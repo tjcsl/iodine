@@ -115,12 +115,12 @@
 		/* If we were called by a class, use the config section
 		for that class. */
 		if (isset($trace[1]['class'])) {
-			return i2config_get($field, strtolower($trace[1]['class']));
+			return i2config_get($field, $default, strtolower($trace[1]['class']));
 		}
 		
 		/* If we were not called by a class, default to core, since
 		if we were called by core, it would not report a class. */
 
-		return i2config_get($field, 'core');
+		return i2config_get($field, $default, 'core');
 	}
 ?>
