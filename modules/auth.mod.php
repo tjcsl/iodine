@@ -43,6 +43,9 @@
 		/**
 		* Shows the login box so users can actually log in to use the
 		* system.
+		*
+		* FIXME: This should only use Display to display a tpl file with has
+		* the login box page. -Deason
 		*/
 		function show_login() {
 			$I2_DISP->show_login();
@@ -64,7 +67,8 @@
 		
 		/**
 		* Gets the starting page for a user.
-		Doesn't this call another module or something to get the data?
+		* Doesn't this call another module or something to get the data? Yes, but
+		* until it gets discussed, don't worry about it. -Deason
 		*
 		* @param string $user The user to get the page for.
 		* @return string The start page for the user.
