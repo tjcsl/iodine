@@ -7,26 +7,19 @@
 	* @since 1.0
 	* @package core
 	*/
-	
+
+	include('../functions.inc.php');
+
 	/**
-	* The __autoload function, used for autoloading modules.
-	*
-	* This is the function used by PHP as a last resort for loading 
-	* noninstantiated classes before it throws an error. It checks for
-	* readability of the module (if one exists) in the {@link MODULE_PATH}.
-	* Throws an exception if it does not exist.
-	* 
-	* @param string $class_name Name of noninstantiated class.
+	* The path to the master Iodine configuration file.
 	*/
-	function __autoload($class_name) {
-		if (!is_readable(MODULE_PATH."$class_name.inc.php")) {
-			throw new Exception("Cannot load module $class_name."); // PHP4
-			die("Cannot load module $class_name.");
-		}
-		else {
-			require_once(MODULE_PATH."$class_name.inc.php");
-		}
-	}
+	define('CONFIG_FILENAME', '../config.user.ini');
+	/* The actual config file in CVS is ../config.ini, but since the config
+	file contents should be different for different people when I2 is
+	checked out from CVS. So, copy config.ini to config.user.ini in your
+	personal intranet2 CVS dir, and change the necessary values. But do
+	_NOT_ add config.user.ini to cvs, so it stays different across the
+	different instances of the I2 application. */
 
 	/* Load the essential modules; start try block*/
 	try {
@@ -53,15 +46,15 @@
 		 *
 		 * @global MySQL $I2_SQL
 		 */
-		$I2_SQL = new MySQL();
+		//$I4_SQL = new MySQL();
 		/**
 		 * The global authentication mechanism.
 		 *
-		 * Use this {@link Authentication} object for authenticating users.
+		 * Use this {@link Auth} object for authenticating users.
 		 *
-		 * @global Authentication $I2_AUTH
+		 * @global Auth $I2_AUTH
 		 */
-		$I2_AUTH = new Authentication();
+		$I2_AUTH = new Auth();
 		/**
 		 * The global user info mechanism.
 		 *
@@ -70,7 +63,7 @@
 		 * @global User $I2_USER
 		 */
 		$I2_USER = new User();
-		/*
+		/**
 		 * The global display mechanism.
 		 *
 		 * Use this {@link Display} object for displaying information on a page.
@@ -79,9 +72,9 @@
 		 */
 		$I2_DISP = new Display('core'); 
 		
-		// $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here)
+		/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here) */
 
-		/*
+		/**
 		 * The global array for a module's arguments.
 		 *
 		 * This array contains argv-style arguments when a module is called to
@@ -109,30 +102,18 @@
 			}
 		}
 		
-		/* FIXME: this should be in the Authentication module, anyone care to tell me why it needs to be here? -Deason */
-		// Authentication of user will be done here instead of on Authentication instantiation because other essential modules will be loaded here.
-		if (!$I2_AUTH->check_authenticated()) { 
-			// If user is not authenticated/trying and failing to authenticate 
-			$I2_AUTH->show_login($I2_ARGS); // Show the login page and pass
-			// $I2_ARGS in order to preserve the page that they were requesting
-			exit; // TODO: This is messy. Any way we can die/exit gracefully?
+		if (!is_i2module($I2_ARGS[0])) {
+			$I2_ERR->call_error('Invalid module name \''.$I2_ARGS[0].'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
 		}
-			
-		eval('$I2_MOD = new ' . $I2_ARGS[0] . '();');
-		
-		$I2_DISP->globalHeader();
 
-		$I2_DISP->openMainBox($I2_MOD); //Open the central box
-		$I2_MOD->display(new Display($I2_ARGS[0]));
-		$I2_DISP->closeMainBox($I2_MOD); //Close the central box
-		
-		$I2_DISP->globalFooter();
+		/* Display will instantiate the module, we just pass the name */
+		$I2_DISP->display_loop($I2_ARGS[0]);
 	
-	} catch ($exception) {
+	} catch (Exception $e) {
 		if(isset($I2_ERR)) {
-			$I2_ERR->unhandled_error($exception);
+			$I2_ERR->default_exception_handler($e);
 		} else {
-			die("The error module is not loaded and there was an error.");
+			die('The error module is not loaded and there was an error: '.$e->getMessage());
 		}
 	}
 
