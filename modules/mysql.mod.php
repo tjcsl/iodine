@@ -462,7 +462,8 @@
 		* TODO: document $conditionals.
 		*/
 		function delete($table, $where = false, $conditionals = false) {
-			//TODO: If where is nonexistent, throw error
+			
+			//if (!$where) { error("uh-oh!"); } 
 
 			$q = "DELETE FROM $table WHERE ";
 			
