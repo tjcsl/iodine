@@ -10,7 +10,7 @@ interface Module {
 	* @param object $disp The Display object to use for output.
 	* @abstract
 	*/
-	function displayBox($disp);
+	function display_box($disp);
 	
 	/**
 	* Displays all of a module's main content.
@@ -18,7 +18,7 @@ interface Module {
 	* @param object $disp The Display object to use for output.
 	* @abstract
 	*/
-	function display($disp);
+	function display_pane($disp);
 	
 	/**
 	* Gets the module's name.
@@ -26,7 +26,7 @@ interface Module {
 	* @returns string The name of the module.
 	* @abstract
 	*/
-	function getName();
+	function get_name();
 
 	/**
 	* Performs all initialization necessary for this module to be 
@@ -34,7 +34,7 @@ interface Module {
 	*
 	* @abstract
 	*/
-	function initBox();
+	function init_box();
 
 	/**
 	* Performs all initialization necessary for this module to be
@@ -42,7 +42,7 @@ interface Module {
 	*
 	* @abstract
 	*/
-	function init();
+	function init_pane();
 	
 }
 ?>
