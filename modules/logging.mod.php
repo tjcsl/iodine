@@ -13,7 +13,6 @@
 	Logging Team: adeason, mlee1, melthon, jboning
 	*/
 	
-	
 	class Logging {
 		
 		var $my_email = "intranet@tjhsst.edu";
@@ -43,9 +42,9 @@
 		* 0 = LOG_CRIT, 1 = LOG_ERR, 2 = LOG_WARNING, 3 = LOG_NOTICE, 4 = LOG_INFO, 5 = LOG_DEBUG
 		*/
 		function log_syslog($msg = "", $priority = 4) {
-			define_syslog_variables();
-			stripslashes($msg);
-			switch ($priority) {
+			define_syslog_variables(); //Define the LOG_* variables
+			stripslashes($msg); //Get rid of any slashes in $msg
+			switch ($priority) { //Convert priority to system constants
 				case 0:
 					$pri = LOG_CRIT;
 					break;
@@ -68,7 +67,7 @@
 					$pri = LOG_INFO;
 					break;
 			}
-			syslog($pri, $msg);
+			syslog($pri, $msg); //Send the message to SysLog
 		}
 		
 		/**
@@ -77,14 +76,20 @@
 		* @param string $msg The messgage to log to the email address.
 		*/
 		function log_mail($msg = "") {
-			$headers  = "MIME-Version: 1.0\n";
+			$headers  = "MIME-Version: 1.0\n"; //Setup email headers
 			$headers .= "From: Intranet Logs <noreply@intranet.tjhsst.edu>\n";
-			mail($my_email, "Intranet Log", $msg, $headers);
+			mail($my_email, "Intranet Log", $msg, $headers); //Send the email
 		}
-
+		
+		/**
+		* Displays a log message to the screen?
+		*
+		* @param int $level The access level of the attempted action?
+		* @param string $msg The message to log to debug
+		*/
 		function log_debug($level, $msg = "") {
 			//What does this do?  (In an ideal world)
-			echo("LOG: $msg");
+			echo("Debugging Mesage: $msg, Level $level");
 		}
 
 	}
