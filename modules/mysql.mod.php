@@ -22,8 +22,30 @@
 		* Indicates that results should be equal to a value.
 		*/
 		const $EQUAL_TO = '=';
-		
-		private var $db;
+		/**
+		* Indicates the sort order is descending.
+		*/
+		const DESC = 'DESC';
+		/**
+		* Indicates the sort order is ascending.
+		*/
+		const ASC = 'ASC';
+		/**
+		* Indicates an AND in a WHERE statement.
+		*/
+		const AND = 'AND';
+		/**
+		* Indicates on OR in a WHERE statement.
+		*/
+		const OR = 'OR';
+		/**
+		* Indicates a left parenthesis in a WHERE statement.
+		*/
+		const LPAREN = '(';
+		/**
+		* Indicates a right parenthesis in a WHERE statement.
+		*/
+		const RPAREN = ')';
 		
 		/**
 		* The MySQL class constructor.
@@ -32,7 +54,7 @@
 		*/
 		function MySQL() {
 			//TODO: Get config value here//
-			$db = $this->connect($blah, $blah2, $blah3);
+			$this->connect($blah, $blah2, $blah3);
 
 		}
 
@@ -48,16 +70,35 @@
 			return $sql;
 		}
 		
+		/**
+		* Connects to a MySQL database server.
+		*
+		* @access protected
+		* @param string $server The MySQL server location/name.
+		* @param string $user The MySQL username.
+		* @param string $password The MySQL password.
+		*/
 		protected function connect($server, $user, $password) {
 			return mysql_pconnect($server, $user, $password);
 		}
-
+		
+		/**
+		* Select a MySQL database.
+		*
+		* @access protected
+		* @param string $database The name of the database to select.
+		*/
 		protected function select_db($database) {
 			mysql_select_db($database);
 		}
 
+		/**
+		* Perform a preformatted MySQL query.  NOT FOR OUTSIDE USE!!!
+		*
+		* @param string $query The query string.
+		*/
 		protected function query($query) {
-			return mysql_query($db,$query); //Is this the right ordering?
+			return mysql_query($query);
 		}
 
 		/**
@@ -65,12 +106,17 @@
 		*
 		* @param string $table The table to query.
 		* @param array $columns The columns to select (all by default).
-		* @param assoc_array $where The conditions on which to accept a row.  This should
+		* @param array $where The conditions on which to accept a row.  This should
 		* be an associative array of two-element arrays consisting of a comparison operator
-		* and a value, so that $where[$key] = array($comparitive,$value).
-		* @param array $ordering The desired sort order of the resultset.
+		* and a valueso that $where[$key] = array($comparitive,$value,$).
+		* @param array $conditionals An array indicating how to match the $where argument's requirements.
+		* It have appropriate grouping.  For the MySQL query segment
+		* "WHERE name='david' AND (id='3' OR foo='bar') AND who='me'", the array would be:
+		* array(AND,LPAREN,OR,RPAREN,AND).
+		* @param array $ordering The desired sort order of the resultset as an array of arrays
+		* , with each subarray being array($ordertype,$column).
 		*/
-		function select($table, $columns = false, $where = false, $ordering = false) {
+		function select($table, $columns = false, $where = false, $conditionals = false, $ordering = false) {
 			/*
 			** Build a (hopefully valid) MySQL query from the arguments.
 			*/
@@ -97,12 +143,27 @@
 				foreach ($where as $key=>$subarray) {
 					if ($first) {
 						$first = false;
+						while ($conditionals && $conditionals[0] == LPAREN) {
+							$q .= array_shift($conditionals);
+						}
 					} else {
-						$q .= ',';
+						if ($conditionals) {
+							$poss = array_shift($conditionals);
+							while ($poss == LPAREN || $poss = RPAREN) {
+								$q .= $poss;
+								//TODO: array bounds checking
+								$poss = array_shift($conditionals);
+							}
+							$q .= " $poss ";
+						}
 					}
 					$comptype = $subarray[0];
 					$value = addslashes($subarray[1]); //Is addslashes() good enough?
 					$q .= "$key $comptype '$value'";
+				}
+				while ($conditionals && ($poss = array_shift($conditionals))) {
+					//if ($poss != RPAREN) { err('Bad parens.') }
+					$q .= $poss;
 				}
 			}
 			
@@ -181,17 +242,18 @@
 		* @param array $values An array of values.
 		* @param array $where An associative array of arrays containing condition-match pairs, so that
 		* $where[$key] = array($comparetype,$value).
+		* TODO: document $conditionals.
 		*/
-		function update($table, $columns, $values = false, $where = false) {
+		function update($table, $columns, $values = false, $where = false, $conditionals = false) {
 			/*
 			** If $values isn't present, expand $columns to $columns and $values.
 			*/
-			//FIXME fix it!!
-			if ($values) {
-				$a = 0;
-				while ($val = array_pop($values)) {
-					$columns[$columns[$a]] = $val;
+			
+			if (!$values) {
+				foreach (array_values($columns) as $val) {
+					$values = $val;
 				}
+				$columns = array_keys($columns);
 			}
 
 			/*
@@ -200,12 +262,39 @@
 
 			$q = "UPDATE $table SET ";
 
-			foreach ($columns as $col) {
+			//if (array_len($columns) != array_len($values)) { error("uh-oh!"); }
+			
+			$first = true;
+			for ($i = 0; $i < array_len($columns); $i++) {
+				if ($first) {
+					$first = false;
+				} else {
+					$q .= ',';
+				}
+				$val = addslashes($values[$i]);
+				$q .= "$columns[$i] = '$val'";
 			}
-		}
 
-		function drop($table, $where = false) {
-			//If where is nonexistent, throw error
+			//TODO: implement $where and $conditionals
+			
+
+			return sql_to_result(query($q));
+		}
+		
+		/**
+		* Perform a MySQL DELETE statement.  You must provide at least one condition.
+		*
+		* @param string $table The name of the table to delete from.
+		* @param array $where An associative array of names to condition/value pairs,
+		* so that $where[$column] = array($matchtype,$value).
+		* TODO: document $conditionals.
+		*/
+		function delete($table, $where = false, $conditionals = false) {
+			//TODO: If where is nonexistent, throw error
+
+			$q = "DELETE FROM $table WHERE ";
+			
+			//TODO: implement 
 		}
 
 	}
