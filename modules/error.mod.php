@@ -15,8 +15,8 @@
 		* @access public
 		*/
 		function Error() {
-			set_error_handler(array(&$this,default_error_handler));
-			set_exception_handler(array(&$this,default_exception_handler));
+			set_error_handler(array(&$this,'default_error_handler'));
+			set_exception_handler(array(&$this,'default_exception_handler'));
 		}
 
 		/**
