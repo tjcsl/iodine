@@ -15,8 +15,8 @@
 		* @access public
 		*/
 		function Error() {
-			set_error_handler(default_error_handler);
-			set_exception_handler(default_exception_handler);
+			set_error_handler(array(&$this,default_error_handler));
+			set_exception_handler(array(&$this,default_exception_handler));
 		}
 
 		/**
@@ -41,7 +41,7 @@
 		* @param Exception $exception	The exception that was thrown
 		*				and not caught
 		*/
-		function default_exception_handler($exception) {
+		function default_exception_handler(Exception $exception) {
 
 		}
 
