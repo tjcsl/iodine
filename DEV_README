@@ -15,4 +15,7 @@ The star denotes your module team leader. Pleas talk to them and communicate wit
 
 Again, stay tuned, and happy coding.
 
-Dan Tran
+-Dan Tran
+
+If you need to edit something, please use the command 'cvs edit [filename]' first.  This is important.
+-braujac
