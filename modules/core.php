@@ -109,6 +109,7 @@
 			}
 		}
 		
+		/* FIXME: this should be in the Authentication module, anyone care to tell me why it needs to be here? -Deason */
 		// Authentication of user will be done here instead of on Authentication instantiation because other essential modules will be loaded here.
 		if (!$I2_AUTH->check_authenticated()) { 
 			// If user is not authenticated/trying and failing to authenticate 
@@ -117,6 +118,11 @@
 			exit; // TODO: This is messy. Any way we can die/exit gracefully?
 		}
 			
+		/* This should _ALL_ be in the Intrabox module. Yes, it has not been coded yet
+		what does that mean? It means we're not coding Intrabox code yet! We're only doing
+		core modules code right now, and Intrabox is not a core module, nor critical
+		functionality. */
+		/*
 		// The order of the following will probably be changed; this is temporary.
 
 		$module_list = array();
@@ -141,10 +147,11 @@
 			$module->displayBox(new Display($module->getName())); //Invoke the module display method
 			$I2_DISP->closeBox($module); //Close the ibox
 		}
-		$I2_DISP->endBoxes(); //Close the box group
+		$I2_DISP->endBoxes(); //Close the box group*/
+		eval('$I2_MOD = new ' . $I2_ARGS[0] . '();');
 		
 		$I2_DISP->openMainBox($I2_MOD); //Open the central box
-		$I2_MOD->display(new Display($I2_MODULE_NAME);
+		$I2_MOD->display(new Display($I2_MODULE_NAME));
 		$I2_DISP->closeMainBox($I2_MOD); //Close the central box
 		
 		$I2_DISP->globalFooter();
