@@ -2,7 +2,7 @@
 	/**
 	* The authentication module for Iodine.
 	* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
-	* @copyright 2004 The Intranet 2 Development Team
+	* @copyright 2004-2005 The Intranet 2 Development Team
 	* @version 1.0
 	* @since 1.0
 	* @package auth
@@ -15,8 +15,7 @@
 		* @access public
 		*/
 		function Authentication() {
-			$this->check_sessid();
-				
+		
 		}
 
 		/**
@@ -31,7 +30,7 @@
 		* system.
 		*/
 		function show_login() {
-
+			$I2_DISP->showLogin();
 		}
 		
 		/**
@@ -44,7 +43,7 @@
 		FIXME: is that what it really returns? deason is just guessing
 		*/
 		function check_user($user, $password) {
-
+			return true;
 		}
 		
 		/**
