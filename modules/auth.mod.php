@@ -65,10 +65,20 @@
 		 */
 		 
 		function check_user($user, $password) {
-			$status=shell_exec("echo $password | kinit $user 1> /dev/null 2> /dev/null;echo $?;kdestroy 1> /dev/null 2> /dev/null");
-			if ($status==0)
-				return false;
-			return true;
+			$descriptors = array(0 => array("pipe", "r"), 1 => array("file", "/dev/null", "w"), 2 => array("file", "/dev/null", "w"));
+
+			$process = proc_open("kinit $user", $descriptors, $pipes);
+			if(is_resource($process)) {
+				fwrite($pipes[0], $password);
+				fclose($pipes[0]);
+				$status = proc_close($process);
+			
+				if($status == 0) {
+					exec("kdestroy");
+					return true;
+				}
+			}
+			return false;
 		}
 
 		/**
