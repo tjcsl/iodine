@@ -96,7 +96,7 @@
 		/* Eliminates extraneous slashes in the PATH_INFO
 		** And splits them into the global I2_ARGS array
 		*/
-		foreach(explode('/', $_SERVER['PATH_INFO']) as $arg) {
+		foreach(explode('/', $_SERVER['QUERY_STRING']) as $arg) {
 			if($arg) {
 				$I2_ARGS[] = $arg;
 			}
