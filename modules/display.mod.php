@@ -58,9 +58,9 @@
 		*/
 		function __construct($module_name) {
 			$this->smarty = new Smarty;
-			//$this->smarty->register_prefilter('Display::prefilter');
-			//$this->smarty->register_postfilter('Display::postfilter');
-			//$this->smarty->register_outputfilter('Display::outputfilter');
+			$this->smarty->register_prefilter(array(&$this,'prefilter'));
+			$this->smarty->register_postfilter(array(&$this,'postfilter'));
+			$this->smarty->register_outputfilter(array(&$this,'outputfilter'));
 			$this->smarty->left_delimiter = '[<';
 			$this->smarty->right_delimiter = '>]';
 			$this->smarty->compile_dir = i2config_get('smarty_path','./','core');
@@ -77,13 +77,21 @@
 			global $I2_ERR;
 			$this->global_header();
 			$mod = '';
+			$mastertoken = get_master_token();
 			try {
 				//TODO: there has to be a better way to do this!
 				$disp = new Display($module);
 				eval('$mod = new '.$module.'();');
+				/*
+				** Create an authentication token with all the appropriate rights.
+				*/
+				$token = issue_token($mastertoken,array('db/'.$module=>'w','info/'.$module=>'w','pref/'.$module=>'w','*'=>'r'));	
+				
 				//FIXME: use more than one module, duh!
 				$this->open_content_pane($mod);
-				$mod->init_pane();
+
+				
+				$mod->init_pane($token);
 				$mod->display_pane($disp);
 				$this->close_content_pane($mod);
 			} catch (Exception $e) {
@@ -160,7 +168,7 @@
 			if ($this->buffering_on()) {
 				Display::$core_display->buffer .= "$text";
 			} else {
-				$I2_LOG->log_screen($text);
+				echo($text);
 			}
 		}
 		
@@ -240,7 +248,7 @@
 		*/
 		function prefilter($source,&$smarty) {
 			//TODO: put actual debug-mode-detection here
-			if ($debug) {
+			if (!$debug) {
 				return "[<strip>]${source}[</strip>]";
 			}
 			return $source;
