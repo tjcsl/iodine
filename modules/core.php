@@ -108,7 +108,15 @@
 				$I2_ARGS[] = $arg;
 			}
 		}
-
+		
+		// Authentication of user will be done here instead of on Authentication instantiation because other essential modules will be loaded here.
+		if (!$I2_AUTH->check_authenticated()) { 
+			// If user is not authenticated/trying and failing to authenticate 
+			$I2_AUTH->show_login($I2_ARGS); // Show the login page and pass
+			// $I2_ARGS in order to preserve the page that they were requesting
+			exit; // TODO: This is messy. Any way we can die/exit gracefully?
+		}
+			
 		// The order of the following will probably be changed; this is temporary.
 
 		$module_list = array();
