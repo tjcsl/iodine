@@ -61,6 +61,8 @@
 			$this->smarty->register_prefilter('prefilter');
 			$this->smarty->register_postfilter('postfilter');
 			$this->smarty->register_outputfilter('outputfilter');
+			$this->smarty->left_delimiter = '[<';
+			$this->smarty->right_delimiter = '>]';
 			$this->my_module_name = $module_name;
 			if ($module_name == 'core') {
 				$Display::core_display = $this;
@@ -173,62 +175,22 @@
 		}
 
 		/**
-		* Opens the ibox section of the page.
-		*/
-		function startBoxes() {
-			disp('startboxes.tpl',array());
-			flush();
-		}
-
-		/**
-		* Closes the ibox section of the page.
-		*/
-		function endBoxes() {
-			disp('endboxes.tpl',array());
-			flush();
-		}
-
-		/**
-		* Open an ibox.
-		*
-		* @param object $module The module that the ibox will contain.
-		*/
-		function openBox(&$module) {
-			//TODO: implement for real
-			setBuffering(true);
-			$name = $module->getName();
-			disp('openbox.tpl',array('module_name'=>$name));
-		}
-
-		/**
-		* Close an ibox.
-		*
-		* @param object $module The module that was contained in the ibox.
-		*/
-		function closeBox(&$module) {
-			//TODO: implement for real
-			$name = $module->getName();
-			disp('closebox.tpl',array('module_name'=>$name));
-			setBuffering(false);
-		}
-
-		/**
-		* Open the main display box.
+		* Open the content pane.
 		*
 		* @param object $module The module that will be displayed in the main box.
 		*/
-		function openMainBox(&$module) {
+		function openContentPane(&$module) {
 			setBuffering(false);
 			$name = $module->getName();
 			disp('openmainbox.tpl',array('module_name'=>$name));
 		}
 
 		/**
-		* Close the main display box.
+		* Close the content pane.
 		*
 		* @param object $module The module that was displayed in the main box.
 		*/
-		function closeMainBox(&$module) {
+		function closeContentPane(&$module) {
 			$name = $module->getName();
 			disp('closemainbox.tpl',array('module_name'=>$name));
 		}
