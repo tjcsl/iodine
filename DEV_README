@@ -19,3 +19,6 @@ Again, stay tuned, and happy coding.
 
 If you need to edit something, please use the command 'cvs edit [filename]' first.  This is important.
 -braujac
+
+After you edit something, make sure to either do a 'cvs commit' or 'cvs unedit' on it, so you don't stay in the editors list forever. And to see if people are editing a file, use 'cvs editors [filename]' to get a list of people currently editing a file.
+-Deason
