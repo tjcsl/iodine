@@ -120,7 +120,7 @@
 		* array($key,$value)
 		* @param string $value The value to assign the variable.
 		*/
-		function assign($var,$value=null) {
+		function smarty_assign($var,$value=null) {
 			if ($value === null) {
 				$value = $var[1];
 				$var = $var[0];
