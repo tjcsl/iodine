@@ -56,7 +56,7 @@
 		* @access public
 		* @param string $module_name The name of the module this Display object applies to.
 		*/
-		function Display($module_name) {
+		function __construct($module_name) {
 			$this->smarty = new Smarty;
 			$this->smarty->register_prefilter('prefilter');
 			$this->smarty->register_postfilter('postfilter');
@@ -75,7 +75,7 @@
 		*
 		* @return bool Whether buffering is enabled.
 		*/
-		function bufferingOn() {
+		function buffering_on() {
 			return Display::$core_display->buffering;
 		}
 
@@ -116,7 +116,7 @@
 		function disp($template, $args=array()) {
 			assign_array($args);
 			//TODO: validate passed template name.
-			if (bufferingOn()) {
+			if (buffering_on()) {
 				Display::$core_display->buffer .= $this->smarty->fetch($template); 
 			} else {
 				$this->smarty->display($template);
@@ -128,8 +128,8 @@
 		*
 		* @param string $text The text to display.
 		*/
-		function rawDisplay($text) {
-			if (bufferingOn()) {
+		function raw_display($text) {
+			if (buffering_on()) {
 				Display::$core_display->buffer .= "$text";
 			} else {
 				echo($text);
@@ -152,10 +152,10 @@
 		*
 		* @param bool $on Whether to buffer output.
 		*/
-		function setBuffering($on) {
+		function set_buffering($on) {
 			if ($this == Display::$core_display) {
 				Display::$core_display->buffering = $on;
-				if (!bufferingOn()) {
+				if (!buffering_on()) {
 					flush();
 				}
 			}
@@ -167,7 +167,7 @@
 		* Also sends all necessary header information, links CSS, etc.  Please note
 		* that this is not global:  it is called only on the core's Display instance.
 		*/
-		function globalHeader() {
+		function global_header() {
 			//TODO: implement this for real.
 			disp('header.tpl');
 			flush();
@@ -177,7 +177,7 @@
 		* Closes everything that remains open, and prints anything else that goes
 		* after the modules.
 		*/
-		function globalFooter() {
+		function global_footer() {
 			disp('footer.tpl');
 			flush();
 		}
@@ -187,8 +187,8 @@
 		*
 		* @param object $module The module that will be displayed in the main box.
 		*/
-		function openContentPane(&$module) {
-			setBuffering(false);
+		function open_content_pane(&$module) {
+			set_buffering(false);
 			$this->name = $module->getName();
 			disp('openmainbox.tpl',array('module_name'=>$this->name));
 		}
@@ -198,7 +198,7 @@
 		*
 		* @param object $module The module that was displayed in the main box.
 		*/
-		function closeContentPane(&$module) {
+		function close_content_pane(&$module) {
 			$this->name = $module->getName();
 			disp('closemainbox.tpl',array('module_name'=>$this->name));
 		}
