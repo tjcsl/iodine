@@ -57,17 +57,17 @@
 		* @param string $module_name The name of the module this Display object applies to.
 		*/
 		function Display($module_name) {
-			$this->$smarty = new Smarty;
-			$this->$smarty->register_prefilter('prefilter');
-			$this->$smarty->register_postfilter('postfilter');
-			$this->$smarty->register_outputfilter('outputfilter');
-			$this->$smarty->left_delimiter = '[<';
-			$this->$smarty->right_delimiter = '>]';
-			$this->$my_module_name = $module_name;
+			$this->smarty = new Smarty;
+			$this->smarty->register_prefilter('prefilter');
+			$this->smarty->register_postfilter('postfilter');
+			$this->smarty->register_outputfilter('outputfilter');
+			$this->smarty->left_delimiter = '[<';
+			$this->smarty->right_delimiter = '>]';
+			$this->my_module_name = $module_name;
 			if ($module_name == 'core') {
 				Display::$core_display = $this;
 			}
-			$this->$buffer = "";
+			$this->buffer = "";
 		}
 
 		/**
@@ -76,7 +76,7 @@
 		* @return bool Whether buffering is enabled.
 		*/
 		function bufferingOn() {
-			return Display::$core_display->$buffering;
+			return Display::$core_display->buffering;
 		}
 
 		/**
@@ -93,7 +93,7 @@
 				$value = $var[1];
 				$var = $var[0];
 			}
-			$this->$smarty->assign($var,$value);
+			$this->smarty->assign($var,$value);
 		}
 
 		/**
@@ -117,9 +117,9 @@
 			assign_array($args);
 			//TODO: validate passed template name.
 			if (bufferingOn()) {
-				Display::$core_display->$buffer .= $this->$smarty->fetch($template); 
+				Display::$core_display->buffer .= $this->smarty->fetch($template); 
 			} else {
-				$this->$smarty->display($template);
+				$this->smarty->display($template);
 			}
 		}
 		
@@ -130,7 +130,7 @@
 		*/
 		function rawDisplay($text) {
 			if (bufferingOn()) {
-				Display::$core_display->$buffer .= "$text";
+				Display::$core_display->buffer .= "$text";
 			} else {
 				echo($text);
 			}
@@ -142,8 +142,8 @@
 		*/
 		function flush() {
 			if ($this == Display::$core_display) {
-				echo(Display::$core_display->$buffer);
-				Display::$core_display->$buffer = "";
+				echo(Display::$core_display->buffer);
+				Display::$core_display->buffer = "";
 			}
 		}
 		
@@ -154,7 +154,7 @@
 		*/
 		function setBuffering($on) {
 			if ($this == Display::$core_display) {
-				Display::$core_display->$buffering = $on;
+				Display::$core_display->buffering = $on;
 				if (!bufferingOn()) {
 					flush();
 				}
@@ -189,8 +189,8 @@
 		*/
 		function openContentPane(&$module) {
 			setBuffering(false);
-			$this->$name = $module->getName();
-			disp('openmainbox.tpl',array('module_name'=>$this->$name));
+			$this->name = $module->getName();
+			disp('openmainbox.tpl',array('module_name'=>$this->name));
 		}
 
 		/**
@@ -199,8 +199,8 @@
 		* @param object $module The module that was displayed in the main box.
 		*/
 		function closeContentPane(&$module) {
-			$this->$name = $module->getName();
-			disp('closemainbox.tpl',array('module_name'=>$this->$name));
+			$this->name = $module->getName();
+			disp('closemainbox.tpl',array('module_name'=>$this->name));
 		}
 
 		/**
