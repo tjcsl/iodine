@@ -78,7 +78,7 @@
 	* @param mixed $default The default value to be returned if the specified key is not found.
 	* @return mixed The config value for the specified field, the default value if one was passed and if the specified key was not found, NULL otherwise.
 	*/
-	function i2config_get($field, $section = NULL, $default) {
+	function i2config_get($field, $section = NULL, $default = NULL) {
 		global $I2_ERR;
 		static $config = NULL;
 		
@@ -100,8 +100,11 @@
 			if (isset($config[$section][$field])) {
 				return $config[$section][$field];
 			}
-			/* Return error, should probably also make a logging call here */
-			return NULL;
+			if ($default === NULL) {
+				/* Return error, should probably also make a logging call here */
+				return NULL;
+			}
+			return $default;
 		}
 		
 		/* If a section was not specified, try to guess it from getting
