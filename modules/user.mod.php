@@ -27,11 +27,16 @@
 		/**
 		* Gets a tidbit of info about the user.
 		*
+		* @param string $token An access token with read rights to the passed field.
 		* @param string $field The field to get the value of.
 		*/
-		function get_info($field) {
-			if (isSet($info[$field])) {
-				return $info[$field];
+		function get_info($token, $field) {
+			if (!check_token_rights($token,'info/'.$field,'r')) {
+				$I2_ERR->call_error("Bad authentication token to get $field!");
+				return null;
+			}
+			if (isSet($this->info[$field])) {
+				return $this->info[$field];
 			} else {
 				$I2_LOG->log_debug("Access of undefined field $field in User module.");	
 			}
@@ -42,9 +47,15 @@
 		* Gets a user preference.
 		*
 		* @param string $field The preference name whose value you want.
+		* @param string $token An access token with read rights to the given preference.
 		*/
-		function get_pref($field) {
-			if (isSet($prefs[$field])) {
+		function get_pref($token, $field) {
+			if (!check_token_rights($token,'pref/'.$field,'r')) {
+				$I2_ERR->call_error("Bad authentication token to get preference $field!");
+				return null;
+			}
+			if (isSet($this->prefs[$field])) {
+				return $this->prefs[$field];
 			} else {
 				$I2_LOG->log_debug("Access of undefined preference $field in User module.");
 			}
@@ -55,7 +66,7 @@
 		* Returns an array of class sectionIDs. Use the Schedule class to get more info about those classes.
 		*/
 		function get_sched() {
-			return $schedule;
+			return $this->schedule;
 		}
 
 
@@ -67,9 +78,10 @@
 		* @param mixed $value The value to set the field to.
 		*/
 		function set_info($token, $name, $value) {
-			//FIXME: check $token.
-			// if (!check_token_rights($token,$name,'w')) {$I2_ERR->call_error("Bad authentication token to set $name!"); }
-			$info[$name] = $value;
+			if (!check_token_rights($token,'info/'.$name,'w')) {
+				$I2_ERR->call_error("Bad authentication token to set $name!"); 
+			}
+			$this->info[$name] = $value;
 			//FIXME: update the database to make the change persist.
 		}
 
@@ -81,7 +93,11 @@
 		* @param mixed $value The value to set the preference to.
 		*/
 		function set_pref($token, $name, $value) {
-			//FIXME:  As set_info.
+			if (!check_token_rights($token,'pref/'.$name,'w')) {
+				$I2_ERR->call_error("Bad authentication token to set preference $name!"); 
+			}
+			$this->prefs[$name] = $value;
+			//FIXME: update the database to make the change persist.
 		}
 
 	}
