@@ -21,13 +21,13 @@
 		
 		function init_pane($token) {
 			global $I2_SQL;
-			$res = $I2_SQL->select($token,'news_stories',array('title','text','author','authortype','posted'));
-			$this->$newsdetails = $res->fetch_all_arrays();
+			$res = $I2_SQL->select($token,'news_stories',array('title','text','authorID','authortype','posted'));
+			$this->newsdetails = $res->fetch_all_arrays(MYSQL_NUM);
 		}
 		
 		function display_pane($display) {
-			$display->raw_display("This is today's news, in a pane.");
-			$display->disp('newspane.tpl',array('stories'=>$newsdetails));
+			//$display->raw_display("This is today's news, in a pane.");
+			$display->disp('newspane.tpl',array('news_stories'=>$this->newsdetails));
 		}
 		
 		function init_box($token) {
@@ -38,7 +38,7 @@
 
 		function display_box($display) {
 			$display->raw_display("This is today's news, in a box.");
-			$display->disp('newsbox.tpl',array('summaries'=>$summaries));
+			$display->disp('newsbox.tpl',array('summaries'=>$this->summaries));
 		}
 
 		function get_name() {
