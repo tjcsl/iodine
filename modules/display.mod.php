@@ -70,7 +70,7 @@
 			}
 			$this->buffer = "";
 			//FIXME: this must be removed before production code!  It's a hack!
-			$this->assign('page_css',i2config_get('css_file','./css.css','core'));
+			$this->assign('page_css','http://iodine.tjhsst.edu/~braujac/i2/www/css.css');
 		}
 
 		function display_loop($module) {
@@ -155,11 +155,12 @@
 		* @param string $text The text to display.
 		*/
 		function raw_display($text) {
+			global $I2_LOG;
 			$text = 'Raw display from module '.$this->my_module_name.': '.$text;
 			if ($this->buffering_on()) {
 				Display::$core_display->buffer .= "$text";
 			} else {
-				echo($text);
+				$I2_LOG->log_screen($text);
 			}
 		}
 		
