@@ -131,6 +131,7 @@
 				return NULL;
 			}
 			return $default;
+			
 		}
 		
 		/* If a section was not specified, try to guess it from getting
@@ -150,30 +151,98 @@
 		return i2config_get($field, $default, 'core');
 	}
 
+	//FIXME:  Isolate these variables
+	$master = null;
+	$slaves = array();
+
+	function compatible_access($permissions,$request) {
+		if ($permissions == 'w') {
+			return true;
+		}
+		if ($permissions == $request) {
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	* Verifies that the passed token gives rights to access the passed data.
 	*
 	* @param string $token The authentication token to check.
 	* @param string $field The field whose access was attempted.
-	* @param string $accesstype 'r' for read, 'w' for write, 'rp' for preference read,
-	* or 'wp' for preference write.
+	* @param string $accesstype 'r' for read, 'w' for write.
 	* @return boolean True if access is granted; false if it's denied.
 	*/
 	function check_token_rights($token, $field, $accesstype) {
+		global $slaves;
+		if (!isSet($slaves[$token])) {
+			/*
+			** Invalid token.
+			*/
+			return false;
+		}
+		/*
+		** Eliminate all of the passed field after the first underscore.
+		*/
+		$fieldpieces = preg_split('/_/',$field);
+		$field = $fieldpieces[0];
+		if (isSet($slaves[$token][$field])) {
+			return compatible_access($slaves[$token][$field]);
+		}
+		if (isSet($slaves[$token]['*'])) {
+			return compatible_access($slaves[$token][$field]);
+		}
+		/*
+		** No mention of the passed field, and no catch-all.
+		*/
+		return false;
+	}
+
+	function generate_token() {
+		//FIXME:  make this real.
+		return md5(time());
 	}
 
 	/**
 	* Issue an authentication token for a module to use to access user information.
 	*
 	* @return string An authentication token with the given rights.
+	* @param string $mastertoken The master token obtained from get_master_token.
 	* @param mixed $rightsarray An array containing access rights for the new token.
 	*/
-	function issue_token($rightsarray) {
+	function issue_token($mastertoken, $rightsarray) {
+		global $slaves;
+		global $master;
+		global $I2_LOG;
+		if ($mastertoken != $master) {
+			echo_handler('An invalid master token was used in an attempt to create a new token!');
+			return;
+		}
+		$token = generate_token();
+		$slaves[$token] = $rightsarray;
+		$ct = count($rightsarray);
+		if ($ct > 1) {
+			$I2_LOG->log_debug('Authentication token issued, rights: '.print_r($rightsarray,true));
+		} else if ($ct%2==1) {
+			$I2_LOG->log_debug('A token issue was attempted with an irregular number of access rights...');
+		} else {
+			$I2_LOG->log_debug('Authentication token issued with no rights!');
+		}
+		return $token;
 	}
 	
-	/**
-	* Prevents the issue of any new authentication tokens.
-	*/
-	function freeze_tokens() {
+	function get_master_token() {
+		global $master;
+		global $slaves;
+		if (isSet($master)) {
+			echo_handler('An attempt was made to create an extra master token!');
+		} else {
+			$master = generate_token();
+			/*
+			** Allow the master token read/write access to everything.
+			*/
+			$slaves[$master] = array('*'=>'w');
+			return $master;
+		}
 	}
 ?>
