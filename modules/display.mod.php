@@ -131,6 +131,7 @@
 		
 		/**
 		* Clear any output buffers, ensuring that all data is written to the browser.
+		FIXME: flush seems to be a reserved keyword, change to something else
 		*/
 		function flush() {
 			if ($this == $Display::core_display) {
