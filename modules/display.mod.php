@@ -70,7 +70,7 @@
 			}
 			$this->buffer = "";
 			//FIXME: this must be removed before production code!  It's a hack!
-			$this->assign('page_css','http://iodine.tjhsst.edu/~braujac/i2/www/css.css');
+			$this->smarty_assign('page_css','http://iodine.tjhsst.edu/~braujac/i2/www/css.css');
 		}
 
 		function display_loop($module) {
@@ -135,7 +135,7 @@
 		*/
 		function assign_array($array) {
 			foreach ($array as $key=>$val) {
-				$this->assign($key,$val);
+				$this->smarty_assign($key,$val);
 			}
 		}
 
