@@ -67,8 +67,12 @@
 
 		function call_error($msg, $critical = 0) {
 			global $I2_LOG;
-			
+
 			$out = 'Iodine fatal error: '.$msg;
+			if (!isSet($I2_LOG)) {
+				echo $out.'<BR>';
+				return;
+			}
 			$I2_LOG->log_error($out);
 			
 			if ($critical) {
