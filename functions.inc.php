@@ -26,9 +26,15 @@
 	* @param string $class_name Name of noninstantiated class.
 	*/
 	function __autoload($class_name) {
-		$class_file = i2config_get('module_path', NULL, 'core').strtolower($class_name).'.mod.php';
+		echo("Loading $class_name<BR />");
+		$class_file = '';
+		if ($class_name == "Error") {
+			echo("Using Error bootstrap load method to ensure proper error handling...");
+			require_once(MODULE_PATH.'error.mod.php');
+			return;
+		}
 
-		if (!is_i2module($class_name)) {
+		if (!($class_file=get_i2module($class_name))) {
 	//		throw new Exception("Cannot load module $class_name."); // PHP4
 			die('Cannot load module '.$class_name.': the file '.$class_file.' is not readable.');
 		}
@@ -46,9 +52,9 @@
 	* not exist, as opposed to raising an exception.
 	*
 	* @param String $module_name The name of the module.
-	* @return bool True if the I2 module file is available, or if the class has already been instantiated. False otherwise.
+	* @return string The file name of the module to load, if it exists; false if it doesn't.
 	*/
-	function is_i2module($module_name) {
+	function get_i2module($module_name) {
 		/* Do not run autoload, since it will throw an exception if the
 		class does not exist */
 		if (class_exists($module_name, FALSE)) {
@@ -56,8 +62,14 @@
 			not be an I2 module, but it is safe to instantiate...*/
 			return TRUE;
 		}
-		if (is_readable(i2config_get('module_path', NULL, 'core').strtolower($module_name).'.mod.php')) {
-			return TRUE;
+		$prepath = i2config_get('module_path', NULL, 'core');
+		$file = $prepath.strtolower($module_name).'.mod.php';
+		if (is_readable($file)) {
+			return $file;
+		}
+		$file = $prepath.$module_name.'.class.php';
+		if (is_readable($file)) {
+			return $file;
 		}
 		return FALSE;
 	}
@@ -80,6 +92,7 @@
 	*/
 	function i2config_get($field, $default = NULL, $section = NULL) {
 		global $I2_ERR;
+		//$I2_ERR = $GLOBALS['I2_ERR'];
 		static $config = NULL;
 		
 		if ($config === NULL) { /*Parse the INI file*/
