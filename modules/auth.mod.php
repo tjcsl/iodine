@@ -14,7 +14,7 @@
 		* 
 		* @access public
 		*/
-		function Auth() {
+		function __construct() {
 		
 		}
 
@@ -44,10 +44,9 @@
 		* Shows the login box so users can actually log in to use the
 		* system.
 		*
-		* FIXME: This should only use Display to display a tpl file with has
-		* the login box page. -Deason
 		*/
 		function show_login() {
+			/* FIXME: make this code be in auth, not display*/
 			$I2_DISP->show_login();
 		}
 		
