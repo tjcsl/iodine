@@ -99,7 +99,7 @@
 
 			/* Maybe put some kind of determination whether to
 			print to screen or print to file here? */
-			echo "Debugging Mesage: $msg, Level $level" ;
+			$this->log_screen("Debugging Mesage: $msg, Level $level");
 		}
 
 		/**
@@ -117,7 +117,8 @@
 		function log_screen($msg) {
 			/* This will get more complicated later, like smarty
 			formatting, etc. */
-			echo $msg;
+			//FIXME: write a custom template pair for this.
+			echo "<div class='raw'>$msg</div>";
 		}
 
 	}
