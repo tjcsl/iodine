@@ -15,14 +15,14 @@
 	
 	
 	class Logging {
+		
+		var $my_email = "intranet@tjhsst.edu";
+		
 		/**
 		* The Logging class constructor.
 		* 
 		* @access public
 		*/
-		
-		var $my_email = "intranet@tjhsst.edu";
-
 		function Logging() {
 			$this->log_access();
 		}
@@ -83,7 +83,8 @@
 		}
 
 		function log_debug($level, $msg = "") {
-
+			//What does this do?  (In an ideal world)
+			echo("LOG: $msg");
 		}
 
 	}
