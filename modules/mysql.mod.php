@@ -73,7 +73,7 @@
 		*/
 		function __construct() {
 			$this->connect(i2config_get('server','','mysql'), i2config_get('user','','mysql'), i2config_get('pass','','mysql'));
-
+			$this->select_db('iodine');
 		}
 
 		/**
@@ -81,11 +81,11 @@
 		*
 		* @access private
 		* @param object $sql The MySQL resultset object.
+		* @param mixed $querytype A query type, from the MySQL module.
 		* @return object An Intranet2-MySQL result object.
 		*/
-		private function sql_to_result($sql) {
-			//TODO:  Implement for real.  Decide on what results should be.
-			return $sql;
+		private function sql_to_result($sql,$querytype) {
+			return new Result($sql,$querytype);
 		}
 		
 		/**
@@ -118,7 +118,13 @@
 		* @param string $query The query string.
 		*/
 		protected function query($query) {
-			return mysql_query($query);
+			global $I2_ERR;
+			$r = mysql_query($query);
+			if ($err = mysql_error()) {
+				$I2_ERR->call_error('MySQL error: '.$err);
+				return false;
+			}
+			return $r;
 		}
 
 		protected function orderToString($ordering) {
@@ -319,6 +325,7 @@
 		*/
 		function select($token, $table, $columns = false, $where = false, $vals = false, $ordering = false) {
 			//TODO: fix the multiargument syntax
+			global $I2_ERR;
 			if (!check_token_rights($token,'db/'.$table,'r')) {
 				$I2_ERR->call_error("An invalid access token was used in attempting to access the $table MySQL table!");
 				return null;
@@ -343,17 +350,23 @@
 			
 			$q .= " FROM $table";
 			
-			$q .= ' ';
+			if ($where) {
+				$q .= ' ';
 			
-			$q .= whereToString($where,$vals);
+				$q .= $this->whereToString($where,$vals);
+			}
 			
-			$q .= ' ';
+			if ($ordering) {
+				$q .= ' ';
 			
-			$q .= orderToString($ordering);
-
+				$q .= $this->orderToString($ordering);
+			}
+			
+			echo $q;
+			
 			//Glad that's over with.  Now, we query the database.
 			
-			return sqlToResult(query($q));
+			return $this->sql_to_result($this->query($q),MySQL::SQL_SELECT);
 		}
 
 		/**
@@ -404,7 +417,7 @@
 			}
 			$q .= ')';
 
-			return sqlToResult(query($q));
+			return $this->sql_to_result($this->query($q),MySQL::SQL_INSERT);
 			
 		}
 
@@ -458,9 +471,9 @@
 			}
 
 			$q .= ' ';
-			$q .= whereToString($where,$wherevals);	
+			$q .= $this->whereToString($where,$wherevals);	
 
-			return sqlToResult(query($q));
+			return $this->sql_to_result(query($q),MySQL::SQL_UPDATE);
 		}
 
 		/**
