@@ -26,7 +26,7 @@
 	* @param string $class_name Name of noninstantiated class.
 	*/
 	function __autoload($class_name) {
-		$class_file = i2config_get('module_path', 'core').strtolower($class_name).'.mod.php';
+		$class_file = i2config_get('module_path', NULL, 'core').strtolower($class_name).'.mod.php';
 
 		if (!is_i2module($class_name)) {
 	//		throw new Exception("Cannot load module $class_name."); // PHP4
@@ -56,7 +56,7 @@
 			not be an I2 module, but it is safe to instantiate...*/
 			return TRUE;
 		}
-		if (is_readable(i2config_get('module_path', 'core').strtolower($module_name).'.mod.php')) {
+		if (is_readable(i2config_get('module_path', NULL, 'core').strtolower($module_name).'.mod.php')) {
 			return TRUE;
 		}
 		return FALSE;
