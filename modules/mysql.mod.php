@@ -89,7 +89,7 @@
 				}
 			}
 			
-			$q .= "FROM $table";
+			$q .= " FROM $table";
 			
 			if ($where) {
 				$q .= " WHERE ";
@@ -124,8 +124,53 @@
 			return sql_to_result(query($q));
 		}
 
-		function insert($table, $columns, $values) {
+		/**
+		* Perform a MySQL INSERT query.
+		*
+		* @param string $table The table to insert into.
+		* @param mixed $cols_to_vals An associative array of columns to values (or just columns if $values is provided).
+		* @param array $values An array of values.
+		* @return A result object.
+		*/
+		function insert($table, $cols, $values = false) {
+			
+			/*
+			** If $values wasn't passed, break up $cols into $cols and $values. 
+			*/
+			if (!$values) {
+				$values = array_values($cols);
+				$cols = array_keys($cols);
+			}
 
+			/*
+			** Build the query.
+			*/
+			
+			$q = "INSERT INTO $table(";
+			$first = true;
+			foreach ($cols as $col) {
+				if ($first) {
+					$first = false;
+				} else {
+					$q .= ',';
+				}
+				$q .= $col;
+			}
+			$q .= ') VALUES(';
+			$first = true;
+			foreach ($values as $val) {
+				if ($first) {
+					$first = false;
+				} else {
+					$q .= ',';
+				}
+				$var = addslashes($val);
+				$q .= "'$val'";
+			}
+			$q .= ')';
+
+			return sql_to_result(query($q));
+			
 		}
 
 		function update($table, $columns, $values, $where = false) {
@@ -134,8 +179,6 @@
 
 		function drop($table, $where = false) {
 			//If where is nonexistent, throw error
-
-			//braujac is confused: why is dropping everything not allowable?
 		}
 
 	}
