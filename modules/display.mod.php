@@ -57,17 +57,17 @@
 		* @param string $module_name The name of the module this Display object applies to.
 		*/
 		function Display($module_name) {
-			$this->smarty = new Smarty;
-			$this->smarty->register_prefilter('prefilter');
-			$this->smarty->register_postfilter('postfilter');
-			$this->smarty->register_outputfilter('outputfilter');
-			$this->smarty->left_delimiter = '[<';
-			$this->smarty->right_delimiter = '>]';
-			$this->my_module_name = $module_name;
+			$this->$smarty = new Smarty;
+			$this->$smarty->register_prefilter('prefilter');
+			$this->$smarty->register_postfilter('postfilter');
+			$this->$smarty->register_outputfilter('outputfilter');
+			$this->$smarty->left_delimiter = '[<';
+			$this->$smarty->right_delimiter = '>]';
+			$this->$my_module_name = $module_name;
 			if ($module_name == 'core') {
 				Display::$core_display = $this;
 			}
-			$buffer = "";
+			$this->$buffer = "";
 		}
 
 		/**
@@ -82,11 +82,18 @@
 		/**
 		* Assign a Smarty variable a value.
 		*
-		* @param string $var The name of the variable to assign.
+		* @param mixed $var either:
+		* the name of the variable to assign
+		* or
+		* array($key,$value)
 		* @param string $value The value to assign the variable.
 		*/
-		function assign($var,$value) {
-			$this->smarty->assign($var,$value);
+		function assign($var,$value=null) {
+			if ($value === null) {
+				$value = $var[1];
+				$var = $var[0];
+			}
+			$this->$smarty->assign($var,$value);
 		}
 
 		/**
@@ -94,14 +101,11 @@
 		*
 		* @param array $array An associative array matching variables to values.
 		*/
-		/*PHP DOES NOT SUPPORT FUNCTION OVERLOADING!
-		please read up on the func_get_arg-like functions to see how
-		to do something like this*/
-		/*function assign($array) {
+		function assign_array($array) {
 			foreach ($array as $key=>$val) {
 				assign($key,$val);
 			}
-		}*/
+		}
 
 		/**
 		* The display function.
@@ -110,12 +114,12 @@
 		* @param array $args Associative array of Smarty arguments.
 		*/
 		function disp($template, $args=array()) {
-			assign($args);
+			assign_array($args);
 			//TODO: validate passed template name.
 			if (bufferingOn()) {
-				Display::$core_display->buffer .= $this->smarty->fetch($template); 
+				Display::$core_display->$buffer .= $this->$smarty->fetch($template); 
 			} else {
-				$this->smarty->display($template);
+				$this->$smarty->display($template);
 			}
 		}
 		
@@ -126,7 +130,7 @@
 		*/
 		function rawDisplay($text) {
 			if (bufferingOn()) {
-				Display::$core_display->buffer .= "$text";
+				Display::$core_display->$buffer .= "$text";
 			} else {
 				echo($text);
 			}
@@ -138,8 +142,8 @@
 		*/
 		function flush() {
 			if ($this == Display::$core_display) {
-				echo(Display::$core_display->buffer);
-				Display::$core_display->buffer = "";
+				echo(Display::$core_display->$buffer);
+				Display::$core_display->$buffer = "";
 			}
 		}
 		
@@ -150,7 +154,7 @@
 		*/
 		function setBuffering($on) {
 			if ($this == Display::$core_display) {
-				Display::$core_display->buffering = $on;
+				Display::$core_display->$buffering = $on;
 				if (!bufferingOn()) {
 					flush();
 				}
@@ -165,7 +169,7 @@
 		*/
 		function globalHeader() {
 			//TODO: implement this for real.
-			disp('header.tpl',array());
+			disp('header.tpl');
 			flush();
 		}
 
@@ -174,7 +178,7 @@
 		* after the modules.
 		*/
 		function globalFooter() {
-			disp('footer.tpl',array());
+			disp('footer.tpl');
 			flush();
 		}
 
@@ -185,8 +189,8 @@
 		*/
 		function openContentPane(&$module) {
 			setBuffering(false);
-			$name = $module->getName();
-			disp('openmainbox.tpl',array('module_name'=>$name));
+			$this->$name = $module->getName();
+			disp('openmainbox.tpl',array('module_name'=>$this->$name));
 		}
 
 		/**
@@ -195,8 +199,8 @@
 		* @param object $module The module that was displayed in the main box.
 		*/
 		function closeContentPane(&$module) {
-			$name = $module->getName();
-			disp('closemainbox.tpl',array('module_name'=>$name));
+			$this->$name = $module->getName();
+			disp('closemainbox.tpl',array('module_name'=>$this->$name));
 		}
 
 		/**
@@ -209,7 +213,7 @@
 		function prefilter($source,&$smarty) {
 			//TODO: put actual debug-mode-detection here
 			if ($debug) {
-				return "{strip}$source{/strip}";
+				return "[<strip>]$source[</strip>]";
 			}
 			return $source;
 		}
