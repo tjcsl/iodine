@@ -46,7 +46,7 @@
 		 *
 		 * @global MySQL $I2_SQL
 		 */
-		//$I4_SQL = new MySQL();
+		$I2_SQL = new MySQL();
 		/**
 		 * The global authentication mechanism.
 		 *
@@ -102,7 +102,12 @@
 			}
 		}
 		
-		if (!is_i2module($I2_ARGS[0])) {
+		if (count($I2_ARGS) == 0) {
+			//FIXME: no modules?!  Whatever will we do?!
+			return;
+		}
+		
+		if (!get_i2module($I2_ARGS[0])) {
 			$I2_ERR->call_error('Invalid module name \''.$I2_ARGS[0].'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
 		}
 
