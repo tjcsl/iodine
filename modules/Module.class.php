@@ -33,16 +33,18 @@ interface Module {
 	* displayed in an ibox.
 	*
 	* @abstract
+	* @param string $token An authentication token to pass to User.
 	*/
-	function init_box();
+	function init_box($token);
 
 	/**
 	* Performs all initialization necessary for this module to be
 	* displayed as the main page.
 	*
 	* @abstract
+	* @param string $token An authentication token to pass to User.
 	*/
-	function init_pane();
+	function init_pane($token);
 	
 }
 ?>

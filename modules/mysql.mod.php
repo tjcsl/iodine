@@ -315,9 +315,14 @@
 		# @param array $vals The values for use with the printf string.
 		* @param array $ordering The desired sort order of the resultset as an array of arrays
 		* , with each subarray being array($ordertype,$column).
+		* @param string $token An authentication token to use for this query.
 		*/
-		function select($table, $columns = false, $where = false, $vals = false, $ordering = false) {
+		function select($token, $table, $columns = false, $where = false, $vals = false, $ordering = false) {
 			//TODO: fix the multiargument syntax
+			if (!check_token_rights($token,'db/'.$table,'r')) {
+				$I2_ERR->call_error("An invalid access token was used in attempting to access the $table MySQL table!");
+				return null;
+			}
 			/*
 			** Build a (hopefully valid) MySQL query from the arguments.
 			*/
@@ -359,8 +364,11 @@
 		* @param array $values An array of values.
 		* @return A result object.
 		*/
-		function insert($table, $cols, $values = false) {
-			
+		function insert($token, $table, $cols, $values = false) {
+			if (!check_token_rights($token,'db/'.$table,'w')) {
+				$I2_ERR->call_error("An invalid token was used in trying to insert into the $table database table!");
+				return null;
+			}
 			/*
 			** If $values wasn't passed, break up $cols into $cols and $values. 
 			*/
@@ -410,8 +418,13 @@
 		* @param array $values An array of values.
 		* @param string $where A printf-style string, as select().
 		* @param array $wherevals The values for the printf string.
+		* @param string $token An authentication token with rights for this update.
 		*/
-		function update($table, $columns, $values = false, $where = false, $wherevals = false) {
+		function update($token, $table, $columns, $values = false, $where = false, $wherevals = false) {
+			if (!check_token_rights($token,'db/',$field,'w')) {
+				$I2_ERR->call_error("An invalid authentication token was used in attempting to update the $table database table!");
+				return null;
+			}
 			/*
 			** If $values isn't present, expand $columns to $columns and $values.
 			*/
@@ -429,7 +442,9 @@
 
 			$q = "UPDATE $table SET ";
 
-			//if (array_len($columns) != array_len($values)) { error("uh-oh!"); }
+			if (array_len($columns) != array_len($values)) {
+				$I2_ERR->call_error("The MySQL update method was passed a mismatched set of arguments!"); 
+			}
 			
 			$first = true;
 			for ($i = 0; $i < array_len($columns); $i++) {
@@ -464,10 +479,16 @@
 		* @param string $table The name of the table to delete from.
 		* @param string $where A printf-style string, as select().
 		* @param array $wherevals An array of values for use with the printf string.
+		* @param string $token An authentication token with rights to the given table.
 		*/
-		function del($table, $where = false, $wherevals = false) {
-			
-			//if (!$where) { error("uh-oh!"); } 
+		function del($token, $table, $where = false, $wherevals = false) {
+			if (!check_token_rights($token,'db/'.$table,'w')) {
+				$I2_ERR->call_error("An invalid authentication token was used in an attempt to delete from the $table database table!");
+			}
+			if (!$where) { 
+				$I2_ERR->call_error("A SQL delete attempt was made with a blank 'where' argument!"); 
+				return null;
+			} 
 
 			$q = "DELETE FROM $table ";
 			
