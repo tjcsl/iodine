@@ -48,8 +48,7 @@
 		}
 
 		if (!($class_file=get_i2module($class_name))) {
-	//		throw new Exception("Cannot load module $class_name."); // PHP4
-			die('Cannot load module '.$class_name.': the file '.$class_file.' is not readable.');
+			$I2_ERR->call_error('Cannot load module '.$class_name.': the file '.$class_file.' is not readable.');
 		}
 		else {
 			require_once($class_file);
@@ -81,6 +80,7 @@
 			return $file;
 		}
 		$file = $prepath.$module_name.'.class.php';
+		//echo_handler('Trying file '.$file.' to autoload '.$module_name);
 		if (is_readable($file)) {
 			return $file;
 		}
@@ -187,10 +187,10 @@
 		$fieldpieces = preg_split('/_/',$field);
 		$field = $fieldpieces[0];
 		if (isSet($slaves[$token][$field])) {
-			return compatible_access($slaves[$token][$field]);
+			return compatible_access($slaves[$token][$field],$accesstype);
 		}
 		if (isSet($slaves[$token]['*'])) {
-			return compatible_access($slaves[$token][$field]);
+			return compatible_access($slaves[$token][$field],$accesstype);
 		}
 		/*
 		** No mention of the passed field, and no catch-all.
