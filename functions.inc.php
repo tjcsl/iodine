@@ -14,6 +14,20 @@
 	* This is only temporary
 	*/
 	define('MODULE_PATH', './');
+
+	/**
+	* A safe alternative to the echo() or I2_LOG->debug methods.
+	*
+	* @param string $text The text to display.
+	*/
+	function echo_handler($text) {
+		global $I2_LOG;
+		if (isSet($I2_LOG)) {
+			$I2_LOG->log_debug($text);
+		} else {
+			echo($text.'<br />');
+		}
+	}
 	
 	/**
 	* The __autoload function, used for autoloading modules.
@@ -26,10 +40,9 @@
 	* @param string $class_name Name of noninstantiated class.
 	*/
 	function __autoload($class_name) {
-		echo("Loading $class_name<BR />");
+		echo_handler("Loading $class_name");
 		$class_file = '';
 		if ($class_name == "Error") {
-			echo("Using Error bootstrap load method to ensure proper error handling...");
 			require_once(MODULE_PATH.'error.mod.php');
 			return;
 		}
@@ -135,5 +148,32 @@
 		if we were called by core, it would not report a class. */
 
 		return i2config_get($field, $default, 'core');
+	}
+
+	/**
+	* Verifies that the passed token gives rights to access the passed data.
+	*
+	* @param string $token The authentication token to check.
+	* @param string $field The field whose access was attempted.
+	* @param string $accesstype 'r' for read, 'w' for write, 'rp' for preference read,
+	* or 'wp' for preference write.
+	* @return boolean True if access is granted; false if it's denied.
+	*/
+	function check_token_rights($token, $field, $accesstype) {
+	}
+
+	/**
+	* Issue an authentication token for a module to use to access user information.
+	*
+	* @return string An authentication token with the given rights.
+	* @param mixed $rightsarray An array containing access rights for the new token.
+	*/
+	function issue_token($rightsarray) {
+	}
+	
+	/**
+	* Prevents the issue of any new authentication tokens.
+	*/
+	function freeze_tokens() {
 	}
 ?>
