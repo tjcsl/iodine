@@ -1,6 +1,6 @@
 <?php
 	/**
-	* The authentication module for Iodine.
+	* The auth module for Iodine.
 	* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 	* @copyright 2004-2005 The Intranet 2 Development Team
 	* @version 1.0
@@ -8,13 +8,13 @@
 	* @package auth
 	*/
 	
-	class Authentication {
+	class Auth {
 		/**
-		* The Authentication class constructor.
+		* The Auth class constructor.
 		* 
 		* @access public
 		*/
-		function Authentication() {
+		function Auth() {
 		
 		}
 
