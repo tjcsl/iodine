@@ -58,21 +58,28 @@
 		* @param string $password The user's password
 		* @return boolean	True if correct user/pass pair, false
 		*			otherwise.
-		FIXME: is that what it really returns? deason is just guessing
-		TODO: Really messy Windows/Novell auth. Have fun lburton etc.
-		*/
+		TODO: Auth WILL WORK, but we need (in krb5.conf) -Victor:
+		LOCAL.TJHSST.EDU = {
+		kdc = tj01.local.tjhsst.edu
+	        admin_server = tj01.local.tjhsst.edu
+		}
+		 */
+		 
 		function check_user($user, $password) {
+			$status=shell_exec("echo $password | kinit $user 1> /dev/null 2> /dev/null;echo $?;kdestroy 1> /dev/null 2> /dev/null");
+			if ($status==0)
+				return false;
 			return true;
 		}
-		
+
 		/**
-		* Gets the starting page for a user.
-		* Doesn't this call another module or something to get the data? Yes, but
-		* until it gets discussed, don't worry about it. -Deason
-		*
-		* @param string $user The user to get the page for.
-		* @return string The start page for the user.
-		*/
+		 * Gets the starting page for a user.
+		 * Doesn't this call another module or something to get the data? Yes, but
+		 * until it gets discussed, don't worry about it. -Deason
+		 *
+		 * @param string $user The user to get the page for.
+		 * @return string The start page for the user.
+		 */
 		function get_startpage($user) {
 
 		}
