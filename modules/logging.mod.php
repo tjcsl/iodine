@@ -8,6 +8,11 @@
 	* @package logging
 	*/
 	
+	/*
+	Logging Team Leader: vmircea
+	Logging Team: adeason, mlee1, melthon, jboning
+	*/
+	
 	class Logging {
 		/**
 		* The Logging class constructor.
