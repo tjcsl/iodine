@@ -20,35 +20,35 @@
 		*
 		* @access private
 		*/
-		private var $smarty;
+		private $smarty;
 
 		/**
 		* The name of the module associated with this Display object.
 		*
 		* @access private
 		*/
-		private var $my_module_name;
+		private $my_module_name;
 
 		/**
 		* The output buffer.
 		*
 		* @access private
 		*/
-		private var $buffer;
+		private $buffer;
 		
 		/**
 		* Whether to buffer output.
 		*
 		* @access private
 		*/
-		private var $buffering = true;
+		private $buffering = true;
 
 		/**
 		* The core display object to get buffering data from.
 		*
 		* @access private
 		*/
-		private static var $core_display;
+		private static $core_display;
 		
 		/**
 		* The Display class constructor.
@@ -65,7 +65,7 @@
 			$this->smarty->right_delimiter = '>]';
 			$this->my_module_name = $module_name;
 			if ($module_name == 'core') {
-				$Display::core_display = $this;
+				Display::$core_display = $this;
 			}
 			$buffer = "";
 		}
@@ -76,7 +76,7 @@
 		* @return bool Whether buffering is enabled.
 		*/
 		function bufferingOn() {
-			return $Display::core_display->$buffering;
+			return Display::$core_display->$buffering;
 		}
 
 		/**
@@ -94,11 +94,14 @@
 		*
 		* @param array $array An associative array matching variables to values.
 		*/
-		function assign($array) {
+		/*PHP DOES NOT SUPPORT FUNCTION OVERLOADING!
+		please read up on the func_get_arg-like functions to see how
+		to do something like this*/
+		/*function assign($array) {
 			foreach ($array as $key=>$val) {
 				assign($key,$val);
 			}
-		}
+		}*/
 
 		/**
 		* The display function.
@@ -110,7 +113,7 @@
 			assign($args);
 			//TODO: validate passed template name.
 			if (bufferingOn()) {
-				$Display::core_display->buffer .= $this->smarty->fetch($template); 
+				Display::$core_display->buffer .= $this->smarty->fetch($template); 
 			} else {
 				$this->smarty->display($template);
 			}
@@ -123,7 +126,7 @@
 		*/
 		function rawDisplay($text) {
 			if (bufferingOn()) {
-				$Display::core_display->buffer .= "$text";
+				Display::$core_display->buffer .= "$text";
 			} else {
 				echo($text);
 			}
@@ -134,9 +137,9 @@
 		FIXME: flush seems to be a reserved keyword, change to something else
 		*/
 		function flush() {
-			if ($this == $Display::core_display) {
-				echo($Display::core_display->buffer);
-				$Display::core_display->buffer = "";
+			if ($this == Display::$core_display) {
+				echo(Display::$core_display->buffer);
+				Display::$core_display->buffer = "";
 			}
 		}
 		
@@ -146,8 +149,8 @@
 		* @param bool $on Whether to buffer output.
 		*/
 		function setBuffering($on) {
-			if ($this == $Display::core_display) {
-				$Display::core_display->buffering = $on;
+			if ($this == Display::$core_display) {
+				Display::$core_display->buffering = $on;
 				if (!bufferingOn()) {
 					flush();
 				}
