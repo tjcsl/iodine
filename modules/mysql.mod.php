@@ -7,52 +7,71 @@
 	* @since 1.0
 	* @package mysql
 	*/
+	//TODO: implement class resolution based on the class calling require(),
+	// so that this will actually work.
+	require_once('Result.class.php');
 	
 	class MySQL {
 
 		/**
 		* Indicates that results should be greater than a value.
 		*/
-		const $GREATER_THAN = '>';
+		const GREATER_THAN = '>';
 		/**
 		* Indicates that results should be less than a value.
 		*/
-		const $LESS_THAN = '<';
+		const LESS_THAN = '<';
 		/**
 		* Indicates that results should be equal to a value.
 		*/
-		const $EQUAL_TO = '=';
+		const EQUAL_TO = '=';
 		/**
 		* Indicates the sort order is descending.
 		*/
-		const $DESC = 'DESC';
+		const DESC = 'DESC';
 		/**
 		* Indicates the sort order is ascending.
 		*/
-		const $ASC = 'ASC';
+		const ASC = 'ASC';
 		/**
 		* Indicates an AND in a WHERE statement.
 		*/
-		const $AND = 'AND';
+		const AND = 'AND';
 		/**
 		* Indicates on OR in a WHERE statement.
 		*/
-		const $OR = 'OR';
+		const OR = 'OR';
 		/**
 		* Indicates a left parenthesis in a WHERE statement.
 		*/
-		const $LPAREN = '(';
+		const LPAREN = '(';
 		/**
 		* Indicates a right parenthesis in a WHERE statement.
 		*/
-		const $RPAREN = ')';
+		const RPAREN = ')';
+		/**
+		* Represents a SELECT query.
+		*/
+		const SELECT = 1;
+		/**
+		* Represents an INSERT query.
+		*/
+		const INSERT = 2;
+		/**
+		* Represents an UPDATE query.
+		*/
+		const UPDATE = 3;
+		/**
+		* Represents a DELETE query.
+		*/
+		const DELETE = 4;
 		
 		/**
 		* The MySQL class constructor.
 		* 
 		* @access public
 		*/
-		function MySQL() {
+		function __construct() {
 			//TODO: Get config value here//
 			$this->connect($blah, $blah2, $blah3);
 
