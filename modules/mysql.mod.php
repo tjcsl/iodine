@@ -113,6 +113,17 @@
 		* It have appropriate grouping.  For the MySQL query segment
 		* "WHERE name='david' AND (id='3' OR foo='bar') AND who='me'", the array would be:
 		* array(AND,LPAREN,OR,RPAREN,AND).
+		The following lines are from a discussion in an I2 meeting, not actual code.
+		Example MySQL query: "SELECT * FROM blah WHERE mycol=`myval123` ORDER BY mykey ASC;"
+		<cfquery datasource="blah">
+		SELECT * FROM blah WHERE
+		mycol=<cfqueryparam type='CFSQLPARAM_INT' value='myval123' />
+		ORDER BY mykey ASC;;
+
+		</cfquery>
+		$I2_SQL->select("mytable", "*", "mycol=" . $I2_SQL::param('int','myval123'));
+		$I2_SQL->select("mytable", "*", "mycol=`%d`", array("myval123"));
+		
 		* @param array $ordering The desired sort order of the resultset as an array of arrays
 		* , with each subarray being array($ordertype,$column).
 		*/
