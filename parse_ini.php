@@ -1,4 +1,7 @@
 <?php
+	/*THIS WORKS!*/
+	parse_ini_file("config.ini", TRUE);
+	/*
 	// File to read
 	$file = "config.ini";
 
@@ -24,5 +27,5 @@
 		}
 	}
 	// Change to output config however you want
-	print_r($config);
+	print_r($config);*/
 ?>
