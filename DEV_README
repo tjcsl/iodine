@@ -1,0 +1,18 @@
+Updated January 7, 2005 - 10:26 PM by Dan Tran
+
+Well, if you're here, you've gotten to getting CVSROOT set up and checking out in CVS. Here's a few notes to keep in mind:
+
+This is the module team list as of January 7, 2005:
+
+Error: 		adeason*, vmircea, aparthum, eharmon
+Logging: 	vmircea*, adeason, mlee1, melthon, jboning
+Authentication: lburton*, vmircea, jbreese, nkolia, sgross, asmith1
+User: 		kgallagh*, vmircea, bfleming, lburton, sgross
+MySQL: 		nkolia*, braujac, lhsu, kgallagh, asmith1, astebbin
+Display: 	braujac*, eharmon, lhsu, aparthum
+
+The star denotes your module team leader. Pleas talk to them and communicate with each other. Stay tuned to when http://iodine.tjhsst.edu/ is unblocked. I hope that there we can keep everyone uptodate on issues instead of this file. I will move parts of http://www.tjhsst.edu/~dtran/intranet2/ there when everything is ready.
+
+Again, stay tuned, and happy coding.
+
+Dan Tran
