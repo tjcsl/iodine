@@ -30,6 +30,27 @@
 		private var $my_module_name;
 
 		/**
+		* The output buffer.
+		*
+		* @access private
+		*/
+		private var $buffer;
+		
+		/**
+		* Whether to buffer output.
+		*
+		* @access private
+		*/
+		private var $buffering = true;
+
+		/**
+		* The core display object to get buffering data from.
+		*
+		* @access private
+		*/
+		private static var $core_display;
+		
+		/**
 		* The Display class constructor.
 		* 
 		* @access public
@@ -41,6 +62,19 @@
 			$this->smarty->register_postfilter('postfilter');
 			$this->smarty->register_outputfilter('outputfilter');
 			$this->my_module_name = $module_name;
+			if ($module_name == 'core') {
+				$Display::core_display = $this;
+			}
+			$buffer = "";
+		}
+
+		/**
+		* Get the current buffering state.
+		*
+		* @return bool Whether buffering is enabled.
+		*/
+		function bufferingOn() {
+			return $Display::core_display->$buffering;
 		}
 
 		/**
@@ -70,10 +104,51 @@
 		* @param string $template File name of the template.
 		* @param array $args Associative array of Smarty arguments.
 		*/
-		function disp($template, $args) {
+		function disp($template, $args=array()) {
 			assign($args);
 			//TODO: validate passed template name.
-			$this->smarty->display($template);
+			if (bufferingOn()) {
+				$Display::core_display->buffer .= $this->smarty->fetch($template); 
+			} else {
+				$this->smarty->display($template);
+			}
+		}
+		
+		/**
+		* Output raw HTML to the browser.  Not advisable.
+		*
+		* @param string $text The text to display.
+		*/
+		function rawDisplay($text) {
+			if (bufferingOn()) {
+				$Display::core_display->buffer .= "$text";
+			} else {
+				echo($text);
+			}
+		}
+		
+		/**
+		* Clear any output buffers, ensuring that all data is written to the browser.
+		*/
+		function flush() {
+			if ($this == $Display::core_display) {
+				echo($Display::core_display->buffer);
+				$Display::core_display->buffer = "";
+			}
+		}
+		
+		/**
+		* Set whether or not to buffer output.
+		*
+		* @param bool $on Whether to buffer output.
+		*/
+		function setBuffering($on) {
+			if ($this == $Display::core_display) {
+				$Display::core_display->buffering = $on;
+				if (!bufferingOn()) {
+					flush();
+				}
+			}
 		}
 		
 		/**
@@ -85,6 +160,7 @@
 		function globalHeader() {
 			//TODO: implement this for real.
 			disp('header.tpl',array());
+			flush();
 		}
 
 		/**
@@ -93,6 +169,7 @@
 		*/
 		function globalFooter() {
 			disp('footer.tpl',array());
+			flush();
 		}
 
 		/**
@@ -100,6 +177,7 @@
 		*/
 		function startBoxes() {
 			disp('startboxes.tpl',array());
+			flush();
 		}
 
 		/**
@@ -107,6 +185,7 @@
 		*/
 		function endBoxes() {
 			disp('endboxes.tpl',array());
+			flush();
 		}
 
 		/**
@@ -116,6 +195,7 @@
 		*/
 		function openBox(&$module) {
 			//TODO: implement for real
+			setBuffering(true);
 			$name = $module->getName();
 			disp('openbox.tpl',array('module_name'=>$name));
 		}
@@ -129,6 +209,7 @@
 			//TODO: implement for real
 			$name = $module->getName();
 			disp('closebox.tpl',array('module_name'=>$name));
+			setBuffering(false);
 		}
 
 		/**
@@ -137,6 +218,7 @@
 		* @param object $module The module that will be displayed in the main box.
 		*/
 		function openMainBox(&$module) {
+			setBuffering(false);
 			$name = $module->getName();
 			disp('openmainbox.tpl',array('module_name'=>$name));
 		}
