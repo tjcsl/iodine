@@ -1,1 +1,1 @@
-<DIV class='{$module_name}'>
+<DIV class='ibox'>
