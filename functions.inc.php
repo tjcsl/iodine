@@ -74,11 +74,11 @@
 	* and a warning is logged in the Logging module.
 	*
 	* @param String $field The name of the config value you want to get.
-	* @param String $section The name of the config section you want to retrieve the value from.
 	* @param mixed $default The default value to be returned if the specified key is not found.
+	* @param String $section The name of the config section you want to retrieve the value from.
 	* @return mixed The config value for the specified field, the default value if one was passed and if the specified key was not found, NULL otherwise.
 	*/
-	function i2config_get($field, $section = NULL, $default = NULL) {
+	function i2config_get($field, $default = NULL, $section = NULL) {
 		global $I2_ERR;
 		static $config = NULL;
 		
