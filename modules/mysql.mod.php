@@ -9,7 +9,7 @@
 	*/
 	//TODO: implement class resolution based on the class calling require(),
 	// so that this will actually work.
-	require_once('Result.class.php');
+	
 	
 	class MySQL {
 
@@ -36,11 +36,11 @@
 		/**
 		* Indicates an AND in a WHERE statement.
 		*/
-		const AND = 'AND';
+		const LOGICAL_AND = 'AND';
 		/**
 		* Indicates on OR in a WHERE statement.
 		*/
-		const OR = 'OR';
+		const LOGICAL_OR = 'OR';
 		/**
 		* Indicates a left parenthesis in a WHERE statement.
 		*/
@@ -52,19 +52,19 @@
 		/**
 		* Represents a SELECT query.
 		*/
-		const SELECT = 1;
+		const SQL_SELECT = 1;
 		/**
 		* Represents an INSERT query.
 		*/
-		const INSERT = 2;
+		const SQL_INSERT = 2;
 		/**
 		* Represents an UPDATE query.
 		*/
-		const UPDATE = 3;
+		const SQL_UPDATE = 3;
 		/**
 		* Represents a DELETE query.
 		*/
-		const DELETE = 4;
+		const SQL_DELETE = 4;
 		
 		/**
 		* The MySQL class constructor.
@@ -72,8 +72,7 @@
 		* @access public
 		*/
 		function __construct() {
-			//TODO: Get config value here//
-			$this->connect($blah, $blah2, $blah3);
+			$this->connect(i2config_get('server','','mysql'), i2config_get('user','','mysql'), i2config_get('pass','','mysql'));
 
 		}
 
@@ -98,6 +97,8 @@
 		* @param string $password The MySQL password.
 		*/
 		protected function connect($server, $user, $password) {
+			global $I2_LOG;
+			$I2_LOG->log_screen("Connecting to $server as $user<BR>");
 			return mysql_pconnect($server, $user, $password);
 		}
 		
@@ -315,7 +316,7 @@
 		* @param array $ordering The desired sort order of the resultset as an array of arrays
 		* , with each subarray being array($ordertype,$column).
 		*/
-		function select($table, $columns = false, $where = false, $vals = false; $ordering = false) {
+		function select($table, $columns = false, $where = false, $vals = false, $ordering = false) {
 			//TODO: fix the multiargument syntax
 			/*
 			** Build a (hopefully valid) MySQL query from the arguments.
