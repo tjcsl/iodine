@@ -24,11 +24,11 @@
 		* @return boolean True if user is authenticated, false if not.
 		*/
 		function check_authenticated() {
-			if (check_sessid()) { // If the user has a session ID
+			if ($this->check_sessid()) { // If the user has a session ID
 				return true;
 			}
 			// Here, they should have POST data (user+pass)
-			return check_user($POST['username'], $_POST['password']);
+			return $this->check_user($POST['username'], $_POST['password']);
 		}
 		
 		/**
