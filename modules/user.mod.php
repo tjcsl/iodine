@@ -19,7 +19,7 @@
 		* 
 		* @access public
 		*/
-		function User() {
+		function __construct() {
 				
 		}
 		
