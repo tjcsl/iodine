@@ -15,27 +15,28 @@
 	
 	class Logging {
 		
-		var $my_email = "intranet@tjhsst.edu";
+		private $my_email;
 		
 		/**
 		* The Logging class constructor.
 		* 
 		* @access public
 		*/
-		function Logging() {
+		function __construct() {
 			$this->log_access();
+			$this->my_email = i2config_get('email', 'iodine-errors@tjhsst.edu', 'logging');
 		}
 
 		function log_access() {
 
 		}
 
-		function log_error($msg = "") {
+		function log_error($msg) {
 			
 		}
 
 		/**
-		* Log to SysLog
+		* Log to Syslog
 		*
 		* @param string $msg The message to log to SysLog
 		* @param int $priority The priority of the message to syslog
@@ -75,27 +76,48 @@
 		*
 		* @param string $msg The messgage to log to the email address.
 		*/
-		function log_mail($msg = "") {
+		function log_mail($msg) {
 			$headers  = "MIME-Version: 1.0\n"; //Setup email headers
 			$headers .= "From: Intranet Logs <noreply@intranet.tjhsst.edu>\n";
-			mail($my_email, "Intranet Log", $msg, $headers); //Send the email
+			mail($this->my_email, 'Intranet Log', $msg, $headers); //Send the email
 		}
 		
 		/**
-		* Displays a log message to the screen?
+		* Debug logging.
 		*
-		* @param int $level The access level of the attempted action?
-		* @param string $msg The message to log to debug
+		* @param string $msg The message to log to debug.
+		* @param int $level The debug level.
 		*/
-		function log_debug($level, $msg = "") {
-			//What does this do?  (In an ideal world)
-			/* It's a debug message, so only output anything
-			if a certain value is set to true. Maybe a config file
-			key, or something. We haven't decided yet whether
-			we need to print to output, or to a log file, yet.
-			Maybe both? or a different method to do each one?
-			-deason*/
-			echo("Debugging Mesage: $msg, Level $level");
+		function log_debug($msg, $level = NULL) {
+
+			if ($level === NULL) { /* If not set, get default debug level */
+				$level = i2config_get('default_debug_level', 0, 'logging');
+			}
+			if ($level > i2config_get('debug_loglevel', 9, 'logging')) {
+				return;
+			}
+
+			/* Maybe put some kind of determination whether to
+			print to screen or print to file here? */
+			echo "Debugging Mesage: $msg, Level $level" ;
+		}
+
+		/**
+		* Logs a message to the screen.
+		*
+		* It may not be obvious at first what the point of this method
+		* is, and that's because it's not meant to be called by outside
+		Question: should it be private/protected, then?
+		* classes. It's main use is to be called from the other Logging
+		* and/or Error methods, and this just formats the message for
+		* output to the user.
+		*
+		* @param String $msg The message to display.
+		*/
+		function log_screen($msg) {
+			/* This will get more complicated later, like smarty
+			formatting, etc. */
+			echo $msg;
 		}
 
 	}
