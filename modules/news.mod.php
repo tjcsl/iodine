@@ -20,17 +20,18 @@
 		}
 		
 		function init_pane($token) {
+			
 		}
 		
 		function display_pane($display) {
-			$display->raw_display("This is today's news, in a pane. <BR />");
+			$display->raw_display("This is today's news, in a pane.");
 		}
 		
 		function init_box($token) {
 		}
 
 		function display_box($display) {
-			$display->raw_display("This is today's news, in a box. <BR />");
+			$display->raw_display("This is today's news, in a box.");
 		}
 
 		function get_name() {
