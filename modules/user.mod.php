@@ -13,6 +13,7 @@
 		private $info = array();
 		private $prefs = array();
 		private $schedule;
+		private $curuser;
 		
 		/**
 		* The User class constructor.
@@ -20,7 +21,7 @@
 		* @access public
 		*/
 		function __construct() {
-				
+			//TODO: get the current user and put it in $this->curuser.
 		}
 		
 		/**
@@ -55,6 +56,32 @@
 		*/
 		function get_sched() {
 			return $schedule;
+		}
+
+
+		/**
+		* Sets a tidbit of user info.
+		*
+		* @param string $token An authorization token to check privledges.
+		* @param string $name The name of the info bit to set.
+		* @param mixed $value The value to set the field to.
+		*/
+		function set_info($token, $name, $value) {
+			//FIXME: check $token.
+			// if (!check_token_rights($token,$name,'w')) {$I2_ERR->call_error("Bad authentication token to set $name!"); }
+			$info[$name] = $value;
+			//FIXME: update the database to make the change persist.
+		}
+
+		/**
+		* Sets a user preference.
+		*
+		* @param string $token An authorization token to check privledges.
+		* @param string $name The name of the preference to set.
+		* @param mixed $value The value to set the preference to.
+		*/
+		function set_pref($token, $name, $value) {
+			//FIXME:  As set_info.
 		}
 
 	}
