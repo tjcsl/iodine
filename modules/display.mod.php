@@ -27,19 +27,20 @@
 		*
 		* @access private
 		*/
-		private var $module_name;
+		private var $my_module_name;
 
 		/**
 		* The Display class constructor.
 		* 
 		* @access public
+		* @param string $module_name The name of the module this Display object applies to.
 		*/
 		function Display($module_name) {
 			$this->smarty = new Smarty;
 			$this->smarty->register_prefilter('prefilter');
 			$this->smarty->register_postfilter('postfilter');
 			$this->smarty->register_outputfilter('outputfilter');
-			$this->module = $module_name;
+			$this->my_module_name = $module_name;
 		}
 
 		/**
@@ -172,7 +173,5 @@
 		function outputfilter($output,&$smarty) {
 			return $output;
 		}
-
 	}
-
 ?>
