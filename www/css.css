@@ -29,3 +29,7 @@ body {
 	top: 60px;
 	border: 1px dashed #CCCCCC;
 }
+.raw {
+	font-style: bold;
+	border: 2px double black;
+}
