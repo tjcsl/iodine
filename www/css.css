@@ -30,6 +30,5 @@ body {
 	border: 1px dashed #CCCCCC;
 }
 .raw {
-	font-style: bold;
-	border: 2px double black;
+	color: white;
 }
