@@ -65,7 +65,7 @@
 		* @param object $sql The MySQL resultset object.
 		* @return object An Intranet2-MySQL result object.
 		*/
-		private function sql_to_result($sql) {
+		private function sqlToResult($sql) {
 			//TODO:  Implement for real.  Decide on what results should be.
 			return $sql;
 		}
@@ -214,10 +214,10 @@
 							//$clause should be a value
 
 							/* Catch %[character] and %[space] in their own little sections
-							** with all the other stuff in between them.  This only grabs
-							** one character.  I think that's all we need.
+							** with all the other stuff in between them. This will only look
+							** for a '.decimal' after the number if the character is d|D|f|F|l|L
 							*/
-							$clause = preg_split('/([^\\]%[\S ])/',$clause,-1,PREG_SPLIT_DELIM_CAPTURE);
+							$clause = preg_split('/([^\\]%([dfDFlL]\.\d+)|([\S ]))/',$clause,-1,PREG_SPLIT_DELIM_CAPTURE);
 							
 							foreach ($clause as $fragment) {
 								if ($fragment{0} != '%') {
@@ -231,7 +231,21 @@
 									
 									$val = array_shift($values);	
 									
-									$char = $fragment[1];
+									$char = $fragment{1};
+
+									$precision = 8; // Default precision
+									if (strlen($fragment) > 2) {
+										//TODO: typecheck/error
+										$precision = int($fragment{2});
+										for ($a = 3; $a < strlen($fragment); $a++) {
+											$precision *= 10;
+											//TODO: typecheck/error
+											$precision += int($fragment{$a});
+										}
+									}
+									
+									//TODO: implement precision to $precision places
+									
 									switch ($char) {
 										case 'd':
 											if (!is_int($val)) {
@@ -277,28 +291,13 @@
 		*
 		* @param string $table The table to query.
 		* @param array $columns The columns to select (all by default).
-		* @param array $where The conditions on which to accept a row.  This should
-		* be an associative array of two-element arrays consisting of a comparison operator
-		* and a valueso that $where[$key] = array($comparitive,$value,$).
-		* @param array $conditionals An array indicating how to match the $where argument's requirements.
-		* It have appropriate grouping.  For the MySQL query segment
-		* "WHERE name='david' AND (id='3' OR foo='bar') AND who='me'", the array would be:
-		* array(AND,LPAREN,OR,RPAREN,AND).
-		The following lines are from a discussion in an I2 meeting, not actual code.
-		Example MySQL query: "SELECT * FROM blah WHERE mycol=`myval123` ORDER BY mykey ASC;"
-		<cfquery datasource="blah">
-		SELECT * FROM blah WHERE
-		mycol=<cfqueryparam type='CFSQLPARAM_INT' value='myval123' />
-		ORDER BY mykey ASC;;
-
-		</cfquery>
-		$I2_SQL->select("mytable", "*", "mycol=" . $I2_SQL::param('int','myval123'));
-		$I2_SQL->select("mytable", "*", "mycol=`%d`", array("myval123"));
-		
+		* @param string $where This should be a printf-style string.
+		# @param array $vals The values for use with the printf string.
 		* @param array $ordering The desired sort order of the resultset as an array of arrays
 		* , with each subarray being array($ordertype,$column).
 		*/
-		function select($table, $columns = false, $where = false, $conditionals = false, $ordering = false) {
+		function select($table, $columns = false, $where = false, $vals = false; $ordering = false) {
+			//TODO: fix the multiargument syntax
 			/*
 			** Build a (hopefully valid) MySQL query from the arguments.
 			*/
@@ -319,42 +318,17 @@
 			
 			$q .= " FROM $table";
 			
-			if ($where) {
-				$q .= " WHERE ";
-				$first = true;
-				foreach ($where as $key=>$subarray) {
-					if ($first) {
-						$first = false;
-						while ($conditionals && $conditionals[0] == LPAREN) {
-							$q .= array_shift($conditionals);
-						}
-					} else {
-						if ($conditionals) {
-							$poss = array_shift($conditionals);
-							while ($poss == LPAREN || $poss = RPAREN) {
-								$q .= $poss;
-								//TODO: array bounds checking
-								$poss = array_shift($conditionals);
-							}
-							$q .= " $poss ";
-						}
-					}
-					$comptype = $subarray[0];
-					$value = addslashes($subarray[1]); //Is addslashes() good enough?
-					$q .= "$key $comptype '$value'";
-				}
-				while ($conditionals && ($poss = array_shift($conditionals))) {
-					//if ($poss != RPAREN) { err('Bad parens.') }
-					$q .= $poss;
-				}
-			}
+			$q .= ' ';
+			
+			$q .= whereToString($where,$vals);
 			
 			$q .= ' ';
+			
 			$q .= orderToString($ordering);
 
 			//Glad that's over with.  Now, we query the database.
 			
-			return sql_to_result(query($q));
+			return sqlToResult(query($q));
 		}
 
 		/**
@@ -402,7 +376,7 @@
 			}
 			$q .= ')';
 
-			return sql_to_result(query($q));
+			return sqlToResult(query($q));
 			
 		}
 
@@ -411,12 +385,13 @@
 		*
 		* @param string $table The table to update.
 		* @param mixed $columns An associative array of columns to values, or an array of columns if $values is provided.
+		* @param array $values An array of the values to update the given columns with.
+		* //TODO:  Prepositions are not things to end sentences with!
 		* @param array $values An array of values.
-		* @param array $where An associative array of arrays containing condition-match pairs, so that
-		* $where[$key] = array($comparetype,$value).
-		* TODO: document $conditionals.
+		* @param string $where A printf-style string, as select().
+		* @param array $wherevals The values for the printf string.
 		*/
-		function update($table, $columns, $values = false, $where = false, $conditionals = false) {
+		function update($table, $columns, $values = false, $where = false, $wherevals = false) {
 			/*
 			** If $values isn't present, expand $columns to $columns and $values.
 			*/
@@ -447,27 +422,29 @@
 				$q .= "$columns[$i] = '$val'";
 			}
 
-			//TODO: implement $where and $conditionals
-			
+			$q .= ' ';
 
-			return sql_to_result(query($q));
+			$q .= whereToString($where,$wherevals);	
+
+			return sqlToResult(query($q));
 		}
 		
 		/**
 		* Perform a MySQL DELETE statement.  You must provide at least one condition.
 		*
 		* @param string $table The name of the table to delete from.
-		* @param array $where An associative array of names to condition/value pairs,
-		* so that $where[$column] = array($matchtype,$value).
-		* TODO: document $conditionals.
+		* @param string $where A printf-style string, as select().
+		* @param array $wherevals An array of values for use with the printf string.
 		*/
-		function delete($table, $where = false, $conditionals = false) {
+		function delete($table, $where = false, $wherevals = false) {
 			
 			//if (!$where) { error("uh-oh!"); } 
 
-			$q = "DELETE FROM $table WHERE ";
+			$q = "DELETE FROM $table ";
 			
-			//TODO: implement 
+			$q .= whereToString($where,$wherevals);
+
+			return sqlToResult(query($q));
 		}
 
 	}
