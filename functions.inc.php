@@ -1,6 +1,8 @@
 <?php
 	/**
-	* Global utility functions for Iodine.
+	* Global utility functions for Iodine. Only general utility functions
+	* which do not belong in any other specific module belong here.
+
 	* @author The Intranet2 Development Team <intranet2@lists.tjhsst.edu>
 	* @copyright 2004-2005 The Intranet2 Development Team
 	* @version 1.0
@@ -35,6 +37,17 @@
 		}
 	}
 
+	/**
+	* Determines whether a certain class name is an instantiatable I2 module.
+	*
+	* This checks whether the class name is already instantiated, and if
+	* not, then checks to see if an I2 module file is available and
+	* readable. Unlike __autoload, this only returns FALSE if a module does
+	* not exist, as opposed to raising an exception.
+	*
+	* @param String $module_name The name of the module.
+	* @return Boolean True if the I2 module file is available, or if the class has already been instantiated. False otherwise.
+	*/
 	function is_i2module($module_name) {
 		/* Do not run autoload, since it will throw an exception if the
 		class does not exist */
