@@ -65,7 +65,7 @@
 		* @param object $sql The MySQL resultset object.
 		* @return object An Intranet2-MySQL result object.
 		*/
-		private function sqlToResult($sql) {
+		private function sql_to_result($sql) {
 			//TODO:  Implement for real.  Decide on what results should be.
 			return $sql;
 		}
@@ -423,10 +423,19 @@
 			}
 
 			$q .= ' ';
-
 			$q .= whereToString($where,$wherevals);	
 
 			return sqlToResult(query($q));
+		}
+
+		/**
+		* Joins two result objects into one.
+		*
+		* @param $left The resultset to appear first in the result.
+		* @param $right The resultset to appear last in the result.
+		* @return mixed The composite resultset object.
+		*/
+		function ljoin($left, $right) {
 		}
 		
 		/**
@@ -436,7 +445,7 @@
 		* @param string $where A printf-style string, as select().
 		* @param array $wherevals An array of values for use with the printf string.
 		*/
-		function delete($table, $where = false, $wherevals = false) {
+		function del($table, $where = false, $wherevals = false) {
 			
 			//if (!$where) { error("uh-oh!"); } 
 
