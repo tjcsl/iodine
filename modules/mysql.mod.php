@@ -173,8 +173,35 @@
 			
 		}
 
-		function update($table, $columns, $values, $where = false) {
+		/**
+		* Performs a MySQL UPDATE statement.
+		*
+		* @param string $table The table to update.
+		* @param mixed $columns An associative array of columns to values, or an array of columns if $values is provided.
+		* @param array $values An array of values.
+		* @param array $where An associative array of arrays containing condition-match pairs, so that
+		* $where[$key] = array($comparetype,$value).
+		*/
+		function update($table, $columns, $values = false, $where = false) {
+			/*
+			** If $values isn't present, expand $columns to $columns and $values.
+			*/
+			//FIXME fix it!!
+			if ($values) {
+				$a = 0;
+				while ($val = array_pop($values)) {
+					$columns[$columns[$a]] = $val;
+				}
+			}
 
+			/*
+			** Build a query.
+			*/
+
+			$q = "UPDATE $table SET ";
+
+			foreach ($columns as $col) {
+			}
 		}
 
 		function drop($table, $where = false) {
