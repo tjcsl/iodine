@@ -118,40 +118,12 @@
 			exit; // TODO: This is messy. Any way we can die/exit gracefully?
 		}
 			
-		/* This should _ALL_ be in the Intrabox module. Yes, it has not been coded yet
-		what does that mean? It means we're not coding Intrabox code yet! We're only doing
-		core modules code right now, and Intrabox is not a core module, nor critical
-		functionality. */
-		/*
-		// The order of the following will probably be changed; this is temporary.
-
-		$module_list = array();
-	
-		// Instantiate ibox modules and initialize them
-		
-		foreach ($I2_LOADED_MODULES as $module_name) {
-			eval('$module = new ' . $module_name . '();'); //Instantiate the module
-			$module->initBox();	//Initialize the module as a box
-			$module_list[] = $module;  //And put it in the list.
-		}
-		
-		$I2_MODULE_NAME = $I2_ARGS[0];	//TODO: validate module name to make sure the user isn't being nasty.
-		eval('$I2_MOD = new ' . $I2_MODULE_NAME . '();'); 	// Instantiate the main module
-		$I2_MOD->init(); //And initialize it
-		
-		$I2_DISP->globalHeader(); //Background, CSS link, title bar, etc.
-		
-		$I2_DISP->startBoxes(); //Begin ibox column/group/whatever
-		foreach ($module_list as $module) {
-			$I2_DISP->openBox($module); //Open an ibox
-			$module->displayBox(new Display($module->getName())); //Invoke the module display method
-			$I2_DISP->closeBox($module); //Close the ibox
-		}
-		$I2_DISP->endBoxes(); //Close the box group*/
 		eval('$I2_MOD = new ' . $I2_ARGS[0] . '();');
 		
+		$I2_DISP->globalHeader();
+
 		$I2_DISP->openMainBox($I2_MOD); //Open the central box
-		$I2_MOD->display(new Display($I2_MODULE_NAME));
+		$I2_MOD->display(new Display($I2_ARGS[0]));
 		$I2_DISP->closeMainBox($I2_MOD); //Close the central box
 		
 		$I2_DISP->globalFooter();
