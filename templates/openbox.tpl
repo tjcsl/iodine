@@ -1,1 +1,1 @@
-<DIV class='ibox'>
+<div class='ibox'>

@@ -1,1 +1,1 @@
-<DIV class='mainbox'>
+<div class='mainbox'>
