@@ -25,27 +25,27 @@
 		/**
 		* Indicates the sort order is descending.
 		*/
-		const DESC = 'DESC';
+		const $DESC = 'DESC';
 		/**
 		* Indicates the sort order is ascending.
 		*/
-		const ASC = 'ASC';
+		const $ASC = 'ASC';
 		/**
 		* Indicates an AND in a WHERE statement.
 		*/
-		const AND = 'AND';
+		const $AND = 'AND';
 		/**
 		* Indicates on OR in a WHERE statement.
 		*/
-		const OR = 'OR';
+		const $OR = 'OR';
 		/**
 		* Indicates a left parenthesis in a WHERE statement.
 		*/
-		const LPAREN = '(';
+		const $LPAREN = '(';
 		/**
 		* Indicates a right parenthesis in a WHERE statement.
 		*/
-		const RPAREN = ')';
+		const $RPAREN = ')';
 		
 		/**
 		* The MySQL class constructor.
@@ -99,6 +99,177 @@
 		*/
 		protected function query($query) {
 			return mysql_query($query);
+		}
+
+		protected function orderToString($ordering) {
+			$str = "ORDER BY ";
+			if (!$ordering) {
+				return $str;
+			}
+			$first = true;
+			foreach ($ordering as $item) {
+				if ($first) {
+					$first = false;
+				} else {
+					$str .= ',';
+				}
+				//$item = array(DESC,value), for example
+				$ordertype = $item[0];
+				$value = $item[1];
+				$str .= "$value $ordertype";
+			}
+			return $str;
+		}
+		
+
+		/**
+		 * Converts a printf-style string and an array of values
+		 * into a MySQL-type WHERE clause.
+		 *
+		 * @access protected
+		 * @param string $format The format string.
+		 * @param array $values An array of values.
+		 */
+		protected function whereToString($format,$values) {
+			if (!$format || !$values) {
+				return '';
+			}
+			$str = "WHERE ";
+			/* Break the format string around &, |, (, ), =, >, or < signs 
+			** except where they're escaped with \.
+			*/
+			$format = preg_split('/^([^\\][()&|=<>])$/',$format,-1,
+				PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+
+			$parens_open = 0;
+			$waiting_for_name = true;
+			$got_equality = false;
+			
+			foreach ($format as $clause) {
+				
+				//Replace escaped sequences with their raw forms, and strip whitespace
+				$clause = preg_replace('/^\s*\\([()&|=<>])\s*$/e',"'\\1'",$clause);
+				
+				/* Okay, now we have one of four things, either:
+				** 	(a) A (, ), &, or | character alone
+				** 	(b) A >, <, or = character alone
+				**	(c) A column name
+				** or 	(d) A value
+				*/
+				switch ($clause) {
+					case $LPAREN: 
+						$str .= " $LPAREN ";
+						$parens_open++;
+						break;
+					case $RPAREN: 
+						$str .= " $RPAREN ";
+						$parens_open--;
+						if ($parens_open < 0) {
+							//TODO:  Roll over and die
+						}
+						break;
+					case '&':
+						if (!$waiting_for_name) {
+							//TODO: fail
+						}
+						$waiting_for_name = true;
+						$str .= " $AND ";
+						break;
+					case '|':
+						if (!$waiting_for_name) {
+							//TODO: throw error
+						}
+						$waiting_for_name = true;
+						$str .= " $OR ";
+						break;
+					case $EQUAL_TO:
+						if ($waiting_for_name || $got_equality) {
+							//TODO: fail
+						}
+						$got_equality = true;
+						$str .= " $EQUAL_TO ";
+						break;
+					case $LESS_THAN:
+						if ($waiting_for_name || $got_equality) {
+							//TODO: fail
+						}
+						$got_equality = true;
+						$str .= " $LESS_THAN ";
+						break;
+					case $GREATER_THAN:
+						if ($waiting_for_name || $got_equality) {
+							//TODO: fail
+						}
+						$got_equality = true;
+						$str .= " $GREATER_THAN ";
+						break;
+					default:
+						if ($waiting_for_name) {
+							//$clause should be a column name
+							//TODO: prevent breaking MySQL here
+							$str .= " $clause  ";
+							$waiting_for_name = true;
+							$got_inequality = false;
+						} else {
+							//$clause should be a value
+
+							/* Catch %[character] and %[space] in their own little sections
+							** with all the other stuff in between them.  This only grabs
+							** one character.  I think that's all we need.
+							*/
+							$clause = preg_split('/([^\\]%[\S ])/',$clause,-1,PREG_SPLIT_DELIM_CAPTURE);
+							
+							foreach ($clause as $fragment) {
+								if ($fragment{0} != '%') {
+									$fragment = preg_replace('/\\%/','%',$fragment);
+								} else {
+									//This is a special formatty-thingy.  Let's fix it up.
+									
+									if (count($values) < 1) {
+										//TODO: give the caller a piece of our mind.
+									}
+									
+									$val = array_shift($values);	
+									
+									$char = $fragment[1];
+									switch ($char) {
+										case 'd':
+											if (!is_int($val)) {
+												//TODO: type error
+											}
+											$fragment = $val;
+											break;
+										case 's':
+											if (!is_string($val)) {
+												//TODO: type error
+											}
+											$fragment = "$val";
+											break;
+										case 'T':
+											$fragment = "'CURRENT_TIMESTAMP'";
+											break;
+										case ' ':
+											$fragment = ' ';
+											break;
+										case '%':
+											//Hey, people will expect %% to create a %
+											$fragment = '%';
+											break;
+										default:
+											//TODO: throw a bad formatting error
+											break;
+									}
+								}
+								$fragment = addslashes($fragment);
+								$str .= $fragment;
+							}
+							
+							$waiting_for_name = true;
+						}
+						break;
+				}
+				
+			}
 		}
 
 		/**
@@ -178,18 +349,8 @@
 				}
 			}
 			
-			if ($ordering) {
-				$q .= " ORDER BY ";
-				$first = true;
-				foreach ($ordering as $item) {
-					if ($first) {
-						$first = false;
-					} else {
-						$q .= ',';
-					}
-					$q .= $item;
-				}
-			}
+			$q .= ' ';
+			$q .= orderToString($ordering);
 
 			//Glad that's over with.  Now, we query the database.
 			
