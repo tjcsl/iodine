@@ -28,6 +28,12 @@
 		* specification on php.net.
 		*/
 		function default_error_handler($errno, $errstr, $errfile, $errline) {
+			if ((ini_get('error_reporting') & $errno) == 0) {
+				return;
+			}
+
+
+			$this->call_error("Error: $errstr\r\n<br />Error number: $errno\r\n<br />Error File: $errfile\r\n<br />Error line: $errline", FALSE);
 
 		}
 
@@ -41,8 +47,8 @@
 		* @param Exception $exception	The exception that was thrown
 		*				and not caught
 		*/
-		function default_exception_handler(Exception $exception) {
-
+		function default_exception_handler(Exception $e) {
+			$this->call_error('There has been an unhandled Iodine error. The file that raised this error was '.$e->getFile().' and the error message was:'."\r\n<br />".$e->getMessage(), TRUE);
 		}
 
 		/**
@@ -60,11 +66,16 @@
 		*/
 
 		function call_error($msg, $critical = 0) {
-			echo 'Iodine fatal error: '.$msg;
+			global $I2_LOG;
+			
+			$out = 'Iodine fatal error: '.$msg;
+			$I2_LOG->log_error($out);
+			
 			if ($critical) {
-				echo '\r\n<br />This is a critical error, so an email is being sent to the developers, so hopefully this problem will be fixed soon.';
-				/*TODO:email the report*/
+				$I2_LOG->log_mail($out);
+				$out .= "\r\n".'<br />This is a critical error, so an email is being sent to the developers, so hopefully this problem will be fixed soon.';
 			}
+			$I2_LOG->log_screen($out);
 			die();
 		}
 
