@@ -77,8 +77,16 @@
 		 *
 		 * @global Display $I2_DISP
 		 */
-		$I2_DISP = new Display();
-		/* $I2_WHATEVER = new Whatever(); */
+		$I2_DISP = new Display('core'); 
+		/*
+		** Note from braujac:  The Display module's methods are static for most things.
+		** The objects are purely for convenience.  In the future this may change, however,
+		** so please use only the instance methods for now.
+		*/
+
+		 
+		
+		/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here)*/
 
 		/**
 		 * The global array for a module's arguments.
@@ -100,18 +108,35 @@
 		$I2_ARGS = array();
 
 		/* Eliminates extraneous slashes in the PATH_INFO
-		 * And splits them into the global I2_ARGS array
+		** And splits them into the global I2_ARGS array
 		 */
 		foreach(explode('/', $_SERVER['PATH_INFO']) as $arg) {
 			if($arg) {
 				$I2_ARGS[] = $arg;
 			}
 		}
-			
-		eval('$I2_MOD = new ' . $I2_ARGS[0] . '();');
-		$I2_DISP->header();
-		$I2_MOD->init();
-		$I2_DISP->footer();
+
+		/*
+		** The order of the following will probably be changed; this is temporary.
+		*/
+		
+		$I2_MODULE_NAME = $I2_ARGS[0];	//TODO: validate module name to make sure the user isn't being nasty.
+		eval('$I2_MOD = new ' . $I2_MODULE_NAME . '();'); 	// Instantiate the main module
+		
+		$I2_DISP->globalHeader(); //Background, CSS link, title bar, etc.
+		$I2_DISP->startBoxes(); //Begin ibox column/group/whatever
+		foreach ($I2_LOADED_MODULES as $module_name) {
+			eval('$module = new ' . $module_name . '();'); //Instantiate the module
+			$I2_DISP->openBox($module); //Open an ibox
+			$module->display(new Display($module)); //Invoke the module display method
+			$I2_DISP->closeBox($module); //Close the ibox
+		}
+		$I2_DISP->endBoxes(); //Close the box group
+		$I2_DISP->openMainBox($I2_MOD); //Open the central box
+		$I2_MOD->display(new Display($I2_MODULE_NAME);
+		$I2_DISP->closeMainBox($I2_MOD); //Close the central box
+		$I2_DISP->globalFooter();
+	
 	} catch ($exception) {
 		if(isset($I2_ERR)) {
 			$I2_ERR->unhandled_error($exception);
