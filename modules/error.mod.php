@@ -14,7 +14,7 @@
 		* 
 		* @access public
 		*/
-		function Error() {
+		function __construct() {
 			set_error_handler(array(&$this,'default_error_handler'));
 			set_exception_handler(array(&$this,'default_exception_handler'));
 		}
@@ -54,13 +54,18 @@
 		* renders properly, control is taken away from the module, so
 		* you cannot do anything after calling this method, so don't try
 		*
-		* @param string $msg		The errors message to display.
-		* @param boolean $critical	Whether or not to email this error to a
-		*							list, if it's absolutely critical.
+		* @param string $msg The errors message to display.
+		* @param boolean $critical Whether or not to email this error to
+		* a list, if it's absolutely critical.
 		*/
 
 		function call_error($msg, $critical = 0) {
-		
+			echo 'Iodine fatal error: '.$msg;
+			if ($critical) {
+				echo '\r\n<br />This is a critical error, so an email is being sent to the developers, so hopefully this problem will be fixed soon.';
+				/*TODO:email the report*/
+			}
+			die();
 		}
 
 	}
