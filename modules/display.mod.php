@@ -20,72 +20,134 @@
 		*
 		* @access private
 		*/
-		private static var $smarty = new Smarty;
+		private var $smarty;
 
 		/**
 		* The name of the module associated with this Display object.
 		*
 		* @access private
 		*/
-		private var $module;
+		private var $module_name;
 
 		/**
 		* The Display class constructor.
 		* 
 		* @access public
-		* @staticvar object $Display is instantiated if it hadn't been before.
 		*/
 		function Display($module_name) {
-			//Create Smarty object if necessary
-			if (!$Display->smarty) {
-				$Display->smarty = new Smarty;
-				$Display->smarty->register_prefilter('prefilter');
-				$Display->smarty->register_postfilter('postfilter');
-				$Display->smarty->register_outputfilter('outputfilter');
-			}
-
+			$this->smarty = new Smarty;
+			$this->smarty->register_prefilter('prefilter');
+			$this->smarty->register_postfilter('postfilter');
+			$this->smarty->register_outputfilter('outputfilter');
 			$this->module = $module_name;
-			
 		}
 
 		/**
-		* The static (internal?) display function.
-		* 
-		* @param string $module_name The name of the module calling the function.
-		* @param string $template File name of the template.
-		* @param array $args Associative array of Smarty arguments.
+		* Assign a Smarty variable a value.
+		*
+		* @param string $var The name of the variable to assign.
+		* @param string $value The value to assign the variable.
 		*/
-		static function disp($module_name, $template, $args) {
-			foreach ($args as $key=>$value) {
-				$smarty->assign($key,$value);
+		function assign($var,$value) {
+			$this->smarty->assign($var,$value);
+		}
+
+		/**
+		* Assign a list of Smarty variables values.
+		*
+		* @param array $array An associative array matching variables to values.
+		*/
+		function assign($array) {
+			foreach ($array as $key=>$val) {
+				assign($key,$val);
 			}
-			$smarty->display($template);
 		}
 
 		/**
 		* The display function.
-		*
-		* @param string $template File name of the template to be displayed.
+		* 
+		* @param string $template File name of the template.
 		* @param array $args Associative array of Smarty arguments.
 		*/
 		function disp($template, $args) {
-			disp($this->module,$template,$args);
+			assign($args);
+			//TODO: validate passed template name.
+			$this->smarty->display($template);
+		}
+		
+		/**
+		* Outputs everything that should go to the user before iboxes, regardless
+		* of whether it will appear at the top or bottom of the finished layout.
+		* Also sends all necessary header information, links CSS, etc.  Please note
+		* that this is not global:  it is called only on the core's Display instance.
+		*/
+		function globalHeader() {
+			//TODO: implement this for real.
+			disp('header.tpl',array());
 		}
 
-		static function box_header($module_name) {
-			//TODO: implement
+		/**
+		* Closes everything that remains open, and prints anything else that goes
+		* after the modules.
+		*/
+		function globalFooter() {
+			disp('footer.tpl',array());
 		}
 
-		function header() {
-			header($this->module);
+		/**
+		* Opens the ibox section of the page.
+		*/
+		function startBoxes() {
+			disp('startboxes.tpl',array());
 		}
 
-		static function footer($module_name) {
-			//TODO: implement
+		/**
+		* Closes the ibox section of the page.
+		*/
+		function endBoxes() {
+			disp('endboxes.tpl',array());
 		}
 
-		function footer() {
-			footer($this->module);
+		/**
+		* Open an ibox.
+		*
+		* @param object $module The module that the ibox will contain.
+		*/
+		function openBox(&$module) {
+			//TODO: implement for real
+			$name = $module->getName();
+			disp('openbox.tpl',array('module_name'=>$name));
+		}
+
+		/**
+		* Close an ibox.
+		*
+		* @param object $module The module that was contained in the ibox.
+		*/
+		function closeBox(&$module) {
+			//TODO: implement for real
+			$name = $module->getName();
+			disp('closebox.tpl',array('module_name'=>$name));
+		}
+
+		/**
+		* Open the main display box.
+		*
+		* @param object $module The module that will be displayed in the main box.
+		*/
+		function openMainBox(&$module) {
+			$name = $module->getName();
+			disp('openmainbox.tpl',array('module_name'=>$name));
+		}
+
+		/**
+		* Close the main display box.
+		*
+		* @param object $module The module that was displayed in the main box.
+		*/
+		function closeMainBox(&$module) {
+			$name = $module->getName();
+			disp('closemainbox.tpl',array('module_name'=>$name));
 		}
 
 		/**
