@@ -8,29 +8,6 @@
 	* @package core
 	*/
 	
-	/*TODO: Get ini file here and get rid of all defines*/
-
-	/**
-	* Defines the ROOT_PATH constant.
-	*	
-	* The ROOT_PATH is the root path where the Iodine system resides.
-	*/
-	define("ROOT_PATH", "/afs/csl/web/intranet/");
-
-	/**
-	* Defines the MODULE_PATH constant.
-	*	
-	* The MODULE_PATH is the path where the Iodine modules reside.
-	*/
-	define("MODULE_PATH", ROOT_PATH."modules/");
-
-	/**
-	* Defines the CORE_PATH constant.
-	*	
-	* The CORE_PATH is the path where the Iodine core resides.
-	*/
-	define("CORE_PATH", MODULE_PATH."core/");
-
 	/**
 	* The __autoload function, used for autoloading modules.
 	*
