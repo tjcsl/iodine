@@ -89,6 +89,12 @@
 		*/
 		function log_debug($level, $msg = "") {
 			//What does this do?  (In an ideal world)
+			/* It's a debug message, so only output anything
+			if a certain value is set to true. Maybe a config file
+			key, or something. We haven't decided yet whether
+			we need to print to output, or to a log file, yet.
+			Maybe both? or a different method to do each one?
+			-deason*/
 			echo("Debugging Mesage: $msg, Level $level");
 		}
 
