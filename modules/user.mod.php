@@ -24,13 +24,17 @@
 			global $I2_SQL;
 			//TODO: get the current user (name? studentid?) and put it in $this->curuser. Let's assume StudentID, it is more useful
 			//I hope we will be using session variables
-			$this->cursuser = $_SESSION['StudentID'];
+			//$this->cursuser = $_SESSION['StudentID'];
 			
-			//TODO: pick table name, pass actual auth token, pick selector, format results
-			//These are the tables that hold the relevant information as of now. StudentInfo for addresses, name, stuff like that
-			//and StudentMiscInfo for preferences. The prefs table name must change as well as the fields, but StudentInfo is fine.
-			$this->info = $I2_SQL->select($token,"StudentInfo",,"StudentID=%d",array($this->curuser));
-			$this->prefs = $I2_SQL->select($token,"StudentMiscInfo",,"StudentID=%d",array($this->curuser));
+			/*TODO: pick table name, pass actual auth token, pick selector, format results
+			**These are the tables that hold the relevant information as of now. StudentInfo for addresses, name, stuff like that
+			**and StudentMiscInfo for preferences. The prefs table name must change as well as the fields, but StudentInfo is fine.
+			**$this->info = $I2_SQL->select($token,'StudentInfo',,'StudentID=%d',array($this->curuser));
+			**$this->prefs = $I2_SQL->select($token,'StudentMiscInfo',,'StudentID=%d',array($this->curuser));
+			*/
+			//note from braujac:  This is looking like it'll be LDAP at this point, not SQL.  We can have private LDAP access methods
+			// in this class, and call them here.
+			
 
 			//TODO: How do I got schedule?
 		}
