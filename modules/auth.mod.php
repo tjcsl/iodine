@@ -19,10 +19,25 @@
 		}
 
 		/**
+		* Checks the user's authentication status.
+		*
+		* @return boolean True if user is authenticated, false if not.
+		*/
+		function check_authenticated() {
+			if (check_sessid()) { // If the user has a session ID
+				return true;
+			}
+			// Here, they should have POST data (user+pass)
+			return check_user($POST['username'], $_POST['password']);
+		}
+		
+		/**
 		* Checks the user's session ID
+		* False for now until something happens here.
 		*/
 		function check_sessid() {
-
+			// $_SESSION['blah'] is equal to blah
+			return false;
 		}
 
 		/**
@@ -30,7 +45,7 @@
 		* system.
 		*/
 		function show_login() {
-			$I2_DISP->showLogin();
+			$I2_DISP->show_login();
 		}
 		
 		/**
@@ -41,6 +56,7 @@
 		* @return boolean	True if correct user/pass pair, false
 		*			otherwise.
 		FIXME: is that what it really returns? deason is just guessing
+		TODO: Really messy Windows/Novell auth. Have fun lburton etc.
 		*/
 		function check_user($user, $password) {
 			return true;
