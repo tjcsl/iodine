@@ -58,16 +58,40 @@
 		*/
 		function __construct($module_name) {
 			$this->smarty = new Smarty;
-			$this->smarty->register_prefilter('prefilter');
-			$this->smarty->register_postfilter('postfilter');
-			$this->smarty->register_outputfilter('outputfilter');
+			//$this->smarty->register_prefilter('Display::prefilter');
+			//$this->smarty->register_postfilter('Display::postfilter');
+			//$this->smarty->register_outputfilter('Display::outputfilter');
 			$this->smarty->left_delimiter = '[<';
 			$this->smarty->right_delimiter = '>]';
+			$this->smarty->compile_dir = i2config_get('smarty_path','./','core');
 			$this->my_module_name = $module_name;
 			if ($module_name == 'core') {
 				Display::$core_display = $this;
 			}
 			$this->buffer = "";
+			//FIXME: this must be removed before production code!  It's a hack!
+			$this->assign('page_css',i2config_get('css_file','./css.css','core'));
+		}
+
+		function display_loop($module) {
+			global $I2_ERR;
+			$this->global_header();
+			$mod = '';
+			try {
+				//TODO: there has to be a better way to do this!
+				$disp = new Display($module);
+				eval('$mod = new '.$module.'();');
+				//FIXME: use more than one module, duh!
+				$this->open_content_pane($mod);
+				$mod->init_pane();
+				$mod->display_pane($disp);
+				$this->close_content_pane($mod);
+			} catch (Exception $e) {
+				$I2_ERR->call_error("The module $module raised an error while displaying its content.");
+				//FIXME: patch this up.
+				$I2_ERR->default_exception_handler($e);
+			}
+			$this->global_footer();
 		}
 
 		/**
@@ -103,7 +127,7 @@
 		*/
 		function assign_array($array) {
 			foreach ($array as $key=>$val) {
-				assign($key,$val);
+				$this->assign($key,$val);
 			}
 		}
 
@@ -114,9 +138,11 @@
 		* @param array $args Associative array of Smarty arguments.
 		*/
 		function disp($template, $args=array()) {
-			assign_array($args);
+			$this->assign_array($args);
+			
+			$template = i2config_get('template_path','./','core').$template;
 			//TODO: validate passed template name.
-			if (buffering_on()) {
+			if ($this->buffering_on()) {
 				Display::$core_display->buffer .= $this->smarty->fetch($template); 
 			} else {
 				$this->smarty->display($template);
@@ -129,7 +155,8 @@
 		* @param string $text The text to display.
 		*/
 		function raw_display($text) {
-			if (buffering_on()) {
+			$text = 'Raw display from module '.$this->my_module_name.': '.$text;
+			if ($this->buffering_on()) {
 				Display::$core_display->buffer .= "$text";
 			} else {
 				echo($text);
@@ -140,7 +167,7 @@
 		* Clear any output buffers, ensuring that all data is written to the browser.
 		FIXME: flush seems to be a reserved keyword, change to something else
 		*/
-		function flush() {
+		function flush_buffer() {
 			if ($this == Display::$core_display) {
 				echo(Display::$core_display->buffer);
 				Display::$core_display->buffer = "";
@@ -155,8 +182,8 @@
 		function set_buffering($on) {
 			if ($this == Display::$core_display) {
 				Display::$core_display->buffering = $on;
-				if (!buffering_on()) {
-					flush();
+				if (!$this->buffering_on()) {
+					$this->flush_buffer();
 				}
 			}
 		}
@@ -169,17 +196,17 @@
 		*/
 		function global_header() {
 			//TODO: implement this for real.
-			disp('header.tpl');
-			flush();
+			$this->disp('header.tpl');
+			$this->flush_buffer();
 		}
 
-		/**
+		/**k
 		* Closes everything that remains open, and prints anything else that goes
 		* after the modules.
 		*/
 		function global_footer() {
-			disp('footer.tpl');
-			flush();
+			$this->disp('footer.tpl');
+			$this->flush_buffer();
 		}
 
 		/**
@@ -188,9 +215,9 @@
 		* @param object $module The module that will be displayed in the main box.
 		*/
 		function open_content_pane(&$module) {
-			set_buffering(false);
-			$this->name = $module->getName();
-			disp('openmainbox.tpl',array('module_name'=>$this->name));
+			$this->set_buffering(false);
+			$this->name = $module->get_name();
+			$this->disp('openmainbox.tpl',array('module_name'=>$this->name));
 		}
 
 		/**
@@ -199,8 +226,8 @@
 		* @param object $module The module that was displayed in the main box.
 		*/
 		function close_content_pane(&$module) {
-			$this->name = $module->getName();
-			disp('closemainbox.tpl',array('module_name'=>$this->name));
+			$this->name = $module->get_name();
+			$this->disp('closemainbox.tpl',array('module_name'=>$this->name));
 		}
 
 		/**
@@ -213,7 +240,7 @@
 		function prefilter($source,&$smarty) {
 			//TODO: put actual debug-mode-detection here
 			if ($debug) {
-				return "[<strip>]$source[</strip>]";
+				return "[<strip>]${source}[</strip>]";
 			}
 			return $source;
 		}
