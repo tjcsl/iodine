@@ -70,7 +70,7 @@
 		 * @global User $I2_USER
 		 */
 		$I2_USER = new User();
-		/**
+		/*
 		 * The global display mechanism.
 		 *
 		 * Use this {@link Display} object for displaying information on a page.
@@ -78,17 +78,10 @@
 		 * @global Display $I2_DISP
 		 */
 		$I2_DISP = new Display('core'); 
-		/*
-		** Note from braujac:  The Display module's methods are static for most things.
-		** The objects are purely for convenience.  In the future this may change, however,
-		** so please use only the instance methods for now.
-		*/
-
-		 
 		
-		/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here)*/
+		// $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here)
 
-		/**
+		/*
 		 * The global array for a module's arguments.
 		 *
 		 * This array contains argv-style arguments when a module is called to
@@ -109,19 +102,19 @@
 
 		/* Eliminates extraneous slashes in the PATH_INFO
 		** And splits them into the global I2_ARGS array
-		 */
+		*/
 		foreach(explode('/', $_SERVER['PATH_INFO']) as $arg) {
 			if($arg) {
 				$I2_ARGS[] = $arg;
 			}
 		}
 
-		/*
-		** The order of the following will probably be changed; this is temporary.
-		*/
+		// The order of the following will probably be changed; this is temporary.
 
 		$module_list = array();
-
+	
+		// Instantiate ibox modules and initialize them
+		
 		foreach ($I2_LOADED_MODULES as $module_name) {
 			eval('$module = new ' . $module_name . '();'); //Instantiate the module
 			$module->initBox();	//Initialize the module as a box
