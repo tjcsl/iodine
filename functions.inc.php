@@ -30,6 +30,15 @@
 	}
 	
 	/**
+	* Force loading of the passed class.
+	*
+	* @param string $class The class to load.
+	*/
+	function i2_force_load($class) {
+		require_once($class);
+	}
+	
+	/**
 	* The __autoload function, used for autoloading modules.
 	*
 	* This is the function used by PHP as a last resort for loading 
@@ -40,6 +49,7 @@
 	* @param string $class_name Name of noninstantiated class.
 	*/
 	function __autoload($class_name) {
+		global $I2_ERR;
 		echo_handler("Loading $class_name");
 		$class_file = '';
 		if ($class_name == "Error") {
@@ -48,7 +58,7 @@
 		}
 
 		if (!($class_file=get_i2module($class_name))) {
-			$I2_ERR->call_error('Cannot load module '.$class_name.': the file '.$class_file.' is not readable.');
+			$I2_ERR->nonfatal_error('Cannot load module/class '.$class_name.': the file '.$class_file.' is not readable.');
 		}
 		else {
 			require_once($class_file);
@@ -105,7 +115,6 @@
 	*/
 	function i2config_get($field, $default = NULL, $section = NULL) {
 		global $I2_ERR;
-		//$I2_ERR = $GLOBALS['I2_ERR'];
 		static $config = NULL;
 		
 		if ($config === NULL) { /*Parse the INI file*/
@@ -116,7 +125,7 @@
 				to send critical errors to is in the config
 				file! */
 				/* hence, put a hard-coded mail() call here */
-				$I2_ERR->call_error('The master Iodine configuration file '.CONFIG_FILENAME.' cannot be read.', FALSE);
+				$I2_ERR->fatal_error('The master Iodine configuration file '.CONFIG_FILENAME.' cannot be read.', FALSE);
 			}
 			
 			$config = parse_ini_file(CONFIG_FILENAME, TRUE);
