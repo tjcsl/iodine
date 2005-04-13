@@ -98,7 +98,7 @@
 		*/
 		protected function connect($server, $user, $password) {
 			global $I2_LOG;
-			$I2_LOG->log_screen("Connecting to $server as $user<BR>");
+			$I2_LOG->log_debug("Connecting to $server as $user");
 			return mysql_pconnect($server, $user, $password);
 		}
 		
@@ -121,7 +121,7 @@
 			global $I2_ERR;
 			$r = mysql_query($query);
 			if ($err = mysql_error()) {
-				$I2_ERR->call_error('MySQL error: '.$err);
+				$I2_ERR->nonfatal_error('MySQL error: '.$err);
 				return false;
 			}
 			return $r;
@@ -327,7 +327,7 @@
 			//TODO: fix the multiargument syntax
 			global $I2_ERR;
 			if (!check_token_rights($token,'db/'.$table,'r')) {
-				$I2_ERR->call_error("An invalid access token was used in attempting to access the $table MySQL table!");
+				$I2_ERR->nonfatal_error("An invalid access token was used in attempting to access the $table MySQL table!");
 				return null;
 			}
 			/*
@@ -379,7 +379,7 @@
 		*/
 		function insert($token, $table, $cols, $values = false) {
 			if (!check_token_rights($token,'db/'.$table,'w')) {
-				$I2_ERR->call_error("An invalid token was used in trying to insert into the $table database table!");
+				$I2_ERR->nonfatal_error("An invalid token was used in trying to insert into the $table database table!");
 				return null;
 			}
 			/*
@@ -435,7 +435,7 @@
 		*/
 		function update($token, $table, $columns, $values = false, $where = false, $wherevals = false) {
 			if (!check_token_rights($token,'db/',$field,'w')) {
-				$I2_ERR->call_error("An invalid authentication token was used in attempting to update the $table database table!");
+				$I2_ERR->nonfatal_error("An invalid authentication token was used in attempting to update the $table database table!");
 				return null;
 			}
 			/*
@@ -456,7 +456,7 @@
 			$q = "UPDATE $table SET ";
 
 			if (array_len($columns) != array_len($values)) {
-				$I2_ERR->call_error("The MySQL update method was passed a mismatched set of arguments!"); 
+				$I2_ERR->nonfatal_error("The MySQL update method was passed a mismatched set of arguments!"); 
 			}
 			
 			$first = true;
@@ -496,10 +496,10 @@
 		*/
 		function del($token, $table, $where = false, $wherevals = false) {
 			if (!check_token_rights($token,'db/'.$table,'w')) {
-				$I2_ERR->call_error("An invalid authentication token was used in an attempt to delete from the $table database table!");
+				$I2_ERR->nonfatal_error("An invalid authentication token was used in an attempt to delete from the $table database table!");
 			}
 			if (!$where) { 
-				$I2_ERR->call_error("A SQL delete attempt was made with a blank 'where' argument!"); 
+				$I2_ERR->nonfatal_error("A SQL delete attempt was made with a blank 'where' argument!"); 
 				return null;
 			} 
 

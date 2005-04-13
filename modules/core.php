@@ -48,6 +48,14 @@
 		 */
 		$I2_SQL = new MySQL();
 		/**
+		 * The global LDAP mechanism.
+		 *
+		 * Use this {@link LDAP} object for accessing LDAP-based information.
+		 *
+		 * @global LDAP $I2_LDAP
+		 */
+		$I2_LDAP = new LDAP();
+		/**
 		 * The global authentication mechanism.
 		 *
 		 * Use this {@link Auth} object for authenticating users.
@@ -66,7 +74,7 @@
 		/**
 		 * The global display mechanism.
 		 *
-		 * Use this {@link Display} object for displaying information on a page.
+		 * Use this {@link Display} object for nothing, unless you're core.php.
 		 *
 		 * @global Display $I2_DISP
 		 */
@@ -108,7 +116,7 @@
 		}
 		
 		if (!get_i2module($I2_ARGS[0])) {
-			$I2_ERR->call_error('Invalid module name \''.$I2_ARGS[0].'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
+			$I2_ERR->fatal_error('Invalid module name \''.$I2_ARGS[0].'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
 		}
 
 		/* Display will instantiate the module, we just pass the name */

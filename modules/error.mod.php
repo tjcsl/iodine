@@ -33,7 +33,7 @@
 			}
 
 
-			$this->call_error("Error: $errstr\r\n<br />Error number: $errno\r\n<br />Error File: $errfile\r\n<br />Error line: $errline", FALSE);
+			$this->fatal_error("Error: $errstr\r\n<br />Error number: $errno\r\n<br />Error File: $errfile\r\n<br />Error line: $errline", FALSE);
 
 		}
 
@@ -48,7 +48,7 @@
 		*				and not caught
 		*/
 		function default_exception_handler(Exception $e) {
-			$this->call_error('There has been an unhandled Iodine error. The file that raised this error was '.$e->getFile().' and the error message was:'."\r\n<br />".$e->getMessage(), TRUE);
+			$this->fatal_error('There has been an unhandled Iodine error. The file that raised this error was '.$e->getFile().' and the error message was:'."\r\n<br />".$e->getMessage(), TRUE);
 		}
 
 		/**
@@ -58,14 +58,14 @@
 		* effectively stop from the underlying module's point of view.
 		* Even though processing will technically continue so the page
 		* renders properly, control is taken away from the module, so
-		* you cannot do anything after calling this method, so don't try
+		* you cannot do anything after calling this method. Don't try.
 		*
-		* @param string $msg The errors message to display.
+		* @param string $msg The error message to display.
 		* @param boolean $critical Whether or not to email this error to
 		* a list, if it's absolutely critical.
 		*/
 
-		function call_error($msg, $critical = 0) {
+		function fatal_error($msg, $critical = 0) {
 			global $I2_LOG;
 
 			$out = 'Iodine fatal error: '.$msg;
@@ -81,6 +81,29 @@
 			}
 			$I2_LOG->log_screen($out);
 			die();
+		}
+		
+		
+		/**
+		* The non-fatal error function.
+		*
+		* Use this function to signify an error that, while possibly fatal
+		* for the module that raised it, should NOT be fatal for the entire
+		* application run.  This method will throw an Exception which should
+		* NOT be caught.  Make SURE that the Exception is able to propagate!
+		*
+		* @param string $msg The message associated with the error.
+		*/
+		function nonfatal_error($msg) {
+			global $I2_LOG;
+
+			if (!isSet($I2_LOG)) {
+				echo("Nonfatal error:  $msg <br />");
+			}
+			
+			$I2_LOG->log_error("Nonfatal error: $msg");
+			
+			throw new Exception();
 		}
 
 	}

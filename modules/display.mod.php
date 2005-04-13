@@ -1,8 +1,5 @@
 <?php
 
-	//We need Smarty to work with templates, of course.
-	require_once('Smarty.class.php');
-
 
 	/**
 	* The display module for Iodine.
@@ -45,7 +42,6 @@
 
 		/**
 		* The core display object to get buffering data from.
-		*
 		* @access private
 		*/
 		private static $core_display;
@@ -57,10 +53,12 @@
 		* @param string $module_name The name of the module this Display object applies to.
 		*/
 		function __construct($module_name) {
+			i2_force_load('Smarty.class.php');
 			$this->smarty = new Smarty;
-			$this->smarty->register_prefilter(array(&$this,'prefilter'));
-			$this->smarty->register_postfilter(array(&$this,'postfilter'));
-			$this->smarty->register_outputfilter(array(&$this,'outputfilter'));
+			//$this->smarty->register_prefilter(array(&$this,'prefilter'));
+			//$this->smarty->load_filter('pre','strip');
+			//$this->smarty->register_postfilter(array(&$this,'postfilter'));
+			//$this->smarty->register_outputfilter(array(&$this,'outputfilter'));
 			$this->smarty->left_delimiter = '[<';
 			$this->smarty->right_delimiter = '>]';
 			$this->smarty->compile_dir = i2config_get('smarty_path','./','core');
@@ -70,7 +68,7 @@
 			}
 			$this->buffer = "";
 			//FIXME: this must be removed before production code!  It's a hack!
-			$this->smarty_assign('page_css','http://iodine.tjhsst.edu/~braujac/i2/www/css.css');
+			$this->smarty_assign('page_css',i2config_get('www_root').'/www/css.css');
 		}
 
 		function display_loop($module) {
@@ -78,6 +76,7 @@
 			$this->global_header();
 			$mod = '';
 			$mastertoken = get_master_token();
+
 			try {
 				//TODO: there has to be a better way to do this!
 				$disp = new Display($module);
@@ -89,16 +88,14 @@
 				
 				//FIXME: use more than one module, duh!
 				$this->open_content_pane($mod);
-
-				
 				$mod->init_pane($token);
 				$mod->display_pane($disp);
 				$this->close_content_pane($mod);
+			
 			} catch (Exception $e) {
-				$I2_ERR->call_error("The module $module raised an error while displaying its content.");
-				//FIXME: patch this up.
-				$I2_ERR->default_exception_handler($e);
+				$I2_ERR->nonfatal_error("The main module $module raised error $e while displaying its content.");
 			}
+			
 			$this->global_footer();
 		}
 
@@ -174,7 +171,7 @@
 		
 		/**
 		* Clear any output buffers, ensuring that all data is written to the browser.
-		FIXME: flush seems to be a reserved keyword, change to something else
+		* //FIXME: flush seems to be a reserved keyword, change to something else
 		*/
 		function flush_buffer() {
 			if ($this == Display::$core_display) {
@@ -204,12 +201,11 @@
 		* that this is not global:  it is called only on the core's Display instance.
 		*/
 		function global_header() {
-			//TODO: implement this for real.
 			$this->disp('header.tpl');
 			$this->flush_buffer();
 		}
 
-		/**k
+		/**
 		* Closes everything that remains open, and prints anything else that goes
 		* after the modules.
 		*/
@@ -249,7 +245,7 @@
 		function prefilter($source,&$smarty) {
 			//TODO: put actual debug-mode-detection here
 			if (!$debug) {
-				return "[<strip>]${source}[</strip>]";
+				return '[<strip>]'.$source.'[</strip>]';
 			}
 			return $source;
 		}
