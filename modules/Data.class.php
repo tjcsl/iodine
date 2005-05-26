@@ -14,7 +14,19 @@ class Data {
 
 	function get_user_info($token,$uid) {
 		global $I2_ERR;
-		if (!check_token_rights($token,'ldap/iodine','r')) {
+
+		/*if (!check_token_rights($token,'mysql/iodine','r')) {
+			$I2_ERR->call_error("Bad authentication token accessing user info for user $uid");
+			return;
+		}*/
+		
+		//Token rights are checked when the query is made, of course.
+		//We could catch it early and print a better, cleaner error message, but why bother? :P
+		
+		return new UserInfo($token,$uid);
+
+		
+		/*if (!check_token_rights($token,'ldap/iodine','r')) {
 			$I2_ERR->call_error("Bad authentication token accessing LDAP information for user $uid");
 			return;
 		}
@@ -27,7 +39,7 @@ class Data {
 		
 		$ret = ldap_get_attributes($ldap,$res);
 		
-		return $ret;
+		return $ret;*/
 	}
 
 
