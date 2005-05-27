@@ -14,8 +14,7 @@
 		* 
 		* @access public
 		*/
-		function __construct() {
-		
+		function __construct() {	
 		}
 
 		/**
@@ -24,26 +23,13 @@
 		* @return boolean True if user is authenticated, false if not.
 		*/
 		function check_authenticated() {
-			if ($this->check_sessid()) { // If the user has a session ID
-				return true;
-			}
-			// Here, they should have POST data (user+pass)
-			return $this->check_user($POST['username'], $_POST['password']);
-		}
-		
-		/**
-		* Checks the user's session ID
-		* False for now until something happens here.
-		*/
-		function check_sessid() {
-			// $_SESSION['blah'] is equal to blah
-			return false;
+			global $_SESSION;
+			return isSet($_SESSION['uid']);
 		}
 
 		/**
 		* Shows the login box so users can actually log in to use the
 		* system.
-		*
 		*/
 		function show_login() {
 			/* FIXME: make this code be in auth, not display*/
@@ -80,19 +66,7 @@
 			}
 			return false;
 		}
-
-		/**
-		 * Gets the starting page for a user.
-		 * Doesn't this call another module or something to get the data? Yes, but
-		 * until it gets discussed, don't worry about it. -Deason
-		 *
-		 * @param string $user The user to get the page for.
-		 * @return string The start page for the user.
-		 */
-		function get_startpage($user) {
-
-		}
-
-	}
+		
+}
 
 ?>

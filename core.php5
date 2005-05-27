@@ -101,18 +101,52 @@
 		 */
 		$I2_ARGS = array();
 
+		//FIXME: PROTECT THIS TOKEN!
+		$mastertoken = get_master_token();	
+		
+		foreach($_SESSION as $key=>$value) {
+			//TODO: filter out bad stuff.
+			$I2_ARGS[$key] = $value;
+		}
+
+		foreach ($_REQUEST as $key=>$value) {
+			//TODO: filter.
+			$I2_ARGS[$key] = $value;
+		}
+
+		$I2_ARGS['i2_query'] = array();
+
 		/* Eliminates extraneous slashes in the PATH_INFO
 		** And splits them into the global I2_ARGS array
 		*/
 		foreach(explode('/', $_SERVER['QUERY_STRING']) as $arg) {
 			if($arg) {
-				$I2_ARGS[] = $arg;
+				if (!isSet($I2_ARGS['i2_desired_module'])) {
+					$I2_ARGS['i2_desired_module'] = $arg;
+				} else {
+					$I2_ARGS['i2_query'][] = $arg;
+				}
 			}
 		}
+
+		if (!$I2_AUTH->check_authenticated()) {
+			if (isSet($I2_ARGS['i2_desired_module'])) {
+				$_SESSION['i2_after_login_module'] = $I2_ARGS['i2_desired_module'];
+			} else {
+				$_SESSION['i2_after_login_module'] = $I2_USER->get_current_user_info($mastertoken);
+			}
+			$_SESSION['i2_desired_module'] = "Login";
+
+			// We already copied $_SESSION to $I2_ARGS, so here we need to update both places
+			$I2_ARGS['i2_desired_module'] = $_SESSION['i2_desired_module'];
+			$I2_ARGS['i2_after_login_module'] = $_SESSION['i2_after_login_module'];
+		}
 		
-		if (count($I2_ARGS) == 0) {
-			//FIXME: no modules?!  Whatever will we do?!
-			return;
+		if (!isSet($I2_ARGS['i2_desired_module'])) {
+			/* The user didn't tell us which module to load, so we'll 
+			** load their default start page.
+			*/
+			$I2_ARGS['i2_desired_module'] = $I2_USER->get_startpage();
 		}
 		
 		if (!get_i2module($I2_ARGS[0])) {
@@ -120,7 +154,7 @@
 		}
 
 		/* Display will instantiate the module, we just pass the name */
-		$I2_DISP->display_loop($I2_ARGS[0]);
+		$I2_DISP->display_loop($I2_ARGS[0],$mastertoken);
 	
 	} catch (Exception $e) {
 		if(isset($I2_ERR)) {

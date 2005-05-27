@@ -71,11 +71,11 @@
 			$this->smarty_assign('page_css',i2config_get('www_root').'/www/css.css');
 		}
 
-		function display_loop($module) {
+		function display_loop($module,$mastertoken) {
 			global $I2_ERR;
 			$this->global_header();
 			$mod = '';
-			$mastertoken = get_master_token();
+			//$mastertoken = get_master_token();
 
 			try {
 				//TODO: there has to be a better way to do this!
