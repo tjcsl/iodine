@@ -85,6 +85,7 @@
 			return TRUE;
 		}
 		$prepath = i2config_get('module_path', NULL, 'core');
+		
 		$file = $prepath.strtolower($module_name).'.mod.php5';
 		if (is_readable($file)) {
 			return $file;
@@ -262,13 +263,21 @@
 		}
 	}
 
-	function redirect($url) {
-		//FIXME: write this!  It's essential!
-		include($url);
+	function redirect($modulename) {
+		global $I2_LOG, $I2_DISP;
+		if (!$modulename || !get_i2module($modulename)) {
+			//TODO: note the caller and print info about it.
+			$I2_LOG->log_debug("An attempt to include a null module was made.");
+			return;
+		}
+		$I2_DISP->halt_display();
+		$I2_LOG->log_debug("Redirecting to module $modulename");
+		set_i2var('i2_desired_module',$modulename);
 	}
 
 	function set_i2var($varname,$value) {
-		global $I2_ARGS;
+		global $I2_ARGS, $I2_LOG;
+		$I2_LOG->log_debug("Setting i2 variable $varname to $value");
 		$_SESSION[$varname] = $value;
 		$I2_ARGS[$varname] = $value;
 	}
