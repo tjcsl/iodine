@@ -7,7 +7,7 @@
 	private $data;
 	private $classes = false;
 	
-	function __autoconstruct($token,$uid) {
+	function __construct($token,$uid) {
 		global $I2_SQL;
 		
 		$this->uid = $uid;
