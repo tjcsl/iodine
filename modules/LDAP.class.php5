@@ -7,7 +7,7 @@ class LDAP {
 	private final $student_dnbase="ou=users,$dnbase";
 	private final $teacher_dnbase="ou=users,$dnbase";
 	
-	function __autoconstruct() {
+	function __construct() {
 		$this->conn = ldap_connect(i2config_get('server','localhost','ldap'));
 		ldap_bind($this->conn,i2config_get('user','iodine','ldap'),i2config_get('password','iodine','ldap')));
 	}

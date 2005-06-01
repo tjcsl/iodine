@@ -137,7 +137,7 @@ class Result {
 	* @param int $type As fetch_array.
 	* @return mixed As fetch_array.
 	*/
-	function fetch_row($rownum, $type = MYSQL__BOTH) {
+	function fetch_row($rownum, $type = MYSQL_BOTH) {
 		foreach ($results as $res=>$arr) {
 			if ($arr[1] != MySQL::SELECT) {
 				continue;
