@@ -20,8 +20,9 @@
 		*/
 		function __construct() {
 			global $_SESSION;
-			//TODO: check this
-			$this->curuid = $_SESSION["i2_uid"];
+			if (isSet($_SESSION['i2_uid'])) {
+				$this->curuid = $_SESSION['i2_uid'];
+			}
 		}	
 
 		function get_info($token,$uid) {

@@ -23,6 +23,9 @@
 
 	/* Load the essential modules; start try block*/
 	try {
+
+		session_start();
+		
 		/**
 		 * The global error-handling mechanism.
 		 *
@@ -103,24 +106,33 @@
 
 		//FIXME: PROTECT THIS TOKEN!
 		$mastertoken = get_master_token();	
-		if (!$_SESSION) {
+		if (!isSet($_SESSION)) {
 			$_SESSION = array();
 		}
 		foreach($_SESSION as $key=>$value) {
 			//TODO: filter out bad stuff.
-			if (strpos($key,'i2') !== 0) {
-				$I2_ARGS[$key] = $value;
-			}
+			//if (strpos($key,'i2') !== 0) {
+				$I2_ARGS[$key] = $value;			
+				$I2_LOG->log_debug("Mapped key $key to $value from session variables.");
+			//}
 		}
 
 		foreach ($_REQUEST as $key=>$value) {
 			//TODO: filter.
-			if (strpos($key,'i2') !== 0) {
+			//if (strpos($key,'i2') !== 0) {
 				$I2_ARGS[$key] = $value;
-			}
+				/*
+				** Hide passwords.
+				*/
+				if ($key == 'login_password') {
+					$value = '**HIDDEN**';
+				}
+				$I2_LOG->log_debug("Mapped key $key to value $value in the request string.");
+			//}
 		}
 
 		$I2_ARGS['i2_query'] = array();
+		$I2_ARGS['i2_boxes'] = array();
 
 		/* Eliminates extraneous slashes in the PATH_INFO
 		** And splits them into the global I2_ARGS array
@@ -130,6 +142,7 @@
 				if (!isSet($I2_ARGS['i2_desired_module'])) {
 					$I2_ARGS['i2_desired_module'] = $arg;
 				} else {
+					$I2_LOG->log_debug("Added $arg to the query string variable.");
 					$I2_ARGS['i2_query'][] = $arg;
 				}
 			}
@@ -146,9 +159,7 @@
 			// We already copied $_SESSION to $I2_ARGS, so here we need to update both places
 			$I2_ARGS['i2_desired_module'] = $_SESSION['i2_desired_module'];
 			$I2_ARGS['i2_after_login_module'] = $_SESSION['i2_after_login_module'];
-		}
-		
-		if (!isSet($I2_ARGS['i2_desired_module'])) {
+		} else if (!isSet($I2_ARGS['i2_desired_module'])) {
 			/* The user didn't tell us which module to load, so we'll 
 			** load their default start page.
 			*/
@@ -157,6 +168,14 @@
 		
 		if (!get_i2module($I2_ARGS['i2_desired_module'])) {
 			$I2_ERR->fatal_error('Invalid module name \''.$I2_ARGS['i2_desired_module'].'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
+		}
+
+		$I2_LOG->log_debug('Desired module is '.$I2_ARGS['i2_desired_module']);
+
+		//FIXME: put stuff in $I2_ARGS['i2_boxes'] here.
+
+		foreach ($I2_ARGS['i2_boxes'] as $module) {
+			$I2_LOG->log_debug("Box: $module");
 		}
 
 		/* Display will instantiate the module, we just pass the name */

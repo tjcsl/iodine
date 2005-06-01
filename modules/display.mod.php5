@@ -38,13 +38,15 @@
 		*
 		* @access private
 		*/
-		private $buffering = true;
+		private $buffering = TRUE;
 
 		/**
 		* The core display object to get buffering data from.
 		* @access private
 		*/
 		private static $core_display;
+		
+		private static $display_stopped = FALSE;
 		
 		/**
 		* The Display class constructor.
@@ -73,6 +75,11 @@
 
 		function display_loop($module,$mastertoken) {
 			global $I2_ERR;
+
+			if (Display::$display_stopped) {
+				return;
+			}
+			
 			$this->global_header();
 			$mod = '';
 			//$mastertoken = get_master_token();
@@ -84,12 +91,21 @@
 				/*
 				** Create an authentication token with all the appropriate rights.
 				*/
-				$token = issue_token($mastertoken,array('db/'.$module=>'w','info/'.$module=>'w','pref/'.$module=>'w','*'=>'r'));	
+				//TODO: change this
+				$token = issue_token($mastertoken,array(
+					'db/'.$module => 'w',
+					'info/'.$module => 'w',
+					'pref/'.$module => 'w',
+					'*'=>'r'
+				));	
 				
 				//FIXME: use more than one module, duh!
+				
 				$this->open_content_pane($mod);
 				$mod->init_pane($token);
-				$mod->display_pane($disp);
+				if (!Display::$display_stopped) {
+					$mod->display_pane($disp);
+				}
 				$this->close_content_pane($mod);
 			
 			} catch (Exception $e) {
@@ -97,6 +113,14 @@
 			}
 			
 			$this->global_footer();
+		}
+
+		static function halt_display() {
+			Display::$display_stopped = TRUE;
+		}
+
+		static function resume_display() {
+			Display::$display_stopped = FALSE;
 		}
 
 		/**
