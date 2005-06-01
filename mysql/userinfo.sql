@@ -49,7 +49,7 @@ CREATE TABLE users(
 
 	username VARCHAR(128) DEFAULT "", /* LAN username, etc. */
 
-	sex CHAR(1) DEFAULT 'N',
+	sex ENUM('M','F','N') DEFAULT 'N',
 	
 	grade TINYINT(2) DEFAULT 0,
 	

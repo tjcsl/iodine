@@ -114,7 +114,7 @@
 		*
 		* @param String $msg The message to display.
 		*/
-		private function log_screen($msg) {
+		function log_screen($msg) {
 			/* This will get more complicated later, like smarty
 			formatting, etc. */
 			//FIXME: write a custom template pair for this.

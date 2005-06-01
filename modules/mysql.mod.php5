@@ -170,11 +170,20 @@
 			$parens_open = 0;
 			$waiting_for_name = true;
 			$got_equality = false;
+
+			$LPAREN = MySQL::LPAREN;
+			$RPAREN = MySQL::RPAREN;
+			$AND = MySQL::LOGICAL_AND;
+			$OR = MySQL::LOGICAL_OR;
+			$EQUAL_TO = MySQL::EQUAL_TO;
+			$GREATER_THAN = MySQL::GREATER_THAN;
+			$LESS_THAN = MySQL::LESS_THAN;
+			
 			
 			foreach ($format as $clause) {
 				
 				//Replace escaped sequences with their raw forms, and strip whitespace
-				$clause = preg_replace('/^\s*\\([()&|=<>])\s*$/e',"'\\1'",$clause);
+				$clause = preg_replace('/^\s*\\([()&|=<>]\)\s*$/e',"'\\1'",$clause);
 				
 				/* Okay, now we have one of four things, either:
 				** 	(a) A (, ), &, or | character alone
@@ -337,6 +346,12 @@
 			if (!$columns) {
 				$q .= '*';
 			} else {
+				if (!is_array($columns)) {
+					$columns = array($columns);
+				}
+				if (count($columns) < 1) {
+					return FALSE;
+				}
 				$first = true;
 				foreach ($columns as $col) {
 					if ($first) {

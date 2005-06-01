@@ -15,10 +15,6 @@
 		$this->data = $I2_SQL->select($token,"prefs",false,"$uid=%d",$uid)->fetch_array();
 	}
 
-	function get_start_page() {
-		return $this->data["startpage"];
-	}
- 
  }
 
 ?>

@@ -51,16 +51,16 @@
 		 */
 		 
 		function check_user($user, $password) {
-			$descriptors = array(0 => array("pipe", "r"), 1 => array("file", "/dev/null", "w"), 2 => array("file", "/dev/null", "w"));
+			$descriptors = array(0 => array('pipe', 'r'), 1 => array('file', '/dev/null', 'w'), 2 => array('file', '/dev/null', 'w'));
 
-			$process = proc_open("kinit $user", $descriptors, $pipes);
+			$process = proc_open("kinit $user@LOCAL.TJHSST.EDU", $descriptors, $pipes);
 			if(is_resource($process)) {
 				fwrite($pipes[0], $password);
 				fclose($pipes[0]);
 				$status = proc_close($process);
 			
 				if($status == 0) {
-					exec("kdestroy");
+					exec('kdestroy');
 					return true;
 				}
 			}

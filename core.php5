@@ -8,7 +8,7 @@
 	* @package core
 	*/
 
-	include('../functions.inc.php');
+	include('../functions.inc.php5');
 
 	/**
 	* The path to the master Iodine configuration file.
@@ -103,15 +103,21 @@
 
 		//FIXME: PROTECT THIS TOKEN!
 		$mastertoken = get_master_token();	
-		
+		if (!$_SESSION) {
+			$_SESSION = array();
+		}
 		foreach($_SESSION as $key=>$value) {
 			//TODO: filter out bad stuff.
-			$I2_ARGS[$key] = $value;
+			if (strpos($key,'i2') !== 0) {
+				$I2_ARGS[$key] = $value;
+			}
 		}
 
 		foreach ($_REQUEST as $key=>$value) {
 			//TODO: filter.
-			$I2_ARGS[$key] = $value;
+			if (strpos($key,'i2') !== 0) {
+				$I2_ARGS[$key] = $value;
+			}
 		}
 
 		$I2_ARGS['i2_query'] = array();
@@ -133,9 +139,9 @@
 			if (isSet($I2_ARGS['i2_desired_module'])) {
 				$_SESSION['i2_after_login_module'] = $I2_ARGS['i2_desired_module'];
 			} else {
-				$_SESSION['i2_after_login_module'] = $I2_USER->get_current_user_info($mastertoken);
+				$_SESSION['i2_after_login_module'] = $I2_USER->get_current_user_info($mastertoken)->get_startpage($mastertoken);
 			}
-			$_SESSION['i2_desired_module'] = "Login";
+			$_SESSION['i2_desired_module'] = 'Login';
 
 			// We already copied $_SESSION to $I2_ARGS, so here we need to update both places
 			$I2_ARGS['i2_desired_module'] = $_SESSION['i2_desired_module'];
@@ -149,12 +155,12 @@
 			$I2_ARGS['i2_desired_module'] = $I2_USER->get_startpage();
 		}
 		
-		if (!get_i2module($I2_ARGS[0])) {
-			$I2_ERR->fatal_error('Invalid module name \''.$I2_ARGS[0].'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
+		if (!get_i2module($I2_ARGS['i2_desired_module'])) {
+			$I2_ERR->fatal_error('Invalid module name \''.$I2_ARGS['i2_desired_module'].'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
 		}
 
 		/* Display will instantiate the module, we just pass the name */
-		$I2_DISP->display_loop($I2_ARGS[0],$mastertoken);
+		$I2_DISP->display_loop($I2_ARGS['i2_desired_module'],$mastertoken);
 	
 	} catch (Exception $e) {
 		if(isset($I2_ERR)) {

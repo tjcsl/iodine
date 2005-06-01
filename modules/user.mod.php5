@@ -19,8 +19,9 @@
 		* @access public
 		*/
 		function __construct() {
+			global $_SESSION;
 			//TODO: check this
-			$this->curuid = $_SESSION["uid"];
+			$this->curuid = $_SESSION["i2_uid"];
 		}	
 
 		function get_info($token,$uid) {
@@ -39,7 +40,7 @@
 
 		function get_current_user_info($token) {
 			if (!$this->curinfo) {
-			 	$this->curinfo = get_info($token,$this->curuid);
+			 	$this->curinfo = $this->get_info($token,$this->curuid);
 			}
 			return $this->curinfo;
 		}
@@ -49,7 +50,7 @@
 		*/
 		function get_schedule($token) {
 			if (!$this->curinfo) {
-			 	$this->curinfo = get_info($token,$this->curuid);
+			 	$this->curinfo = $this->get_info($token,$this->curuid);
 			}
 			return $this->curinfo->get_schedule($token);
 		}	
