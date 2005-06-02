@@ -176,7 +176,7 @@
 		}
 	
 	} catch (Exception $e) {
-		if(isset($I2_ERR)) {
+		if(isSet($I2_ERR)) {
 			$I2_ERR->default_exception_handler($e);
 		} else {
 			die('The error module is not loaded and there was an error: '.$e->getMessage());

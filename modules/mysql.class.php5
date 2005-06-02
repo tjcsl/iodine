@@ -334,7 +334,7 @@
 		*/
 		function select($token, $table, $columns = false, $where = false, $vals = false, $ordering = false) {
 			//TODO: fix the multiargument syntax
-			global $I2_ERR;
+			global $I2_ERR, $I2_LOG;
 			if (!check_token_rights($token,"db/".$table,'r')) {
 				$I2_ERR->nonfatal_error("An invalid access token was used in attempting to access the $table MySQL table!");
 				return null;
@@ -377,7 +377,7 @@
 				$q .= $this->orderToString($ordering);
 			}
 			
-			echo $q;
+			$I2_LOG->log_debug("SQL select query: $q");
 			
 			//Glad that's over with.  Now, we query the database.
 			

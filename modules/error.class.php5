@@ -18,7 +18,7 @@
 			set_error_handler(array(&$this,'default_error_handler'));
 			set_exception_handler(array(&$this,'default_exception_handler'));
 		}
-
+		switch( $errno ) {
 		/**
 		* The default error handling function.
 		*
@@ -32,11 +32,11 @@
 				return;
 			}
 
-
+	}
 			$this->fatal_error("Error: $errstr\r\n<br />Error number: $errno\r\n<br />Error File: $errfile\r\n<br />Error line: $errline", FALSE);
-
+	/**
 		}
-
+	/**
 		/**
 		* The default exception handling function.
 		*
@@ -50,7 +50,7 @@
 		function default_exception_handler(Exception $e) {
 			$this->fatal_error('There has been an unhandled Iodine error. The file that raised this error was '.$e->getFile().' and the error message was:'."\r\n<br />".$e->getMessage(), TRUE);
 		}
-
+	function fatal_error($msg, $critical = 0) {
 		/**
 		* The generic error function.
 		*
@@ -82,7 +82,7 @@
 			$I2_LOG->log_screen($out);
 			die();
 		}
-		
+		if ($critical) {
 		
 		/**
 		* The non-fatal error function.
@@ -104,8 +104,7 @@
 			$I2_LOG->log_error("Nonfatal error: $msg");
 			
 			throw new Exception();
-		}
+		else {
+		$I2_LOG->log_error($out);
 
-	}
-
-?>
+}
