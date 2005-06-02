@@ -115,6 +115,24 @@
 			$this->global_footer();
 		}
 
+		function open_login_pane() {
+			//TODO: write
+		}
+
+		function close_login_pane() {
+			//TODO: write
+		}
+
+		function show_login($token) {
+			$this->global_header();
+			$login = new Login();
+			$login->init_pane($token);
+			$this->open_login_pane();
+			$login->display_pane($this);
+			$this->close_login_pane();
+			$this->global_footer();
+		}
+
 		static function halt_display() {
 			Display::$display_stopped = TRUE;
 		}

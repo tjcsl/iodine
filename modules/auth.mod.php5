@@ -23,17 +23,15 @@
 		* @return boolean True if user is authenticated, false if not.
 		*/
 		function check_authenticated() {
-			global $_SESSION;
-			return isSet($_SESSION['uid']);
-		}
-
-		/**
-		* Shows the login box so users can actually log in to use the
-		* system.
-		*/
-		function show_login() {
-			/* FIXME: make this code be in auth, not display*/
-			$I2_DISP->show_login();
+			global $_SESSION, $I2_ARGS;
+			//FIXME: these need to be stored SERVER-SIDE, not in $_SESSION!!!!  Important!!!
+			if (isSet($_SESSION['i2_uid']) 
+				&& isSet($_SESSION['i2_login_time']) 
+				&& $_SESSION['i2_login_time'] <= time()+i2config_get('timeout',0,'login')) {
+				set_i2var('i2_login_time',time());
+				return TRUE;
+			}
+			return FALSE;
 		}
 		
 		/**

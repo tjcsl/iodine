@@ -148,22 +148,14 @@
 			}
 		}
 
-		if (!$I2_AUTH->check_authenticated()) {
-			if (isSet($I2_ARGS['i2_desired_module'])) {
-				$_SESSION['i2_after_login_module'] = $I2_ARGS['i2_desired_module'];
-			} else {
-				$_SESSION['i2_after_login_module'] = $I2_USER->get_current_user_info($mastertoken)->get_startpage($mastertoken);
-			}
-			$_SESSION['i2_desired_module'] = 'Login';
+		$authed = $I2_AUTH->check_authenticated();
 
-			// We already copied $_SESSION to $I2_ARGS, so here we need to update both places
-			$I2_ARGS['i2_desired_module'] = $_SESSION['i2_desired_module'];
-			$I2_ARGS['i2_after_login_module'] = $_SESSION['i2_after_login_module'];
-		} else if (!isSet($I2_ARGS['i2_desired_module'])) {
-			/* The user didn't tell us which module to load, so we'll 
-			** load their default start page.
-			*/
-			$I2_ARGS['i2_desired_module'] = $I2_USER->get_startpage();
+		if (!$authed) {
+			$I2_DISP->show_login($mastertoken);
+			if (!isSet($I2_ARGS['i2_desired_module'])) {
+				$I2_ARGS['i2_desired_module'] = $I2_USER->get_current_user_info($mastertoken)->get_startpage($mastertoken);
+			}
+			$authed = $I2_AUTH->check_authenticated();
 		}
 		
 		if (!get_i2module($I2_ARGS['i2_desired_module'])) {
@@ -179,7 +171,9 @@
 		}
 
 		/* Display will instantiate the module, we just pass the name */
-		$I2_DISP->display_loop($I2_ARGS['i2_desired_module'],$mastertoken);
+		if ($authed) {
+			$I2_DISP->display_loop($I2_ARGS['i2_desired_module'],$mastertoken);
+		}
 	
 	} catch (Exception $e) {
 		if(isset($I2_ERR)) {
