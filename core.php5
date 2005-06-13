@@ -158,6 +158,8 @@
 			$authed = $I2_AUTH->check_authenticated();
 		}
 		
+		
+		
 		if (!get_i2module($I2_ARGS['i2_desired_module'])) {
 			$I2_ERR->fatal_error('Invalid module name \''.$I2_ARGS['i2_desired_module'].'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
 		}

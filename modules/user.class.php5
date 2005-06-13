@@ -54,7 +54,17 @@
 			 	$this->curinfo = $this->get_info($token,$this->curuid);
 			}
 			return $this->curinfo->get_schedule($token);
-		}	
+		}
+
+		function get_users_with_birthday($token, $date) {
+			global $I2_SQL;
+			$res = $I2_SQL->select($token,'users',array('fname','mname','lname','grade'),'bdate=%s',$date,'grade,lname');
+			$ret = array();
+			while ($row = $res->fetch_array()) {
+				$ret[] = array($row['fname'].' '.$row['mname'].' '.$row['lname'],$row['grade']);
+			}
+			return $ret;
+		}
 
 	}
 

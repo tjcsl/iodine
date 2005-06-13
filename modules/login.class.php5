@@ -29,15 +29,17 @@
 					$this->loggedin = TRUE;
 					$this->uname = $I2_ARGS['login_username'];
 					$this->pass = $I2_ARGS['login_password'];
+					return FALSE;
 				} else {
 					$this->loginfailed = TRUE;
 					$this->uname = $I2_ARGS['login_username'];
-					return;
+					return TRUE;
 				}
 			} else {
 				$this->loginfailed = FALSE;
-				return;
+				return FALSE;
 			}
+			return TRUE;
 		}
 	}
 

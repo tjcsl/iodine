@@ -73,8 +73,12 @@
 			$this->smarty_assign('page_css',i2config_get('www_root').'/www/css.css');
 		}
 
+		private static function get_all_assigned_vars() {
+			//FIXME!!!  YAR!
+		}
+
 		function display_loop($module,$mastertoken) {
-			global $I2_ERR;
+			global $I2_ERR, $I2_ARGS;
 
 			if (Display::$display_stopped) {
 				return;
@@ -84,9 +88,42 @@
 			$mod = '';
 			//$mastertoken = get_master_token();
 
-			try {
+				
+				
+				/*
+				** Display each box.
+				*/
+				
+				foreach ($I2_ARGS['i2_boxes'] as $box) {
+					try {
+						$token = issue_token($mastertoken,array(
+							'db/'.$box => 'w',
+							'info/'.$box => 'w',
+							'pref/'.$box => 'w',
+							'*' => 'r'
+						));
+						
+						eval('$boxinstance = new '.$box.'();');
+						$disp = new Display($box);
+						$needsdisp = $boxinstance->init_box($token);
+						if ($needsdisp) {
+							$this->open_box();
+							$boxinstance->display_box($disp);
+							$this->close_box();
+						}
+						
+					} catch (Exception $e) {
+						$I2_ERR->nonfatal_error("The boxed module $box raised error $e!");
+					}
+				}
+				
+			try {	
+				/*
+				** Display the main pane.
+				*/
 				//TODO: there has to be a better way to do this!
 				$disp = new Display($module);
+				
 				eval('$mod = new '.$module.'();');
 				/*
 				** Create an authentication token with all the appropriate rights.
@@ -98,18 +135,18 @@
 					'pref/'.$module => 'w',
 					'*'=>'r'
 				));	
-				
+					
 				//FIXME: use more than one module, duh!
 				
-				$this->open_content_pane($mod);
-				$mod->init_pane($token);
-				if (!Display::$display_stopped) {
+				$needsdisp = $mod->init_pane($token);
+				if (!Display::$display_stopped && $needsdisp) {
+					$this->open_content_pane($mod);
 					$mod->display_pane($disp);
+					$this->close_content_pane($mod);
 				}
-				$this->close_content_pane($mod);
-			
+							
 			} catch (Exception $e) {
-				$I2_ERR->nonfatal_error("The main module $module raised error $e while displaying its content.");
+				$I2_ERR->nonfatal_error("The main module $module raised error $e!");
 			}
 			
 			$this->global_footer();
@@ -126,7 +163,7 @@
 		function show_login($token) {
 			$this->global_header();
 			$login = new Login();
-			$login->init_pane($token);
+			if(!$login->init_pane($token)) return;
 			$this->open_login_pane();
 			$login->display_pane($this);
 			$this->close_login_pane();

@@ -23,6 +23,7 @@
 			global $I2_SQL;
 			$res = $I2_SQL->select($token,'news_stories',array('title','text','authorID','authortype','posted'));
 			$this->newsdetails = $res->fetch_all_arrays(MYSQL_NUM);
+			return TRUE;
 		}
 		
 		function display_pane($display) {
@@ -34,6 +35,7 @@
 			global $I2_SQL;
 			$res = $I2_SQL->select($token,'news_stories',array('title'));
 			$this->summaries = $res->fetch_col('title');
+			return TRUE;
 		}
 
 		function display_box($display) {
