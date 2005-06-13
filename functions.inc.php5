@@ -53,7 +53,7 @@
 		echo_handler("Loading $class_name");
 		$class_file = '';
 		if ($class_name == "Error") {
-			require_once(MODULE_PATH.'error.mod.php5');
+			require_once(MODULE_PATH.'error.class.php5');
 			return;
 		}
 
