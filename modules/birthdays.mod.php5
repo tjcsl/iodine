@@ -14,10 +14,11 @@
 			//FIXME: get_users_with_birthday needs to be commited
 			//and modified
 			$namearr = $I2_USER->get_users_with_birthday($token,date());
+			return TRUE;
 		}
 		
 		function display_box($disp){
-			$disp->disp('birthdays.tpl',array());
+			$disp->disp('birthdays.tpl',array('people' =>$this->namearr));
 		}
 		
 		function init_pane($token){
