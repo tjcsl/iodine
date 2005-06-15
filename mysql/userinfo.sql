@@ -64,6 +64,8 @@ CREATE TABLE users(
 	picture0 BIGINT DEFAULT 0,
 	picture1 BIGINT DEFAULT 1,
 	picture2 BIGINT DEFAULT 2,
-	picture3 BIGINT DEFAULT 3
+	picture3 BIGINT DEFAULT 3,
+
+	boxes TEXT NOT NULL DEFAULT ""
 
 );
