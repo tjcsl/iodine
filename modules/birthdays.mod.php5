@@ -22,9 +22,15 @@
 		}
 		
 		function init_pane($token){
+			return FALSE;
 		}
 		
 		function display_pane($disp){
+			return;
+		}
+
+		function get_name(){
+			return "Birthdays";
 		}
 	}
 ?>
