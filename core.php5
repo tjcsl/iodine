@@ -166,7 +166,9 @@
 
 		$I2_LOG->log_debug('Desired module is '.$I2_ARGS['i2_desired_module']);
 
-		//FIXME: put stuff in $I2_ARGS['i2_boxes'] here.
+		if ($authed) {
+			set_i2var('i2_boxes',$I2_USER->get_desired_boxes($mastertoken));
+		}
 
 		foreach ($I2_ARGS['i2_boxes'] as $module) {
 			$I2_LOG->log_debug("Box: $module");

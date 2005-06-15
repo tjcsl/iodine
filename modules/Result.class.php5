@@ -110,7 +110,7 @@ class Result {
 	*/
 	function get_num_fetched() {
 		$fetched = array();
-		foreach ($results as $null=>$arr) {
+		foreach ($this->results as $null=>$arr) {
 			$fetched[] = $arr[2];
 		}
 		return $fetched;
@@ -123,7 +123,7 @@ class Result {
 	*/
 	function get_num_fetched_total() {
 		$sum = 0;
-		foreach (get_num_fetched() as $fetched) {
+		foreach ($this->get_num_fetched() as $fetched) {
 			$sum += $fetched;
 		}
 		return $sum;
@@ -165,8 +165,8 @@ class Result {
 	* @return boolean True for more rows; false otherwise.
 	*/
 	function more_rows() {
-		foreach ($results as $res=>$arr) {
-			if ($arr[1] == MySQL::SELECT && mysql_num_rows($arr[0]) > $arr[2]) {
+		foreach ($this->results as $res=>$arr) {
+			if ($arr[1] == MySQL::SQL_SELECT && mysql_num_rows($arr[0]) > $arr[2]) {
 				return true;
 			}
 		}
@@ -185,9 +185,9 @@ class Result {
 		/*
 		**  First, get all the cached rows.
 		*/
-		$numfetched = get_num_fetched_total();
+		$numfetched = $this->get_num_fetched_total();
 		for ($a = 0; $a < $numfetched; $a++) {
-			$row = fetch_row($a);
+			$row = $this->fetch_row($a);
 			if (isSet($row[$colname])) {
 				$ret[] = $row[$colname];
 			}
@@ -197,8 +197,8 @@ class Result {
 		/*
 		** Then, push through the rest of the resultset.
 		*/
-		while (more_rows()) {
-			$row = fetch_array();
+		while ($this->more_rows()) {
+			$row = $this->fetch_array();
 			if (isSet($row[$colname])) {
 				$ret[] = $row[$colname];
 			}

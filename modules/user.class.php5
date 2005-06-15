@@ -56,6 +56,13 @@
 			return $this->curinfo->get_schedule($token);
 		}
 
+		function get_desired_boxes($token) {
+			global $I2_SQL;
+			$res = $I2_SQL->select($token,'users','boxes','uid=%d',$this->curuid);
+			$arr = $res->fetch_array();
+			return explode(',',$arr['boxes']);
+		}
+
 		function get_users_with_birthday($token, $date) {
 			global $I2_SQL;
 			/* date in format YYYY-MM-DD
