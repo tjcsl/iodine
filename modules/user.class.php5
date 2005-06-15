@@ -71,11 +71,11 @@
 			 */
 			$day = substr($date,-5);
 			$thisyear = substr($date,4);
-			$res = $I2_SQL->select($token,'users',array('fname','lname','bdate','grade'),'bdate LIKE "\%-%s"',array($day),'grade,lname');
+			$res = $I2_SQL->select($token,'users',array('fname','lname','bdate','grade'),'bdate LIKE "\%-%s"',array($day),array(array('','grade'),array('','lname')));
 			$ret = array();
 			while ($row = $res->fetch_array()) {
-				$byear = $substr($row['grade'],4);
-				$ret[] = array($row['fname'].' '.$row['mname'].' '.$row['lname'],$thisyear - $byear);
+				$byear = substr($row['grade'],4);
+				$ret[] = array($row['fname'].' '.$row['lname'],$thisyear - $byear);
 			}
 			return $ret;
 		}
