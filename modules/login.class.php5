@@ -37,7 +37,7 @@
 				}
 			} else {
 				$this->loginfailed = FALSE;
-				return FALSE;
+				return TRUE;
 			}
 			return TRUE;
 		}
