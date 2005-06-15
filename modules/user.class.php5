@@ -58,10 +58,17 @@
 
 		function get_users_with_birthday($token, $date) {
 			global $I2_SQL;
-			$res = $I2_SQL->select($token,'users',array('fname','mname','lname','grade'),'bdate=%s',$date,'grade,lname');
+			/* date in format YYYY-MM-DD
+			 * extract the month/day and year components for databse query
+			 * and age determination.
+			 */
+			$day = substr($date,-5);
+			$thisyear = substr($date,4);
+			$res = $I2_SQL->select($token,'users',array('fname','lname','bdate','grade'),'bdate LIKE \%-%s',$day,'grade,lname');
 			$ret = array();
 			while ($row = $res->fetch_array()) {
-				$ret[] = array($row['fname'].' '.$row['mname'].' '.$row['lname'],$row['grade']);
+				$byear = $substr($row['grade'],4);
+				$ret[] = array($row['fname'].' '.$row['mname'].' '.$row['lname'],$thisyear - $byear);
 			}
 			return $ret;
 		}

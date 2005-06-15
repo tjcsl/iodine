@@ -13,7 +13,7 @@
 			global $I2_SQL, $I2_USER;
 			//FIXME: get_users_with_birthday needs to be commited
 			//and modified
-			$namearr = $I2_USER->get_users_with_birthday($token,date());
+			$namearr = $I2_USER->get_users_with_birthday($token,date("Y-m-d"));
 			return TRUE;
 		}
 		
