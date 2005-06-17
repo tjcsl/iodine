@@ -294,6 +294,20 @@
 		}
 
 		/**
+		* Open a <div> element for an intranet box
+		*/
+		function open_box() {
+			$this->raw_display("<div>");
+		}
+
+		/**
+		* Close the <div> element for an ibox
+		*/
+		function close_box() {
+			$this->raw_display("</div>");
+		}
+		
+		/**
 		* Open the content pane.
 		*
 		* @param object $module The module that will be displayed in the main box.
