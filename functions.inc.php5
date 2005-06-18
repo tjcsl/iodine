@@ -277,8 +277,18 @@
 
 	function set_i2var($varname,$value) {
 		global $I2_ARGS, $I2_LOG;
+		//TODO: permissions check by caller - only core modules should be able to do this
 		$I2_LOG->log_debug("Setting i2 variable $varname to $value");
 		$_SESSION[$varname] = $value;
 		$I2_ARGS[$varname] = $value;
+	}
+
+	function unset_i2var($varname) {
+		global $I2_ARGS, $I2_LOG;
+		$I2_LOG->log_debug("Unsetting i2 variable $varname");
+		//TODO: check this...
+		$_SESSION[$varname] = null;
+		$I2_ARGS[$varname] = null;
+
 	}
 ?>
