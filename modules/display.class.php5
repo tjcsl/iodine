@@ -77,6 +77,12 @@
 			//FIXME!!!  YAR!
 		}
 
+		private function display_top_bar($mastertoken) {
+			global $I2_ARGS;
+			$this->disp('opentopbar.tpl');
+			$this->disp('closetopbar.tpl');
+		}
+
 		function display_loop($module,$mastertoken) {
 			global $I2_ERR, $I2_ARGS;
 
@@ -85,6 +91,7 @@
 			}
 			
 			$this->global_header();
+			$this->display_top_bar($mastertoken);
 			$mod = '';
 			//$mastertoken = get_master_token();
 
@@ -201,6 +208,10 @@
 				$value = $var[1];
 				$var = $var[0];
 			}
+			if (strpos($var,'i2_') === 0) {
+				//They tried to set an i2_ variable.  Denied!
+				return;
+			}
 			$this->smarty->assign($var,$value);
 		}
 
@@ -216,12 +227,28 @@
 		}
 
 		/**
+		* Assigns all i2_ variables in $I2_ARGS to the smarty object,
+		* thus making them available to templates.
+		*/
+		private function assign_i2vals() {
+			global $I2_ARGS;
+			foreach ($I2_ARGS as $key=>$val) {
+				if (strpos($key,'i2_') === 0) {
+					//This needs to be done directly.
+					$this->smarty->assign($key,$val);
+				}
+			}
+		}
+
+		/**
 		* The display function.
 		* 
 		* @param string $template File name of the template.
 		* @param array $args Associative array of Smarty arguments.
 		*/
 		function disp($template, $args=array()) {
+			$this->assign_i2vals();
+			//TODO: check that no i2_ vars are set
 			$this->assign_array($args);
 			
 			$template = i2config_get('template_path','./','core').$template;

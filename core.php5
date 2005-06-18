@@ -112,23 +112,36 @@
 		foreach($_SESSION as $key=>$value) {
 			//TODO: filter out bad stuff.
 			//if (strpos($key,'i2') !== 0) {
-				$I2_ARGS[$key] = $value;			
-				$I2_LOG->log_debug("Mapped key $key to $value from session variables.");
-			//}
+			if ($value != null) {
+				$I2_ARGS[$key] = $value;	
+				if (is_array($value)) {
+					$str = print_r($value,true);
+					$I2_LOG->log_debug("Mapped key $key to $str from session variables.");
+				} else {
+					$I2_LOG->log_debug("Mapped key $key to $value from session variables.");
+				}
+			}
 		}
 
 		foreach ($_REQUEST as $key=>$value) {
 			//TODO: filter.
 			//if (strpos($key,'i2') !== 0) {
+			if ($value != null) {
 				$I2_ARGS[$key] = $value;
+			
 				/*
 				** Hide passwords.
 				*/
 				if ($key == 'login_password') {
 					$value = '**HIDDEN**';
 				}
-				$I2_LOG->log_debug("Mapped key $key to value $value in the request string.");
-			//}
+				if (is_array($value)) {
+					$str = print_r($value,true);
+					$I2_LOG->log_debug("Mapped key $key to $str from request string.");
+				} else {
+					$I2_LOG->log_debug("Mapped key $key to $value from request string.");
+				}
+			}
 		}
 
 		$I2_ARGS['i2_query'] = array();
@@ -146,6 +159,11 @@
 					$I2_ARGS['i2_query'][] = $arg;
 				}
 			}
+		}
+
+		if (isSet($I2_ARGS['i2_logout']) && $I2_ARGS['i2_logout']) {
+			set_i2var('i2_logout',FALSE);
+			unset_i2var('i2_uid');
 		}
 
 		$authed = $I2_AUTH->check_authenticated();
