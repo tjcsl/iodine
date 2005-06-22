@@ -7,12 +7,12 @@
 		<th>Grade</th>
 		<th>Age</th>
 	</tr>
-[<section name=person loop=$birthdays>]
+[<foreach from=$birthdays item=person>]
 	<tr>
-		<th>[$birthdays[person][0]]</th>
-		<th>[$birthdays[person][1]]</th>
-		<th>[$birthdays[person][2]]</th>
+		<th>[<$person[0]>]</th>
+		<th>[<$person[1]>]</th>
+		<th>[<$person[2]>]</th>
 	</tr>
-[</section>]
+[</foreach>]
 </tbody>
 </table>

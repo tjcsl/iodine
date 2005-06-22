@@ -58,7 +58,7 @@
 
 		function get_desired_boxes($token) {
 			global $I2_SQL;
-			$res = $I2_SQL->select($token,'users','boxes','uid=%d',$this->curuid);
+			$res = $I2_SQL->select($token,'users','boxes','uid=%d',array($this->curuid));
 			$arr = $res->fetch_array();
 			return explode(',',$arr['boxes']);
 		}
@@ -70,12 +70,12 @@
 			 * and age determination.
 			 */
 			$day = substr($date,-5);
-			$thisyear = substr($date,4);
-			$res = $I2_SQL->select($token,'users',array('fname','lname','bdate','grade'),'bdate LIKE \'\%-%s\'',array($day),array(array('','grade'),array('','lname')));
+			$thisyear = substr($date,0,4);
+			$res = $I2_SQL->select($token,'users',array('fname','lname','bdate','grade'),"bdate='1988-06-21'",array($day),array(array(false,'grade'),array(false,'lname')));
 			$ret = array();
 			while ($row = $res->fetch_array()) {
-				$byear = substr($row['grade'],4);
-				$ret[] = array($row['fname'].' '.$row['lname'],$thisyear - $byear);
+				$byear = substr($row['bdate'],0,4);
+				$ret[] = array($row['fname'].' '.$row['lname'],$row['grade'],$thisyear - $byear);
 			}
 			return $ret;
 		}

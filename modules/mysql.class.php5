@@ -162,10 +162,10 @@
 			}
 			$str = "WHERE ";
 			/* Break the format string around &, |, (, ), =, >, or < signs 
-			** except where they're escaped with \.
 			*/
-			$format = preg_split('/^([^\\][()&|=<>])$/',$format,-1,
+			$format = preg_split('/([\(\)&|=<>])/',$format,-1,
 				PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+			print_r($format);
 
 			$parens_open = 0;
 			$waiting_for_name = true;
@@ -182,9 +182,12 @@
 			
 			foreach ($format as $clause) {
 				
-				//Replace escaped sequences with their raw forms, and strip whitespace
-				$clause = preg_replace('/^\s*\\([()&|=<>]\)\s*$/e',"'\\1'",$clause);
 				
+				//Replace escaped sequences with their raw forms, and strip whitespace
+				$clause = preg_replace('/^\s*([\(\)&|=<>])\s*$/e',"'$0'",$clause);
+				
+				echo "Preclause: $clause<br/>";
+
 				/* Okay, now we have one of four things, either:
 				** 	(a) A (, ), &, or | character alone
 				** 	(b) A >, <, or = character alone
@@ -221,61 +224,73 @@
 						if ($waiting_for_name || $got_equality) {
 							//TODO: fail
 						}
-						$got_equality = true;
+						$got_equality = TRUE;
+						echo "Got EQUAL_TO<br/>";
 						$str .= " $EQUAL_TO ";
+						$waiting_for_name = FALSE;
 						break;
 					case $LESS_THAN:
 						if ($waiting_for_name || $got_equality) {
 							//TODO: fail
 						}
-						$got_equality = true;
+						$got_equality = TRUE;
 						$str .= " $LESS_THAN ";
+						$waiting_for_name = FALSE;
 						break;
 					case $GREATER_THAN:
 						if ($waiting_for_name || $got_equality) {
 							//TODO: fail
 						}
-						$got_equality = true;
+						$got_equality = TRUE;
 						$str .= " $GREATER_THAN ";
+						$waiting_for_name = FALSE;
 						break;
 					default:
 						if ($waiting_for_name) {
 							//$clause should be a column name
 							//TODO: prevent breaking MySQL here
+							echo "Got column name $clause<br />";
 							$str .= " $clause  ";
 							$waiting_for_name = true;
-							$got_inequality = false;
+							$got_equality = false;
 						} else {
 							//$clause should be a value
-
+							echo "Value $clause discovered<br/>";
 							/* Catch %[character] and %[space] in their own little sections
 							** with all the other stuff in between them. This will only look
 							** for a '.decimal' after the number if the character is d|D|f|F|l|L
 							*/
-							$clause = preg_split('/([^\\]%([dfDFlL]\.\d+)|([\S ]))/',$clause,-1,PREG_SPLIT_DELIM_CAPTURE);
-							
+							echo "Clause: $clause<br/>";
+							$clause = preg_split('/(%.)/',$clause,-1,PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+							echo "Clause: ";
+							print_r($clause);
+							echo "<br/>";
+
+
 							foreach ($clause as $fragment) {
-								if ($fragment{0} != '%') {
+								echo "Fragment: $fragment<br/>";
+								if ($fragment[0] != '%') {
 									$fragment = preg_replace('/\\%/','%',$fragment);
 								} else {
 									//This is a special formatty-thingy.  Let's fix it up.
-									
+
 									if (count($values) < 1) {
+
 										//TODO: give the caller a piece of our mind.
 									}
 									
 									$val = array_shift($values);	
 									
-									$char = $fragment{1};
+									$char = $fragment[1];
 
 									$precision = 8; // Default precision
 									if (strlen($fragment) > 2) {
 										//TODO: typecheck/error
-										$precision = int($fragment{2});
+										$precision = int($fragment[2]);
 										for ($a = 3; $a < strlen($fragment); $a++) {
 											$precision *= 10;
 											//TODO: typecheck/error
-											$precision += int($fragment{$a});
+											$precision += int($fragment[$a]);
 										}
 									}
 									
@@ -309,7 +324,7 @@
 											break;
 									}
 								}
-								$fragment = addslashes($fragment);
+								
 								$str .= $fragment;
 							}
 							
@@ -319,6 +334,8 @@
 				}
 				
 			}
+
+			return $str;
 		}
 
 		/**

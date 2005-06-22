@@ -324,14 +324,14 @@
 		* Open a <div> element for an intranet box
 		*/
 		function open_box() {
-			$this->raw_display("<div>");
+			$this->disp('openbox.tpl');
 		}
 
 		/**
 		* Close the <div> element for an ibox
 		*/
 		function close_box() {
-			$this->raw_display("</div>");
+			$this->disp('closebox.tpl');
 		}
 		
 		/**

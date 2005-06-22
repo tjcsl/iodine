@@ -11,7 +11,7 @@
 	
 		function init_box($token){
 			global $I2_SQL, $I2_USER;
-			$namearr = $I2_USER->get_users_with_birthday($token,date("Y-m-d"));
+			$this->namearr = $I2_USER->get_users_with_birthday($token,date("Y-m-d"));
 			return TRUE;
 		}
 		
