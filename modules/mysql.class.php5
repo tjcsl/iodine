@@ -165,7 +165,6 @@
 			*/
 			$format = preg_split('/([\(\)&|=<>])/',$format,-1,
 				PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-			print_r($format);
 
 			$parens_open = 0;
 			$waiting_for_name = true;
@@ -186,7 +185,6 @@
 				//Replace escaped sequences with their raw forms, and strip whitespace
 				$clause = preg_replace('/^\s*([\(\)&|=<>])\s*$/e',"'$0'",$clause);
 				
-				echo "Preclause: $clause<br/>";
 
 				/* Okay, now we have one of four things, either:
 				** 	(a) A (, ), &, or | character alone
@@ -225,7 +223,6 @@
 							//TODO: fail
 						}
 						$got_equality = TRUE;
-						echo "Got EQUAL_TO<br/>";
 						$str .= " $EQUAL_TO ";
 						$waiting_for_name = FALSE;
 						break;
@@ -249,26 +246,19 @@
 						if ($waiting_for_name) {
 							//$clause should be a column name
 							//TODO: prevent breaking MySQL here
-							echo "Got column name $clause<br />";
 							$str .= " $clause  ";
 							$waiting_for_name = true;
 							$got_equality = false;
 						} else {
 							//$clause should be a value
-							echo "Value $clause discovered<br/>";
 							/* Catch %[character] and %[space] in their own little sections
 							** with all the other stuff in between them. This will only look
 							** for a '.decimal' after the number if the character is d|D|f|F|l|L
 							*/
-							echo "Clause: $clause<br/>";
 							$clause = preg_split('/(%.)/',$clause,-1,PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-							echo "Clause: ";
-							print_r($clause);
-							echo "<br/>";
 
 
 							foreach ($clause as $fragment) {
-								echo "Fragment: $fragment<br/>";
 								if ($fragment[0] != '%') {
 									$fragment = preg_replace('/\\%/','%',$fragment);
 								} else {
