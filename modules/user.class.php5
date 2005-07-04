@@ -60,7 +60,8 @@
 			global $I2_SQL;
 			$res = $I2_SQL->select($token,'users','boxes','uid=%d',array($this->curuid));
 			$arr = $res->fetch_array();
-			return explode(',',$arr['boxes']);
+			//return explode(',',$arr['boxes']);
+			return array();
 		}
 
 		function get_users_with_birthday($token, $date) {
