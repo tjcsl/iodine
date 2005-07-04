@@ -77,7 +77,10 @@
 			
 			if ($critical) {
 				$I2_LOG->log_mail($out);
+				$out .= "\r\n".'<br />This is a critical error, so an email is being sent to the developers, so hopefully this problem will be fixed soon.';
 			}
+		$out = 'Iodine fatal error: '.$msg;
+			$I2_LOG->log_screen($out);
 			die();
 		}
 		if ($critical) {
