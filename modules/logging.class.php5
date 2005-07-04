@@ -8,11 +8,6 @@
 	* @package logging
 	*/
 	
-	/*
-	Logging Team Leader: vmircea
-	Logging Team: adeason, mlee1, melthon, jboning
-	*/
-	
 	class Logging {
 		
 		private $my_email;
@@ -28,12 +23,46 @@
 		}
 
 		function log_access() {
+			global $I2_ERR;
+			
+			$fname = i2config_get('access_log');
+			
+			if (!$fname || !($fh = fopen($fname, 'a'))) {
+				$I2_ERR->fatal_error('The main iodine access log cannot be accessed.');
+			}
+			
+			/* IP - username - [Apache-style date format] "Request" "Referrer" "User-Agent" */
+			fwrite($fh,
+				$_SERVER['REMOTE_ADDR'] . ' - ' .
+				$username /*FIXME*/ . ' - [' .
+				date('d/M/Y:H:i:s O') . '] "' .
+				$_SERVER['REQUEST_URI'] . '" "' .
+				$_SERVER['HTTP_REFERER'] . '" "' .
+				$_SERVER['HTTP_USER_AGENT'] . '"'
+			);
 
 		}
 
 		function log_error($msg) {
+			global $I2_ERR;
+			
+			$fname = i2config_get('error_log');
+			
+			if (!$fname || !($fh = fopen($fname, 'a'))) {
+				$I2_ERR->fatal_error('The main iodine error log cannot be accessed.');
+			}
+			
+			/* IP - [Apache-style date format] [Module] "Request" "Error" */
+			fwrite($fh,
+				$_SERVER['REMOTE_ADDR'] . ' - [' .
+				date('d/M/Y:H:i:s O') . '] [' .
+				$module /*FIXME*/ . '] "' .
+				$_SERVER['REQUEST_URI'] . '" "' .
+				$msg . '"'
+			);
 			
 		}
+
 
 		/**
 		* Log to Syslog
@@ -42,6 +71,9 @@
 		* @param int $priority The priority of the message to syslog
 		* 0 = LOG_CRIT, 1 = LOG_ERR, 2 = LOG_WARNING, 3 = LOG_NOTICE, 4 = LOG_INFO, 5 = LOG_DEBUG
 		*/
+
+		/* I DO NOT THINK THIS IS REALLY NECESSARY
+		It will be deleted soon unless I get some objection. -Deason */
 		function log_syslog($msg = "", $priority = 4) {
 			define_syslog_variables(); //Define the LOG_* variables
 			stripslashes($msg); //Get rid of any slashes in $msg
@@ -68,6 +100,7 @@
 					$pri = LOG_INFO;
 					break;
 			}
+			$msg = "Iodine error: " . $msg;
 			syslog($pri, $msg); //Send the message to SysLog
 		}
 		
