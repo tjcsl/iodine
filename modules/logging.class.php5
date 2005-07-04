@@ -133,8 +133,10 @@
 				return;
 			}
 
-			if ($this->screen_debug)
-				$this->log_screen("Debugging Mesage: $msg, Level $level");
+			if ($this->screen_debug) {
+				$trace = debug_backtrace();
+				$this->log_screen('Debugging Mesage' . (isset($trace[1]['class'])?' from module '.$trace[1]['class']:' from core') .": $msg, Level $level");
+			}
 		}
 
 		/**
@@ -148,7 +150,7 @@
 		*
 		* @param String $msg The message to display.
 		*/
-		private function log_screen($msg) {
+		public function log_screen($msg) {
 			/* This will get more complicated later, like smarty
 			formatting, etc. */
 			//FIXME: write a custom template pair for this.
