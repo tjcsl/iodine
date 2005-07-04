@@ -77,9 +77,7 @@
 			
 			if ($critical) {
 				$I2_LOG->log_mail($out);
-				$out .= "\r\n".'<br />This is a critical error, so an email is being sent to the developers, so hopefully this problem will be fixed soon.';
 			}
-			$I2_LOG->log_screen($out);
 			die();
 		}
 		if ($critical) {
@@ -89,8 +87,7 @@
 		*
 		* Use this function to signify an error that, while possibly fatal
 		* for the module that raised it, should NOT be fatal for the entire
-		* application run.  This method will throw an Exception which should
-		* NOT be caught.  Make SURE that the Exception is able to propagate!
+		* application run.
 		*
 		* @param string $msg The message associated with the error.
 		*/
@@ -103,7 +100,6 @@
 			
 			$I2_LOG->log_error("Nonfatal error: $msg");
 			
-			throw new Exception();
 		else {
 		$I2_LOG->log_error($out);
 
