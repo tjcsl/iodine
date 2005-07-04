@@ -35,8 +35,6 @@
 			
 			/* IP - username - [Apache-style date format] "Request" "Referrer" "User-Agent" */
 
-			echo isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'';
-			
 			fwrite($fh,
 				$_SERVER['REMOTE_ADDR'] . ' - ' .
 				'blah' /*FIXME*/ . ' - [' .
