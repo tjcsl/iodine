@@ -161,6 +161,10 @@
 			}
 		}
 
+		if (isset($I2_ARGS['i2_query'][0])) {
+			$I2_ARGS['i2_desired_module'] = $I2_ARGS['i2_query'][0];
+		}
+
 		if (isSet($I2_ARGS['i2_logout']) && $I2_ARGS['i2_logout']) {
 			set_i2var('i2_logout',FALSE);
 			unset_i2var('i2_uid');
@@ -194,6 +198,7 @@
 
 		/* Display will instantiate the module, we just pass the name */
 		if ($authed) {
+			$I2_LOG->log_debug('Passing module ' . $I2_ARGS['i2_desired_module'] . ' to Display module', 9);
 			$I2_DISP->display_loop($I2_ARGS['i2_desired_module'],$mastertoken);
 		}
 	
