@@ -11,6 +11,7 @@
 	class Logging {
 		
 		private $my_email;
+		private $screen_debug;
 		
 		/**
 		* The Logging class constructor.
@@ -19,6 +20,7 @@
 		*/
 		function __construct() {
 			$this->log_access();
+			$this->screen_debug = true;
 			$this->my_email = i2config_get('email', 'iodine-errors@tjhsst.edu', 'logging');
 		}
 
@@ -32,13 +34,16 @@
 			}
 			
 			/* IP - username - [Apache-style date format] "Request" "Referrer" "User-Agent" */
+
+			echo isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'';
+			
 			fwrite($fh,
 				$_SERVER['REMOTE_ADDR'] . ' - ' .
-				$username /*FIXME*/ . ' - [' .
+				'blah' /*FIXME*/ . ' - [' .
 				date('d/M/Y:H:i:s O') . '] "' .
 				$_SERVER['REQUEST_URI'] . '" "' .
-				$_SERVER['HTTP_REFERER'] . '" "' .
-				$_SERVER['HTTP_USER_AGENT'] . '"'
+				(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'') . '" "' .
+				$_SERVER['HTTP_USER_AGENT'] . '"' ."\n"
 			);
 
 		}
@@ -56,9 +61,9 @@
 			fwrite($fh,
 				$_SERVER['REMOTE_ADDR'] . ' - [' .
 				date('d/M/Y:H:i:s O') . '] [' .
-				$module /*FIXME*/ . '] "' .
+				'mr. module' /*FIXME*/ . '] "' .
 				$_SERVER['REQUEST_URI'] . '" "' .
-				$msg . '"'
+				$msg . '"' ."\n"
 			);
 			
 		}
@@ -130,9 +135,8 @@
 				return;
 			}
 
-			/* Maybe put some kind of determination whether to
-			print to screen or print to file here? */
-			$this->log_screen("Debugging Mesage: $msg, Level $level");
+			if ($this->screen_debug)
+				$this->log_screen("Debugging Mesage: $msg, Level $level");
 		}
 
 		/**
@@ -140,20 +144,29 @@
 		*
 		* It may not be obvious at first what the point of this method
 		* is, and that's because it's not meant to be called by outside
-		Question: should it be private/protected, then?
 		* classes. It's main use is to be called from the other Logging
 		* and/or Error methods, and this just formats the message for
 		* output to the user.
 		*
 		* @param String $msg The message to display.
 		*/
-		function log_screen($msg) {
+		private function log_screen($msg) {
 			/* This will get more complicated later, like smarty
 			formatting, etc. */
 			//FIXME: write a custom template pair for this.
 			echo "<div class='raw'>$msg</div>";
 		}
 
+		/* turns on and off screen debugging, so you can see on the
+		screen all debug for temporary amounts of processing if you
+		want to */
+		public function debug_on() {
+			$this->screen_debug = true;
+		}
+
+		public function debug_off() {
+			$this->screen_debug = false;
+		}
 	}
 
 ?>
