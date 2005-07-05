@@ -71,6 +71,7 @@
 			$this->buffer = "";
 			//FIXME: this must be removed before production code!  It's a hack!
 			$this->smarty_assign('page_css',i2config_get('www_root').'/www/css.css');
+			$this->smarty_assign('I2_SELF',$_SERVER['PHP_SELF']);
 		}
 
 		private static function get_all_assigned_vars() {
