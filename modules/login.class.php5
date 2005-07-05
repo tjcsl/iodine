@@ -24,7 +24,8 @@
 					$uarr = $I2_SQL->select($token,'users','uid,startpage',"username='%s'",array($I2_ARGS['login_username']))->fetch_array();
 					set_i2var('i2_uid',$uarr['uid']);
 					set_i2var('i2_username',$I2_ARGS['login_username']);
-					set_i2var('i2_desired_module',$uarr['startpage']);
+					if (!isset($I2_ARGS['i2_desired_module']))
+						set_i2var('i2_desired_module',$uarr['startpage']);
 					set_i2var('i2_login_time',time());
 					$this->loggedin = TRUE;
 					$this->uname = $I2_ARGS['login_username'];
