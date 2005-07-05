@@ -71,7 +71,7 @@
 			$out = 'Iodine fatal error: '.$msg;
 			if (!isSet($I2_LOG)) {
 				echo $out.'<BR>';
-				return;
+				die();
 			}
 			$I2_LOG->log_error($out);
 			
