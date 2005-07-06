@@ -163,7 +163,7 @@
 			$query = $_SERVER['REDIRECT_QUERY_STRING'];
 		}
 		else {
-			$query = $_SERVER['QUERY_STRING'];
+			$query = '';
 		}
 		foreach(explode('/', $query) as $arg) {
 			if($arg) {
@@ -191,6 +191,9 @@
 		$I2_LOG->log_debug('Desired module is '.(isset($I2_ARGS['i2_desired_module'])?$I2_ARGS['i2_desired_module']:'not specified'));
 
 		if ($authed) {
+			if (!isSet($I2_ARGS['i2_desired_module'])) {
+				$I2_ARGS['i2_desired_module'] = $I2_USER->get_current_user_info($mastertoken)->get_startpage($mastertoken);
+			}
 			set_i2var('i2_boxes',$I2_USER->get_desired_boxes($mastertoken));
 		}
 
