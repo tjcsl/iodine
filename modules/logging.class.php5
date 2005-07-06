@@ -151,10 +151,15 @@
 		* @param String $msg The message to display.
 		*/
 		public function log_screen($msg) {
+			global $I2_DISP;
 			/* This will get more complicated later, like smarty
 			formatting, etc. */
 			//FIXME: write a custom template pair for this.
-			echo "<div class='raw'>$msg</div>";
+			if (isset($I2_DISP)) {
+				echo "<div class='raw'>$msg</div>";
+			}
+			/* otherwise do nothing, logging to screen should not
+			be necessary this early on, before I2_DISP exists */
 		}
 
 		/* turns on and off screen debugging, so you can see on the
