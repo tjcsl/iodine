@@ -56,7 +56,7 @@
 		}
 
 		if (!($class_file=get_i2module($class_name))) {
-			$I2_ERR->nonfatal_error('Cannot load module/class '.$class_name.': the file '.$class_file.' is not readable.');
+			$I2_ERR->fatal_error('Cannot load module/class '.$class_name.': the file '.$class_file.' is not readable.');
 		}
 		else {
 			require_once($class_file);
