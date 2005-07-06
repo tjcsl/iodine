@@ -109,6 +109,14 @@
 		if (!isSet($_SESSION)) {
 			$_SESSION = array();
 		}
+
+		if (isSet($_REQUEST['i2_logout']) && $_REQUEST['i2_logout']) {
+			/* destroy information known about user */
+			$I2_LOG->log_debug("Destroying all session information about user");
+			session_destroy();
+			$_SESSION = array();
+		}
+		
 		foreach($_SESSION as $key=>$value) {
 			//TODO: filter out bad stuff.
 			//if (strpos($key,'i2') !== 0) {
@@ -165,28 +173,19 @@
 			$I2_ARGS['i2_desired_module'] = $I2_ARGS['i2_query'][0];
 		}
 
-		if (isSet($I2_ARGS['i2_logout']) && $I2_ARGS['i2_logout']) {
-			set_i2var('i2_logout',FALSE);
-			unset_i2var('i2_uid');
-		}
-
 		$authed = $I2_AUTH->check_authenticated();
 
 		if (!$authed) {
 			$I2_DISP->show_login($mastertoken);
-			if (!isSet($I2_ARGS['i2_desired_module'])) {
-				$I2_ARGS['i2_desired_module'] = $I2_USER->get_current_user_info($mastertoken)->get_startpage($mastertoken);
-			}
 			$authed = $I2_AUTH->check_authenticated();
 		}
 		
 		
-		
-		if (!get_i2module($I2_ARGS['i2_desired_module'])) {
+		if (isset($I2_ARGS['i2_desired_module']) && !get_i2module($I2_ARGS['i2_desired_module'])) {
 			$I2_ERR->fatal_error('Invalid module name \''.$I2_ARGS['i2_desired_module'].'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
 		}
 
-		$I2_LOG->log_debug('Desired module is '.$I2_ARGS['i2_desired_module']);
+		$I2_LOG->log_debug('Desired module is '.(isset($I2_ARGS['i2_desired_module'])?$I2_ARGS['i2_desired_module']:'not specified'));
 
 		if ($authed) {
 			set_i2var('i2_boxes',$I2_USER->get_desired_boxes($mastertoken));
