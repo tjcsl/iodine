@@ -21,8 +21,8 @@
 		
 		function init_pane($token) {
 			global $I2_SQL;
-			$res = $I2_SQL->select($token,'news_stories',array('title','text','authorID','authortype','posted'));
-			$this->newsdetails = $res->fetch_all_arrays(MYSQL_NUM);
+			$res = $I2_SQL->select($token,'news_stories',array('title','text','author','authorID','authortype','posted'));
+			$this->newsdetails = $res->fetch_all_arrays(MYSQL_BOTH);
 			return TRUE;
 		}
 		
