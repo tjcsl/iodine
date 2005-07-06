@@ -24,8 +24,6 @@
 		global $I2_LOG;
 		if (isSet($I2_LOG)) {
 			$I2_LOG->log_debug($text);
-		} else {
-			echo($text.'<br />');
 		}
 	}
 	
