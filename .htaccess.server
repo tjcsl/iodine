@@ -1,9 +1,9 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 
-	RewriteRule ^/?$ /home/adeason/web-docs/i2/modules/core.php5 [L]
+	RewriteRule ^/?$ /shared/apache2/iodine/intranet2/modules/core.php5 [L]
 
 	RewriteRule ^/www/public/ - [L]
 	
-	RewriteRule ^/(.*)$ /home/adeason/web-docs/i2/modules/core.php5?$1 [L]
+	RewriteRule ^/(.*)$ /shared/apache2/iodine/intranet2/modules/core.php5?$1 [L]
 </IfModule>
