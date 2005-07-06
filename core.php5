@@ -13,13 +13,14 @@
 	/**
 	* The path to the master Iodine configuration file.
 	*/
-	define('CONFIG_FILENAME', '../config.user.ini');
-	/* The actual config file in CVS is ../config.ini, but since the config
-	file contents should be different for different people when I2 is
-	checked out from CVS. So, copy config.ini to config.user.ini in your
-	personal intranet2 CVS dir, and change the necessary values. But do
-	_NOT_ add config.user.ini to cvs, so it stays different across the
-	different instances of the I2 application. */
+	define('CONFIG_FILENAME', '../config.ini');
+	/*
+	The actual config file in CVS is config.user.ini and config.server.ini
+	When you check out intranet2 to run it from your personal space, copy
+	config.user.ini to config.ini and edit the values to work in your own
+	personal space. Do _NOT_ add config.ini to CVS, as it's different for
+	everyone. Edit config.server.ini to edit the server (production) config.
+	*/
 
 	/* Load the essential modules; start try block*/
 	try {
@@ -158,7 +159,13 @@
 		/* Eliminates extraneous slashes in the PATH_INFO
 		** And splits them into the global I2_ARGS array
 		*/
-		foreach(explode('/', $_SERVER['QUERY_STRING']) as $arg) {
+		if(isset($_SERVER['REDIRECT_QUERY_STRING'])) {
+			$query = $_SERVER['REDIRECT_QUERY_STRING'];
+		}
+		else {
+			$query = $_SERVER['QUERY_STRING'];
+		}
+		foreach(explode('/', $query) as $arg) {
 			if($arg) {
 				if (!isSet($I2_ARGS['i2_desired_module'])) {
 					$I2_ARGS['i2_desired_module'] = $arg;
