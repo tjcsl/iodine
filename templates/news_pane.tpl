@@ -1,7 +1,7 @@
 This is the news Smarty pane.<BR />
 [<foreach from=$news_stories item=story>]
-[<foreach from=$story key=column item=val>]
-[<$val>]&nbsp;
-[</foreach>]
-<BR />
+<b>[<$story.title>]</b><BR />
+[<$story.text>]<BR />
+<em>Posted by [<$story.author>] at [<$story.posted|date_format:"%l:%M %p on %a, %B %Y">]</em>
+<HR />
 [</foreach>]
