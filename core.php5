@@ -176,10 +176,6 @@
 			}
 		}
 
-		if (isset($I2_ARGS['i2_query'][0])) {
-			$I2_ARGS['i2_desired_module'] = $I2_ARGS['i2_query'][0];
-		}
-
 		$authed = $I2_AUTH->check_authenticated();
 
 		if (!$authed) {
