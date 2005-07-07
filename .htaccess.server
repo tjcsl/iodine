@@ -3,7 +3,7 @@
 
 	RewriteRule ^$ /shared/apache2/iodine/intranet2/modules/core.php5 [L]
 
-	RewriteRule ^www/public/ - [L]
+	RewriteRule ^www/ - [L]
 	
 	RewriteRule ^(.*)$ /shared/apache2/iodine/intranet2/modules/core.php5?$1 [L]
 </IfModule>
