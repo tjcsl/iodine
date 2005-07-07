@@ -3,6 +3,7 @@
 	* The core module for Iodine.
 	* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 	* @copyright 2004-2005 The Intranet 2 Development Team
+	* @since 1.0
 	* @version 1.0
 	* @package core
 	*/
