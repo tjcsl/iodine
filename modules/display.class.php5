@@ -1,13 +1,11 @@
 <?php
-
-
 	/**
 	* The display module for Iodine.
 	* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 	* @copyright 2004 The Intranet 2 Development Team
 	* @version 1.0
 	* @since 1.0
-	* @package error
+	* @package display
 	*/
 
 	class Display {
@@ -74,16 +72,32 @@
 			$this->smarty_assign('I2_SELF',$_SERVER['REDIRECT_URL']);
 		}
 
+		/**
+		* FIXME: put documentation here
+		*/
 		private static function get_all_assigned_vars() {
 			//FIXME!!!  YAR!
 		}
-
+		
+		/**
+		* Displays the top bar.
+		*/
 		private function display_top_bar($mastertoken) {
 			global $I2_ARGS;
 			$this->disp('opentopbar.tpl');
 			$this->disp('closetopbar.tpl');
 		}
 
+		/**
+		* The main non-core executing loop of Iodine.
+		*
+		* This function basically displays everything and performs
+		* pretty much all processing done outside of core.
+		*
+		* @param $module The name of the module to display in the main
+		*                panel and give processing control to.
+		* @param $mastertoken The token for displaying.
+		*/
 		function display_loop($module,$mastertoken) {
 			global $I2_ERR, $I2_ARGS;
 
@@ -168,6 +182,9 @@
 			//TODO: write
 		}
 
+		/**
+		* Shows the login screen.
+		*/
 		function show_login($token) {
 			$this->global_header();
 			$login = new Login();
@@ -178,10 +195,16 @@
 			$this->global_footer();
 		}
 
+		/**
+		* Stops from anything being displayed? FIXME: explain this!
+		*/
 		static function halt_display() {
 			Display::$display_stopped = TRUE;
 		}
-
+		
+		/**
+		* Resumes all display? FIXME: explain this!
+		*/
 		static function resume_display() {
 			Display::$display_stopped = FALSE;
 		}
@@ -198,11 +221,8 @@
 		/**
 		* Assign a Smarty variable a value.
 		*
-		* @param mixed $var either:
-		* the name of the variable to assign
-		* or
-		* array($key,$value)
-		* @param string $value The value to assign the variable.
+		* @param mixed $var either the name of the variable to assign or an array of a key,value pair to assign.
+		* @param mixed $value The value to assign the variable.
 		*/
 		function smarty_assign($var,$value=null) {
 			if ($value === null) {
@@ -249,7 +269,6 @@
 		*/
 		function disp($template, $args=array()) {
 			$this->assign_i2vals();
-			//TODO: check that no i2_ vars are set
 			$this->assign_array($args);
 			
 			$template = i2config_get('template_path','./','core').$template;
@@ -278,7 +297,6 @@
 		
 		/**
 		* Clear any output buffers, ensuring that all data is written to the browser.
-		* //FIXME: flush seems to be a reserved keyword, change to something else
 		*/
 		function flush_buffer() {
 			if ($this == Display::$core_display) {
@@ -321,6 +339,7 @@
 			$this->flush_buffer();
 		}
 
+		/* These should be smarty functions */
 		/**
 		* Open a <div> element for an intranet box
 		*/
