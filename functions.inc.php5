@@ -11,11 +11,6 @@
 	*/
 
 	/**
-	* This is only temporary
-	*/
-	define('MODULE_PATH', './');
-
-	/**
 	* A safe alternative to the echo() or I2_LOG->debug methods.
 	*
 	* @param string $text The text to display.
@@ -41,7 +36,7 @@
 	*
 	* This is the function used by PHP as a last resort for loading 
 	* noninstantiated classes before it throws an error. It checks for
-	* readability of the module (if one exists) in the {@link MODULE_PATH}.
+	* readability of the module (if one exists) in the module path.
 	* Throws an exception if it does not exist.
 	* 
 	* @param string $class_name Name of noninstantiated class.
@@ -50,10 +45,6 @@
 		global $I2_ERR;
 		echo_handler("Loading $class_name");
 		$class_file = '';
-		if ($class_name == "Error") {
-			require_once(MODULE_PATH.'error.class.php5');
-			return;
-		}
 
 		if (!($class_file=get_i2module($class_name))) {
 			$I2_ERR->fatal_error('Cannot load module/class '.$class_name.': the file '.$class_file.' is not readable.');
@@ -80,6 +71,9 @@
 		if (class_exists($module_name, FALSE)) {
 			/*FIXME: should this return true? It might technically
 			not be an I2 module, but it is safe to instantiate...*/
+			/*That case is too difficult to detect for our purposes.
+			Such a conflict should be extremely rare, so we'll not
+			worry about it now.*/
 			return TRUE;
 		}
 		$prepath = i2config_get('module_path', NULL, 'core');
