@@ -1,24 +1,22 @@
-Updated January 7, 2005 - 10:26 PM by Dan Tran
+To start up your local CVS copy, run 'cvs co intranet2' in some directory, and
+the files will be in the 'intranet2' sub-directory.
 
-Well, if you're here, you've gotten to getting CVSROOT set up and checking out in CVS. Here's a few notes to keep in mind:
+General CVS guidelines:
 
-This is the module team list as of January 7, 2005:
+- Run 'cvs update' to grab the latest code from CVS into your local directory
+- Run 'cvs edit <file>' before editing a file, then edit it how you wish
+- Run 'cvs commit [<file>]' to commit a file to CVS (omitting the file just
+  commits everything edited so far), but make sure to run 'cvs update' before
+  you commit things to make sure other things haven't changed since you edited
+  the file.
+- Run 'cvs unedit <file>' if you want to undo all changes you've made to a file,
+  or if you haven't made any changes, then it just tells CVS that you have no
+  intention of doing so.
 
-Error: 		adeason*, vmircea, aparthum, eharmon
-Logging: 	vmircea*, adeason, mlee1, melthon, jboning
-Authentication: lburton*, vmircea, jbreese, nkolia, sgross, asmith1
-User: 		kgallagh*, vmircea, bfleming, lburton, sgross
-MySQL: 		nkolia*, braujac, lhsu, kgallagh, asmith1, astebbin
-Display: 	braujac*, eharmon, lhsu, aparthum
+Config:
 
-The star denotes your module team leader. Pleas talk to them and communicate with each other. Stay tuned to when http://iodine.tjhsst.edu/ is unblocked. I hope that there we can keep everyone uptodate on issues instead of this file. I will move parts of http://www.tjhsst.edu/~dtran/intranet2/ there when everything is ready.
+- You need to copy .htaccess.user and config.user.ini into .htaccess and
+  config.ini, respectively, and edit them in order to config Iodine correctly.
 
-Again, stay tuned, and happy coding.
-
--Dan Tran
-
-If you need to edit something, please use the command 'cvs edit [filename]' first.  This is important.
--braujac
-
-After you edit something, make sure to either do a 'cvs commit' or 'cvs unedit' on it, so you don't stay in the editors list forever. And to see if people are editing a file, use 'cvs editors [filename]' to get a list of people currently editing a file.
--Deason
+- If you make a change to the config or the RewriteRules, then please commit
+  changes in both the user and server file.
