@@ -20,3 +20,16 @@ Config:
 
 - If you make a change to the config or the RewriteRules, then please commit
   changes in both the user and server file.
+
+To create documentation:
+
+Run 'makedoc.sh' in the root directory of your intranet2 copy, preferably the
+one that's in your web-docs, for reasons below.
+
+makedoc.sh reads the files from the current directory and places the
+documentation in ../doc relative to the current directory. So, if you're in
+~/web-docs/i2/, it will place the documentation in ~/web-docs/doc/, so now it's
+easily accessible from your iodine /~username space (that's why you should be
+in your web-docs).
+
+This creates documentation for your personal space. Overall documentation will be generated every once in a while by someone who has root access on humboldt.
