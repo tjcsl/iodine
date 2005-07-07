@@ -1,4 +1,13 @@
 <?php
+	/**
+	* The class for a student's schedule for Iodine.
+	* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+	* @copyright 2005 The Intranet 2 Development Team
+	* @version 1.0
+	* @since 1.0
+	* @package core
+	* @subpackage user
+	*/
 
  class Schedule {
  	

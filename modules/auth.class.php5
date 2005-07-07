@@ -5,7 +5,8 @@
 	* @copyright 2004-2005 The Intranet 2 Development Team
 	* @version 1.0
 	* @since 1.0
-	* @package auth
+	* @package core
+	* @subpackage auth
 	*/
 	
 	class Auth {

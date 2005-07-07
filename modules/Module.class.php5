@@ -1,6 +1,8 @@
 <?php
 /**
-* The API for all Intranet2 modules to extend.z
+* The API for all Intranet2 modules to extend.
+* @ignore
+the ignore is temporary, because phpDoc doesn't recognize interfaces
 */
 interface Module {
 

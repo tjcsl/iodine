@@ -5,7 +5,8 @@
 	* @copyright 2004 The Intranet 2 Development Team
 	* @version 1.0
 	* @since 1.0
-	* @package error
+	* @package core
+	* @subpackage logging
 	*/
 	
 	class Error {

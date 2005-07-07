@@ -1,9 +1,12 @@
 <?php
-
 	/**
 	* The module that shows you what email you have on your TJ account.
-	*
-	* @author The Intranet 2 Development Team
+	* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+	* @copyright 2005 The Intranet 2 Development Team
+	* @version 1.0
+	* @since 1.0
+	* @package modules
+	* @subpackage mail
 	*/
 
 	class Mail implements Module {

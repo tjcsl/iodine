@@ -1,10 +1,14 @@
 <?php
 	/**
-	* Module displays birthdays for today or a few days past and
-	* future.
-	*
-	* @author The Intranet 2 Development Team
+	* A module that displays users with birthdays close to the current date.
+	* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+	* @copyright 2005 The Intranet 2 Development Team
+	* @version 1.0
+	* @since 1.0
+	* @package modules
+	* @subpackage birthday
 	*/
+
 	class Birthdays implements Module{
 	
 		private $namearr;

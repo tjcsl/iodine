@@ -2,10 +2,11 @@
 	/**
 	* The display module for Iodine.
 	* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
-	* @copyright 2004 The Intranet 2 Development Team
+	* @copyright 2005 The Intranet 2 Development Team
 	* @version 1.0
 	* @since 1.0
-	* @package display
+	* @package core
+	* @subpackage display
 	*/
 
 	class Display {
@@ -44,6 +45,9 @@
 		*/
 		private static $core_display;
 		
+		/**
+		* @access private
+		*/
 		private static $display_stopped = FALSE;
 		
 		/**

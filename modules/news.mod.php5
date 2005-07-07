@@ -1,10 +1,13 @@
 <?php
-
 	/**
-	* The module that keeps you hip and cool with the latest happenings
-	* the world (or at least the TJ Intranet) over!
-	*
-	* @author The Intranet 2 Development Team
+	* The module that keeps you hip and cool with the latest happenings all
+	* around TJ.
+	* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+	* @copyright 2005 The Intranet 2 Development Team
+	* @version 1.0
+	* @since 1.0
+	* @package modules
+	* @subpackage news
 	*/
 
 	class News implements Module {

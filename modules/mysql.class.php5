@@ -5,11 +5,9 @@
 	* @copyright 2004 The Intranet 2 Development Team
 	* @version 1.0
 	* @since 1.0
-	* @package mysql
+	* @package core
+	* @subpackage mysql
 	*/
-	//TODO: implement class resolution based on the class calling require(),
-	// so that this will actually work.
-	
 	
 	class MySQL {
 
