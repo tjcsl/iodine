@@ -1,5 +1,15 @@
 <?php
+/**
+* @ignore
+* @package modules
+Don't know if this is necessary yet, so don't include docs for it.
+*/
 
+/**
+* @ignore
+* @package modules
+Don't know if this is necessary yet, so don't include docs for it.
+*/
  class Prefs {
  
  	private $uid;

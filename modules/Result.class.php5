@@ -1,13 +1,19 @@
 <?php
-	/**
-	* A class representing the results of a MySQL query.
-	* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
-	* @copyright 2004 The Intranet 2 Development Team
-	* @version 1.0
-	* @since 1.0
-	* @package core
-	* @subpackage mysql
-	*/
+/**
+* Just contains the definition for the {@link Result} class.
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2004 The Intranet 2 Development Team
+* @version 1.0
+* @since 1.0
+* @package core
+* @subpackage MySQL
+*/
+
+/**
+* A class representing the results of a {@link MySQL} query.
+* @package core
+* @subpackage MySQL
+*/
 class Result {
 	
 	/*

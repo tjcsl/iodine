@@ -1,5 +1,15 @@
 <?php
+/**
+Ignore this for now, not in use presently.
+* @ignore
+* @package core
+*/
 
+/**
+Ignore this for now, not in use presently.
+* @ignore
+* @package core
+*/
 class LDAP {
 
 	private $conn = null;

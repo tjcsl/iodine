@@ -1,8 +1,18 @@
 <?php
 /**
+* Just contains the definition for the interface {@link Module}.
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2005 The Intranet 2 Development Team
+* @version 1.0
+* @since 1.0
+* @package core
+* @subpackage module
+*/
+
+/**
 * The API for all Intranet2 modules to extend.
-* @ignore
-the ignore is temporary, because phpDoc doesn't recognize interfaces
+* @package core
+* @subpackage Module
 */
 interface Module {
 
