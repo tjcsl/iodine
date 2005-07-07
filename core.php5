@@ -3,9 +3,13 @@
 	* The core module for Iodine.
 	* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 	* @copyright 2004-2005 The Intranet 2 Development Team
+	* @version 1.0
 	* @package core
 	*/
 
+	/**
+	* General functions.
+	*/
 	include('../functions.inc.php5');
 
 	/**
@@ -96,11 +100,12 @@
 	 	* As an example, the URL
 		* http://intranet.tjhsst.edu/birthday/10/16/87 will yield an
 		* $I2_ARRAY['i2_query'] of [0] => birthday, [1] => 10,
-		* [2] => 16, [3] => 87. The 'birthday' module's init_pane() and
-		* display_pane() functions will automatically be called on page
-		* load, and it can access it's arguments via accessing the
-		* $I2_ARGS array just as a normal global, so it can load the
-		* very special person's info who has that birthday.
+		* [2] => 16, [3] => 87. The 'birthday' module's
+		* {@link init_pane()} and {@link display_pane()} functions will
+		* automatically be called on page load, and it can access it's
+		* arguments via accessing the $I2_ARGS array just as a normal
+		* global, so it can load the very special person's info who has
+		* that birthday.
 		*
 		* There are a couple of other things in $I2_ARGS, like i2_boxes,
 		* a list of all intraboxes to load, and i2_desired_module,
