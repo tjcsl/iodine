@@ -7,12 +7,14 @@ mean you can't help, just ask that person before changing the whole thing):
 
 - News needs to be touched up some more, probably
 
-- We need some kind of design to work with (Eric is working on this, I assume)
+- We need some kind of design to work with (Eric)
 
 - MySQL's select() needs to be changed to accept a straight string with
-  printf-style input validation (Deason will work on this soon)
+  printf-style input validation
 
 - phpDoc needs to be run on the code to generate the API
 
-- The phpDoc comments need to be refined, and more need to be added (Deason is
-  working on this)
+- The phpDoc comments need to be refined, and more need to be added (Deason)
+ 
+- The MySQL tables need to be created according to the scripts in mysql/
+  (Deason)
