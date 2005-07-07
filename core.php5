@@ -3,8 +3,6 @@
 	* The core module for Iodine.
 	* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 	* @copyright 2004-2005 The Intranet 2 Development Team
-	* @version 1.0
-	* @since 1.0
 	* @package core
 	*/
 
@@ -14,6 +12,7 @@
 	* The path to the master Iodine configuration file.
 	*/
 	define('CONFIG_FILENAME', '../config.ini');
+
 	/*
 	The actual config file in CVS is config.user.ini and config.server.ini
 	When you check out intranet2 to run it from your personal space, copy
@@ -52,11 +51,11 @@
 		 */
 		$I2_SQL = new MySQL();
 		/**
-		 * The global LDAP mechanism.
-		 *
-		 * Use this {@link LDAP} object for accessing LDAP-based information.
-		 *
-		 * @global LDAP $I2_LDAP
+		  The global LDAP mechanism.
+		 
+		  Use this {@link LDAP} object for accessing LDAP-based information.
+		 
+		  @global LDAP $I2_LDAP
 		 */
 		//$I2_LDAP = new LDAP();
 		/**
@@ -87,22 +86,30 @@
 		/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here) */
 
 		/**
-		 * The global array for a module's arguments.
-		 *
-		 * This array contains argv-style arguments when a module is called to
-		 * display a page. $I2_ARGS[0] will always be the name of the module,
-		 * and subsequent elements will be the arguments passed to the module
-		 * using '/' to delimit arguments in the URL.
-		 *
-		 * As an example, the URL http://intranet.tjhsst.edu/birthday/10/16/87
-		 * will yield an $I2_ARRAY of [0] => birthday, [1] => 10, [2] => 16,
-		 * [3] => 87. The 'birthday' module's init() function will automatically
-		 * be called on page load, and it can access it's arguments via
-		 * accessing the $I2_ARGS array just as a normal global, so it can load
-		 * the very special person's info who has that birthday.
-		 *
-		 * @global mixed $I2_ARGS
-		 */
+		* The global associative array for a module's arguments.
+		*
+		* This array now contains multiple entries in it. First, there
+		* is $I2_ARGS['i2_query']. This contains argv-style arguments
+		* to the module specified that were passed on the query string
+		* to the Iodine application.
+	 	*
+	 	* As an example, the URL
+		* http://intranet.tjhsst.edu/birthday/10/16/87 will yield an
+		* $I2_ARRAY['i2_query'] of [0] => birthday, [1] => 10,
+		* [2] => 16, [3] => 87. The 'birthday' module's init_pane() and
+		* display_pane() functions will automatically be called on page
+		* load, and it can access it's arguments via accessing the
+		* $I2_ARGS array just as a normal global, so it can load the
+		* very special person's info who has that birthday.
+		*
+		* There are a couple of other things in $I2_ARGS, like i2_boxes,
+		* a list of all intraboxes to load, and i2_desired_module,
+		* which contains the name of the main module to load, but these
+		* will not be needed by any normal non-core modules, so you can
+		* ignore them for the most part.
+		*
+		* @global mixed $I2_ARGS
+		*/
 		$I2_ARGS = array();
 
 		//FIXME: PROTECT THIS TOKEN!
