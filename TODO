@@ -1,0 +1,18 @@
+Things that need to be done (if a name is attributed to something, it doesn't
+mean you can't help, just ask that person before changing the whole thing):
+
+- 8th period system, in general (will expand to finer points later)
+
+- Student directory system, with privacy options
+
+- News needs to be touched up some more, probably
+
+- We need some kind of design to work with (Eric is working on this, I assume)
+
+- MySQL's select() needs to be changed to accept a straight string with
+  printf-style input validation (Deason will work on this soon)
+
+- phpDoc needs to be run on the code to generate the API
+
+- The phpDoc comments need to be refined, and more need to be added (Deason is
+  working on this)
