@@ -11,12 +11,12 @@
 	/**
 	* General functions.
 	*/
-	include('../functions.inc.php5');
+	include('functions.inc.php5');
 
 	/**
 	* The path to the master Iodine configuration file.
 	*/
-	define('CONFIG_FILENAME', '../config.ini');
+	define('CONFIG_FILENAME', 'config.ini');
 
 	/*
 	The actual config file in CVS is config.user.ini and config.server.ini
