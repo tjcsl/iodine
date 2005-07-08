@@ -6,13 +6,13 @@
 * @version 1.0
 * @since 1.0
 * @package core
-* @subpackage Logging
+* @subpackage Error
 */
 
 /**
 * The error checking module for Iodine.
 * @package core
-* @subpackage Logging
+* @subpackage Error
 * @see logging
 */
 class Error {
@@ -55,7 +55,7 @@ class Error {
 	*/
 	function default_exception_handler(Exception $e) {
 		$this->fatal_error(''.$e->__toString(), FALSE);
-		$this->fatal_error('There has been an unhandled Iodine error. The file that raised this error was '.$e->getFile().' and the error message was:'."\r\n<br />".$e->getMessage(), TRUE);
+		$this->fatal_error('There has been an unhandled Iodine exception: '.$e->__toString(), TRUE);
 
 	/**
 	* The generic fatal error function.
@@ -104,12 +104,11 @@ class Error {
 		global $I2_LOG;
 
 		if (isset($I2_LOG)) {
-		if (!isSet($I2_LOG)) {
-			echo("Nonfatal error:  $msg <br />");
+		if (!isset($I2_LOG)) {
+			echo("$msg <br />");
 	}
 		
-		$I2_LOG->log_error("Nonfatal error: $msg");
-		
+		$I2_LOG->log_error($msg);
 
 }
 
