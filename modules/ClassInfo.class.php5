@@ -32,7 +32,8 @@ class ClassInfo {
 		}*/
 		
 		//Select the user with uid=$uid
-		$res = $I2_SQL->select($token,'classes',false,'cid=%s',$cid)->fetch_array();
+		$res = $I2_SQL->query($token, 'SELECT * FROM classes WHERE cid=%d;', $cid)->fetch_array();
+//		$res = $I2_SQL->select($token,'classes',false,'cid=%s',$cid)->fetch_array();
 
 		if (!$res) {
 			$I2_ERR->call_error("ClassInfo requested for nonexistant class $cid!");
@@ -76,7 +77,8 @@ class ClassInfo {
 			$I2_ERR->nonfatal_error("An invalid access token was used in attempting to access the name info field of class description ".$this->data['descriptionid']);
 			return null;
 		}
-		$res = $I2_SQL->select($token,'classdescriptions','name','did=%d',$this->data['descriptionid'])->fetch_array();
+		$res = $I2_SQL->query($token, 'SELECT name FROM classdescriptions WHERE did=%d;', $this->data['descriptionid'])->fetch_array();
+//		$res = $I2_SQL->select($token,'classdescriptions','name','did=%d',$this->data['descriptionid'])->fetch_array();
 		if (!$res) {
 			$I2_ERR->call_error("ClassInfo requested for nonexistant class description {$this->data['descriptionid']}!");
 			return null;
@@ -91,7 +93,8 @@ class ClassInfo {
 			$I2_ERR->nonfatal_error("An invalid access token was used in attempting to access the description info field of class description ".$this->data['descriptionid']);
 			return null;
 		}
-		$res = $I2_SQL->select($token,'classdescriptions','description','did=%d',$this->data['descriptionid'])->fetch_array();
+		$res = $I2_SQL->query($token, 'SELECT description FROM classdescriptions WHERE did=%d;', $this->data['descriptionid'])->fetch_array();
+//		$res = $I2_SQL->select($token,'classdescriptions','description','did=%d',$this->data['descriptionid'])->fetch_array();
 		if (!$res) {
 			$I2_ERR->call_error("ClassInfo requested for nonexistant class description {$this->['descriptionid']}!");
 			return null;

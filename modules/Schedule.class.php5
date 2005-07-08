@@ -27,7 +27,8 @@ class Schedule {
        	$this->uid = $uid;
        	$this->token = $token;
 
-       	$this->data = $I2_SQL->select($token,"schedules",false,"uid=%d",$uid)->fetch_array();
+	$this->data = $I2_SQL->query($token, 'SELECT * FROM schedules WHERE uid=%d;', $uid)->fetch_array();
+//       	$this->data = $I2_SQL->select($token,"schedules",false,"uid=%d",$uid)->fetch_array();
        }
 
        function get_period($periodnum) {

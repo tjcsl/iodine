@@ -32,7 +32,8 @@ class UserInfo {
        	}*/
        	
        	//Select the user with uid=$uid
-       	$res = $I2_SQL->select($token,'users',false,'uid=%s',array($uid))->fetch_array();
+	$res = $I2_SQL->query($token, 'SELECT * FROM users WHERE uid=%d;', $uid)->fetch_array();
+//      $res = $I2_SQL->select($token,'users',false,'uid=%s',array($uid))->fetch_array();
 
        	if (!$res) {
        		$I2_LOG->log_debug("UserInfo requested for nonexistant user $uid!");

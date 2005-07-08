@@ -66,7 +66,8 @@ class User {
 
 	function get_desired_boxes($token) {
 		global $I2_SQL;
-		$res = $I2_SQL->select($token,'users','boxes','uid=%d',array($this->curuid));
+		$res = $I2_SQL->query($token, 'SELECT boxes FROM users WHERE uid=%d;', $this->curuid);
+		//$res = $I2_SQL->select($token,'users','boxes','uid=%d',array($this->curuid));
 		$arr = $res->fetch_array();
 		//return explode(',',$arr['boxes']);
 		return array();
@@ -80,7 +81,8 @@ class User {
 		 */
 		$day = substr($date,-5);
 		$thisyear = substr($date,0,4);
-		$res = $I2_SQL->select($token,'users',array('fname','lname','bdate','grade'),"bdate='1988-06-21'",array($day),array(array(false,'grade'),array(false,'lname')));
+		/* Can't implement this in new query() style because I can't tell wth is does */
+		//$res = $I2_SQL->select($token,'users',array('fname','lname','bdate','grade'),"bdate='1988-06-21'",array($day),array(array(false,'grade'),array(false,'lname')));
 		$ret = array();
 		while ($row = $res->fetch_array()) {
 			$byear = substr($row['bdate'],0,4);

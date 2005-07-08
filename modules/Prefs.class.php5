@@ -21,8 +21,9 @@ Don't know if this is necessary yet, so don't include docs for it.
 
 		$this->uid = $uid;
 		$this->token = $token;
-
-		$this->data = $I2_SQL->select($token,"prefs",false,"$uid=%d",$uid)->fetch_array();
+		
+		$this->data = $I2_SQL->query($token,'SELECT * FROM prefs WHERE uid=%d;',$uid)->fetch_array();
+//		$this->data = $I2_SQL->select($token,"prefs",false,"$uid=%d",$uid)->fetch_array();
 	}
 
  }
