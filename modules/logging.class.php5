@@ -6,13 +6,13 @@
 * @version 1.0
 * @since 1.0
 * @package core
-* @subpackage Logging
+* @subpackage Error
 */
 
 /**
 * The logging module for Iodine.
 * @package core
-* @subpackage Logging
+* @subpackage Error
 * @see Error
 */
 class Logging {
@@ -54,7 +54,7 @@ class Logging {
 	}
 
 	function log_error($msg) {
-		global $I2_ERR;
+		global $I2_ERR, $I2_DISP;
 		
 		$fname = i2config_get('error_log');
 		
@@ -70,7 +70,11 @@ class Logging {
 			$_SERVER['REQUEST_URI'] . '" "' .
 			$msg . '"' ."\n"
 		);
-		
+		fclose($fh);
+
+		if(isset($I2_DISP)) {
+			$I2_DISP->disp('error.tpl', array('error'=>$msg));
+		}
 	}
 
 
