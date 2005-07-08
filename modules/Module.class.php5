@@ -6,7 +6,7 @@
 * @version 1.0
 * @since 1.0
 * @package core
-* @subpackage module
+* @subpackage Module
 */
 
 /**
