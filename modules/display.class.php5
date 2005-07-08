@@ -173,12 +173,18 @@ class Display {
 			$needsdisp = $mod->init_pane($token);
 			if (!Display::$display_stopped && $needsdisp) {
 				$this->open_content_pane($mod);
-				$mod->display_pane($disp);
+				try {
+					$mod->display_pane($disp);
+				} catch (Exception $e) {
+					/* Make sure to close the content pane*/
+					$this->close_content_pane($mod);
+					throw $e;
+				}
 				$this->close_content_pane($mod);
 			}
 						
 		} catch (Exception $e) {
-			$I2_ERR->nonfatal_error("The main module $module raised error $e!");
+			$I2_ERR->nonfatal_error('Exception raised in module '.$module.', while processing main pane. Exception: '.$e->__toString());
 		}
 		
 		$this->global_footer();
