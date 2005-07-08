@@ -7,6 +7,7 @@
 * @since 1.0
 * @package modules
 * @subpackage News
+* @filesource
 */
 
 /**
@@ -14,6 +15,7 @@
 * around TJ.
 * @package modules
 * @subpackage News
+* @todo Still needs a bit of touchup, with design and stuff, I think
 */
 class News implements Module {
 	

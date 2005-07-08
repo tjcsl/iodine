@@ -4,6 +4,7 @@
 *
 * @package core
 * @subpackage Error
+* @filesource
 */
 
 /**

@@ -7,6 +7,7 @@
 * @since 1.0
 * @package modules
 * @subpackage Makeuser
+* @filesource
 */
 
 /**

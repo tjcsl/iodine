@@ -7,12 +7,16 @@
 * @since 1.0
 * @package core
 * @subpackage Module
+* @filesource
 */
 
 /**
 * The API for all Intranet2 modules to extend.
 * @package core
 * @subpackage Module
+* @todo The 8th Period module(s) need to be created
+* @todo The Student Directory module needs to be created
+(Just put modules to be done in here, since there's really no other place)
 */
 interface Module {
 

@@ -7,6 +7,7 @@
 * @since 1.0
 * @package core
 * @subpackage Display
+* @filesource
 * @todo We need some kind of design! (Eric)
 */
 
