@@ -48,6 +48,9 @@ class User {
 	}
 
 	function get_current_user_info($token) {
+		if (isSet($_SESSION['i2_uid'])) {
+			$this->curuid = $_SESSION['i2_uid'];
+		}
 		if (!$this->curinfo) {
 		 	$this->curinfo = $this->get_info($token,$this->curuid);
 		}
