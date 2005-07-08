@@ -18,6 +18,11 @@
 	*/
 	define('CONFIG_FILENAME', 'config.ini');
 
+	/**
+	* The current version of Iodine running.
+	*/
+	define('I2_VERSION', 0.1);
+
 	/*
 	The actual config file in CVS is config.user.ini and config.server.ini
 	When you check out intranet2 to run it from your personal space, copy
@@ -180,12 +185,8 @@
 		}
 		foreach(explode('/', $query) as $arg) {
 			if($arg) {
-				if (!isSet($I2_ARGS['i2_desired_module'])) {
-					$I2_ARGS['i2_desired_module'] = $arg;
-				} else {
-					$I2_LOG->log_debug("Added $arg to the query string variable.");
-					$I2_ARGS['i2_query'][] = $arg;
-				}
+				$I2_LOG->log_debug("Added $arg to the query string variable.");
+				$I2_ARGS['i2_query'][] = $arg;
 			}
 		}
 
@@ -195,29 +196,20 @@
 			$I2_DISP->show_login($mastertoken);
 			$authed = $I2_AUTH->check_authenticated();
 		}
-		
-		
-		if (isset($I2_ARGS['i2_desired_module']) && !get_i2module($I2_ARGS['i2_desired_module'])) {
-			$I2_ERR->fatal_error('Invalid module name \''.$I2_ARGS['i2_desired_module'].'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
-		}
-
-		$I2_LOG->log_debug('Desired module is '.(isset($I2_ARGS['i2_desired_module'])?$I2_ARGS['i2_desired_module']:'not specified'));
 
 		if ($authed) {
-			if (!isSet($I2_ARGS['i2_desired_module'])) {
-				$I2_ARGS['i2_desired_module'] = $I2_USER->get_current_user_info($mastertoken)->get_startpage($mastertoken);
+			/* gets the user's startpage module if no module has
+			been specified */
+			$module = isset($I2_ARGS['i2_query'][0]) ?
+				$I2_ARGS['i2_query'][0] :
+				$I2_USER->get_current_user_info($mastertoken)->get_startpage($mastertoken);
+
+			if (!get_i2module($module)) {
+				$I2_ERR->fatal_error('Invalid module name \''.$module.'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
 			}
-			set_i2var('i2_boxes',$I2_USER->get_desired_boxes($mastertoken));
-		}
-
-		foreach ($I2_ARGS['i2_boxes'] as $module) {
-			$I2_LOG->log_debug("Box: $module");
-		}
-
 		/* Display will instantiate the module, we just pass the name */
-		if ($authed) {
-			$I2_LOG->log_debug('Passing module ' . $I2_ARGS['i2_desired_module'] . ' to Display module', 9);
-			$I2_DISP->display_loop($I2_ARGS['i2_desired_module'],$mastertoken);
+			$I2_LOG->log_debug('Passing module ' . $module . ' to Display module', 9);
+			$I2_DISP->display_loop($module,$mastertoken);
 		}
 	
 	} catch (Exception $e) {
