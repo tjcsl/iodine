@@ -95,8 +95,7 @@ class Display {
 	*/
 	private function display_top_bar($mastertoken) {
 		global $I2_ARGS;
-		$this->disp('opentopbar.tpl');
-		$this->disp('closetopbar.tpl');
+		$this->disp('topbar.tpl');
 	}
 
 	/**
