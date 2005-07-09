@@ -130,10 +130,10 @@ class Display {
 			foreach ($I2_ARGS['i2_boxes'] as $box) {
 				try {
 					$token = Token::token($mastertoken,array(
-						'db/'.$box => 'w',
-						'info/'.$box => 'w',
-						'pref/'.$box => 'w',
-						'*' => 'r'
+						'sql/'.$box => 'rw',
+						'info/'.$box => 'rw',
+						'pref/'.$box => 'rw',
+//						'*' => 'r'
 					));
 					
 					eval('$boxinstance = new '.$box.'();');
@@ -163,7 +163,7 @@ class Display {
 			*/
 			//TODO: change this
 			$token = Token::token($mastertoken,array(
-				'db/'.$module => 'rw',
+				'sql/'.$module => 'rw',
 				'info/'.$module => 'rw',
 				'pref/'.$module => 'rw',
 //				'*'=>'r'
