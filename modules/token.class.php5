@@ -11,15 +11,34 @@
 
 /**
 * The class for determining permissions to data for modules.
+*
+* NOTE: The constructor for this class is <em>private</em>, so you cannot just
+* try to do <pre>$mytoken = new Token(/*...*<!-- -->/);</pre> Use the factory
+* method, {@link token} to generate a new one.
+*
 * @package core
 * @see Display
 */
 class Token {
+
+	/**
+	* An associative array of the rights that this token as. The key is the
+	* 'infotype', and the value is a string, where each character represents
+	* a right to that infotype.
+	*/
 	private $rights = array();
+
+	/**
+	* The master token. Has access to everything, and the ability to
+	* generate new tokens.
+	*/
 	private static $mastertoken = NULL;
 	
 	/**
 	* Generates the master token, which has all rights.
+	*
+	* This method can only be run once. Subsequent calls with cause an
+	* exception to be thrown.
 	*
 	* @return Token The master token.
 	*/
@@ -32,6 +51,11 @@ class Token {
 		return self::$mastertoken;
 	}
 	
+	/**
+	* Constructor. This is private so tokens can be created without having
+	* to pass $mastertoken for authorization (say, when the master token
+	* needs to be created).
+	*/
 	final private function __construct($rights) {
 
 		if( !is_array($rights) ) {
@@ -41,6 +65,18 @@ class Token {
 		$this->rights = $rights;
 	}
 
+	/**
+	* The factory-like method outside classes use to instantiate Token
+	* objects.
+	*
+	* This method just generates a token. It basically just calls the
+	* constructor after a few checks. Note that the master token must be
+	* passed as the first argument, as authorization to issue tokens.
+	*
+	* @param Token $mastertoken The master token.
+	* @param array $rights An associative array representing which rights to
+	*                      which data this token will have.
+	*/
 	final public static function token(Token &$mastertoken, $rights) {
 		if( self::$mastertoken == NULL ) {
 			throw new I2Exception('Something tried to create a new token before the mastertoken has been instantiated');
