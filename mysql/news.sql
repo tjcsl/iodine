@@ -1,4 +1,4 @@
-CREATE TABLE news_stories (
+CREATE TABLE news(
 	id bigint NOT NULL DEFAULT '0' AUTO_INCREMENT UNIQUE,	/*Unique autoid*/
 	PRIMARY KEY(id),				
 	text TEXT NOT NULL,				/*Story text*/
