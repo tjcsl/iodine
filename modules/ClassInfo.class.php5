@@ -44,7 +44,7 @@ class ClassInfo {
 	}
 
 	function check_token($token,$field) {
-		if (!check_token_rights($token,'info/classes-'.$this->cid.'-'.$field,'r')) {
+		if (!$token->check_rights('info/classes-'.$this->cid.'-'.$field,'r')) {
 			$I2_ERR->nonfatal_error("An invalid access token was used in attempting to access the $field info field of class ".$this->cid);
 			return false;
 		}
@@ -74,7 +74,7 @@ class ClassInfo {
 	function get_name($token) {
 		global $I2_ERR, $I2_SQL;
 		if(!check_token($token,'name')) return null;
-		if (!check_token_rights($token,'info/classdescriptions-'.$this->data['descriptionid'].'-name','r')) {
+		if (!$token->check_rights('info/classdescriptions-'.$this->data['descriptionid'].'-name','r')) {
 			$I2_ERR->nonfatal_error("An invalid access token was used in attempting to access the name info field of class description ".$this->data['descriptionid']);
 			return null;
 		}
@@ -90,7 +90,7 @@ class ClassInfo {
 	function get_description($token) {
 		global $I2_ERR, $I2_SQL;
 		if(!check_token($token,'description')) return null;
-		if (!check_token_rights($token,'info/classdescriptions-'.$this->data['descriptionid'].'-description','r')) {
+		if (!$token->check_rights('info/classdescriptions-'.$this->data['descriptionid'].'-description','r')) {
 			$I2_ERR->nonfatal_error("An invalid access token was used in attempting to access the description info field of class description ".$this->data['descriptionid']);
 			return null;
 		}

@@ -64,7 +64,7 @@ class LDAP {
 
 	private function check($token,$property,$accesstype) {
 		global $I2_ERR;
-		if (!check_token_rights($token,$property,$accesstype)) {
+		if (!$token->check_rights($property,$accesstype)) {
 			$I2_ERR->call_error("Invalid token used when attempting to access LDAP property $property [$accesstype]!");
 			return 0;
 		}

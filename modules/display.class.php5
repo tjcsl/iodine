@@ -129,7 +129,7 @@ class Display {
 			
 			foreach ($I2_ARGS['i2_boxes'] as $box) {
 				try {
-					$token = issue_token($mastertoken,array(
+					$token = Token::token($mastertoken,array(
 						'db/'.$box => 'w',
 						'info/'.$box => 'w',
 						'pref/'.$box => 'w',
@@ -162,11 +162,11 @@ class Display {
 			** Create an authentication token with all the appropriate rights.
 			*/
 			//TODO: change this
-			$token = issue_token($mastertoken,array(
-				'db/'.$module => 'w',
-				'info/'.$module => 'w',
-				'pref/'.$module => 'w',
-				'*'=>'r'
+			$token = Token::token($mastertoken,array(
+				'db/'.$module => 'rw',
+				'info/'.$module => 'rw',
+				'pref/'.$module => 'rw',
+//				'*'=>'r'
 			));	
 				
 			//FIXME: use more than one module, duh!

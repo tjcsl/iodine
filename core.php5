@@ -124,8 +124,8 @@
 		*/
 		$I2_ARGS = array();
 
-		//FIXME: PROTECT THIS TOKEN!
-		$mastertoken = get_master_token();	
+		$mastertoken = Token::master_token();
+
 		if (!isSet($_SESSION)) {
 			$_SESSION = array();
 		}

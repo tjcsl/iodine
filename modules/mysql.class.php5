@@ -213,12 +213,8 @@ class MySQL {
 			}
 		}
 
-//		return $query;
+
 		return new Result($this->raw_query($query),MYSQL::SQL_SELECT);
-/*		if (!check_token_rights($token,"db/".$table,'r')) {
-			$I2_ERR->nonfatal_error("An invalid access token was used in attempting to access the $table MySQL table!");
-			return null;
-		}*/
 	}
 
 	/**

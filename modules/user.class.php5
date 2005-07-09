@@ -36,10 +36,6 @@ class User {
 
 	function get_info($token,$uid) {
 		global $I2_ERR;
-		//This isn't necessary because UserInfo checks access rights.
-		/*if (!check_token_rights($token,"info/".$this->uid)) {
-			$I2_ERR->nonfatal_error("Could not get user information");
-		}*/
 		
 		return new UserInfo($token,$uid);
 	}

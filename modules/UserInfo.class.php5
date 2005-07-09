@@ -45,7 +45,7 @@ class UserInfo {
 
        function check_token($token,$field) {
        	global $I2_ERR;
-       	if (!check_token_rights($token,'info/students-'.$this->uid.'-'.$field,'r')) {
+       	if (!$token->check_rights('info/students-'.$this->uid.'-'.$field,'r')) {
        		$I2_ERR->nonfatal_error("An invalid access token was used in attempting to access the $field info field of user ".$this->uid);
        		return false;
        	}
