@@ -30,19 +30,19 @@ class MySQL {
 	/**
 	* Represents a SELECT query.
 	*/
-	const SQL_SELECT = 1;
+	const SELECT = 1;
 	/**
 	* Represents an INSERT query.
 	*/
-	const SQL_INSERT = 2;
+	const INSERT = 2;
 	/**
 	* Represents an UPDATE query.
 	*/
-	const SQL_UPDATE = 3;
+	const UPDATE = 3;
 	/**
 	* Represents a DELETE query.
 	*/
-	const SQL_DELETE = 4;
+	const DELETE = 4;
 	
 	/**
 	* The MySQL class constructor.
@@ -136,7 +136,7 @@ class MySQL {
 	* @param mixed $args,... Arguments for printf tags.
 	*/
 	public function query($token, $query) {
-		global $I2_ERR;
+		global $I2_ERR,$I2_LOG;
 
 		$argc = func_num_args()-2;
 		$argv = func_get_args();
@@ -213,8 +213,38 @@ class MySQL {
 			}
 		}
 
+		/* Get query type by examining the query string up to the first
+		space */
+		switch( strtoupper(substr($query, 0, strpos($query, ' '))) ) {
+			case 'SELECT':
+				$perm = 'r';
+				$query_t = MYSQL::SELECT;
+				break;
+			case 'UPDATE':
+				$perm = 'w';
+				$query_t = MYSQL::UPDATE;
+				break;
+			case 'DELETE':
+				$perm = 'd';
+				$query_t = MYSQL::DELETE;
+				break;
+			case 'INSERT':
+				$perm = 'i';
+				$query_t = MYSQL::INSERT;
+				break;
+			default:
+				throw new I2Exception('Attempted MySQL query of unauthorized command `'.substr($query, 0, strpos($query, ' ')).'`');
+		}
 
-		return new Result($this->raw_query($query),MYSQL::SQL_SELECT);
+		$tables = self::get_used_tables($query, $query_t);
+		$I2_LOG->log_debug('Tables referenced in SQL query: '.count($tables).': '.implode($tables, ', '));
+		foreach( $tables as $table) {
+			if( $token->check_rights('sql/'.$table, $perm) === FALSE) {
+				throw new I2Exception('Attempted to perform a MySQL query without proper access. (Table: '.$table.', access needed: '.$perm.')');
+			}
+		}
+
+		return new Result($this->raw_query($query),MYSQL::SELECT);
 	}
 
 	/**
@@ -225,6 +255,103 @@ class MySQL {
 	* @return mixed The composite resultset object.
 	*/
 	function ljoin($left, $right) {
+	}
+
+	/**
+	* Gets the tables used in a query from the query string.
+	*
+	* This goes through a raw query string, and partially parses it to
+	* determine which tables it uses in the database. This is not a very
+	* efficient thing to do, but I'm open to suggestions on any other way
+	* of restricting data access in mysql.
+	*
+	* @param String $str The query string.
+	* @param int $type One of the MySQL constants, representing what kind
+	*                  of query (SELECT/UPDATE/etc) this is.
+	*/
+	private static function get_used_tables($str, $type) {
+		if( ($offset = stripos($str, ' where ')) ) {
+			/* strip off everything after 'where'; not needed */
+			$str = substr($str, 0, $offset);
+		}
+
+		if( $type == MYSQL::SELECT ) {
+			/* strip off column names and stuff */
+			$str = substr($str, stripos($str, 'from'));
+		}
+
+		if( $str[strlen($str)-1] == ';' ) {
+			$str = substr($str, 0, strlen($str)-1);
+		}
+
+		$ret = array();
+		$words = explode(' ', ltrim($str));
+		array_shift($words);
+		
+		switch($type) {
+			case MYSQL::SELECT:
+			case MYSQL::DELETE:
+				while(isset($words[0])) {
+					switch(strtolower($words[0])) {
+						case 'from':
+							array_shift($words);
+							continue;
+						case 'where':
+							/* stop processing */
+							unset($words);
+							break;
+						case 'as':
+							array_shift($words);
+							array_shift($words);
+							continue;
+						/* joins */
+						case 'left':
+						case 'right':
+						case 'cross':
+						case 'natural':
+						case 'inner':
+						case 'join':
+						case 'straight_join':
+/* Not implementing JOINs right now because it's too difficult. Perhaps will
+implement them at a later date if there is a need. */
+							throw new I2Exception('We do not currently support using JOINs in MySQL statements. Try again later, when we do.');
+/*							while(strtolower($words[0]) != 'join') {
+								array_shift($words);
+							}
+							array_shift($words);
+							continue;*/
+						default:
+							foreach(explode(',', $words[0]) as $word) {
+								if( $word ) {
+									$ret[] = $word;
+								}
+							}
+							array_shift($words);
+
+					}
+				}
+				break;
+			case MYSQL::INSERT:
+				if(strtolower($words[0]) == 'into') {
+					array_shift($words);
+				}
+				$ret[] = $words[0];
+				break;
+				
+			case MYSQL::UPDATE:
+				while(isset($words[0])) {
+					if(strtolower($words[0]) == 'set')
+						break;
+					foreach(explode(',', $words[0]) as $word) {
+						if($word)
+							$ret[] = $word;
+					}
+				}
+				break;
+			default:
+				throw new I2Exception('Invalid MySQL query type `'.$type.'` passed to get_used_tables');
+		}
+		return $ret;
 	}
 }
 
