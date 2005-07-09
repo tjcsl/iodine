@@ -130,7 +130,7 @@ class Display {
 			foreach ($I2_ARGS['i2_boxes'] as $box) {
 				try {
 					$token = Token::token($mastertoken,array(
-						'sql/'.$box => 'rw',
+						'mysql/'.$box => 'rw',
 						'info/'.$box => 'rw',
 						'pref/'.$box => 'rw',
 //						'*' => 'r'
@@ -163,7 +163,7 @@ class Display {
 			*/
 			//TODO: change this
 			$token = Token::token($mastertoken,array(
-				'sql/'.$module => 'rw',
+				'mysql/'.$module => 'rw',
 				'info/'.$module => 'rw',
 				'pref/'.$module => 'rw',
 //				'*'=>'r'
