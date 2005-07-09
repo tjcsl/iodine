@@ -1,12 +1,19 @@
 CREATE TABLE users(
-	uid BIGINT NOT NULL UNIQUE,
+	uid SMALLINT UNSIGNED NOT NULL UNIQUE,
 	PRIMARY KEY(uid),
 	
+	username VARCHAR(128) DEFAULT "", /* LAN username, etc. */
+
 	fname VARCHAR(64) DEFAULT "",
 	mname VARCHAR(64) DEFAULT "",
 	lname VARCHAR(128) DEFAULT "",
+	suffix VARCHAR(16) DEFAULT "",
+	nickname VARCHAR(64) DEFAULT "",
+	/* like the ()'ed ones now in Intranet */
 	
-	bdate DATE DEFAULT '0',
+	startpage VARCHAR(128) DEFAULT "news", /* Default I2 module */
+
+	bdate DATE DEFAULT NULL,
 	
 	phone_home VARCHAR(20) DEFAULT "",
 	phone_cell VARCHAR(20) DEFAULT "",
@@ -14,20 +21,20 @@ CREATE TABLE users(
 	
 	/*	Address information	 */
 
-	address_primary_city VARCHAR(64) DEFAULT "",
-	address_primary_state VARCHAR(2) DEFAULT "",
-	address_primary_zip VARCHAR(12) DEFAULT "",
-	address_primary_street VARCHAR(255) DEFAULT "",
+	address1_city VARCHAR(64) DEFAULT "",
+	address1_state VARCHAR(2) DEFAULT "",
+	address1_zip VARCHAR(12) DEFAULT "",
+	address1_street VARCHAR(255) DEFAULT "",
 	
-	address_secondary_city VARCHAR(64) DEFAULT "",
-	address_secondary_state VARCHAR(2) DEFAULT "",
-	address_secondary_zip VARCHAR(12) DEFAULT "",
-	address_secondary_street VARCHAR(255) DEFAULT "",
+	address2_city VARCHAR(64) DEFAULT "",
+	address2_state VARCHAR(2) DEFAULT "",
+	address2_zip VARCHAR(12) DEFAULT "",
+	address2_street VARCHAR(255) DEFAULT "",
 	
-	address_tertiary_city VARCHAR(64) DEFAULT "",
-	address_tertiary_state VARCHAR(2) DEFAULT "",
-	address_tertiary_zip VARCHAR(12) DEFAULT "",
-	address_tertiary_street VARCHAR(255) DEFAULT "",
+	address3_city VARCHAR(64) DEFAULT "",
+	address3_state VARCHAR(2) DEFAULT "",
+	address3_zip VARCHAR(12) DEFAULT "",
+	address3_street VARCHAR(255) DEFAULT "",
 
 	/* Screen names and email */
 
@@ -47,25 +54,23 @@ CREATE TABLE users(
 
 	/* Other assorted stuff */
 
-	username VARCHAR(128) DEFAULT "", /* LAN username, etc. */
-
-	sex ENUM('M','F','N') DEFAULT 'N',
+	sex ENUM('M','F') DEFAULT NULL,
 	
-	grade TINYINT(2) DEFAULT 0,
+	grade ENUM('9', '10', '11', '12', 'staff') DEFAULT NULL,
 	
-	webpage VARCHAR(255) DEFAULT "",
+	webpage VARCHAR(256) DEFAULT "",
 	
-	locker BIGINT DEFAULT 0,
+	locker SMALLINT UNSIGNED DEFAULT 0,
 	
 	counselor VARCHAR(64) DEFAULT "",
 	
-	startpage VARCHAR(128) DEFAULT "news", /* Default I2 module */
-	
-	picture0 BIGINT DEFAULT 0,
-	picture1 BIGINT DEFAULT 1,
-	picture2 BIGINT DEFAULT 2,
-	picture3 BIGINT DEFAULT 3,
+	picture0 SMALLINT DEFAULT NULL,
+	picture1 SMALLINT DEFAULT NULL,
+	picture2 SMALLINT DEFAULT NULL,
+	picture3 SMALLINT DEFAULT NULL,
 
-	boxes TEXT NOT NULL DEFAULT ""
+	boxes TEXT NOT NULL DEFAULT "",
+
+	groups TEXT DEFAULT NULL
 
 );
