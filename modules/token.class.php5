@@ -37,10 +37,6 @@ class Token {
 		if( !is_array($rights) ) {
 			throw new I2Exception('A non-array was passed to Token as a rights array. The \'$rights\' parameter to Token\'s constructor must be an assoicative array');
 		}
-
-		echo 'contructing token: ';
-		print_r($rights);
-		$this->rights = $rights;
 	}
 
 	final public static function token(Token &$mastertoken, $rights) {
