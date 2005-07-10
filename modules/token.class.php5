@@ -119,6 +119,10 @@ class Token {
 	* @param String $access A string containing all of the permissions this token must match to return true.
 	*/
 	final public function check_rights($infotype, $access) {
+
+		/* disable token checking for now, don't know if we're actually
+		going to use tokens */
+		return true;
 		if( $this === self::$mastertoken ) {
 			return true;
 		}
