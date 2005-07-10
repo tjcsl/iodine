@@ -297,6 +297,7 @@ class MySQL {
 							array_shift($words);
 							continue;
 						case 'where':
+						case 'order':
 							/* stop processing */
 							unset($words);
 							break;
