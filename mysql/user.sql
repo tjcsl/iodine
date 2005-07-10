@@ -6,6 +6,7 @@ CREATE TABLE user (
 	PRIMARY KEY(uid),
 
 	username VARCHAR(15) NOT NULL,
+	INDEX(username),
 
 	sex ENUM('M','F') DEFAULT NULL,
 	
