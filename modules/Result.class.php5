@@ -52,7 +52,7 @@ class Result {
 	function __construct($mysql_result,$query_type) {
 		global $I2_LOG;
 		if (!$mysql_result) {
-			$I2_LOG->log_debug('Null SQL result constructed.');
+			d('Null SQL result constructed.');
 			return;
 		}
 		$this->join_right($mysql_result,$query_type);

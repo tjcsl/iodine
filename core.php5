@@ -131,8 +131,7 @@
 		}
 
 		if (isSet($_REQUEST['i2_logout']) && $_REQUEST['i2_logout']) {
-			/* destroy information known about user */
-			$I2_LOG->log_debug("Destroying all session information about user");
+			d("Destroying all session information about user");
 			session_destroy();
 			$_SESSION = array();
 		}
@@ -144,9 +143,9 @@
 				$I2_ARGS[$key] = $value;	
 				if (is_array($value)) {
 					$str = print_r($value,true);
-					$I2_LOG->log_debug("Mapped key $key to $str from session variables.");
+					d("Mapped key $key to $str from session variables.");
 				} else {
-					$I2_LOG->log_debug("Mapped key $key to $value from session variables.");
+					d("Mapped key $key to $value from session variables.");
 				}
 			}
 		}
@@ -165,9 +164,9 @@
 				}
 				if (is_array($value)) {
 					$str = print_r($value,true);
-					$I2_LOG->log_debug("Mapped key $key to $str from request string.");
+					d("Mapped key $key to $str from request string.");
 				} else {
-					$I2_LOG->log_debug("Mapped key $key to $value from request string.");
+					d("Mapped key $key to $value from request string.");
 				}
 			}
 		}
@@ -186,7 +185,7 @@
 		}
 		foreach(explode('/', $query) as $arg) {
 			if($arg) {
-				$I2_LOG->log_debug("Added $arg to the query string variable.");
+				d("Added $arg to the query string variable.");
 				$I2_ARGS['i2_query'][] = $arg;
 			}
 		}
@@ -209,7 +208,7 @@
 				$I2_ERR->fatal_error('Invalid module name \''.$module.'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
 			}
 		/* Display will instantiate the module, we just pass the name */
-			$I2_LOG->log_debug('Passing module ' . $module . ' to Display module', 9);
+			d('Passing module ' . $module . ' to Display module', 9);
 			$I2_DISP->display_loop($module,$mastertoken);
 		}
 	
@@ -217,7 +216,7 @@
 		if(isSet($I2_ERR)) {
 			$I2_ERR->default_exception_handler($e);
 		} else {
-			die('The error module is not loaded and there was an error: '.$e->getMessage());
+			die('The error module is not loaded and there was an error: '.$e->__toString());
 		}
 	}
 

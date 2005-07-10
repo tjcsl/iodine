@@ -76,7 +76,7 @@ class MySQL {
 	*/
 	protected function connect($server, $user, $password) {
 		global $I2_LOG;
-		$I2_LOG->log_debug("Connecting to $server as $user");
+		d("Connecting to $server as $user");
 		return mysql_pconnect($server, $user, $password);
 	}
 	
@@ -237,7 +237,7 @@ class MySQL {
 		}
 
 		$tables = self::get_used_tables($query, $query_t);
-		$I2_LOG->log_debug('Tables referenced in SQL query: '.count($tables).': '.implode($tables, ', '));
+		d('Tables referenced in SQL query: '.count($tables).': '.implode($tables, ', '));
 		foreach( $tables as $table) {
 			if( $token->check_rights('mysql/'.$table, $perm) === FALSE) {
 				throw new I2Exception('Attempted to perform a MySQL query without proper access. (Table: '.$table.', access needed: '.$perm.')');

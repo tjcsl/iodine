@@ -12,14 +12,22 @@
 	*/
 
 	/**
-	* A safe alternative to the echo() or I2_LOG->debug methods.
+	* A quick function call for debugging.
+	*
+	* This function is basically just a wrapper for $I2_LOG->log_debug().
+	* This function is far more convenient, however, since you don't need
+	* to declare $I2_LOG as a global, and the function name is only one
+	* keystroke. What a timesaver!
 	*
 	* @param string $text The text to display.
+	* @param int $level The debugging level at which to log this message.
+	*                   (The higher the level, the less important, default
+	*                   is 9, the highest standard level.)
 	*/
-	function echo_handler($text) {
+	function d($text, $level = 9) {
 		global $I2_LOG;
 		if (isSet($I2_LOG)) {
-			$I2_LOG->log_debug($text);
+			$I2_LOG->log_debug($text, $level);
 		}
 	}
 	
@@ -44,7 +52,7 @@
 	*/
 	function __autoload($class_name) {
 		global $I2_ERR;
-		echo_handler("Loading $class_name");
+		d("Loading $class_name");
 		$class_file = '';
 
 		if (!($class_file=get_i2module($class_name))) {
