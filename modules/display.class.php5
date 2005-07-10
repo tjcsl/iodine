@@ -106,6 +106,8 @@ class Display {
 	* This function basically displays everything and performs
 	* pretty much all processing done outside of core.
 	*
+	* @todo Some of the functionality here should probably be in another
+	*       class/module for intraboxes. Make that class and move the code.
 	* @param $module The name of the module to display in the main
 	*                panel and give processing control to.
 	* @param $mastertoken The token for displaying.

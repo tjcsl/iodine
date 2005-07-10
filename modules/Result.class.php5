@@ -8,6 +8,7 @@
 * @package core
 * @subpackage MySQL
 * @filesource
+* @todo Fix the broken-ness. Much of this class is broken. (Stebbins?)
 */
 
 /**
