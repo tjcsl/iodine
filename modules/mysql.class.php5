@@ -235,13 +235,15 @@ class MySQL {
 				throw new I2Exception('Attempted MySQL query of unauthorized command `'.substr($query, 0, strpos($query, ' ')).'`');
 		}
 
-		$tables = self::get_used_tables($query, $query_t);
+		/* token checking disabled, so don't bother determining which
+		tables were used */
+/*		$tables = self::get_used_tables($query, $query_t);
 		d('Tables referenced in SQL query: '.count($tables).': '.implode($tables, ', '));
 		foreach( $tables as $table) {
 			if( $token->check_rights('mysql/'.$table, $perm) === FALSE) {
 				throw new I2Exception('Attempted to perform a MySQL query without proper access. (Table: '.$table.', access needed: '.$perm.')');
 			}
-		}
+		}*/
 
 		return new Result($this->raw_query($query),MYSQL::SELECT);
 	}
