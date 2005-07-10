@@ -94,8 +94,10 @@ class Display {
 	* Displays the top bar.
 	*/
 	private function display_top_bar($mastertoken) {
-		global $I2_ARGS;
-		$this->disp('topbar.tpl');
+		global $I2_ARGS,$I2_SQL;
+
+		$res = $I2_SQL->query($mastertoken, 'SELECT fname FROM user WHERE uid=%d;', $I2_ARGS['i2_uid'])->fetch_all_arrays(MYSQL_ASSOC);
+		$this->disp('topbar.tpl', array('first_name' => $res[0]['fname']) );
 	}
 
 	/**
@@ -120,34 +122,6 @@ class Display {
 		$mod = '';
 		//$mastertoken = get_master_token();
 
-			
-			
-			/*
-			** Display each box.
-			*/
-			
-			foreach ($I2_ARGS['i2_boxes'] as $box) {
-				try {
-					$token = Token::token($mastertoken,array(
-						'mysql/'.$box => 'rw',
-						'info/'.$box => 'rw',
-						'pref/'.$box => 'rw',
-//						'*' => 'r'
-					));
-					
-					eval('$boxinstance = new '.$box.'();');
-					$disp = new Display($box);
-					$needsdisp = $boxinstance->init_box($token);
-					if ($needsdisp) {
-						$this->open_box();
-						$boxinstance->display_box($disp);
-						$this->close_box();
-					}
-					
-				} catch (Exception $e) {
-					$I2_ERR->nonfatal_error("The boxed module $box raised error $e!");
-				}
-			}
 			
 		try {	
 			/*
@@ -186,6 +160,34 @@ class Display {
 		} catch (Exception $e) {
 			$I2_ERR->nonfatal_error('Exception raised in module '.$module.', while processing main pane. Exception: '.$e->__toString());
 		}
+			
+			/*
+			** Display each box.
+			*/
+			set_i2var('i2_boxes',$GLOBALS['I2_USER']->get_desired_boxes($mastertoken));	
+			foreach ($I2_ARGS['i2_boxes'] as $box) {
+				try {
+					$token = Token::token($mastertoken,array(
+						'mysql/'.$box => 'rw',
+						'info/'.$box => 'rw',
+						'pref/'.$box => 'rw',
+//						'*' => 'r'
+					));
+					
+					eval('$boxinstance = new '.$box.'();');
+					$disp = new Display($box);
+					$needsdisp = $boxinstance->init_box($token);
+					if ($needsdisp) {
+						$this->open_box();
+						$boxinstance->display_box($disp);
+						$this->close_box();
+					}
+					
+				} catch (Exception $e) {
+					$I2_ERR->nonfatal_error('The boxed module '.$box.' raised the following error: '.$e->__toString());
+				}
+			}
+			
 		
 		$this->global_footer();
 	}
