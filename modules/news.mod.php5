@@ -31,7 +31,7 @@ class News implements Module {
 	
 	function init_pane(Token $token) {
 		global $I2_SQL;
-		$res = $I2_SQL->query($token, 'SELECT title,text,author,authorID,authortype,posted FROM news;');
+		$res = $I2_SQL->query($token, 'SELECT title,text,author,authorID,authortype,posted FROM news ORDER BY posted DESC;');
 //		$res = $I2_SQL->select($token,'news_stories',array('title','text','author','authorID','authortype','posted'));
 		$this->newsdetails = $res->fetch_all_arrays(MYSQL_BOTH);
 		return TRUE;
@@ -44,14 +44,16 @@ class News implements Module {
 	
 	function init_box(Token $token) {
 		global $I2_SQL;
-		$res = $I2_SQL->query($token, 'SELECT title FROM news;');
-//		$res = $I2_SQL->select($token,'news_stories',array('title'));
-		$this->summaries = $res->fetch_col('title');
+		$res = $I2_SQL->query($token, 'SELECT title FROM news ORDER BY posted DESC;')->fetch_all_arrays(MYSQL_ASSOC);
+		$titles = array();
+		foreach ($res as $row) {
+			$titles[] = $row['title'];
+		}
+		$this->summaries = $titles;
 		return TRUE;
 	}
 
 	function display_box($display) {
-		$display->raw_display("This is today's news, in a box.");
 		$display->disp('newsbox.tpl',array('summaries'=>$this->summaries));
 	}
 
