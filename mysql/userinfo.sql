@@ -1,18 +1,10 @@
-CREATE TABLE users(
-	uid SMALLINT UNSIGNED NOT NULL UNIQUE,
+/* This table contains user information which is either editable or could
+possibly be restricted by privacy preferences */
+CREATE TABLE userinfo(
+	/* binds to other user/userinfo tables */
+	uid MEDIUMINT UNSIGNED NOT NULL UNIQUE,
 	PRIMARY KEY(uid),
 	
-	username VARCHAR(128) DEFAULT "", /* LAN username, etc. */
-
-	fname VARCHAR(64) DEFAULT "",
-	mname VARCHAR(64) DEFAULT "",
-	lname VARCHAR(128) DEFAULT "",
-	suffix VARCHAR(16) DEFAULT "",
-	nickname VARCHAR(64) DEFAULT "",
-	/* like the ()'ed ones now in Intranet */
-	
-	startpage VARCHAR(128) DEFAULT "news", /* Default I2 module */
-
 	bdate DATE DEFAULT NULL,
 	
 	phone_home VARCHAR(20) DEFAULT "",
