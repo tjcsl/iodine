@@ -66,10 +66,10 @@ class User {
 
 	function get_desired_boxes(Token $token) {
 		global $I2_SQL;
-		$res = $I2_SQL->query($token, 'SELECT boxes FROM users WHERE uid=%d;', $this->curuid);
-		//$res = $I2_SQL->select($token,'users','boxes','uid=%d',array($this->curuid));
+		$res = $I2_SQL->query($token, 'SELECT boxes FROM userinfo WHERE uid=%d;', $this->curuid);
 		$arr = $res->fetch_array();
-		//return explode(',',$arr['boxes']);
+		if($arr['boxes'])
+			return explode(',',$arr['boxes']);
 		return array();
 	}
 
