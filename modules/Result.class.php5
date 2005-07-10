@@ -177,7 +177,7 @@ class Result {
 	*/
 	function more_rows() {
 		foreach ($this->results as $res=>$arr) {
-			if ($arr[1] == MySQL::SQL_SELECT && mysql_num_rows($arr[0]) > $arr[2]) {
+			if ($arr[1] == MySQL::SELECT && mysql_num_rows($arr[0]) > $arr[2]) {
 				return true;
 			}
 		}
