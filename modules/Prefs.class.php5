@@ -16,7 +16,7 @@ Don't know if this is necessary yet, so don't include docs for it.
 	private $token;
 	private $data;
  
- 	function __autoconstruct($token,$uid) {
+ 	function __construct(Token $token,$uid) {
 		global $I2_SQL;
 
 		$this->uid = $uid;

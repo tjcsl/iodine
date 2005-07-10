@@ -34,7 +34,7 @@ class User {
 		}
 	}	
 
-	function get_info($token,$uid) {
+	function get_info(Token $token,$uid) {
 		global $I2_ERR;
 		
 		return new UserInfo($token,$uid);
@@ -44,7 +44,7 @@ class User {
 		return $this->curuid;
 	}
 
-	function get_current_user_info($token) {
+	function get_current_user_info(Token $token) {
 		if (isSet($_SESSION['i2_uid'])) {
 			$this->curuid = $_SESSION['i2_uid'];
 		}
@@ -57,14 +57,14 @@ class User {
 	/**
 	* Returns an array of class sectionIDs. Use the Schedule class to get more info about those classes.
 	*/
-	function get_schedule($token) {
+	function get_schedule(Token $token) {
 		if (!$this->curinfo) {
 		 	$this->curinfo = $this->get_info($token,$this->curuid);
 		}
 		return $this->curinfo->get_schedule($token);
 	}
 
-	function get_desired_boxes($token) {
+	function get_desired_boxes(Token $token) {
 		global $I2_SQL;
 		$res = $I2_SQL->query($token, 'SELECT boxes FROM users WHERE uid=%d;', $this->curuid);
 		//$res = $I2_SQL->select($token,'users','boxes','uid=%d',array($this->curuid));
@@ -73,7 +73,7 @@ class User {
 		return array();
 	}
 
-	function get_users_with_birthday($token, $date) {
+	function get_users_with_birthday(Token $token, $date) {
 		global $I2_SQL;
 		/* date in format YYYY-MM-DD
 		 * extract the month/day and year components for databse query

@@ -20,7 +20,7 @@ class ClassInfo {
 	private $cid;
 	private $data;
 
-	function __construct($token,$cid) {
+	function __construct(Token $token,$cid) {
 		global $I2_SQL;
 		global $I2_ERR;
 		
@@ -43,7 +43,7 @@ class ClassInfo {
 		$this->data = $res;
 	}
 
-	function check_token($token,$field) {
+	function check_token(Token $token,$field) {
 		if (!$token->check_rights('info/classes-'.$this->cid.'-'.$field,'r')) {
 			$I2_ERR->nonfatal_error("An invalid access token was used in attempting to access the $field info field of class ".$this->cid);
 			return false;
@@ -51,27 +51,27 @@ class ClassInfo {
 		return true;
 	}
 
-	function get_teachers($token) {
+	function get_teachers(Token $token) {
 		if(!check_token($token,'teachers')) return null;
 		return explode(":", $this->data['teachers']);
 	}
 
-	function get_period($token) {
+	function get_period(Token $token) {
 		if(!check_token($token,'period')) return null;
 		return $this->data['period'];
 	}
 
-	function get_length($token) {
+	function get_length(Token $token) {
 		if(!check_token($token,'length')) return null;
 		return $this->data['length'];
 	}
 
-	function get_time($token) {
+		function get_time(Token $token) {
 		if(!check_token($token,'time')) return null;
 		return $this->data['time'];
 	}
 
-	function get_name($token) {
+	function get_name(Token $token) {
 		global $I2_ERR, $I2_SQL;
 		if(!check_token($token,'name')) return null;
 		if (!$token->check_rights('info/classdescriptions-'.$this->data['descriptionid'].'-name','r')) {
@@ -87,7 +87,7 @@ class ClassInfo {
 		return $res['name'];
 	}
 
-	function get_description($token) {
+	function get_description(Token $token) {
 		global $I2_ERR, $I2_SQL;
 		if(!check_token($token,'description')) return null;
 		if (!$token->check_rights('info/classdescriptions-'.$this->data['descriptionid'].'-description','r')) {

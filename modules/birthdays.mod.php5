@@ -20,7 +20,7 @@ class Birthdays implements Module{
 
 	private $namearr;
 
-	function init_box($token){
+	function init_box(Token $token){
 		global $I2_SQL, $I2_USER;
 		$this->namearr = $I2_USER->get_users_with_birthday($token,date("Y-m-d"));
 		return TRUE;
@@ -30,7 +30,7 @@ class Birthdays implements Module{
 		$disp->disp('birthdaybox.tpl',array('birthdays' =>$this->namearr));
 	}
 	
-	function init_pane($token){
+	function init_pane(Token $token){
 		return FALSE;
 	}
 	

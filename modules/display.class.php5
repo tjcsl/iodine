@@ -201,7 +201,7 @@ class Display {
 	/**
 	* Shows the login screen.
 	*/
-	function show_login($token) {
+	function show_login(Token $token) {
 		$this->global_header();
 		$login = new Login();
 		if(!$login->init_pane($token)) return;

@@ -130,12 +130,12 @@ class MySQL {
 	*
 	* @todo check permissions on table access
 	* @access public
-	* @param string $token The permissions token, ensuring that you have
+	* @param Token $token The permissions token, ensuring that you have
 	*                      access to the table(s) you're trying to access.
 	* @param string $query The printf-ifyed query you want to run.
 	* @param mixed $args,... Arguments for printf tags.
 	*/
-	public function query($token, $query) {
+	public function query(Token $token, $query) {
 		global $I2_ERR,$I2_LOG;
 
 		$argc = func_num_args()-2;

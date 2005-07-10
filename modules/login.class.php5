@@ -33,7 +33,7 @@ class Login {
 		));
 	}
 
-	function init_pane($token) {
+	function init_pane(Token $token) {
 		global $I2_ARGS, $I2_AUTH, $I2_USER, $I2_SQL, $_SESSION;
 		if (isSet($I2_ARGS['login_username']) && isSet($I2_ARGS['login_password'])) { 
 			if ($I2_AUTH->check_user($I2_ARGS['login_username'],$I2_ARGS['login_password'])) {

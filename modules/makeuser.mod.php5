@@ -18,7 +18,7 @@
 */
 class Makeuser implements Module {
 
-	function init_box($token) {
+	function init_box(Token $token) {
 		return FALSE;
 	}
 
@@ -29,7 +29,7 @@ class Makeuser implements Module {
 		return "Make User";
 	}
 
-	function init_pane($token) {
+	function init_pane(Token $token) {
 		global $I2_ARGS,$I2_SQL;
 		if (isSet($I2_ARGS['makeuser_uid'])) {
 			$I2_SQL->insert($token,'users',

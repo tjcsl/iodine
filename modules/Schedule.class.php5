@@ -22,7 +22,7 @@ class Schedule {
        private $data;
        private $classes = false;
        
-       function __construct($token,$uid) {
+       function __construct(Token $token,$uid) {
        	global $I2_SQL;
        	
        	$this->uid = $uid;
