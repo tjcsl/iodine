@@ -5,7 +5,7 @@
 
 	* @author The Intranet2 Development Team <intranet2@lists.tjhsst.edu>
 	* @copyright 2004-2005 The Intranet2 Development Team
-	* @version 1.0
+	* @version $Id: functions.inc.php5,v 1.11 2005/07/10 18:44:57 adeason Exp $
 	* @since 1.0
 	* @package core
 	* @filesource
@@ -168,28 +168,31 @@
 	}
 
 	function redirect($modulename) {
-		global $I2_LOG, $I2_DISP;
+		global $I2_DISP;
 		if (!$modulename || !get_i2module($modulename)) {
 			//TODO: note the caller and print info about it.
-			$I2_LOG->log_debug("An attempt to include a null module was made.");
+			d("An attempt to include a null module was made.");
 			return;
 		}
 		$I2_DISP->halt_display();
-		$I2_LOG->log_debug("Redirecting to module $modulename");
+		d("Redirecting to module $modulename");
 		set_i2var('i2_desired_module',$modulename);
 	}
 
+	/**
+	* @todo clean up the *_i2var stuff
+	*/
 	function set_i2var($varname,$value) {
 		global $I2_ARGS, $I2_LOG;
 		//TODO: permissions check by caller - only core modules should be able to do this
-		$I2_LOG->log_debug("Setting i2 variable $varname to $value");
+		d("Setting i2 variable $varname to $value");
 		$_SESSION[$varname] = $value;
 		$I2_ARGS[$varname] = $value;
 	}
 
 	function unset_i2var($varname) {
 		global $I2_ARGS, $I2_LOG;
-		$I2_LOG->log_debug("Unsetting i2 variable $varname");
+		d("Unsetting i2 variable $varname");
 		//TODO: check this...
 		$_SESSION[$varname] = null;
 		$I2_ARGS[$varname] = null;
