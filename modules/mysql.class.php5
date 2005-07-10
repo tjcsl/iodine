@@ -128,7 +128,6 @@ class MySQL {
 	* <li>%% - Outputs a literal '%'</li>
 	* </ul>
 	*
-	* @todo check permissions on table access
 	* @access public
 	* @param Token $token The permissions token, ensuring that you have
 	*                      access to the table(s) you're trying to access.
