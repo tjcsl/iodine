@@ -1,67 +1,63 @@
 /* This table contains user information which is either editable or could
 possibly be restricted by privacy preferences */
-CREATE TABLE userinfo(
+CREATE TABLE userinfo (
 	/* binds to other user/userinfo tables */
 	uid MEDIUMINT UNSIGNED NOT NULL UNIQUE,
 	PRIMARY KEY(uid),
 	
 	bdate DATE DEFAULT NULL,
 	
-	phone_home VARCHAR(20) DEFAULT "",
-	phone_cell VARCHAR(20) DEFAULT "",
-	phone_other VARCHAR(20) DEFAULT "",
+	phone_home VARCHAR(20) DEFAULT NULL,
+	phone_cell VARCHAR(20) DEFAULT NULL,
+	phone_other VARCHAR(20) DEFAULT NULL,
 	
 	/*	Address information	 */
 
-	address1_city VARCHAR(64) DEFAULT "",
-	address1_state VARCHAR(2) DEFAULT "",
-	address1_zip VARCHAR(12) DEFAULT "",
-	address1_street VARCHAR(255) DEFAULT "",
+	address1_city VARCHAR(63) DEFAULT NULL,
+	address1_state VARCHAR(2) DEFAULT NULL,
+	address1_zip VARCHAR(12) DEFAULT NULL,
+	address1_street VARCHAR(255) DEFAULT NULL,
 	
-	address2_city VARCHAR(64) DEFAULT "",
-	address2_state VARCHAR(2) DEFAULT "",
-	address2_zip VARCHAR(12) DEFAULT "",
-	address2_street VARCHAR(255) DEFAULT "",
+	address2_city VARCHAR(63) DEFAULT NULL,
+	address2_state VARCHAR(2) DEFAULT NULL,
+	address2_zip VARCHAR(12) DEFAULT NULL,
+	address2_street VARCHAR(255) DEFAULT NULL,
 	
-	address3_city VARCHAR(64) DEFAULT "",
-	address3_state VARCHAR(2) DEFAULT "",
-	address3_zip VARCHAR(12) DEFAULT "",
-	address3_street VARCHAR(255) DEFAULT "",
+	address3_city VARCHAR(63) DEFAULT NULL,
+	address3_state VARCHAR(2) DEFAULT NULL,
+	address3_zip VARCHAR(12) DEFAULT NULL,
+	address3_street VARCHAR(255) DEFAULT NULL,
 
 	/* Screen names and email */
 
-	sn0 VARCHAR(128) DEFAULT "",
-	sn1 VARCHAR(128) DEFAULT "",
-	sn2 VARCHAR(128) DEFAULT "",
-	sn3 VARCHAR(128) DEFAULT "",
-	sn4 VARCHAR(128) DEFAULT "",
-	sn5 VARCHAR(128) DEFAULT "",
-	sn6 VARCHAR(128) DEFAULT "",
-	sn7 VARCHAR(128) DEFAULT "",
+	sn0 VARCHAR(127) DEFAULT NULL,
+	sn1 VARCHAR(127) DEFAULT NULL,
+	sn2 VARCHAR(127) DEFAULT NULL,
+	sn3 VARCHAR(127) DEFAULT NULL,
+	sn4 VARCHAR(127) DEFAULT NULL,
+	sn5 VARCHAR(127) DEFAULT NULL,
+	sn6 VARCHAR(127) DEFAULT NULL,
+	sn7 VARCHAR(127) DEFAULT NULL,
 
-	email0 VARCHAR(128) DEFAULT "",
-	email1 VARCHAR(128) DEFAULT "",
-	email2 VARCHAR(128) DEFAULT "",
-	email3 VARCHAR(128) DEFAULT "",
+	email0 VARCHAR(127) DEFAULT NULL,
+	email1 VARCHAR(127) DEFAULT NULL,
+	email2 VARCHAR(127) DEFAULT NULL,
+	email3 VARCHAR(127) DEFAULT NULL,
 
 	/* Other assorted stuff */
 
-	sex ENUM('M','F') DEFAULT NULL,
+	webpage VARCHAR(255) DEFAULT NULL,
 	
-	grade ENUM('9', '10', '11', '12', 'staff') DEFAULT NULL,
+	locker SMALLINT UNSIGNED DEFAULT NULL,
 	
-	webpage VARCHAR(256) DEFAULT "",
-	
-	locker SMALLINT UNSIGNED DEFAULT 0,
-	
-	counselor VARCHAR(64) DEFAULT "",
+	counselor VARCHAR(63) DEFAULT NULL,
 	
 	picture0 SMALLINT DEFAULT NULL,
 	picture1 SMALLINT DEFAULT NULL,
 	picture2 SMALLINT DEFAULT NULL,
 	picture3 SMALLINT DEFAULT NULL,
 
-	boxes TEXT NOT NULL DEFAULT "",
+	boxes TEXT DEFAULT NULL,
 
 	groups TEXT DEFAULT NULL
 
