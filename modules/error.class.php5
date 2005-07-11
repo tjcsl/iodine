@@ -2,9 +2,8 @@
 /**
 * Just contains the definition for the class {@link Error}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
-* @copyright 2004 The Intranet 2 Development Team
-* @version 1.0
-* @since 1.0
+* @copyright 2004-2005 The Intranet 2 Development Team
+* @version $Id: error.class.php5,v 1.9 2005/07/11 05:16:36 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -60,13 +59,12 @@ class Error {
 
 	/**
 	* The generic fatal error function.
-	* The generic error function.
+	*
 	* Use this function to signify an error. Processing will
 	* stop at the end of this method call, so tables/divs/etc will not be
-	* effectively stop from the underlying module's point of view.
-	* Even though processing will technically continue so the page
-	* renders properly, control is taken away from the module, so
-	* you cannot do anything after calling this method. Don't try.
+	* closed. If you want that to happen, then throw an exception. This
+	* method is just for errors which must cause Iodine to stop immediately
+	*
 	* @param string $msg The error message to display.
 	* @param bool $critical Whether or not to email this error to
 	* @param boolean $critical Whether or not to email this error to
@@ -105,11 +103,9 @@ class Error {
 		global $I2_LOG;
 
 		if (isset($I2_LOG)) {
-		if (!isset($I2_LOG)) {
-			echo("$msg <br />");
+			$I2_LOG->log_error($msg);
+		}
 	}
-		
-		$I2_LOG->log_error($msg);
 
 }
 

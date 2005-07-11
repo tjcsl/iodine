@@ -3,7 +3,7 @@
 * Just contains the definition for the interface {@link Module}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version 1.0
+* @version $Id: Module.class.php5,v 1.9 2005/07/11 05:16:36 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Module
@@ -48,6 +48,9 @@ interface Module {
 	* Performs all initialization necessary for this module to be 
 	* displayed in an ibox.
 	*
+	* @returns string The title of the box if it is to be displayed,
+	*                 otherwise FALSE if this module doesn't have an
+	*                 intrabox.
 	* @abstract
 	*/
 	function init_box();
@@ -56,6 +59,7 @@ interface Module {
 	* Performs all initialization necessary for this module to be
 	* displayed as the main page.
 	*
+	* @returns string The title of the main pane.
 	* @abstract
 	*/
 	function init_pane();

@@ -3,8 +3,7 @@
 * The core module for Iodine.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @since 1.0
-* @version 1.0
+* @version $Id: core.php5,v 1.25 2005/07/11 05:16:30 adeason Exp $
 * @package core
 * @filesource
 */
@@ -122,7 +121,7 @@ try {
 	 *
 	 * @global Display $I2_DISP
 	 */
-	$I2_DISP = new Display('core'); 
+	$I2_DISP = new Display(); 
 	/**
 	 * The global authentication mechanism.
 	 *

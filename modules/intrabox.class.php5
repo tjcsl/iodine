@@ -1,7 +1,16 @@
 <?php
+/**
+* Just contains the definition for the class {@link IntraBox}.
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2004-2005 The Intranet 2 Development Team
+* @version $Id: intrabox.class.php5,v 1.4 2005/07/11 05:16:36 adeason Exp $
+* @package core
+* @subpackage Display
+* @filesource
+*/
 
 /**
-* Class for intraboxen.
+* Class for obtaining/displaying/processing IntraBoxes.
 *
 * @package core
 * @subpackage Display
@@ -22,6 +31,9 @@ class IntraBox {
 	*/
 	private static $main_module = NULL;
 
+	/**
+	* The display object to display the intrabox templates on.
+	*/
 	private static $display = NULL;
 
 	/**
@@ -95,6 +107,14 @@ class IntraBox {
 		}
 	}
 
+	/**
+	* Displays all intraboxes for the current logged-in user.
+	*
+	* @param Module $main_module The module that will be used to display
+	*                            the main content pane. This is passed so
+	*                            that particular module is not instantiated
+	*                            twice.
+	*/
 	public static function display_boxes($main_module) {
 		global $I2_SQL,$I2_ARGS;
 		
@@ -102,12 +122,45 @@ class IntraBox {
 			self::$main_module = $main_module;
 		}
 
-		$res = $I2_SQL->query('SELECT boxes FROM userinfo WHERE uid=%d', $_SESSION['i2_uid'])->fetch_all_arrays(MYSQL_NUM);
-		foreach(explode(',', $res[0][0]) as $mod) {
+		foreach(self::get_user_boxes($_SESSION['i2_uid']) as $mod) {
 			$box = new Intrabox($mod);
 			$box->display_box();
 		}
+	}
 
+	/**
+	* Gets the current list of intraboxes that a user has set to display.
+	*
+	* @param int $uid The user ID of the user from which to get the list of
+	*                 intraboxes.
+	* @return array The list of the names of the intraboxes.
+	*/
+	public static function get_user_boxes($uid) {
+		global $I2_SQL;
+		$res = $I2_SQL->query('SELECT boxes FROM userinfo WHERE uid=%d', $uid)->fetch_all_arrays(MYSQL_NUM);
+		return explode(',', $res[0][0]);
+	}
+
+	/**
+	* Sets a user's preferences so the specified intraboxes are displayed
+	* for them.
+	*
+	* @param int $uid The user ID of the user to set the boxes for.
+	* @param array $boxes The array of the names of the boxes.
+	*/
+	public static function set_user_boxes($uid, $boxes) {
+		global $I2_SQL;
+		$box_str = implode(',', $boxes);
+		$I2_SQL->query('UPDATE userinfo SET boxes=%s WHERE uid=%d;', $box_str, $uid);
+	}
+
+	/**
+	* @return array The names of all of the intraboxes that a user can
+	*               choose to have.
+	* @todo Write this method.
+	*/
+	public static function get_all_boxes() {
+		
 	}
 }
 

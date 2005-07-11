@@ -3,22 +3,12 @@
 * Contains the definition for the class {@link MySQL}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004 The Intranet 2 Development Team
-* @version 1.0
-* @since 1.0
+* @version $Id: mysql.class.php5,v 1.18 2005/07/11 05:16:37 adeason Exp $
 * @package core
 * @subpackage MySQL
 * @filesource
 */
 
-/**
-* A string representing all custom printf tags for mysql queries which require an argument. Each character represents a different tag.
-*/
-define('I2_SQL_TAGS_ARG', 'adsi');
-/**
-* A string representing all custom printf tags for mysql queries which do not require an argument. Each character represents a different tag.
-*/
-define('I2_SQL_TAGS_NOARG', 'V%');
-		
 /**
 * The MySQL module for Iodine.
 * @package core
@@ -27,6 +17,11 @@ define('I2_SQL_TAGS_NOARG', 'V%');
 */
 class MySQL {
 
+	/**
+	* The mysql_pconnect() link
+	*/
+	private $link;
+	
 	/**
 	* Represents a SELECT query.
 	*/
@@ -43,6 +38,17 @@ class MySQL {
 	* Represents a DELETE query.
 	*/
 	const DELETE = 4;
+
+	/**
+	* A string representing all custom printf tags for mysql queries which require an argument. Each character represents a different tag.
+	*/
+	const TAGS_ARG = 'adsi';
+
+	/**
+	* A string representing all custom printf tags for mysql queries which do not require an argument. Each character represents a different tag.
+	*/
+	const TAGS_NOARG = 'V%';
+		
 	
 	/**
 	* The MySQL class constructor.
@@ -55,18 +61,6 @@ class MySQL {
 	}
 
 	/**
-	* Converts/wraps a MySQL result object into an Intranet2 type.
-	*
-	* @access private
-	* @param object $sql The MySQL resultset object.
-	* @param mixed $querytype A query type, from the MySQL module.
-	* @return object An Intranet2-MySQL result object.
-	*/
-	private function sql_to_result($sql,$querytype) {
-		return new Result($sql,$querytype);
-	}
-	
-	/**
 	* Connects to a MySQL database server.
 	*
 	* @access protected
@@ -75,9 +69,9 @@ class MySQL {
 	* @param string $password The MySQL password.
 	*/
 	protected function connect($server, $user, $password) {
-		global $I2_LOG;
-		d("Connecting to $server as $user");
-		return mysql_pconnect($server, $user, $password);
+		d("Connecting to mysql server $server as $user");
+		$this->link = mysql_pconnect($server, $user, $password);
+		return $this->link;
 	}
 	
 	/**
@@ -87,18 +81,19 @@ class MySQL {
 	* @param string $database The name of the database to select.
 	*/
 	protected function select_db($database) {
-		mysql_select_db($database);
+		mysql_select_db($database, $this->link);
 	}
 
 	/**
-	* Perform a preformatted MySQL query.  NOT FOR OUTSIDE USE!!!
+	* Perform a preformatted MySQL query.
 	*
 	* @param string $query The query string.
+	* @return resource A raw mysql result resourse.
 	*/
 	protected function raw_query($query) {
 		global $I2_ERR;
-		$r = mysql_query($query);
-		if ($err = mysql_error()) {
+		$r = mysql_query($query, $this->link);
+		if ($err = mysql_error($this->link)) {
 			throw new I2Exception('MySQL error: '.$err);
 			return false;
 		}
@@ -106,14 +101,15 @@ class MySQL {
 	}
 
 	/**
-	* Printf-style MySQL query function
+	* Printf-style MySQL query function.
+	*
 	* This takes a string and args. The string is the actual MySQL query
 	* with optional printf-style markers to indicate values that should be
 	* checked (or formatted in a certain way). Any other arguments after
 	* that are the printf-style arguments. For example:
 	*
 	* <code>
-	* query('SELECT * FROM mytable WHERE id=`%d`', $the_id);
+	* query('SELECT * FROM mytable WHERE id=%d', $the_id);
 	* </code>
 	*
 	* Will essentially execute the query
@@ -124,6 +120,8 @@ class MySQL {
 	* <ul>
 	* <li>%a - A string which only contains alphanumeric characters</li>
 	* <li>%d or %i - An integer, or an integer in a string</li>
+	* <li>%s - A string, which will be quoted, and escapes all necessary
+	* characters for use in a mysql statement</li>
 	* <li>%V - Outputs the current Iodine version</li>
 	* <li>%% - Outputs a literal '%'</li>
 	* </ul>
@@ -131,6 +129,7 @@ class MySQL {
 	* @access public
 	* @param string $query The printf-ifyed query you want to run.
 	* @param mixed $args,... Arguments for printf tags.
+	* @return Result The results of the query run.
 	*/
 	public function query($query) {
 		global $I2_ERR,$I2_LOG;
@@ -141,7 +140,7 @@ class MySQL {
 		
 		/* matches Iodine custom printf-style tags */
 		if( preg_match_all(
-			'/(?<!%)%['.I2_SQL_TAGS_ARG.I2_SQL_TAGS_NOARG.']/',
+			'/(?<!%)%['.self::TAGS_ARG.self::TAGS_NOARG.']/',
 			$query,
 			$tags,
 			PREG_PATTERN_ORDER | PREG_OFFSET_CAPTURE )
@@ -150,7 +149,7 @@ class MySQL {
 				/*$tag[0] is the string, $tag[1] is the offset*/
 				
 				/* tags that require an argument */
-				if ( strpos(I2_SQL_TAGS_ARG, $tag[0][1]) ) {
+				if ( strpos(self::TAGS_ARG, $tag[0][1]) ) {
 					if($argc < 1) {
 						throw new I2Exception('Insufficient arguments to mysql query string');
 					}
@@ -171,8 +170,10 @@ class MySQL {
 							throw new I2Exception('String `'.$arg.'` contains non-alphanumeric characters, and was passed as an %a string in a mysql query');
 							$replacement = '';
 						}
-						$replacement = $arg;
+					case 's':
+						$replacement = '\''.mysql_real_escape_string($arg).'\'';
 						break;
+
 					/* integer*/
 					case 'd':
 					case 'i':
@@ -186,9 +187,6 @@ class MySQL {
 							throw new I2Exception('The string `'.$arg.'` is not an integer, but was passed as %d or %i in a mysql query');
 							$replacement = '0';
 						}
-						break;
-					case 's':
-						$replacement = '\''.$arg.'\'';
 						break;
 					
 					/* Non-argument tags below here */
@@ -235,17 +233,6 @@ class MySQL {
 
 		return new Result($this->raw_query($query),MYSQL::SELECT);
 	}
-
-	/**
-	* Joins two result objects into one.
-	*
-	* @param $left The resultset to appear first in the result.
-	* @param $right The resultset to appear last in the result.
-	* @return mixed The composite resultset object.
-	*/
-	function ljoin($left, $right) {
-	}
-
 }
 
 ?>

@@ -3,8 +3,7 @@
 * Just contains the definition for the class {@link Auth}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version 1.0
-* @since 1.0
+* @version $Id: auth.class.php5,v 1.8 2005/07/11 05:16:36 adeason Exp $
 * @package core
 * @subpackage Auth
 * @filesource
@@ -19,9 +18,10 @@ class Auth {
 	/**
 	* The Auth class constructor.
 	* 
-	* @access public
+	* This constructor determines if a user is logged in, and if not,
+	* displays the login page, and checks the username and password.
 	*/
-	function __construct() {	
+	public function __construct() {	
 		global $I2_ARGS;
 
 		if( isset($I2_ARGS[0]) && $I2_ARGS[0] == 'logout' ) {
@@ -42,7 +42,7 @@ class Auth {
 	/**
 	* Checks the user's authentication status.
 	*
-	* @return boolean True if user is authenticated, false otherwise.
+	* @return boolean True if user is authenticated, False otherwise.
 	*/
 	public function is_authenticated() {
 		if (	isset($_SESSION['i2_uid']) 
@@ -55,7 +55,7 @@ class Auth {
 	}
 	
 	/**
-	* Checks a user with the specified password.
+	* Checks a user with the specified password against the LOCAL.TJHSST.EDU kerberos realm.
 	*
 	* @todo Specify a cache location to make sure it doesn't destroy the server's kerberos credentials, and possible preserve the creds for later use
 	* @param string $user The username of the user you want to check
@@ -114,6 +114,7 @@ class Auth {
 			$uname='';
 		}
 		
+		// Show the login box
 		$disp = new Display('login');
 		$disp->disp('login.tpl',array('failed' => $loginfailed,'uname' => $uname, 'css' => i2config_get('www_root', NULL, 'core') . i2config_get('login_css', NULL, 'auth')));
 

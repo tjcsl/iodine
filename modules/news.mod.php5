@@ -3,8 +3,7 @@
 * Just contains the definition for the class {@link News}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version 1.0
-* @since 1.0
+* @version $Id: news.mod.php5,v 1.13 2005/07/11 05:16:37 adeason Exp $
 * @package modules
 * @subpackage News
 * @filesource
@@ -19,16 +18,24 @@
 */
 class News implements Module {
 	
+	/**
+	* The display object to use
+	*/
 	private $display;
+
+	/**
+	* A 2-dimensional array containing all of the information for news posts.
+	*/
 	private $newsdetails = NULL; 
+
+	/**
+	* A 1-dimensional array containing all of the titles for all news posts.
+	*/
 	private $summaries;
 	
 	/**
-	* The News class constructor.
+	* Required by the {@link Module} interface.
 	*/
-	function __construct() {
-	}
-	
 	function init_pane() {
 		global $I2_SQL;
 		$res = $I2_SQL->query('SELECT title,text,author,authorID,authortype,posted FROM news ORDER BY posted DESC;');
@@ -36,11 +43,17 @@ class News implements Module {
 		return TRUE;
 	}
 	
+	/**
+	* Required by the {@link Module} interface.
+	*/
 	function display_pane($display) {
 		//$display->raw_display("This is today's news, in a pane.");
 		$display->disp('newspane.tpl',array('news_stories'=>$this->newsdetails));
 	}
 	
+	/**
+	* Required by the {@link Module} interface.
+	*/
 	function init_box() {
 		if( $this->newsdetails === NULL ) {
 			global $I2_SQL;
@@ -61,10 +74,16 @@ class News implements Module {
 		return 'There '.($num==1?'is':'are'). ' '.$num.' news stor'.($num==1?'y':'ies').' to read';
 	}
 
+	/**
+	* Required by the {@link Module} interface.
+	*/
 	function display_box($display) {
 		$display->disp('newsbox.tpl',array('summaries'=>$this->summaries));
 	}
 
+	/**
+	* Required by the {@link Module} interface.
+	*/
 	function get_name() {
 		return "News";
 	}
