@@ -51,7 +51,7 @@ interface Module {
 	* @abstract
 	* @param Token $token An authentication token to pass to User.
 	*/
-	function init_box(Token $token);
+	function init_box($token);
 
 	/**
 	* Performs all initialization necessary for this module to be
@@ -60,7 +60,7 @@ interface Module {
 	* @abstract
 	* @param Token $token An authentication token to pass to User.
 	*/
-	function init_pane(Token $token);
+	function init_pane($token);
 	
 }
 ?>

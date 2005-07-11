@@ -134,7 +134,7 @@ class MySQL {
 	* @param string $query The printf-ifyed query you want to run.
 	* @param mixed $args,... Arguments for printf tags.
 	*/
-	public function query(Token $token, $query) {
+	public function query($token, $query) {
 		global $I2_ERR,$I2_LOG;
 
 		$argc = func_num_args()-2;
