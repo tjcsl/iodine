@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Logging}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: logging.class.php5,v 1.12 2005/07/11 06:48:44 adeason Exp $
+* @version $Id: logging.class.php5,v 1.13 2005/07/11 19:28:04 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -90,6 +90,9 @@ class Logging {
 
 		if(isset($I2_DISP)) {
 			$I2_DISP->disp('error.tpl', array('error'=>$msg));
+		}
+		else {
+			echo $msg;
 		}
 	}
 	
