@@ -3,7 +3,7 @@
 * The core module for Iodine.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: core.php5,v 1.26 2005/07/11 07:07:02 adeason Exp $
+* @version $Id: core.php5,v 1.27 2005/07/11 15:39:45 adeason Exp $
 * @package core
 * @filesource
 */
@@ -107,14 +107,6 @@ try {
 	 */
 	//$I2_LDAP = new LDAP();
 	/**
-	 * The global user info mechanism.
-	 *
-	 * Use this {@link User} object for getting information about a user.
-	 *
-	 * @global User $I2_USER
-	 */
-	$I2_USER = new User();
-	/**
 	 * The global display mechanism.
 	 *
 	 * Use this {@link Display} object for nothing, unless you're core.php.
@@ -130,6 +122,14 @@ try {
 	 * @global Auth $I2_AUTH
 	 */
 	$I2_AUTH = new Auth();
+	/**
+	 * The global user info mechanism.
+	 *
+	 * Use this {@link User} object for getting information about a user.
+	 *
+	 * @global User $I2_USER
+	 */
+	$I2_USER = new User();
 	
 	/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here) */
 
