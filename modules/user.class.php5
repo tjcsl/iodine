@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.20 2005/07/11 15:40:56 adeason Exp $
+* @version $Id: user.class.php5,v 1.21 2005/07/11 19:40:42 adeason Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -40,7 +40,7 @@ class User {
 		global $I2_SQL, $I2_ERR;
 		if( $uid === NULL && isset($_SESSION['i2_uid'])) {
 			$uid = $_SESSION['i2_uid'];
-			$this->info = $I2_SQL->query('SELECT * FROM user where uid=%d', $uid)->fetch_row(MYSQL_ASSOC);
+			$this->info = $I2_SQL->query('SELECT * FROM user where uid=%d', $uid)->fetch_array(MYSQL_ASSOC);
 			if( ! $this->info ) {
 				$I2_ERR->nonfatal_error('A User object was created with a nonexistent uid');
 			}
@@ -83,7 +83,7 @@ class User {
 		
 		// printf input sanitation unneccesary, since we just tested it
 		// for vailidity in the lines above
-		$res = $I2_SQL->query('SELECT '.$name.' FROM '.$table.' WHERE uid=%d', $this->uid)->fetch_row(MYSQL_NUM);
+		$res = $I2_SQL->query('SELECT '.$name.' FROM '.$table.' WHERE uid=%d', $this->uid)->fetch_array(MYSQL_NUM);
 		return $res[0];
 	}
 
@@ -105,7 +105,7 @@ class User {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
 		}
 		
-		return $I2_SQL->query('SELECT * FROM user LEFT JOIN userinfo USING (uid) WHERE uid=%d;', $this->uid)->fetch_row(MYSQL_ASSOC);
+		return $I2_SQL->query('SELECT * FROM user LEFT JOIN userinfo USING (uid) WHERE uid=%d;', $this->uid)->fetch_array(MYSQL_ASSOC);
 	}
 
 	/**
@@ -143,7 +143,7 @@ class User {
 			$cols = $argv;
 		}
 
-		return $I2_SQL->query('SELECT '.implode(',', $cols). ' FROM user LEFT JOIN userinfo USING (uid) WHERE uid=%d;', $this->uid)->fetch_row(MYSQL_NUM);
+		return $I2_SQL->query('SELECT '.implode(',', $cols). ' FROM user LEFT JOIN userinfo USING (uid) WHERE uid=%d;', $this->uid)->fetch_array(MYSQL_NUM);
 	}
 }
 
