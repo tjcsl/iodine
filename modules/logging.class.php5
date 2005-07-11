@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Logging}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: logging.class.php5,v 1.11 2005/07/11 05:16:36 adeason Exp $
+* @version $Id: logging.class.php5,v 1.12 2005/07/11 06:48:44 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -59,7 +59,7 @@ class Logging {
 			date('d/M/Y:H:i:s O') . '] "' .
 			$_SERVER['REQUEST_URI'] . '" "' .
 			(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'') . '" "' .
-			$_SERVER['HTTP_USER_AGENT'] . '"' ."\n"
+			(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'') . '"' ."\n"
 		);
 
 	}
