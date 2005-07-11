@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.27 2005/07/11 05:16:36 adeason Exp $
+* @version $Id: display.class.php5,v 1.28 2005/07/11 05:21:49 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -71,7 +71,7 @@ class Display {
 	* @param string $module_name The name of the module this Display object applies to.
 	*/
 	public function __construct($module_name='core') {
-		i2_force_load('Smarty.class.php');
+		require_once('Smarty.class.php');
 		$this->smarty = new Smarty;
 		//$this->smarty->register_prefilter(array(&$this,'prefilter'));
 		//$this->smarty->load_filter('pre','strip');
