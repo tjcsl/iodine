@@ -65,10 +65,9 @@ a:active {
 	width: 305px;
 }
 .intrabox {
+	margin-top:10px;
 	border: thin groove;
-	margin-bottom: 10pt;
 	width: 250px;
-	float: left;
 }
 .intrabox_title {
 	font-weight: bold;
@@ -101,6 +100,9 @@ a:active {
 }
 .bold {
 	font-weight: bold;
+}
+.left {
+	float:left;
 }
 #login_box {
 	position:absolute;
