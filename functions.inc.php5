@@ -5,7 +5,7 @@
 
 	* @author The Intranet2 Development Team <intranet2@lists.tjhsst.edu>
 	* @copyright 2004-2005 The Intranet2 Development Team
-	* @version $Id: functions.inc.php5,v 1.12 2005/07/11 00:45:58 adeason Exp $
+	* @version $Id: functions.inc.php5,v 1.13 2005/07/11 02:29:47 adeason Exp $
 	* @since 1.0
 	* @package core
 	* @filesource
@@ -174,7 +174,7 @@
 				throw new I2Exception('A redirect was attempted, but headers have already been sent in file '.$file.' on line '.$line);
 			}
 			else {
-				header('Location: '.i2config_get('www_root', 'https://iodine.tjhsst.edu/', 'display'));
+				header('Location: '.i2config_get('www_root', 'https://iodine.tjhsst.edu/', 'core'));
 				die();
 			}
 		}

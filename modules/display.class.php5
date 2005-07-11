@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.24 2005/07/11 00:49:01 adeason Exp $
+* @version $Id: display.class.php5,v 1.25 2005/07/11 02:29:49 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -239,7 +239,7 @@ class Display {
 	* Assigns all I2 variables which we want available in all tempaltes.
 	*/
 	private function assign_i2vals() {
-		$root = i2config_get('www_root', 'https://iodine.tjhsst.edu/','display');
+		$root = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
 		$this->smarty->assign('I2_ROOT', $root);
 		$this->smarty->assign('I2_SELF', $_SERVER['REDIRECT_URL']);
 		$this->smarty->assign('I2_CSS', $root . i2config_get('css_url', 'www/css.css', 'display'));
