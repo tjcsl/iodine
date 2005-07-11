@@ -22,20 +22,33 @@ class Auth {
 	* @access public
 	*/
 	function __construct() {	
+		global $I2_ARGS;
+
+		if( isset($I2_ARGS[0]) && $I2_ARGS[0] == 'logout' ) {
+			session_destroy();
+			unset($_SESSION);
+			/* Redirect to Iodine root. If we didn't do this, then
+			'logout' would still be in the query string if the user
+			tried to log in again immediately, which would cause
+			problems. So, we redirect instead. */
+			redirect();
+		}
+		
+		if( !$this->is_authenticated() && !$this->login() ) {
+			die();
+		}
 	}
 
 	/**
 	* Checks the user's authentication status.
 	*
-	* @return boolean True if user is authenticated, false if not.
+	* @return boolean True if user is authenticated, false otherwise.
 	*/
-	function check_authenticated() {
-		global $_SESSION, $I2_ARGS;
-		//FIXME: these need to be stored SERVER-SIDE, not in $_SESSION!!!!  Important!!!
-		if (isSet($_SESSION['i2_uid']) 
-			&& isSet($_SESSION['i2_login_time']) 
-			&& $_SESSION['i2_login_time'] <= time()+i2config_get('timeout',0,'login')) {
-			set_i2var('i2_login_time',time());
+	public function is_authenticated() {
+		if (	isset($_SESSION['i2_uid']) 
+			&& isset($_SESSION['i2_login_time']) 
+			&& $_SESSION['i2_login_time'] <= time()+i2config_get('timeout',600,'login')) {
+			$_SESSION['i2_login_time'] = time();
 			return TRUE;
 		}
 		return FALSE;
@@ -44,14 +57,14 @@ class Auth {
 	/**
 	* Checks a user with the specified password.
 	*
-	* @todo check_user needs to specify a cache location to make sure it doesn't destroy the server's kerberos credentials, and possible preserve the creds for later use
+	* @todo Specify a cache location to make sure it doesn't destroy the server's kerberos credentials, and possible preserve the creds for later use
 	* @param string $user The username of the user you want to check
 	* @param string $password The user's password
 	* @return boolean	True if correct user/pass pair, false
 	*			otherwise.
 	*/
 	 
-	function check_user($user, $password) {
+	public function check_user($user, $password) {
 		$descriptors = array(0 => array('pipe', 'r'), 1 => array('file', '/dev/null', 'w'), 2 => array('file', '/dev/null', 'w'));
 
 		$process = proc_open("kinit $user@LOCAL.TJHSST.EDU", $descriptors, $pipes);
@@ -67,7 +80,45 @@ class Auth {
 		}
 		return false;
 	}
-	
+
+	/**
+	* Login a user to the system.
+	*
+	* Displays the login box if the user is not logged in, and then returns
+	* FALSE. Returns TRUE if the user had successfully logged in on the
+	* last attempt with the login box.
+	*
+	* @returns bool Whether or not the user has successfully logged in.
+	*/
+	public function login() {
+		global $I2_SQL;
+
+		if (isset($_REQUEST['login_username']) && isset($_REQUEST['login_password'])) {
+		
+			if ($this->check_user($_REQUEST['login_username'],$_REQUEST['login_password'])) {
+
+				$uarr = $I2_SQL->query(true, 'SELECT uid FROM user WHERE username=%s;',$_REQUEST['login_username'])->fetch_array();
+
+				$_SESSION['i2_uid'] = $uarr['uid'];
+				$_SESSION['i2_username']= $_REQUEST['login_username'];
+				$_SESSION['i2_login_time'] = time();
+				
+				return TRUE;
+			} else {
+				/* Attempted login failed */
+				$loginfailed = TRUE;
+				$uname = $_REQUEST['login_username'];
+			}
+		} else {
+			$loginfailed = FALSE;
+			$uname='';
+		}
+		
+		$disp = new Display('login');
+		$disp->disp('login.tpl',array('failed' => $loginfailed,'uname' => $uname, 'css' => i2config_get('login_css', NULL, 'auth')));
+
+		return FALSE;
+	}
 }
 
 ?>

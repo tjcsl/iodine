@@ -1,8 +1,4 @@
 <div class='topbar'>
-[<if $i2_uid>]
-Hello, [<$first_name>]!
-<form action='[<$I2_SELF>]' method='post'>
-	<button name='i2_logout' value='1'>Logout</button>
-</form>
-[</if>]
+Hello, [<$first_name>], welcome to Intranet2!<br />
+<a href="[<$I2_ROOT>]logout">Logout</a>
 </div>
