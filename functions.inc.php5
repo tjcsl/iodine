@@ -5,7 +5,7 @@
 
 	* @author The Intranet2 Development Team <intranet2@lists.tjhsst.edu>
 	* @copyright 2004-2005 The Intranet2 Development Team
-	* @version $Id: functions.inc.php5,v 1.11 2005/07/10 18:44:57 adeason Exp $
+	* @version $Id: functions.inc.php5,v 1.12 2005/07/11 00:45:58 adeason Exp $
 	* @since 1.0
 	* @package core
 	* @filesource
@@ -167,8 +167,17 @@
 		return i2config_get($field, $default, 'core');
 	}
 
-	function redirect($modulename) {
+	function redirect($modulename=NULL) {
 		global $I2_DISP;
+		if( $modulename === NULL ) {
+			if( headers_sent($file, $line) ) {
+				throw new I2Exception('A redirect was attempted, but headers have already been sent in file '.$file.' on line '.$line);
+			}
+			else {
+				header('Location: '.i2config_get('www_root', 'https://iodine.tjhsst.edu/', 'display'));
+				die();
+			}
+		}
 		if (!$modulename || !get_i2module($modulename)) {
 			//TODO: note the caller and print info about it.
 			d("An attempt to include a null module was made.");
