@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.22 2005/07/10 20:49:43 adeason Exp $
+* @version $Id: display.class.php5,v 1.23 2005/07/10 21:59:41 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -109,8 +109,6 @@ class Display {
 	* This function basically displays everything and performs
 	* pretty much all processing done outside of core.
 	*
-	* @todo Some of the functionality here should probably be in another
-	*       class/module for intraboxes. Make that class and move the code.
 	* @param $module The name of the module to display in the main
 	*                panel and give processing control to.
 	* @param $mastertoken The token for displaying.
