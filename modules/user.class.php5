@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.19 2005/07/11 07:04:55 adeason Exp $
+* @version $Id: user.class.php5,v 1.20 2005/07/11 15:40:56 adeason Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -38,7 +38,7 @@ class User {
 	*/
 	public function __construct($uid = NULL) {
 		global $I2_SQL, $I2_ERR;
-		if( $uid === NULL ) {
+		if( $uid === NULL && isset($_SESSION['i2_uid'])) {
 			$uid = $_SESSION['i2_uid'];
 			$this->info = $I2_SQL->query('SELECT * FROM user where uid=%d', $uid)->fetch_row(MYSQL_ASSOC);
 			if( ! $this->info ) {
@@ -62,6 +62,10 @@ class User {
 	*/
 	public function __get( $name ) {
 		global $I2_SQL;
+
+		if( $this->uid === NULL ) {
+			throw new I2Exception('Tried to retrieve information for nonexistent user!');
+		}
 		
 		if( $this->info != NULL && in_array($name, array_keys($this->info)) ) {
 			return $this->info[$name];
@@ -96,6 +100,11 @@ class User {
 	*/
 	public function info() {
 		global $I2_SQL;
+
+		if( $this->uid === NULL ) {
+			throw new I2Exception('Tried to retrieve information for nonexistent user!');
+		}
+		
 		return $I2_SQL->query('SELECT * FROM user LEFT JOIN userinfo USING (uid) WHERE uid=%d;', $this->uid)->fetch_row(MYSQL_ASSOC);
 	}
 
@@ -116,6 +125,11 @@ class User {
 	*/
 	public function get_cols() {
 		global $I2_SQL;
+
+		if( $this->uid === NULL ) {
+			throw new I2Exception('Tried to retrieve information for nonexistent user!');
+		}
+		
 		if( func_num_args() < 1 ) {
 			throw new I2Exception('Illegal number of arguments passed to User::get_cols()');
 		}
