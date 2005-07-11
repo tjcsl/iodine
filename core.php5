@@ -3,7 +3,7 @@
 * The core module for Iodine.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: core.php5,v 1.25 2005/07/11 05:16:30 adeason Exp $
+* @version $Id: core.php5,v 1.26 2005/07/11 07:07:02 adeason Exp $
 * @package core
 * @filesource
 */
@@ -137,7 +137,7 @@ try {
 	been specified */
 	$module = isset($I2_ARGS[0]) ?
 		$I2_ARGS[0] :
-		$I2_USER->get_current_user_info()->get_startpage();
+		$I2_USER->startpage;
 
 	if (!get_i2module($module)) {
 		$I2_ERR->fatal_error('Invalid module name \''.$module.'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
