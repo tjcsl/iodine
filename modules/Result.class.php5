@@ -150,6 +150,8 @@ class Result {
 	* @return mixed As fetch_array.
 	*/
 	function fetch_row($rownum, $type = MYSQL_BOTH) {
+		$ret = $this->fetch_all_arrays($type);
+		return $ret[0];
 		foreach ($results as $res=>$arr) {
 			if ($arr[1] != MySQL::SELECT) {
 				continue;
