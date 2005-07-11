@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.23 2005/07/10 21:59:41 adeason Exp $
+* @version $Id: display.class.php5,v 1.24 2005/07/11 00:49:01 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -44,7 +44,7 @@ class Display {
 	*
 	* @access private
 	*/
-	private $buffering = TRUE;
+	private $buffering = FALSE;
 
 	/**
 	* The core display object to get buffering data from.
@@ -81,9 +81,6 @@ class Display {
 			self::$tpl_root = i2config_get('template_path','./','core');
 		}
 		$this->buffer = "";
-		//FIXME: this must be removed before production code!  It's a hack!
-		$this->smarty_assign('page_css',i2config_get('www_root').'/www/css.css');
-		$this->smarty_assign('I2_SELF',$_SERVER['REDIRECT_URL']);
 	}
 
 	/**
@@ -97,9 +94,9 @@ class Display {
 	* Displays the top bar.
 	*/
 	private function display_top_bar($mastertoken) {
-		global $I2_ARGS,$I2_SQL;
+		global $I2_SQL;
 
-		$res = $I2_SQL->query($mastertoken, 'SELECT fname FROM user WHERE uid=%d;', $I2_ARGS['i2_uid'])->fetch_all_arrays(MYSQL_ASSOC);
+		$res = $I2_SQL->query($mastertoken, 'SELECT fname FROM user WHERE uid=%d;', $_SESSION['i2_uid'])->fetch_all_arrays(MYSQL_ASSOC);
 		$this->disp('topbar.tpl', array('first_name' => $res[0]['fname']) );
 	}
 
@@ -239,17 +236,19 @@ class Display {
 	}
 
 	/**
-	* Assigns all i2_ variables in $I2_ARGS to the smarty object,
-	* thus making them available to templates.
+	* Assigns all I2 variables which we want available in all tempaltes.
 	*/
 	private function assign_i2vals() {
-		global $I2_ARGS;
-		foreach ($I2_ARGS as $key=>$val) {
+		$root = i2config_get('www_root', 'https://iodine.tjhsst.edu/','display');
+		$this->smarty->assign('I2_ROOT', $root);
+		$this->smarty->assign('I2_SELF', $_SERVER['REDIRECT_URL']);
+		$this->smarty->assign('I2_CSS', $root . i2config_get('css_url', 'www/css.css', 'display'));
+		/*foreach ($I2_ARGS as $key=>$val) {
 			if (strpos($key,'i2_') === 0) {
 				//This needs to be done directly.
 				$this->smarty->assign($key,$val);
 			}
-		}
+		}*/
 	}
 
 	/**
