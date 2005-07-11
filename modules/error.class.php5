@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Error}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: error.class.php5,v 1.10 2005/07/11 19:30:48 adeason Exp $
+* @version $Id: error.class.php5,v 1.11 2005/07/11 19:40:21 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -77,7 +77,7 @@ class Error {
 		
 		if ($critical) {
 			$I2_LOG->log_mail($out.'\r\nBacktrace: \r\n'.print_r(debug_backtrace(),TRUE));
-			$I2_LOG->log_mail($out);
+			$out .= "\r\n".'<br />This is a critical error, so an email is being sent to the developers, so hopefully this problem will be fixed soon.';
 		}
 		else {
 		if (!isset($I2_LOG)) {
@@ -87,6 +87,8 @@ class Error {
 
 		$I2_LOG->log_error($out);
 
+		//echo 'Backtrace: <br/><pre>'.print_r(debug_backtrace(),TRUE).'</pre>';
+		echo 'Backtrace: <br/><pre>'.print_r(debug_backtrace(),TRUE).'</pre>';
 		die();
 	}
 	
