@@ -64,11 +64,15 @@ a:active {
 	left: 10px;
 	width: 305px;
 }
-.ibox {
+.intrabox {
 	border: thin groove;
 	margin-bottom: 10pt;
 	width: 250px;
 	float: left;
+}
+.intrabox_title {
+	font-weight: bold;
+	background-color: #f77;
 }
 .boxheader {
 	color: #FFFFFF;
