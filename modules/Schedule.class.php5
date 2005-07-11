@@ -18,18 +18,15 @@
 class Schedule {
 	
        private $uid;
-       private $token;
        private $data;
        private $classes = false;
        
-       function __construct(Token $token,$uid) {
+       function __construct($uid) {
        	global $I2_SQL;
        	
        	$this->uid = $uid;
-       	$this->token = $token;
 
-	$this->data = $I2_SQL->query($token, 'SELECT * FROM schedules WHERE uid=%d;', $uid)->fetch_array();
-//       	$this->data = $I2_SQL->select($token,"schedules",false,"uid=%d",$uid)->fetch_array();
+	$this->data = $I2_SQL->query('SELECT * FROM schedules WHERE uid=%d;', $uid)->fetch_array();
        }
 
        function get_period($periodnum) {

@@ -60,8 +60,6 @@ try {
 	*/
 	$I2_ARGS = array();
 
-	$mastertoken = Token::master_token();
-
 	/* Eliminates extraneous slashes in the PATH_INFO
 	** And splits them into the global I2_ARGS array
 	*/
@@ -140,7 +138,7 @@ try {
 	been specified */
 	$module = isset($I2_ARGS[0]) ?
 		$I2_ARGS[0] :
-		$I2_USER->get_current_user_info($mastertoken)->get_startpage($mastertoken);
+		$I2_USER->get_current_user_info()->get_startpage();
 
 	if (!get_i2module($module)) {
 		$I2_ERR->fatal_error('Invalid module name \''.$module.'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
@@ -148,7 +146,7 @@ try {
 
 	/* Display will instantiate the module, we just pass the name */
 	d('Passing module ' . $module . ' to Display module', 9);
-	$I2_DISP->display_loop($module,$mastertoken);
+	$I2_DISP->display_loop($module);
 
 } catch (Exception $e) {
 	if(isset($I2_ERR)) {

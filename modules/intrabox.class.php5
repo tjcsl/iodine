@@ -102,7 +102,7 @@ class IntraBox {
 			self::$main_module = $main_module;
 		}
 
-		$res = $I2_SQL->query(true, 'SELECT boxes FROM userinfo WHERE uid=%d', $_SESSION['i2_uid'])->fetch_all_arrays(MYSQL_NUM);
+		$res = $I2_SQL->query('SELECT boxes FROM userinfo WHERE uid=%d', $_SESSION['i2_uid'])->fetch_all_arrays(MYSQL_NUM);
 		foreach(explode(',', $res[0][0]) as $mod) {
 			$box = new Intrabox($mod);
 			$box->display_box();

@@ -20,21 +20,14 @@ class ClassInfo {
 	private $cid;
 	private $data;
 
-	function __construct(Token $token,$cid) {
+	function __construct($cid) {
 		global $I2_SQL;
 		global $I2_ERR;
 		
 		$this->cid = $cid;
 		
-		//Not necessary b/c MySQL will check the access rights.
-		/*if (!check_token_rights($token,"info/".$uid,'r')) {
-			$I2_ERR->nonfatal_error("Unable to get user information for user $uid : invalid token!");
-			return;
-		}*/
-		
 		//Select the user with uid=$uid
-		$res = $I2_SQL->query($token, 'SELECT * FROM classes WHERE cid=%d;', $cid)->fetch_array();
-//		$res = $I2_SQL->select($token,'classes',false,'cid=%s',$cid)->fetch_array();
+		$res = $I2_SQL->query('SELECT * FROM classes WHERE cid=%d;', $cid)->fetch_array();
 
 		if (!$res) {
 			$I2_ERR->call_error("ClassInfo requested for nonexistant class $cid!");
@@ -43,43 +36,25 @@ class ClassInfo {
 		$this->data = $res;
 	}
 
-	function check_token(Token $token,$field) {
-		if (!$token->check_rights('info/classes-'.$this->cid.'-'.$field,'r')) {
-			$I2_ERR->nonfatal_error("An invalid access token was used in attempting to access the $field info field of class ".$this->cid);
-			return false;
-		}
-		return true;
-	}
-
-	function get_teachers(Token $token) {
-		if(!check_token($token,'teachers')) return null;
+	function get_teachers() {
 		return explode(":", $this->data['teachers']);
 	}
 
-	function get_period(Token $token) {
-		if(!check_token($token,'period')) return null;
+	function get_period() {
 		return $this->data['period'];
 	}
 
-	function get_length(Token $token) {
-		if(!check_token($token,'length')) return null;
+	function get_length() {
 		return $this->data['length'];
 	}
 
-		function get_time(Token $token) {
-		if(!check_token($token,'time')) return null;
+		function get_time() {
 		return $this->data['time'];
 	}
 
-	function get_name(Token $token) {
+	function get_name() {
 		global $I2_ERR, $I2_SQL;
-		if(!check_token($token,'name')) return null;
-		if (!$token->check_rights('info/classdescriptions-'.$this->data['descriptionid'].'-name','r')) {
-			$I2_ERR->nonfatal_error("An invalid access token was used in attempting to access the name info field of class description ".$this->data['descriptionid']);
-			return null;
-		}
-		$res = $I2_SQL->query($token, 'SELECT name FROM classdescriptions WHERE did=%d;', $this->data['descriptionid'])->fetch_array();
-//		$res = $I2_SQL->select($token,'classdescriptions','name','did=%d',$this->data['descriptionid'])->fetch_array();
+		$res = $I2_SQL->query('SELECT name FROM classdescriptions WHERE did=%d;', $this->data['descriptionid'])->fetch_array();
 		if (!$res) {
 			$I2_ERR->call_error("ClassInfo requested for nonexistant class description {$this->data['descriptionid']}!");
 			return null;
@@ -87,15 +62,9 @@ class ClassInfo {
 		return $res['name'];
 	}
 
-	function get_description(Token $token) {
+	function get_description() {
 		global $I2_ERR, $I2_SQL;
-		if(!check_token($token,'description')) return null;
-		if (!$token->check_rights('info/classdescriptions-'.$this->data['descriptionid'].'-description','r')) {
-			$I2_ERR->nonfatal_error("An invalid access token was used in attempting to access the description info field of class description ".$this->data['descriptionid']);
-			return null;
-		}
-		$res = $I2_SQL->query($token, 'SELECT description FROM classdescriptions WHERE did=%d;', $this->data['descriptionid'])->fetch_array();
-//		$res = $I2_SQL->select($token,'classdescriptions','description','did=%d',$this->data['descriptionid'])->fetch_array();
+		$res = $I2_SQL->query('SELECT description FROM classdescriptions WHERE did=%d;', $this->data['descriptionid'])->fetch_array();
 		if (!$res) {
 			$I2_ERR->call_error("ClassInfo requested for nonexistant class description {$this->['descriptionid']}!");
 			return null;

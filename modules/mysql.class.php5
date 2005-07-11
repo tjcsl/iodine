@@ -106,14 +106,14 @@ class MySQL {
 	}
 
 	/**
-	* Raw-string replacement function for the current select/insert functons.
-	* This takes a token and a string. The string is the actual MySQL query
+	* Printf-style MySQL query function
+	* This takes a string and args. The string is the actual MySQL query
 	* with optional printf-style markers to indicate values that should be
 	* checked (or formatted in a certain way). Any other arguments after
 	* that are the printf-style arguments. For example:
 	*
 	* <code>
-	* query($token, 'SELECT * FROM mytable WHERE id=`%d`', $the_id);
+	* query('SELECT * FROM mytable WHERE id=`%d`', $the_id);
 	* </code>
 	*
 	* Will essentially execute the query
@@ -129,17 +129,15 @@ class MySQL {
 	* </ul>
 	*
 	* @access public
-	* @param Token $token The permissions token, ensuring that you have
-	*                      access to the table(s) you're trying to access.
 	* @param string $query The printf-ifyed query you want to run.
 	* @param mixed $args,... Arguments for printf tags.
 	*/
-	public function query($token, $query) {
+	public function query($query) {
 		global $I2_ERR,$I2_LOG;
 
-		$argc = func_num_args()-2;
+		$argc = func_num_args()-1;
 		$argv = func_get_args();
-		array_shift($argv); array_shift($argv);
+		array_shift($argv);
 		
 		/* matches Iodine custom printf-style tags */
 		if( preg_match_all(
@@ -154,7 +152,7 @@ class MySQL {
 				/* tags that require an argument */
 				if ( strpos(I2_SQL_TAGS_ARG, $tag[0][1]) ) {
 					if($argc < 1) {
-						throw new Exception('Insufficient arguments to mysql query string');
+						throw new I2Exception('Insufficient arguments to mysql query string');
 					}
 					$arg = array_shift($argv);
 					$argc--;
@@ -235,16 +233,6 @@ class MySQL {
 				throw new I2Exception('Attempted MySQL query of unauthorized command `'.substr($query, 0, strpos($query, ' ')).'`');
 		}
 
-		/* token checking disabled, so don't bother determining which
-		tables were used */
-/*		$tables = self::get_used_tables($query, $query_t);
-		d('Tables referenced in SQL query: '.count($tables).': '.implode($tables, ', '));
-		foreach( $tables as $table) {
-			if( $token->check_rights('mysql/'.$table, $perm) === FALSE) {
-				throw new I2Exception('Attempted to perform a MySQL query without proper access. (Table: '.$table.', access needed: '.$perm.')');
-			}
-		}*/
-
 		return new Result($this->raw_query($query),MYSQL::SELECT);
 	}
 
@@ -258,103 +246,6 @@ class MySQL {
 	function ljoin($left, $right) {
 	}
 
-	/**
-	* Gets the tables used in a query from the query string.
-	*
-	* This goes through a raw query string, and partially parses it to
-	* determine which tables it uses in the database. This is not a very
-	* efficient thing to do, but I'm open to suggestions on any other way
-	* of restricting data access in mysql.
-	*
-	* @param String $str The query string.
-	* @param int $type One of the MySQL constants, representing what kind
-	*                  of query (SELECT/UPDATE/etc) this is.
-	*/
-	private static function get_used_tables($str, $type) {
-		if( ($offset = stripos($str, ' where ')) ) {
-			/* strip off everything after 'where'; not needed */
-			$str = substr($str, 0, $offset);
-		}
-
-		if( $type == MYSQL::SELECT ) {
-			/* strip off column names and stuff */
-			$str = substr($str, stripos($str, 'from'));
-		}
-
-		if( $str[strlen($str)-1] == ';' ) {
-			$str = substr($str, 0, strlen($str)-1);
-		}
-
-		$ret = array();
-		$words = explode(' ', ltrim($str));
-		array_shift($words);
-		
-		switch($type) {
-			case MYSQL::SELECT:
-			case MYSQL::DELETE:
-				while(isset($words[0])) {
-					switch(strtolower($words[0])) {
-						case 'from':
-							array_shift($words);
-							continue;
-						case 'where':
-						case 'order':
-							/* stop processing */
-							unset($words);
-							break;
-						case 'as':
-							array_shift($words);
-							array_shift($words);
-							continue;
-						/* joins */
-						case 'left':
-						case 'right':
-						case 'cross':
-						case 'natural':
-						case 'inner':
-						case 'join':
-						case 'straight_join':
-/* Not implementing JOINs right now because it's too difficult. Perhaps will
-implement them at a later date if there is a need. */
-							throw new I2Exception('We do not currently support using JOINs in MySQL statements. Try again later, when we do.');
-/*							while(strtolower($words[0]) != 'join') {
-								array_shift($words);
-							}
-							array_shift($words);
-							continue;*/
-						default:
-							foreach(explode(',', $words[0]) as $word) {
-								if( $word ) {
-									$ret[] = $word;
-								}
-							}
-							array_shift($words);
-
-					}
-				}
-				break;
-			case MYSQL::INSERT:
-				if(strtolower($words[0]) == 'into') {
-					array_shift($words);
-				}
-				$ret[] = $words[0];
-				break;
-				
-			case MYSQL::UPDATE:
-				while(isset($words[0])) {
-					if(strtolower($words[0]) == 'set')
-						break;
-					foreach(explode(',', $words[0]) as $word) {
-						if($word)
-							$ret[] = $word;
-					}
-				}
-				break;
-			default:
-				throw new I2Exception('Invalid MySQL query type `'.$type.'` passed to get_used_tables');
-		}
-		return $ret;
-	}
 }
 
 ?>

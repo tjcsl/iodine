@@ -62,66 +62,62 @@ class LDAP {
 
 	private function search_studn
 
-	private function check($token,$property,$accesstype) {
+	private function check($property,$accesstype) {
 		global $I2_ERR;
-		if (!$token->check_rights($property,$accesstype)) {
-			$I2_ERR->call_error("Invalid token used when attempting to access LDAP property $property [$accesstype]!");
-			return 0;
-		}
 		return 1;
 	}
 
-	function get_teachers_by_class($token, $classid, $year = false, $period = false) {
+	function get_teachers_by_class($classid, $year = false, $period = false) {
 		
 	}
 
-	function get_classes_by_name($token,$classname) {
+	function get_classes_by_name($classname) {
 		$res = ;
 	}
 
-	function get_students_by_name_exact($token,$lname,$fname=false) {
+	function get_students_by_name_exact($lname,$fname=false) {
 		$query = "(sn)";
 	}
 
-	function get_classes_by_teacher($token, $teacherid, $year = false, $period = false) {
+	function get_classes_by_teacher($teacherid, $year = false, $period = false) {
 	}
 
-	function get_students_by_class($token, $classid, $year = false, $period = false, $grade = false) {
+	function get_students_by_class($classid, $year = false, $period = false, $grade = false) {
 	}
 
-	function get_periods_by_class($token, $classid, $year = false) {
+	function get_periods_by_class($classid, $year = false) {
 	}
 
-	function get_years_by_class($token, $classid, $period = false) {
+	function get_years_by_class($classid, $period = false) {
 	}
 
-	function get_students_by_teacher($token, $teacherid, $year = false, $period = false, $grade = false) {
+	function get_students_by_teacher($teacherid, $year = false, $period = false, $grade = false) {
 	}
 
-	function get_classes_by_year($token, $year, $period = false) {
+	function get_classes_by_year($year, $period = false) {
 	}
 
-	function get_students_by_year($token, $year = false, $period = false, $grade = false) {
+	function get_students_by_year($year = false, $period = false, $grade = false) {
 		"";
 	}
 
-	function get_students_by_grade($token, $grade, $year = false) {
+	function get_students_by_grade($grade, $year = false) {
 	}
 
-	function get_teachers_by_year($token, $year = false) {
+	function get_teachers_by_year($year = false) {
 	}
 
-	function get_classes_by_student($token, $studentid, $year = false, $period = false) {
+	function get_classes_by_student($studentid, $year = false, $period = false) {
 	}
 	
-	function get_student_info($token, $studentid) {
+	function get_student_info($studentid) {
 		return ldap_get_entries($this->conn,ldap_search($this->conn,$this->teacher_dnbase,$this->query_studentid($studentid)));
 	}
 
-	function get_class_info($token, $classid) {
+	function get_class_info($classid) {
 	}
 
-	function get_teacher_info($token, $teacherid) {
+	function get_teacher_info($teacherid) {
 	}
 
 }

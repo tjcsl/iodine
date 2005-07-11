@@ -18,7 +18,7 @@
 */
 class Makeuser implements Module {
 
-	function init_box(Token $token) {
+	function init_box() {
 		return FALSE;
 	}
 
@@ -29,10 +29,10 @@ class Makeuser implements Module {
 		return "Make User";
 	}
 
-	function init_pane(Token $token) {
-		global $I2_ARGS,$I2_SQL;
-		if (isSet($I2_ARGS['makeuser_uid'])) {
-			$I2_SQL->insert($token,'users',
+	function init_pane() {
+		global $I2_SQL;
+		if (isSet($_REQUEST['makeuser_uid'])) {
+			/*$I2_SQL->insert('users',
 			array('uid','fname','mname','lname',
 			'bdate','phone_home','phone_cell','phone_other',
 			'address_primary_city','address_primary_state','address_primary_zip','address_primary_street',
@@ -47,8 +47,9 @@ class Makeuser implements Module {
 			),
 			array(
 			$I2_ARGS['makeuser_uid'],$I2_ARGS['makeuser_fname'],$I2_ARGS['makeuser_mname'],$I2_ARGS['makeuser_lname'],
-			$I2_ARGS['makeuser_bdate'],$I2_ARGS['makeuser_phone_home'],$I2_ARGS['makeuser_phone_cell'],$I2_ARGS['makeuser_phone_other'],
+			$I2_ARGS['makeuser_bdate'],$I2_ARGS['makeuser_phone_home'],$I2_ARGS['makeuser_phone_cell'],$I2_ARGS['makeuser_phone_other'],*/
 				//FIXME:  Finish this
+				//FIXME: this usage is also obsolete, you'll need to rewrite it
 			)
 			);
 			return FALSE;

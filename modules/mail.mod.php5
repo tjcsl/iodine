@@ -23,14 +23,14 @@ class Mail implements Module {
 	function __construct() {
 	}
 	
-	function init_pane(Token $token) {
+	function init_pane() {
 	}
 	
 	function display_pane($display) {
 		$display->disp('mailpane.tpl',array());
 	}
 	
-	function init_box(Token $token) {
+	function init_box() {
 	}
 
 	function display_box($display) {

@@ -97,7 +97,7 @@ class Auth {
 		
 			if ($this->check_user($_REQUEST['login_username'],$_REQUEST['login_password'])) {
 
-				$uarr = $I2_SQL->query(true, 'SELECT uid FROM user WHERE username=%s;',$_REQUEST['login_username'])->fetch_array();
+				$uarr = $I2_SQL->query('SELECT uid FROM user WHERE username=%s;',$_REQUEST['login_username'])->fetch_array();
 
 				$_SESSION['i2_uid'] = $uarr['uid'];
 				$_SESSION['i2_username']= $_REQUEST['login_username'];

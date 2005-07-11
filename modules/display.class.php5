@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.25 2005/07/11 02:29:49 adeason Exp $
+* @version $Id: display.class.php5,v 1.26 2005/07/11 03:06:48 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -93,10 +93,10 @@ class Display {
 	/**
 	* Displays the top bar.
 	*/
-	private function display_top_bar($mastertoken) {
+	private function display_top_bar() {
 		global $I2_SQL;
 
-		$res = $I2_SQL->query($mastertoken, 'SELECT fname FROM user WHERE uid=%d;', $_SESSION['i2_uid'])->fetch_all_arrays(MYSQL_ASSOC);
+		$res = $I2_SQL->query('SELECT fname FROM user WHERE uid=%d;', $_SESSION['i2_uid'])->fetch_all_arrays(MYSQL_ASSOC);
 		$this->disp('topbar.tpl', array('first_name' => $res[0]['fname']) );
 	}
 
@@ -108,9 +108,8 @@ class Display {
 	*
 	* @param $module The name of the module to display in the main
 	*                panel and give processing control to.
-	* @param $mastertoken The token for displaying.
 	*/
-	function display_loop($module,$mastertoken) {
+	function display_loop($module) {
 		global $I2_ERR, $I2_ARGS;
 
 		if (Display::$display_stopped) {
@@ -118,9 +117,8 @@ class Display {
 		}
 		
 		$this->global_header();
-		$this->display_top_bar($mastertoken);
+		$this->display_top_bar();
 		$mod = '';
-		//$mastertoken = get_master_token();
 
 			
 		try {	
@@ -130,17 +128,8 @@ class Display {
 			$disp = new Display($module);
 			
 			eval('$mod = new '.$module.'();');
-			/*
-			** Create an authentication token with all the appropriate rights.
-			*/
-			$token = Token::token($mastertoken,array(
-				'mysql/'.$module => 'rw',
-				'info/'.$module => 'rw',
-				'pref/'.$module => 'rw',
-//				'*'=>'r'
-			));	
 			
-			$needsdisp = $mod->init_pane($token);
+			$needsdisp = $mod->init_pane();
 			if (!Display::$display_stopped && $needsdisp) {
 				$this->open_content_pane($mod);
 				try {
@@ -173,10 +162,10 @@ class Display {
 	/**
 	* Shows the login screen.
 	*/
-	function show_login(Token $token) {
+	function show_login() {
 		$this->global_header();
 		$login = new Login();
-		if(!$login->init_pane($token)) return;
+		if(!$login->init_pane()) return;
 		$this->open_login_pane();
 		$login->display_pane($this);
 		$this->close_login_pane();
