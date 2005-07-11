@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version 1.0
+* @version $Id: display.class.php5,v 1.22 2005/07/10 20:49:43 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -56,6 +56,8 @@ class Display {
 	* @access private
 	*/
 	private static $display_stopped = FALSE;
+
+	private static $tpl_root = NULL;
 	
 	/**
 	* The Display class constructor.
@@ -76,6 +78,7 @@ class Display {
 		$this->my_module_name = $module_name;
 		if ($module_name == 'core') {
 			Display::$core_display = $this;
+			self::$tpl_root = i2config_get('template_path','./','core');
 		}
 		$this->buffer = "";
 		//FIXME: this must be removed before production code!  It's a hack!
@@ -129,22 +132,18 @@ class Display {
 			/*
 			** Display the main pane.
 			*/
-			//TODO: there has to be a better way to do this!
 			$disp = new Display($module);
 			
 			eval('$mod = new '.$module.'();');
 			/*
 			** Create an authentication token with all the appropriate rights.
 			*/
-			//TODO: change this
 			$token = Token::token($mastertoken,array(
 				'mysql/'.$module => 'rw',
 				'info/'.$module => 'rw',
 				'pref/'.$module => 'rw',
 //				'*'=>'r'
 			));	
-				
-			//FIXME: use more than one module, duh!
 			
 			$needsdisp = $mod->init_pane($token);
 			if (!Display::$display_stopped && $needsdisp) {
@@ -163,33 +162,7 @@ class Display {
 			$I2_ERR->nonfatal_error('Exception raised in module '.$module.', while processing main pane. Exception: '.$e->__toString());
 		}
 			
-			/*
-			** Display each box.
-			*/
-			set_i2var('i2_boxes',$GLOBALS['I2_USER']->get_desired_boxes($mastertoken));	
-			foreach ($I2_ARGS['i2_boxes'] as $box) {
-				try {
-					$token = Token::token($mastertoken,array(
-						'mysql/'.$box => 'rw',
-						'info/'.$box => 'rw',
-						'pref/'.$box => 'rw',
-//						'*' => 'r'
-					));
-					
-					eval('$boxinstance = new '.$box.'();');
-					$disp = new Display($box);
-					$needsdisp = $boxinstance->init_box($token);
-					if ($needsdisp) {
-						$this->open_box();
-						$boxinstance->display_box($disp);
-						$this->close_box();
-					}
-					
-				} catch (Exception $e) {
-					$I2_ERR->nonfatal_error('The boxed module '.$box.' raised the following error: '.$e->__toString());
-				}
-			}
-			
+		Intrabox::display_boxes($mod);
 		
 		$this->global_footer();
 	}
@@ -291,7 +264,7 @@ class Display {
 		$this->assign_i2vals();
 		$this->assign_array($args);
 		
-		$template = i2config_get('template_path','./','core').$template;
+		$template = self::$tpl_root . $template;
 		//TODO: validate passed template name.
 		if ($this->buffering_on()) {
 			Display::$core_display->buffer .= $this->smarty->fetch($template); 
@@ -416,6 +389,10 @@ class Display {
 
 	function outputfilter($output,&$smarty) {
 		return $output;
+	}
+
+	public static function template_exists($tpl) {
+		return is_readable(self::$tpl_root . $tpl);
 	}
 }
 ?>
