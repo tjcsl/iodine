@@ -115,7 +115,7 @@ class Auth {
 		}
 		
 		$disp = new Display('login');
-		$disp->disp('login.tpl',array('failed' => $loginfailed,'uname' => $uname, 'css' => i2config_get('login_css', NULL, 'auth')));
+		$disp->disp('login.tpl',array('failed' => $loginfailed,'uname' => $uname, 'css' => i2config_get('www_root', NULL, 'core') . i2config_get('login_css', NULL, 'auth')));
 
 		return FALSE;
 	}
