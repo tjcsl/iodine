@@ -3,7 +3,7 @@
 * Contains the definition for the class {@link MySQL}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004 The Intranet 2 Development Team
-* @version $Id: mysql.class.php5,v 1.18 2005/07/11 05:16:37 adeason Exp $
+* @version $Id: mysql.class.php5,v 1.19 2005/07/11 07:06:08 adeason Exp $
 * @package core
 * @subpackage MySQL
 * @filesource
@@ -232,6 +232,22 @@ class MySQL {
 		}
 
 		return new Result($this->raw_query($query),MYSQL::SELECT);
+	}
+	
+	/**
+	* Determines whether a certain column is in a certain table.
+	*
+	* @param string $table The mysql table where the column might be.
+	* @param string $col The name of the column you are searching for.
+	* @return bool TRUE if $col is in table $table, FALSE otherwise.
+	*/
+	public function column_exists($table, $col) {
+		foreach(mysql_fetch_array($this->raw_query('DESCRIBE '.$table.';'), MYSQL_ASSOC) as $field) {
+			if( $field['Field'] = $col ) {
+				return TRUE;
+			}
+		}
+		return FALSE;
 	}
 }
 
