@@ -1,2 +1,3 @@
 <div class="intrabox">
-<span class="intrabox_title">[<$title>]</span><br />
+<div class="boxheader">[<$title>]</div>
+<div class="boxcontent">

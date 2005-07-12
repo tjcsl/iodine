@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.6 2005/07/11 20:49:22 adeason Exp $
+* @version $Id: intrabox.class.php5,v 1.7 2005/07/11 21:46:26 adeason Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -121,11 +121,19 @@ class IntraBox {
 		if( self::$main_module === NULL ) {
 			self::$main_module = $main_module;
 		}
+		
+		if( self::$display === NULL ) {
+			self::$display = new Display('Intrabox');
+		}
 
+		self::$display->disp('intrabox_open.tpl');
+		
 		foreach(explode(',', $I2_USER->boxes) as $mod) {
 			$box = new Intrabox($mod);
 			$box->display_box();
 		}
+
+		self::$display->disp('intrabox_close.tpl');
 	}
 
 	/**
