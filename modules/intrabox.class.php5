@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.5 2005/07/11 20:07:23 adeason Exp $
+* @version $Id: intrabox.class.php5,v 1.6 2005/07/11 20:49:22 adeason Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -137,7 +137,7 @@ class IntraBox {
 	*/
 	public static function get_user_boxes($uid) {
 		$user = new User($uid);
-		return explode(',', $user->startpage)
+		return explode(',', $user->startpage);
 	}
 
 	/**
