@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.21 2005/07/11 19:40:42 adeason Exp $
+* @version $Id: user.class.php5,v 1.22 2005/07/11 20:51:11 adeason Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -83,7 +83,7 @@ class User {
 		
 		// printf input sanitation unneccesary, since we just tested it
 		// for vailidity in the lines above
-		$res = $I2_SQL->query('SELECT '.$name.' FROM '.$table.' WHERE uid=%d', $this->uid)->fetch_array(MYSQL_NUM);
+		$res = $I2_SQL->query('SELECT %c FROM %c WHERE uid=%d', $name, $table, $this->uid)->fetch_array(MYSQL_NUM);
 		return $res[0];
 	}
 
@@ -143,7 +143,7 @@ class User {
 			$cols = $argv;
 		}
 
-		return $I2_SQL->query('SELECT '.implode(',', $cols). ' FROM user LEFT JOIN userinfo USING (uid) WHERE uid=%d;', $this->uid)->fetch_array(MYSQL_NUM);
+		return $I2_SQL->query('SELECT %c FROM user LEFT JOIN userinfo USING (uid) WHERE uid=%d;', $cols, $this->uid)->fetch_array(MYSQL_NUM);
 	}
 }
 
