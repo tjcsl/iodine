@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.8 2005/07/11 22:07:27 adeason Exp $
+* @version $Id: intrabox.class.php5,v 1.9 2005/07/12 06:49:53 adeason Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -147,21 +147,25 @@ class IntraBox {
 	*/
 	public static function get_user_boxes($uid) {
 		$user = new User($uid);
-		return explode(',', $user->startpage);
+		return explode(',', $user->boxes);
 	}
 
 	/**
 	* Sets a user's preferences so the specified intraboxes are displayed
 	* for them.
 	*
-	* @todo Use calls in User instead of sql
 	* @param int $uid The user ID of the user to set the boxes for.
 	* @param array $boxes The array of the names of the boxes.
 	*/
 	public static function set_user_boxes($uid, $boxes) {
-		global $I2_SQL;
-		$box_str = implode(',', $boxes);
-		$I2_SQL->query('UPDATE userinfo SET boxes=%s WHERE uid=%d;', $box_str, $uid);
+		global $I2_USER;
+		
+		if( is_array($boxes) ) {
+			$boxes = implode(',', $boxes);
+		}
+		
+		$usr = new User($uid);
+		$usr->set( 'boxes', MYSQL::STRING, $boxes );
 	}
 
 	/**
