@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Logging}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: logging.class.php5,v 1.13 2005/07/11 19:28:04 adeason Exp $
+* @version $Id: logging.class.php5,v 1.14 2005/07/12 06:50:56 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -11,6 +11,7 @@
 
 /**
 * The logging module for Iodine.
+* @todo Make error/debug output more pleasant somehow
 * @package core
 * @subpackage Error
 * @see Error
@@ -138,7 +139,6 @@ class Logging {
 	* output to the user.
 	*
 	* @param String $msg The message to display.
-	* @todo Write a smarty template for the output.
 	*/
 	public function log_screen($msg) {
 		global $I2_DISP;
