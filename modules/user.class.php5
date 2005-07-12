@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.22 2005/07/11 20:51:11 adeason Exp $
+* @version $Id: user.class.php5,v 1.23 2005/07/11 21:09:41 adeason Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -111,13 +111,14 @@ class User {
 	/**
 	* Get only certain columns of info about the user.
 	*
-	* Note that the column names are NOT CHECKED, so please do not have
-	* user input go directly into this method's parameters. You must check
-	* the user input yourself in those cases, but this method was mainly
-	* created for you to type in the values yourself, hardcoded. Like
-	* "$user->get_cols('bdate', 'email0');" and so forth. (Except for a
-	* larger amount of columns than that, if you only want two, then you
-	* should probably use the standard way of getting values.)
+	* Even though the column values are checked, it's not adviseable to have
+	* user input go into this method, at least, not directly (just for
+	* general security reasons). It was created mainly so you could do
+	* <code>
+	* $user = new User($id);
+	* $arr = $user->get_cols('username', 'fname', 'lname', 'bdate');
+	* </code>
+	* or something like that.
 	*
 	* @param mixed $cols,... Either an array containing the names of the
 	*                        columns to retrieve, or just pass a string for
