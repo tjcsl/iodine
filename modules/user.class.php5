@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.23 2005/07/11 21:09:41 adeason Exp $
+* @version $Id: user.class.php5,v 1.24 2005/07/11 23:29:15 adeason Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -38,11 +38,16 @@ class User {
 	*/
 	public function __construct($uid = NULL) {
 		global $I2_SQL, $I2_ERR;
-		if( $uid === NULL && isset($_SESSION['i2_uid'])) {
-			$uid = $_SESSION['i2_uid'];
-			$this->info = $I2_SQL->query('SELECT * FROM user where uid=%d', $uid)->fetch_array(MYSQL_ASSOC);
-			if( ! $this->info ) {
-				$I2_ERR->nonfatal_error('A User object was created with a nonexistent uid');
+		if( $uid === NULL ) {
+			if( isset($_SESSION['i2_uid']) ) {
+				$uid = $_SESSION['i2_uid'];
+				$this->info = $I2_SQL->query('SELECT * FROM user where uid=%d', $uid)->fetch_array(MYSQL_ASSOC);
+				if( ! $this->info ) {
+					$I2_ERR->nonfatal_error('A User object was created with a nonexistent uid');
+				}
+			}
+			else {
+				$I2_ERR->fatal_error('Your password and username were correct, but you don\'t appear to exist in our database. If this is a mistake, please contact the intranetmaster about it.');
 			}
 		}
 
