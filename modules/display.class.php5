@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.29 2005/07/11 07:06:32 adeason Exp $
+* @version $Id: display.class.php5,v 1.30 2005/07/11 20:07:52 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -96,10 +96,9 @@ class Display {
 	* @todo Put a call to the User class in here instead of a mysql query.
 	*/
 	private function display_top_bar() {
-		global $I2_SQL;
+		global $I2_USER;
 
-		$res = $I2_SQL->query('SELECT fname FROM user WHERE uid=%d;', $_SESSION['i2_uid'])->fetch_all_arrays(MYSQL_ASSOC);
-		$this->disp('topbar.tpl', array('first_name' => $res[0]['fname']) );
+		$this->disp('topbar.tpl', array('first_name' => $I2_USER->fname) );
 	}
 
 	/**

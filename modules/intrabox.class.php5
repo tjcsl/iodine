@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.4 2005/07/11 05:16:36 adeason Exp $
+* @version $Id: intrabox.class.php5,v 1.5 2005/07/11 20:07:23 adeason Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -116,13 +116,13 @@ class IntraBox {
 	*                            twice.
 	*/
 	public static function display_boxes($main_module) {
-		global $I2_SQL,$I2_ARGS;
+		global $I2_USER;
 		
 		if( self::$main_module === NULL ) {
 			self::$main_module = $main_module;
 		}
 
-		foreach(self::get_user_boxes($_SESSION['i2_uid']) as $mod) {
+		foreach(explode(',', $I2_USER->boxes) as $mod) {
 			$box = new Intrabox($mod);
 			$box->display_box();
 		}
@@ -136,15 +136,15 @@ class IntraBox {
 	* @return array The list of the names of the intraboxes.
 	*/
 	public static function get_user_boxes($uid) {
-		global $I2_SQL;
-		$res = $I2_SQL->query('SELECT boxes FROM userinfo WHERE uid=%d', $uid)->fetch_all_arrays(MYSQL_NUM);
-		return explode(',', $res[0][0]);
+		$user = new User($uid);
+		return explode(',', $user->startpage)
 	}
 
 	/**
 	* Sets a user's preferences so the specified intraboxes are displayed
 	* for them.
 	*
+	* @todo Use calls in User instead of sql
 	* @param int $uid The user ID of the user to set the boxes for.
 	* @param array $boxes The array of the names of the boxes.
 	*/
