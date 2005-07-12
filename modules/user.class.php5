@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.24 2005/07/11 23:29:15 adeason Exp $
+* @version $Id: user.class.php5,v 1.25 2005/07/12 06:53:09 adeason Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -29,7 +29,7 @@ class User {
 	/**
 	* The uid of the user.
 	*/
-	private $uid;
+	private $myuid;
 
 	/**
 	* The User class constructor.
@@ -51,7 +51,7 @@ class User {
 			}
 		}
 
-		$this->uid = $uid;
+		$this->myuid = $uid;
 	}
 
 	/**
@@ -68,7 +68,7 @@ class User {
 	public function __get( $name ) {
 		global $I2_SQL;
 
-		if( $this->uid === NULL ) {
+		if( $this->myuid === NULL ) {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
 		}
 		
@@ -79,17 +79,66 @@ class User {
 		if( $this->info == NULL && $I2_SQL->column_exists( 'user', $name ) ) {
 			$table = 'user';
 		}
-		elseif( ! $I2_SQL->column_exists( 'userinfo', $name) ) {
-			throw new I2Exception('Uknown column `'.$name.'` passed to User.');
+		elseif( ! $I2_SQL->column_exists('userinfo', $name) ) {
+			throw new I2Exception('Tried to get unknown User information `'.$name.'`.');
 		}
 		else {
 			$table = 'userinfo';
 		}
 		
-		// printf input sanitation unneccesary, since we just tested it
-		// for vailidity in the lines above
-		$res = $I2_SQL->query('SELECT %c FROM %c WHERE uid=%d', $name, $table, $this->uid)->fetch_array(MYSQL_NUM);
+		$res = $I2_SQL->query('SELECT %c FROM %c WHERE uid=%d;', $name, $table, $this->myuid)->fetch_array(MYSQL_NUM);
 		return $res[0];
+	}
+
+	/**
+	* Set information about a user.
+	*
+	* This sets a certain piece of information about a user to something.
+	* You need to specify the name of the attribute, and the type of
+	* information it is, along with the value to set it to, so it can be
+	* validated by {@link MySQL}.
+	*
+	* @param string $name The name of the field to set.
+	* @param int $type A constant from {@link MySQL} that represents what
+	*                  type of data this is.
+	* @param mixed $val The data to set the field to.
+	*/
+	public function set( $name, $type, $val ) {
+	// Can't use __set easily, because we need another argument for the type
+	//technically, we _could_ look up the type in the mysql table, and check
+	//for that type, but I'm not sure it's worth the trouble & extra
+	//processing time when we can just pass the extra argument
+		global $I2_SQL;
+
+		if( $this->myuid === NULL ) {
+			throw new I2Exception('Tried to set information for nonexistant user!');
+		}
+
+		if( $I2_SQL->column_exists( 'user', $name ) ) {
+			$table = 'user';
+		}
+		elseif( ! $I2_SQL->column_exists('userinfo', $name) ) {
+			throw new I2Exception('Tried to get unknown User information `'.$name.'`.');
+		}
+		else {
+			$table = 'userinfo';
+		}
+
+		switch( $type ) {
+			case MYSQL::STRING:	$tag = '%s'; break;
+			case MYSQL::INT:	$tag = '%d'; break;
+			case MYSQL::FLOAT:
+			case MYSQL::DATE:
+			default:
+				$GLOBALS['I2_ERR']->nonfatal_error('Tried to set the User field `'.$name.'` to an unknown/unsupported type: `'.$type.'`');
+				return;
+		}
+
+		$I2_SQL->query('UPDATE %c SET %c='.$tag.' WHERE uid=%d;', $table, $name, $val, $this->myuid);
+
+		if( $this->info != NULL && in_array($name, array_keys($this->info)) ) {
+			$this->info[$name] = $val;
+		}
 	}
 
 	/**
@@ -106,11 +155,11 @@ class User {
 	public function info() {
 		global $I2_SQL;
 
-		if( $this->uid === NULL ) {
+		if( $this->myuid === NULL ) {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
 		}
 		
-		return $I2_SQL->query('SELECT * FROM user LEFT JOIN userinfo USING (uid) WHERE uid=%d;', $this->uid)->fetch_array(MYSQL_ASSOC);
+		return $I2_SQL->query('SELECT * FROM user LEFT JOIN userinfo USING (uid) WHERE uid=%d;', $this->myuid)->fetch_array(MYSQL_ASSOC);
 	}
 
 	/**
@@ -132,7 +181,7 @@ class User {
 	public function get_cols() {
 		global $I2_SQL;
 
-		if( $this->uid === NULL ) {
+		if( $this->myuid === NULL ) {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
 		}
 		
@@ -149,7 +198,7 @@ class User {
 			$cols = $argv;
 		}
 
-		return $I2_SQL->query('SELECT %c FROM user LEFT JOIN userinfo USING (uid) WHERE uid=%d;', $cols, $this->uid)->fetch_array(MYSQL_NUM);
+		return $I2_SQL->query('SELECT %c FROM user LEFT JOIN userinfo USING (uid) WHERE uid=%d;', $cols, $this->myuid)->fetch_array(MYSQL_NUM);
 	}
 }
 
