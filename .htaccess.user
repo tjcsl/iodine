@@ -1,10 +1,10 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine On
-	RewriteBase /~adeason/i2/
+	RewriteBase /~<username>/i2/
 
-	RewriteRule ^$ /home/adeason/web-docs/i2/core.php5 [L]
+	RewriteRule ^(/home/<username>/web-docs/i2$|$) /home/<username>/web-docs/i2/core.php5 [L]
 
 	RewriteRule ^www/ - [L]
 	
-	RewriteRule ^(.*)$ /home/adeason/web-docs/i2/core.php5?$1 [L]
+	RewriteRule ^(.*)$ /home/<username>/web-docs/i2/core.php5?$1 [L]
 </IfModule>
