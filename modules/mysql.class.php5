@@ -3,7 +3,7 @@
 * Contains the definition for the class {@link MySQL}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004 The Intranet 2 Development Team
-* @version $Id: mysql.class.php5,v 1.20 2005/07/11 20:50:35 adeason Exp $
+* @version $Id: mysql.class.php5,v 1.21 2005/07/12 06:52:03 adeason Exp $
 * @package core
 * @subpackage MySQL
 * @filesource
@@ -38,6 +38,23 @@ class MySQL {
 	* Represents a DELETE query.
 	*/
 	const DELETE = 4;
+	
+	/**
+	* Represents input that is a string
+	*/
+	const STRING	= 10;
+	/**
+	* Represents input that is an integer
+	*/
+	const INT	= 11;
+	/**
+	* Represents input that is a float
+	*/
+	const FLOAT	= 12;
+	/**
+	* Represents input that represents a date
+	*/
+	const DATE	= 13;
 
 	/**
 	* A string representing all custom printf tags for mysql queries which require an argument. Each character represents a different tag.
@@ -253,7 +270,7 @@ class MySQL {
 	*/
 	public function column_exists($table, $col) {
 		foreach($this->query('DESCRIBE %c;', $table)->fetch_all_arrays(MYSQL_ASSOC) as $field) {
-			if( $field['Field'] = $col ) {
+			if( $field['Field'] == $col ) {
 				return TRUE;
 			}
 		}
