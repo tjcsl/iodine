@@ -19,4 +19,4 @@
   <a href="[<$I2_ROOT>]logout">Logout</a>
  </span>
 </div>
-<div class="date">January 15, 2004</div>
+<div class="date">[<$smarty.now|date_format:"%B %e, %Y">]<div>
