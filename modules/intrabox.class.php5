@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.7 2005/07/11 21:46:26 adeason Exp $
+* @version $Id: intrabox.class.php5,v 1.8 2005/07/11 22:07:27 adeason Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -79,8 +79,10 @@ class IntraBox {
 		if( is_string($this->module) ) {
 			$tpl = 'intrabox_'.$this->module.'.tpl';
 			
-			if( Display::template_exists($tpl) ) {
+			if( Display::get_template($tpl) ) {
+				self::$display->disp('intrabox_openbox.tpl', array('title' => ucwords($this->module)));
 				self::$display->disp($tpl);
+				self::$display->disp('intrabox_closebox.tpl');
 			}
 			else {
 				throw new I2Exception('Invalid intrabox `'.$this->module.'` was attempted to be displayed.');
