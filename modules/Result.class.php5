@@ -174,7 +174,7 @@ class Result {
 	* inside the Result object.  Thus, after calling fetch_regex, this
 	* method will return false.
 	*
-	* @return boolean True for more rows; false otherwise.
+	* @return bool True for more rows; false otherwise.
 	*/
 	function more_rows() {
 		foreach ($this->results as $res=>$arr) {

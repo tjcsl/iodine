@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Auth}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: auth.class.php5,v 1.8 2005/07/11 05:16:36 adeason Exp $
+* @version $Id: auth.class.php5,v 1.9 2005/07/11 21:15:28 adeason Exp $
 * @package core
 * @subpackage Auth
 * @filesource
@@ -42,7 +42,7 @@ class Auth {
 	/**
 	* Checks the user's authentication status.
 	*
-	* @return boolean True if user is authenticated, False otherwise.
+	* @return bool True if user is authenticated, False otherwise.
 	*/
 	public function is_authenticated() {
 		if (	isset($_SESSION['i2_uid']) 
@@ -60,7 +60,7 @@ class Auth {
 	* @todo Specify a cache location to make sure it doesn't destroy the server's kerberos credentials, and possible preserve the creds for later use
 	* @param string $user The username of the user you want to check
 	* @param string $password The user's password
-	* @return boolean	True if correct user/pass pair, false
+	* @return bool	True if correct user/pass pair, false
 	*			otherwise.
 	*/
 	 

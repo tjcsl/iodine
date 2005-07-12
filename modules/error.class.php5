@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Error}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: error.class.php5,v 1.11 2005/07/11 19:40:21 adeason Exp $
+* @version $Id: error.class.php5,v 1.12 2005/07/11 21:15:28 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -67,7 +67,7 @@ class Error {
 	*
 	* @param string $msg The error message to display.
 	* @param bool $critical Whether or not to email this error to
-	* @param boolean $critical Whether or not to email this error to
+	* a list, if it's absolutely critical.
 	*/
 
 	function fatal_error($msg, $critical = 0) {
