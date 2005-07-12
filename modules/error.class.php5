@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Error}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: error.class.php5,v 1.12 2005/07/11 21:15:28 adeason Exp $
+* @version $Id: error.class.php5,v 1.13 2005/07/11 22:56:45 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -88,7 +88,7 @@ class Error {
 		$I2_LOG->log_error($out);
 
 		//echo 'Backtrace: <br/><pre>'.print_r(debug_backtrace(),TRUE).'</pre>';
-		echo 'Backtrace: <br/><pre>'.print_r(debug_backtrace(),TRUE).'</pre>';
+		
 		die();
 	}
 	
