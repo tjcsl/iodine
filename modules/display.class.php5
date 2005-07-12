@@ -3,12 +3,11 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.30 2005/07/11 20:07:52 adeason Exp $
+* @version $Id: display.class.php5,v 1.31 2005/07/12 04:44:26 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
 * @filesource
-* @todo We need some kind of design! (Eric)
 */
 
 /**
@@ -93,7 +92,6 @@ class Display {
 	/**
 	* Displays the top bar.
 	*
-	* @todo Put a call to the User class in here instead of a mysql query.
 	*/
 	private function display_top_bar() {
 		global $I2_USER;
@@ -117,11 +115,8 @@ class Display {
 			return;
 		}
 		
-		$this->global_header();
-		$this->display_top_bar();
 		$mod = '';
 
-			
 		try {	
 			/*
 			** Display the main pane.
@@ -129,10 +124,26 @@ class Display {
 			$disp = new Display($module);
 			
 			eval('$mod = new '.$module.'();');
+		
+			if (!get_i2module($module) || ($title = $mod->init_pane()) === FALSE) {
+				$I2_ERR->fatal_error('Invalid module name \''.$module.'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
+			}
+
+			if( !is_array($title) ) {
+				$title = array( $title, $title );
+			}
+			elseif( count($title) == 1 ) {
+				$title = array( $title[0], $title[0] );
+			}
+			elseif( count($title) == 0 ) {
+				$title = array( NULL, '&nbsp;' );
+			}
+		
+			$this->global_header($title[0]);
+			$this->display_top_bar();
 			
-			$title = $mod->init_pane();
 			if (!Display::$display_stopped && $title) {
-				$this->open_content_pane($mod, array('title' => $title));
+				$this->open_content_pane($mod, array('title' => $title[1]));
 				try {
 					$mod->display_pane($disp);
 				} catch (Exception $e) {
@@ -268,8 +279,8 @@ class Display {
 	* Also sends all necessary header information, links CSS, etc.  Please note
 	* that this is not global:  it is called only on the core's Display instance.
 	*/
-	public function global_header() {
-		$this->disp('header.tpl');
+	public function global_header($title = NULL) {
+		$this->disp('header.tpl', array('title' => $title));
 		$this->flush_buffer();
 	}
 
@@ -287,10 +298,10 @@ class Display {
 	*
 	* @param object $module The module that will be displayed in the main box.
 	*/
-	public function open_content_pane(&$module) {
+	public function open_content_pane(&$module, $args) {
 		$this->set_buffering(false);
 		$this->name = $module->get_name();
-		$this->disp('openmainbox.tpl',array('module_name'=>$this->name));
+		$this->disp('openmainbox.tpl',array_merge(array('module_name'=>$this->name), $args));
 	}
 
 	/**

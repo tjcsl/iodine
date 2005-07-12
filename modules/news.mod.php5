@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link News}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: news.mod.php5,v 1.13 2005/07/11 05:16:37 adeason Exp $
+* @version $Id: news.mod.php5,v 1.14 2005/07/12 04:44:26 adeason Exp $
 * @package modules
 * @subpackage News
 * @filesource
@@ -40,7 +40,7 @@ class News implements Module {
 		global $I2_SQL;
 		$res = $I2_SQL->query('SELECT title,text,author,authorID,authortype,posted FROM news ORDER BY posted DESC;');
 		$this->newsdetails = $res->fetch_all_arrays(MYSQL_BOTH);
-		return TRUE;
+		return array('News', 'Recent News Posts');
 	}
 	
 	/**
@@ -71,7 +71,7 @@ class News implements Module {
 		}
 		$this->summaries = $titles;
 		$num = count($this->summaries);
-		return 'There '.($num==1?'is':'are'). ' '.$num.' news stor'.($num==1?'y':'ies').' to read';
+		return 'News: '.$num.' post'.($num==1?'':'s').' to read';
 	}
 
 	/**

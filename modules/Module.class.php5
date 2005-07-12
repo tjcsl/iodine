@@ -3,7 +3,7 @@
 * Just contains the definition for the interface {@link Module}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: Module.class.php5,v 1.9 2005/07/11 05:16:36 adeason Exp $
+* @version $Id: Module.class.php5,v 1.10 2005/07/12 04:44:26 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Module
@@ -59,7 +59,14 @@ interface Module {
 	* Performs all initialization necessary for this module to be
 	* displayed as the main page.
 	*
-	* @returns string The title of the main pane.
+	* @returns mixed Either a string, which will be the title for both the
+	*                main pane and for part of the page title, or an array
+	*                of two strings: the first is part of the page title,
+	*                and the second is the title of the content pane. To
+	*                specify no titles, return an empty array. To specify
+	*                that this module has no main content pane (and will
+	*                show an error if someone tries to access it as such),
+	*                return FALSE.
 	* @abstract
 	*/
 	function init_pane();
