@@ -3,7 +3,7 @@
 * Contains the definition for the class {@link MySQL}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004 The Intranet 2 Development Team
-* @version $Id: mysql.class.php5,v 1.19 2005/07/11 07:06:08 adeason Exp $
+* @version $Id: mysql.class.php5,v 1.20 2005/07/11 20:50:35 adeason Exp $
 * @package core
 * @subpackage MySQL
 * @filesource
@@ -42,7 +42,7 @@ class MySQL {
 	/**
 	* A string representing all custom printf tags for mysql queries which require an argument. Each character represents a different tag.
 	*/
-	const TAGS_ARG = 'adsi';
+	const TAGS_ARG = 'adsic';
 
 	/**
 	* A string representing all custom printf tags for mysql queries which do not require an argument. Each character represents a different tag.
@@ -92,6 +92,7 @@ class MySQL {
 	*/
 	protected function raw_query($query) {
 		global $I2_ERR;
+		d('Running query: '.$query);
 		$r = mysql_query($query, $this->link);
 		if ($err = mysql_error($this->link)) {
 			throw new I2Exception('MySQL error: '.$err);
@@ -145,7 +146,7 @@ class MySQL {
 			$tags,
 			PREG_PATTERN_ORDER | PREG_OFFSET_CAPTURE )
 		) {
-			foreach ($tags[0] as $tag) {
+			foreach (array_reverse($tags[0]) as $tag) {
 				/*$tag[0] is the string, $tag[1] is the offset*/
 				
 				/* tags that require an argument */
@@ -153,7 +154,7 @@ class MySQL {
 					if($argc < 1) {
 						throw new I2Exception('Insufficient arguments to mysql query string');
 					}
-					$arg = array_shift($argv);
+					$arg = array_pop($argv);
 					$argc--;
 				}
 
@@ -172,6 +173,18 @@ class MySQL {
 						}
 					case 's':
 						$replacement = '\''.mysql_real_escape_string($arg).'\'';
+						break;
+
+					case 'c':
+						if( is_array($arg) ) {
+							foreach($arg as $i=>$col) {
+								$arg[$i] = mysql_real_escape_string($col);
+							}
+							$replacement = '`'.implode('`,`', $arg).'`';
+						}
+						else {
+							$replacement = '`'.mysql_real_escape_string($arg).'`';
+						}
 						break;
 
 					/* integer*/
@@ -211,20 +224,17 @@ class MySQL {
 		/* Get query type by examining the query string up to the first
 		space */
 		switch( strtoupper(substr($query, 0, strpos($query, ' '))) ) {
+			case 'DESCRIBE':
 			case 'SELECT':
-				$perm = 'r';
 				$query_t = MYSQL::SELECT;
 				break;
 			case 'UPDATE':
-				$perm = 'w';
 				$query_t = MYSQL::UPDATE;
 				break;
 			case 'DELETE':
-				$perm = 'd';
 				$query_t = MYSQL::DELETE;
 				break;
 			case 'INSERT':
-				$perm = 'i';
 				$query_t = MYSQL::INSERT;
 				break;
 			default:
@@ -242,7 +252,7 @@ class MySQL {
 	* @return bool TRUE if $col is in table $table, FALSE otherwise.
 	*/
 	public function column_exists($table, $col) {
-		foreach(mysql_fetch_array($this->raw_query('DESCRIBE '.$table.';'), MYSQL_ASSOC) as $field) {
+		foreach($this->query('DESCRIBE %c;', $table)->fetch_all_arrays(MYSQL_ASSOC) as $field) {
 			if( $field['Field'] = $col ) {
 				return TRUE;
 			}
