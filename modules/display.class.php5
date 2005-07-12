@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.31 2005/07/12 04:44:26 adeason Exp $
+* @version $Id: display.class.php5,v 1.32 2005/07/12 04:56:47 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -12,8 +12,6 @@
 
 /**
 * The display module for Iodine.
-* @todo Implement a way for the main module to influence the page title, and
-* title for the main content pane.
 * @package core
 * @subpackage Display
 */
