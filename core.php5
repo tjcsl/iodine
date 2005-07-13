@@ -3,7 +3,7 @@
 * The core module for Iodine.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: core.php5,v 1.27 2005/07/11 15:39:45 adeason Exp $
+* @version $Id: core.php5,v 1.28 2005/07/13 02:16:20 adeason Exp $
 * @package core
 * @filesource
 */
@@ -138,10 +138,6 @@ try {
 	$module = isset($I2_ARGS[0]) ?
 		$I2_ARGS[0] :
 		$I2_USER->startpage;
-
-	if (!get_i2module($module)) {
-		$I2_ERR->fatal_error('Invalid module name \''.$module.'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
-	}
 
 	/* Display will instantiate the module, we just pass the name */
 	d('Passing module ' . $module . ' to Display module', 9);
