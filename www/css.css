@@ -108,3 +108,24 @@ a:hover {
 	padding:0px;
 	border: 2px dashed #2a4;
 }
+.error {
+	position:absolute;
+	left:0px;
+	bottom:0px;
+	z-index:10;
+	border: 2px #f00 dashed;
+	background-color: #daa;
+	padding: 5px;
+/* Should this be included? */
+/*	text-align: right; */
+}
+
+.debug {
+	position:absolute;
+	right:0;
+	bottom:0;
+	z-index:10;
+	border: 2px #00f dashed;
+	background-color: #aad;
+	padding: 5px;
+}
