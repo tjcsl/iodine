@@ -4,7 +4,7 @@
 *
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: i2exception.class.php5,v 1.3 2005/07/11 05:16:36 adeason Exp $
+* @version $Id: i2exception.class.php5,v 1.4 2005/07/13 03:25:05 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -19,7 +19,8 @@
 class I2Exception extends Exception {
 
 	/**
-	* Whether or not this exception has been deemed 'critical'
+	* Whether or not this exception has been deemed 'critical'.
+	* @var bool
 	*/
 	protected $critical = FALSE;
 
