@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Logging}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: logging.class.php5,v 1.16 2005/07/13 03:19:17 adeason Exp $
+* @version $Id: logging.class.php5,v 1.17 2005/07/13 03:33:47 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -134,16 +134,15 @@ class Logging {
 	/**
 	* Logs a message to the screen.
 	*
-	* It may not be obvious at first what the point of this method
-	* is, and that's because it's not meant to be called by outside
-	* classes. It's main use is to be called from the other Logging
-	* and/or Error methods, and this just formats the message for
-	* output to the user.
+	* This method buffers debug messages so they can be output to the screen
+	* at the end of the application's run, in a colorful box.
 	*
 	* @param String $msg The message to display.
 	*/
 	public function log_screen($msg) {
-		$this->debug_buf .= "\r\n<br />$msg";
+		if($this->screen_debug) {
+			$this->debug_buf .= "\r\n<br />$msg";
+		}
 	}
 
 	/**
@@ -160,6 +159,16 @@ class Logging {
 		$this->screen_debug = false;
 	}
 
+	/**
+	* Flushes any debug or error messages.
+	*
+	* Since the way debug/error messages are output now need to be output to
+	* the browser all at once, they must be buffered. This method outputs
+	* those buffers and properly formats them and all that. To ensure that
+	* the messages are displayed, this is registered as a 'shutdown
+	* function' in php, so it should be called in almost all cases, even if
+	* the application just dies halfway through.
+	*/
 	public function flush_debug_output() {
 		global $I2_DISP;
 
