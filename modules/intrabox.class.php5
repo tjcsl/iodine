@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.9 2005/07/12 06:49:53 adeason Exp $
+* @version $Id: intrabox.class.php5,v 1.10 2005/07/13 02:17:51 adeason Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -53,7 +53,7 @@ class IntraBox {
 			self::$display = new Display('Intrabox');
 		}
 
-		if( $module_name == self::$main_module->get_name() ) {
+		if( $module_name == self::$main_module ) {
 			$this->module = self::$main_module;
 		}
 		else {
@@ -120,8 +120,8 @@ class IntraBox {
 	public static function display_boxes($main_module) {
 		global $I2_USER;
 		
-		if( self::$main_module === NULL ) {
-			self::$main_module = $main_module;
+		if( self::$main_module === NULL && is_object($main_module) ) {
+			self::$main_module = $main_module->get_name();
 		}
 		
 		if( self::$display === NULL ) {
