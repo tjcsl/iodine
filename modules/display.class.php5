@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.32 2005/07/12 04:56:47 adeason Exp $
+* @version $Id: display.class.php5,v 1.33 2005/07/13 02:16:55 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -116,40 +116,52 @@ class Display {
 		$mod = '';
 
 		try {	
-			/*
-			** Display the main pane.
-			*/
-			$disp = new Display($module);
-			
-			eval('$mod = new '.$module.'();');
+			if( !get_i2module($module) ) {
+				$this->global_header('Error');
+				$this->display_top_bar();
+				$this->open_content_pane(array('no_module' => $module));
+				$this->close_content_pane();
+			}
+			else {
 		
-			if (!get_i2module($module) || ($title = $mod->init_pane()) === FALSE) {
-				$I2_ERR->fatal_error('Invalid module name \''.$module.'\'. Either you mistyped a URL or you clicked a broken link. Or Intranet could just be broken.');
-			}
-
-			if( !is_array($title) ) {
-				$title = array( $title, $title );
-			}
-			elseif( count($title) == 1 ) {
-				$title = array( $title[0], $title[0] );
-			}
-			elseif( count($title) == 0 ) {
-				$title = array( NULL, '&nbsp;' );
-			}
-		
-			$this->global_header($title[0]);
-			$this->display_top_bar();
+				/*
+				** Display the main pane.
+				*/
+				$disp = new Display($module);
+				
+				eval('$mod = new '.$module.'();');
 			
-			if (!Display::$display_stopped && $title) {
-				$this->open_content_pane($mod, array('title' => $title[1]));
-				try {
-					$mod->display_pane($disp);
-				} catch (Exception $e) {
-					/* Make sure to close the content pane*/
-					$this->close_content_pane($mod);
-					throw $e;
+				if (($title = $mod->init_pane()) === FALSE) {
+					$this->global_header('Error');
+					$this->display_top_bar();
+					$this->open_content_pane(array('no_module' => $module));
+					$this->close_content_pane();
 				}
-				$this->close_content_pane($mod);
+	
+				if( !is_array($title) ) {
+					$title = array( $title, $title );
+				}
+				elseif( count($title) == 1 ) {
+					$title = array( $title[0], $title[0] );
+				}
+				elseif( count($title) == 0 ) {
+					$title = array( NULL, '&nbsp;' );
+				}
+			
+				$this->global_header($title[0]);
+				$this->display_top_bar();
+				
+				if (!Display::$display_stopped && $title) {
+					$this->open_content_pane(array('title' => $title[1]));
+					try {
+						$mod->display_pane($disp);
+					} catch (Exception $e) {
+						/* Make sure to close the content pane*/
+						$this->close_content_pane();
+						throw $e;
+					}
+					$this->close_content_pane();
+				}
 			}
 						
 		} catch (Exception $e) {
@@ -287,6 +299,8 @@ class Display {
 	* after the modules.
 	*/
 	public function global_footer() {
+		global $I2_LOG;
+		$I2_LOG->flush_debug_output();
 		$this->disp('footer.tpl');
 		$this->flush_buffer();
 	}
@@ -296,10 +310,9 @@ class Display {
 	*
 	* @param object $module The module that will be displayed in the main box.
 	*/
-	public function open_content_pane(&$module, $args) {
+	public function open_content_pane($args) {
 		$this->set_buffering(false);
-		$this->name = $module->get_name();
-		$this->disp('openmainbox.tpl',array_merge(array('module_name'=>$this->name), $args));
+		$this->disp('openmainbox.tpl',$args);
 	}
 
 	/**
@@ -307,9 +320,8 @@ class Display {
 	*
 	* @param object $module The module that was displayed in the main box.
 	*/
-	public function close_content_pane(&$module) {
-		$this->name = $module->get_name();
-		$this->disp('closemainbox.tpl',array('module_name'=>$this->name));
+	public function close_content_pane() {
+		$this->disp('closemainbox.tpl');
 	}
 
 	/**
