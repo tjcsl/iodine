@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Logging}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: logging.class.php5,v 1.15 2005/07/13 03:03:41 adeason Exp $
+* @version $Id: logging.class.php5,v 1.16 2005/07/13 03:19:17 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -60,7 +60,7 @@ class Logging {
 
 		fwrite($fh,
 			$_SERVER['REMOTE_ADDR'] . ' - ' .
-			'blah' /*FIXME*/ . ' - [' .
+			(isset($_SESSION['i2_username'])?$_SESSION['i2_username']:'not_logged_in') . ' - [' .
 			date('d/M/Y:H:i:s O') . '] "' .
 			$_SERVER['REQUEST_URI'] . '" "' .
 			(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'') . '" "' .
@@ -72,6 +72,8 @@ class Logging {
 	/**
 	* Records an entry in the error log.
 	*
+	* @todo Actually report the module that triggered this. (Or a backtrace
+	*       of modules, or something?)
 	* @param string $msg The error message to record.
 	*/
 	public function log_error($msg) {
