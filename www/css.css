@@ -25,6 +25,9 @@ a:visited {
 a:active {
 	color: #004a2a;
 }
+a:hover {
+	text-decoration: underline;
+}
 
 .logo {
 	position: absolute;
