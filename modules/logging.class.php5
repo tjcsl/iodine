@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Logging}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: logging.class.php5,v 1.14 2005/07/12 06:50:56 adeason Exp $
+* @version $Id: logging.class.php5,v 1.15 2005/07/13 03:03:41 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -11,12 +11,15 @@
 
 /**
 * The logging module for Iodine.
-* @todo Make error/debug output more pleasant somehow
+* @todo Make the error/debug boxes X-able, so they don't always block stuff.
 * @package core
 * @subpackage Error
 * @see Error
 */
 class Logging {
+	
+	private $error_buf='';
+	private $debug_buf='';
 	
 	/**
 	* Email address to send critical messages to.
@@ -37,6 +40,7 @@ class Logging {
 		$this->log_access();
 		$this->screen_debug = true;
 		$this->my_email = i2config_get('email', 'iodine-errors@tjhsst.edu', 'logging');
+		register_shutdown_function(array($this, 'flush_debug_output'));
 	}
 
 	/**
@@ -89,12 +93,8 @@ class Logging {
 		);
 		fclose($fh);
 
-		if(isset($I2_DISP)) {
-			$I2_DISP->disp('error.tpl', array('error'=>$msg));
-		}
-		else {
-			echo $msg;
-		}
+
+		$this->error_buf .= "\r\n<br />$msg";
 	}
 	
 	/**
@@ -141,12 +141,7 @@ class Logging {
 	* @param String $msg The message to display.
 	*/
 	public function log_screen($msg) {
-		global $I2_DISP;
-		if (isset($I2_DISP)) {
-			echo "<div class='raw'>$msg</div>";
-		}
-		/* otherwise do nothing, logging to screen should not
-		be necessary this early on, before I2_DISP exists */
+		$this->debug_buf .= "\r\n<br />$msg";
 	}
 
 	/**
@@ -161,6 +156,38 @@ class Logging {
 	*/
 	public function debug_off() {
 		$this->screen_debug = false;
+	}
+
+	public function flush_debug_output() {
+		global $I2_DISP;
+
+		if( !( $this->error_buf || $this->debug_buf) ) {
+			return;
+		}
+		
+		try {
+			if( isset($I2_DISP) ) {
+				$I2_DISP->disp('error_debug.tpl', array('errors' => $this->error_buf, 'debug' => $this->debug_buf));
+				$this->error_buf = NULL;
+				$this->debug_buf = NULL;
+				return;
+			}
+		}
+		catch( Exception $e ) {
+			// Error in standard output, so just print things, no
+			//n eed to actually do anything in this block
+		}
+		//Will not be reached if all goes well
+
+		if( $this->error_buf ) {
+			echo '<div class="error">Intranet has encountered the following error(s):'."\r\n".'<br /><br />'
+				.$this->error_buf."\r\n".'<br /><br /></div>';
+		}
+		if( $this->debug_buf ) {
+			echo '<div class="debug">Intranet debug messages:'."\r\n".'<br /><br />'.$this->debug_buf."\r\n".'<br /><br /></div>';
+		}
+		$this->error_buf = NULL;
+		$this->debug_buf = NULL;
 	}
 }
 
