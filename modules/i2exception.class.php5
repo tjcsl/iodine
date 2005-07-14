@@ -4,7 +4,7 @@
 *
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: i2exception.class.php5,v 1.4 2005/07/13 03:25:05 adeason Exp $
+* @version $Id: i2exception.class.php5,v 1.5 2005/07/14 00:48:26 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -57,12 +57,12 @@ class I2Exception extends Exception {
 	*/
 	public function __toString() {
 		$str = ($this->critical?'Critical ':'') . 'I2 Exception: '.$this->message;
-		$str .= "\r\n\r\nBacktrace:\r\n";
+		$str .= "<br />\r\n<br />\r\nBacktrace:<br />\r\n";
 		
 		$trace = $this->getTrace();
 		
 		foreach($trace as $level) {
-			$str .= $level['file'].':'.$level['line']."\r\n";
+			$str .= $level['file'].':'.$level['line']."<br />\r\n";
 		}
 		
 		return $str;

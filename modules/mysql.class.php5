@@ -3,7 +3,7 @@
 * Contains the definition for the class {@link MySQL}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004 The Intranet 2 Development Team
-* @version $Id: mysql.class.php5,v 1.21 2005/07/12 06:52:03 adeason Exp $
+* @version $Id: mysql.class.php5,v 1.22 2005/07/14 00:48:26 adeason Exp $
 * @package core
 * @subpackage MySQL
 * @filesource
@@ -87,7 +87,10 @@ class MySQL {
 	*/
 	protected function connect($server, $user, $password) {
 		d("Connecting to mysql server $server as $user");
-		$this->link = mysql_pconnect($server, $user, $password);
+		$this->link = @mysql_pconnect($server, $user, $password);
+		if( $this->link === FALSE ) {
+			throw new I2Exception('Could not connect to MySQL server');
+		}
 		return $this->link;
 	}
 	

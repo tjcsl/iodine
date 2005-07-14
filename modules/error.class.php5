@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Error}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: error.class.php5,v 1.13 2005/07/11 22:56:45 adeason Exp $
+* @version $Id: error.class.php5,v 1.14 2005/07/14 00:48:26 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -23,6 +23,7 @@ class Error {
 	*/
 	function __construct() {
 		set_error_handler(array(&$this,'default_error_handler'));
+		error_reporting(E_ALL | E_STRICT);
 		set_exception_handler(array(&$this,'default_exception_handler'));
 	}
 
@@ -35,12 +36,22 @@ class Error {
 	* specification on php.net.
 	*/
 	function default_error_handler($errno, $errstr, $errfile, $errline) {
-		if ((ini_get('error_reporting') & $errno) == 0) {
+		//Ignore messages from Smarty, as it generates a lot of them.
+		//Also ignore if error_reporting() is zero, i.e. error
+		//suppression is on.
+		if( $errfile == '/usr/share/php/smarty/libs/Smarty.class.php' || error_reporting() == 0 ) {
 			return;
 		}
 		switch( $errno ) {
+			case E_WARNING:
+			case E_NOTICE:
+			case E_STRICT:
+				$this->nonfatal_error("Warning: $errstr\r\n<br />Error number: $errno\r\n<br />File: $errfile\r\n<br />Line: $errline");
+				break;
+			default:
+				$this->fatal_error("Error: $errstr\r\n<br />Error number: $errno\r\n<br />File: $errfile\r\n<br />Line: $errline");
+		}
 
-		$this->fatal_error("Error: $errstr\r\n<br />Error number: $errno\r\n<br />Error File: $errfile\r\n<br />Error line: $errline", FALSE);
 	}
 
 	/**
@@ -55,7 +66,7 @@ class Error {
 	*/
 	function default_exception_handler(Exception $e) {
 		$this->fatal_error(''.$e->__toString(), FALSE);
-		$this->fatal_error('There has been an unhandled Iodine exception: '.$e->__toString(), TRUE);
+	}
 
 	/**
 	* The generic fatal error function.
@@ -80,6 +91,9 @@ class Error {
 			$out .= "\r\n".'<br />This is a critical error, so an email is being sent to the developers, so hopefully this problem will be fixed soon.';
 		}
 		else {
+			$out .= "<br />\r\n".'If this problem persists, please contact the intranetmaster.';
+		}
+		
 		if (!isset($I2_LOG)) {
 			echo $out.'<BR>';
 			die();
