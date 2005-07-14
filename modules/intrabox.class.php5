@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.12 2005/07/14 12:52:04 vmircea Exp $
+* @version $Id: intrabox.class.php5,v 1.13 2005/07/14 12:54:39 vmircea Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -177,6 +177,7 @@ class IntraBox {
 	*               choose to have.
 	*/
 	public static function get_all_boxes() {
+		global $I2_ERR;
 		$modules = array();
 		$path = i2config_get('module_path', NULL, 'core');
 		$files = list_dir($path);
