@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link News}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: studentdirectory.mod.php5,v 1.2 2005/07/14 14:07:47 vmircea Exp $
+* @version $Id: studentdirectory.mod.php5,v 1.3 2005/07/14 14:14:23 vmircea Exp $
 * @package modules
 * @subpackage StudentDirectory
 * @filesource
@@ -39,7 +39,7 @@ class StudentDirectory implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
-		$display->disp('studentdirectorypane.tpl',$this->information);
+		$display->disp('studentdirectorypane.tpl',array("user"=>$this->information));
 	}
 	
 	/**
