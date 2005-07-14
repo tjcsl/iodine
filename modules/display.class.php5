@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.33 2005/07/13 02:16:55 adeason Exp $
+* @version $Id: display.class.php5,v 1.34 2005/07/14 00:54:07 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -152,7 +152,7 @@ class Display {
 				$this->display_top_bar();
 				
 				if (!Display::$display_stopped && $title) {
-					$this->open_content_pane(array('title' => $title[1]));
+					$this->open_content_pane(array('title' => $title[1], 'no_module' => ''));
 					try {
 						$mod->display_pane($disp);
 					} catch (Exception $e) {
