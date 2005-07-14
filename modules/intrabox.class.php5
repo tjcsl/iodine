@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.10 2005/07/13 02:17:51 adeason Exp $
+* @version $Id: intrabox.class.php5,v 1.11 2005/07/14 12:16:43 vmircea Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -169,12 +169,27 @@ class IntraBox {
 	}
 
 	/**
+	* Looks through all off the files labeled with .mod.php5, and adds all
+	* of the names of the classes that do not return false on an init_box()
+	* call.
+	*	
 	* @return array The names of all of the intraboxes that a user can
 	*               choose to have.
-	* @todo Write this method.
 	*/
 	public static function get_all_boxes() {
-		
+		$modules = array();
+		$path = i2config_get('module_path', NULL, 'core');
+		$files = list_dir($path);
+		foreach ($files as $file) {
+			$index = strpos($file,"mod.php5");
+			if ($index != FALSE) {
+				$file2 = substr_replace(substr_replace($file,strtoupper(substr($file,0,1)),0,1),"",$index-1,9); // uppercases the first character of the filename, and chops off the .mod.php5 so that we can instantiate the class
+				eval('$mod = new '.$file2.'();'); // make our own copy of the class
+				if (!($mod->init_box() === FALSE)) // check to see if we can init the box
+					$modules[] = $file2;
+			}
+		}
+		return $modules;
 	}
 }
 
