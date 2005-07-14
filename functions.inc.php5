@@ -5,7 +5,7 @@
 
 * @author The Intranet2 Development Team <intranet2@lists.tjhsst.edu>
 * @copyright 2004-2005 The Intranet2 Development Team
-* @version $Id: functions.inc.php5,v 1.15 2005/07/14 13:18:45 vmircea Exp $
+* @version $Id: functions.inc.php5,v 1.16 2005/07/14 19:23:40 adeason Exp $
 * @package core
 * @filesource
 */
@@ -67,14 +67,6 @@ function __autoload($class_name) {
 function get_i2module($module_name) {
 	/* Do not run autoload, since it will throw an exception if the
 	class does not exist */
-	if (class_exists($module_name, FALSE)) {
-		/*FIXME: should this return true? It might technically
-		not be an I2 module, but it is safe to instantiate...*/
-		/*That case is too difficult to detect for our purposes.
-		Such a conflict should be extremely rare, so we'll not
-		worry about it now.*/
-		return TRUE;
-	}
 	$prepath = i2config_get('module_path', NULL, 'core');
 	
 	$file = $prepath.strtolower($module_name).'.mod.php5';
