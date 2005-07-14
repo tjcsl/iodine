@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.25 2005/07/12 06:53:09 adeason Exp $
+* @version $Id: user.class.php5,v 1.26 2005/07/14 08:55:17 vmircea Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -198,7 +198,7 @@ class User {
 			$cols = $argv;
 		}
 
-		return $I2_SQL->query('SELECT %c FROM user LEFT JOIN userinfo USING (uid) WHERE uid=%d;', $cols, $this->myuid)->fetch_array(MYSQL_NUM);
+		return $I2_SQL->query('SELECT %c FROM user LEFT JOIN userinfo USING (uid) WHERE user.uid=%d;', $cols, $this->myuid)->fetch_array(MYSQL_NUM);
 	}
 }
 
