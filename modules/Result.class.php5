@@ -40,7 +40,7 @@ class Result {
 	*/
 
 	function join_right($result,$qtype) {
-		$this->results[$result] = array($result,$qtype,0);
+		$this->results[(int)$result] = array($result,$qtype,0);
 	}
 
 	/**
