@@ -5,7 +5,7 @@
 
 * @author The Intranet2 Development Team <intranet2@lists.tjhsst.edu>
 * @copyright 2004-2005 The Intranet2 Development Team
-* @version $Id: functions.inc.php5,v 1.14 2005/07/11 05:16:30 adeason Exp $
+* @version $Id: functions.inc.php5,v 1.15 2005/07/14 13:18:45 vmircea Exp $
 * @package core
 * @filesource
 */
@@ -181,4 +181,28 @@ function redirect($url = NULL) {
 	die();
 
 }
+
+/**
+* The listdir function, used for getting a list of files in a directory.
+*
+* Gives an array of the filenames in the specified directory. It is used by the
+* get all boxes function in the IntraBox class. Also, it checks to make sure
+* that it does not include files that start with a . , such as swap files.
+* 
+* @param string $directory Full local path to the desired directory.
+* @return array An array of strings with the full filename of the 
+*/
+
+function list_dir($directory) 
+{
+	$files = array();
+	$handler = opendir($directory);
+	while ($file = readdir($handler)) {
+		if ($file != '.' && $file != '..' && substr($file,0,1) != '.')
+			$files[] = $file;
+	}
+	closedir($handler);
+	return $files;
+}
+
 ?>
