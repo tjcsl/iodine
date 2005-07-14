@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Error}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: error.class.php5,v 1.14 2005/07/14 00:48:26 adeason Exp $
+* @version $Id: error.class.php5,v 1.15 2005/07/14 19:16:19 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -39,9 +39,12 @@ class Error {
 		//Ignore messages from Smarty, as it generates a lot of them.
 		//Also ignore if error_reporting() is zero, i.e. error
 		//suppression is on.
-		if( $errfile == '/usr/share/php/smarty/libs/Smarty.class.php' || error_reporting() == 0 ) {
+		if(	$errfile == '/usr/share/php/smarty/libs/Smarty.class.php' ||
+			$errfile == '/usr/share/php/smarty/libs/Smarty_Compiler.class.php' ||
+			error_reporting() == 0 ) {
 			return;
 		}
+
 		switch( $errno ) {
 			case E_WARNING:
 			case E_NOTICE:
