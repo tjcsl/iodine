@@ -22,7 +22,7 @@ class Birthdays implements Module{
 
 	function init_box(){
 		global $I2_SQL, $I2_USER;
-		$this->namearr = $I2_USER->get_users_with_birthday(date("Y-m-d"));
+		//$this->namearr = $I2_USER->get_users_with_birthday(date("Y-m-d"));
 		return TRUE;
 	}
 	
