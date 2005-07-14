@@ -1,6 +1,13 @@
 To start up your local CVS copy, run 'cvs co intranet2' in some directory, and
 the files will be in the 'intranet2' sub-directory.
 
+Directory hierarchy:
+/modules/ -- most PHP goes in here. Any module, core, or helper classes go here.
+/www/ -- Files that are always accessible to users, with no need for auth.
+/templates/ -- Smarty template files.
+/mysql/ -- Scripts for making/defining the mysql tables.
+/smarty/ -- PHP files for defining custom smarty tags and functions.
+
 General CVS guidelines:
 
 - Run 'cvs update' to grab the latest code from CVS into your local directory
@@ -34,4 +41,5 @@ documentation in ../doc relative to the current directory. So, if you're in
 easily accessible from your iodine /~username space (that's why you should be
 in your web-docs).
 
-This creates documentation for your personal space. Overall documentation will be generated every once in a while by someone who has root access on humboldt.
+This creates documentation for your personal space. Overall documentation will
+be generated every once in a while by someone who has root access on humboldt.
