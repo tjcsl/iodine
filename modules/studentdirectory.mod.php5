@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link News}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: studentdirectory.mod.php5,v 1.1 2005/07/14 13:08:11 vmircea Exp $
+* @version $Id: studentdirectory.mod.php5,v 1.2 2005/07/14 14:07:47 vmircea Exp $
 * @package modules
 * @subpackage StudentDirectory
 * @filesource
@@ -28,7 +28,10 @@ class StudentDirectory implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_SQL;
+		global $I2_SQL,$I2_ARGS,$I2_USER;
+		isset($I2_ARGS[1]) ? $uid = $I2_ARGS[1] : $uid = $I2_USER->uid;
+		$tmpusr = new User($uid);
+		$this->information = $tmpusr->info();	
 		return true;
 	}
 	
@@ -36,7 +39,7 @@ class StudentDirectory implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
-		$display->disp('studentdirectorypane.tpl',$this->information));
+		$display->disp('studentdirectorypane.tpl',$this->information);
 	}
 	
 	/**
