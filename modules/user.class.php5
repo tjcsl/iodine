@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.26 2005/07/14 08:55:17 vmircea Exp $
+* @version $Id: user.class.php5,v 1.27 2005/07/14 13:40:42 vmircea Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -159,7 +159,7 @@ class User {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
 		}
 		
-		return $I2_SQL->query('SELECT * FROM user LEFT JOIN userinfo USING (uid) WHERE uid=%d;', $this->myuid)->fetch_array(MYSQL_ASSOC);
+		return $I2_SQL->query('SELECT * FROM user LEFT JOIN userinfo USING (uid) WHERE user.uid=%d;', $this->myuid)->fetch_array(MYSQL_ASSOC);
 	}
 
 	/**
@@ -198,7 +198,7 @@ class User {
 			$cols = $argv;
 		}
 
-		return $I2_SQL->query('SELECT %c FROM user LEFT JOIN userinfo USING (uid) WHERE user.uid=%d;', $cols, $this->myuid)->fetch_array(MYSQL_NUM);
+		return $I2_SQL->query('SELECT %c FROM user LEFT JOIN userinfo USING (uid) WHERE user.uid=%d;', $cols, $this->myuid)->fetch_array(MYSQL_BOTH);
 	}
 }
 
