@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.11 2005/07/14 12:16:43 vmircea Exp $
+* @version $Id: intrabox.class.php5,v 1.12 2005/07/14 12:52:04 vmircea Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -184,9 +184,13 @@ class IntraBox {
 			$index = strpos($file,"mod.php5");
 			if ($index != FALSE) {
 				$file2 = substr_replace(substr_replace($file,strtoupper(substr($file,0,1)),0,1),"",$index-1,9); // uppercases the first character of the filename, and chops off the .mod.php5 so that we can instantiate the class
-				eval('$mod = new '.$file2.'();'); // make our own copy of the class
-				if (!($mod->init_box() === FALSE)) // check to see if we can init the box
-					$modules[] = $file2;
+				try {
+					eval('$mod = new '.$file2.'();'); // make our own copy of the class
+					if (!($mod->init_box() === FALSE)) // check to see if we can init the box
+						$modules[] = $file2;
+				} catch (Exception $e) {
+					$I2_ERR->nonfatal_error('There was an error trying to initialize the class named `'.$file2.'` when checking for it\'s IntraBox: '.$e->__toString());
+				}
 			}
 		}
 		return $modules;
