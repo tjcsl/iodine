@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.34 2005/07/14 00:54:07 adeason Exp $
+* @version $Id: display.class.php5,v 1.35 2005/07/14 22:02:31 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -80,6 +80,8 @@ class Display {
 		$this->smarty->right_delimiter = '>]';
 		$this->smarty->compile_dir = i2config_get('smarty_path','./','core');
 		$this->my_module_name = $module_name;
+
+		
 		if ($module_name == 'core') {
 			Display::$core_display = $this;
 			self::$tpl_root = i2config_get('template_path','./','core');
@@ -130,37 +132,48 @@ class Display {
 				$disp = new Display($module);
 				
 				eval('$mod = new '.$module.'();');
-			
-				if (($title = $mod->init_pane()) === FALSE) {
+				
+				try {
+					$title = $mod->init_pane();
+				} catch( Exception $e ) {
+					$this->global_header('Error');
+					$this->display_top_bar();
+					$this->open_content_pane(array('error' => 1));
+					$this->close_content_pane();
+					throw $e;
+				}
+				if ( $title === FALSE) {
 					$this->global_header('Error');
 					$this->display_top_bar();
 					$this->open_content_pane(array('no_module' => $module));
 					$this->close_content_pane();
 				}
+				else {
 	
-				if( !is_array($title) ) {
-					$title = array( $title, $title );
-				}
-				elseif( count($title) == 1 ) {
-					$title = array( $title[0], $title[0] );
-				}
-				elseif( count($title) == 0 ) {
-					$title = array( NULL, '&nbsp;' );
-				}
-			
-				$this->global_header($title[0]);
-				$this->display_top_bar();
-				
-				if (!Display::$display_stopped && $title) {
-					$this->open_content_pane(array('title' => $title[1], 'no_module' => ''));
-					try {
-						$mod->display_pane($disp);
-					} catch (Exception $e) {
-						/* Make sure to close the content pane*/
-						$this->close_content_pane();
-						throw $e;
+					if( !is_array($title) ) {
+						$title = array( $title, $title );
 					}
-					$this->close_content_pane();
+					elseif( count($title) == 1 ) {
+						$title = array( $title[0], $title[0] );
+					}
+					elseif( count($title) == 0 ) {
+						$title = array( NULL, '&nbsp;' );
+					}
+				
+					$this->global_header($title[0]);
+					$this->display_top_bar();
+					
+					if (!Display::$display_stopped && $title) {
+						$this->open_content_pane(array('title' => $title[1]));
+						try {
+							$mod->display_pane($disp);
+						} catch (Exception $e) {
+							/* Make sure to close the content pane*/
+							$this->close_content_pane();
+							throw $e;
+						}
+						$this->close_content_pane();
+					}
 				}
 			}
 						
