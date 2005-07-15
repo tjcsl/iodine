@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link News}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: news.mod.php5,v 1.14 2005/07/12 04:44:26 adeason Exp $
+* @version $Id: news.mod.php5,v 1.15 2005/07/14 20:16:07 adeason Exp $
 * @package modules
 * @subpackage News
 * @filesource
@@ -48,7 +48,7 @@ class News implements Module {
 	*/
 	function display_pane($display) {
 		//$display->raw_display("This is today's news, in a pane.");
-		$display->disp('newspane.tpl',array('news_stories'=>$this->newsdetails));
+		$display->disp('news_pane.tpl',array('news_stories'=>$this->newsdetails));
 	}
 	
 	/**
@@ -78,7 +78,7 @@ class News implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_box($display) {
-		$display->disp('newsbox.tpl',array('summaries'=>$this->summaries));
+		$display->disp('news_box.tpl',array('summaries'=>$this->summaries));
 	}
 
 	/**
