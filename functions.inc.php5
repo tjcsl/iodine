@@ -5,7 +5,7 @@
 
 * @author The Intranet2 Development Team <intranet2@lists.tjhsst.edu>
 * @copyright 2004-2005 The Intranet2 Development Team
-* @version $Id: functions.inc.php5,v 1.17 2005/07/15 06:34:49 adeason Exp $
+* @version $Id: functions.inc.php5,v 1.18 2005/07/15 06:37:52 adeason Exp $
 * @package core
 * @filesource
 */
@@ -184,12 +184,13 @@ function flatten($arr) {
 	$ret = array();
 	foreach($arr as $item) {
 		if( is_array($item) ) {
-			$ret += $item;
+			$ret = array_merge($ret,$item);
 		}
 		else {
 			$ret[] = $item;
 		}
 	}
+	return $ret;
 }
 
 ?>
