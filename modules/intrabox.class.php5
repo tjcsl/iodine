@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.13 2005/07/14 12:54:39 vmircea Exp $
+* @version $Id: intrabox.class.php5,v 1.14 2005/07/15 06:53:36 adeason Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -130,7 +130,7 @@ class IntraBox {
 
 		self::$display->disp('intrabox_open.tpl');
 		
-		foreach(explode(',', $I2_USER->boxes) as $mod) {
+		foreach(self::get_user_boxes($I2_USER->uid) as $mod) {
 			$box = new Intrabox($mod);
 			$box->display_box();
 		}
@@ -146,8 +146,12 @@ class IntraBox {
 	* @return array The list of the names of the intraboxes.
 	*/
 	public static function get_user_boxes($uid) {
-		$user = new User($uid);
-		return explode(',', $user->boxes);
+		global $I2_SQL;
+		return flatten($I2_SQL->query(	'SELECT intrabox.name FROM intrabox 
+					 JOIN intrabox_map USING (boxid) 
+					 WHERE intrabox_map.uid=%d 
+					 ORDER BY intrabox_map.box_order;'
+			,$uid)->fetch_all_arrays(MYSQL_NUM));
 	}
 
 	/**
@@ -169,32 +173,14 @@ class IntraBox {
 	}
 
 	/**
-	* Looks through all off the files labeled with .mod.php5, and adds all
-	* of the names of the classes that do not return false on an init_box()
-	* call.
+	* Retrieves all available intraboxes from MySQL.
 	*	
 	* @return array The names of all of the intraboxes that a user can
 	*               choose to have.
 	*/
 	public static function get_all_boxes() {
-		global $I2_ERR;
-		$modules = array();
-		$path = i2config_get('module_path', NULL, 'core');
-		$files = list_dir($path);
-		foreach ($files as $file) {
-			$index = strpos($file,"mod.php5");
-			if ($index != FALSE) {
-				$file2 = substr_replace(substr_replace($file,strtoupper(substr($file,0,1)),0,1),"",$index-1,9); // uppercases the first character of the filename, and chops off the .mod.php5 so that we can instantiate the class
-				try {
-					eval('$mod = new '.$file2.'();'); // make our own copy of the class
-					if (!($mod->init_box() === FALSE)) // check to see if we can init the box
-						$modules[] = $file2;
-				} catch (Exception $e) {
-					$I2_ERR->nonfatal_error('There was an error trying to initialize the class named `'.$file2.'` when checking for it\'s IntraBox: '.$e->__toString());
-				}
-			}
-		}
-		return $modules;
+		global $I2_SQL;
+		return flatten($I2_SQL->query('SELECT name FROM intrabox;')->fetch_all_arrays(MYSQL_NUM));
 	}
 }
 
