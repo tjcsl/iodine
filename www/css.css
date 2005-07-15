@@ -109,7 +109,7 @@ a:hover {
 	border: 2px dashed #2a4;
 }
 .error {
-	position:absolute;
+	position:fixed;
 	left:0px;
 	bottom:0px;
 	z-index:10;
@@ -121,7 +121,7 @@ a:hover {
 }
 
 .debug {
-	position:absolute;
+	position:fixed;
 	right:0;
 	bottom:0;
 	z-index:10;
