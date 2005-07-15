@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.27 2005/07/14 13:40:42 vmircea Exp $
+* @version $Id: user.class.php5,v 1.28 2005/07/14 20:42:57 adeason Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -41,13 +41,19 @@ class User {
 		if( $uid === NULL ) {
 			if( isset($_SESSION['i2_uid']) ) {
 				$uid = $_SESSION['i2_uid'];
-				$this->info = $I2_SQL->query('SELECT * FROM user where uid=%d', $uid)->fetch_array(MYSQL_ASSOC);
+				$this->info = $I2_SQL->query('SELECT * FROM user WHERE uid=%d', $uid)->fetch_array(MYSQL_ASSOC);
 				if( ! $this->info ) {
 					$I2_ERR->nonfatal_error('A User object was created with a nonexistent uid');
 				}
 			}
 			else {
 				$I2_ERR->fatal_error('Your password and username were correct, but you don\'t appear to exist in our database. If this is a mistake, please contact the intranetmaster about it.');
+			}
+		}
+		else {
+			$count = $I2_SQL->query('SELECT COUNT(*) FROM user WHERE uid=%d', $uid)->fetch_array(MYSQL_NUM);
+			if( $count[0] == 0 ) {
+				$I2_ERR->nonfatal_error('Specified UID does not exist in the database.');
 			}
 		}
 
