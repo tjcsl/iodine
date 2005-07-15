@@ -5,7 +5,7 @@
 
 * @author The Intranet2 Development Team <intranet2@lists.tjhsst.edu>
 * @copyright 2004-2005 The Intranet2 Development Team
-* @version $Id: functions.inc.php5,v 1.16 2005/07/14 19:23:40 adeason Exp $
+* @version $Id: functions.inc.php5,v 1.17 2005/07/15 06:34:49 adeason Exp $
 * @package core
 * @filesource
 */
@@ -175,26 +175,21 @@ function redirect($url = NULL) {
 }
 
 /**
-* The listdir function, used for getting a list of files in a directory.
+* Flatten an array. (Non-recursive, one level deep.)
 *
-* Gives an array of the filenames in the specified directory. It is used by the
-* get all boxes function in the IntraBox class. Also, it checks to make sure
-* that it does not include files that start with a . , such as swap files.
-* 
-* @param string $directory Full local path to the desired directory.
-* @return array An array of strings with the full filename of the 
+* @param Array $arr The array to flatten.
+* @return Array The flattened array.
 */
-
-function list_dir($directory) 
-{
-	$files = array();
-	$handler = opendir($directory);
-	while ($file = readdir($handler)) {
-		if ($file != '.' && $file != '..' && substr($file,0,1) != '.')
-			$files[] = $file;
+function flatten($arr) {
+	$ret = array();
+	foreach($arr as $item) {
+		if( is_array($item) ) {
+			$ret += $item;
+		}
+		else {
+			$ret[] = $item;
+		}
 	}
-	closedir($handler);
-	return $files;
 }
 
 ?>
