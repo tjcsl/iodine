@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link News}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: news.mod.php5,v 1.15 2005/07/14 20:16:07 adeason Exp $
+* @version $Id: news.mod.php5,v 1.16 2005/07/15 05:03:11 adeason Exp $
 * @package modules
 * @subpackage News
 * @filesource
@@ -38,8 +38,15 @@ class News implements Module {
 	*/
 	function init_pane() {
 		global $I2_SQL;
-		$res = $I2_SQL->query('SELECT title,text,author,authorID,authortype,posted FROM news ORDER BY posted DESC;');
+		$res = $I2_SQL->query('SELECT title,text,authorID,posted FROM news ORDER BY posted DESC;');
 		$this->newsdetails = $res->fetch_all_arrays(MYSQL_BOTH);
+
+		foreach( $this->newsdetails as $i=>$story ) {
+			if( $story['authorID'] ) {
+				$tmpuser = new User($story['authorID']);
+				$this->newsdetails[$i]['author'] = $tmpuser->fname .' '.$tmpuser->lname;
+			}
+		}
 		return array('News', 'Recent News Posts');
 	}
 	
