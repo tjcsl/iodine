@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link StudentDirectory}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: studentdirectory.mod.php5,v 1.4 2005/07/14 20:50:21 adeason Exp $
+* @version $Id: studentdirectory.mod.php5,v 1.5 2005/07/14 22:22:34 adeason Exp $
 * @package modules
 * @subpackage StudentDirectory
 * @filesource
@@ -23,23 +23,46 @@ class StudentDirectory implements Module {
 	*/
 	private $display;
 
+	private $information;
+
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
 		global $I2_SQL,$I2_ARGS,$I2_USER;
-		$user = isset($I2_ARGS[1]) ? new User($I2_ARGS[1]) : $I2_USER;
-		if( ($this->information = $user->info()) === FALSE ) {
-			return array('Error', 'Error: Student does not exist');
+
+		if( ! isset($I2_ARGS[1]) ) {
+			$this->information = 'help';
+			return array('Student Directory Help', 'Searching Help');
 		}
-		return array('Student Directory: '.$this->information['fname'].' '.$this->information['lname'], $this->information['fname'].' '.$this->information['lname']);
+		
+		switch($I2_ARGS[1]) {
+			//Get info about someone
+			case 'info':
+				$user = isset($I2_ARGS[2]) ? new User($I2_ARGS[2]) : $I2_USER;
+				if( ($this->information = $user->info()) === FALSE ) {
+					return array('Error', 'Error: Student does not exist');
+				}
+				return array('Student Directory: '.$this->information['fname'].' '.$this->information['lname'], $this->information['fname'].' '.$this->information['lname']);
+
+			//Not implemented yet
+			case 'search':
+			default:
+				$this->information = FALSE;
+				return array('Error', 'Error: Student does not exist');
+				
+		}
 	}
 	
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
-		$display->disp('studentdirectory_pane.tpl',array('info'=>$this->information));
+		if( $this->information == 'help' ) {
+			$display->disp('studentdirectory_help.tpl');
+		} else {
+			$display->disp('studentdirectory_pane.tpl',array('info'=>$this->information));
+		}
 	}
 	
 	/**
