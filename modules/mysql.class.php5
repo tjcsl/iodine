@@ -3,7 +3,7 @@
 * Contains the definition for the class {@link MySQL}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004 The Intranet 2 Development Team
-* @version $Id: mysql.class.php5,v 1.22 2005/07/14 00:48:26 adeason Exp $
+* @version $Id: mysql.class.php5,v 1.23 2005/07/15 23:51:18 adeason Exp $
 * @package core
 * @subpackage MySQL
 * @filesource
@@ -59,7 +59,7 @@ class MySQL {
 	/**
 	* A string representing all custom printf tags for mysql queries which require an argument. Each character represents a different tag.
 	*/
-	const TAGS_ARG = 'adsic';
+	const TAGS_ARG = 'adsicDI';
 
 	/**
 	* A string representing all custom printf tags for mysql queries which do not require an argument. Each character represents a different tag.
@@ -140,7 +140,9 @@ class MySQL {
 	* The printf-style tags implemented are:
 	* <ul>
 	* <li>%a - A string which only contains alphanumeric characters</li>
+	* <li>%c - A table or column name, or an array of column or table names</li>
 	* <li>%d or %i - An integer, or an integer in a string</li>
+	* <li>%D or %I - An array of integers, to be separated by ','</li>
 	* <li>%s - A string, which will be quoted, and escapes all necessary
 	* characters for use in a mysql statement</li>
 	* <li>%V - Outputs the current Iodine version</li>
@@ -205,6 +207,22 @@ class MySQL {
 						else {
 							$replacement = '`'.mysql_real_escape_string($arg).'`';
 						}
+						break;
+
+					case 'I':
+					case 'D':
+						if( !is_array($arg) ) {
+							throw new I2Exception('Non-array passed to %D in a mysql query');
+						}
+						foreach($arg as $num) {
+							if(!(	is_int($num) ||
+								ctype_digit($num) ||
+								(ctype_digit(substr($num,1)) && $num[0]=='-') //negatives
+							)) {
+								throw new I2Exception('Non-integer `'.$num.'` passed in the array passed to %D in a mysql query');
+							}
+						}
+						$replacement = implode($arg, ',');
 						break;
 
 					/* integer*/
