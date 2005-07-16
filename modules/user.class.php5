@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.28 2005/07/14 20:42:57 adeason Exp $
+* @version $Id: user.class.php5,v 1.29 2005/07/15 23:53:09 adeason Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -11,7 +11,6 @@
 
 /**
 * The user information module for Iodine.
-* @todo Perhaps make some methods to get information from an array of UIDs
 * @package core
 * @subpackage User
 * @see UserInfo
@@ -33,6 +32,16 @@ class User {
 
 	/**
 	* The User class constructor.
+	*
+	* This takes the UID of the user as an argument. If the uid is not
+	* or if it is NULL, then the UID of the currently logged in user is
+	* used. (If someone isn't logged in yet, the application exits before
+	* processing gets here, so we don't have to worry about it.)
+	*
+	* In that case of a NULL uid, the info is cached in an array in addition
+	* to using the current user's information. This is because it is
+	* anticipated that the current user's info will be queried a lot, so we
+	* cache it so it doesn't need to be looked up all the time.
 	* 
 	* @access public
 	*/
@@ -120,6 +129,11 @@ class User {
 			throw new I2Exception('Tried to set information for nonexistant user!');
 		}
 
+		//This could really screw up some SQL stuff, so I'm disallowing it
+		if( $name == 'uid' ) {
+			throw new I2Exception('Something tried to change the uid of a user. This is not permitted.');
+		}
+
 		if( $I2_SQL->column_exists( 'user', $name ) ) {
 			$table = 'user';
 		}
@@ -204,7 +218,29 @@ class User {
 			$cols = $argv;
 		}
 
-		return $I2_SQL->query('SELECT %c FROM user LEFT JOIN userinfo USING (uid) WHERE user.uid=%d;', $cols, $this->myuid)->fetch_array(MYSQL_BOTH);
+		return $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid=%d;', $cols, $this->myuid)->fetch_array(MYSQL_BOTH);
+	}
+
+	/**
+	* Get information about multiple users at once.
+	*
+	* @param array $uids An array of UIDs of users to get info about.
+	* @param mixed $cols Either pass an array of columns of information you
+	*                    want to retrieve, or pass a series of strings as
+	*                    additional arguments.
+	* @param mixed $cols,...
+	* @return array Two-dimensional array of the results, each row being an
+	*               associative array with the column as the key.
+	*/
+	public static function get_multi( $uids, $cols ) {
+		global $I2_SQL;
+	
+		if( !is_array($cols)) {
+			$cols = func_get_args();
+			array_shift($cols);
+		}
+		
+		return $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid IN (%D);', $cols, $uids)->fetch_all_arrays(MYSQL_ASSOC);
 	}
 }
 
