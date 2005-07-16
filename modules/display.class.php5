@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.36 2005/07/16 01:56:53 adeason Exp $
+* @version $Id: display.class.php5,v 1.37 2005/07/16 04:47:11 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -79,6 +79,7 @@ class Display {
 		$this->smarty->left_delimiter = '[<';
 		$this->smarty->right_delimiter = '>]';
 		$this->smarty->compile_dir = i2config_get('smarty_path','./','core');
+		$this->smarty->plugins_dir = array('plugins',i2config_get('root_path',NULL,'core').'smarty');
 		$this->my_module_name = $module_name;
 
 		
