@@ -3,7 +3,7 @@
 * Just contains the definition for the interface {@link Module}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: Module.class.php5,v 1.10 2005/07/12 04:44:26 adeason Exp $
+* @version $Id: Module.class.php5,v 1.11 2005/07/15 22:59:28 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Module
@@ -15,7 +15,6 @@
 * @package core
 * @subpackage Module
 * @todo The 8th Period module(s) need to be created
-* @todo The Student Directory module needs to be created
 (Just put modules to be done in here, since there's really no other place)
 */
 interface Module {
