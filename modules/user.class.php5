@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.29 2005/07/15 23:53:09 adeason Exp $
+* @version $Id: user.class.php5,v 1.30 2005/07/16 04:13:40 adeason Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -79,6 +79,8 @@ class User {
 	* </code>
 	* And that will obtain the user's first name. If you want to retrieve
 	* multiple items at a time, look at the other methods in this class.
+	*
+	* @return mixed The data you requested.
 	*/
 	public function __get( $name ) {
 		global $I2_SQL;
@@ -197,6 +199,7 @@ class User {
 	* @param mixed $cols,... Either an array containing the names of the
 	*                        columns to retrieve, or just pass a string for
 	*                        each column you want returned.
+	* @return Array The information in the columns you requested.
 	*/
 	public function get_cols() {
 		global $I2_SQL;

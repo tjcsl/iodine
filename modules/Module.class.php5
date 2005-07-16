@@ -3,7 +3,7 @@
 * Just contains the definition for the interface {@link Module}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: Module.class.php5,v 1.11 2005/07/15 22:59:28 adeason Exp $
+* @version $Id: Module.class.php5,v 1.12 2005/07/16 04:13:40 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Module
@@ -22,7 +22,7 @@ interface Module {
 	/**
 	* Displays all of a module's ibox content.
 	*
-	* @param object $disp The Display object to use for output.
+	* @param Display $disp The Display object to use for output.
 	* @abstract
 	*/
 	function display_box($disp);
@@ -30,7 +30,7 @@ interface Module {
 	/**
 	* Displays all of a module's main content.
 	*
-	* @param object $disp The Display object to use for output.
+	* @param Display $disp The Display object to use for output.
 	* @abstract
 	*/
 	function display_pane($disp);

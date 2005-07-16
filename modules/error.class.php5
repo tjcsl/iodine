@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Error}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: error.class.php5,v 1.15 2005/07/14 19:16:19 adeason Exp $
+* @version $Id: error.class.php5,v 1.16 2005/07/16 04:13:40 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -64,8 +64,8 @@ class Error {
 	* application does. Modules should handle their own exceptions,
 	* though; this is just a failsafe.
 	*
-	* @param Exception $exception	The exception that was thrown
-	*				and not caught
+	* @param Exception $e The exception that was thrown
+	*                     and not caught
 	*/
 	function default_exception_handler(Exception $e) {
 		$this->fatal_error(''.$e->__toString(), FALSE);
@@ -84,7 +84,7 @@ class Error {
 	* a list, if it's absolutely critical.
 	*/
 
-	function fatal_error($msg, $critical = 0) {
+	function fatal_error($msg, $critical = FALSE) {
 		global $I2_LOG;
 
 		$out = 'Iodine fatal error: '.$msg;
