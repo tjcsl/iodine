@@ -3,7 +3,7 @@
 * Contains the definition for the class {@link MySQL}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004 The Intranet 2 Development Team
-* @version $Id: mysql.class.php5,v 1.23 2005/07/15 23:51:18 adeason Exp $
+* @version $Id: mysql.class.php5,v 1.24 2005/07/16 03:24:52 adeason Exp $
 * @package core
 * @subpackage MySQL
 * @filesource
@@ -59,7 +59,7 @@ class MySQL {
 	/**
 	* A string representing all custom printf tags for mysql queries which require an argument. Each character represents a different tag.
 	*/
-	const TAGS_ARG = 'adsicDI';
+	const TAGS_ARG = 'adsicDIS';
 
 	/**
 	* A string representing all custom printf tags for mysql queries which do not require an argument. Each character represents a different tag.
@@ -145,6 +145,7 @@ class MySQL {
 	* <li>%D or %I - An array of integers, to be separated by ','</li>
 	* <li>%s - A string, which will be quoted, and escapes all necessary
 	* characters for use in a mysql statement</li>
+	* <li>%S - An array of strings, quoted and escaped</li>
 	* <li>%V - Outputs the current Iodine version</li>
 	* <li>%% - Outputs a literal '%'</li>
 	* </ul>
@@ -195,6 +196,16 @@ class MySQL {
 						}
 					case 's':
 						$replacement = '\''.mysql_real_escape_string($arg).'\'';
+						break;
+
+					case 'S':
+						if( !is_array($arg) ) {
+							throw new I2Exception('Non-array passed as %S in a mysql query');
+						}
+						foreach($arg as $i=>$str) {
+							$arg[$i] = mysql_real_escape_string($str);
+						}
+						$replacement = '\''.implode('\',\'', $arg).'\'';
 						break;
 
 					case 'c':
