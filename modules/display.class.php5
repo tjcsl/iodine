@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.35 2005/07/14 22:02:31 adeason Exp $
+* @version $Id: display.class.php5,v 1.36 2005/07/16 01:56:53 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -105,7 +105,7 @@ class Display {
 	* This function basically displays everything and performs
 	* pretty much all processing done outside of core.
 	*
-	* @param $module The name of the module to display in the main
+	* @param string $module The name of the module to display in the main
 	*                panel and give processing control to.
 	*/
 	public function display_loop($module) {
@@ -301,6 +301,8 @@ class Display {
 	* of whether it will appear at the top or bottom of the finished layout.
 	* Also sends all necessary header information, links CSS, etc.  Please note
 	* that this is not global:  it is called only on the core's Display instance.
+	*
+	* @param string $title The title for the page.
 	*/
 	public function global_header($title = NULL) {
 		$this->disp('header.tpl', array('title' => $title));
@@ -321,7 +323,7 @@ class Display {
 	/**
 	* Open the content pane.
 	*
-	* @param object $module The module that will be displayed in the main box.
+	* @param array $args The arguments passed to the Smarty template.
 	*/
 	public function open_content_pane($args) {
 		$this->set_buffering(false);
@@ -331,7 +333,6 @@ class Display {
 	/**
 	* Close the content pane.
 	*
-	* @param object $module The module that was displayed in the main box.
 	*/
 	public function close_content_pane() {
 		$this->disp('closemainbox.tpl');
