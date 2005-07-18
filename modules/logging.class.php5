@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Logging}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: logging.class.php5,v 1.18 2005/07/14 20:44:11 adeason Exp $
+* @version $Id: logging.class.php5,v 1.19 2005/07/18 02:03:02 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -46,6 +46,9 @@ class Logging {
 	/**
 	* Records an entry in the access log. This is called on every page load
 	* that does not crash before the Logging object is instantiated.
+	*
+	* The format for the access log is
+	* 'IP - username - [Apache-style date format] "Request" "Referrer" "User-Agent"'.
 	*/
 	public function log_access() {
 		global $I2_ERR;
@@ -72,8 +75,10 @@ class Logging {
 	/**
 	* Records an entry in the error log.
 	*
-	* @todo Actually report the module that triggered this. (Or a backtrace
-	*       of modules, or something?)
+	* Records an error message in the error log, and outputs the error to
+	* the screen. The format in the error log file is
+	* 'IP - [Apache-style date format] [Mini-backtrace] "Request" "Error"'.
+	*
 	* @param string $msg The error message to record.
 	*/
 	public function log_error($msg) {
@@ -84,12 +89,17 @@ class Logging {
 		if (!$fname || !($fh = fopen($fname, 'a'))) {
 			$I2_ERR->fatal_error('The main iodine error log cannot be accessed.');
 		}
+
+		$trace_arr = array();
+		foreach(array_slice(debug_backtrace(),1) as $trace) {
+			$trace_arr[] = basename($trace['file'],'.php5') .':'. $trace['line'];
+		}
 		
-		/* IP - [Apache-style date format] [Module] "Request" "Error" */
+		/* IP - [Apache-style date format] [Mini-backtrace] "Request" "Error" */
 		fwrite($fh,
 			$_SERVER['REMOTE_ADDR'] . ' - [' .
 			date('d/M/Y:H:i:s O') . '] [' .
-			'mr. module' /*FIXME*/ . '] "' .
+			implode($trace_arr, ',') . '] "' .
 			$_SERVER['REQUEST_URI'] . '" "' .
 			$msg . '"' ."\n"
 		);
