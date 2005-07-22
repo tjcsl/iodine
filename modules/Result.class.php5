@@ -8,7 +8,6 @@
 * @package core
 * @subpackage MySQL
 * @filesource
-* @todo Fix the broken-ness. Much of this class is broken. (Stebbins?)
 */
 
 /**
@@ -16,33 +15,33 @@
 * @package core
 * @subpackage MySQL
 */
-class Result {
+class Result implements Iterator {
 	
 	/*
-	** An associative array of arrays, such that:
-	** $results[$mysql_result_object] = array($qtype,$numrows,$row1,$row2,...)
-	** $qtype is a constant from the MySQL module;
-	** $numrows is the number of rows fetched from the result.
+	** The mysql result for this Result object.
 	*/
-	private $results = array();
+	private $mysql_result = NULL;
+
+	/*
+	** The query type of this Result object.
+	*/
+	private $query_type = NULL;
 	
 	/*
 	** Cached information resolving column names to numbers.
 	*/
 	private $schema = array();
-	
-	/**
-	* Joins a resultset object onto the right of this one.
-	*
-	* @param mixed $result The result object to right-join onto this.
-	* @param mixed $qtype The query type this result represents, from
-	* the MySQL module.
+
+	/*
+	** The current row.
 	*/
+	private $current_row = NULL;
 
-	function join_right($result,$qtype) {
-		$this->results[(int)$result] = array($result,$qtype,0);
-	}
-
+	/*
+	** The current row number.
+	*/
+	private $curr_row_number = 0;
+	
 	/**
 	* The constructor for a Result object.
 	*
@@ -56,27 +55,24 @@ class Result {
 			d('Null SQL result constructed.');
 			return;
 		}
-		$this->join_right($mysql_result,$query_type);
+		$this->mysql_result = $mysql_result;
+		$this->query_type = $query_type;
 	}
 
 	
 	/**
 	* Fetches the next ungotten row in the resultset.
-	* Note that which row this is may change after joining
 	*
 	* @param int $type MYSQL_BOTH, MYSQL_ASSOC, or MYSQL_NUM.
 	* @return mixed An array containing cells indexed by the selected method.
 	*/
 	function fetch_array($type = MYSQL_BOTH) {
-		foreach ($this->results as $res=>$arr) {
-			$row = mysql_fetch_array($arr[0],$type);
-			if ($row) {
-				$arr[] = $row;
-				$arr[2]++;
-				return $row;
-			}
+		$row = mysql_fetch_array($this->mysql_result, $type);
+		if ($row) {
+			$this->current_row_number++;
+			return ($this->current_row = $row);
 		}
-		return false;
+		return FALSE;
 	}
 
 	/**
@@ -85,16 +81,13 @@ class Result {
 	* @return int The ID which the row was inserted into.
 	*/
 	function get_insert_id() {
-		foreach ($results as $res=>$arr) {
-			if ($arr[1] != MySQL::INSERT) {
-				continue;
-			}
-			$id = mysql_insert_id($arr[0]);
+		if ($this->query_type == MySQL::INSERT) {
+			$id = mysql_insert_id($this->mysql_result);
 			if ($id) {
 				return $id;
 			}
 		}
-		//TODO: roll over and die; this resultset has no queries for which insert_id is relevant.
+		return 0;
 	}
 
 	/**
@@ -103,42 +96,22 @@ class Result {
 	* @return int The number of affected rows.
 	*/
 	function get_affected_rows() {
-		foreach ($results as $res=>$arr) {
-			if ($arr[1] != MySQL::UPDATE && $arr[1] != MySQL::DELETE) {
-				continue;
-			}
-			$affected = mysql_affected_rows($arr[0]);
+		if ($this->query_type == MySQL::INSERT || $this->query_type == MySQL::UPDATE || $this->query_type == MySQL::DELETE) {
+			$affected = mysql_affected_rows($this->mysql_result);
 			if ($affected) {
 				return $affected;
 			}
 		}
-		//TODO: die; this Result has no queries with affected_rows.
+		return -1;
 	}
 
 	/**
-	* Returns an array of the number of rows fetched so far by this Result.
+	* Returns the number of rows fetched so far by this Result.
 	*
-	* @return array The number of rows fetched for each resultset in this Result.
+	* @return int The number of rows fetched.
 	*/
 	function get_num_fetched() {
-		$fetched = array();
-		foreach ($this->results as $null=>$arr) {
-			$fetched[] = $arr[2];
-		}
-		return $fetched;
-	}
-
-	/**
-	* Returns a cumulative sum of the number of rows fetched by this Result.
-	*
-	* @return int The total number of rows fetched.
-	*/
-	function get_num_fetched_total() {
-		$sum = 0;
-		foreach ($this->get_num_fetched() as $fetched) {
-			$sum += $fetched;
-		}
-		return $sum;
+		return $this->current_row_number;
 	}
 
 	/**
@@ -150,21 +123,12 @@ class Result {
 	* @return mixed As fetch_array.
 	*/
 	function fetch_row($rownum, $type = MYSQL_BOTH) {
-		foreach ($results as $res=>$arr) {
-			if ($arr[1] != MySQL::SELECT) {
-				continue;
-			}
-			$rownum -= mysql_num_rows($res);
-			if ($rownum < 0) {
-				while ($rownum > $arr[2]) {
-					$row = mysql_fetch_array($arr[0],$type);
-					$arr[] = $row;
-					$arr[2]++;
-				}
-				return $arr[count($arr)-1];
-			}
+		if($this->query_type = MySQL::SELECT && $rownum < mysql_num_rows($this->mysql_result)) {
+			mysql_data_seek($this->mysql_result, $rownum);
+			$this->fetch_array($type);
+			mysql_data_seek($this->mysql_result, $this->current_row_number);
 		}
-		//TODO: crash and burn; no such row.
+		return FALSE;
 	}
 	
 	/**
@@ -174,49 +138,13 @@ class Result {
 	* inside the Result object.  Thus, after calling fetch_regex, this
 	* method will return false.
 	*
-	* @return bool True for more rows; false otherwise.
+	* @return bool TRUE for more rows; FALSE otherwise.
 	*/
 	function more_rows() {
-		foreach ($this->results as $res=>$arr) {
-			if ($arr[1] == MySQL::SELECT && mysql_num_rows($arr[0]) > $arr[2]) {
-				return true;
-			}
+		if ($this->query_type == MySQL::SELECT && mysql_num_rows($this->mysql_result) > $this->current_row_number) {
+			return TRUE;
 		}
-		return false;
-	}
-
-	/**
-	* Fetches an entire column by name.  Note that this operation is time-consuming,
-	* and thus discouraged.  It is not safe to call fetch_array after this operation.
-	*
-	* @param string $colname The name of the column to be fetched.
-	* @return array An array of cells from the selected column.
-	*/
-	function fetch_col($colname) {
-		$ret = array();
-		/*
-		**  First, get all the cached rows.
-		*/
-		$numfetched = $this->get_num_fetched_total();
-		for ($a = 0; $a < $numfetched; $a++) {
-			$row = $this->fetch_row($a);
-			if (isSet($row[$colname])) {
-				$ret[] = $row[$colname];
-			}
-			
-		}
-
-		/*
-		** Then, push through the rest of the resultset.
-		*/
-		while ($this->more_rows()) {
-			$row = $this->fetch_array();
-			if (isSet($row[$colname])) {
-				$ret[] = $row[$colname];
-			}
-		}
-
-		return $ret;
+		return FALSE;
 	}
 
 	/**
@@ -230,8 +158,6 @@ class Result {
 	*/
 	function fetch_regex($colnames, $pattern) {
 		//TODO: implement
-		foreach ($results as $res=>$arr) {
-		}
 	}
 	
 
@@ -247,5 +173,50 @@ class Result {
 		}
 		return $sum;
 	}
+
+	/**
+	* Rewind function for Iterator interface
+	*/
+	function rewind() {
+		mysql_data_seek($results[0], 0)
+		$this->current_row_number = 0;
+		$this->current_row = NULL;
+	}
+	
+	/**
+	* Current function for Iterator interface
+	* @return array The current row
+	*/
+	function current() {
+		if(!$this->current_row) {
+			$this->fetch_array();
+		}
+		return $this->current_row;
+	}
+	
+	/**
+	* Key function for the Iterator interface
+	* @return int The key for the current row (its number)
+	*/
+	function key() {
+		return $this->current_row_number - 1;
+	}
+	
+	/**
+	* Next function for Iterator interface
+	* @return array The next row
+	*/
+	function next() {
+		return $this->fetch_array();
+	}
+	
+	/**
+	* Valid function for Iterator interface
+	* @return bool Valid until we reach the end of the result set
+	*/
+	function valid() {
+		return $this->more_rows();
+	}
+
 }
 ?>
