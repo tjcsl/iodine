@@ -3,7 +3,7 @@
 * Contains the definition for the class {@link MySQL}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004 The Intranet 2 Development Team
-* @version $Id: mysql.class.php5,v 1.24 2005/07/16 03:24:52 adeason Exp $
+* @version $Id: mysql.class.php5,v 1.25 2005/07/22 04:58:37 asmith Exp $
 * @package core
 * @subpackage MySQL
 * @filesource
@@ -290,7 +290,7 @@ class MySQL {
 				throw new I2Exception('Attempted MySQL query of unauthorized command `'.substr($query, 0, strpos($query, ' ')).'`');
 		}
 
-		return new Result($this->raw_query($query),MYSQL::SELECT);
+		return new Result($this->raw_query($query),$query_t);
 	}
 	
 	/**
