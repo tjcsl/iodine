@@ -16,29 +16,31 @@
 * @subpackage Birthday
 */
 
-class Birthdays implements Module{
+class Birthdays implements Module {
 
 	private $namearr;
 
-	function init_box(){
-		global $I2_SQL, $I2_USER;
-		//$this->namearr = $I2_USER->get_users_with_birthday(date("Y-m-d"));
-		return TRUE;
+	function init_box() {
+		global $I2_SQL;
+		$this->namearr = $I2_SQL->query("SELECT CONCAT(`fname`, ' ', `lname`) as `name`, `grade`, `bdate` FROM user, userinfo WHERE user.uid=userinfo.uid AND `bdate` LIKE %s", "%-" . date("m-d"))->fetch_all_arrays(MYSQL_NUM);
+		foreach($this->namearr as $key => $value)
+			$this->namearr[$key][2] = ((int)date("Y")) - ((int)substr($this->namearr[$key][2], 0, 4));
+		return "Today's Birthdays";
 	}
 	
-	function display_box($disp){
-		$disp->disp('birthdaybox.tpl',array('birthdays' =>$this->namearr));
+	function display_box($disp) {
+		$disp->disp('birthdaybox.tpl',array('birthdays' => $this->namearr));
 	}
 	
-	function init_pane(){
+	function init_pane() {
 		return FALSE;
 	}
 	
-	function display_pane($disp){
+	function display_pane($disp) {
 		return;
 	}
 
-	function get_name(){
+	function get_name() {
 		return "Birthdays";
 	}
 }
