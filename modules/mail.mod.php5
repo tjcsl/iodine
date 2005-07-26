@@ -24,18 +24,19 @@ class Mail implements Module {
 	}
 	
 	function init_pane() {
+		return array("Mail", "Mail");
 	}
 	
 	function display_pane($display) {
-		$display->disp('mailpane.tpl',array());
+		$display->disp('mail_pane.tpl',array());
 	}
 	
 	function init_box() {
+		return "Mail";
 	}
 
 	function display_box($display) {
-		$display->raw_display("This is your mail, in a box.");
-		$display->disp('mailbox.tpl',array());
+		$display->disp('mail_box.tpl',array());
 	}
 
 	function get_name() {
