@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link StudentDirectory}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: studentdirectory.mod.php5,v 1.5 2005/07/14 22:22:34 adeason Exp $
+* @version $Id: studentdirectory.mod.php5,v 1.6 2005/07/28 03:43:57 adeason Exp $
 * @package modules
 * @subpackage StudentDirectory
 * @filesource
@@ -18,11 +18,6 @@
 */
 class StudentDirectory implements Module {
 	
-	/**
-	* The display object to use
-	*/
-	private $display;
-
 	private $information;
 
 	/**
@@ -45,8 +40,19 @@ class StudentDirectory implements Module {
 				}
 				return array('Student Directory: '.$this->information['fname'].' '.$this->information['lname'], $this->information['fname'].' '.$this->information['lname']);
 
-			//Not implemented yet
 			case 'search':
+				if( !isset($_REQUEST['studentdirectory_query']) ) {
+					$this->information = 'help';
+					return array('Student Directory Help', 'Searching Help');
+				}
+				else {
+					$this->information = $I2_USER->search_info($_REQUEST['studentdirectory_query']);
+					if( count($this->information) == 1 ) {
+						redirect('studentdirectory/info/'.$this->information[0]->uid);
+					}
+					return array('Student Directory search results for "'.$_REQUEST['studentdirectory_query'].'"', 'Search results for "'.$_REQUEST['studentdirectory_query'].'"');
+				}
+				break;
 			default:
 				$this->information = FALSE;
 				return array('Error', 'Error: Student does not exist');

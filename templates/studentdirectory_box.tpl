@@ -1,3 +1,3 @@
 <form action="[<$I2_ROOT>]StudentDirectory/search/" method="post">
-<p>Query: <input name="query" type="text" /></p>
+<p><input name="studentdirectory_query" type="text" /><input name="Submit" type="submit" value="Search" /></p>
 </form>
