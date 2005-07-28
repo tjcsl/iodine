@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.30 2005/07/16 04:13:40 adeason Exp $
+* @version $Id: user.class.php5,v 1.31 2005/07/28 03:44:48 adeason Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -80,6 +80,14 @@ class User {
 	* And that will obtain the user's first name. If you want to retrieve
 	* multiple items at a time, look at the other methods in this class.
 	*
+	* There are a few psuedo fields, which are actually a few fields
+	* combined. They are:
+	* <ul>
+	* <li>fullname - Returns the full name of the student</li>
+	* <li>fullname_comma - Returns the full name of the student, with the
+	* last name first, with a comma (as in 'Powers, Austin Danger').</li>
+	* </ul>
+	*
 	* @return mixed The data you requested.
 	*/
 	public function __get( $name ) {
@@ -87,6 +95,18 @@ class User {
 
 		if( $this->myuid === NULL ) {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
+		}
+
+		// pseudo-fields
+		switch( $name ) {
+			case 'fullname':
+				$nick = $this->__get('nickname');
+				$mid = $this->__get('mname');
+				return $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . ($mid ? "$mid " : '') . $this->__get('lname');
+			case 'fullname_comma':
+				$nick = $this->__get('nickname');
+				$mid = $this->__get('mname');
+				return $this->__get('lname') . ', ' . $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . ($mid ? "$mid " : '');
 		}
 		
 		if( $this->info != NULL && in_array($name, array_keys($this->info)) ) {
@@ -235,7 +255,7 @@ class User {
 	* @return array Two-dimensional array of the results, each row being an
 	*               associative array with the column as the key.
 	*/
-	public static function get_multi( $uids, $cols ) {
+	public function get_multi( $uids, $cols ) {
 		global $I2_SQL;
 	
 		if( !is_array($cols)) {
@@ -244,6 +264,42 @@ class User {
 		}
 		
 		return $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid IN (%D);', $cols, $uids)->fetch_all_arrays(MYSQL_ASSOC);
+	}
+
+	/**
+	* Search for users based on their information.
+	*
+	* @todo Implement more searching functionality. Right now we just search
+	* by name.
+	* @param string The search string.
+	* @return array An array of {@link User} objects of the results. An
+	* empty array is returned if no match is found.
+	*/
+	public function search_info($str) {
+		global $I2_SQL;
+		
+		//Change BASH/DOS-style globbing to MySQL-style wildcards
+		$str = strtr($str, '*?', '%_');
+
+		$where = '';
+		$where_arr = array();
+
+		foreach(explode(' ', $str) as $item) {
+			$where .= '(fname LIKE %s OR mname LIKE %s OR lname LIKE %s) AND ';
+			$arr = array( '%'.$item.'%', '%'.$item.'%', '%'.$item.'%' );
+			
+			$where_arr = array_merge($where_arr, $arr);
+		}
+
+		//Cut off last 'AND '
+		$where = substr($where, 0, strlen($where)-4);
+		$ret = array();
+
+		foreach( $I2_SQL->query_arr('SELECT uid FROM user WHERE '.$where.';', $where_arr) as $row ) {
+			$ret[] = new User($row[0]);
+		}
+
+		return $ret;
 	}
 }
 
