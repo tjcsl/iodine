@@ -12,6 +12,8 @@
 
 /**
 * A module that displays users with birthdays close to the current date.
+* @todo Cache the results for a day, since these don't need to calculated every
+ * time.
 * @package modules
 * @subpackage Birthday
 */
@@ -29,7 +31,7 @@ class Birthdays implements Module {
 	}
 	
 	function display_box($disp) {
-		$disp->disp('birthdaybox.tpl',array('birthdays' => $this->namearr));
+		$disp->disp('birthdays_box.tpl',array('birthdays' => $this->namearr));
 	}
 	
 	function init_pane() {
