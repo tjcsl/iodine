@@ -3,7 +3,7 @@
 * Contains the definition for the class {@link MySQL}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004 The Intranet 2 Development Team
-* @version $Id: mysql.class.php5,v 1.25 2005/07/22 04:58:37 asmith Exp $
+* @version $Id: mysql.class.php5,v 1.26 2005/07/28 02:37:19 adeason Exp $
 * @package core
 * @subpackage MySQL
 * @filesource
@@ -156,11 +156,34 @@ class MySQL {
 	* @return Result The results of the query run.
 	*/
 	public function query($query) {
+		$args = NULL;
+		
+		if( func_num_args() > 1 ) {
+			$args = func_get_args();
+			array_shift($args);
+		}
+
+		return $this->query_arr($query, $args);
+	}
+
+	/**
+	* Array counterpart to query().
+	*
+	* This is the same as the query() method, except that it takes its
+	* arguments as an array, instead of as a varied-length list of
+	* arguments. Use this if you're building your own string that involves
+	* printf tags and you need to dynamically create the argument list, as
+	* well.
+	*
+	* @param string $query The printf-ifyed query you want to run.
+	* @param array $args Arguments for printf tags.
+	* @return Result The results of the query run.
+	*/
+	public function query_arr($query, $args = NULL) {
 		global $I2_ERR,$I2_LOG;
 
-		$argc = func_num_args()-1;
-		$argv = func_get_args();
-		array_shift($argv);
+		$argc = $args == NULL ? 0 : count($args);
+		$argv = $args;
 		
 		/* matches Iodine custom printf-style tags */
 		if( preg_match_all(
