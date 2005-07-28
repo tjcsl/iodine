@@ -72,7 +72,7 @@ class Result implements Iterator {
 			$this->current_row_number++;
 			return ($this->current_row = $row);
 		}
-		return FALSE;
+		return ($this->current_row = FALSE);
 	}
 
 	/**
@@ -189,6 +189,7 @@ class Result implements Iterator {
 	*/
 	function current() {
 		if(!$this->current_row) {
+			//fetch_array sets current_row, so do not do it here
 			$this->fetch_array();
 		}
 		return $this->current_row;
@@ -215,7 +216,7 @@ class Result implements Iterator {
 	* @return bool Valid until we reach the end of the result set
 	*/
 	function valid() {
-		return $this->more_rows();
+		return $this->current() !== FALSE;
 	}
 
 }
