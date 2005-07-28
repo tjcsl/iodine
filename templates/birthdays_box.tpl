@@ -1,6 +1,6 @@
+[<if count($birthdays) > 0 >]
+
 <table>
-<caption>Today's Birthdays</caption>
-<summary>Name, grade, and age of students born today</summary>
 <tbody>
 	<tr>
 		<th>Name</th>
@@ -9,10 +9,16 @@
 	</tr>
 [<foreach from=$birthdays item=person>]
 	<tr>
-		<th>[<$person[0]>]</th>
-		<th>[<$person[1]>]</th>
-		<th>[<$person[2]>]</th>
+		<td>[<$person[0]>]</td>
+		<td>[<$person[1]>]</td>
+		<td>[<$person[2]>]</td>
 	</tr>
 [</foreach>]
 </tbody>
 </table>
+
+[<else>]
+
+No birthdays today.
+
+[</if>]
