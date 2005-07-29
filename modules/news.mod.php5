@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link News}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: news.mod.php5,v 1.17 2005/07/28 22:53:56 adeason Exp $
+* @version $Id: news.mod.php5,v 1.18 2005/07/29 01:41:58 adeason Exp $
 * @package modules
 * @subpackage News
 * @filesource
@@ -41,10 +41,17 @@ class News implements Module {
 		$res = $I2_SQL->query('SELECT title,text,authorID,posted FROM news ORDER BY posted DESC;');
 		$this->newsdetails = $res->fetch_all_arrays(MYSQL_BOTH);
 
+		$authors = array();
 		foreach( $this->newsdetails as $i=>$story ) {
 			if( $story['authorID'] ) {
-				$tmpuser = new User($story['authorID']);
-				$this->newsdetails[$i]['author'] = $tmpuser->fname .' '.$tmpuser->lname;
+				if( isset($authors[$story['authorID']]) ) {
+					$this->newsdetails[$i]['author'] = $authors[$story['authorID']];
+				}
+				else {
+					$tmpuser = new User($story['authorID']);
+					$this->newsdetails[$i]['author'] = $tmpuser->fname .' '.$tmpuser->lname;
+					$authors[$story['authorID']] = $this->newsdetails[$i]['author'];
+				}
 			}
 		}
 		return array('News', 'Recent News Posts');
