@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.31 2005/07/28 03:44:48 adeason Exp $
+* @version $Id: user.class.php5,v 1.32 2005/07/28 23:45:12 adeason Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -59,12 +59,6 @@ class User {
 				$I2_ERR->fatal_error('Your password and username were correct, but you don\'t appear to exist in our database. If this is a mistake, please contact the intranetmaster about it.');
 			}
 		}
-		else {
-			$count = $I2_SQL->query('SELECT COUNT(*) FROM user WHERE uid=%d', $uid)->fetch_array(MYSQL_NUM);
-			if( $count[0] == 0 ) {
-				$I2_ERR->nonfatal_error('Specified UID does not exist in the database.');
-			}
-		}
 
 		$this->myuid = $uid;
 	}
@@ -91,13 +85,15 @@ class User {
 	* @return mixed The data you requested.
 	*/
 	public function __get( $name ) {
-		global $I2_SQL;
+		global $I2_SQL,$I2_ERR;
 
 		if( $this->myuid === NULL ) {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
 		}
 
 		// pseudo-fields
+		//must use explicit __get calls here, since recursive implicit
+		//__get calls apparently are not allowed.
 		switch( $name ) {
 			case 'fullname':
 				$nick = $this->__get('nickname');
@@ -124,6 +120,13 @@ class User {
 		}
 		
 		$res = $I2_SQL->query('SELECT %c FROM %c WHERE uid=%d;', $name, $table, $this->myuid)->fetch_array(MYSQL_NUM);
+
+		if( $res === FALSE ) {
+			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information');
+			return FALSE;
+			
+		}
+		
 		return $res[0];
 	}
 
@@ -201,7 +204,13 @@ class User {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
 		}
 		
-		return $I2_SQL->query('SELECT * FROM user LEFT JOIN userinfo USING (uid) WHERE user.uid=%d;', $this->myuid)->fetch_array(MYSQL_ASSOC);
+		$ret = $I2_SQL->query('SELECT * FROM user LEFT JOIN userinfo USING (uid) WHERE user.uid=%d;', $this->myuid)->fetch_array(MYSQL_ASSOC);
+
+		if( $ret === FALSE ) {
+			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information');
+		}
+
+		return $ret;
 	}
 
 	/**
@@ -241,7 +250,13 @@ class User {
 			$cols = $argv;
 		}
 
-		return $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid=%d;', $cols, $this->myuid)->fetch_array(MYSQL_BOTH);
+		$ret = $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid=%d;', $cols, $this->myuid)->fetch_array(MYSQL_BOTH);
+		
+		if( $ret === FALSE ) {
+			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information');
+		}
+
+		return $ret;
 	}
 
 	/**
