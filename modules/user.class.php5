@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.32 2005/07/28 23:45:12 adeason Exp $
+* @version $Id: user.class.php5,v 1.33 2005/07/29 01:36:46 adeason Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -31,6 +31,11 @@ class User {
 	private $myuid;
 
 	/**
+	* Cache for which columns are in the `user` table
+	*/
+	private static $user_cols = NULL;
+
+	/**
 	* The User class constructor.
 	*
 	* This takes the UID of the user as an argument. If the uid is not
@@ -47,6 +52,15 @@ class User {
 	*/
 	public function __construct($uid = NULL) {
 		global $I2_SQL, $I2_ERR;
+
+		//Construct column cache, if it does not already exist
+		if( self::$user_cols === NULL ) {
+			self::$user_cols = array();
+			foreach( $I2_SQL->query('DESCRIBE `user`;') as $col ) {
+				self::$user_cols[] = $col['Field'];
+			}
+		}
+		
 		if( $uid === NULL ) {
 			if( isset($_SESSION['i2_uid']) ) {
 				$uid = $_SESSION['i2_uid'];
@@ -105,11 +119,12 @@ class User {
 				return $this->__get('lname') . ', ' . $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . ($mid ? "$mid " : '');
 		}
 		
-		if( $this->info != NULL && in_array($name, array_keys($this->info)) ) {
-			return $this->info[$name];
-		}
-		
-		if( $this->info == NULL && $I2_SQL->column_exists( 'user', $name ) ) {
+		//Check which table the information is in
+		if( in_array($name, self::$user_cols) ) {
+			if( $this->info != NULL ) {
+				//returned cached info if we are caching
+				return $this->info[$name];
+			}
 			$table = 'user';
 		}
 		elseif( ! $I2_SQL->column_exists('userinfo', $name) ) {
