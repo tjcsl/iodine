@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link News}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: news.mod.php5,v 1.16 2005/07/15 05:03:11 adeason Exp $
+* @version $Id: news.mod.php5,v 1.17 2005/07/28 22:53:56 adeason Exp $
 * @package modules
 * @subpackage News
 * @filesource
@@ -72,7 +72,7 @@ class News implements Module {
 		}
 		else {
 			$titles=array();
-			foreach($newsdetails as $news) {
+			foreach($this->newsdetails as $news) {
 				$titles[] = $news['title'];
 			}
 		}
