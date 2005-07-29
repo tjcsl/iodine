@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.15 2005/07/16 03:24:28 adeason Exp $
+* @version $Id: intrabox.class.php5,v 1.16 2005/07/28 22:53:34 adeason Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -53,12 +53,12 @@ class IntraBox {
 			self::$display = new Display('Intrabox');
 		}
 
-		if( $module_name == self::$main_module ) {
+		if( strcasecmp($module_name, self::$main_module->get_name()) == 0 ) {
 			$this->module = self::$main_module;
 		}
 		else {
 			if( get_i2module($module_name) ) {
-				eval('$mod = new '.$module_name.'();');
+				$mod = new $module_name();
 				if( ! in_array( 'Module', class_implements($mod)) ) {
 					throw new I2Exception('The class '.$module_name.' was passed as an Intrabox, but it does not implement the Module interface.');
 				}
@@ -121,7 +121,7 @@ class IntraBox {
 		global $I2_USER;
 		
 		if( self::$main_module === NULL && is_object($main_module) ) {
-			self::$main_module = $main_module->get_name();
+			self::$main_module = $main_module;
 		}
 		
 		if( self::$display === NULL ) {
