@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.33 2005/07/29 01:36:46 adeason Exp $
+* @version $Id: user.class.php5,v 1.34 2005/07/29 02:14:44 adeason Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -23,7 +23,7 @@ class User {
 	* represents the current user logged in, since that information will
 	* probably be retrieved the most, so we cache it for speed.
 	*/
-	private $info = NULL;
+	protected $info = NULL;
 
 	/**
 	* The uid of the user.
@@ -72,6 +72,10 @@ class User {
 			else {
 				$I2_ERR->fatal_error('Your password and username were correct, but you don\'t appear to exist in our database. If this is a mistake, please contact the intranetmaster about it.');
 			}
+		}
+		//If the user created is the same as the logged in user, use the cache
+		elseif( $uid == $GLOBALS['I2_USER']->uid ) {
+			$this->info = &$GLOBALS['I2_USER']->info;
 		}
 
 		$this->myuid = $uid;
