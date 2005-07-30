@@ -3,7 +3,7 @@
 * Contains the definition for the class {@link MySQL}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004 The Intranet 2 Development Team
-* @version $Id: mysql.class.php5,v 1.26 2005/07/28 02:37:19 adeason Exp $
+* @version $Id: mysql.class.php5,v 1.27 2005/07/30 06:25:45 adeason Exp $
 * @package core
 * @subpackage MySQL
 * @filesource
@@ -184,6 +184,8 @@ class MySQL {
 
 		$argc = $args == NULL ? 0 : count($args);
 		$argv = $args;
+
+		$query = trim($query);
 		
 		/* matches Iodine custom printf-style tags */
 		if( preg_match_all(
