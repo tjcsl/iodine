@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.16 2005/07/28 22:53:34 adeason Exp $
+* @version $Id: intrabox.class.php5,v 1.17 2005/07/30 06:40:54 adeason Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -35,6 +35,9 @@ class IntraBox {
 	* The display object to display the intrabox templates on.
 	*/
 	private static $display = NULL;
+
+	const USED = 1;
+	const UNUSED = 2;
 
 	/**
 	* Constructor, makes the intrabox with name $module_name.
@@ -155,44 +158,6 @@ class IntraBox {
 	}
 
 	/**
-	* Sets a user's preferences so the specified intraboxes are displayed
-	* for them.
-	*
-	* @param int $uid The user ID of the user to set the boxes for.
-	* @param array $boxes The array of the names of the boxes. (A
-	*                     numerically indexed array, in the order that the
-	*                     boxes should be in.)
-	*/
-	public static function set_user_boxes($uid, $boxes) {
-		global $I2_SQL,$I2_ERR;
-
-		//Preserve original information, in case something goes wrong with setting the new values
-		$orig = $I2_SQL->query('SELECT * FROM intrabox_map WHERE uid=%d;', $uid)->fetch_all_arrays(MYSQL_ASSOC);
-		$I2_SQL->query('DELETE FROM intrabox_map WHERE uid=%d;', $uid);
-
-		try {
-			foreach($boxes as $i=>$box) {
-				$id = $I2_SQL->query('SELECT boxid FROM intrabox WHERE name=%s;', $box)->fetch_array();
-				if( $id && isset($id[0]) && $id[0] ) {
-					$id = $id[0];
-					$I2_SQL->query('INSERT INTO intrabox_map ( `uid`,`boxid`,`box_order` ) VALUES ( %d, %d, %d );', $uid, $id, $i);
-				}
-				else {
-					$I2_ERR->nonfatal_error('Invalid or nonexistant intrabox name `'.$box.'` passed to Intrabox::set_user_boxes');
-				}
-			}
-		} catch (Exception $e) {
-			//Error in setting new values, restore old values
-			d('Exception caught while trying to set intraboxes for user '.$uid.', restoring old data...');
-			$I2_SQL->query('DELETE FROM intrabox_map WHERE uid=%d;', $uid);
-			foreach($orig as $row) {
-				$I2_SQL->query('INSERT INTO intrabox_map ( `uid`,`boxid`,`box_order` ) VALUES ( %d, %d, %d );', $uid, $row['boxid'], $row['box_order']);
-			}
-			throw $e;
-		}
-	}
-
-	/**
 	* Retrieves all available intraboxes from MySQL.
 	*	
 	* @return array The names of all of the intraboxes that a user can
@@ -202,6 +167,67 @@ class IntraBox {
 		global $I2_SQL;
 		return flatten($I2_SQL->query('SELECT name FROM intrabox;')->fetch_all_arrays(MYSQL_NUM));
 	}
+
+	/**
+	* Adds a box to a user's intrabox list.
+	*
+	* @todo Put in some error checking.
+	*/
+	public static function add_box($boxid) {
+		global $I2_SQL,$I2_USER;
+		
+		//This is possible to do in one query with subqueries in SQL, I believe, but not prior to MySQL 4.1 afaik. If anyone knows of a way to do this in one query, by all means do it
+		list($max) = $I2_SQL->query('SELECT MAX(box_order) FROM intrabox_map WHERE uid=%d', $I2_USER->uid)->fetch_array(MYSQL_NUM);
+		
+		$I2_SQL->query('INSERT INTO intrabox_map ( uid, boxid, box_order ) VALUES ( %d, %d, %d );', $I2_USER->uid, $boxid, $max+1);
+	}
+
+	/**
+	* Deletes a box from a user's intrabox list.
+	*
+	* @todo Put in some error checking.
+	*/
+	public static function delete_box($boxid) {
+		global $I2_SQL,$I2_USER;
+		
+		list($order) = $I2_SQL->query('SELECT box_order FROM intrabox_map WHERE uid=%d AND boxid=%d;', $I2_USER->uid, $boxid)->fetch_array(MYSQL_NUM);
+
+		$I2_SQL->query('DELETE FROM intrabox_map WHERE uid=%d AND boxid=%d;', $I2_USER->uid, $boxid);
+		$I2_SQL->query('UPDATE intrabox_map SET box_order=box_order-1 WHERE uid=%d AND box_order>%d;', $I2_USER->uid, $order);
+	}
+
+	/**
+	* Gets information about certain boxes.
+	*
+	* @todo Write documentation here.
+	*/
+	public static function get_boxes_info($boxes) {
+		global $I2_SQL, $I2_USER;
+		if( $boxes == self::USED ) {
+			return $I2_SQL->query('
+			SELECT intrabox.boxid AS boxid, intrabox.display_name AS display_name
+			FROM intrabox JOIN intrabox_map USING (boxid)
+			WHERE intrabox_map.uid = %d
+			ORDER BY intrabox_map.box_order;', $I2_USER->uid);
+		}
+		elseif( $boxes == self::UNUSED ) {
+			//this is possible with one query with subqueries, but mysql < 4.1 doesn't support them
+			//I can't think of a way to do it right now with joins, but if it's possible, then someone do it here
+			$ids = array();
+			foreach($I2_SQL->query('SELECT boxid FROM intrabox_map WHERE uid=%d;', $I2_USER->uid) as $row) {
+				$ids[] = $row[0];
+			}
+			return $I2_SQL->query('
+			SELECT DISTINCT intrabox.boxid AS boxid, intrabox.display_name AS display_name
+			FROM intrabox LEFT JOIN intrabox_map USING (boxid)
+			WHERE intrabox.boxid NOT IN (%D)
+			ORDER BY intrabox.display_name;', $ids);
+		}
+		else {
+			throw new I2Exception('Invalid parameter passed to Intrabox::get_boxes_info()');
+		}
+	}
+	
 }
 
 ?>
