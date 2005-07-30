@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link StudentDirectory}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: studentdirectory.mod.php5,v 1.6 2005/07/28 03:43:57 adeason Exp $
+* @version $Id: studentdirectory.mod.php5,v 1.7 2005/07/30 02:53:48 adeason Exp $
 * @package modules
 * @subpackage StudentDirectory
 * @filesource
@@ -15,6 +15,7 @@
 * @package modules
 * @subpackage StudentDirectory
 * @todo Decide on a system for parental permission (on student directory info) and then make the mysql structure for it
+* @todo Make the page that displays all of the user's info more pretty.
 */
 class StudentDirectory implements Module {
 	
