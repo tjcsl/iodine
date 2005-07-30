@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.34 2005/07/29 02:14:44 adeason Exp $
+* @version $Id: user.class.php5,v 1.35 2005/07/30 04:51:24 adeason Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -150,19 +150,17 @@ class User {
 	}
 
 	/**
-	* Set information about a user.
+	* The magical php __set method.
 	*
-	* This sets a certain piece of information about a user to something.
-	* You need to specify the name of the attribute, and the type of
-	* information it is, along with the value to set it to, so it can be
-	* validated by {@link MySQL}.
+	* This is called implicitly by PHP if you try to do
+	* <code>$user->val = 'foo';</code>
+	* so you don't need to call it directly. The value specified will be
+	* treated as a string for purposes of MySQL validation and escaping.
 	*
 	* @param string $name The name of the field to set.
-	* @param int $type A constant from {@link MySQL} that represents what
-	*                  type of data this is.
 	* @param mixed $val The data to set the field to.
 	*/
-	public function set( $name, $type, $val ) {
+	public function __set( $name, $val ) {
 	// Can't use __set easily, because we need another argument for the type
 	//technically, we _could_ look up the type in the mysql table, and check
 	//for that type, but I'm not sure it's worth the trouble & extra
@@ -178,27 +176,18 @@ class User {
 			throw new I2Exception('Something tried to change the uid of a user. This is not permitted.');
 		}
 
-		if( $I2_SQL->column_exists( 'user', $name ) ) {
+		//Check which table the information is in
+		if( in_array($name, self::$user_cols) ) {
 			$table = 'user';
 		}
 		elseif( ! $I2_SQL->column_exists('userinfo', $name) ) {
-			throw new I2Exception('Tried to get unknown User information `'.$name.'`.');
+			throw new I2Exception('Tried to set unknown User information `'.$name.'`.');
 		}
 		else {
 			$table = 'userinfo';
 		}
 
-		switch( $type ) {
-			case MYSQL::STRING:	$tag = '%s'; break;
-			case MYSQL::INT:	$tag = '%d'; break;
-			case MYSQL::FLOAT:
-			case MYSQL::DATE:
-			default:
-				$GLOBALS['I2_ERR']->nonfatal_error('Tried to set the User field `'.$name.'` to an unknown/unsupported type: `'.$type.'`');
-				return;
-		}
-
-		$I2_SQL->query('UPDATE %c SET %c='.$tag.' WHERE uid=%d;', $table, $name, $val, $this->myuid);
+		$I2_SQL->query('UPDATE %c SET %c=%s WHERE uid=%d;', $table, $name, $val, $this->myuid);
 
 		if( $this->info != NULL && in_array($name, array_keys($this->info)) ) {
 			$this->info[$name] = $val;
