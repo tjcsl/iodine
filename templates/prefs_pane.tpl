@@ -3,6 +3,8 @@
 Cell Phone: <input type="text" maxlength="10" name="pref_phone_cell" value="[<$prefs.phone_cell>]" /><br />
 AIM Screename: <input type="text" name="pref_sn0" value="[<$prefs.sn0>]" /><br />
 <em>Other fields...</em>
+<br /><br />
+Add/Remove intraboxes:<br />
 <table>
  <tr>
   <td>
