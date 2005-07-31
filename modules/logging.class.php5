@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Logging}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: logging.class.php5,v 1.19 2005/07/18 02:03:02 adeason Exp $
+* @version $Id: logging.class.php5,v 1.20 2005/07/31 05:00:58 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -136,7 +136,6 @@ class Logging {
 		}
 
 		if ($this->screen_debug) {
-			$trace = debug_backtrace();
 			$this->log_screen('Level '.$level.' debug: '.$msg);
 		}
 	}
