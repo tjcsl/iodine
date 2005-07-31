@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.17 2005/07/30 06:40:54 adeason Exp $
+* @version $Id: intrabox.class.php5,v 1.18 2005/07/31 04:00:41 adeason Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -171,7 +171,7 @@ class IntraBox {
 	/**
 	* Adds a box to a user's intrabox list.
 	*
-	* @todo Put in some error checking.
+	* @param int $boxid The ID of the box to add.
 	*/
 	public static function add_box($boxid) {
 		global $I2_SQL,$I2_USER;
@@ -185,12 +185,16 @@ class IntraBox {
 	/**
 	* Deletes a box from a user's intrabox list.
 	*
-	* @todo Put in some error checking.
+	* @param int $boxid The ID of the box to delete.
 	*/
 	public static function delete_box($boxid) {
 		global $I2_SQL,$I2_USER;
 		
-		list($order) = $I2_SQL->query('SELECT box_order FROM intrabox_map WHERE uid=%d AND boxid=%d;', $I2_USER->uid, $boxid)->fetch_array(MYSQL_NUM);
+		if( ! ($res = $I2_SQL->query('SELECT box_order FROM intrabox_map WHERE uid=%d AND boxid=%d;', $I2_USER->uid, $boxid)->fetch_array(MYSQL_NUM)) ) {
+			d('The specified intrabox '.$boxid.' was not already selected by the current user, but something asked to delete it. Ignoring this request', 5);
+			return;
+		}
+		$order = $res[0];
 
 		$I2_SQL->query('DELETE FROM intrabox_map WHERE uid=%d AND boxid=%d;', $I2_USER->uid, $boxid);
 		$I2_SQL->query('UPDATE intrabox_map SET box_order=box_order-1 WHERE uid=%d AND box_order>%d;', $I2_USER->uid, $order);
@@ -199,7 +203,19 @@ class IntraBox {
 	/**
 	* Gets information about certain boxes.
 	*
-	* @todo Write documentation here.
+	* Gets the boxid and the display name of a certain set of intraboxes. If
+	* the Intrabox::USED constant is passed as a parameter, then information
+	* about the logged-in user's intraboxes is returned. If Intrabox::UNUSED
+	* is passed, then information about intraboxes that the logged-in user
+	* has not selected will be returned.
+	*
+	* The information is returned as a {@link Result} object, with the two
+	* columns 'boxid' and 'display_name' containing the information in its
+	* rows.
+	*
+	* @param int $boxes One of the constants in Intrabox, either
+	* {@link Intrabox::USED} or {@link Intrabox::UNUSED}.
+	* @return Result The information about the requested boxes.
 	*/
 	public static function get_boxes_info($boxes) {
 		global $I2_SQL, $I2_USER;
