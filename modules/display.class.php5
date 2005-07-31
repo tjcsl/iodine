@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.37 2005/07/16 04:47:11 adeason Exp $
+* @version $Id: display.class.php5,v 1.38 2005/07/31 05:03:32 adeason Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -89,16 +89,6 @@ class Display {
 		}
 		$this->buffer = "";
 	}
-	
-	/**
-	* Displays the top bar.
-	*
-	*/
-	private function display_top_bar() {
-		global $I2_USER;
-
-		$this->disp('topbar.tpl', array('first_name' => $I2_USER->fname) );
-	}
 
 	/**
 	* The main non-core executing loop of Iodine.
@@ -121,7 +111,6 @@ class Display {
 		try {	
 			if( !get_i2module($module) ) {
 				$this->global_header('Error');
-				$this->display_top_bar();
 				$this->open_content_pane(array('no_module' => $module));
 				$this->close_content_pane();
 			}
@@ -138,14 +127,12 @@ class Display {
 					$title = $mod->init_pane();
 				} catch( Exception $e ) {
 					$this->global_header('Error');
-					$this->display_top_bar();
 					$this->open_content_pane(array('error' => 1));
 					$this->close_content_pane();
 					throw $e;
 				}
 				if ( $title === FALSE) {
 					$this->global_header('Error');
-					$this->display_top_bar();
 					$this->open_content_pane(array('no_module' => $module));
 					$this->close_content_pane();
 				}
@@ -162,7 +149,6 @@ class Display {
 					}
 				
 					$this->global_header($title[0]);
-					$this->display_top_bar();
 					
 					if (!Display::$display_stopped && $title) {
 						$this->open_content_pane(array('title' => $title[1]));
@@ -306,7 +292,8 @@ class Display {
 	* @param string $title The title for the page.
 	*/
 	public function global_header($title = NULL) {
-		$this->disp('header.tpl', array('title' => $title));
+		global $I2_USER;
+		$this->disp('header.tpl', array('title' => $title, 'first_name' => $I2_USER->fname));
 		$this->flush_buffer();
 	}
 
