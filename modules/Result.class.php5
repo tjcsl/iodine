@@ -40,7 +40,7 @@ class Result implements Iterator {
 	/*
 	** The current row number.
 	*/
-	private $curr_row_number = 0;
+	private $current_row_number = 0;
 	
 	/**
 	* The constructor for a Result object.
