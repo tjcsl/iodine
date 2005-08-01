@@ -218,6 +218,20 @@ class Result implements Iterator {
 	function valid() {
 		return $this->current() !== FALSE;
 	}
+	
+	/**
+	* Returns the number of rows in this Result.
+	*/
+	public function num_rows() {
+		return mysql_num_rows($this->mysql_result);
+	}
+
+	/**
+	* Returns the number of columns in this Result.
+	*/
+	public function num_cols() {
+		return mysql_num_fields($this->mysql_result);
+	}
 
 }
 ?>
