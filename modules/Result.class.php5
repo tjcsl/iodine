@@ -178,9 +178,11 @@ class Result implements Iterator {
 	* Rewind function for Iterator interface
 	*/
 	function rewind() {
-		mysql_data_seek($this->mysql_result, 0);
+		if($this->more_rows()) {
+			mysql_data_seek($this->mysql_result, 0);
+		}
 		$this->current_row_number = 0;
-		$this->current_row = NULL;
+		$this->current_row = FALSE;
 	}
 	
 	/**
