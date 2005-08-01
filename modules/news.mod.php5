@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link News}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: news.mod.php5,v 1.18 2005/07/29 01:41:58 adeason Exp $
+* @version $Revision: 1.19 $
 * @package modules
 * @subpackage News
 * @filesource
@@ -37,53 +37,109 @@ class News implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_SQL;
-		$res = $I2_SQL->query('SELECT title,text,authorID,posted FROM news ORDER BY posted DESC;');
-		$this->newsdetails = $res->fetch_all_arrays(MYSQL_BOTH);
+		global $I2_SQL,$I2_ARGS,$I2_USER;
 
-		$authors = array();
-		foreach( $this->newsdetails as $i=>$story ) {
-			if( $story['authorID'] ) {
-				if( isset($authors[$story['authorID']]) ) {
-					$this->newsdetails[$i]['author'] = $authors[$story['authorID']];
-				}
-				else {
-					$tmpuser = new User($story['authorID']);
-					$this->newsdetails[$i]['author'] = $tmpuser->fname .' '.$tmpuser->lname;
-					$authors[$story['authorID']] = $this->newsdetails[$i]['author'];
-				}
-			}
+		if( ! isset($I2_ARGS[1]) ) {
+			$I2_ARGS[1] = '';
 		}
-		return array('News', 'Recent News Posts');
+
+		switch($I2_ARGS[1]) {
+
+			case 'add':
+				//put in checks here to see if the user is allowed to post
+				if( isset($_REQUEST['add_form']) ) {
+					$I2_SQL->query('INSERT INTO news ( authorID, title, text, posted ) VALUES ( %d, %s, %s, CURRENT_TIMESTAMP );', $I2_USER->uid, $_REQUEST['add_title'], $_REQUEST['add_text']);
+					$this->newsdetails = 1;
+					return array('Post News', 'News article posted');
+				}
+				return array('Post News', 'Add a news article');
+
+			case 'edit':
+				if( !isset($I2_ARGS[2]) ) {
+					throw new I2Exception('ID of article to delete not specified.');
+				}
+				
+				$res = $I2_SQL->query('SELECT title,text,authorID FROM news WHERE id=%d;', $I2_ARGS[2])->fetch_array();
+				
+				if( $res === FALSE ) {
+					throw new I2Exception('Specified article ID does not exist.');
+				}
+				if( $res['authorID'] != $I2_USER->uid ) {
+					throw new I2Exception('You do not have permission to edit this article.');
+				}
+
+				if( isset($_REQUEST['edit_form']) ) {
+					$I2_SQL->query('UPDATE news SET title=%s, text=%s WHERE id=%d;', $_REQUEST['edit_title'], $_REQUEST['edit_text'], $I2_ARGS[2]);
+					$res = $I2_SQL->query('SELECT title,text,authorID FROM news WHERE id=%d;', $I2_ARGS[2])->fetch_array();
+					$res['edited'] = 1;
+				}
+
+				$this->newsdetails = $res;
+				return 'Edit News Post';
+				
+			case 'delete':
+				if( !isset($I2_ARGS[2]) ) {
+					throw new I2Exception('ID of article to delete not specified.');
+				}
+				
+				$res = $I2_SQL->query('SELECT title,text,authorID FROM news WHERE id=%d;', $I2_ARGS[2])->fetch_array();
+				
+				if( $res === FALSE ) {
+					throw new I2Exception('Specified article ID does not exist.');
+				}
+				if( $res['authorID'] != $I2_USER->uid ) {
+					throw new I2Exception('You do not have permission to delete this article.');
+				}
+
+				if( isset($_REQUEST['delete_confirm']) ) {
+					$I2_SQL->query('DELETE FROM news WHERE id=%d;', $I2_ARGS[2]);
+					return 'News Post Deleted';
+				}
+				
+				$this->newsdetails = $res;
+				return array('Delete News Post', 'Confirm News Post Delete');
+				
+			default:
+				$I2_ARGS[1] = '';
+				$this->newsdetails = $I2_SQL->query('SELECT id,title,text,authorID,posted FROM news ORDER BY posted DESC;')->fetch_all_arrays(MYSQL_ASSOC);
+				$this->summaries = &$this->newsdetails;
+		
+				$authors = array();
+				foreach( $this->newsdetails as $i=>$story ) {
+					if( $story['authorID'] ) {
+						if( isset($authors[$story['authorID']]) ) {
+							$this->newsdetails[$i]['author'] = $authors[$story['authorID']];
+						}
+						else {
+							$tmpuser = new User($story['authorID']);
+							$this->newsdetails[$i]['author'] = $tmpuser->fname .' '.$tmpuser->lname;
+							$authors[$story['authorID']] = $this->newsdetails[$i]['author'];
+						}
+					}
+				}
+				return array('News', 'Recent News Posts');
+		}
+		//should not happen
+		throw new I2Exception('Internal error: sanity check, reached end of init_pane in news.');
 	}
 	
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
-		//$display->raw_display("This is today's news, in a pane.");
-		$display->disp('news_pane.tpl',array('news_stories'=>$this->newsdetails));
+		global $I2_ARGS;
+		
+		$display->disp('news_'.($I2_ARGS[1]?$I2_ARGS[1]:'pane').'.tpl',array('news_stories'=>$this->newsdetails));
 	}
 	
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_box() {
-		if( $this->newsdetails === NULL ) {
+		if( $this->summaries === NULL ) {
 			global $I2_SQL;
-			$res = $I2_SQL->query('SELECT title FROM news ORDER BY posted DESC;')->fetch_all_arrays(MYSQL_ASSOC);
-			$titles = array();
-			foreach ($res as $row) {
-				$titles[] = $row['title'];
-			}
+			$this->summaries = $I2_SQL->query('SELECT title FROM news ORDER BY posted DESC;')->fetch_all_arrays(MYSQL_ASSOC);
 		}
-		else {
-			$titles=array();
-			foreach($this->newsdetails as $news) {
-				$titles[] = $news['title'];
-			}
-		}
-		$this->summaries = $titles;
 		$num = count($this->summaries);
 		return 'News: '.$num.' post'.($num==1?'':'s').' to read';
 	}
