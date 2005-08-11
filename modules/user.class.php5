@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.35 2005/07/30 04:51:24 adeason Exp $
+* @version $Id: user.class.php5,v 1.36 2005/08/11 01:28:21 asmith Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -322,6 +322,20 @@ class User {
 			$ret[] = new User($row[0]);
 		}
 
+		return $ret;
+	}
+
+	/**
+	* Convert an array of user IDs into an array or {@link User} objects
+	*
+	* @param array An array of user IDs.
+	* @return array An array of {@link User} objects.
+	*/
+	public function id_to_user($userids) {
+		$ret = array();
+		foreach($userids as $userid) {
+			$ret[] = new User($userid);
+		}
 		return $ret;
 	}
 }
