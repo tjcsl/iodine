@@ -30,6 +30,11 @@ class News implements Module {
 	* A 1-dimensional array containing all of the titles for all news posts.
 	*/
 	private $summaries;
+
+	/**
+	* Whether the current user is a news administrator.
+	*/
+	private $newsadmin;
 	
 	/**
 	* Required by the {@link Module} interface.
@@ -40,12 +45,14 @@ class News implements Module {
 		if( ! isset($I2_ARGS[1]) ) {
 			$I2_ARGS[1] = '';
 		}
-
+		
+		$this->newsadmin = $I2_USER->is_group_member('admin_news');
+		
 		switch($I2_ARGS[1]) {
 
 			case 'add':
-				//put in checks here to see if the user is allowed to post
-				if( isset($_REQUEST['add_form']) ) {
+				
+				if( isset($_REQUEST['add_form']) && $this->newsadmin) {
 					$I2_SQL->query('INSERT INTO news ( authorID, title, text, posted ) VALUES ( %d, %s, %s, CURRENT_TIMESTAMP );', $I2_USER->uid, $_REQUEST['add_title'], $_REQUEST['add_text']);
 					$this->newsdetails = 1;
 					return array('Post News', 'News article posted');
@@ -62,7 +69,7 @@ class News implements Module {
 				if( $res === FALSE ) {
 					throw new I2Exception('Specified article ID does not exist.');
 				}
-				if( $res['authorID'] != $I2_USER->uid ) {
+				if( !$this->newsadmin ) {
 					throw new I2Exception('You do not have permission to edit this article.');
 				}
 
@@ -79,14 +86,13 @@ class News implements Module {
 				if( !isset($I2_ARGS[2]) ) {
 					throw new I2Exception('ID of article to delete not specified.');
 				}
-				
+				if (!$this->newsadmin) {
+					throw new I2Exception('You do not have permission to delete this article!');
+				}
 				$res = $I2_SQL->query('SELECT title,text,authorID FROM news WHERE id=%d;', $I2_ARGS[2])->fetch_array();
 				
 				if( $res === FALSE ) {
 					throw new I2Exception('Specified article ID does not exist.');
-				}
-				if( $res['authorID'] != $I2_USER->uid ) {
-					throw new I2Exception('You do not have permission to delete this article.');
 				}
 
 				if( isset($_REQUEST['delete_confirm']) ) {
