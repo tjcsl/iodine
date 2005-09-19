@@ -134,6 +134,7 @@ function i2config_get($field, $default = NULL, $section = NULL) {
 		}
 		if ($default === NULL) {
 			/* Return error, should probably also make a logging call here */
+			d("Attempted to read bad config value $field in section $section");
 			return NULL;
 		}
 		return $default;
