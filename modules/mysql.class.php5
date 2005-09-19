@@ -3,7 +3,7 @@
 * Contains the definition for the class {@link MySQL}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004 The Intranet 2 Development Team
-* @version $Id: mysql.class.php5,v 1.27 2005/07/30 06:25:45 adeason Exp $
+* @version $Id: mysql.class.php5,v 1.28 2005/09/19 11:41:33 asmith Exp $
 * @package core
 * @subpackage MySQL
 * @filesource
@@ -38,6 +38,10 @@ class MySQL {
 	* Represents a DELETE query.
 	*/
 	const DELETE = 4;
+	/**
+	* Represents a REPLACE query.
+	*/
+	const REPLACE = 5;
 	
 	/**
 	* Represents input that is a string
@@ -59,7 +63,7 @@ class MySQL {
 	/**
 	* A string representing all custom printf tags for mysql queries which require an argument. Each character represents a different tag.
 	*/
-	const TAGS_ARG = 'adsicDIS';
+	const TAGS_ARG = 'acdistDIS';
 
 	/**
 	* A string representing all custom printf tags for mysql queries which do not require an argument. Each character represents a different tag.
@@ -146,6 +150,7 @@ class MySQL {
 	* <li>%s - A string, which will be quoted, and escapes all necessary
 	* characters for use in a mysql statement</li>
 	* <li>%S - An array of strings, quoted and escaped</li>
+	* <li>%t - A date of the form YYYY-MM-DD</li>
 	* <li>%V - Outputs the current Iodine version</li>
 	* <li>%% - Outputs a literal '%'</li>
 	* </ul>
@@ -258,7 +263,7 @@ class MySQL {
 								throw new I2Exception('Non-integer `'.$num.'` passed in the array passed to %D in a mysql query');
 							}
 						}
-						$replacement = implode($arg, ',');
+						$replacement = '\'' . implode($arg, ',') . '\'';
 						break;
 
 					/* integer*/
@@ -274,6 +279,16 @@ class MySQL {
 							throw new I2Exception('The string `'.$arg.'` is not an integer, but was passed as %d or %i in a mysql query');
 							$replacement = '0';
 						}
+						break;
+					case 't':
+						if(is_string($arg)) {
+							$parts = explode("-", $arg);
+							if(count($parts) == 3 && !empty($parts[1]) && !empty($parts[2]) && strlen($parts[0]) == 4 && strlen($parts[1]) <= 2 && strlen($parts[2]) <= 2 && ctype_digit($parts[0]) && ctype_digit($parts[1]) && ctype_digit($parts[2]) && checkdate($parts[1], $parts[2], $parts[0])) {
+								$replacement = '\''.$arg.'\'';
+								break;
+							}
+						}
+						throw new I2Exception('The string `'.$arg.'` is not a properly formatted date, but was passed as %t in a mysql query');
 						break;
 					
 					/* Non-argument tags below here */
@@ -310,6 +325,9 @@ class MySQL {
 				break;
 			case 'INSERT':
 				$query_t = MYSQL::INSERT;
+				break;
+			case 'REPLACE':
+				$query_t = MYSQL::REPLACE;
 				break;
 			default:
 				throw new I2Exception('Attempted MySQL query of unauthorized command `'.substr($query, 0, strpos($query, ' ')).'`');

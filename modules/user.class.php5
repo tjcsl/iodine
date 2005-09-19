@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.37 2005/08/11 01:30:52 asmith Exp $
+* @version $Id: user.class.php5,v 1.38 2005/09/19 11:41:33 asmith Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -95,6 +95,9 @@ class User {
 	* There are a few psuedo fields, which are actually a few fields
 	* combined. They are:
 	* <ul>
+	* <li>name - Returns the name of the student</li>
+	* <li>name_comma - Returns the name of the student, with the last
+	* name first, with a comma (as in 'Powers, Austin').</li>
 	* <li>fullname - Returns the full name of the student</li>
 	* <li>fullname_comma - Returns the full name of the student, with the
 	* last name first, with a comma (as in 'Powers, Austin Danger').</li>
@@ -113,6 +116,12 @@ class User {
 		//must use explicit __get calls here, since recursive implicit
 		//__get calls apparently are not allowed.
 		switch( $name ) {
+			case 'name':
+				$nick = $this->__get('nickname');
+				return $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . $this->__get('lname');
+			case 'name_comma':
+				$nick = $this->__get('nickname');
+				return $this->__get('lname') . ', ' . $this->__get('fname') . ' ' . ($nick ? "($nick)" : '');
 			case 'fullname':
 				$nick = $this->__get('nickname');
 				$mid = $this->__get('mname');
