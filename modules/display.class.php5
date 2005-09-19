@@ -127,9 +127,10 @@ class Display {
 				*/
 				$disp = new Display($module);
 				
-				eval('$mod = new '.$module.'();');
-				
+				$mod = NULL;
+
 				try {
+					eval('$mod = new '.$module.'();');
 					$title = $mod->init_pane();
 				} catch( Exception $e ) {
 					$this->global_header('Error');
@@ -137,6 +138,7 @@ class Display {
 					$this->close_content_pane();
 					throw $e;
 				}
+				
 				if ( $title === FALSE) {
 					$this->global_header('Error');
 					$this->open_content_pane(array('no_module' => $module));

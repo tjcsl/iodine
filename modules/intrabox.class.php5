@@ -31,9 +31,14 @@ class IntraBox {
 	private static $main_module = NULL;
 
 	/**
-	* The display object to display the intrabox templates on.
+	* The Display object to display the global intrabox templates on.
 	*/
 	private static $display = NULL;
+
+	/**
+	* The Display object for this particular Intrabox
+	*/
+	private $mydisplay = NULL;
 
 	const USED = 1;
 	const UNUSED = 2;
@@ -51,9 +56,6 @@ class IntraBox {
 	*                            for.
 	*/
 	public function __construct($module_name) {
-		if( self::$display === NULL ) {
-			self::$display = new Display('Intrabox');
-		}
 
 		if( strcasecmp($module_name, self::$main_module->get_name()) == 0 ) {
 			$this->module = self::$main_module;
@@ -71,6 +73,8 @@ class IntraBox {
 				$this->module = $module_name;
 			}
 		}
+
+		$this->mydisplay = new Display($module_name);
 	}
 
 	/**
@@ -82,9 +86,9 @@ class IntraBox {
 			$tpl = 'intrabox_'.$this->module.'.tpl';
 			
 			if( Display::get_template($tpl) ) {
-				self::$display->disp('intrabox_openbox.tpl', array('title' => ucwords($this->module)));
-				self::$display->disp($tpl);
-				self::$display->disp('intrabox_closebox.tpl');
+				$this->mydisplay->disp('intrabox_openbox.tpl', array('title' => ucwords($this->module)));
+				$this->mydisplay->disp($tpl);
+				$this->mydisplay->disp('intrabox_closebox.tpl');
 			}
 			else {
 				throw new I2Exception('Invalid intrabox `'.$this->module.'` was attempted to be displayed.');
@@ -94,15 +98,15 @@ class IntraBox {
 			$name = $this->module->get_name();
 			try {
 				if( ($title = $this->module->init_box(true)) ) {
-					self::$display->disp('intrabox_openbox.tpl', array('title' => $title));
+					$this->mydisplay->disp('intrabox_openbox.tpl', array('title' => $title));
 					try {
 						$this->module->display_box(new Display($name));
 					}
 					catch( Exception $e ) {
-						self::$display->disp('intrabox_closebox.tpl');
+						$this->mydisplay->disp('intrabox_closebox.tpl');
 						throw $e;
 					}
-					self::$display->disp('intrabox_closebox.tpl');
+					$this->mydisplay->disp('intrabox_closebox.tpl');
 				}
 			}
 			catch( Exception $e ) {
