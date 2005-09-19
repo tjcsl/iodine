@@ -21,11 +21,31 @@ To commit:
 To update:
 ./update
 
-Note that these tools will update or commit your ENTIRE repository.  They don't care if you pass them file names or directories.  So, please excercise caution.
+Note that these tools will update or commit your ENTIRE repository.  They don't care if you pass them file names or directories.  They don't even care where you are when you call them.  So, please excercise caution.
+
+Also, note that files you create won't be committed until you use 'hg add' on them.
+
+DO NOT use 'hg addremove'.  It will commit your personal config files to the global repository.  Please don't do that.
+
+The shortcuts 'i2' and 'intranet2' are available for your use.  You can type 'hg pull i2', 'hg push intranet2', etc.  The default may also be i2, so you can tr typing 'hg pull' and seeing what happens.
+
+The suggested way of working is to 'hg pull rsync://[username]@humboldt.tjhsst.edu//shared/hg/intranet2' from home, and push the same way.  You obviously need to install hg (and preferably meld) on your home computer to do this.  Mercurial depends on Python 2.3 or better.  By the time you are reading this, the entire system should be available on the CSL workstations for your working pleasure.  Remember to change config.ini's ROOT setting to the appropriate access URL if you're not working on humboldt.
+
+Summary of things you need installed to work from home:
+- Apache
+- PHP5 with mod_php
+- mod_rewrite  
+- Python 2.3
+- Meld, xxdiff, or the like type of decent merge program 
+- Mercurial
+- MySQL: you need the user iodine, with password 'br0m1n3', and the database 'iodine'.
+
+You'll only be able to log in as 'guest', unless you hack kinit.  Remember to source the MySQL files in mysql/ to create the necessary databases.
 
 Config:
 
-To configure Intranet2 for use in your local directory, just run ./setup .
+To configure
+ Intranet2 for use in your local directory, just run ./setup .
 If changes are made to the htaccess or config.ini files by others, then you
 will need to run this script again. If suddenly everything stops working, try
 running that script to see if it makes things work again.
