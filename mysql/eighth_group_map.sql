@@ -1,0 +1,5 @@
+CREATE TABLE eighth_group_map (
+	gid MEDIUMINT UNSIGNED NOT NULL,
+
+	userid MEDIUMINT UNSIGNED NOT NULL
+);
