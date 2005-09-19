@@ -300,7 +300,14 @@ class User {
 	*	@return boolean Whether this User is a member of the passed group.
 	*/
 	public function is_group_member($groupname) {
-		return in_array($this->get_groups(),$groupname);
+			$groups = $this->get_groups();
+			if (in_array($groups,$groupname)) {
+							return TRUE;
+			}	
+		 if	(substr($groupname,6) == 'admin_'  && in_array($groups,'admin_all')) {
+				return TRUE;
+		 }
+		 return FALSE;
 	}
 
 	/**
