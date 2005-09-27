@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Logging}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: logging.class.php5,v 1.20 2005/07/31 05:00:58 adeason Exp $
+* @version $Id: logging.class.php5,v 1.21 2005/09/27 00:47:36 braujac Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -92,7 +92,15 @@ class Logging {
 
 		$trace_arr = array();
 		foreach(array_slice(debug_backtrace(),1) as $trace) {
-			$trace_arr[] = basename($trace['file'],'.php5') .':'. $trace['line'];
+			$tracepart = '';
+			//Sometimes the trace won't have all parts; we can accept that.
+			if (isSet($trace['file'])) {
+				$tracepart = basename($trace['file'],'.php5') .':';
+			}
+			if (isSet($trace['line'])) {
+				$tracepart .= $trace['line'];
+			}
+			$trace_arr[] = $tracepart;
 		}
 		
 		/* IP - [Apache-style date format] [Mini-backtrace] "Request" "Error" */
