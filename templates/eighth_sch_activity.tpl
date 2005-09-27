@@ -15,7 +15,6 @@
 		<td style="padding: 5px;">
 			<select name="room_list[[<$activity.block.bid>]][]" size="3" multiple>
 				<option value=""></option>
-		[<php>] var_dump($this->_tpl_vars['rooms']); [</php>]
 [<foreach from=$rooms item='room'>]
 				<option value="[<$room.rid>]"[<if in_array($room.rid, explode(",", $activity.rooms))>] selected[</if>]>[<$room.name>]</option>
 [</foreach>]

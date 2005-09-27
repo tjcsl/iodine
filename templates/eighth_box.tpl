@@ -8,7 +8,7 @@ You have been absent <a href="">[<$absent>] time[<if $absent != 1 >]s[</if>]</a>
 [<if isset($activities) && count($activities) > 0 >]
 	[<foreach from=$activities item="activity">]
 		<tr>
-			<td style="text-align: left;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/single/uid/[<$I2_UID>]">[<$activity->name>]</a></td>
+			<td style="text-align: left;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/single/uid/[<$I2_UID>]">[<$activity->name_r>]</a></td>
 			<td style="text-align: center;">[<$activity->block_rooms_comma>]</td>
 			<td style="text-align: center;">[<$activity->block->block>] block</td>
 		</tr>

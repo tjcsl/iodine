@@ -1,6 +1,6 @@
 [<include file="eighth_header.tpl">]
 <span style="font-weight: bold; font-size: 125%;">[<$title|default:"">]</span><br />
-<select name="activity_list" size="10" onChange="location.href='[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/aid/' + this.options[this.selectedIndex].value">
+<select name="activity_list" size="10" onChange="location.href='[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/[<$field|default:"aid">]/' + this.options[this.selectedIndex].value">
 [<foreach from=$activities item='activity'>]
 <option value="[<$activity.aid>]">[<$activity.aid>]: [<$activity.name>][<if $activity.restricted >] (R)[</if>]</option>
 [</foreach>]

@@ -3,9 +3,9 @@
 <table cellspacing="0" style="border: 0px; margin: 0px; padding: 0px;">
 [<foreach from=$blocks item='block'>]
 	<tr style="background-color: [<cycle values="#CCCCCC,#FFFFFF">];">
-		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/bid/[<$block.bid>]">[<$block.date|date_format:"%A">]</a></td>
-		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/bid/[<$block.bid>]">[<$block.date|date_format>]</a></td>
-		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/bid/[<$block.bid>]">[<$block.block>] block</a></td>
+		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/[<$field|default:"bid">]/[<$block.bid>]">[<$block.date|date_format:"%A">]</a></td>
+		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/[<$field|default:"bid">]/[<$block.bid>]">[<$block.date|date_format>]</a></td>
+		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/[<$field|default:"bid">]/[<$block.bid>]">[<$block.block>] block</a></td>
 	</tr>
 [</foreach>]
 </table>

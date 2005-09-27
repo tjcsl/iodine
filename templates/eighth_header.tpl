@@ -28,13 +28,13 @@ newWin.focus();
 <table style="border: 0px; padding: 0px; margin: 0px">
 <tr>
 <td style="width: 80">First name:</TD>
-<td style="width: 120"><input type="text" name="firstname" style="width: 115px;"></td>
+<td style="width: 120"><input type="text" name="fname" style="width: 115px;"></td>
 <td style="width: 80">Student ID:</TD>
-<td style="width: 120"><input type="text" name="studentid" style="width: 115px;"></td>
+<td style="width: 120"><input type="text" name="uid" style="width: 115px;"></td>
 </tr> 
 <tr>
 <td style="width: 80">Last name:</td>
-<td style="width: 120"><input type="text" name="lastname" style="width: 115px;" ></td>
+<td style="width: 120"><input type="text" name="lname" style="width: 115px;" ></td>
 <td style="width: 80">&nbsp;</td>
 <td style="width: 120"><input type="submit" value="View Schedule" style="width: 115px;" tabindex="4"></td>
 </tr>
