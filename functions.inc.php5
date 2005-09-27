@@ -5,7 +5,7 @@
 
 * @author The Intranet2 Development Team <intranet2@lists.tjhsst.edu>
 * @copyright 2004-2005 The Intranet2 Development Team
-* @version $Id: functions.inc.php5,v 1.18 2005/07/15 06:37:52 adeason Exp $
+* @version $Id: functions.inc.php5,v 1.19 2005/09/27 00:52:44 braujac Exp $
 * @package core
 * @filesource
 */
@@ -46,7 +46,12 @@ function __autoload($class_name) {
 	$class_file = '';
 
 	if (!($class_file=get_i2module($class_name))) {
-		$I2_ERR->fatal_error('Cannot load module/class '.$class_name.': the file '.$class_file.' is not readable.');
+		$err = 	'Cannot load module/class '.$class_name.': the file '.$class_file.' is not readable.';
+		if ($I2_ERR) {
+			$I2_ERR->fatal_error($err);
+		} else {
+			echo($err);
+		}
 	}
 	else {
 		require_once($class_file);
@@ -114,7 +119,11 @@ function i2config_get($field, $default = NULL, $section = NULL) {
 			to send critical errors to is in the config
 			file! */
 			/* hence, put a hard-coded mail() call here */
-			$I2_ERR->fatal_error('The master Iodine configuration file '.CONFIG_FILENAME.' cannot be read.', FALSE);
+			if ($I2_ERR) {
+				$I2_ERR->fatal_error('The master Iodine configuration file '.CONFIG_FILENAME.' cannot be read.', FALSE);
+			} else {
+				echo('The master Iodine configuration file '.CONFIG_FILENAME.' cannot be read.');
+			}
 		}
 		
 		$config = parse_ini_file(CONFIG_FILENAME, TRUE);
