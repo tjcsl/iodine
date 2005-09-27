@@ -36,7 +36,7 @@ class Eighth implements Module {
 	function init_pane() {
 		global $I2_ARGS;
 		$args = array();
-		if(count($I2_ARGS) == 1) {
+		if(count($I2_ARGS) <= 1) {
 			$this->template = "eighth_pane.tpl";
 			return array("Eighth Period Office Online: Home", "Eighth");
 		}
@@ -71,13 +71,21 @@ class Eighth implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_box() {
-		return FALSE;
+		global $I2_USER;
+		$date = EighthSchedule::get_next_date();
+		$this->template_args['absent'] = count(EighthSchedule::get_absences($I2_USER->uid));
+		if($date) {
+			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($I2_USER->uid, $date));
+		}
+		$dates = array($date => date("n/j/Y", @strtotime($date)), date("Y-m-d") => "Today", date("Y-m-d", time() + 3600 * 24) => "Tomorrow", "" => "None Scheduled");
+		return "8th Period: {$dates[$date]}";
 	}
 	
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function display_box($display) {
+		$display->disp("eighth_box.tpl", $this->template_args);
 	}
 	
 	/**
@@ -105,11 +113,12 @@ class Eighth implements Module {
 	* @param bool $add Whether to include the add field or not.
 	* @param string $title The title for the block list.
 	*/
-	private function setup_block_selection($add = FALSE, $title = "Select a block:") {
+	private function setup_block_selection($add = FALSE, $field = "bid", $title = "Select a block:") {
 		$blocks = EighthBlock::get_all_blocks(i2config_get("start_date", date("Y-m-d"), "eighth"));
 		$this->template = "eighth_block_selection.tpl";
 		$this->template_args += array("blocks" => $blocks, "add" => $add);
 		$this->template_args['title'] = $title;
+		$this->template_args['field'] = $field;
 	}
 
 	/**
@@ -121,16 +130,12 @@ class Eighth implements Module {
 	* if you want the full list.
 	* @param string $title The title for the activity list.
 	*/
-	private function setup_activity_selection($add = FALSE, $blockid = NULL, $title = "Select an activity:") {
-		if($blockid == NULL) {
-			$activities = EighthActivity::get_all_activities();
-		}
-		else {
-			$activities = EighthActivity::get_all_activities($blockid);
-		}
+	private function setup_activity_selection($add = FALSE, $blockid = NULL, $restricted = FALSE, $field = "aid", $title = "Select an activity:") {
+		$activities = EighthActivity::get_all_activities($blockid, $restricted);
 		$this->template = "eighth_activity_selection.tpl";
 		$this->template_args += array("activities" => $activities, "add" => $add);
 		$this->template_args['title'] = $title;
+		$this->template_args['field'] = $field;
 	}
 
 	/**
@@ -264,7 +269,7 @@ class Eighth implements Module {
 	*/
 	private function alt_permissions($op, $args) {
 		if($op == "") {
-			$this->setup_activity_selection();
+			$this->setup_activity_selection(FALSE, NULL, TRUE);
 		}
 		else if($op == "add_group") {
 			$activity = new EighthActivity($args['aid']);
@@ -294,27 +299,33 @@ class Eighth implements Module {
 	*/
 	private function people_switch($op, $args) {
 		if($op == "") {
-			$this->setup_block_selection();
+			$this->setup_block_selection(FALSE, "bid_from");
 			$this->template_args['op'] = "activity_from";
 		}
 		else if($op == "activity_from") {
-			$this->setup_activity_selection(FALSE, $args['bid'], "From this activity:");
-			$this->template_args['op'] = "activity_to/bid/{$args['bid']}";
+			$this->setup_activity_selection(FALSE, $args['bid_from'], FALSE, "aid_from", "From this activity:");
+			$this->template_args['op'] = "activity_to/bid_from/{$args['bid_from']}/bid_to/{$args['bid_from']}";
+		}
+		else if($op == "block_to") {
+			$this->setup_block_selection(FALSE, "bid_to");
+			$this->template_args['op'] = "activity_to/bid_from/{$args['bid_from']}/aid_from/{$args['aid_from']}";
 		}
 		else if($op == "activity_to") {
-			$this->setup_activity_selection(FALSE, $args['bid'], "To this activity:");
-			$this->template_args['op'] = "confirm/bid/{$args['bid']}/aid_from/{$args['aid']}";
+			$this->setup_activity_selection(FALSE, $args['bid_to'], FALSE, "aid_to", "To this activity:");
+			$this->template_args['op'] = "confirm/bid_from/{$args['bid_from']}/aid_from/{$args['aid_from']}/bid_to/{$args['bid_to']}";
 		}
 		else if($op == "confirm") {
+			if($args['aid_from'] == $args['aid_to']) {
+				redirect("eighth/people_switch/activity_to/bid_from/{$args['bid_from']}/aid/{$args['aid_from']}/bid_to/{$args['bid_to']}");
+			}
 			$this->template = "eighth_people_switch.tpl";
-			$this->template_args['activity_from'] = new EighthActivity($args['aid_from']);
-			$this->template_args['activity_to'] = new EighthActivity($args['aid']);
-			$this->template_args['block'] = new EighthBlock($args['bid']);
+			$this->template_args['activity_from'] = new EighthActivity($args['aid_from'], $args['bid_from']);
+			$this->template_args['activity_to'] = new EighthActivity($args['aid_to'], $args['bid_to']);
 		}
 		else if($op == "commit") {
-			$activity_from = new EighthActivity($args['aid_from']);
-			$activity_to = new EighthActivity($args['aid_to']);
-			$activity_to->add_members($args['bid'], $activity_from->get_members($args['bid']));
+			$activity_from = new EighthActivity($args['aid_from'], $args['bid_from']);
+			$activity_to = new EighthActivity($args['aid_to'], $args['bid_to']);
+			$activity_to->add_members($args['bid'], $activity_from->members);
 			$activity_from->remove_all($args['bid']);
 			redirect("eighth");
 		}
@@ -637,8 +648,7 @@ class Eighth implements Module {
 		}
 		else if($op == "view") {
 			$this->template = "eighth_vcp_attendance.tpl";
-			$this->template_args['block'] = new EighthBlock($args['bid']);
-			$this->template_args['activity'] = new EighthActivity($args['aid']);
+			$this->template_args['activity'] = new EighthActivity($args['aid'], $args['bid']);
 			$this->template_args['absentees'] = EighthSchedule::get_absentees($args['bid'], $args['aid']);
 		}
 		else if($op == "update") {
@@ -796,15 +806,23 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	public function vcp_schedule($op, $args) {
+		global $I2_SQL;
 		if($op == "") {
-			$this->template = "eighth_test_pane.tpl";
-			$this->template_args['args'] = $args;
-		}
-		else if($op == "choose") {
-			$this->template = "eighth_vcp_schedule_choose.tpl";
+			$this->template = "eighth_vcp_schedule.tpl";
+			if(!empty($args['uid'])) {
+				$this->template_args['users'] = User::id_to_user(flatten($I2_SQL->query("SELECT uid FROM user WHERE uid LIKE %d", $args['uid'])->fetch_all_arrays(MYSQL_NUM)));
+			}
+			else {
+				$this->template_args['users'] = User::search_info("{$args['fname']} {$args['lname']}");
+				usort($this->template_args['users'], array("User", 'name_cmp'));
+			}
 		}
 		else if($op == "view") {
+			$this->template_args['user'] = new User($args['uid']);
+			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($args['uid']));
 			$this->template = "eighth_vcp_schedule_view.tpl";
+		}
+		else if($op == "change") {
 		}
 	}
 }

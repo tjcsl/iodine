@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.38 2005/09/19 11:41:33 asmith Exp $
+* @version $Id: user.class.php5,v 1.39 2005/09/27 00:41:44 asmith Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -346,6 +346,29 @@ class User {
 			$ret[] = new User($userid);
 		}
 		return $ret;
+	}
+
+	/**
+	* Sort a list of users when given a list of user IDs.
+	*
+	* @param array $userids An array of user IDs.
+	* @return array An array of sorted {@link User} objects.
+	*/
+	public static function sort_users($userids) {
+		$users = self::id_to_user($userids);
+		usort($users, array('self', 'name_cmp'));
+		return $users;
+	}
+
+	/**
+	* The custom sort method for sorting users.
+	*
+	* @param object $user1 The first user.
+	* @param object $user2 The second user.
+	* @return int Depending on order, Less than 0, 0, or Greater than 0.
+	*/
+	public static function name_cmp($user1, $user2) {
+		return strcasecmp($user1->name_comma, $user2->name_comma);
 	}
 }
 
