@@ -53,6 +53,7 @@ a:hover {
 	font-family: arial, helvetica, verdana, sans-serif;
 	font-size: 10pt;
 	margin-bottom: 10pt;
+	border: dotted 1px gray;
 }
 .date {
 	position: absolute;
