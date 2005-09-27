@@ -4,7 +4,7 @@
 *
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: i2exception.class.php5,v 1.5 2005/07/14 00:48:26 adeason Exp $
+* @version $Id: i2exception.class.php5,v 1.6 2005/09/27 02:14:42 sgross Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -62,7 +62,9 @@ class I2Exception extends Exception {
 		$trace = $this->getTrace();
 		
 		foreach($trace as $level) {
-			$str .= $level['file'].':'.$level['line']."<br />\r\n";
+			$file = $level['file'];
+			$line = $level['line'];
+			$str .= "<a href='highlight/$line$file#$line'>" . $file .':'.$line ."</a><br />\r\n";
 		}
 		
 		return $str;
