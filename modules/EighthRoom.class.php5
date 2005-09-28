@@ -35,24 +35,36 @@ class EighthRoom {
 	* @access public
 	* @param int $blockid The block ID.
 	* @param array $columns The columns to include.
-	* @param bool $overbooked Whether to only overbooked activities or not.
+	* @param bool $overbooked Whether to only show overbooked activities or not.
 	* @todo Make it actually use $columns.
 	*/
 	public static function get_utilization($blockid, $columns, $overbooked) {
 		global $I2_SQL;
-		$result = $I2_SQL->query("SELECT eighth_block_map.activityid, eighth_activities.name, eighth_block_map.rooms, eighth_block_map.sponsors, eighth_activities.restricted FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d", $blockid)->fetch_all_arrays(MYSQL_ASSOC);
+		$activities = EighthActivity::is_to_activity($I2_SQL->query("SELECT eighth_block_map.activityid,bid FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d", $blockid)->fetch_all_arrays(MYSQL_NUM));
 		$utilizations = array();
-		foreach($result as $activity) {
-			$rooms = explode(",", $activity['rooms']);
+		foreach($activities as $activity) {
+			$rooms = $activity->block_rooms;
 			foreach($rooms as $room) {
 				$room = new EighthRoom($room);
-				$students = EighthSchedule::count_members($blockid, $activity['activityid']);
+				$students = EighthSchedule::count_members($blockid, $activity->aid);
 				if(!$overbooked || $students > $room->capacity) {
-					$utilizations[] = array("room" => $room->name, "aid" => $activity['activityid'], "name" => ($activity['name'] . ($activity['restricted'] ? " (R)" : "")), "sponsors" => $activity['sponsors'], "students" => $students);
+					$utilizations[] = array("room" => $room, "activity" => $activity, "students" => $students);
 				}
 			}
 		}
+		usort($utilizations, array("self", "sort_rooms"));
 		return $utilizations;
+	}
+
+	/**
+	* Custom function to sort rooms.
+	*
+	* @param array $utilization1 The first room utilization.
+	* @param array $utilization2 The second room utilization.
+	* @return int Less than 0, 0, or greater than 0.
+	*/
+	private static function sort_rooms($utilization1, $utilization2) {
+		return strcasecmp($utilization1['room']->name, $utilization2['room']->name);
 	}
 
 	/**

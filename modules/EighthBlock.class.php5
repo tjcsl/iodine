@@ -75,7 +75,7 @@ class EighthBlock {
 		if($starting_date == NULL) {
 			$starting_date = i2config_get('start_date', date("Y-m-d"), 'eighth');
 		}
-		return $I2_SQL->query("SELECT * FROM eighth_blocks WHERE date >= %t ORDER BY date LIMIT %d", $starting_date, $number_of_blocks)->fetch_all_arrays(MYSQL_ASSOC);
+		return $I2_SQL->query("SELECT * FROM eighth_blocks WHERE date >= %t ORDER BY date,block LIMIT %d", $starting_date, $number_of_blocks)->fetch_all_arrays(MYSQL_ASSOC);
 	}
 
 	/**

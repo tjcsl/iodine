@@ -42,11 +42,14 @@ class EighthActivity {
 	* Adds a member to the activity.
 	*
 	* @access public
-	* @param int $blockid The block ID to add them to.
 	* @param int $userid The student's user ID.
+	* @param int $blockid The block ID to add them to.
 	*/
-	public function add_member($blockid, $userid) {
+	public function add_member($userid, $blockid = NULL) {
 		global $I2_SQL;
+		if($blockid == NULL) {
+			$blockid = $this->data['bid'];
+		}
 		$result = $I2_SQL->query("REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES (%d,%d,%d)", $this->data['aid'], $blockid, $userid);
 	}
 	
@@ -54,12 +57,12 @@ class EighthActivity {
 	* Add multiple members to the activity.
 	*
 	* @access private
-	* @param int $blockid The block ID to add them to.
 	* @param array $userids The students' user IDs.
+	* @param int $blockid The block ID to add them to.
 	*/
-	public function add_members($blockid, $userids) {
+	public function add_members($userids, $blockid = NULL) {
 		foreach($userids as $userid) {
-			$this->add_member($blockid, $userid);
+			$this->add_member($userid, $blockid);
 		}
 	}
 
@@ -67,11 +70,14 @@ class EighthActivity {
 	* Removes a member from the activity.
 	*
 	* @access public
-	* @param int $blockid The block ID to remove them from.
 	* @param int $userid The student's user ID.
+	* @param int $blockid The block ID to remove them from.
 	*/
-	public function remove_member($blockid, $userid) {
+	public function remove_member($userid, $blockid) {
 		global $I2_SQL;
+		if($blockid == NULL) {
+			$blockid = $this->data['bid'];
+		}
 		$result = $I2_SQL->query("DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d", $this->data['aid'], $blockid, $userid);
 	}
 
@@ -79,12 +85,12 @@ class EighthActivity {
 	* Removes multiple members from the activity.
 	*
 	* @access public
-	* @param int $blockid The block ID to remove them from.
 	* @param int $userid The students' user IDs.
+	* @param int $blockid The block ID to remove them from.
 	*/
-	public function remove_members($blockid, $userids) {
+	public function remove_members($userids, $blockid) {
 		foreach($userids as $userid) {
-			$this->remove_member($blockid, $userid);
+			$this->remove_member($userid, $blockid);
 		}
 	}
 
@@ -105,8 +111,11 @@ class EighthActivity {
 	* @access public
 	* @param int $blockid The block ID to remove them from.
 	*/
-	public function remove_all($blockid) {
+	public function remove_all($blockid = NULL) {
 		global $I2_SQL;
+		if($blockid == NULL) {
+			$blockid = $this->data['bid'];
+		}
 		$result = $I2_SQL->query("DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d", $this->data['aid'], $blockid);
 	}
 
@@ -234,13 +243,13 @@ class EighthActivity {
 	* @access public
 	* @param int $blockid The room ID.
 	*/
-	public static function get_all_activities($blockid = NULL) {
+	public static function get_all_activities($blockid = NULL, $restricted = FALSE) {
 		global $I2_SQL;
 		if($blockid == NULL) {
-			return $I2_SQL->query("SELECT aid, name, restricted FROM eighth_activities ORDER BY name")->fetch_all_arrays(MYSQL_ASSOC);
+			return $I2_SQL->query("SELECT aid, name, restricted FROM eighth_activities " . ($restricted ? "WHERE restricted=1 " : "") . "ORDER BY name")->fetch_all_arrays(MYSQL_ASSOC);
 		}
 		else {
-			return $I2_SQL->query("SELECT aid, name, restricted FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid=%d ORDER BY name", $blockid)->fetch_all_arrays(MYSQL_ASSOC);
+			return $I2_SQL->query("SELECT aid, name, restricted FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid=%d " . ($restricted ? "AND restricted=1 " : "") . "ORDER BY name", $blockid)->fetch_all_arrays(MYSQL_ASSOC);
 		}
 	}
 
@@ -303,10 +312,36 @@ class EighthActivity {
 			return $this->data['name'] . ($this->data['restricted'] ? " (R)" : "");
 		}
 		else if($name == "sponsors_comma") {
-			return implode(",", $this->data['sponsors']);
+			$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
+			$temp_sponsors = array();
+			foreach($sponsors as $sponsor) {
+				$temp_sponsors[] = $sponsor->name;
+			}
+			return implode(",", $temp_sponsors);
+		}
+		else if($name == "block_sponsors_comma") {
+			$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
+			$temp_sponsors = array();
+			foreach($sponsors as $sponsor) {
+				$temp_sponsors[] = $sponsor->name;
+			}
+			return implode(",", $temp_sponsors);
 		}
 		else if($name == "rooms_comma") {
-			return implode(",", $this->data['rooms']);
+			$rooms = EighthRoom::id_to_room($this->data['rooms']);
+			$temp_rooms = array();
+			foreach($rooms as $room) {
+				$temp_rooms[] = $room->name;
+			}
+			return implode(",", $temp_rooms);
+		}
+		else if($name == "block_rooms_comma") {
+			$rooms = EighthRoom::id_to_room($this->data['block_rooms']);
+			$temp_rooms = array();
+			foreach($rooms as $room) {
+				$temp_rooms[] = $room->name;
+			}
+			return implode(",", $temp_rooms);
 		}
 		else if($name == "members" && $this->data['bid']) {
 			return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $this->data['bid'], $this->data['aid'])->fetch_all_arrays(MYSQL_NUM));
@@ -391,7 +426,12 @@ class EighthActivity {
 	public static function id_to_activity($activityids) {
 		$ret = array();
 		foreach($activityids as $activityid) {
-			$ret[] = new EighthActivity($activityid);
+			if(is_array($activityid)) {
+				$ret[] = new EighthActivity($activityid[0], $activityid[1]);
+			}
+			else {
+				$ret[] = new EighthActivity($activityid);
+			}
 		}
 		return $ret;
 	}
