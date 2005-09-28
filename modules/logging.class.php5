@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Logging}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: logging.class.php5,v 1.22 2005/09/27 21:22:52 braujac Exp $
+* @version $Id: logging.class.php5,v 1.23 2005/09/28 01:09:15 braujac Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -151,7 +151,7 @@ class Logging {
 	public function log_screen($msg) {
 		if($this->screen_debug) {
 			$this->debug_buf .= "\r\n<br />$msg";
-		}
+		}	
 	}
 
 	/**
@@ -176,11 +176,13 @@ class Logging {
 	* those buffers and properly formats them and all that. To ensure that
 	* the messages are displayed, this is registered as a 'shutdown
 	* function' in php, so it should be called in almost all cases, even if
-	* the application just dies halfway through.
+	* the applicatioan just dies halfway through.
 	*/
 	public function flush_debug_output() {
 		global $I2_DISP;
-
+		
+		echo "Flush...\n";
+		
 		if( !( $this->error_buf || $this->debug_buf) ) {
 			return;
 		}
@@ -194,8 +196,9 @@ class Logging {
 			}
 		}
 		catch( Exception $e ) {
-			// Error in standard output, so just print things, no
-			//n eed to actually do anything in this block
+			/* Error in standard output, so just print things, no
+			** need to actually do anything in this block
+			*/
 		}
 		//Will not be reached if all goes well
 

@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Prefs}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Revision: 1.1 $
+* @version $Revision: 1.2 $
 * @since 1.0
 * @package modules
 * @subpackage Prefs
@@ -42,18 +42,18 @@ class Prefs implements Module {
 				}
 			}
 
-			if( isset($_REQUEST['add_intrabox']) ) {
+			if( isset($_REQUEST['add_intrabox']) && isSet($_REQUEST['add_boxid']) ) {
 				Intrabox::add_box($_REQUEST['add_boxid']);
 			}
-			if( isset($_REQUEST['delete_intrabox']) ) {
+			if( isset($_REQUEST['delete_intrabox']) && isSet($_REQUEST['delete_boxid']) ) {
 				Intrabox::delete_box($_REQUEST['delete_boxid']);
 			}
 
-//			redirect('prefs');
+			//redirect('prefs');
 		}
 
-		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED);
-		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED);
+		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED)->fetch_all_arrays(MYSQL_ASSOC);
+		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED)->fetch_all_arrays(MYSQL_ASSOC);
 		
 		d('nonuser_intraboxen:');
 		foreach($this->nonuser_intraboxen as $box) {
