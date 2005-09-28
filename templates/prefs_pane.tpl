@@ -27,8 +27,8 @@ Add/Remove intraboxes:<br />
   </td>
   <td>
    <select name="add_boxid" size="5">
-    [<foreach from=$nonuser_intraboxen item=box>]
-     <option value="[<$box.boxid>]">[<$box.display_name>]</option>
+    [<foreach from=$nonuser_intraboxen item=abox>]
+     <option value="[<$abox.boxid>]">[<$abox.display_name>]</option>
     [</foreach>]
    </select>
   </td>
