@@ -4,9 +4,15 @@
 <b>Counselor: [<$user->counselor>], TA: </b><br />
 <span style="color: #FF0000; font-weight: bold;">Comments: [<if empty($user->comments) >]none[<else>][<$user->comments>][</if>]</span><br />
 <form action="[<$I2_ROOT>]eighth/vcp_schedule/change" method="post">
+	<input type="submit" value="Change Selected">
+	<div style="display: inline; margin-left: 100px;">
+		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="< Back Two Weeks"></a>
+		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="Forward Two Weeks >"></a>
+	</div>
+	<br /><br />
 	<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; border: 0px; width: 100%;">
 		<tr>
-			<td>&nbsp;</td>
+			<th><input type="checkbox" name="selectall"></td>
 			<td>&nbsp;</td>
 			<th>Day of Week</th>
 			<th>Block</th>
@@ -30,4 +36,10 @@
 		</tr>
 [</foreach>]
 	</table>
+	<br />
+	<input type="submit" value="Change Selected">
+	<div style="display: inline; margin-left: 100px;">
+		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="< Back Two Weeks"></a>
+		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="Forward Two Weeks >"></a>
+	</div>
 </form>
