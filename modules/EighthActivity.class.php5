@@ -262,7 +262,7 @@ class EighthActivity {
 		if(!is_array($rooms)) {
 			$rooms = array($rooms);
 		}
-		$result = $I2_SQL->query("INSERT INTO eighth_activities (name,sponsors,rooms,description,restricted) VALUES (%s,%D,%D,%s,%d)", $name, $sponsors, $rooms, $description, ($restricted ? 1 : 0));
+		$result = $I2_SQL->query("INSERT INTO eighth_activities (name,sponsors,rooms,description,restricted) VALUES (%s,'%D','%D',%s,%d)", $name, $sponsors, $rooms, $description, ($restricted ? 1 : 0));
 		return $result->get_insert_id();
 	}
 
@@ -330,14 +330,14 @@ class EighthActivity {
 			if(!is_array($value)) {
 				$value = array($value);
 			}
-			$result = $I2_SQL->query("UPDATE eighth_activities SET sponsors=%D WHERE aid=%d", $value, $this->data['aid']);
+			$result = $I2_SQL->query("UPDATE eighth_activities SET sponsors='%D' WHERE aid=%d", $value, $this->data['aid']);
 			$this->data['sponsors'] = $value;
 		}
 		else if($name == "rooms") {
 			if(!is_array($value)) {
 				$value = array($value);
 			}
-			$result = $I2_SQL->query("UPDATE eighth_activities SET rooms=%D WHERE aid=%d", $value, $this->data['aid']);
+			$result = $I2_SQL->query("UPDATE eighth_activities SET rooms='%D' WHERE aid=%d", $value, $this->data['aid']);
 			$this->data['rooms'] = $value;
 		}
 		else if($name == "description") {

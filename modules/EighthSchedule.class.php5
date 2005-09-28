@@ -32,7 +32,7 @@ class EighthSchedule {
 		if(!is_array($rooms)) {
 			$rooms = array($rooms);
 		}
-		$result = $I2_SQL->query("REPLACE INTO eighth_block_map (bid,activityid,sponsors,rooms) VALUES (%d,%d,%D,%D)", $blockid, $activityid, $sponsors, $rooms);
+		$result = $I2_SQL->query("REPLACE INTO eighth_block_map (bid,activityid,sponsors,rooms) VALUES (%d,%d,'%D','%D')", $blockid, $activityid, $sponsors, $rooms);
 	}
 
 	/**
