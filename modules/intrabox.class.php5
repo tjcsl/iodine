@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.18 2005/07/31 04:00:41 adeason Exp $
+* @version $Id: intrabox.class.php5,v 1.19 2005/09/28 19:52:49 braujac Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -133,7 +133,9 @@ class IntraBox {
 
 		self::$display->disp('intrabox_open.tpl');
 		
-		foreach(self::get_user_boxes($I2_USER->uid) as $mod) {
+		$b = self::get_user_boxes($I2_USER->uid);
+		foreach($b as $mod) {
+			d("Box: $mod");
 			$box = new Intrabox($mod);
 			$box->display_box();
 		}
@@ -178,6 +180,15 @@ class IntraBox {
 		
 		//This is possible to do in one query with subqueries in SQL, I believe, but not prior to MySQL 4.1 afaik. If anyone knows of a way to do this in one query, by all means do it
 		list($max) = $I2_SQL->query('SELECT MAX(box_order) FROM intrabox_map WHERE uid=%d', $I2_USER->uid)->fetch_array(MYSQL_NUM);
+		
+		$boxinfo = self::get_boxes_info(self::USED)->fetch_all_arrays(MYSQL_ASSOC);
+		
+		foreach ($boxinfo as $box) {
+			if ($box['boxid'] == $boxid) {
+				d("User attempted to re-add box $boxid - ignored.");
+				return;	
+			}
+		}
 		
 		$I2_SQL->query('INSERT INTO intrabox_map ( uid, boxid, box_order ) VALUES ( %d, %d, %d );', $I2_USER->uid, $boxid, $max+1);
 	}
@@ -232,6 +243,12 @@ class IntraBox {
 			$ids = array();
 			foreach($I2_SQL->query('SELECT boxid FROM intrabox_map WHERE uid=%d;', $I2_USER->uid) as $row) {
 				$ids[] = $row[0];
+			}
+			if (count($ids) == 0) {
+				return $I2_SQL->query('
+				SELECT DISTINCT intrabox.boxid AS boxid, intrabox.display_name AS display_name
+				FROM intrabox LEFT JOIN intrabox_map USING (boxid)
+				ORDER BY intrabox.display_name;');
 			}
 			return $I2_SQL->query('
 			SELECT DISTINCT intrabox.boxid AS boxid, intrabox.display_name AS display_name
