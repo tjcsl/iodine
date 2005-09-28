@@ -234,13 +234,13 @@ class EighthActivity {
 	* @access public
 	* @param int $blockid The room ID.
 	*/
-	public static function get_all_activities($blockid = NULL, $restricted = FALSE) {
+	public static function get_all_activities($blockid = NULL) {
 		global $I2_SQL;
 		if($blockid == NULL) {
-			return $I2_SQL->query("SELECT aid, name, restricted FROM eighth_activities " . ($restricted ? "WHERE restricted=1 " : "") . "ORDER BY name")->fetch_all_arrays(MYSQL_ASSOC);
+			return $I2_SQL->query("SELECT aid, name, restricted FROM eighth_activities ORDER BY name")->fetch_all_arrays(MYSQL_ASSOC);
 		}
 		else {
-			return $I2_SQL->query("SELECT aid, name, restricted FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid=%d " . ($restricted ? "AND restricted=1 " : "") . "ORDER BY name", $blockid)->fetch_all_arrays(MYSQL_ASSOC);
+			return $I2_SQL->query("SELECT aid, name, restricted FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid=%d ORDER BY name", $blockid)->fetch_all_arrays(MYSQL_ASSOC);
 		}
 	}
 
@@ -303,36 +303,10 @@ class EighthActivity {
 			return $this->data['name'] . ($this->data['restricted'] ? " (R)" : "");
 		}
 		else if($name == "sponsors_comma") {
-			$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
-			$temp_sponsors = array();
-			foreach($sponsors as $sponsor) {
-				$temp_sponsors[] = $sponsor->name;
-			}
-			return implode(", ", $temp_sponsors);
-		}
-		else if($name == "block_sponsors_comma") {
-			$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
-			$temp_sponsors = array();
-			foreach($sponsors as $sponsor) {
-				$temp_sponsors[] = $sponsor->name;
-			}
-			return implode(", ", $temp_sponsors);
+			return implode(",", $this->data['sponsors']);
 		}
 		else if($name == "rooms_comma") {
-			$rooms = EighthRoom::id_to_room($this->data['rooms']);
-			$temp_rooms = array();
-			foreach($rooms as $room) {
-				$temp_rooms[] = $room->name;
-			}
-			return implode(", ", $temp_rooms);
-		}
-		else if($name == "block_rooms_comma") {
-			$rooms = EighthRoom::id_to_room($this->data['block_rooms']);
-			$temp_rooms = array();
-			foreach($rooms as $room) {
-				$temp_rooms[] = $room->name;
-			}
-			return implode(", ", $temp_rooms);
+			return implode(",", $this->data['rooms']);
 		}
 		else if($name == "members" && $this->data['bid']) {
 			return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $this->data['bid'], $this->data['aid'])->fetch_all_arrays(MYSQL_NUM));
@@ -417,12 +391,7 @@ class EighthActivity {
 	public static function id_to_activity($activityids) {
 		$ret = array();
 		foreach($activityids as $activityid) {
-			if(is_array($activityid)) {
-				$ret[] = new EighthActivity($activityid[0], $activityid[1]);
-			}
-			else {
-				$ret[] = new EighthActivity($activityid);
-			}
+			$ret[] = new EighthActivity($activityid);
 		}
 		return $ret;
 	}

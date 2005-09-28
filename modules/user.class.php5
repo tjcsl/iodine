@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.39 2005/09/27 00:41:44 asmith Exp $
+* @version $Id: user.class.php5,v 1.40 2005/09/27 21:22:52 braujac Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -103,6 +103,7 @@ class User {
 	* last name first, with a comma (as in 'Powers, Austin Danger').</li>
 	* </ul>
 	*
+	* @param mixed $name The field for which to get data.
 	* @return mixed The data you requested.
 	*/
 	public function __get( $name ) {
@@ -112,9 +113,10 @@ class User {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
 		}
 
-		// pseudo-fields
-		//must use explicit __get calls here, since recursive implicit
-		//__get calls apparently are not allowed.
+		/* pseudo-fields
+		** must use explicit __get calls here, since recursive implicit
+		** __get calls apparently are not allowed.
+		*/
 		switch( $name ) {
 			case 'name':
 				$nick = $this->__get('nickname');
@@ -170,10 +172,11 @@ class User {
 	* @param mixed $val The data to set the field to.
 	*/
 	public function __set( $name, $val ) {
-	// Can't use __set easily, because we need another argument for the type
-	//technically, we _could_ look up the type in the mysql table, and check
-	//for that type, but I'm not sure it's worth the trouble & extra
-	//processing time when we can just pass the extra argument
+	/* Can't use __set easily, because we need another argument for the type
+	** technically, we _could_ look up the type in the mysql table, and check
+	** for that type, but I'm not sure it's worth the trouble & extra
+	** processing time when we can just pass the extra argument
+	*/
 		global $I2_SQL;
 
 		if( $this->myuid === NULL ) {
@@ -228,6 +231,65 @@ class User {
 		}
 
 		return $ret;
+	}
+
+	/**
+	* Get a user's groups.
+	*
+	* Used for finding all a user's groups.
+	*
+	*	@return array An array of names of groups of which this user is a member.
+	*/
+	public function get_groups() {
+		global $I2_SQL;
+		
+		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$this->myuid)->fetch_array(MYSQL_NUM);
+		$ret = array();
+		foreach ($res as $gid) {
+			$ret[] = $this->get_group_name($gid);
+		}	
+		/* Add grade_n to the user's groups.
+		** Yes, This does mean there's a grade_staff.  Yes, that sounds funny.  Live with it.
+		*/
+		$ret[] = 'grade_'.$this->grade;
+	}
+
+	/**
+	* Get the name of a group.
+	*
+	* Returns a group's name.  This function will throw an error if the passed groupid is invalid.
+	*
+	* @param int $gid The ID of a group.
+	* @return string The group's name. 
+	*/
+	public static function get_group_name($gid) {
+		global $I2_SQL;
+
+		return $I2_SQL->query('SELECT name FROM groups WHERE gid=%d',$gid)->fetch_single_value();
+	}
+
+	/**
+	* Gets a group's ID by name.
+	*
+	* Performs a lookup of a group's ID with the given name.
+	*
+	* @param string $gname The name of the group to look up.
+	*/
+	public static function get_group_id($gname) {
+		global $I2_SQL;
+		return $I2_SQL->query('SELECT gid FROM groups WHERE name=%s',$gname)->fetch_single_value();
+	}
+
+	/**
+	* Indicates whether this User is a member of the given group. 
+	*
+	*	Looks up a user's membership status by group name.
+	*
+	* @param string $groupname The name of the group to check.
+	*	@return boolean Whether this User is a member of the passed group.
+	*/
+	public function is_group_member($groupname) {
+		return contains($this->get_groups(),$groupname);
 	}
 
 	/**
@@ -346,29 +408,6 @@ class User {
 			$ret[] = new User($userid);
 		}
 		return $ret;
-	}
-
-	/**
-	* Sort a list of users when given a list of user IDs.
-	*
-	* @param array $userids An array of user IDs.
-	* @return array An array of sorted {@link User} objects.
-	*/
-	public static function sort_users($userids) {
-		$users = self::id_to_user($userids);
-		usort($users, array('self', 'name_cmp'));
-		return $users;
-	}
-
-	/**
-	* The custom sort method for sorting users.
-	*
-	* @param object $user1 The first user.
-	* @param object $user2 The second user.
-	* @return int Depending on order, Less than 0, 0, or Greater than 0.
-	*/
-	public static function name_cmp($user1, $user2) {
-		return strcasecmp($user1->name_comma, $user2->name_comma);
 	}
 }
 

@@ -235,5 +235,15 @@ class Result implements Iterator {
 		return mysql_num_fields($this->mysql_result);
 	}
 
+	/**
+	* Fetches one lone value from the Result.
+	*
+	* This is a convenience method designed for one-result simple queries.
+	* It will return the first value in the first row. 
+	*/
+	public function fetch_single_value() {
+		return $this->fetch_array(MYSQL_NUM)[0];
+	}
+
 }
 ?>

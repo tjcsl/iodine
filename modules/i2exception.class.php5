@@ -4,7 +4,7 @@
 *
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: i2exception.class.php5,v 1.7 2005/09/27 02:23:58 sgross Exp $
+* @version $Id: i2exception.class.php5,v 1.8 2005/09/27 21:22:52 braujac Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -18,8 +18,6 @@
 */
 class I2Exception extends Exception {
 
-	//protected $I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
-	
 	/**
 	* Whether or not this exception has been deemed 'critical'.
 	* @var bool
@@ -58,16 +56,13 @@ class I2Exception extends Exception {
 	* @return string The exception in the form of a string.
 	*/
 	public function __toString() {
-	$I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
 		$str = ($this->critical?'Critical ':'') . 'I2 Exception: '.$this->message;
 		$str .= "<br />\r\n<br />\r\nBacktrace:<br />\r\n";
 		
 		$trace = $this->getTrace();
 		
 		foreach($trace as $level) {
-			$file = $level['file'];
-			$line = $level['line'];
-			$str .= "<a href='" . $I2_ROOT . "highlight/$line$file#$line'>" . $file .':'.$line ."</a><br />\r\n";
+			$str .= $level['file'].':'.$level['line']."<br />\r\n";
 		}
 		
 		return $str;
