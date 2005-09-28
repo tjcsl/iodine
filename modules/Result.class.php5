@@ -242,7 +242,8 @@ class Result implements Iterator {
 	* It will return the first value in the first row. 
 	*/
 	public function fetch_single_value() {
-		return $this->fetch_array(MYSQL_NUM)[0];
+		$array = $this->fetch_array(MYSQL_NUM);
+		return $array[0];
 	}
 
 }
