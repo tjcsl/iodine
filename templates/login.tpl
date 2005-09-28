@@ -1,7 +1,7 @@
 <html>
 <head>
 <title>TJHSST Intranet2: Login</title>
-<style type='text/css' media='all'>@import "[<$css>]";</style>
+<style type='text/css' media='all'>@import "[<$I2_CSS>]";</style>
 </head>
 <body>
  <div id="login_box">
