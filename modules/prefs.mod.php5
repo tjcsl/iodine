@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Prefs}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Revision: 1.2 $
+* @version $Revision: 1.3 $
 * @since 1.0
 * @package modules
 * @subpackage Prefs
@@ -22,8 +22,8 @@ class Prefs implements Module {
 	*/
 	private $prefs;
 
-	private $user_intraboxen;
-	private $nonuser_intraboxen;
+	protected $user_intraboxen;
+	protected $nonuser_intraboxen;
 	
 	/**
 	* @todo Error checking of form values and such
