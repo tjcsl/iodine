@@ -129,3 +129,23 @@ a:hover {
 	background-color: #aad;
 	padding: 5px;
 }
+
+.minimized {
+	width:15px;
+	height:15px;
+	-moz-opacity: 0.5;
+	filter:alpha(opacity=50);
+	opacity: 0.5;
+}
+
+.minimize {
+	width:15px;
+	height:15px;
+	background-color: #f11;
+	border: 1px solid #d00;
+	float:right;
+}
+
+div.minimize:hover {
+	background-color: #f66;
+}
