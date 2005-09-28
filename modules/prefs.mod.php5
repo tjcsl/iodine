@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Prefs}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Revision: 1.3 $
+* @version $Revision: 1.4 $
 * @since 1.0
 * @package modules
 * @subpackage Prefs
@@ -31,8 +31,6 @@ class Prefs implements Module {
 	function init_pane() {
 		global $I2_USER,$I2_ARGS;
 
-		$this->prefs = $I2_USER->info();
-
 		if( isset($_REQUEST['prefs_form']) ) {
 			//form submitted, update info
 			foreach($_REQUEST as $key=>$val) {
@@ -51,6 +49,8 @@ class Prefs implements Module {
 
 			//redirect('prefs');
 		}
+
+		$this->prefs = $I2_USER->info();
 
 		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED)->fetch_all_arrays(MYSQL_ASSOC);
 		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED)->fetch_all_arrays(MYSQL_ASSOC);
