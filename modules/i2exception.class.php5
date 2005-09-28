@@ -4,7 +4,7 @@
 *
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: i2exception.class.php5,v 1.8 2005/09/27 21:22:52 braujac Exp $
+* @version $Id: i2exception.class.php5,v 1.9 2005/09/27 21:41:52 sgross Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -56,13 +56,16 @@ class I2Exception extends Exception {
 	* @return string The exception in the form of a string.
 	*/
 	public function __toString() {
+		$I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
 		$str = ($this->critical?'Critical ':'') . 'I2 Exception: '.$this->message;
 		$str .= "<br />\r\n<br />\r\nBacktrace:<br />\r\n";
 		
 		$trace = $this->getTrace();
 		
 		foreach($trace as $level) {
-			$str .= $level['file'].':'.$level['line']."<br />\r\n";
+			$file = $level['file'];
+			$line = $level['line'];
+			$str .= "<a href='" . $I2_ROOT . "highlight/$line$file#$line'>" . $file .':'.$line ."</a><br />\r\n";
 		}
 		
 		return $str;
