@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.42 2005/09/28 18:52:32 asmith Exp $
+* @version $Id: display.class.php5,v 1.43 2005/09/28 19:34:27 asmith Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -221,9 +221,12 @@ class Display {
 		$root = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
 		$this->smarty->assign('I2_ROOT', $root);
 		$this->smarty->assign('I2_SELF', $_SERVER['REDIRECT_URL']);
-		$this->smarty->assign('I2_CSS', "{$root}www/styles/{$I2_USER->style}.css");
 		if( isset($I2_USER) ) {
 			$this->smarty->assign('I2_UID', $I2_USER->uid);
+			$this->smarty->assign('I2_CSS', "{$root}www/styles/{$I2_USER->style}.css");
+		}
+		else {
+			$this->smarty->assign('I2_CSS', "{$root}www/styles/default.css");
 		}
 	}
 
