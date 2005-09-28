@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.40 2005/09/27 21:22:52 braujac Exp $
+* @version $Id: user.class.php5,v 1.41 2005/09/27 21:58:34 braujac Exp $
 * @package core
 * @subpackage User
 * @filesource
@@ -255,6 +255,18 @@ class User {
 	}
 
 	/**
+	* Adds this user to the given group.
+	*
+	* Adds the given group to this user's membership list.
+	* 
+	* @param string $groupname The name of the group to which this user should be added.
+	*/
+	public function add_group($groupname) {
+		$gid = $this->get_group_id($groupname)->fetch_single_value();
+		return $I2_SQL->query('INSERT INTO group_user_map (gid,name) VALUES(%d,%d)',$gid,$this->myuid);
+	}
+
+	/**
 	* Get the name of a group.
 	*
 	* Returns a group's name.  This function will throw an error if the passed groupid is invalid.
@@ -289,7 +301,7 @@ class User {
 	*	@return boolean Whether this User is a member of the passed group.
 	*/
 	public function is_group_member($groupname) {
-		return contains($this->get_groups(),$groupname);
+		return in_array($this->get_groups(),$groupname);
 	}
 
 	/**
