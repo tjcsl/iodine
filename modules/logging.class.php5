@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Logging}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: logging.class.php5,v 1.23 2005/09/28 01:09:15 braujac Exp $
+* @version $Id: logging.class.php5,v 1.24 2005/09/28 01:12:01 braujac Exp $
 * @package core
 * @subpackage Error
 * @filesource
@@ -180,8 +180,6 @@ class Logging {
 	*/
 	public function flush_debug_output() {
 		global $I2_DISP;
-		
-		echo "Flush...\n";
 		
 		if( !( $this->error_buf || $this->debug_buf) ) {
 			return;
