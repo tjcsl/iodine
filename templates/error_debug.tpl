@@ -6,8 +6,8 @@ function minimize(name) {
 		div.style.height = "";
 		div.className = div.className.replace(/ minimized/, "");
 	} else {
-		div.style.width = "15px";
-		div.style.height = "15px";
+		div.style.width = "";
+		div.style.height = "";
 		div.className += " minimized";
 	}
 }
