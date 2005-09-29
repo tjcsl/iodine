@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.43 2005/09/28 19:34:27 asmith Exp $
+* @version $Id: display.class.php5,v 1.44 2005/09/28 22:28:21 braujac Exp $
 * @since 1.0
 * @package core
 * @subpackage Display
@@ -63,6 +63,8 @@ class Display {
 	*/
 	private static $tpl_root = NULL;
 	
+	private static $style = NULL;
+	
 	/**
 	* The Display class constructor.
 	* 
@@ -88,6 +90,10 @@ class Display {
 			self::$tpl_root = i2config_get('template_path','./','core');
 		}
 		$this->buffer = "";
+
+		if (self::$style == NULL) {
+			self::style_changed();
+		}
 	}
 
 	/**
@@ -189,6 +195,16 @@ class Display {
 	}
 
 	/**
+	* Inform Dislay that the user's style has changed.
+	*/
+	public static function style_changed() {
+		global $I2_USER;
+		if (isSet($I2_USER)) {
+			self::$style = $I2_USER->style;
+		}
+	}
+
+	/**
 	* Get the current buffering state.
 	*
 	* @return bool Whether buffering is enabled.
@@ -221,9 +237,9 @@ class Display {
 		$root = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
 		$this->smarty->assign('I2_ROOT', $root);
 		$this->smarty->assign('I2_SELF', $_SERVER['REDIRECT_URL']);
-		if( isset($I2_USER) ) {
+		if( isSet($I2_USER) ) {
 			$this->smarty->assign('I2_UID', $I2_USER->uid);
-			$this->smarty->assign('I2_CSS', "{$root}www/styles/{$I2_USER->style}.css");
+			$this->smarty->assign('I2_CSS', "{$root}www/styles/".self::$style.'.css');
 		}
 		else {
 			$this->smarty->assign('I2_CSS', "{$root}www/styles/default.css");
