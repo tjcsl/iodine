@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link IntraBox}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: intrabox.class.php5,v 1.19 2005/09/28 19:52:49 braujac Exp $
+* @version $Id: intrabox.class.php5,v 1.20 2005/09/29 12:39:54 braujac Exp $
 * @package core
 * @subpackage Display
 * @filesource
@@ -135,7 +135,7 @@ class IntraBox {
 		
 		$b = self::get_user_boxes($I2_USER->uid);
 		foreach($b as $mod) {
-			d("Box: $mod");
+			//d("Box: $mod");
 			$box = new Intrabox($mod);
 			$box->display_box();
 		}
