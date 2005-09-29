@@ -135,6 +135,11 @@ a:hover {
 /*	text-align: right; */
 }
 
+
+div.minimize:hover {
+	background-color: #f66;
+}
+
 .debug {
 	position:fixed;
 	right:0;
@@ -148,19 +153,22 @@ a:hover {
 }
 
 .minimized {
-	width:15px;
-	height:15px;
+	padding: 0px;
+	width:23px;
+	height:23px;
 	-moz-opacity: 0.5;
 	filter:alpha(opacity=50);
 	opacity: 0.5;
+	overflow: hidden;
 }
 
 .minimize {
+	float: right;
+	margin: 3px 3px 3px 3px;
 	width:15px;
 	height:15px;
 	background-color: #f11;
 	border: 1px solid #d00;
-	float:right;
 }
 
 div.minimize:hover {
