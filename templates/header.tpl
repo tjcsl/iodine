@@ -1,10 +1,10 @@
 <html><head>
 <title>TJHSST Intranet2[<if $title != "" >]: [<$title>][</if>]</title>
-<style type='text/css' media='all'>@import "[<$I2_CSS|default:'/www/css.css'>]";</style>
+<link type='text/css' rel='stylesheet' href="[<$I2_CSS|default:'/www/css.css'>]" />
 </head>
 <body>
 <div class="logo">
- <a href="[<$I2_ROOT>]"><img alt="Intranet" src="[<$I2_ROOT>]www/logo.png" /></a>
+
 </div>
 <div class="header">
  <div class="title"> Welcome, [<$first_name>]! </div>
