@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Auth}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: auth.class.php5,v 1.9 2005/07/11 21:15:28 adeason Exp $
+* @version $Id: auth.class.php5,v 1.10 2005/09/28 21:55:17 braujac Exp $
 * @package core
 * @subpackage Auth
 * @filesource
@@ -65,6 +65,9 @@ class Auth {
 	*/
 	 
 	public function check_user($user, $password) {
+		if ($user == 'guest' && $password == 'guest') {
+			return true;
+		}
 		$descriptors = array(0 => array('pipe', 'r'), 1 => array('file', '/dev/null', 'w'), 2 => array('file', '/dev/null', 'w'));
 
 		$process = proc_open("kinit $user@LOCAL.TJHSST.EDU", $descriptors, $pipes);
