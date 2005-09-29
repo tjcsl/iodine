@@ -1,8 +1,16 @@
 #!/bin/bash
 
-mkdir ../smartycompile
-mkdir ../smartycompile/templates_c
-chmod -R 777 ../smartycompile
+if [ ! -d "${HOME}/intranet2" ] ; then
+	echo -e "Your CVS checkout of intranet2 is not in the correct directory. Please check it\nout in ${HOME}/intranet2."
+	exit 1
+fi
+
+cd ${HOME}/intranet2
+
+rm -rf ${HOME}/smartycompile
+mkdir ${HOME}/smartycompile
+mkdir ${HOME}/smartycompile/templates_c
+chmod -R 777 ${HOME}/smartycompile
 cat .htaccess.user | sed "s/<username>/`whoami`/g" > .htaccess
 cat config.user.ini | sed "s/<username>/`whoami`/g" > config.ini
-ln -s ../intranet2 ../web-docs/i2
+ln -s ../intranet2 ${HOME}/web-docs/i2
