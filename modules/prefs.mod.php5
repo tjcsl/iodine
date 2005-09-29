@@ -3,7 +3,7 @@
 * Just contains the definition for the class {@link Prefs}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Revision: 1.4 $
+* @version $Revision: 1.5 $
 * @since 1.0
 * @package modules
 * @subpackage Prefs
@@ -24,12 +24,13 @@ class Prefs implements Module {
 
 	protected $user_intraboxen;
 	protected $nonuser_intraboxen;
+	private $themes;
 	
 	/**
 	* @todo Error checking of form values and such
 	*/
 	function init_pane() {
-		global $I2_USER,$I2_ARGS;
+		global $I2_USER,$I2_ARGS,$I2_SQL;
 
 		if( isset($_REQUEST['prefs_form']) ) {
 			//form submitted, update info
@@ -38,6 +39,10 @@ class Prefs implements Module {
 					$field = substr($key, 5);
 					$I2_USER->$field = $val;
 				}
+			}
+
+			if (isSet($_REQUEST['pref_style'])) {
+				Display::style_changed();
 			}
 
 			if( isset($_REQUEST['add_intrabox']) && isSet($_REQUEST['add_boxid']) ) {
@@ -60,14 +65,24 @@ class Prefs implements Module {
 			d(print_r($box,TRUE));
 		}
 
+		$this->themes = $this->get_available_styles();
+
 		return array('Your Preferences', 'Preferences');
 		
+	}
+
+	public function get_available_styles() {
+		$styles = explode(',',i2config_get('styles','default','css'));
+		d('Available styles: '.print_r($styles,true));
+		return $styles;
 	}
 	
 	function display_pane($display) {
 		$display->disp('prefs_pane.tpl',array(	'prefs' => $this->prefs,
 							'user_intraboxen' => $this->user_intraboxen,
-							'nonuser_intraboxen' => $this->nonuser_intraboxen
+							'nonuser_intraboxen' => $this->nonuser_intraboxen,
+							'curtheme' => $this->prefs['style'],
+							'themes' => $this->themes
 		));
 	}
 	
