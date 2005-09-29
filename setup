@@ -1,3 +1,5 @@
+#!/bin/bash
+
 mkdir ../smartycompile
 mkdir ../smartycompile/templates_c
 chmod -R 777 ../smartycompile
