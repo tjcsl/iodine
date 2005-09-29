@@ -20,7 +20,7 @@ function minimize(name) {
  </div>
 [</if>]
 [<if $debug>]
- <div class="debug" [<if $errors>]style="width:45%;"[<else>]style="width:90%;"[</if>] id="debug">
+ <div class="debug minimized" id="debug">
   <div class="minimize" onclick="minimize('debug')"></div>
   Debug messages: <br /><br />
   [<$debug>]
