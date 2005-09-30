@@ -1,5 +1,5 @@
 CREATE TABLE news(
-	id INT UNSIGNED NOT NULL DEFAULT '0' AUTO_INCREMENT UNIQUE, /*Unique autoid*/
+	id INT UNSIGNED NOT NULL DEFAULT NULL AUTO_INCREMENT UNIQUE, /*Unique autoid*/
 	PRIMARY KEY(id),				
 	title VARCHAR(255) NOT NULL,			/*Story title*/
 	text TEXT NOT NULL,			/*Story text*/

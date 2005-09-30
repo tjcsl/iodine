@@ -13,4 +13,6 @@ mkdir ${HOME}/smartycompile/templates_c
 chmod -R 777 ${HOME}/smartycompile
 cat .htaccess.user | sed "s/<username>/`whoami`/g" > .htaccess
 cat config.user.ini | sed "s/<username>/`whoami`/g" > config.ini
-ln -s ../intranet2 ${HOME}/web-docs/i2
+if [ ! -d "$HOME/web-docs/i2" ] ; then
+	ln -s ../intranet2 ${HOME}/web-docs/i2
+fi
