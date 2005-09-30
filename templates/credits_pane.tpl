@@ -1,5 +1,3 @@
 <ul>
-	<li>Eric Harmon</li>
-	<li>Andrew Smith</li>
-	<li>Everyone else who didn't contribute to the credits page</li>
+	<li>Everyone except Eric Harmon and Andrew Smith, and their pets (including pet rocks)</li>
 </ul>
