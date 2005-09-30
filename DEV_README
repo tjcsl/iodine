@@ -22,6 +22,8 @@ To commit:
 To update:
 ./update
 
+Note that these tools will update or commit your ENTIRE repository.  They don't care if you pass them file names or directories.  So, please excercise caution.
+
 Config:
 
 - You need to copy .htaccess.user and config.user.ini into .htaccess and
