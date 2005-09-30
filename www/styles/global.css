@@ -6,7 +6,7 @@
 	margin-left:-150px; 
 	margin-top:-75px; 
 	padding:0px;
-	border: 2px dashed #2a4;
+	border: thin groove;
 }
 .error {
 	position:fixed;
