@@ -21,7 +21,7 @@ function minimize(name) {
 [</if>]
 [<if $debug>]
  <div class="debug minimized" id="debug">
-  <div class="minimize" onclick="minimize('debug')"></div>
+  <div class="button_container"><div class="minimize" onclick="minimize('debug')"></div></div>
   Debug messages: <br /><br />
   [<$debug>]
  </div>
