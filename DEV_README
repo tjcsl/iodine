@@ -9,6 +9,7 @@ Directory hierarchy:
 /smarty/ -- PHP files for defining custom smarty tags and functions.
 
 We are currently using Mercurial for source management.  DO NOT use cvs.
+To pull from a remote location, the command is 'hg pull ssh://humboldt.tjhsst.edu//shared/hg/intranet2'.
 
 To get started:
 mkdir intranet2
