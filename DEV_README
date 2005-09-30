@@ -9,6 +9,12 @@ Directory hierarchy:
 /smarty/ -- PHP files for defining custom smarty tags and functions.
 
 We are currently using Mercurial for source management.
+To get started:
+mkdir intranet2
+cd intranet2
+hg init
+hg pull /shared/hg/intranet2
+hg update
 
 Config:
 
