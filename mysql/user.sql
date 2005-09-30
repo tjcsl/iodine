@@ -22,5 +22,7 @@ CREATE TABLE user (
 	/* This field _is_ edited, but it seems like it will be accessed so
 	much, it may make sense to put it in this table, as this is a smaller
 	table than userinfo */
-	startpage VARCHAR(127) DEFAULT "news" NOT NULL /* Default I2 module */
+	startpage VARCHAR(127) DEFAULT "news" NOT NULL, /* Default I2 module */
+
+	style VARCHAR(255) DEFAULT "default" NOT NULL /* User style */
 );

@@ -14,7 +14,7 @@ function minimize(name) {
 </script>
 [<if $errors>]
  <div class="error" [<if $debug>]style="width:45%;"[<else>]style="width:90%;"[</if>] id="error">
-  <div class="minimize" onclick="minimize('error')"></div>
+  <div class="button_container"><div class="minimize" onclick="minimize('error')"></div></div>
   Iodine has encountered the following errors: <br /><br />
   [<$errors>]
  </div>
