@@ -8,7 +8,8 @@ Directory hierarchy:
 /mysql/ -- Scripts for making/defining the mysql tables.
 /smarty/ -- PHP files for defining custom smarty tags and functions.
 
-We are currently using Mercurial for source management.
+We are currently using Mercurial for source management.  DO NOT use cvs.
+
 To get started:
 mkdir intranet2
 cd intranet2
