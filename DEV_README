@@ -8,19 +8,7 @@ Directory hierarchy:
 /mysql/ -- Scripts for making/defining the mysql tables.
 /smarty/ -- PHP files for defining custom smarty tags and functions.
 
-General CVS guidelines:
-
-- Run 'cvs update' to grab the latest code from CVS into your local directory
-- Run 'cvs edit <file>' before editing a file, then edit it how you wish
-- Run 'cvs commit [file]' to commit a file to CVS (omitting the file just
-  commits everything edited so far in the current PWD and subdirectories), but
-  make sure to run 'cvs update' before you commit things to make sure other
-  things haven't changed since you edited the file.
-- Run 'cvs unedit <file>' if you want to undo all changes you've made to a file,
-  or if you haven't made any changes, then it just tells CVS that you have no
-  intention of doing so.
-
-For more details, check out http://iodine.tjhsst.edu/cvs-lecture/
+We are currently using Mercurial for source management.
 
 Config:
 
