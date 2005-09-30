@@ -2,7 +2,8 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html><head>
 <title>TJHSST Intranet2[<if $title != "" >]: [<$title>][</if>]</title>
-<link type='text/css' rel='stylesheet' href="[<$I2_CSS|default:'/www/css.css'>]" />
+<link type='text/css' rel='stylesheet' href="[<$I2_CSS|default:'/www/styles/default.css'>]" />
+<link type='text/css' rel='stylesheet' href="[<$I2_ROOT>]/www/styles/global.css" /> 
 </head>
 <body>
 <div class="logo">
