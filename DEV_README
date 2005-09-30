@@ -16,6 +16,12 @@ hg init
 hg pull /shared/hg/intranet2
 hg update
 
+To commit:
+./commit
+
+To update:
+./update
+
 Config:
 
 - You need to copy .htaccess.user and config.user.ini into .htaccess and
