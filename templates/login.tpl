@@ -21,7 +21,7 @@
 	<td><input name='login_password' type='password'/><br /></td>
       </tr>
       <tr>
-        <td><input type='submit' value='Submit'/></td>
+        <td><input type='submit' value='Login'/></td>
       </tr>
      </table>
     </form>
