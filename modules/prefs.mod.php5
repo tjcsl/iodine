@@ -3,7 +3,6 @@
 * Just contains the definition for the class {@link Prefs}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Revision: 1.5 $
 * @since 1.0
 * @package modules
 * @subpackage Prefs

@@ -3,7 +3,6 @@
 * Just contains the definition for the class {@link StudentDirectory}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: studentdirectory.mod.php5,v 1.7 2005/07/30 02:53:48 adeason Exp $
 * @package modules
 * @subpackage StudentDirectory
 * @filesource

@@ -5,7 +5,6 @@
 
 * @author The Intranet2 Development Team <intranet2@lists.tjhsst.edu>
 * @copyright 2004-2005 The Intranet2 Development Team
-* @version $Id: functions.inc.php5,v 1.19 2005/09/27 00:52:44 braujac Exp $
 * @package core
 * @filesource
 */

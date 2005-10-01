@@ -3,7 +3,6 @@
 * Just contains the definition for the class {@link Error}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: error.class.php5,v 1.16 2005/07/16 04:13:40 adeason Exp $
 * @package core
 * @subpackage Error
 * @filesource

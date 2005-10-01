@@ -4,7 +4,6 @@
 *
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: i2exception.class.php5,v 1.9 2005/09/27 21:41:52 sgross Exp $
 * @package core
 * @subpackage Error
 * @filesource

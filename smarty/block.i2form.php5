@@ -3,7 +3,6 @@
 * Just contains one smarty function to create an html form.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version 1.0
 * @since 1.0
 * @package smarty
 */

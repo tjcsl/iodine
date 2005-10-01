@@ -3,7 +3,6 @@
 * Just contains the definition for the class {@link News}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Revision: 1.19 $
 * @package modules
 * @subpackage News
 * @filesource

@@ -3,7 +3,6 @@
 * Contains the definition for the class {@link MySQL}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004 The Intranet 2 Development Team
-* @version $Id: mysql.class.php5,v 1.29 2005/09/28 01:45:00 asmith Exp $
 * @package core
 * @subpackage MySQL
 * @filesource

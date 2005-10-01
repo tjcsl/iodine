@@ -3,7 +3,6 @@
 * Just contains the definition for the class {@link Display}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: display.class.php5,v 1.44 2005/09/28 22:28:21 braujac Exp $
 * @since 1.0
 * @package core
 * @subpackage Display

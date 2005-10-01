@@ -3,7 +3,6 @@
 * Just contains the definition for the class {@link User}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @version $Id: user.class.php5,v 1.42 2005/09/28 06:43:12 asmith Exp $
 * @package core
 * @subpackage User
 * @filesource

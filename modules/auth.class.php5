@@ -3,7 +3,6 @@
 * Just contains the definition for the class {@link Auth}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004-2005 The Intranet 2 Development Team
-* @version $Id: auth.class.php5,v 1.10 2005/09/28 21:55:17 braujac Exp $
 * @package core
 * @subpackage Auth
 * @filesource
