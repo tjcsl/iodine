@@ -2,7 +2,7 @@
 <input type="hidden" name="prefs_form" value="" />
 Cell Phone: <input type="text" maxlength="10" name="pref_phone_cell" value="[<$prefs.phone_cell>]" /><br />
 AIM Screename: <input type="text" name="pref_sn0" value="[<$prefs.sn0>]" /><br />
-Email: <input type="text" name="pref_email0" value="[<$prefs.email0>]" /><br />
+Email: <input type="text" name="pref_email1" value="[<$prefs.email1>]" /><br />
 Style: <select name="pref_style">
 	[<foreach from=$themes item=theme>]
 		<option value="[<$theme>]" [<if $curtheme==$theme>]selected[</if>]>[<$theme>]</option>
