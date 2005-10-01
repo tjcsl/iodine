@@ -12,9 +12,19 @@
     Your login as [<$uname>] failed.  Maybe your password is incorrect?
     [</if>]
     <form action='[<$I2_SELF>]' method='post'>
-      	Username: <input name='login_username' type='text' value='[<$uname>]'/><br />
-      	Password: <input name='login_password' type='password'/><br />
-     <input type='submit' value='Submit'/>
+     <table>
+      <tr>
+      	<td>Username:</td>
+	<td><input name='login_username' type='text' value='[<$uname>]'/><br /></td>
+      </tr>
+      <tr>
+        <td>Password:</td>
+	<td><input name='login_password' type='password'/><br /></td>
+      </tr>
+      <tr>
+        <td><input type='submit' value='Submit'/></td>
+      </tr>
+     </table>
     </form>
    </center></td></tr>
   </table>
