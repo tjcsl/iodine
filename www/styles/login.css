@@ -1,0 +1,68 @@
+#login_box {
+	position:absolute;
+	left:52%;
+	top:30%;
+	width:250px;
+	margin-left:-150px; 
+	margin-top:-75px; 
+	padding:0px;
+}
+body {
+	background: white url(login.gif) no-repeat top center;
+}
+.error {
+	position:fixed;
+	left:0px;
+	bottom:0px;
+	z-index:10;
+	border: 2px #f00 dashed;
+	background-color: #daa;
+	padding: 5px;
+	overflow: scroll;
+	height: 25%;
+/* Should this be included? */
+/*	text-align: right; */
+}
+
+.debug {
+	position:fixed;
+	right:0;
+	bottom:0;
+	z-index:10;
+	border: 2px #00f dashed;
+	background-color: #aad;
+	padding: 5px;
+	overflow: scroll;
+	height: 25%;
+}
+
+.minimized {
+	padding: 0px;
+	width:23px;
+	height:23px;
+	-moz-opacity: 0.5;
+	filter:alpha(opacity=50);
+	opacity: 0.5;
+	overflow: hidden;
+}
+
+.button_container {
+	position: relative;
+	float: right;
+	width:20px;
+	height:20px;
+	margin-top: 3px;
+
+}
+
+.minimize {
+	position: fixed;
+	width:15px;
+	height:15px;
+	background-color: #f11;
+	border: 1px solid #d00;
+}
+
+div.minimize:hover {
+	background-color: #f66;
+}
