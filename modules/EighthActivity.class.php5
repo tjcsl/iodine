@@ -3,15 +3,15 @@
 * Just contains the definition for the class {@link EighthActivity}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @package eighth
-* @subpackage EighthActivity
+* @package modules
+* @subpackage Eighth
 * @filesource
 */
 
 /**
 * The module that holds the definition for an eighth period activity.
-* @package eighth
-* @subpackage EighthActivity
+* @package modules
+* @subpackage Eighth
 */
 
 class EighthActivity {

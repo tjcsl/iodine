@@ -3,15 +3,15 @@
 * Just contains the definition for the class {@link EighthSchedule}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @package eighth
-* @subpackage EighthSchedule
+* @package modules
+* @subpackage Eighth
 * @filesource
 */
 
 /**
 * The module that holds the utilities for an eighth period schedule.
-* @package eighth
-* @subpackage EighthSchedule
+* @package modules
+* @subpackage Eighth
 */
 
 class EighthSchedule {

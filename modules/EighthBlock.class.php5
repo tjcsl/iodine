@@ -3,15 +3,15 @@
 * Just contains the definition for the class {@link EighthBlock}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @package eighth
-* @subpackage EighthBlock
+* @package modules
+* @subpackage Eighth
 * @filesource
 */
 
 /**
 * The module that holds the definition for an eighth period block.
-* @package eighth
-* @subpackage EighthBlock
+* @package modules
+* @subpackage Eighth
 */
 
 class EighthBlock {
