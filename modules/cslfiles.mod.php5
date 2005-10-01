@@ -3,102 +3,25 @@
 * Allows for users to access their Computer Systems Lab files via Intranet.
 *
 *
-*
+* @todo We should really move Kerberos auth functions to a more abstracted layer
 */
 	class cslfiles implements Module {
 
 		private static $logins = array();
-		private $user;
+		private $krb5ccname;
 
 		public function __construct() {
-			if (isSet($_SERVER['csl_logins'])) {
-				self::$logins = $_SERVER['logins'];
-			}
-			$_SERVER['csl_logins'] = array();
-		}
-
-		public static function open_shell($user, $password) {
-			/*
-			** Wholeheartedly stolen from auth.
-			*/
-			$descriptors = array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w'));
-			$process = proc_open('pagsh', $descriptors, $pipes);
-			if (is_resource($process)) {
-				d("Activating CSL files as $user");
-				fwrite($pipes[0], "kinit $user");
-				fwrite($pipes[0], $password);
-				stream_set_blocking($pipes[1],FALSE);
-				stream_set_blocking($pipes[2],FALSE);
-				$txt = self::readin($pipes[1]);
-				d("CSL-Read: $txt");
-				fwrite($pipes[0], 'aklog');
-				fflush($pipes[0]);
-				self::$logins[$user] = array($process,$pipes[0],$pipes[1],$pipes[2]);
-				$_SERVER['csl_logins'] = self::$logins;
-				d("CSL login as $user");
-			} else {
-				throw new i2exception("Failed to open pagsh!");
-			}
-			
-			return false;
-		}
-
-		public static function readin($pipe) {
-				$txt = '';
-				while($ret = fread($pipe,2)) {
-					$txt .= $ret;
-				}
-				return $txt;
-		}
-
-		public static function run_command($user,$cmd) {
-			if (!isSet(self::$logins[$user])) {
-				d("Bad username `$user' passed to run_command");
-				return NULL;
-			}
-			fwrite(self::$logins[$user][1],$cmd);
-			fflush(self::$logins[$user][1]);
-			$txt = self::readin(self::$logins[$user][2]);
-			d("Command $cmd gave output: $txt");
-		}
-
-		private static function logout($user) {
-			if (!isSet(self::$logins[$user])) {
-				return false;
-			}
-			fwrite(self::$logins[$user][1],'kdestroy');
-			fflush(self::$logins[$user][1]);
-			fclose(self::$logins[$user][1]);
-			d('CSL-Read: '.fread(self::$logins[$user][2]));
-			d('CSL-Read-Error: '.fread(self::$logins[$user][3]));
-			proc_close(self::$logins[$user][0]);
-			unset(self::$logins[$user]);
-			return true;
+			global $I2_USER;
+			$this->krb5ccname = '/tmp/iodine_krb5_'.md5($I2_USER->username);
 		}
 
 		public function init_box() {
-			return "Systems Lab File Access";
+			return 'Systems Lab File Access';
 		}
 
 		public function display_box($disp) {
-			if (isSet($this->user)) {
-				$disp->smarty_assign('csl_user',$this->user);
-				$_SESSION['csl_user'] = $this->user;
-			} else if (isSet($_POST['csl_user']) && isSet($_POST['csl_pass']) && !isSet(self::$logins[$_POST['csl_user']])) {
-				$this->user = $_POST['csl_user'];
-				$_SESSION['csl_user'] = $this->user;
-				$disp->smarty_assign('csl_user',$this->user);
-				self::open_shell($_POST['csl_user'],$_POST['csl_pass']);
-			}
-			if (isSet($_POST['csl_cmd']) && isSet($this->user)) {
-				if (self::run_command($this->user,$_POST['csl_command']) !== NULL) {
-					$ps = self::$logins[$this->user];
-					$out = self::readin($ps[1]);
-					$err = self::readin($ps[$this->user][2]);
-					$disp->smarty_assign(array("stdout"=>$out,"stderr"=>$err,"cmd"=>$_POST['csl_command']));
-				}
-			}
-			$disp->disp('cslfiles_box.tpl');
+			global $I2_USER;
+			$disp->disp('cslfiles_box.tpl', array('csl_user' => $I2_USER->username));
 		}
 
 		public function get_name() {
@@ -106,11 +29,55 @@
 		}
 
 		public function init_pane() {
-			return false;
+			return 'Computer Systems Lab File Access';
 		}
 
 		public function display_pane($disp) {
-				$disp->disp('cslfiles_pane.tpl');
+			if( isset($_SESSION['cslfiles_loggedin']) && $_SESSION['cslfiles_loggedin']) {
+				// user already logged in, use previously generated tickets
+				
+			}
+			elseif( ! $this->login() ) {
+				// login to CSL failed
+				$disp->disp('cslfiles_pane.tpl', array('error' => TRUE));
+				return;
+			}
+			else {
+				// successfully logged in
+			}
+			$disp->disp('cslfiles_pane.tpl');
+		}
+
+		public function login() {
+			global $I2_USER;
+			$user = $I2_USER->username;
+
+			$pass = $_REQUEST['cslfiles_pass'];
+			$_REQUEST['cslfiles_pass'] = '';
+
+			$descriptors = array(0 => array('pipe','r'), 1 => array('pipe','w'), 2 => array('pipe','w'));
+			$process = proc_open('/usr/bin/pagsh.openafs', $descriptors, $pipes);
+
+			if(is_resource($process)) {
+				// make sure to store ticket in a good place
+				fwrite($pipes[0], 'export KRB5CCNAME='.$this->krb5ccname."\n");
+
+				// obtain kerberos ticket
+				fwrite($pipes[0], '/usr/bin/kinit '.$user."@CSL.TJHSST.EDU\n");
+				fwrite($pipes[0], "$pass\n");
+				fflush($pipes[0]);
+				d('cslfiles: '.fgets($pipes[1]));
+				fwrite($pipes[0], "/bin/ls -l /tmp\n");
+				fflush($pipes[0]);
+				d('cslfiles: '.fgets($pipes[1]));
+
+				pclose($process);
+				
+			}
+			else {
+				// something bad happened, can't launch pagsh?
+				throw new I2Exception('cslfiles: Cannot launch pagsh');
+			}
 		}
 
 	
