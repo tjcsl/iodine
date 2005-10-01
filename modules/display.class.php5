@@ -12,6 +12,7 @@
 /**
 * The display module for Iodine.
 * @package core
+* @todo Fix the display when a nonexistant module is specified
 * @subpackage Display
 */
 class Display {
