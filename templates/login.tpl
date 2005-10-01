@@ -1,14 +1,13 @@
 <html>
 <head>
 <title>TJHSST Intranet2: Login</title>
-<style type='text/css' media='all'>@import "[<$I2_ROOT>]/www/styles/global.css";</style>
+<style type='text/css' media='all'>@import "[<$I2_ROOT>]/www/styles/login.css";</style>
 </head>
 <body>
  <div id="login_box">
   <table BORDER="0" CELLPADDING="1" CELLSPACING="0" WIDTH="100%" HEIGHT="100%">
    <tr><td valign="center"><center>
-    <h3>Intranet2 Login</h3>
-    [<if $failed>]
+   [<if $failed>]
     Your login as [<$uname>] failed.  Maybe your password is incorrect?
     [</if>]
     <form action='[<$I2_SELF>]' method='post'>
