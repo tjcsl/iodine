@@ -14,7 +14,6 @@
 * around TJ.
 * @package modules
 * @subpackage News
-* @todo Mechanism for posting news
 */
 class News implements Module {
 	

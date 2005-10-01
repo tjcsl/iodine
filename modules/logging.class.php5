@@ -11,7 +11,6 @@
 
 /**
 * The logging module for Iodine.
-* @todo Make the error/debug boxes X-able, so they don't always block stuff.
 * @package core
 * @subpackage Error
 * @see Error
