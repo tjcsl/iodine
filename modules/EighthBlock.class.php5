@@ -42,6 +42,7 @@ class EighthBlock {
 		$uids = flatten($I2_SQL->query("SELECT uid FROM user")->fetch_all_arrays(MYSQL_NUM));
 		// Figure out what the default should be, 999?
 		$block = new Block($result->get_insert_id());
+		EighthSchedule::schedule_activity($block->bid, 1);
 		$activity = new EighthActivity(1, $block->bid);
 		$activity->add_members($users);
 		return $result->get_insert_id();
