@@ -46,7 +46,7 @@ If you only wish to code at home, and to test on humboldt, you may take advantag
 
 If you work from home this way, all you'll need is a merge program and Mercurial.
 
-To make things easier, go ahead and set up an hgrc file, or just run setup.home to have one made automagically for you.  See 'man hgrc'.  Verbose=true under the UI section is highly recommended.  If you have setup.home do it, 'hg push testing' or just 'hg push' will push to your personal humboldt repository, while 'hg push i2' will have your code go global.
+To make things easier, go ahead and set up an hgrc file, or just run setup.home to have one made automagically for you.  See 'man hgrc'.  Verbose=true under the UI section is highly recommended.  If you have setup.home do it, 'hg push testing' or just 'hg push' will push to your personal humboldt repository, while 'hg push i2' will have your code go global.  If your username at home is different from at school, you'll need to edit ~/.hgrc and fix the references to be your humboldt username.
 
 Config:
 
