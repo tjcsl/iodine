@@ -1,1 +1,4 @@
+#!/bin/bash
 cat hgrc.home | sed "s/<username>/`whoami`/g" > ~/.hgrc
+cat test.user | sed "s/<username>/`whoami`/g" > test
+chmod +x test

@@ -301,7 +301,7 @@ class User {
 	*/
 	public function is_group_member($groupname) {
 		$groups = $this->get_groups();
-		if (in_array($groups,$groupname)) {
+		if (in_array($groupname,$groups,FALSE)) {
 			return TRUE;
 		}	
 		if (substr($groupname,6) == 'admin_'  && in_array($groups,'admin_all')) {

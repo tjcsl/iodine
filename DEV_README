@@ -42,7 +42,7 @@ Summary of things you need installed to work AND RUN i2 from home:
 
 You'll only be able to log in as 'guest', unless you hack kinit.  Remember to source the MySQL files in mysql/ to create the necessary databases.
 
-If you only wish to code at home, and to test on humboldt, you may take advantage of a feature of Mercurial: repository-to-repository pushing.  At home, you can run 'hg push ssh://[username]@humboldt.tjhsst.edu/intranet2' to push changes into your humboldt home directory.  Remember to 'hg commit' before pushing.  When you're ready to push your changes to the global repository, push to humboldt't /shared/hg/intranet2 dir as before.
+If you only wish to code at home, and to test on humboldt, you may take advantage of a feature of Mercurial: repository-to-repository pushing.  At home, you can run 'hg push ssh://[username]@humboldt.tjhsst.edu/intranet2' to push changes into your humboldt home directory.  HOWEVER, this only pushes to the .hg repository over there.  It won't update your working copy.  So, you can either run 'hg update' on humboldt or use './test' (after running setup.home) to rsync a testing version up.  You need rsync, obviously.  Remember to 'hg commit' before pushing.  When you're ready to push your changes to the global repository, push to humboldt't /shared/hg/intranet2 dir as before.
 
 If you work from home this way, all you'll need is a merge program and Mercurial.
 
