@@ -100,7 +100,7 @@ class IntraBox {
 				if( ($title = $this->module->init_box(true)) ) {
 					$this->mydisplay->disp('intrabox_openbox.tpl', array('title' => $title));
 					try {
-						$this->module->display_box($this->mydisplay));
+						$this->module->display_box($this->mydisplay);
 					}
 					catch( Exception $e ) {
 						$this->mydisplay->disp('intrabox_closebox.tpl');
