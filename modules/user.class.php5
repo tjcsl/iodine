@@ -242,7 +242,7 @@ class User {
 	public function get_groups() {
 		global $I2_SQL;
 		
-		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$this->myuid)->fetch_array(MYSQL_NUM);
+		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$this->myuid)->fetch_all_arrays(MYSQL_NUM);
 		$ret = array();
 		foreach ($res as $gid) {
 			$ret[] = $this->get_group_name($gid);
@@ -300,14 +300,14 @@ class User {
 	*	@return boolean Whether this User is a member of the passed group.
 	*/
 	public function is_group_member($groupname) {
-			$groups = $this->get_groups();
-			if (in_array($groups,$groupname)) {
-							return TRUE;
-			}	
-		 if	(substr($groupname,6) == 'admin_'  && in_array($groups,'admin_all')) {
-				return TRUE;
-		 }
-		 return FALSE;
+		$groups = $this->get_groups();
+		if (in_array($groups,$groupname)) {
+			return TRUE;
+		}	
+		if (substr($groupname,6) == 'admin_'  && in_array($groups,'admin_all')) {
+			return TRUE;
+		}
+		return FALSE;
 	}
 
 	/**
