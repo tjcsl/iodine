@@ -105,7 +105,7 @@ class News implements Module {
 				
 			default:
 				$I2_ARGS[1] = '';
-				//FIXME: set $story->read to true if the story has been read.
+				
 				$this->newsdetails = $I2_SQL->query('SELECT id,title,text,authorID,posted FROM news ORDER BY posted DESC;')->fetch_all_arrays(MYSQL_ASSOC);
 				$this->summaries = &$this->newsdetails;
 		
@@ -120,11 +120,11 @@ class News implements Module {
 							$this->newsdetails[$i]['author'] = $tmpuser->fname .' '.$tmpuser->lname;
 							$authors[$story['authorID']] = $this->newsdetails[$i]['author'];
 						}
-					}
+					}	
 					//A story is editable if this person wrote it or if they're a newsadmin
-					$story->editable = ($story['authorID'] == $I2_USER->uid || $this->newsadmin );
-					//FIXME: eliminate this hack
-					$story->read = FALSE;
+					$this->newsdetails[$i]['editable'] = ($story['authorID'] == $I2_USER->uid || $this->newsadmin );
+					//FIXME: eliminate this broken hack - make the SQL query above more extensive.
+					$this->newsdetails[$i]['read'] = FALSE;
 				}
 				return array('News', 'Recent News Posts');
 		}
