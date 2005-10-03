@@ -1,8 +1,8 @@
 [paths]
-intranet2 = ssh://[username]@humboldt.tjhsst.edu//shared/hg/intranet2
-i2 = ssh://[username]@humboldt.tjhsst.edu//shared/hg/intranet2
-default = ssh://[username]@humboldt.tjhsst.edu/intranet2
-testing = ssh://[username]@humboldt.tjhsst.edu/intranet2
+intranet2 = ssh://<username>@humboldt.tjhsst.edu//shared/hg/intranet2
+i2 = ssh://<username>@humboldt.tjhsst.edu//shared/hg/intranet2
+default = ssh://<username>@humboldt.tjhsst.edu/intranet2
+testing = ssh://<username>@humboldt.tjhsst.edu/intranet2
 [ui]
 verbose = True
 
