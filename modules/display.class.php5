@@ -396,5 +396,12 @@ class Display {
 		}
 		return NULL;
 	}
+
+	/**
+	* Automagical destructor for Display objects.  This flushes all output.
+	*/
+	public function __finalize() {
+		$this->flush_buffer();
+	}
 }
 ?>
