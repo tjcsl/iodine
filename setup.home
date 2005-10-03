@@ -1,1 +1,1 @@
-cat hgrc.home | sed "s/<username>/`whoami`/g" > .hgrc
+cat hgrc.home | sed "s/<username>/`whoami`/g" > ~/.hgrc
