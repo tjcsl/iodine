@@ -206,8 +206,12 @@ class Display {
 	public static function style_changed() {
 		global $I2_USER;
 		if (isSet($I2_USER)) {
-			self::$style = $I2_USER->style;
+			self::$style = ($I2_USER->style?$I2_USER->style:'default');
 		}
+		else {
+			self::$style = 'default';
+		}
+		d('Style changed, is now: '.self::$style);
 	}
 
 	/**

@@ -106,6 +106,14 @@ try {
 	 */
 	//$I2_LDAP = new LDAP();
 	/**
+	 * The global user info mechanism.
+	 *
+	 * Use this {@link User} object for getting information about a user.
+	 *
+	 * @global User $I2_USER
+	 */
+	$I2_USER = new User();
+	/**
 	 * The global display mechanism.
 	 *
 	 * Use this {@link Display} object for nothing, unless you're core.php.
@@ -121,14 +129,6 @@ try {
 	 * @global Auth $I2_AUTH
 	 */
 	$I2_AUTH = new Auth();
-	/**
-	 * The global user info mechanism.
-	 *
-	 * Use this {@link User} object for getting information about a user.
-	 *
-	 * @global User $I2_USER
-	 */
-	$I2_USER = new User();
 	
 	/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here) */
 
