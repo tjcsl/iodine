@@ -7,4 +7,5 @@ default-push = ssh://<username>@humboldt.tjhsst.edu/intranet2
 testing = ssh://<username>@humboldt.tjhsst.edu/intranet2
 [ui]
 verbose = True
+username=<username>
 
