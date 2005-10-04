@@ -36,6 +36,14 @@ class News implements Module {
 	*/
 	private $newsadmin;
 	
+	private function set_news_admin() {	
+		global $I2_USER;
+		$this->newsadmin = $I2_USER->is_group_member('admin_news');
+		if ($this->newsadmin) {
+			d('This user is a news administrator - news alteration privileges have been granted.');
+		}
+	}
+	
 	/**
 	* Required by the {@link Module} interface.
 	*/
@@ -46,7 +54,7 @@ class News implements Module {
 			$I2_ARGS[1] = '';
 		}
 		
-		$this->newsadmin = $I2_USER->is_group_member('admin_news');
+		$this->set_news_admin();
 		
 		switch($I2_ARGS[1]) {
 
@@ -138,7 +146,7 @@ class News implements Module {
 	function display_pane($display) {
 		global $I2_ARGS;
 		
-		$display->disp('news_'.($I2_ARGS[1]?$I2_ARGS[1]:'pane').'.tpl',array('news_stories'=>$this->newsdetails));
+		$display->disp('news_'.($I2_ARGS[1]?$I2_ARGS[1]:'pane').'.tpl',array('news_stories'=>$this->newsdetails,'newsadmin'=>$this->newsadmin));
 	}
 	
 	/**
@@ -150,6 +158,7 @@ class News implements Module {
 			$this->summaries = $I2_SQL->query('SELECT title FROM news ORDER BY posted DESC;')->fetch_all_arrays(MYSQL_ASSOC);
 		}
 		$num = count($this->summaries);
+		$this->set_news_admin();
 		return 'News: '.$num.' post'.($num==1?'':'s').' to read';
 	}
 
@@ -157,7 +166,7 @@ class News implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_box($display) {
-		$display->disp('news_box.tpl',array('summaries'=>$this->summaries));
+		$display->disp('news_box.tpl',array('summaries'=>$this->summaries,'newsadmin'=>$this->newsadmin));
 	}
 
 	/**
