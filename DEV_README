@@ -17,11 +17,13 @@ hg update
 
 To commit:
 ./commit
+Arguments passed to ./commit will be passed to hg commit ([options] [filenames])
 
 To update:
 ./update
+Arguments passed to ./update will be passed to hg update ([options] [revision to get])
 
-Note that these tools will update or commit your ENTIRE repository.  They don't care if you pass them file names or directories.  They don't even care where you are when you call them.  So, please excercise caution.
+Note that these tools will update or commit your ENTIRE repository.  ./commit can be passed filenames or directories as arguments, but ./update cannot.  So, please excercise caution.
 
 Also, note that files you create won't be committed until you use 'hg add' on them.
 
@@ -50,8 +52,7 @@ To make things easier, go ahead and set up an hgrc file, or just run setup.home 
 
 Config:
 
-To configure
- Intranet2 for use in your local directory, just run ./setup .
+To configure Intranet2 for use in your local directory, just run ./setup .
 If changes are made to the htaccess or config.ini files by others, then you
 will need to run this script again. If suddenly everything stops working, try
 running that script to see if it makes things work again.
