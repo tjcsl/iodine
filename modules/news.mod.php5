@@ -54,7 +54,9 @@ class News implements Module {
 			$I2_ARGS[1] = '';
 		}
 		
-		$this->set_news_admin();
+		if (!isSet($this->newsadmin)) {
+			$this->set_news_admin();
+		}
 		
 		switch($I2_ARGS[1]) {
 
@@ -158,7 +160,9 @@ class News implements Module {
 			$this->summaries = $I2_SQL->query('SELECT title FROM news ORDER BY posted DESC;')->fetch_all_arrays(MYSQL_ASSOC);
 		}
 		$num = count($this->summaries);
-		$this->set_news_admin();
+		if (!isSet($this->newsadmin)) {
+			$this->set_news_admin();
+		}
 		return 'News: '.$num.' post'.($num==1?'':'s').' to read';
 	}
 
