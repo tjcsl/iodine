@@ -81,6 +81,11 @@ class Display {
 		$this->smarty->right_delimiter = '>]';
 		$this->smarty->compile_dir = i2config_get('smarty_path','./','core');
 		$this->smarty->plugins_dir = array('plugins',i2config_get('root_path',NULL,'core').'smarty');
+		$this->smarty->caching = true;
+		
+		//TODO: turn this off for production code!
+		$this->smarty->compile_check = true;
+
 		$this->my_module_name = $module_name;
 
 		
