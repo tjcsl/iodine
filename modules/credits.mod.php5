@@ -32,7 +32,7 @@ class Credits {
 	* @abstract
 	*/
 	function display_pane($display) {
-		$display->disp("credits_pane.tpl");
+		$display->disp('credits_pane.tpl');
 	}
 	
 	/**
@@ -42,7 +42,7 @@ class Credits {
 	* @abstract
 	*/
 	function get_name() {
-		return "Credits";
+		return 'Credits';
 	}
 
 	/**
@@ -55,6 +55,7 @@ class Credits {
 	* @abstract
 	*/
 	function init_box() {
+		return FALSE;
 	}
 
 	/**
@@ -72,7 +73,7 @@ class Credits {
 	* @abstract
 	*/
 	function init_pane() {
-		return "Credits";
+		return 'Credits';
 	}
 	
 }
