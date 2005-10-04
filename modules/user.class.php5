@@ -245,12 +245,14 @@ class User {
 		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$this->myuid)->fetch_all_arrays(MYSQL_NUM);
 		$ret = array();
 		foreach ($res as $gid) {
-			$ret[] = $this->get_group_name($gid);
+			$ret[] = $this->get_group_name($gid[0]);
 		}	
 		/* Add grade_n to the user's groups.
 		** Yes, This does mean there's a grade_staff.  Yes, that sounds funny.  Live with it.
 		*/
 		$ret[] = 'grade_'.$this->grade;
+
+		return $ret;
 	}
 
 	/**
@@ -274,6 +276,10 @@ class User {
 	* @return string The group's name. 
 	*/
 	public static function get_group_name($gid) {
+
+		if (!is_numeric($gid)) {
+			throw new i2exception("Non-numerical groupid `$gid' passed to get_group_name!");
+		}
 		global $I2_SQL;
 
 		return $I2_SQL->query('SELECT name FROM groups WHERE gid=%d',$gid)->fetch_single_value();
