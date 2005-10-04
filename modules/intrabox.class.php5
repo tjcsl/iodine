@@ -57,7 +57,7 @@ class IntraBox {
 	*/
 	public function __construct($module_name) {
 
-		if( strcasecmp($module_name, self::$main_module->get_name()) == 0 ) {
+		if( self::$main_module && strcasecmp($module_name, self::$main_module->get_name()) == 0 ) {
 			$this->module = self::$main_module;
 		}
 		else {
