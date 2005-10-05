@@ -64,3 +64,12 @@
 div.minimize:hover {
 	background-color: #f66;
 }
+
+.fortune {
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.fortune-button {
+	text-align: right;
+}

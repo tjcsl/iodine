@@ -22,6 +22,8 @@
 				$this->fortune .= fgets($handle,1024);
 			}
 			pclose($handle);
+			//This could be nasty without this bit.
+			$this->fortune = htmlentities($this->fortune);
 			d('New fortune `'.$this->fortune."' generated.");
 			$_SESSION['fortune'] = $this->fortune;
 
