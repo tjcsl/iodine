@@ -1,2 +1,5 @@
-hg pull /shared/hg/intranet2
+#!/bin/bash
+echo "Updating your local repository from the global tree..."
+hg pull http://iodine.tjhsst.edu/hg
 hg update $*
+echo "Done."

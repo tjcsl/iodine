@@ -1,2 +1,4 @@
 #!/bin/bash
-rsync -aP * <username>@humboldt.tjhsst.edu:~/intranet2/
+echo "Copying your current working directory (excluding hidden files) to your humboldt directory..."
+rsync -aP * .htaccess <username>@humboldt.tjhsst.edu:~/intranet2/
+echo "Done."
