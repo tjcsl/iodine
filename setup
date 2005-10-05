@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [[ $1 == "" ]] ; then
+	echo "Sets up a repository for Intranet 2 development"
+	echo "Usage: setup [type] [username]"
+	echo "[type] is one of: home humboldt"
+	echo "[username] is optional"
+else
+	if [[ $1 == "home" ]] ; then
+					./scripts/setup.home
+	else 
+			if [[ $1 == "humboldt" ]]; then
+					./scripts/setup.humboldt				
+			else
+					echo "Type \"$1\" not recognized; should be either humboldt or home."
+			fi
+		fi
+fi
+

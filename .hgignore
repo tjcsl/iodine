@@ -2,6 +2,6 @@
 (^|/)\.hg($|/)
 (^|/)\.htaccess$
 (^|/)config\.ini$
-(^|/)update($|/)
-(^|/)commit($|/)
+^update$
+^commit$
 (^|/)test$
