@@ -4,4 +4,4 @@
 (^|/)config\.ini$
 ^update$
 ^commit$
-(^|/)test$
+^test$
