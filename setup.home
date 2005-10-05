@@ -1,4 +1,24 @@
 #!/bin/bash
-cat hgrc.home | sed "s/<username>/`whoami`/g" > ~/.hgrc
-cat test.user | sed "s/<username>/`whoami`/g" > test
+if [[ $1 == "" ]] ; then
+	username=`whoami`
+	echo "Setting you up for work at home as $username."
+	echo "If that's not you, please pass your humboldt account name to the script."
+else
+	username=$1
+	echo "Setting up with humboldt username $username..."
+fi
+cat hgrc.home | sed s/\<username\>/$username/g > ~/.hgrc
+echo "~/.hgrc created"
+cat config.user.ini | sed s/\<username\>/$username/g > config.ini
+cat config.ini | sed s/iodine\.tjhsst\.edu/localhost/g > config.ini
+echo "config.ini created using localhost"
+cat test.user | sed s/\<username\>/$username/g > test
 chmod +x test
+echo "./test created"
+cat commit.home | sed s/\<username\>/$username/g > commit
+chmod +x commit
+echo "./commit created"
+cp update.home update
+chmod +x update
+echo "./update created"
+echo "Done."

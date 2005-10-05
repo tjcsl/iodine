@@ -2,3 +2,5 @@
 (^|/)\.hg($|/)
 ^\.htaccess$
 ^config\.ini$
+^update$
+^commit$
