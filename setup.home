@@ -12,7 +12,7 @@ echo "~/.hgrc created"
 cat config.user.ini | sed s/\<username\>/$username/g > config.ini
 cat config.ini | sed s/iodine\.tjhsst\.edu/localhost/g > config.ini
 echo "config.ini created using localhost"
-cat test.user | sed s/\<username\>/$username/g > test
+cat test.home | sed s/\<username\>/$username/g > test
 chmod +x test
 echo "./test created"
 cat commit.home | sed s/\<username\>/$username/g > commit
