@@ -5,18 +5,26 @@
 		private $fortune;
 
 		public function init_box() {
-			if (isSet($_SESSION['fortune'])) {
+			if (!isSet($_REQUEST['fortune_regen']) && isSet($_SESSION['fortune'])) {
+				d('Old fortune retrieved.');
 				$this->fortune = $_SESSION['fortune'];
 			} else {
-				$handle = popen('fortune','r');
-				$this->fortune = '';
-				while ($read = fread($handle,2096)) {
-					$this->fortune .= $read;
-				}
-				pclose($handle);
-				$_SESSION['fortune'] = $this->fortune;
+				$this->regen();
 			}
 			return "Fortune";
+		}
+
+		public function regen() {
+			d('Generating new fortune...');
+			$handle = popen('/usr/games/fortune','r');
+			$this->fortune = '';
+			while (!feof($handle)) {
+				$this->fortune .= fgets($handle,1024);
+			}
+			pclose($handle);
+			d('New fortune `'.$this->fortune."' generated.");
+			$_SESSION['fortune'] = $this->fortune;
+
 		}
 
 		public function display_box($display) {
