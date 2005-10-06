@@ -1,4 +1,4 @@
-<form method="POST" action="[<$I2_ROOT>]prefs">
+<form method="POST" action="[<$I2_ROOT>]prefs" class="boxform">
 <input type="hidden" name="prefs_form" value="" />
 <table>
  <tr>

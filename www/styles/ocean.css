@@ -107,6 +107,10 @@ a:hover {
 	margin: 4px;
 	color: #000099;
 }
+.boxform {
+	margin: 5px 4px;
+	color: #000099;
+}
 .mainbox {
 	position: absolute;
 	top: 110px;
