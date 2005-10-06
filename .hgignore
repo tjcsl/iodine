@@ -1,2 +1,7 @@
 (^|/)CVS($|/)
 (^|/)\.hg($|/)
+(^|/)\.htaccess$
+(^|/)config\.ini$
+^update$
+^commit$
+^test$

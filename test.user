@@ -1,2 +1,0 @@
-#!/bin/bash
-rsync -aP * <username>@humboldt.tjhsst.edu:~/intranet2/

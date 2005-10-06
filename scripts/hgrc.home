@@ -1,10 +1,12 @@
 [paths]
 intranet2 = ssh://<username>@humboldt.tjhsst.edu//shared/hg/intranet2
 i2 = ssh://<username>@humboldt.tjhsst.edu//shared/hg/intranet2
+global = ssh://<username>@humboldt.tjhsst.edu//shared/hg/intranet2
 http = http://iodine.tjhsst.edu/hg
 default = http://iodine.tjhsst.edu/hg
 default-push = ssh://<username>@humboldt.tjhsst.edu/intranet2
 testing = ssh://<username>@humboldt.tjhsst.edu/intranet2
+ssh = ssh://<username>@humboldt.tjhsst.edu/intranet2
 [ui]
 verbose = True
 username=<username>

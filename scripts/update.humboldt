@@ -1,0 +1,5 @@
+#!/bin/bash
+echo "Updating your local repository from the global tree..."
+hg pull /shared/hg/intranet2
+hg update $*
+echo "Done."
