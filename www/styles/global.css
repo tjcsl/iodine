@@ -40,6 +40,9 @@
 	height:23px;
 	-moz-opacity: 0.5;
 	filter:alpha(opacity=50);
+/* in my experience, the above two lines, or at least the one right above is not valid css */
+/* maybe remove them? */
+/* --wyang */
 	opacity: 0.5;
 	overflow: hidden;
 }
@@ -72,6 +75,8 @@ div.minimize:hover {
 
 .fortune-button {
 	text-align: right;
+	margin-top: 0px;
+	margin-bottom: 5px;
 }
 .directory-field {
 	width:190px;
