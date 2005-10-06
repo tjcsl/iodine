@@ -48,7 +48,7 @@ class Display {
 	* The core display object to get buffering data from.
 	* @access private
 	*/
-	private static $core_display;
+	private static $core_display = NULL;
 	
 	/**
 	* @access private
@@ -221,7 +221,9 @@ class Display {
 	* @return bool Whether buffering is enabled.
 	*/
 	public function buffering_on() {
-		return Display::$core_display->buffering;
+		if( Display::$core_display !== NULL )
+			return Display::$core_display->buffering;
+		return FALSE;
 	}
 
 	/**
