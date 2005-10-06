@@ -2,4 +2,5 @@
 echo "Pushing your changes into the global Iodine source tree..."
 hg commit $*
 hg push /shared/hg/intranet2
-echo "Done."
+echo "Done.  Now:"
+hg status
