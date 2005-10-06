@@ -10,7 +10,7 @@ fi
 cat scripts/hgrc.home | sed s/\<username\>/$username/g > ${HOME}/.hgrc
 echo "~/.hgrc created"
 cat config.user.ini | sed s/\<username\>/$username/g > config.ini
-cat config.ini | sed s/iodine\.tjhsst\.edu/localhost/g > config.ini
+cat config.ini | sed s/https:\/\/iodine\.tjhsst\.edu/http:\/\/localhost/g > config.ini
 echo "config.ini created using localhost"
 cat scripts/test.home | sed s/\<username\>/$username/g > test
 chmod +x test
