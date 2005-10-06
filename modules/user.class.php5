@@ -242,15 +242,17 @@ class User {
 	public function get_groups() {
 		global $I2_SQL;
 		
-		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$this->myuid)->fetch_array(MYSQL_NUM);
+		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$this->myuid)->fetch_all_arrays(MYSQL_NUM);
 		$ret = array();
 		foreach ($res as $gid) {
-			$ret[] = $this->get_group_name($gid);
+			$ret[] = $this->get_group_name($gid[0]);
 		}	
 		/* Add grade_n to the user's groups.
 		** Yes, This does mean there's a grade_staff.  Yes, that sounds funny.  Live with it.
 		*/
 		$ret[] = 'grade_'.$this->grade;
+
+		return $ret;
 	}
 
 	/**
@@ -274,6 +276,10 @@ class User {
 	* @return string The group's name. 
 	*/
 	public static function get_group_name($gid) {
+
+		if (!is_numeric($gid)) {
+			throw new i2exception("Non-numerical groupid `$gid' passed to get_group_name!");
+		}
 		global $I2_SQL;
 
 		return $I2_SQL->query('SELECT name FROM groups WHERE gid=%d',$gid)->fetch_single_value();
@@ -300,7 +306,15 @@ class User {
 	*	@return boolean Whether this User is a member of the passed group.
 	*/
 	public function is_group_member($groupname) {
-		return in_array($this->get_groups(),$groupname);
+		$groups = $this->get_groups();
+		//d(print_r($groups,true));
+		if ($groups != NULL && in_array($groupname,$groups,FALSE)) {
+			return TRUE;
+		}	
+		if (substr($groupname,6) == 'admin_'  && in_array($groups,'admin_all')) {
+			return TRUE;
+		}
+		return FALSE;
 	}
 
 	/**

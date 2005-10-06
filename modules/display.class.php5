@@ -12,7 +12,6 @@
 /**
 * The display module for Iodine.
 * @package core
-* @todo Fix the display when a nonexistant module is specified
 * @subpackage Display
 */
 class Display {
@@ -82,6 +81,12 @@ class Display {
 		$this->smarty->right_delimiter = '>]';
 		$this->smarty->compile_dir = i2config_get('smarty_path','./','core');
 		$this->smarty->plugins_dir = array('plugins',i2config_get('root_path',NULL,'core').'smarty');
+		$this->smarty->cache_dir = $this->smarty->compile_dir.'cache';
+		$this->smarty->caching = true;
+		
+		//TODO: turn this off for production code!
+		$this->smarty->compile_check = true;
+
 		$this->my_module_name = $module_name;
 
 		
@@ -127,9 +132,10 @@ class Display {
 				*/
 				$disp = new Display($module);
 				
-				eval('$mod = new '.$module.'();');
-				
+				$mod = NULL;
+
 				try {
+					eval('$mod = new '.$module.'();');
 					$title = $mod->init_pane();
 				} catch( Exception $e ) {
 					$this->global_header('Error');
@@ -137,6 +143,7 @@ class Display {
 					$this->close_content_pane();
 					throw $e;
 				}
+				
 				if ( $title === FALSE) {
 					$this->global_header('Error');
 					$this->open_content_pane(array('no_module' => $module));
@@ -200,8 +207,12 @@ class Display {
 	public static function style_changed() {
 		global $I2_USER;
 		if (isSet($I2_USER)) {
-			self::$style = $I2_USER->style;
+			self::$style = ($I2_USER->style?$I2_USER->style:'default');
 		}
+		else {
+			self::$style = 'default';
+		}
+		d('Style changed, is now: '.self::$style);
 	}
 
 	/**
@@ -394,6 +405,13 @@ class Display {
 			return self::$tpl_root . $tpl;
 		}
 		return NULL;
+	}
+
+	/**
+	* Automagical destructor for Display objects.  This flushes all output.
+	*/
+	public function __finalize() {
+		$this->flush_buffer();
 	}
 }
 ?>

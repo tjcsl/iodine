@@ -1,2 +1,2 @@
 hg pull /shared/hg/intranet2
-hg update -m
+hg update $*

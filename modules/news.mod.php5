@@ -30,6 +30,19 @@ class News implements Module {
 	* A 1-dimensional array containing all of the titles for all news posts.
 	*/
 	private $summaries;
+
+	/**
+	* Whether the current user is a news administrator.
+	*/
+	private $newsadmin;
+	
+	private function set_news_admin() {	
+		global $I2_USER;
+		$this->newsadmin = $I2_USER->is_group_member('admin_news');
+		if ($this->newsadmin) {
+			d('This user is a news administrator - news alteration privileges have been granted.');
+		}
+	}
 	
 	/**
 	* Required by the {@link Module} interface.
@@ -40,12 +53,16 @@ class News implements Module {
 		if( ! isset($I2_ARGS[1]) ) {
 			$I2_ARGS[1] = '';
 		}
-
+		
+		if (!isSet($this->newsadmin)) {
+			$this->set_news_admin();
+		}
+		
 		switch($I2_ARGS[1]) {
 
 			case 'add':
-				//put in checks here to see if the user is allowed to post
-				if( isset($_REQUEST['add_form']) ) {
+				
+				if( isset($_REQUEST['add_form']) && $this->newsadmin) {
 					$I2_SQL->query('INSERT INTO news ( authorID, title, text, posted ) VALUES ( %d, %s, %s, CURRENT_TIMESTAMP );', $I2_USER->uid, $_REQUEST['add_title'], $_REQUEST['add_text']);
 					$this->newsdetails = 1;
 					return array('Post News', 'News article posted');
@@ -62,7 +79,7 @@ class News implements Module {
 				if( $res === FALSE ) {
 					throw new I2Exception('Specified article ID does not exist.');
 				}
-				if( $res['authorID'] != $I2_USER->uid ) {
+				if( !$this->newsadmin ) {
 					throw new I2Exception('You do not have permission to edit this article.');
 				}
 
@@ -79,14 +96,13 @@ class News implements Module {
 				if( !isset($I2_ARGS[2]) ) {
 					throw new I2Exception('ID of article to delete not specified.');
 				}
-				
+				if (!$this->newsadmin) {
+					throw new I2Exception('You do not have permission to delete this article!');
+				}
 				$res = $I2_SQL->query('SELECT title,text,authorID FROM news WHERE id=%d;', $I2_ARGS[2])->fetch_array();
 				
 				if( $res === FALSE ) {
 					throw new I2Exception('Specified article ID does not exist.');
-				}
-				if( $res['authorID'] != $I2_USER->uid ) {
-					throw new I2Exception('You do not have permission to delete this article.');
 				}
 
 				if( isset($_REQUEST['delete_confirm']) ) {
@@ -99,6 +115,7 @@ class News implements Module {
 				
 			default:
 				$I2_ARGS[1] = '';
+				
 				$this->newsdetails = $I2_SQL->query('SELECT id,title,text,authorID,posted FROM news ORDER BY posted DESC;')->fetch_all_arrays(MYSQL_ASSOC);
 				$this->summaries = &$this->newsdetails;
 		
@@ -113,7 +130,11 @@ class News implements Module {
 							$this->newsdetails[$i]['author'] = $tmpuser->fname .' '.$tmpuser->lname;
 							$authors[$story['authorID']] = $this->newsdetails[$i]['author'];
 						}
-					}
+					}	
+					//A story is editable if this person wrote it or if they're a newsadmin
+					$this->newsdetails[$i]['editable'] = ($story['authorID'] == $I2_USER->uid || $this->newsadmin );
+					//FIXME: eliminate this broken hack - make the SQL query above more extensive.
+					$this->newsdetails[$i]['read'] = FALSE;
 				}
 				return array('News', 'Recent News Posts');
 		}
@@ -127,7 +148,7 @@ class News implements Module {
 	function display_pane($display) {
 		global $I2_ARGS;
 		
-		$display->disp('news_'.($I2_ARGS[1]?$I2_ARGS[1]:'pane').'.tpl',array('news_stories'=>$this->newsdetails));
+		$display->disp('news_'.($I2_ARGS[1]?$I2_ARGS[1]:'pane').'.tpl',array('news_stories'=>$this->newsdetails,'newsadmin'=>$this->newsadmin));
 	}
 	
 	/**
@@ -139,6 +160,9 @@ class News implements Module {
 			$this->summaries = $I2_SQL->query('SELECT title FROM news ORDER BY posted DESC;')->fetch_all_arrays(MYSQL_ASSOC);
 		}
 		$num = count($this->summaries);
+		if (!isSet($this->newsadmin)) {
+			$this->set_news_admin();
+		}
 		return 'News: '.$num.' post'.($num==1?'':'s').' to read';
 	}
 
@@ -146,7 +170,7 @@ class News implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_box($display) {
-		$display->disp('news_box.tpl',array('summaries'=>$this->summaries));
+		$display->disp('news_box.tpl',array('summaries'=>$this->summaries,'newsadmin'=>$this->newsadmin));
 	}
 
 	/**

@@ -17,11 +17,40 @@ hg update
 
 To commit:
 ./commit
+Arguments passed to ./commit will be passed to hg commit ([options] [filenames])
 
 To update:
 ./update
+Arguments passed to ./update will be passed to hg update ([options] [revision to get])
 
-Note that these tools will update or commit your ENTIRE repository.  They don't care if you pass them file names or directories.  So, please excercise caution.
+Note that these tools will update or commit your ENTIRE repository.  ./commit can be passed filenames or directories as arguments, but ./update cannot.  So, please excercise caution.
+
+Also, note that files you create won't be committed until you use 'hg add' on them.
+
+DO NOT use 'hg addremove'.  It will commit your personal config files to the global repository.  Please don't do that.
+
+The shortcuts 'i2' and 'intranet2' are available for your use.  You can type 'hg pull i2', 'hg push intranet2', etc.  The default may also be i2, so you can tr typing 'hg pull' and seeing what happens.
+
+The suggested way of working is to 'hg pull ssh://[username]@humboldt.tjhsst.edu//shared/hg/intranet2' from home, and push the same way.  You obviously need to install hg (and preferably meld) on your home computer to do this.  Mercurial depends on Python 2.3 or better.  By the time you are reading this, the entire system should be available on the CSL workstations for your working pleasure.  Remember to change config.ini's ROOT setting to the appropriate access URL if you're not working on humboldt.
+
+Summary of things you need installed to work AND RUN i2 from home:
+- Apache
+- PHP5 with mod_php
+- mod_rewrite  
+- Python 2.3
+- Meld, xxdiff, or the like type of decent merge program 
+- Mercurial
+- MySQL: you need the user iodine, with password 'br0m1n3', and the database 'iodine'.
+
+You'll only be able to log in as 'guest', unless you hack kinit.  Remember to source the MySQL files in mysql/ to create the necessary databases.
+
+If you only wish to code at home, and to test on humboldt, you may take advantage of a feature of Mercurial: repository-to-repository pushing.  At home, you can run 'hg push ssh://[username]@humboldt.tjhsst.edu/intranet2' to push changes into your humboldt home directory.  HOWEVER, this only pushes to the .hg repository over there.  It won't update your working copy.  So, you can either run 'hg update' on humboldt or use './test' (after running setup.home) to rsync a testing version up.  You need rsync, obviously.  Remember to 'hg commit' before pushing.  When you're ready to push your changes to the global repository, push to humboldt't /shared/hg/intranet2 dir as before.
+
+If you work from home this way, all you'll need is a merge program and Mercurial.
+
+To make things easier, go ahead and set up an hgrc file, or just run setup.home to have one made automagically for you.  See 'man hgrc'.  Verbose=true under the UI section is highly recommended.  If you have setup.home do it, 'hg push testing' or just 'hg push' will push to your personal humboldt repository, while 'hg push i2' will have your code go global.  If your username at home is different from at school, you'll need to edit ~/.hgrc and fix the references to be your humboldt username.
+
+Additionally, there are two ways to PULL the current Intranet2 copy: HTTP and SSH.  'hg pull http://iodine.tjhsst.edu/hg' will get the latest via HTTP - SSH is detailed above.  You cannot push to http, but since it doesn't require a password and is faster, you should use it for all your pulls.  After running ./setup.home, 'hg pull' will be HTTP, 'hg pull http' will be HTTP, 'hg pull i2' will be SSH, 'hg pull intranet2' will be SSH, and 'hg push' will be SSH.
 
 Config:
 
