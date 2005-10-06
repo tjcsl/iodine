@@ -25,7 +25,8 @@
       </tr>
      </table>
     </form>
-   </center></td></tr>
+     <!- You are accessing the intranet of the Thomas Jefferson High School for Science and Technology.  Any unauthorized or improper use of this system may result in civil and criminal penalties and administrative or disciplinary action, as appropriate.  By proceeding, you indicate awareness of and consent to being monitored and logged.
+ </!>  </center></td></tr>
   </table>
  </div>
 </body>
