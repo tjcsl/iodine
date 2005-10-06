@@ -129,7 +129,7 @@ try {
 	 * @global User $I2_USER
 	 */
 	$I2_USER = new User();
-	
+
 	/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here) */
 
 	/* gets the user's startpage module if no module has
@@ -146,7 +146,7 @@ try {
 	if(isset($I2_ERR)) {
 		$I2_ERR->default_exception_handler($e);
 	} else {
-		die('There was an error too early on in the application for anything to handle the error. What you are seeing right now is the fail-safe message. Please inform the intranetmaster of this immediately. Error: '.$e->__toString());
+		die('There was an error too early on in the application for anything to handle the error. What you are seeing right now is the fail-safe message. Please inform the intranetmaster immediately. Error: '.$e->__toString());
 	}
 }
 
