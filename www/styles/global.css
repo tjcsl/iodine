@@ -73,3 +73,13 @@ div.minimize:hover {
 .fortune-button {
 	text-align: right;
 }
+.directory-field {
+	width:190px;
+}
+.directory-button {
+	width:75px;
+}
+.directory {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
