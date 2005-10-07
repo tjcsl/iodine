@@ -246,10 +246,10 @@ class EighthActivity {
 	public static function get_all_activities($blockid = NULL, $restricted = FALSE) {
 		global $I2_SQL;
 		if($blockid == NULL) {
-			return $I2_SQL->query("SELECT aid, name, restricted FROM eighth_activities " . ($restricted ? "WHERE restricted=1 " : "") . "ORDER BY name")->fetch_all_arrays(MYSQL_ASSOC);
+			return self::id_to_activity(flatten($I2_SQL->query("SELECT aid FROM eighth_activities " . ($restricted ? "WHERE restricted=1 " : "") . "ORDER BY name")->fetch_all_arrays(MYSQL_NUM)));
 		}
 		else {
-			return $I2_SQL->query("SELECT aid, name, restricted FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid=%d " . ($restricted ? "AND restricted=1 " : "") . "ORDER BY name", $blockid)->fetch_all_arrays(MYSQL_ASSOC);
+			return self::id_to_activity($I2_SQL->query("SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid=%d " . ($restricted ? "AND restricted=1 " : "") . "ORDER BY name", $blockid)->fetch_all_arrays(MYSQL_NUM));
 		}
 	}
 
