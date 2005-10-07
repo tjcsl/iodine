@@ -49,7 +49,7 @@
 		</tr>
 		<tr>
 			<td>Description:</td>
-			<td><textarea name="description" rows="3" cols="30">[<$activity->description>]</textarea></td>
+			<td><textarea name="description" rows="8" cols="40">[<$activity->description>]</textarea></td>
 		</tr>
 		<tr>
 			<td>Restricted:</td>

@@ -327,6 +327,14 @@ class EighthActivity {
 			}
 			return implode(",", $temp_sponsors);
 		}
+		else if($name == "block_sponsors_comma_short") {
+			$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
+			$temp_sponsors = array();
+			foreach($sponsors as $sponsor) {
+				$temp_sponsors[] = substr($sponsor->fname, 0, 1) . ". {$sponsor->lname}";
+			}
+			return implode(",", $temp_sponsors);
+		}
 		else if($name == "rooms_comma") {
 			$rooms = EighthRoom::id_to_room($this->data['rooms']);
 			$temp_rooms = array();

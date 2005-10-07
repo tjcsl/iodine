@@ -56,7 +56,7 @@
 			<td style="text-align: center;">[<$activity->block->date|date_format>]</td>
 			<td style="text-align: center;">[<* figure out attended *>]</td>
 			<td style="text-align: center;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/roster/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_r>] ([<$activity->aid>])</a></td>
-			<td style="text-align: center;">[<$activity->block_sponsors_comma>]</td>
+			<td style="text-align: center;">[<$activity->block_sponsors_comma_short>]</td>
 			<td style="text-align: center;">[<$activity->block_rooms_comma>]</td>
 		</tr>
 [</foreach>]
