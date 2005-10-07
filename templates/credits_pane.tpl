@@ -13,4 +13,5 @@ User Experience Technicians (GUI people):
 	<li>Eric Harmon</li>
 	<li>Andrew Smith</li>
 	<li>Dan Tran</li>
+	<li>William "wyang" Yang</li>
 </ul>
