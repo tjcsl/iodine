@@ -1,4 +1,4 @@
 #!/bin/bash
 echo "Copying your current working directory (excluding hidden files) to your humboldt directory..."
-rsync -aP * .htaccess --exclude=config.ini <username>@humboldt.tjhsst.edu:~/intranet2/
+rsync -aP * --exclude=config.ini --exclude=test --exclude=commit --exclude=update <username>@humboldt.tjhsst.edu:~/intranet2/
 echo "Done."
