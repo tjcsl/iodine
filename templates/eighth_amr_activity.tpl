@@ -25,10 +25,11 @@
 				<input type="button" value="Remove" onClick="location.href='[<$I2_ROOT>]eighth/amr_activity/remove_sponsor/aid/[<$activity->aid>]/sid/' + document.getElementById('sponsors').options[document.getElementById('sponsors').selectedIndex].value;">
 [</if>]
 			</td>
+		</tr>
 		<tr>
 			<td>Room(s):</td>
-[<if count($activity->rooms) > 0 >]
 			<td>
+[<if count($activity->rooms) > 0 >]
 				<select name="rooms[]" id="rooms" size="[<php>] echo count($this->_tpl_vars['activity']->rooms); [</php>]">
 [<php>]
 	$this->_tpl_vars['rooms'] = EighthRoom::id_to_room($this->_tpl_vars['activity']->rooms);

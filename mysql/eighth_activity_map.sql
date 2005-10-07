@@ -5,5 +5,5 @@ CREATE TABLE eighth_activity_map (
 
 	userid MEDIUMINT UNSIGNED NOT NULL,
 
-	PRIMARY KEY(aid,bid,userid)
+	PRIMARY KEY(bid,userid)
 );

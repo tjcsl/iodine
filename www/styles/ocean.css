@@ -3,7 +3,7 @@ form, div, p, span, td, th, i {
 	font-size: 10pt;
 }
 
-input {
+input, select, textarea {
 	background-color: #009999;
 	color: #99FFFF;
 	border-width: medium;

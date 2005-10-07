@@ -39,6 +39,12 @@ class EighthBlock {
 	public static function add_block($date, $block) {
 		global $I2_SQL;
 		$result = $I2_SQL->query("INSERT INTO eighth_blocks (date,block) VALUES (%t,%s)", $date, $block);
+		$uids = flatten($I2_SQL->query("SELECT uid FROM user")->fetch_all_arrays(MYSQL_NUM));
+		// Figure out what the default should be, 999?
+		$block = new Block($result->get_insert_id());
+		EighthSchedule::schedule_activity($block->bid, 1);
+		$activity = new EighthActivity(1, $block->bid);
+		$activity->add_members($users);
 		return $result->get_insert_id();
 	}
 
@@ -68,14 +74,14 @@ class EighthBlock {
 	*
 	* @access public
 	* @param string $starting_date The starting date for the list, usually NULL.
-	* @param int $number_of_blocks The number of blocks to return.
+	* @param int $number_of_days The number of days to return.
 	*/
-	public static function get_all_blocks($starting_date = NULL, $number_of_blocks = 20) {
+	public static function get_all_blocks($starting_date = NULL, $number_of_days = 14) {
 		global $I2_SQL;
 		if($starting_date == NULL) {
 			$starting_date = i2config_get('start_date', date("Y-m-d"), 'eighth');
 		}
-		return $I2_SQL->query("SELECT * FROM eighth_blocks WHERE date >= %t ORDER BY date,block LIMIT %d", $starting_date, $number_of_blocks)->fetch_all_arrays(MYSQL_ASSOC);
+		return $I2_SQL->query("SELECT * FROM eighth_blocks WHERE date >= %t AND date <= ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block", $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(MYSQL_ASSOC);
 	}
 
 	/**
@@ -84,11 +90,11 @@ class EighthBlock {
 	* @access public
 	* @param int $activityid The activity ID.
 	* @param string $starting_date The starting date for the list, usually NULL.
-	* @param int $number_of_blocks The number of blocks to return.
+	* @param int $number_of_days The number of days to return.
 	*/
-	public static function get_activity_schedule($activityid, $starting_date = NULL, $number_of_blocks = 20) {
+	public static function get_activity_schedule($activityid, $starting_date = NULL, $number_of_days = 14) {
 		global $I2_SQL;
-		$blocks = self::get_all_blocks($starting_date, $number_of_blocks);
+		$blocks = self::get_all_blocks($starting_date, $number_of_days);
 		$activities = array();
 		foreach($blocks as $block) {
 			$result = $I2_SQL->query("SELECT rooms,sponsors from eighth_block_map WHERE bid=%d AND activityid=%d", $block['bid'], $activityid);
