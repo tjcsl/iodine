@@ -8,9 +8,9 @@
 </td>
 </tr>
 <tr>
-<td align="center">
+<td align="center" class="directory-field">
 <em>Submit a blank query to get help.</em>
-</td><td align="center">
+</td><td align="center" class="directory-button">
 <a href="[<$I2_ROOT>]studentdirectory/info/[<$I2_UID>]">Your info</a>
 </td>
 </tr>
