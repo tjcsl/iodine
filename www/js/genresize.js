@@ -33,7 +33,6 @@ function getDirection(el) {
 
 	xPos = window.event.offsetX;
 	yPos = window.event.offsetY;
-	window.status = xPos + ", " + yPos;
 
 	offset = 7; //The distance from the edge in pixels
 
