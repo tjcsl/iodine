@@ -28,6 +28,7 @@
 <h2>[<$user->name_comma>] ([<$user->uid>], [<$user->grade>]th)</h2>
 <b>Counselor: [<$user->counselor>], TA: </b><br />
 <span style="color: #FF0000; font-weight: bold;">Comments: [<if empty($user->comments) >]none[<else>][<$user->comments>][</if>]</span><br />
+<form action="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>]" method="post">
 <form name="activities" action="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>]" method="post">
 	<input type="submit" value="Change Selected">
 	<div style="display: inline; margin-left: 100px;">
