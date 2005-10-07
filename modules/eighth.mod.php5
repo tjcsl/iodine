@@ -834,10 +834,14 @@ class Eighth implements Module {
 			$this->template = "eighth_vcp_schedule_choose.tpl";
 		}
 		else if($op == "change") {
-			d(var_export($args,true));
 			$activity = new EighthActivity($args['aid'], $args['bid']);
 			$activity->add_member($args['uid']);
 			redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
+		}
+		else if($op == "roster") {
+			$activity = new EighthActivity($args['aid'], $args['bid']);
+			$this->template_args['activity'] = $activity;
+			$this->template = "eighth_vcp_schedule_roster.tpl";
 		}
 	}
 }
