@@ -48,7 +48,7 @@ class Display {
 	* The core display object to get buffering data from.
 	* @access private
 	*/
-	private static $core_display;
+	private static $core_display = NULL;
 	
 	/**
 	* @access private
@@ -92,8 +92,8 @@ class Display {
 		
 		if ($module_name == 'core') {
 			Display::$core_display = $this;
-			self::$tpl_root = i2config_get('template_path','./','core');
 		}
+		self::$tpl_root = i2config_get('template_path','./','core');
 		$this->buffer = "";
 
 		if (self::$style == NULL) {
@@ -207,7 +207,7 @@ class Display {
 	public static function style_changed() {
 		global $I2_USER;
 		if (isSet($I2_USER)) {
-			self::$style = ($I2_USER->style?$I2_USER->style:'default');
+			self::$style = ($I2_USER->style);
 		}
 		else {
 			self::$style = 'default';
@@ -221,7 +221,9 @@ class Display {
 	* @return bool Whether buffering is enabled.
 	*/
 	public function buffering_on() {
-		return Display::$core_display->buffering;
+		if( Display::$core_display !== NULL )
+			return Display::$core_display->buffering;
+		return FALSE;
 	}
 
 	/**

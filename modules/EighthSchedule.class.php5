@@ -84,43 +84,43 @@ class EighthSchedule {
 	}
 
 	/**
-	* Get the absences for a student. 	 
-	* 	 
-	* @access public 	 
-	* @param int $userid The student's user ID. 	 
-	*/ 	 
-	public static function get_absences($userid) { 	 
-		global $I2_SQL; 	 
-		return flatten($I2_SQL->query("SELECT aid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) WHERE eighth_absentees.userid=%d", $userid)->fetch_all_arrays(MYSQL_NUM)); 	 
-	} 	 
+	* Get the absences for a student.
+	*
+	* @access public
+	* @param int $userid The student's user ID.
+	*/
+	public static function get_absences($userid) {
+		global $I2_SQL;
+		return flatten($I2_SQL->query("SELECT aid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) WHERE eighth_absentees.userid=%d", $userid)->fetch_all_arrays(MYSQL_NUM));
+	}
 
-	/** 	 
-	* Get the next eighth period date. 	 
-	* 	 
-	* @access public 	 
-	*/ 	 
-	public static function get_next_date() { 	 
-		global $I2_SQL; 	 
-		$date = $I2_SQL->query("SELECT date FROM eighth_blocks WHERE date >= %t ORDER BY date,block LIMIT 1", date("Y-m-d"))->fetch_array(MYSQL_NUM); 	 
-		return $date[0]; 	 
-	} 	 
+	/**
+	* Get the next eighth period date.
+	*
+	* @access public
+	*/
+	public static function get_next_date() {
+		global $I2_SQL;
+		$date = $I2_SQL->query("SELECT date FROM eighth_blocks WHERE date >= %t ORDER BY date,block LIMIT 1", date("Y-m-d"))->fetch_array(MYSQL_NUM);
+		return $date[0];
+	}
 
-	/** 	 
-	* Gets the activities a student is signed up for on a specific date. 	 
-	* 	 
-	* @access public 	 
-	* @param $userid The student's user ID. 	 
-	* @param $date The date to get activities for. 	 
-	*/ 	 
-	public static function get_activities($userid, $starting_date = NULL, $number_of_blocks = 20) { 	 
-		global $I2_SQL; 	 
-		if($starting_date == NULL) { 	 
-			$starting_date = date("Y-m-d"); 	 
-		} 	 
-		return $I2_SQL->query("SELECT aid,eighth_blocks.bid FROM eighth_activity_map LEFT JOIN eighth_blocks USING (bid) WHERE userid=%d AND date >= %t ORDER BY date,block LIMIT %d", $userid, $starting_date, $number_of_blocks)->fetch_all_arrays(MYSQL_NUM); 	 
-	} 	 
+	/**
+	* Gets the activities a student is signed up for on a specific date.
+	*
+	* @access public
+	* @param $userid The student's user ID.
+	* @param $date The date to get activities for.
+	*/
+	public static function get_activities($userid, $starting_date = NULL, $number_of_days = 14) {
+		global $I2_SQL;
+		if($starting_date == NULL) {
+			$starting_date = date("Y-m-d");
+		}
+		return $I2_SQL->query("SELECT aid,eighth_blocks.bid FROM eighth_activity_map LEFT JOIN eighth_blocks USING (bid) WHERE userid=%d AND date >= %t AND date <= ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block", $userid, $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(MYSQL_NUM);
+	}
 
-	/** 	 
+	/**
 	* Counts the number of students in an activity and block.
 	*
 	* @access public

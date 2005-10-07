@@ -106,14 +106,6 @@ try {
 	 */
 	//$I2_LDAP = new LDAP();
 	/**
-	 * The global display mechanism.
-	 *
-	 * Use this {@link Display} object for nothing, unless you're core.php.
-	 *
-	 * @global Display $I2_DISP
-	 */
-	$I2_DISP = new Display(); 
-	/**
 	 * The global authentication mechanism.
 	 *
 	 * Use this {@link Auth} object for authenticating users.
@@ -129,6 +121,14 @@ try {
 	 * @global User $I2_USER
 	 */
 	$I2_USER = new User();
+	/**
+	 * The global display mechanism.
+	 *
+	 * Use this {@link Display} object for nothing, unless you're core.php.
+	 *
+	 * @global Display $I2_DISP
+	 */
+	$I2_DISP = new Display(); 
 
 	/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here) */
 

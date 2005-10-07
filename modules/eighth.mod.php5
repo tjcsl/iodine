@@ -75,7 +75,7 @@ class Eighth implements Module {
 		$date = EighthSchedule::get_next_date();
 		$this->template_args['absent'] = count(EighthSchedule::get_absences($I2_USER->uid));
 		if($date) {
-			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($I2_USER->uid, $date, 2));
+			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($I2_USER->uid, $date, 1));
 		}
 		$dates = array($date => date("n/j/Y", @strtotime($date)), date("Y-m-d") => "Today", date("Y-m-d", time() + 3600 * 24) => "Tomorrow", "" => "None Scheduled");
 		return "8th Period: {$dates[$date]}";
@@ -829,11 +829,14 @@ class Eighth implements Module {
 		}
 		else if($op == "choose") {
 			$this->template_args['activities'] = EighthActivity::get_all_activities($args['bid']);
+			$this->template_args['bid'] = $args['bid'];
+			$this->template_args['uid'] = $args['uid'];
 			$this->template = "eighth_vcp_schedule_choose.tpl";
 		}
 		else if($op == "change") {
 			$activity = new EighthActivity($args['aid'], $args['bid']);
 			$activity->add_member($args['uid']);
+			redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
 		}
 	}
 }

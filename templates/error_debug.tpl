@@ -26,3 +26,5 @@ function minimize(name) {
   [<$debug>]
  </div>
 [</if>]
+</body>
+</html>

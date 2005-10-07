@@ -184,12 +184,13 @@ class Logging {
 		}
 		
 		try {
-			if( isset($I2_DISP) ) {
-				$I2_DISP->disp('error_debug.tpl', array('errors' => $this->error_buf, 'debug' => $this->debug_buf));
-				$this->error_buf = NULL;
-				$this->debug_buf = NULL;
-				return;
+			if( ! isset($I2_DISP) ) {
+				$I2_DISP = new Display();
 			}
+			$I2_DISP->disp('error_debug.tpl', array('errors' => $this->error_buf, 'debug' => $this->debug_buf));
+			$this->error_buf = NULL;
+			$this->debug_buf = NULL;
+			return;
 		}
 		catch( Exception $e ) {
 			/* Error in standard output, so just print things, no
