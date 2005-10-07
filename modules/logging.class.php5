@@ -104,7 +104,7 @@ class Logging {
 		fclose($fh);
 
 
-		$this->error_buf .= "\r\n<br />$msg";
+		$this->error_buf .= "\r\n<p>$msg</p>";
 	}
 	
 	/**

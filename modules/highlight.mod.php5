@@ -36,13 +36,10 @@ class Highlight implements Module {
 	function init_pane() {
 		global $I2_ARGS;
 
-		$args = array();
-		//if(count($I2_ARGS) == 1) {
 		$filename = "";
 		$linenum = intval($I2_ARGS[1]);
 		foreach (array_slice($I2_ARGS, 2) as $arg) {
 			$filename .= "/" . $arg;
-			echo $arg . "\n";
 		}
 		$code = highlight_file($filename, TRUE);
 		$code = explode('<br />', $code);
@@ -57,9 +54,7 @@ class Highlight implements Module {
 			$num++;
 		}
 		$code = implode("<br />\n", $code);
-		//	$I2_ARGS[1] = urlencode("/home/sgross/cvs/intranet2/modules/mysql.class.php5");
-			$this->template_args = array("code" => $code);
-		//}
+		$this->template_args = array("code" => $code);
 		return array("Source Code Highlighter", "Highlight");
 	}
 

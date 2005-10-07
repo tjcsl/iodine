@@ -16,7 +16,7 @@
 	border: 2px #f00 dashed;
 	background-color: #daa;
 	padding: 5px;
-	overflow: scroll;
+	overflow: auto;
 	height: 25%;
 /* Should this be included? */
 /*	text-align: right; */
@@ -30,7 +30,7 @@
 	border: 2px #00f dashed;
 	background-color: #aad;
 	padding: 5px;
-	overflow: scroll;
+	overflow: auto;
 	height: 25%;
 }
 
