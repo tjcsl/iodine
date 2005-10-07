@@ -24,10 +24,13 @@
   <td><input type="text" name="pref_sn5" value="[<$prefs.sn5>]" /></td></tr>
  <tr>
   <td>Email:</td>
-  <td><input type="text" name="pref_email1" value="[<$prefs.email1>]" /></td></tr>
+  <td><input type="text" name="pref_email0" value="[<$prefs.email0>]" /></td></tr>
  <tr>
   <td>Personal Webpage:</td>
   <td><input type="text" name="pref_webpage" value="[<$prefs.webpage>]" /></td></tr>
+ <tr>
+  <td>Locker Number:</td>
+  <td><input type="text" name="pref_locker" value="[<$prefs.locker>]" /></td></tr>
 <tr>
  <td>Style:</td>
  <td><select name="pref_style">
