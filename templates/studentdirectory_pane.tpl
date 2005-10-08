@@ -9,7 +9,7 @@ The specified student does not exist. Either you mistyped a URL, or something in
 <td valign="top">
 [<$info.fname>][<if $info.nickname>] ([<$info.nickname>])[</if>] [<$info.mname>] [<$info.lname>][<if $info.suffix>] [<$info.suffix>][</if>] (<a href="mailto:[<$info.username>]@tjhsst.edu">[<$info.username>]@tjhsst.edu</a>), Grade [<$info.grade>]<br />
 Born [<$info.bdate>]<br />
-[<$info.phone_home>]<br />
+Phone (home): [<$info.phone_home>]<br />
 [<$info.address1_street>]<br />
 [<$info.address1_city>], [<$info.address1_state>] [<$info.address1_zip>]<br />
 [<if $info.address2_street>]
