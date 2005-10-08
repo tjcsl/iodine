@@ -81,12 +81,12 @@ class IntraBox {
 	* Displays this intrabox.
 	*/
 	public function display_box() {
-		global $I2_ERR;
+		global $I2_ERR,$I2_SQL;
 		if( is_string($this->module) ) {
 			$tpl = 'intrabox_'.$this->module.'.tpl';
-			
+			$display_title = flatten($I2_SQL->query('SELECT display_name FROM intrabox WHERE name=%s', $this->module)->fetch_array(MYSQL_NUM));
 			if( Display::get_template($tpl) ) {
-				$this->mydisplay->disp('intrabox_openbox.tpl', array('title' => ucwords($this->module)));
+				$this->mydisplay->disp('intrabox_openbox.tpl', array('title' => ucwords($display_title[0])));
 				$this->mydisplay->disp($tpl);
 				$this->mydisplay->disp('intrabox_closebox.tpl');
 			}
