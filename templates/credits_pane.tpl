@@ -56,3 +56,11 @@ I2 User Experience Technicians:
 	<li>Dan Tran</li>
 	<li>William "wyang" Yang</li>
 </ul>
+<hr>
+Special Thanks to:
+<ul>
+	<li>Mr. Richard Slivoskey</li>
+	<li>Mr. Donald Hyatt</li>
+	<li>Mr. Randy Latimer</li>
+	<li>Mr. Joshua Strong</li>
+</ul>
