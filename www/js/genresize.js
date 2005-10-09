@@ -111,8 +111,8 @@ function doMove() {
 		window.event.returnValue = false;
 		window.event.cancelBubble = true;
 	
-		setCookie(theobject.el.id + "_width", theobject.el.style.width, '/');
-		setCookie(theobject.el.id + "_height", theobject.el.style.height, '/');
+		setCookie(theobject.el.id + "_width", theobject.el.style.width, "/");
+		setCookie(theobject.el.id + "_height", theobject.el.style.height, "/");
 	}
 }
 

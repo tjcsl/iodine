@@ -26,10 +26,10 @@ function swap(id) {
 	var div = document.getElementById(id);
 	if (/ minimized/.test(div.className)) {
 		maximize(div);
-		setCookie(id + "_open", "true");
+		setCookie(id + "_open", "true", "/");
 	} else {
 		minimize(div);
-		setCookie(id + "_open", "false");
+		setCookie(id + "_open", "false", "/");
 	}
 }
 
