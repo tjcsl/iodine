@@ -52,12 +52,22 @@ class Result implements Iterator {
 		global $I2_LOG;
 		if (!$mysql_result) {
 			d('Null SQL result constructed.');
+			$this->currect_row = 0;
+			/* Haha, it's brilliant!
+			** We just have to make sure to implement the same methods as MySQL results do.
+			** Doing this will make things more likely to work in the event of disaster.
+			*/
+		$this->mysql_result = $this;
+
 			return;
 		}
 		$this->mysql_result = $mysql_result;
 		$this->query_type = $query_type;
 	}
 
+	public static function nil() {
+		return new Result(null,null);	
+	}
 	
 	/**
 	* Fetches the next ungotten row in the resultset.
