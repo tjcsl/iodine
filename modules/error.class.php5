@@ -44,6 +44,7 @@ class Error {
 			return;
 		}
 
+		$I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
 		$fileurl = str_replace('%2F', '/', urlencode($errfile));
 		switch( $errno ) {
 			case E_WARNING:
