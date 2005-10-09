@@ -1,7 +1,6 @@
 <script language="javascript" type="text/javascript">
 	var olddesc = null;
 	function changeDescription(aid) {
-		alert("aid: " + aid);
 		var desc = document.getElementById('desc_' + aid);
 		if(olddesc) {
 			olddesc.style.display = 'none';
