@@ -5,7 +5,7 @@
 </head>
 <body>
  <div id="login_box">
-  <table BORDER="0" CELLPADDING="1" CELLSPACING="0" WIDTH="100%" HEIGHT="100%">
+  <table BORDER="0" CELLPADDING="1" CELLSPACING="0" WIDTH="100%" HEIGHT="400">
    <tr><td valign="center"><center>
    [<if $failed>]
     Your login as [<$uname>] failed.  Maybe your password is incorrect?
