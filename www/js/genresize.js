@@ -62,8 +62,8 @@ function doDown() {
 
 	theobject.grabx = window.event.clientX;
 	theobject.graby = window.event.clientY;
-	theobject.width = el.clientWidth - 10;
-	theobject.height = el.clientHeight - 10;
+	theobject.width = el.offsetWidth - 14;
+	theobject.height = el.offsetHeight - 14;
 	theobject.left = el.offsetLeft;
 	theobject.top = el.offsetTop;
 
@@ -83,7 +83,7 @@ function doMove() {
 	yMin = 8; //             height
 	
 	el = getReal(event.srcElement, "className", regex);
-	if (/resizeMe/g.test(el.className)) {
+	if (theobject == null && regex.test(el.className)) {
 		str = getDirection(el);
 		//Fix the cursor	
 		if (str == "") str = "default";
