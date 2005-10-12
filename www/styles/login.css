@@ -9,9 +9,17 @@
 #login_table {
 	margin: auto auto auto auto;
 	height: 100%;
+	padding-top: 15px;
 }
-#login_box {
+#login_outerbox {
 	vertical-align: middle;
+}
+#login_failed {
+	margin: auto auto auto auto;
+	text-align: center;
+}
+#login_innerbox {
+	margin: auto auto auto auto;
 }
 
 body {

@@ -6,12 +6,14 @@
 <body>
  <div id="login_area">
   <table id="login_table">
-   <tr><td id="login_box">
+   <tr><td id="login_outerbox">
    [<if $failed>]
-    Your login as [<$uname>] failed.  Maybe your password is incorrect?
+   <div id="login_failed">
+    Your login as [<$uname>] failed.  Maybe your password is incorrect?<br />
+    </div>
     [</if>]
     <form action='[<$I2_SELF>]' method='post'>
-     <table>
+     <table id="login_innerbox">
       <tr>
       	<td>Username:</td>
 	<td><input name='login_username' type='text' value='[<$uname>]'/><br /></td>
