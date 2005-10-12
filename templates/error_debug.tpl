@@ -66,10 +66,16 @@ function maximize(div) {
 [</if>]
 <script language="javascript">
 if (eval(getCookie('error_open', 'true'))) {
-	maximize(document.getElementById('error'));
+	var error_div = document.getElementById("error");
+	if (error_div) {
+		maximize(error_div);
+	}
 }
 if (eval(getCookie('debug_open', 'false'))) {
-	maximize(document.getElementById('debug'));
+	var debug_div = document.getElementById("debug");
+	if (debug_div) {
+		maximize(debug_div);
+	}
 }
 </script>
 </body>
