@@ -4,9 +4,9 @@
 <style type='text/css' media='all'>@import "[<$I2_ROOT>]/www/styles/login.css";</style>
 </head>
 <body>
- <div id="login_box">
-  <table BORDER="0" CELLPADDING="1" CELLSPACING="0" WIDTH="100%" HEIGHT="400">
-   <tr><td valign="center"><center>
+ <div id="login_area">
+  <table id="login_table">
+   <tr><td id="login_box">
    [<if $failed>]
     Your login as [<$uname>] failed.  Maybe your password is incorrect?
     [</if>]
@@ -26,6 +26,6 @@
      </table>
     </form>
      [<* You are accessing the intranet of the Thomas Jefferson High School for Science and Technology.  Any unauthorized or improper use of this system may result in civil and criminal penalties and administrative or disciplinary action, as appropriate.  By proceeding, you indicate awareness of and consent to being monitored and logged. 
-     *>]  </center></td></tr>
+     *>]  </td></tr>
   </table>
  </div>
