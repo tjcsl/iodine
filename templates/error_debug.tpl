@@ -1,14 +1,14 @@
-<script language="javascript" src="[<$I2_ROOT>]www/js/cookie.js"></script>
-<script language="javascript" src="[<$I2_ROOT>]www/js/genresize.js"></script>
-<script language="javascript" src="[<$I2_ROOT>]www/js/ieemu.js"></script>
-<script language="javascript">
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/cookie.js"></script>
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/genresize.js"></script>
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/ieemu.js"></script>
+<script type="text/javascript">
 if (moz) {
 	extendElementModel();
 	extendEventObject();
 	emulateEventHandlers(["mousemove", "mousedown", "mouseup"]);
 }
 </script>
-<script language="JavaScript">
+<script type="text/javascript">
 var divs = Array();
 divs['error'] = 
 { 
@@ -64,7 +64,7 @@ function maximize(div) {
   [<$debug>]
  </div>
 [</if>]
-<script language="javascript">
+<script type="text/javascript">
 if (eval(getCookie('error_open', 'true'))) {
 	var error_div = document.getElementById("error");
 	if (error_div) {
