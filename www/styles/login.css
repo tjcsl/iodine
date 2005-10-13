@@ -1,29 +1,28 @@
-#login_area {
-	margin: 0 auto auto auto;
-	min-height: 400;
-	width: 400;
-	height: 100%;
-	background: url(login.gif) no-repeat center center;
+#login_background {
+	margin: auto auto auto auto;
+	width: 400px;
+	height: 400px;
+	background: #FFFFFF url(login.gif) no-repeat center center;
 }
 
-#login_table {
-	margin: auto auto auto auto;
+.centering_table {
 	height: 100%;
+	margin: auto auto auto auto;
 	padding-top: 15px;
 }
-#login_outerbox {
+.centering_td {
 	vertical-align: middle;
 }
 #login_failed {
 	margin: auto auto auto auto;
 	text-align: center;
 }
-#login_innerbox {
+#login_box {
 	margin: auto auto auto auto;
 }
 
 body {
-	background: white;
+	background: #FFFFFF;
 }
 .error {
 	position:fixed;
