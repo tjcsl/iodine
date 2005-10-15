@@ -140,9 +140,6 @@
     then click "Setup"</li>
   <li> In the Servers box, next to HTTP, type <b>border.tjhsst.edu</b>
     and set the port at <b>8080</b></li>
-  <li> In the box below this information, check "Use Proxy Only for Entries
-    in this list" and add <b>www.tjhsst.edu</b> to the list. The proxy 
-    will only be used when accessing tjhsst.edu.</li>
 </ol>
 
 <br />
