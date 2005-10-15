@@ -40,25 +40,27 @@ class Calc implements Module {
 
 		if( isset($_REQUEST['calc_form']) ) {
 			//form submitted
-			foreach($_REQUEST as $key=>$val) {
-				if($key == 'delete') {
-					$I2_SQL->query('DELETE FROM calculators WHERE calcid=%s', $val);
-					$this->message = "Calculator $val removed from database.";
+			if ($_REQUEST['calc_form']=="add")
+			{
+				if( !is_numeric($_REQUEST['sn']) )
+				{
+					$this->message = "Calculator not added -- calculator ID number must be entered as one number!";
 				}
-				else if($key == 'add') {
-					if( !is_numeric($val) ) {
-						$this->message = "Calculator not added -- calculator ID number must be entered as one number!";
-					}
-					else if($this->calc_exists($val)) {
-						$this->message = "Calculator not added -- this calculator is already in the database!";
-					}
-					else {
-						$uid = $I2_USER->uid;
-						//d("uid: $uid");
-						$I2_SQL->query('INSERT INTO calculators (calcid, uid) VALUES (%d, %d)', $val, $uid);
-						$this->message = "Calculator succesfully added.";
-					}
+				else if($this->calc_exists($_REQUEST['sn']))
+				{
+					$this->message = "Calculator not added -- this calculator is already in the database!";
 				}
+				else
+				{
+					$uid = $I2_USER->uid;
+					$I2_SQL->query('INSERT INTO calculators (calcsn, calcid, uid) VALUES (%d,%s,%d)', $_REQUEST['sn'],$_REQUEST['id'], $uid);
+					$this->message = "Calculator succesfully added.";
+				}
+			}
+			else if ($_REQUEST['calc_form']=="delete")
+			{
+				$I2_SQL->query('DELETE FROM calculators WHERE calcsn=%s', $_REQUEST['sn']);
+				$this->message = "Calculator $val removed from database.";
 			}
 		}
 		return array('Calculator Registration');
@@ -66,7 +68,7 @@ class Calc implements Module {
 
 	private function calc_exists($val) {
 		global $I2_SQL;
-		$temp = flatten($I2_SQL->query('SELECT * FROM calculators WHERE calcid=%d', $val)->fetch_array(MYSQL_ASSOC));
+		$temp = flatten($I2_SQL->query('SELECT * FROM calculators WHERE calcsn=%d', $val)->fetch_array(MYSQL_ASSOC));
 		if ( $temp != null )
 		{
 			return true;
@@ -81,8 +83,7 @@ class Calc implements Module {
 	*/
 	function display_pane($display) {
 		global $I2_SQL, $I2_USER;
-		$calcs = $I2_SQL->query('SELECT calcid FROM calculators WHERE uid=%d', $I2_USER->uid)->fetch_all_arrays(MYSQL_ASSOC);
-		//$display->disp($this->template, $this->template_args);
+		$calcs = $I2_SQL->query('SELECT calcsn, calcid FROM calculators WHERE uid=%d', $I2_USER->uid)->fetch_all_arrays(MYSQL_ASSOC);
 		$display->disp($this->template, array( 'message' => $this->message ,
 							'calcs' => $calcs));
 	}
