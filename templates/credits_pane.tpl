@@ -46,6 +46,7 @@ I2 (codename Iodine) Development Team:
 	<li>Andrew "asmith" Smith (2006)</li>
 	<li>Dan "dtran" Tran (2006)</li>
 	<li>Josiah "Jobin" Boning (2008)</li>
+	<li>Jack "jbreese" Breese (2008)</li>
 	<li>William "wyang" Yang (2008)</li>
 	<li>(Add your own name or nickname if you or it are not listed.)</li>
 </ul>
