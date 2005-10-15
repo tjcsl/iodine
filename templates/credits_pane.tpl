@@ -39,6 +39,7 @@ Intranet2 Development Initiative:
 I2 (codename Iodine) Development Team:
 <ul>
 	<li>Andrew "Deason" Deason (2006)</li>
+	<li>Sam Gross (2006)</li>
 	<li>Eric Harmon (2006)</li>
 	<li>Alfie Parthum (2006)</li> 
 	<li>Bryan "brj" Rau-Jacobs (2006)</li>
