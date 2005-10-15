@@ -69,6 +69,7 @@ class Findcalc implements Module {
 	function display_pane($display) {
 		global $I2_SQL, $I2_USER;
 		$username="";
+		$calcs="";
 		if($this->type=="sn")
 		{
 			$calcs = flatten($I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcsn=%s',$this->number)->fetch_all_arrays(MYSQL_ASSOC));
@@ -79,7 +80,7 @@ class Findcalc implements Module {
 		{
 			$this->message="Calculator not found.";
 		}
-		else if($this->message=="")
+		else if($this->message=="" && $calcs!="")
 		{
 			$username = $I2_SQL->query('SELECT fname,mname,lname FROM user WHERE uid=%s', $calcs["uid"])->fetch_array(MYSQL_ASSOC);
 		}
