@@ -42,9 +42,13 @@ class Calc implements Module {
 			//form submitted
 			if ($_REQUEST['calc_form']=="add")
 			{
-				if( !is_numeric($_REQUEST['sn']) )
+				if ($_REQUEST['sn']==""||strlen($_REQUEST['sn'])!=10||!is_numeric($_REQUEST['sn']))
 				{
-					$this->message = "Calculator not added -- calculator ID number must be entered as one number!";
+					$this->message = "You didn't specify a valid serial number!";
+				}
+				else if($_REQUEST['id']==""||strlen($_REQUEST['id'])!=14)
+				{
+					$this->message = "You didn't specify a valid calculator ID!";
 				}
 				else if($this->calc_exists($_REQUEST['sn']))
 				{
@@ -53,7 +57,7 @@ class Calc implements Module {
 				else
 				{
 					$uid = $I2_USER->uid;
-					$I2_SQL->query('INSERT INTO calculators (calcsn, calcid, uid) VALUES (%d,%s,%d)', $_REQUEST['sn'],$_REQUEST['id'], $uid);
+					$I2_SQL->query('INSERT INTO calculators (calcsn, calcid, uid) VALUES (%d,%s,%d)', $_REQUEST['sn'],strtoupper($_REQUEST['id']), $uid);
 					$this->message = "Calculator succesfully added.";
 				}
 			}
