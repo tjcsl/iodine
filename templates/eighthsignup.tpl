@@ -61,5 +61,5 @@ Activity selections are expected to be made by the end of lunch on the day of th
 <li>Lists of students who have excessive absences from 8th period activities are routinely prepared and given to the guidance counselors and assistant principals. Counselors may use the lists as one measure of responsibility and reliability when considering students for leadership positions within the school, mentorships, or in preparing college recommendations.</li>
 <li>Student parking spaces are allocated after a review of 8th period attendance records.</li>
 <li>If necessary, letters may be sent home to parents regarding excessive absences.</li>
-<li>See <a href="eighthclear.phtml">How to Clear an Absence</a> if you feel there is an error in your attendance record. </li>
+<li>See <a href="eighthclear">How to Clear an Absence</a> if you feel there is an error in your attendance record. </li>
 </ul>
