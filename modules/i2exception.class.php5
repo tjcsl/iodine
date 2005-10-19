@@ -57,14 +57,15 @@ class I2Exception extends Exception {
 	public function __toString() {
 		$I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
 		$str = ($this->critical?'Critical ':'') . 'I2 Exception: '.$this->message;
-		$str .= "<br />\r\n<br />\r\nBacktrace:<br />\r\n";
+		$str .= "<br />\r\nBacktrace:<br />\r\n";
 		
 		$trace = $this->getTrace();
 		
 		foreach($trace as $level) {
 			$file = $level['file'];
 			$line = $level['line'];
-			$str .= "<a href='" . $I2_ROOT . "highlight/$line$file#$line'>" . $file .':'.$line ."</a><br />\r\n";
+			$fileurl = str_replace('%2F', '/', urlencode($file));
+			$str .= "<a href='" . $I2_ROOT . "highlight/$line$fileurl#$line'>$file:$line</a><br />\r\n";
 		}
 		
 		return $str;

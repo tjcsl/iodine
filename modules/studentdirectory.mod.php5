@@ -15,6 +15,7 @@
 * @subpackage StudentDirectory
 * @todo Decide on a system for parental permission (on student directory info) and then make the mysql structure for it
 * @todo Make the page that displays all of the user's info more pretty.
+* @todo Add neato search capabilites as discussed on 11 Nov 2004
 */
 class StudentDirectory implements Module {
 	

@@ -130,13 +130,12 @@ class Eighth implements Module {
 	* if you want the full list.
 	* @param string $title The title for the activity list.
 	*/
-	private function setup_activity_selection($add = FALSE, $blockid = NULL, $restricted = FALSE, $field = "aid", $title = "Select an activity:", $autoredirect = TRUE) {
+	private function setup_activity_selection($add = FALSE, $blockid = NULL, $restricted = FALSE, $field = "aid", $title = "Select an activity:") {
 		$activities = EighthActivity::get_all_activities($blockid, $restricted);
 		$this->template = "eighth_activity_selection.tpl";
 		$this->template_args += array("activities" => $activities, "add" => $add);
 		$this->template_args['title'] = $title;
 		$this->template_args['filed'] = $field;
-		$this->template_args['autoredirect'] = $autoredirect;
 	}
 
 	/**
@@ -795,7 +794,15 @@ class Eighth implements Module {
 	* @todo Figure out what voodoo this does
 	*/
 	public function rep_schedules($op, $args) {
+		global $I2_SQL;
 		if($op == "") {
+			$bids = flatten($I2_SQL->query("SELECT bid FROM eighth_blocks")->fetch_all_arrays(MYSQL_NUM));
+			foreach($bids as $bid) {
+				$uids = flatten($I2_SQL->query("SELECT uid FROM user WHERE uid NOT IN (SELECT userid FROM eighth_activity_map WHERE bid=%d)", $bid)->fetch_all_arrays(MYSQL_NUM));
+				foreach($uids as $uid) {
+					$I2_SQL->query("INSERT INTO eighth_activity_map (bid, aid, userid) VALUES (%d, 1, %d)", $bid, $uid);
+				}
+			}
 		}
 	}
 
@@ -834,9 +841,11 @@ class Eighth implements Module {
 			$this->template = "eighth_vcp_schedule_choose.tpl";
 		}
 		else if($op == "change") {
-			$activity = new EighthActivity($args['aid'], $args['bid']);
-			$activity->add_member($args['uid']);
-			redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
+			if (isSet($args['bid']) && $args['bid'] != "" && isSet($args['aid']) && $args['aid'] != "") {
+				$activity = new EighthActivity($args['aid'], $args['bid']);
+				$activity->add_member($args['uid']);
+				redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
+			}
 		}
 		else if($op == "roster") {
 			$activity = new EighthActivity($args['aid'], $args['bid']);

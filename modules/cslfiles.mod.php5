@@ -77,6 +77,8 @@
 		}
 
 		public function init_box() {
+			global $I2_USER;
+			$this->user = $I2_USER->username;
 			return "Systems Lab File Access";
 		}
 

@@ -44,11 +44,13 @@ class Error {
 			return;
 		}
 
+		$I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
+		$fileurl = str_replace('%2F', '/', urlencode($errfile));
 		switch( $errno ) {
 			case E_WARNING:
 			case E_NOTICE:
 			case E_STRICT:
-				$this->nonfatal_error("Warning: $errstr\r\n<br />Error number: $errno\r\n<br />File: $errfile\r\n<br />Line: $errline");
+				$this->nonfatal_error("Warning: $errstr\r\n<br />Error number: $errno\r\n<br />File: <a href='" . $I2_ROOT . "highlight/$errline$fileurl#$errline'>$errfile:$errline</a>");
 				break;
 			default:
 				$this->fatal_error("Error: $errstr\r\n<br />Error number: $errno\r\n<br />File: $errfile\r\n<br />Line: $errline");

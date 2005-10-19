@@ -41,7 +41,7 @@
 <li><a href="[<$I2_ROOT>]eighth/vp_room"><b>View or print the utilization of a room</b></a>
 
 [<* <li><a href="adlist.phtml">Get a plain text list of students in administrative study hall</a> *>]
-<li><a href="[<$I2_ROOT>]eighth/cancel_activity">Cancel/set comments/advertize for an activity</a>
+<li><a href="[<$I2_ROOT>]eighth/cancel_activity">Cancel/set comments/advertise for an activity</a>
 <li><a href="[<$I2_ROOT>]eighth/room_sanity">Room assignment sanity check</a>
 <li><a href="[<$I2_ROOT>]eighth/vp_sponsor">View or print sponsor schedule</a>
 </ol>

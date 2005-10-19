@@ -41,7 +41,7 @@ newWin.focus();
 </table>
 </form>
 <script language="javascript" type="text/javascript">
-document.scheduleform.studentid.focus();
+document.scheduleform.uid.focus();
 </script>
 </td>
 </tr>

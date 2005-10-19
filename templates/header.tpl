@@ -3,7 +3,9 @@
 <html><head>
 <title>TJHSST Intranet2[<if $title != "" >]: [<$title>][</if>]</title>
 <link type='text/css' rel='stylesheet' href="[<$I2_CSS|default:'/www/styles/default.css'>]" />
-<link type='text/css' rel='stylesheet' href="[<$I2_ROOT>]/www/styles/global.css" /> 
+<link type='text/css' rel='stylesheet' href="[<$I2_ROOT>]www/styles/global.css" /> 
+<link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
+<link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
 </head>
 <body>
 <div class="logo">
