@@ -9,7 +9,7 @@
 */
 
 /**
-* The module that keeps the eighth block office happy.
+* The module that keeps the calculator nerds happy.
 * @package modules
 * @subpackage Calc
 */
@@ -26,10 +26,9 @@ class Calc implements Module {
 	private $template = "calc_pane.tpl";
 
 	/**
-	* Template arguments for the specified action
+	* Declaring some global variables
 	*/
 	private $message;
-	private $template_args = array();
 
 	/**
 	* Required by the {@link Module} interface.
@@ -72,12 +71,10 @@ class Calc implements Module {
 
 	private function calc_exists($val) {
 		global $I2_SQL;
-		$temp = flatten($I2_SQL->query('SELECT * FROM calculators WHERE calcsn=%d', $val)->fetch_array(MYSQL_ASSOC));
-		if ( $temp != null )
+		if ( flatten($I2_SQL->query('SELECT * FROM calculators WHERE calcsn=%d', $val)->fetch_array(MYSQL_ASSOC)); != null )
 		{
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
