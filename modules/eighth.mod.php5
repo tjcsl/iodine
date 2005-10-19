@@ -841,7 +841,7 @@ class Eighth implements Module {
 			$this->template = "eighth_vcp_schedule_choose.tpl";
 		}
 		else if($op == "change") {
-			if (isSet($args['bid']) && $args['bid'] != "" && isSet($args['aid']) && $args['aid'] != "") {
+			if ($args['bid'] && $args['aid']) {
 				$activity = new EighthActivity($args['aid'], $args['bid']);
 				$activity->add_member($args['uid']);
 				redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
