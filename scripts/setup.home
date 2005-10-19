@@ -7,6 +7,11 @@ else
 	username=$1
 	echo "Setting up with humboldt username $username..."
 fi
+rm -rf ${HOME}/smartycompile
+mkdir ${HOME}/smartycompile
+mkdir ${HOME}/smartycompile/templates_c
+chmod -R 777 ${HOME}/smartycompile
+echo "Smarty compile dir (~/smartycompile) created and given 777 modifier... be warned."
 cat scripts/hgrc.home | sed s/\<username\>/$username/g > ${HOME}/.hgrc
 echo "~/.hgrc created"
 cat config.user.ini | sed s/\<username\>/$username/g > config.ini

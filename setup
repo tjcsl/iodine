@@ -7,7 +7,7 @@ if [[ $1 == "" ]] ; then
 	echo "[username] is optional"
 else
 	if [[ $1 == "home" ]] ; then
-					./scripts/setup.home
+					./scripts/setup.home $2
 	else 
 			if [[ $1 == "humboldt" ]]; then
 					./scripts/setup.humboldt				

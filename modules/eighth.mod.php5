@@ -77,6 +77,9 @@ class Eighth implements Module {
 		if($date) {
 			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($I2_USER->uid, $date, 1));
 		}
+		else {
+			$this->template_args['activities'] = array();
+		}
 		$dates = array($date => date("n/j/Y", @strtotime($date)), date("Y-m-d") => "Today", date("Y-m-d", time() + 3600 * 24) => "Tomorrow", "" => "None Scheduled");
 		return "8th Period: {$dates[$date]}";
 	}
