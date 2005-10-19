@@ -69,7 +69,7 @@ class Auth {
 		}
 		$descriptors = array(0 => array('pipe', 'r'), 1 => array('file', '/dev/null', 'w'), 2 => array('file', '/dev/null', 'w'));
 
-		$process = proc_open("kinit $user@LOCAL.TJHSST.EDU", $descriptors, $pipes);
+		$process = proc_open("kinit $user@" . i2config_get('domain', 'LOCAL.TJHSST.EDU', 'auth'), $descriptors, $pipes);
 		if(is_resource($process)) {
 			fwrite($pipes[0], $password);
 			fclose($pipes[0]);
