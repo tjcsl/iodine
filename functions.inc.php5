@@ -30,6 +30,20 @@ function d($text, $level = 9) {
 }
 
 /**
+* A quick function call for issuing a warning.
+*
+* This function is basically a wrapper for $I2_ERR->nonfatal_error(), but
+* is much easier to type. This creates a message in the little error pane, but
+* does not stop or alter execution in any way.
+*
+* @param string @msg The warning message.
+*/
+function warn($msg) {
+	global $I2_ERR;
+	$I2_ERR->nonfatal_error($msg);
+}
+
+/**
 * The __autoload function, used for autoloading modules.
 *
 * This is the function used by PHP as a last resort for loading 
