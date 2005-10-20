@@ -8,7 +8,7 @@ Select a block to lock/unlock:
 	</tr>
 [<foreach from=$blocks item="block">]
 	<tr style="background-color: [<cycle values="#CCCCCC,#FFFFFF">]">
-		<td style="padding: 5px;"><a href="[<$I2_ROOT>]eighth/fin_schedules/[<if $block.locked>]unlock/bid/[<$block.bid>]"><img src="[<$I2_ROOT>]www/check-on.gif">[<else>]lock/bid/[<$block.bid>]"><img src="[<$I2_ROOT>]www/check-off.gif">[</if>]</a></td>
+		<td style="padding: 5px;"><a href="[<$I2_ROOT>]eighth/fin_schedules/[<if $block.locked>]unlock/bid/[<$block.bid>]"><img src="[<$I2_ROOT>]www/pics/eighth/check-on.gif">[<else>]lock/bid/[<$block.bid>]"><img src="[<$I2_ROOT>]www/pics/eighth/check-off.gif">[</if>]</a></td>
 		<td style="padding: 0px 5px;">[<$block.date|date_format:"%A, %b %e, %Y">]</td>
 		<td style="padding: 0px 5px;">[<$block.block>] block</td>
 	</tr>

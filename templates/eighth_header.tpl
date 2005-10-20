@@ -9,7 +9,7 @@ newWin.focus();
 <table style="border: 0px; padding: 0px; margin: 0px">
 <tr>
 <td>
-<a href="[<$I2_ROOT>]eighth"><img src="[<$I2_ROOT>]www/eighth.gif" style="border: 0; width: 300; height: 80"></a>
+<a href="[<$I2_ROOT>]eighth"><img src="[<$I2_ROOT>]www/pics/eighth/eighth.gif" style="border: 0; width: 300; height: 80"></a>
 </td>
 <td style="width: 10"></td>
 <td style="valign: top">

@@ -2,7 +2,7 @@
 	margin: auto auto auto auto;
 	width: 400px;
 	height: 400px;
-	background: #FFFFFF url(login.gif) no-repeat center center;
+	background: #FFFFFF url(../login.gif) no-repeat center center;
 }
 
 .centering_table {
