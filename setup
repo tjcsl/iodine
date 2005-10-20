@@ -8,14 +8,17 @@ if [[ $1 == "" ]] ; then
 	echo
 	echo "Assuming [type] is humboldt..."
 	echo
+	arg="humboldt"
+else
+	arg=$1
 fi
-if [[ $1 == "home" ]] ; then
+if [[ $arg == "home" ]] ; then
 	./scripts/setup.home $2
 else 
-	if [[ $1 == "humboldt" ]]; then
+	if [[ $arg == "humboldt" ]]; then
 		./scripts/setup.humboldt $2				
 	else
-		echo "Type \"$1\" not recognized; should be either humboldt or home."
+		echo "Type \"$arg\" not recognized; should be either humboldt or home."
 	fi
 fi
 
