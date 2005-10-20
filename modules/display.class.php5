@@ -91,7 +91,7 @@ class Display {
 
 		
 		if ($module_name == 'core') {
-			Display::$core_display = $this;
+			self::$core_display = $this;
 		}
 		self::$tpl_root = i2config_get('template_path','./','core');
 		$this->buffer = "";
@@ -113,7 +113,7 @@ class Display {
 	public function display_loop($module) {
 		global $I2_ERR;
 
-		if (Display::$display_stopped) {
+		if (self::$display_stopped) {
 			return;
 		}
 		
@@ -163,7 +163,7 @@ class Display {
 				
 					$this->global_header($title[0]);
 					
-					if (!Display::$display_stopped && $title) {
+					if (!self::$display_stopped && $title) {
 						$this->open_content_pane(array('title' => $title[1]));
 						try {
 							$mod->display_pane($disp);
@@ -191,14 +191,14 @@ class Display {
 	* Stops from anything being displayed? FIXME: explain this!
 	*/
 	public static function halt_display() {
-		Display::$display_stopped = TRUE;
+		self::$display_stopped = TRUE;
 	}
 	
 	/**
 	* Resumes all display? FIXME: explain this!
 	*/
 	public static function resume_display() {
-		Display::$display_stopped = FALSE;
+		self::$display_stopped = FALSE;
 	}
 
 	/**
@@ -221,8 +221,8 @@ class Display {
 	* @return bool Whether buffering is enabled.
 	*/
 	public function buffering_on() {
-		if( Display::$core_display !== NULL )
-			return Display::$core_display->buffering;
+		if( self::$core_display !== NULL )
+			return self::$core_display->buffering;
 		return FALSE;
 	}
 
@@ -275,7 +275,7 @@ class Display {
 		}
 		
 		if ($this->buffering_on()) {
-			Display::$core_display->buffer .= $this->smarty->fetch($tpl); 
+			self::$core_display->buffer .= $this->smarty->fetch($tpl); 
 		} else {
 			$this->smarty->display($tpl);
 		}
@@ -289,7 +289,7 @@ class Display {
 	public function raw_display($text) {
 		$text = 'Raw display from module '.$this->my_module_name.': '.$text;
 		if ($this->buffering_on()) {
-			Display::$core_display->buffer .= "$text";
+			self::$core_display->buffer .= "$text";
 		} else {
 			echo($text);
 		}
@@ -299,9 +299,9 @@ class Display {
 	* Clear any output buffers, ensuring that all data is written to the browser.
 	*/
 	public function flush_buffer() {
-		if ($this == Display::$core_display) {
-			echo(Display::$core_display->buffer);
-			Display::$core_display->buffer = "";
+		if ($this == self::$core_display) {
+			echo(self::$core_display->buffer);
+			self::$core_display->buffer = "";
 		}
 	}
 	
@@ -311,8 +311,8 @@ class Display {
 	* @param bool $on Whether to buffer output.
 	*/
 	public function set_buffering($on) {
-		if ($this == Display::$core_display) {
-			Display::$core_display->buffering = $on;
+		if ($this == self::$core_display) {
+			self::$core_display->buffering = $on;
 			if (!$this->buffering_on()) {
 				$this->flush_buffer();
 			}
