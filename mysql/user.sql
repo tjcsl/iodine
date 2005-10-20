@@ -17,7 +17,6 @@ CREATE TABLE user (
 	lname VARCHAR(127) NOT NULL,
 	suffix VARCHAR(15),
 	nickname VARCHAR(63),
-	title VARCHAR(63),
 	/* like the ()'ed ones now in Intranet */
 
 	/* This field _is_ edited, but it seems like it will be accessed so
