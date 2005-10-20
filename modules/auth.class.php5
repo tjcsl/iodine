@@ -25,7 +25,7 @@ class Auth {
 
 		if( isset($I2_ARGS[0]) && $I2_ARGS[0] == 'logout' ) {
 				if (isSet($_SESSION['i2_uid'])) {
-					$self::log_out($_SESSION['i2_uid']);
+					self::log_out($_SESSION['i2_uid']);
 				} else {
 					/*
 					** This person doesn't have a session.  They're probably not logged in at all.
