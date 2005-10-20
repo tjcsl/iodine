@@ -11,6 +11,8 @@ Search by:
 <input type="submit" value="Search" style="width:75px" name="submit" />
 </form><br />
 [<if $calcs>]
+[<foreach from=$calcs item=calc>]
 FOUND:<br />
-[<$username.fname>] [<$username.mname>] [<$username.lname>]: [<$calcs.calcsn>] ([<$calcs.calcid>])<br />
+[<$calc>]<br />
+[</foreach>]
 [</if>]

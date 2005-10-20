@@ -242,14 +242,13 @@ class User {
 	public function get_groups() {
 		global $I2_SQL;
 		
-		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$this->myuid)->fetch_all_arrays(MYSQL_NUM);
+		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$this->myuid);
 		$ret = array();
 		foreach ($res as $gid) {
 			$ret[] = $this->get_group_name($gid[0]);
 		}	
-		/* Add grade_n to the user's groups.
-		** Yes, This does mean there's a grade_staff.  Yes, that sounds funny.  Live with it.
-		*/
+		// Add grade_n to the user's groups.
+		// Yes, This does mean there's a grade_staff.  Yes, that sounds funny.  Live with it.
 		$ret[] = 'grade_'.$this->grade;
 
 		return $ret;

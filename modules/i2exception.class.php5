@@ -70,6 +70,15 @@ class I2Exception extends Exception {
 		
 		return $str;
 	}
+
+	/**
+	* Retrieves the error message of the exception.
+	*
+	* @return string The message of the exception
+	*/
+	public function get_message() {
+		return $this->message;
+	}
 }
 
 ?>

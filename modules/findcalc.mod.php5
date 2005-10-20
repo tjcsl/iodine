@@ -45,7 +45,7 @@ class Findcalc implements Module {
 			$this->type=$_REQUEST['calc_form'];
 			if ($_REQUEST['calc_form']=="sn")
 			{
-				if ($_REQUEST['number']==""||strlen($_REQUEST['number'])!=10||!is_numeric($_REQUEST['number']))
+				if ($_REQUEST['number']==""||!is_numeric($_REQUEST['number']))
 				{
 					$this->message = "You didn't specify a valid serial number!";
 				}
@@ -53,7 +53,7 @@ class Findcalc implements Module {
 			}
 			else if ($_REQUEST['calc_form']=="id")
 			{
-				if($_REQUEST['number']==""||strlen($_REQUEST['number'])!=14)
+				if($_REQUEST['number']=="")
 				{
 					$this->message = "You didn't specify a valid calculator ID!";
 				}
@@ -68,13 +68,15 @@ class Findcalc implements Module {
 	*/
 	function display_pane($display) {
 		global $I2_SQL, $I2_USER;
+		$this->number="%".$this->number."%";
 		$username="";
+		$result="";
 		$calcs="";
 		if($this->type=="sn")
 		{
-			$calcs = flatten($I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcsn=%s',$this->number)->fetch_all_arrays(MYSQL_ASSOC));
+			$calcs = flatten($I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcsn like %s',$this->number)->fetch_all_arrays(MYSQL_ASSOC));
 		}else if($this->type=="id"){
-			$calcs = flatten($I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcid=%s',$this->number)->fetch_all_arrays(MYSQL_ASSOC));
+			$calcs = flatten($I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcid like %s',$this->number)->fetch_all_arrays(MYSQL_ASSOC));
 		}
 		if(count($calcs)==0 && $this->type!="" && $this->message=="")
 		{
@@ -82,11 +84,15 @@ class Findcalc implements Module {
 		}
 		else if($this->message=="" && $calcs!="")
 		{
-			$username = $I2_SQL->query('SELECT fname,mname,lname FROM user WHERE uid=%s', $calcs["uid"])->fetch_array(MYSQL_ASSOC);
+			$username = flatten($I2_SQL->query('SELECT fname,mname,lname FROM user WHERE uid=%s', $calcs["uid"])->fetch_all_arrays(MYSQL_ASSOC));
+		}
+		$calcs = array_merge($calcs, $username);
+		if($calcs!="")
+		{
+			$result=$calcs["fname"]." ".$calcs["mname"]." ".$calcs["lname"]." ".$calcs["calcsn"]." (".$calcs["calcid"].")<br />";
 		}
 		$display->disp($this->template, array( 'message' => $this->message ,
-							'calcs' => $calcs,
-							'username' => $username));
+							'result' => $result));
 	}
 
 	/**

@@ -14,8 +14,9 @@ chmod -R 777 ${HOME}/smartycompile
 echo "Smarty compile dir (~/smartycompile) created and given 777 modifier... be warned."
 cat scripts/hgrc.home | sed s/\<username\>/$username/g > ${HOME}/.hgrc
 echo "~/.hgrc created"
-cat config.user.ini | sed s/\<username\>/$username/g > config.ini
-cat config.ini | sed "s/https:\/\/iodine\.tjhsst\.edu/http:\/\/localhost/g" > config.ini
+cat config.user.ini | sed "s/<username>/$username/g" > config.ini.tmp
+cat config.ini.tmp | sed "s/https:\/\/iodine\.tjhsst\.edu/http:\/\/localhost/g" > config.ini
+rm -f config.ini.tmp
 echo "config.ini created using localhost"
 cat scripts/test.home | sed s/\<username\>/$username/g > test
 chmod +x test

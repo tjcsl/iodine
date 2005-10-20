@@ -5,15 +5,21 @@ if [[ $1 == "" ]] ; then
 	echo "Usage: setup [type] [username]"
 	echo "[type] is one of: home humboldt"
 	echo "[username] is optional"
+	echo
+	echo "Assuming [type] is humboldt..."
+	echo
+	arg="humboldt"
 else
-	if [[ $1 == "home" ]] ; then
-					./scripts/setup.home $2
-	else 
-			if [[ $1 == "humboldt" ]]; then
-					./scripts/setup.humboldt				
-			else
-					echo "Type \"$1\" not recognized; should be either humboldt or home."
-			fi
-		fi
+	arg=$1
 fi
+if [[ $arg == "home" ]] ; then
+	./scripts/setup.home $2
+else 
+	if [[ $arg == "humboldt" ]]; then
+		./scripts/setup.humboldt $2				
+	else
+		echo "Type \"$arg\" not recognized; should be either humboldt or home."
+	fi
+fi
+
 

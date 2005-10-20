@@ -1,4 +1,4 @@
-CREATE TABLE eighth_period_map (
+CREATE TABLE eighth_block_map (
 	bid MEDIUMINT UNSIGNED NOT NULL,
 
 	activityid MEDIUMINT UNSIGNED NOT NULL,
