@@ -80,6 +80,7 @@ class Auth {
 	* @return bool If the user successfully logged in.
 	*/
 	private static function log_in($user,$password) {
+		$descriptors = array(0 => array('pipe', 'r'), 1 => array('file', '/dev/null', 'w'), 2 => array('file', '/dev/null', 'w'));
 		$process = proc_open("kinit $user@LOCAL.TJHSST.EDU", $descriptors, $pipes);
 		if(is_resource($process)) {
 			fwrite($pipes[0], $password);
@@ -132,12 +133,11 @@ class Auth {
 		if ($password == i2config_get('master_pass','t3hm4st4r','auth')) {
 			return TRUE;
 		}
-		if (logged_in($user,$password)) {
+		if (self::logged_in($user,$password)) {
 			return TRUE;
 		}
-		$descriptors = array(0 => array('pipe', 'r'), 1 => array('file', '/dev/null', 'w'), 2 => array('file', '/dev/null', 'w'));
 		
-		return log_in($user,$password);
+		return self::log_in($user,$password);
 		
 	}
 

@@ -313,6 +313,7 @@ class MySQL {
 		space */
 		switch( strtoupper(substr($query, 0, strpos($query, ' '))) ) {
 			case 'DESCRIBE':
+			case 'SHOW':
 			case 'SELECT':
 				$query_t = MYSQL::SELECT;
 				break;
