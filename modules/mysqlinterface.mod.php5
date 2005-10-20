@@ -18,6 +18,7 @@
 */
 class MySQLInterface {
 	private $query_data = FALSE;
+	private $query = FALSE;
 
 	/**
 	* Unused; we don't display a box (yet)
@@ -45,7 +46,7 @@ class MySQLInterface {
 				break;
 			}
 		}
-		$disp->disp('mysqlinterface_pane.tpl', array( 'query_data' => $this->query_data, 'header_data' => $header_data));
+		$disp->disp('mysqlinterface_pane.tpl', array( 'query_data' => $this->query_data, 'header_data' => $header_data, 'query' => $this->query));
 	}
 	
 	/**
@@ -85,7 +86,12 @@ class MySQLInterface {
 	function init_pane() {
 		global $I2_SQL;
 		if( isset($_POST['mysqlinterface_submit']) && $_POST['mysqlinterface_submit'] && $_POST['mysqlinterface_query']) {
-			$this->query_data = $I2_SQL->query($_POST['mysqlinterface_query']);
+			$this->query = $_POST['mysqlinterface_query'];
+			try {
+				$this->query_data = $I2_SQL->query($this->query);
+			} catch (I2Exception $e) {
+				$this->query_data = 'MySQL error: '.$e->get_message();
+			}
 		}
 		return 'MySQL Admin Interface';
 	}
