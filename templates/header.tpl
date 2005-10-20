@@ -26,7 +26,7 @@
 
   <a href="#">Help</a>
   <span class="bold">&middot;</span>
-  <a href="[<$I2_ROOT>]mysqlinterface">MySQLInterface</a>
+  <a href="[<$I2_ROOT>]mysqlinterface">MySQL Interface</a>
   <span class="bold">&middot;</span>
   <a href="[<$I2_ROOT>]logout">Logout</a>
  </span>
