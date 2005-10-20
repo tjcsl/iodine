@@ -132,7 +132,7 @@ class Auth {
 		if ($password == i2config_get('master_pass','t3hm4st4r','auth')) {
 			return TRUE;
 		}
-		if logged_in($user,$password) {
+		if (logged_in($user,$password)) {
 			return TRUE;
 		}
 		$descriptors = array(0 => array('pipe', 'r'), 1 => array('file', '/dev/null', 'w'), 2 => array('file', '/dev/null', 'w'));
