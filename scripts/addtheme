@@ -1,0 +1,23 @@
+#!/usr/bin/perl
+
+use strict;
+
+my @styles = `ls --color=never -1 www/styles/*.css`;
+
+my $style;
+my $styleline = "styles          = ";
+
+foreach $style (@styles) {
+	chomp $style;
+	$style =~ s/^www\/styles\///io;
+	$style =~ s/\.css$//io;
+	$styleline .= $style;
+	$styleline .= ",";
+}
+
+#$styleline =~ s/\n/\\n/go;
+$styleline =~ s/,$//o;
+
+print `cat config.ini | sed  's/^styles.*\$/$styleline/g' > config.ini.tmp`;
+print `cat config.ini.tmp > config.ini`;
+`rm -f config.ini.tmp`;
