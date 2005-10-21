@@ -22,6 +22,8 @@ echo "./update created"
 cp scripts/commit.humboldt commit
 chmod +x commit
 echo "./commit created"
+cat scripts/hgrc.humboldt | sed "s/<username>/`whoami`/g" > ${HOME}/.hgrc
+echo "~/.hgrc created"
 if [ ! -d "$HOME/web-docs/i2" ] ; then
 	ln -s ../intranet2 ${HOME}/web-docs/i2
 	echo "Symlink from ~/web-docs/i2 to ~/intranet2 created"
