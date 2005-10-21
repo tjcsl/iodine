@@ -262,7 +262,7 @@ class User {
 	* @param string $groupname The name of the group to which this user should be added.
 	*/
 	public function add_group($groupname) {
-		$gid = $this->get_group_id($groupname)->fetch_single_value();
+		$gid = $this->get_group_id($groupname);
 		return $I2_SQL->query('INSERT INTO group_user_map (gid,name) VALUES(%d,%d)',$gid,$this->myuid);
 	}
 
