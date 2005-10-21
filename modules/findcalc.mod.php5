@@ -69,8 +69,8 @@ class Findcalc implements Module {
 	function display_pane($display) {
 		global $I2_SQL, $I2_USER;
 		$this->number="%".$this->number."%";
-		$username="";
-		$result="";
+		$realname=array();
+		$result=array();
 		$calcs="";
 		if($this->type=="sn")
 		{
@@ -84,12 +84,19 @@ class Findcalc implements Module {
 		}
 		else if($this->message=="" && $calcs!="")
 		{
-			$username = flatten($I2_SQL->query('SELECT fname,mname,lname FROM user WHERE uid=%s', $calcs["uid"])->fetch_all_arrays(MYSQL_ASSOC));
-		}
-		$calcs = array_merge($calcs, $username);
-		if($calcs!="")
+			foreach($calcs as $key=>$calc)
+			{
+			if($key=="uid")
+			$realname = array_merge($realname,flatten($I2_SQL->query('SELECT fname,mname,lname FROM user WHERE uid=%s', $calc)->fetch_all_arrays(MYSQL_ASSOC)));
+			}
+			$calcs = array_merge($calcs, $realname);
+		foreach($calcs as $key=>$calc)
 		{
-			$result=$calcs["fname"]." ".$calcs["mname"]." ".$calcs["lname"]." ".$calcs["calcsn"]." (".$calcs["calcid"].")<br />";
+		if($calcs!=""&&$key=="uid")
+		{
+			$result=array_merge((array)$result,array("<a href=\"".$I2_ROOT."studentdirectory/info/".$calc."\">".$calcs["fname"]." ".$calcs["mname"]." ".$calcs["lname"]."</a> ".$calcs["calcsn"]." (".$calcs["calcid"].")<br />"));
+		}
+		}
 		}
 		$display->disp($this->template, array( 'message' => $this->message ,
 							'result' => $result));
