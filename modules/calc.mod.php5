@@ -71,7 +71,7 @@ class Calc implements Module {
 
 	private function calc_exists($val) {
 		global $I2_SQL;
-		if ( flatten($I2_SQL->query('SELECT * FROM calculators WHERE calcsn=%d', $val)->fetch_array(MYSQL_ASSOC)); != null )
+		if ( flatten($I2_SQL->query('SELECT * FROM calculators WHERE calcsn=%d', $val)->fetch_array(MYSQL_ASSOC)) != null )
 		{
 			return true;
 		} else {
