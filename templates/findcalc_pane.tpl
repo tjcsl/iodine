@@ -10,9 +10,9 @@ Search by:
 <input type="text" name="number" style="width:150px" value="" />
 <input type="submit" value="Search" style="width:75px" name="submit" />
 </form><br />
-[<if $calcs>]
-[<foreach from=$calcs item=calc>]
-FOUND:<br />
+[<if $result>]
+<strong>Results:</strong><br />
+[<foreach from=$result item=calc>]
 [<$calc>]<br />
 [</foreach>]
 [</if>]
