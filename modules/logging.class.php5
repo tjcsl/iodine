@@ -90,7 +90,13 @@ class Logging {
 
 		$trace_arr = array();
 		foreach(array_slice(debug_backtrace(),1) as $trace) {
-			$trace_arr[] = basename($trace['file'],'.php5') .':'. $trace['line'];
+			if (isSet($trace['file']) && isSet($trace['line'])) {
+				$trace_arr[] = basename($trace['file'],'.php5') .':'. $trace['line'];
+			} else if (isSet($trace['line'])) {
+				$trace_arr[] = 'Unknown file:'. $trace['line'];	
+			} else {
+				$trace_arr[] = 'Unknown file: Unknown line';
+			}
 		}
 		
 		/* IP - [Apache-style date format] [Mini-backtrace] "Request" "Error" */
