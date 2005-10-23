@@ -9,6 +9,7 @@ cd ${HOME}/intranet2
 
 rm -rf ${HOME}/smartycompile
 mkdir ${HOME}/smartycompile
+mkdir ${HOME}/smartycompile/cache
 mkdir ${HOME}/smartycompile/templates_c
 chmod -R 777 ${HOME}/smartycompile
 echo "Smarty compile dir (~/smartycompile) created and given 777 modifier... be warned."
