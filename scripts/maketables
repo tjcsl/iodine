@@ -1,0 +1,15 @@
+#!/bin/bash
+
+cd ${HOME}/intranet2
+
+echo "Extracting MySQL password from config.ini..."
+passwd=`cat config.ini | grep "^pass" | sed "s/^.*= //" | sed "s/;.*\$//"`
+echo "Done!"
+
+cd mysql
+
+echo "Executing all .sql files in the mysql/ directory..."
+for i in `ls --color=never -1 *.sql`; do 
+		  mysql -D iodine -u iodine --password=$passwd -e "source $i"
+done
+echo "Done!"
