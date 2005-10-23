@@ -55,67 +55,74 @@ class Auth {
 	}
 
 	/**
-	* Checks if a user is logged in or not.
-	*
-	* Will return a value indicating if authentication tokens exist for the passed user.
-	*
-	* @todo write this!
-	* @param string $user The username.
-	* @param string $password The password.
-	* @return bool True if the user is logged in.
-	*/
-	private static function logged_in($user,$password) {
-					return FALSE;
-	}
-
-	/**
 	* Directly logs a user in to Iodine.
 	*
-	* This will user whatever method is most in vogue.
-	* Currently, it checks a user with the specified password 
-	* against the LOCAL.TJHSST.EDU kerberos realm.
+	* This will attempt to log in a user into the Iodine system, using
+	* whatever authentication method specified in config.ini under the
+	* 'Auth' section.
+	*
+	* The authentication method specified in config.ini is the name of a
+	* class. To log in a user, the static method 'authenticate' will be
+	* called in that class. Two parameters will be passed to that method:
+	* which are the same parameters passed to this method. It must return
+	* TRUE if authentication succeeded, and FALSE otherwise.
 	*
 	* @param string $user The username to log in.
 	* @param string $password The password to use.
-	* @return bool If the user successfully logged in.
+	* @return bool	TRUE is the user has been logged in successfully, FALSE
+	*		otherwise.
 	*/
-	private static function log_in($user,$password) {
-		$descriptors = array(0 => array('pipe', 'r'), 1 => array('file', '/dev/null', 'w'), 2 => array('file', '/dev/null', 'w'));
-		$process = proc_open("kinit $user@LOCAL.TJHSST.EDU", $descriptors, $pipes);
-		if(is_resource($process)) {
-			fwrite($pipes[0], $password);
-			fclose($pipes[0]);
-		
-			$status = proc_close($process);
-		
-			if($status == 0) {
-				exec('kdestroy');
-				return TRUE;
-			}
+	private static function validate($user,$password) {
+		$auth_method = i2config_get('method','kerberos','auth');
+
+		if( get_i2module($auth_method) === FALSE ) {
+			throw new I2Exception('Internal error: Unimplemented authentication method '.$auth_method.' specified in the Iodine configuration.');
 		}
-		return FALSE;
-		
+
+		if( ! is_callable($auth_method, 'authenticate') ) {
+			throw new I2Exception('Internal error: invalid authentication method '.$auth_method.' specified in the Iodine configuration.');
+		}
+
+		eval('$result = '.$auth_method.'::authenticate($user, $password);');
+
+		return $result;
 	}
 
 	/**
-	* Logs a user out.
+	* Logs a user out of the Iodine system.
 	*
-	* This will destroy any and all login and authentication information for the user.
+	* This logs out a user, performing the following tasks:
+	* <ul>
+	*  <li>Calls all of the functions in the $_SESSION['logout_funcs'] array</li>
+	*  <li>Destroys all session information associated with the user</li>
+	*  <li>Redirects the user back to Iodine root (i.e. the login page)</li>
+	* </ul>
 	*
-	* @todo Implement this.
 	* @param string $user The username to log out.
-	* @return bool True if the user was successfully logged out.
+	* @return bool TRUE if the user was successfully logged out.
+	XXX: would the return value ever be anything but true? Does this function need to return anything? -adeason
 	*/
 	private function log_out($user) {
-		exec('kdestroy');
+		
+		if(isset($_SESSION['logout_funcs'])) {
+			foreach($_SESSION['logout_funcs'] as $callback) {
+				if( is_callable($callback) ) {
+					call_user_func($callback);
+				}
+				else {
+					d('Invalid callback in the logout_funcs SESSION array, skipping it. Callback: '.print_r($callback,TRUE));
+				}
+			}
+		}
+		
 		session_destroy();
 		unset($_SESSION);
-		/* 
-		** Redirect to Iodine root. If we didn't do this, then
-		** 'logout' would still be in the query string if the user
-		** tried to log in again immediately, which would cause
-		** problems. So, we redirect instead. 
-		*/
+		 
+		// Redirect to Iodine root. If we didn't do this, then
+		// 'logout' would still be in the query string if the user
+		// tried to log in again immediately, which would cause
+		// problems. So, we redirect instead. 
+		
 		redirect();
 		return TRUE;
 	}
@@ -123,7 +130,6 @@ class Auth {
 	/**
 	* Checks if a user is authenticated, trying to authenticate them if they're not already.
 	*	
-	* @todo Specify a cache location to make sure it doesn't destroy the server's kerberos credentials, and possibly preserve the creds for later use
 	* @param string $user The username of the user you want to check
 	* @param string $password The user's password
 	* @return bool	True if correct user/pass pair, false
@@ -133,12 +139,8 @@ class Auth {
 		if ($password == i2config_get('master_pass','t3hm4st4r','auth')) {
 			return TRUE;
 		}
-		if (self::logged_in($user,$password)) {
-			return TRUE;
-		}
 		
-		return self::log_in($user,$password);
-		
+		return self::validate($user,$password);
 	}
 
 	/**
@@ -149,6 +151,7 @@ class Auth {
 	* last attempt with the login box.
 	*
 	* @returns bool Whether or not the user has successfully logged in.
+	* @todo We need a check in here in case the user authenticated, but does not exist in the database.
 	*/
 	public function login() {
 		global $I2_SQL;
