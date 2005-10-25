@@ -41,6 +41,9 @@ class News implements Module {
 		$this->newsadmin = $I2_USER->is_group_member('admin_news');
 		if ($this->newsadmin) {
 			d('This user is a news administrator - news alteration privileges have been granted.');
+		}else if($I2_USER->is_group_member('admin_all')){
+			d('This user is an uber-administrator - news alteration privileges have been granted.');
+			$this->newsadmin = true;
 		}
 	}
 	
