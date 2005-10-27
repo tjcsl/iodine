@@ -82,7 +82,9 @@ class Display {
 		$this->smarty->compile_dir = i2config_get('smarty_path','./','core');
 		$this->smarty->plugins_dir = array('plugins',i2config_get('root_path',NULL,'core').'smarty');
 		$this->smarty->cache_dir = $this->smarty->compile_dir.'cache';
-		$this->smarty->caching = true;
+
+		// Caching off by default
+		$this->smarty->caching = false;
 		
 		//TODO: turn this off for production code!
 		$this->smarty->compile_check = true;
@@ -188,10 +190,28 @@ class Display {
 	}
 
 	/**
+	* Turns on or off caching.
+	*/
+	public function cache($yes=TRUE) {
+		$this->smarty->caching = $yes;
+	}
+
+	/**
 	* Stops from anything being displayed? FIXME: explain this!
 	*/
 	public static function halt_display() {
 		self::$display_stopped = TRUE;
+	}
+
+	/**
+	* Clears any cached Smarty templates.
+	*/
+	public function clear_cache($template=FALSE) {
+		if (!$template) {
+			$this->smarty->clear_all_cache();
+		} else {
+			$this->smarty->clear_cache($template);
+		}
 	}
 	
 	/**
