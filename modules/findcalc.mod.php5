@@ -74,9 +74,9 @@ class Findcalc implements Module {
 		$calcs="";
 		if($this->type=="sn")
 		{
-			$calcs = flatten($I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcsn like %s',$this->number)->fetch_all_arrays(MYSQL_ASSOC));
+			$calcs = flatten($I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcsn like %s',$this->number)->fetch_all_arrays(RESULT_ASSOC));
 		}else if($this->type=="id"){
-			$calcs = flatten($I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcid like %s',$this->number)->fetch_all_arrays(MYSQL_ASSOC));
+			$calcs = flatten($I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcid like %s',$this->number)->fetch_all_arrays(RESULT_ASSOC));
 		}
 		if(count($calcs)==0 && $this->type!="" && $this->message=="")
 		{
@@ -87,7 +87,7 @@ class Findcalc implements Module {
 			foreach($calcs as $key=>$calc)
 			{
 			if($key=="uid")
-			$realname = array_merge($realname,flatten($I2_SQL->query('SELECT fname,mname,lname FROM user WHERE uid=%s', $calc)->fetch_all_arrays(MYSQL_ASSOC)));
+			$realname = array_merge($realname,flatten($I2_SQL->query('SELECT fname,mname,lname FROM user WHERE uid=%s', $calc)->fetch_all_arrays(RESULT_ASSOC)));
 			}
 			$calcs = array_merge($calcs, $realname);
 		foreach($calcs as $key=>$calc)

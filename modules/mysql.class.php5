@@ -333,7 +333,7 @@ class MySQL {
 				throw new I2Exception('Attempted MySQL query of unauthorized command `'.substr($query, 0, strpos($query, ' ')).'`');
 		}
 
-		return new Result($this->raw_query($query),$query_t);
+		return new MySQLResult($this->raw_query($query),$query_t);
 	}
 	
 	/**
@@ -344,7 +344,7 @@ class MySQL {
 	* @return bool TRUE if $col is in table $table, FALSE otherwise.
 	*/
 	public function column_exists($table, $col) {
-		foreach($this->query('DESCRIBE %c;', $table)->fetch_all_arrays(MYSQL_ASSOC) as $field) {
+		foreach($this->query('DESCRIBE %c;', $table)->fetch_all_arrays(RESULT_ASSOC) as $field) {
 			if( $field['Field'] == $col ) {
 				return TRUE;
 			}

@@ -63,7 +63,7 @@ class User {
 		if( $uid === NULL ) {
 			if( isset($_SESSION['i2_uid']) ) {
 				$uid = $_SESSION['i2_uid'];
-				$this->info = $I2_SQL->query('SELECT * FROM user WHERE uid=%d', $uid)->fetch_array(MYSQL_ASSOC);
+				$this->info = $I2_SQL->query('SELECT * FROM user WHERE uid=%d', $uid)->fetch_array(RESULT_ASSOC);
 				if( ! $this->info ) {
 					$I2_ERR->nonfatal_error('A User object was created with a nonexistent uid');
 				}
@@ -148,7 +148,7 @@ class User {
 			$table = 'userinfo';
 		}
 		
-		$res = $I2_SQL->query('SELECT %c FROM %c WHERE uid=%d;', $name, $table, $this->myuid)->fetch_array(MYSQL_NUM);
+		$res = $I2_SQL->query('SELECT %c FROM %c WHERE uid=%d;', $name, $table, $this->myuid)->fetch_array(RESULT_NUM);
 
 		if( $res === FALSE ) {
 			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information');
@@ -212,9 +212,8 @@ class User {
 	* person, as it's faster then just going through each column and
 	* retrieving each one manually.
 	*
-	* @return array An associative array for all fields for user info
-	*               about this user. Keys are the column names, values are
-	*               the values in those columns.
+	* @return array A {@link Result} containing all fields for user info
+	*               about this user.
 	*/
 	public function info() {
 		global $I2_SQL;
@@ -223,7 +222,7 @@ class User {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
 		}
 		
-		$ret = $I2_SQL->query('SELECT * FROM user LEFT JOIN userinfo USING (uid) WHERE user.uid=%d;', $this->myuid)->fetch_array(MYSQL_ASSOC);
+		$ret = $I2_SQL->query('SELECT * FROM user LEFT JOIN userinfo USING (uid) WHERE user.uid=%d;', $this->myuid)->fetch_array(RESULT_ASSOC);
 
 		if( $ret === FALSE ) {
 			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information');
@@ -241,13 +240,13 @@ class User {
 	*/
 	public function get_groups() {
 		
-		$meh = Groups::get_groups($this->myuid);
+		$ret = Groups::get_groups($this->myuid);
 		
 		/* Add grade_n to the user's groups.
-		** Yes, This does mean there's a grade_staff.  Yes, that sounds funny.  Live with it.
+		** Yes, This does mean there's a grade_staff.  Yes, it sounds funny.  Live with it.
 		*/
-		$meh[] = 'grade_' . $this->grade;
-		return $meh;
+		$ret[] = 'grade_' . $this->grade;
+		return $ret;
 	}
 
 
@@ -262,8 +261,6 @@ class User {
 	public function add_to_group($groupname) {
 		return Groups::add_user_to_group($this->myuid,$groupname);
 	}	
-
-	
 
 	/**
 	* Indicates whether this User is a member of the given group. 
@@ -314,7 +311,7 @@ class User {
 			$cols = $argv;
 		}
 
-		$ret = $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid=%d;', $cols, $this->myuid)->fetch_array(MYSQL_BOTH);
+		$ret = $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid=%d;', $cols, $this->myuid)->fetch_array(RESULT_BOTH);
 		
 		if( $ret === FALSE ) {
 			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information');
@@ -342,7 +339,7 @@ class User {
 			array_shift($cols);
 		}
 		
-		return $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid IN (%D);', $cols, $uids)->fetch_all_arrays(MYSQL_ASSOC);
+		return $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid IN (%D);', $cols, $uids)->fetch_all_arrays(RESULT_ASSOC);
 	}
 
 	/**

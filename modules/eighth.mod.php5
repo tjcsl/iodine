@@ -147,7 +147,7 @@ class Eighth implements Module {
 	* @param string $title The title for the group list.
 	*/
 	private function setup_group_selection($add = FALSE, $title = "Select a group:") {
-		$groups = EighthGroup::get_all_groups();
+		$groups = Groups::get_all_groups();
 		$this->template = "eighth_group_selection.tpl";
 		$this->template_args += array("groups" => $groups, "add" => $add);
 		$this->template_args['title'] = $title;
@@ -203,8 +203,8 @@ class Eighth implements Module {
 		}
 		else if($op == "commit") {
 			$activity = new EighthActivity($args['aid'], $args['bid']);
-			$group = new EighthGroup($args['gid']);
-			$activity->add_members($group->members);
+			//FIXME: broken
+			$activity->add_members(Groups::get_group_members($args['gid']));
 			redirect("eighth");
 		}
 	}
@@ -221,38 +221,34 @@ class Eighth implements Module {
 			$this->setup_group_selection(true);
 		}
 		else if($op == "add") {
-			EighthGroup::add_group($args['name']);
+			Groups::create_group($args['name']);
 		}
 		else if($op == "modify") {
-			$group = new EighthGroup($args['gid']);
-			$group->name = $args['name'];
+			Groups::set_group_name($args['gid'],$args['name']);
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
 		}
 		else if($op == "remove") {
-			EighthGroup::remove_group($args['gid']);
+			Groups::delete_group($args['gid']);
 			redirect("eighth");
 		}
 		else if($op == "view") {
-			$group = new EighthGroup($args['gid']);
-			$members = User::id_to_user($group->members);
+			//$group = new EighthGroup($args['gid']);
+			$members = User::id_to_user(Groups::get_group_members($args['gid']));
 			usort($members, array($this, 'name_cmp'));
 			$this->template = "eighth_amr_group.tpl";
 			$this->template_args['members'] = $members;
 			$this->template_args['gid'] = $args['gid'];
 		}
 		else if($op == "add_member") {
-			$group = new EighthGroup($args['gid']);
-			$group->add_member($args['uid']);
+			Groups::add_user_to_group($args['gid'],$args['uid']);
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
 		}
 		else if($op == "remove_member") {
-			$group = new EighthGroup($args['gid']);
-			$group->remove_member($args['uid']);
+			Groups::remove_user_from_group($args['uid'],$args['gid']);
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
 		}
 		else if($op == "remove_all") {
-			$group = new EighthGroup($args['gid']);
-			$group->remove_all();
+			Groups::remove_all_from_group($args['gid']);
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
 		}
 		else if($op == "add_members") {
@@ -811,7 +807,7 @@ class Eighth implements Module {
 		if($op == NULL || $op == "") {
 			$this->template = "eighth_vcp_schedule.tpl";
 			if(!empty($args['uid'])) {
-				$this->template_args['users'] = User::id_to_user(flatten($I2_SQL->query("SELECT uid FROM user WHERE uid LIKE %d", $args['uid'])->fetch_all_arrays(MYSQL_NUM)));
+				$this->template_args['users'] = User::id_to_user(flatten($I2_SQL->query("SELECT uid FROM user WHERE uid LIKE %d", $args['uid'])->fetch_all_arrays(RESULT_NUM)));
 			}
 			else {
 				$this->template_args['users'] = User::search_info("{$args['fname']} {$args['lname']}");

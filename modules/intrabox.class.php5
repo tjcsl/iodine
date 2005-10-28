@@ -84,7 +84,7 @@ class IntraBox {
 		global $I2_ERR,$I2_SQL;
 		if( is_string($this->module) ) {
 			$tpl = 'intrabox_'.$this->module.'.tpl';
-			$display_title = flatten($I2_SQL->query('SELECT display_name FROM intrabox WHERE name=%s', $this->module)->fetch_array(MYSQL_NUM));
+			$display_title = flatten($I2_SQL->query('SELECT display_name FROM intrabox WHERE name=%s', $this->module)->fetch_array(RESULT_NUM));
 			if( Display::get_template($tpl) ) {
 				$this->mydisplay->disp('intrabox_openbox.tpl', array('title' => ucwords($display_title[0])));
 				$this->mydisplay->disp($tpl);
@@ -159,7 +159,7 @@ class IntraBox {
 					 JOIN intrabox_map USING (boxid) 
 					 WHERE intrabox_map.uid=%d 
 					 ORDER BY intrabox_map.box_order;'
-			,$uid)->fetch_all_arrays(MYSQL_NUM));
+			,$uid)->fetch_all_arrays(RESULT_NUM));
 	}
 
 	/**
@@ -170,7 +170,7 @@ class IntraBox {
 	*/
 	public static function get_all_boxes() {
 		global $I2_SQL;
-		return flatten($I2_SQL->query('SELECT name FROM intrabox;')->fetch_all_arrays(MYSQL_NUM));
+		return flatten($I2_SQL->query('SELECT name FROM intrabox;')->fetch_all_arrays(RESULT_NUM));
 	}
 
 	/**
@@ -182,9 +182,9 @@ class IntraBox {
 		global $I2_SQL,$I2_USER;
 		
 		//This is possible to do in one query with subqueries in SQL, I believe, but not prior to MySQL 4.1 afaik. If anyone knows of a way to do this in one query, by all means do it
-		list($max) = $I2_SQL->query('SELECT MAX(box_order) FROM intrabox_map WHERE uid=%d', $I2_USER->uid)->fetch_array(MYSQL_NUM);
+		list($max) = $I2_SQL->query('SELECT MAX(box_order) FROM intrabox_map WHERE uid=%d', $I2_USER->uid)->fetch_array(RESULT_NUM);
 		
-		$boxinfo = self::get_boxes_info(self::USED)->fetch_all_arrays(MYSQL_ASSOC);
+		$boxinfo = self::get_boxes_info(self::USED)->fetch_all_arrays(RESULT_ASSOC);
 		
 		foreach ($boxinfo as $box) {
 			if ($box['boxid'] == $boxid) {
@@ -204,7 +204,7 @@ class IntraBox {
 	public static function delete_box($boxid) {
 		global $I2_SQL,$I2_USER;
 		
-		if( ! ($res = $I2_SQL->query('SELECT box_order FROM intrabox_map WHERE uid=%d AND boxid=%d;', $I2_USER->uid, $boxid)->fetch_array(MYSQL_NUM)) ) {
+		if( ! ($res = $I2_SQL->query('SELECT box_order FROM intrabox_map WHERE uid=%d AND boxid=%d;', $I2_USER->uid, $boxid)->fetch_array(RESULT_NUM)) ) {
 			d('The specified intrabox '.$boxid.' was not already selected by the current user, but something asked to delete it. Ignoring this request', 5);
 			return;
 		}

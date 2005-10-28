@@ -116,7 +116,7 @@ class News implements Module {
 			default:
 				$I2_ARGS[1] = '';
 				
-				$this->newsdetails = $I2_SQL->query('SELECT id,title,text,authorID,posted FROM news ORDER BY posted DESC;')->fetch_all_arrays(MYSQL_ASSOC);
+				$this->newsdetails = $I2_SQL->query('SELECT id,title,text,authorID,posted FROM news ORDER BY posted DESC;')->fetch_all_arrays(RESULT_ASSOC);
 				$this->summaries = &$this->newsdetails;
 		
 				$authors = array();
@@ -157,7 +157,7 @@ class News implements Module {
 	function init_box() {
 		if( $this->summaries === NULL ) {
 			global $I2_SQL;
-			$this->summaries = $I2_SQL->query('SELECT title FROM news ORDER BY posted DESC;')->fetch_all_arrays(MYSQL_ASSOC);
+			$this->summaries = $I2_SQL->query('SELECT title FROM news ORDER BY posted DESC;')->fetch_all_arrays(RESULT_ASSOC);
 		}
 		$num = count($this->summaries);
 		if (!isSet($this->newsadmin)) {
