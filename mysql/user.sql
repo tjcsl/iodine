@@ -1,5 +1,6 @@
 /* This table contains critical information about a user, typically system
 information, which never needs to be hidden or protected, or casually edited */
+DROP TABLE IF EXISTS user;
 CREATE TABLE user (
 	/* Iodine uid */
 	uid MEDIUMINT UNSIGNED NOT NULL DEFAULT NULL AUTO_INCREMENT UNIQUE,

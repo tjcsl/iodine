@@ -1,3 +1,4 @@
+DROP TABLE eighth_activity_permissions;
 CREATE TABLE eighth_activity_permissions (
 	aid MEDIUMINT UNSIGNED NOT NULL,
 

@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS eighth_period_map;
 CREATE TABLE eighth_period_map (
 	bid MEDIUMINT UNSIGNED NOT NULL,
 

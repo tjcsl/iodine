@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS schedules;
 CREATE TABLE schedules(
 	uid BIGINT NOT NULL UNIQUE,
 	PRIMARY KEY(uid),

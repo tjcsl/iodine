@@ -1,5 +1,6 @@
 /* This table contains user information which is either editable or could
 possibly be restricted by privacy preferences */
+DROP TABLE IF EXISTS userinfo;
 CREATE TABLE userinfo (
 	/* binds to other user/userinfo tables */
 	uid MEDIUMINT UNSIGNED NOT NULL UNIQUE,

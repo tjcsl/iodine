@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd ${HOME}/intranet2
+echo `cat config.ini | grep "^pass" | sed "s/^.*= //" | sed "s/;.*\$//"`

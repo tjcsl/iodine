@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS classdescriptions;
 CREATE TABLE classdescriptions(
 	did BIGINT UNIQUE NOT NULL,
 	PRIMARY KEY(did),

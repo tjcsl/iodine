@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS eighth_absentees;
 CREATE TABLE eighth_absentees (
 	bid MEDIUMINT UNSIGNED NOT NULL,
 

@@ -168,23 +168,98 @@ class Groups implements Module {
 	/**
 	* Get a list of group members
 	*/
-	function get_group_members($group) {
+	public static function get_group_members($group) {
 		global $I2_SQL;
 		$group_members = array();
 		$result = $I2_SQL->query('SELECT fname, lname, is_admin, can_post FROM user INNER JOIN group_user_map USING (uid) INNER JOIN groups USING (gid) WHERE groups.name=%s', $group);
 		while($member = $result->fetch_array(MYSQL_ASSOC)) {
 			$name = $member['fname']." ".$member['lname'];
 			$person_array = array("name" => $name);
-			if($member['is_admin'] == 1) {
+			if($member['admin_all'] == 1) {
 				$person_array['admin'] = "Admin";
 			}
-			else if($member['can_post'] == 1) {
+			else if($member['admin_news'] == 1) {
 				$person_array['admin'] = "May post news";
 			}
 			$group_members[] = $person_array;
 		}
 		return $group_members;
 	}
+
+	/**
+	* Gets all groups.
+	*
+	* @return A Result containing gids of all groups.
+	*/
+	public static function get_all_groups() {
+		global $I2_SQL;
+		return $I2_SQL->query("SELECT gid FROM groups");
+	}
+	
+	/**
+	* Get the name of a group.
+	*
+	* Returns a group's name.  This function will throw an error if the passed groupid is invalid.
+	*
+	* @param int $gid The ID of a group.
+	* @return string The group's name. 
+	*/
+	public static function get_group_name($gid) {
+
+		if (!is_numeric($gid)) {
+			throw new i2exception("Non-numerical groupid `$gid' passed to get_group_name!");
+		}
+		global $I2_SQL;
+
+		return $I2_SQL->query('SELECT name FROM groups WHERE gid=%d',$gid)->fetch_single_value();
+	}
+
+	/**
+	* Gets a group's ID by name.
+	*
+	* Performs a lookup of a group's ID with the given name.
+	*
+	* @param string $gname The name of the group to look up.
+	*/
+	public static function get_group_id($gname) {
+		global $I2_SQL;
+		return $I2_SQL->query('SELECT gid FROM groups WHERE name=%s',$gname)->fetch_single_value();
+	}
+	
+	public static function add_user_to_group($uid,$groupname) {
+		global $I2_SQL;
+		$gid = $this->get_group_id($groupname);
+		return $I2_SQL->query('INSERT INTO group_user_map (gid,uid) VALUES(%d,%d)',$gid,$groupname);
+	}
+
+	public static function is_group_member($uid,$groupname) {
+		$groups = $self::get_groups($uid);
+		//d(print_r($groups,true));
+		if ($groups != NULL && in_array($groupname,$groups,FALSE)) {
+			return TRUE;
+		}	
+		if (substr($groupname,6) == 'admin_'  && in_array($groups,'admin_all')) {
+			return TRUE;
+		}
+		return FALSE;
+	}
+
+	/**
+	*
+	* @todo Make this return the grade_whatever group and have admin_all return all admin groups.
+	*/
+	public function get_groups($uid) {
+		global $I2_SQL;
+		
+		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$uid);
+		$ret = array();
+		foreach ($res as $gid) {
+			$ret[] = $self::get_group_name($gid[0]);
+		}	
+		return $ret;
+
+	}
+	
 }
 
 ?>

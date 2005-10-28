@@ -240,19 +240,17 @@ class User {
 	*	@return array An array of names of groups of which this user is a member.
 	*/
 	public function get_groups() {
-		global $I2_SQL;
 		
-		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$this->myuid);
-		$ret = array();
-		foreach ($res as $gid) {
-			$ret[] = $this->get_group_name($gid[0]);
-		}	
-		// Add grade_n to the user's groups.
-		// Yes, This does mean there's a grade_staff.  Yes, that sounds funny.  Live with it.
-		$ret[] = 'grade_'.$this->grade;
-
-		return $ret;
+		$meh = Groups::get_groups($this->myuid);
+		
+		/* Add grade_n to the user's groups.
+		** Yes, This does mean there's a grade_staff.  Yes, that sounds funny.  Live with it.
+		*/
+		$meh[] = 'grade_' . $this->grade;
+		return $meh;
 	}
+
+
 
 	/**
 	* Adds this user to the given group.
@@ -261,41 +259,11 @@ class User {
 	* 
 	* @param string $groupname The name of the group to which this user should be added.
 	*/
-	public function add_group($groupname) {
-		global $I2_SQL;
-		$gid = $this->get_group_id($groupname);
-		return $I2_SQL->query('INSERT INTO group_user_map (gid,uid) VALUES(%d,%d)',$gid,$this->myuid);
-	}
+	public function add_to_group($groupname) {
+		return Groups::add_user_to_group($this->myuid,$groupname);
+	}	
 
-	/**
-	* Get the name of a group.
-	*
-	* Returns a group's name.  This function will throw an error if the passed groupid is invalid.
-	*
-	* @param int $gid The ID of a group.
-	* @return string The group's name. 
-	*/
-	public static function get_group_name($gid) {
-
-		if (!is_numeric($gid)) {
-			throw new i2exception("Non-numerical groupid `$gid' passed to get_group_name!");
-		}
-		global $I2_SQL;
-
-		return $I2_SQL->query('SELECT name FROM groups WHERE gid=%d',$gid)->fetch_single_value();
-	}
-
-	/**
-	* Gets a group's ID by name.
-	*
-	* Performs a lookup of a group's ID with the given name.
-	*
-	* @param string $gname The name of the group to look up.
-	*/
-	public static function get_group_id($gname) {
-		global $I2_SQL;
-		return $I2_SQL->query('SELECT gid FROM groups WHERE name=%s',$gname)->fetch_single_value();
-	}
+	
 
 	/**
 	* Indicates whether this User is a member of the given group. 
@@ -306,16 +274,8 @@ class User {
 	*	@return boolean Whether this User is a member of the passed group.
 	*/
 	public function is_group_member($groupname) {
-		$groups = $this->get_groups();
-		//d(print_r($groups,true));
-		if ($groups != NULL && in_array($groupname,$groups,FALSE)) {
-			return TRUE;
-		}	
-		if (substr($groupname,6) == 'admin_'  && in_array($groups,'admin_all')) {
-			return TRUE;
-		}
-		return FALSE;
-	}
+		return Groups::is_group_member($this->myuid,$groupname);
+	}	
 
 	/**
 	* Get only certain columns of info about the user.
