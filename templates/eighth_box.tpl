@@ -15,6 +15,6 @@ You have been absent <a href="">[<$absent>] time[<if $absent != 1 >]s[</if>]</a>
 		[</foreach>]
 	</table>
 [<else>]
-	There are currently no activities.<br />
+	<br />There are currently no activities.<br />
 [</if>]
 <span style="font-style: italic;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$I2_UID>]">Full Schedule</a> | <a href="[<$I2_ROOT>]eighth">Special Activities</a> | <a href="[<$I2_ROOT>]eighth/vcp_schedule/print/uid/[<$I2_UID>]">Printer Friendly</a></span>
