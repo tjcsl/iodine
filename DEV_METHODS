@@ -1,0 +1,13 @@
+
+- General:
+	All data access is done before any displaying.
+
+- Groups:
+	A user is a member of the grade_[grade] group automatically.  If a user is a member of admin_all, they have all administration rights.
+
+- Display:
+	One display instance is created per intrabox, and one for the pane.
+
+- Data:
+	A Result is an abstract object which may represent MySQL or LDAP results, or something else.
+
