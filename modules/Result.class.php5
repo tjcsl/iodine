@@ -12,7 +12,7 @@ interface Result extends Iterator {
 	* @param int $type RESULT_BOTH, RESULT_ASSOC, or RESULTL_NUM.
 	* @return mixed An array containing cells indexed by the selected method.
 	*/
-	public function fetch_array($type);
+	public function fetch_array($type=RESULT_BOTH);
 	/**
 	* Gets the ID of the first row-creation statement associated with this Result object.
 	*
@@ -30,7 +30,7 @@ interface Result extends Iterator {
 	*
 	* @return array A two-dimensional array containing all the rows as-of-yet unfetched.
 	*/
-	public function fetch_all_arrays($type);
+	public function fetch_all_arrays($type=RESULT_BOTH);
 	/**
 	* Returns the number of rows fetched so far by this Result.
 	*
@@ -45,7 +45,7 @@ interface Result extends Iterator {
 	* @param int $type As fetch_array.
 	* @return mixed As fetch_array.
 	*/
-	public function fetch_row($rownum,$type);
+	public function fetch_row($rownum,$type=RESULT_BOTH);
 	/**
 	* Gets whether there are more unfetched rows in this Result object.
 	*

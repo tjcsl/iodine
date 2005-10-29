@@ -193,7 +193,7 @@ class Groups implements Module {
 	}
 	
 	public static function get_group_members_by_id($gname) {
-		return $self::get_group_members($self::get_group_id($gname));
+		return self::get_group_members(self::get_group_id($gname));
 	}
 
 	/**
@@ -242,7 +242,7 @@ class Groups implements Module {
 	}
 
 	public static function add_user_to_group_by_name($uid,$gname) {
-		return $self::add_user_to_group($uid,$self::get_group_id($gname));
+		return self::add_user_to_group($uid,self::get_group_id($gname));
 	}
 
 	public static function remove_user_from_group($uid,$gid) {
@@ -251,7 +251,7 @@ class Groups implements Module {
 	}
 
 	public static function remove_user_from_group_by_name($uid,$gname) {
-		return $self::remove_user_from_group($uid,$self::get_group_id($gname));
+		return self::remove_user_from_group($uid,self::get_group_id($gname));
 	}
 
 	public static function remove_all_from_group($gid) {
@@ -260,11 +260,11 @@ class Groups implements Module {
 	}
 
 	public static function remove_all_from_group_by_name($gname) {
-		return $self::remove_all_from_group($self::get_group_id($gname));
+		return self::remove_all_from_group(self::get_group_id($gname));
 	}
 
 	public static function is_group_member($uid,$groupname) {
-		$groups = $self::get_groups($uid);
+		$groups = self::get_user_groups($uid);
 		if ($groups != NULL && in_array($groupname,$groups,FALSE)) {
 			return TRUE;
 		}	
@@ -286,18 +286,18 @@ class Groups implements Module {
 	*
 	* @todo Make this return the grade_whatever group and have admin_all return all admin groups?
 	*/
-	public function get_user_groups($uid) {
+	public static function get_user_groups($uid) {
 		global $I2_SQL;
 		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$uid);
 		//TODO: consider this
-		return $res;
+		return $res->fetch_all_arrays(RESULT_NUM);
 	}
 
-	public function get_user_group_names($uid) {
-		$res = self::get_groups($uid);
+	public static function get_user_group_names($uid) {
+		$res = self::get_user_groups($uid);
 		$ret = array();
 		foreach ($res as $gid) {
-			$ret[] = $self::get_group_name($gid[0]);
+			$ret[] = self::get_group_name($gid[0]);
 		}	
 		return $ret;
 	}
