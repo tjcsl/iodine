@@ -1,0 +1,29 @@
+#!/bin/bash
+
+cd ${HOME}/intranet2
+echo "Setting up MySQL..."
+passwd=`./scripts/mysqlpass`
+
+if [[ $6 == "" ]] ; then
+	echo "Syntax: mysqlinit <fname> <mname> <lname> <username> <sex> <grade>"
+	exit 1
+fi
+
+fname=$1
+echo "First name = $fname"
+mname=$2
+echo "Middle name = $mname"
+lname=$3
+echo "Last name = $lname"
+username=$4
+echo "Username = $username"
+sex=$5
+echo "Sex = $sex"
+grade=$6
+echo "Grade = $grade"
+
+`mysql -u iodine -D iodine --password=$passwd -e "insert into user(
+			fname,		mname,	lname,	username,		sex,		grade)
+VALUES(	'$fname',	'$mname','$lname','$username',	'$sex',	'$grade')"`
+
+unset passwd
