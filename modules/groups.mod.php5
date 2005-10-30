@@ -307,7 +307,23 @@ class Groups implements Module {
 	*/
 	public static function delete_group($gid) {
 	}
-	
+
+	/**
+	* Get a user's groups
+	*
+	* Used for finding all the groups a user is a member of in group_user_map
+	*
+	* @return array An array of all the names of groups of which this user is a member.
+	*/
+	public static function get_groups($uid) {
+		global $I2_SQL;
+		$ret = array();
+		$result = $I2_SQL->query('SELECT name FROM groups INNER JOIN group_user_map USING (gid) WHERE uid=%d', $uid);
+		while($row = $result->fetch_array()) {
+			$ret[] = $row[0];
+		}
+		return $ret;
+	}
 }
 
 ?>
