@@ -206,6 +206,25 @@ class User {
 	}
 
 	/**
+	* Creates a new user.
+	*
+	* This will insert the necessary information about a user into the applicable databases,
+	* and do whatever is necessary to get that user an account.
+	*
+	* @return mixed A new User object representing the fresh user.
+	* @todo This will have to be changed to LDAP when we move to it.
+	*/
+	public static function create_user($username,$fname,$lname) {
+		global $I2_SQL;
+		$res = $I2_SQL->query(
+		"INSERT INTO user (	username,	fname,	lname) VALUES(%s,%s,%s,%s,%d)",
+									$username,	$fname,	$lname);
+		$uid = $res->get_insert_id();
+		$res = $I2_SQL->query("INSERT INTO userinfo (uid) VALUES(%d)",$uid);
+		return new User($uid);
+	}
+
+	/**
 	* Get all info about a user.
 	*
 	* Use this function if you're obtaining a lot of information about one

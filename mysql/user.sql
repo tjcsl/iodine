@@ -14,10 +14,10 @@ CREATE TABLE user (
 	grade ENUM('9', '10', '11', '12', 'staff') DEFAULT NULL,
 
 	fname VARCHAR(63) NOT NULL,
-	mname VARCHAR(63),
+	mname VARCHAR(63) DEFAULT "",
 	lname VARCHAR(127) NOT NULL,
-	suffix VARCHAR(15),
-	nickname VARCHAR(63),
+	suffix VARCHAR(15) DEFAULT "",
+	nickname VARCHAR(63) DEFAULT "",
 	/* like the ()'ed ones now in Intranet */
 
 	/* This field _is_ edited, but it seems like it will be accessed so
