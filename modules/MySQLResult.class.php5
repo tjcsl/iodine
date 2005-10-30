@@ -1,6 +1,6 @@
 <?php
 /**
-* Just contains the definition for the {@link Result} class.
+* Just contains the definition for the {@link MySQLResult} class.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004 The Intranet 2 Development Team
 * @since 1.0

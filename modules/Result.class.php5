@@ -1,9 +1,22 @@
 <?php
+/**
+* Just contains the definition for the {@link MySQLResult} class, and the defines for RESULT_ stuff.
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2005 The Intranet 2 Development Team
+* @since 1.0
+* @package core
+* @filesource
+*/
+
 
 define("RESUlT_BOTh",MYSQL_BOTH);
 define("RESULT_NUM",MYSQL_NUM);
 define("RESULT_ASSOC",MYSQL_ASSOC);
-				
+
+/**
+* An interface representing the results of a data query.
+* @package core
+*/			
 interface Result extends Iterator {
 
 	/**
