@@ -199,11 +199,22 @@ class Groups implements Module {
 	/**
 	* Gets all groups.
 	*
-	* @return A Result containing gids of all groups.
+	* @return mixed A Result containing gids of all groups.
 	*/
 	public static function get_all_groups() {
 		global $I2_SQL;
 		return $I2_SQL->query("SELECT gid FROM groups");
+	}
+
+	/**
+	* Gets the name of every group
+	*
+	* @return mixed A Result containing each group's name.
+	*/
+	public static function get_all_groups_names() {
+		global $I2_SQL;
+		return $I2_SQL->query("SELECT name FROM groups");
+	
 	}
 	
 	/**
@@ -283,7 +294,11 @@ class Groups implements Module {
 	}
 
 	/**
+	* Gets the groups of which a user is a member.
 	*
+	*
+	* @param int $uid The userID of which to fetch the groups.
+	* @return array The group IDs of groups for the given user.
 	* @todo Make this return the grade_whatever group and have admin_all return all admin groups?
 	*/
 	public static function get_user_groups($uid) {
@@ -293,6 +308,13 @@ class Groups implements Module {
 		return $res->fetch_all_arrays(RESULT_NUM);
 	}
 
+	/**
+	* Gets the names of groups a user belongs to.
+	*
+	* @param int $uid The UID for which to fetch groups.
+	* @return array An array of the names of groups for the passed user.
+	* @todo Consider using a JOIN statement instead of a loop.
+	*/
 	public static function get_user_group_names($uid) {
 		$res = self::get_user_groups($uid);
 		$ret = array();
@@ -308,22 +330,6 @@ class Groups implements Module {
 	public static function delete_group($gid) {
 	}
 
-	/**
-	* Get a user's groups
-	*
-	* Used for finding all the groups a user is a member of in group_user_map
-	*
-	* @return array An array of all the names of groups of which this user is a member.
-	*/
-	public static function get_groups($uid) {
-		global $I2_SQL;
-		$ret = array();
-		$result = $I2_SQL->query('SELECT name FROM groups INNER JOIN group_user_map USING (gid) WHERE uid=%d', $uid);
-		while($row = $result->fetch_array()) {
-			$ret[] = $row[0];
-		}
-		return $ret;
-	}
 }
 
 ?>

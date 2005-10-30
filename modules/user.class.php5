@@ -236,11 +236,11 @@ class User {
 	*
 	* Used for finding all a user's groups.
 	*
-	*	@return array An array of names of groups of which this user is a member.
+	* @return array An array of names of groups of which this user is a member.
 	*/
 	public function get_groups() {
 		
-		$ret = Groups::get_groups($this->myuid);
+		$ret = Groups::get_user_group_names($this->myuid);
 		
 		/* Add grade_n to the user's groups.
 		** Yes, This does mean there's a grade_staff.  Yes, it sounds funny.  Live with it.
