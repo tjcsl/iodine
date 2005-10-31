@@ -13,11 +13,16 @@
 <form action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$uid>]/bid/[<$bid>]" method="post">
 	<select name="aid" size="10" onChange="changeDescription(this.options[this.selectedIndex].value)">
 [<foreach from=$activities item="activity">]
-		<option value="[<$activity->aid>]">[<$activity->aid>]: [<$activity->name_r>]</option>
+		<option value="[<$activity->aid>]"[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"[</if>]>[<$activity->aid>]: [<$activity->name_r>]</option>
 [</foreach>]
-	</select>
-	<input type="text" name="aid" id="aid_box" /><input type="submit" value="Change" />
+	</select><br />
+	<input type="text" name="aid" id="aid_box" maxlength="4" size="4" /><input type="submit" value="Change" /><br />
 </form>
 [<foreach from=$activities item="activity">]
-	<div id="desc_[<$activity->aid>]" style="display: none">[<$activity->description>]</div>
+	<div id="desc_[<$activity->aid>]" style="display: none; border: solid thin #000000; padding: 5px; margin: 5px; width: 300px;">
+	<span class="bold">Description:</span><br />
+	[<$activity->description>]<br />
+	[<if $activity->cancelled>]<br /><span class="bold" style="color: #FF0000;">CANCELLED</span>[</if>]
+	[<if $activity->restricted>]<br /><span class="bold" style="color: #FF6600;">RESTRICTED</span>[</if>]
+	</div>
 [</foreach>]

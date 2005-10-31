@@ -11,5 +11,13 @@ CREATE TABLE eighth_activities (
 
 	description VARCHAR(255) NOT NULL DEFAULT '',
 
-	restricted TINYINT(1) NOT NULL DEFAULT '0'
+	restricted TINYINT(1) NOT NULL DEFAULT '0',
+
+	presign TINYINT(1) NOT NULL DEFAULT '0',
+
+	oneaday TINYINT(1) NOT NULL DEFAULT '0',
+
+	bothblocks TINYINT(1) NOT NULL DEFAULT '0',
+
+	sticky TINYINT(1) NOT NULL DEFAULT '0'
 );

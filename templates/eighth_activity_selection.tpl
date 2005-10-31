@@ -1,10 +1,13 @@
 [<include file="eighth_header.tpl">]
-<span style="font-weight: bold; font-size: 125%;">[<$title|default:"">]</span><br />
-<select name="activity_list" size="10" onChange="location.href='[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/[<$filed|default:"aid">]/' + this.options[this.selectedIndex].value">
+<form action="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]" method="post">
+	<span style="font-weight: bold; font-size: 125%;">[<$title|default:"">]</span><br />
+	<select name="activity_list" size="10" onChange="location.href='[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/[<$field|default:"aid">]/' + this.options[this.selectedIndex].value">
 [<foreach from=$activities item='activity'>]
-<option value="[<$activity->aid>]">[<$activity->aid>]: [<$activity->name_r>]</option>
+		<option value="[<$activity->aid>]">[<$activity->aid>]: [<$activity->name_r>]</option>
 [</foreach>]
-</select>
+	</select><br />
+	Activity ID: <input type="text" name="[<$field|default:"aid">]" size="5"> <input type="submit" value="Next &gt;">
+</form>
 [<if $add >]
 <br />
 <br />

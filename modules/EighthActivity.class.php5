@@ -32,13 +32,7 @@ class EighthActivity {
 			$this->data['sponsors'] = (!empty($this->data['sponsors']) ? explode(",", $this->data['sponsors']) : array());
 			$this->data['rooms'] = (!empty($this->data['rooms']) ? explode(",", $this->data['rooms']) : array());
 			if($blockid != NULL && $blockid != "") {
-				$this->data += $I2_SQL->query(
-					"SELECT bid,sponsors 
-					AS block_sponsors,rooms 
-					AS block_rooms,cancelled,comment,advertisement,attendancetaken 
-					FROM eighth_block_map 
-					WHERE bid=%d AND activityid=%d",
-					$blockid, $activityid)->fetch_array(RESULT_ASSOC);
+				$this->data += $I2_SQL->query("SELECT bid,sponsors AS block_sponsors,rooms AS block_rooms,cancelled,comment,advertisement,attendancetaken FROM eighth_block_map WHERE bid=%d AND activityid=%d", $blockid, $activityid)->fetch_array(MYSQL_ASSOC);
 				$this->data['block_sponsors'] = (!empty($this->data['block_sponsors']) ? explode(",", $this->data['block_sponsors']) : array());
 				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(",", $this->data['block_rooms']) : array());
 				$this->data['block'] = new EighthBlock($blockid);
@@ -332,6 +326,14 @@ class EighthActivity {
 			$temp_sponsors = array();
 			foreach($sponsors as $sponsor) {
 				$temp_sponsors[] = $sponsor->name;
+			}
+			return implode(",", $temp_sponsors);
+		}
+		else if($name == "block_sponsors_comma_short") {
+			$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
+			$temp_sponsors = array();
+			foreach($sponsors as $sponsor) {
+				$temp_sponsors[] = substr($sponsor->fname, 0, 1) . ". {$sponsor->lname}";
 			}
 			return implode(",", $temp_sponsors);
 		}
