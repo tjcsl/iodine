@@ -9,7 +9,7 @@
 */
 
 /**
-* The module that keeps the eighth block office happy.
+* The module that runs groups
 * @package modules
 * @subpackage Groups
 */
@@ -39,6 +39,8 @@ class Groups implements Module {
 		if(count($I2_ARGS) <= 1) {
 			$this->template = "groups_home.tpl";
 			$this->template_args['groups'] = $I2_USER->get_groups();
+			d("grps admin:");
+			d($I2_USER->is_group_member('admin_groups'));
 			if ($I2_USER->is_group_member("admin_groups")) {
 				$this->template_args['admin'] = 1;
 			}
@@ -88,50 +90,71 @@ class Groups implements Module {
 
 	/**
 	* View a group
+	*
+	* There are two levels of group adminship: news posting privileges and full adminship.
+	* Members with news posting privileges can post news. Members with full adminship can
+	* add or remove members and news posting privileges. However, they can only add admin
+	* privileges. (This is so that one admin can't take over the group by removing all the
+	* other admins.) Only members of admin_groups may remove adminship, along with having
+	* all the other group admin abilities.
+	*
+	* This is slightly changed for "admin_" groups. Admin_groups members are no longer allowed
+	* to even view the group: admin_all takes the place of admin_groups in having admin abilities.
 	*/
 	function group() {
 		global $I2_ARGS, $I2_USER, $I2_SQL;
 
 		$group = $I2_ARGS[2];
 		$this->template_args['group'] = $group;
-		$gid = user::get_group_id($group);
+		$gid = self::get_group_id($group);
 		$is_groups_admin = $I2_USER->is_group_member("admin_groups");
-		if($I2_USER->is_group_member($group) || $is_groups_admin) {
-			$result = $I2_SQL->query('SELECT is_admin FROM group_user_map WHERE uid=%d AND gid=%d', $I2_USER->uid, $gid)->fetch_array(RESULT_NUM);
-			if($result[0] == 1 || $is_groups_admin) {
-				$this->template_args['admin'] = "all";
+		$is_master_admin = $I2_USER->is_group_member("admin_all");
+
+		if($I2_USER->is_group_member($group) || (substr($group,0,6) != 'admin_' && $is_groups_admin) || $is_master_admin) {
+			// user is group member, groups admin if a normal group, or master admin if admin group
+
+			$is_single_admin = $I2_SQL->query('SELECT is_admin FROM group_user_map WHERE uid=%d AND gid=%d', $I2_USER->uid, $gid)->fetch_single_value();
+
+			if($is_single_admin || $is_groups_admin) {
+				// user is single-group admin or groups admin (or master admin)
+
+				// differentiate between single group admin and admin_groups/admin_all
+				if($is_groups_admin) {
+					$this->template_args['admin'] = "master";
+				}
+				else {
+					$this->template_args['admin'] = "all";
+				}
+
 				if( isset($_REQUEST['group_form']) ) {
 					if($_REQUEST['group_form'] == "add") {
 						$new_member_uid = $_REQUEST['uid'];
-						$new_member = new User($new_member_uid);
-						$new_member->add_group($group);
+						self::add_user_to_group($new_member_id, $gid);
 					}
 					if($_REQUEST['group_form'] == "remove") {
 						$id_to_remove = $_REQUEST['uid'];
-						$I2_SQL->query('DELETE FROM group_user_map WHERE uid=%d AND gid=%d', $id_to_remove, $gid);
+						self::remove_user_from_group($id_to_remove, $gid);
 					}
 					if($_REQUEST['group_form'] == "make_admin") {
 						$new_admin_id = $_REQUEST['uid'];
-						$I2_SQL->query('UPDATE group_user_map SET is_admin=1 WHERE uid=%d AND gid=%d', $new_admin_id, $gid);
+						self::bestow_admin_privileges($new_admin_id, $gid);
 					}
 					if($_REQUEST['group_form'] == "remove_admin" && $is_groups_admin){
+						//to remove admin, must be more than single group admin
 						$id_to_remove = $_REQUEST['uid'];
-						$I2_SQL->query('UPDATE group_user_map SET is_admin=0 WHERE uid=%d AND gid=%d', $id_to_remove, $gid);
+						self::deprive_of_admin_privileges($id_to_remove, $gid);
 					}
 					if($_REQUEST['group_form'] == "make_poster") {
 						$new_poster_id = $_REQUEST['uid'];
-						$I2_SQL->query('UPDATE group_user_map SET can_post=1 WHERE uid=%d AND gid=%d', $new_poster_id, $gid);
+						self::bestow_news_privileges($new_poster_id, $gid);
 					}
 					if($_REQUEST['group_form'] == "remove_poster") {
 						$id_to_remove = $_REQUEST['uid'];
-						$I2_SQL->query('UPDATE group_user_map SET can_post=0 WHERE uid=%d AND gid=%d', $id_to_remove, $gid);
+						self::deprive_of_news_privileges($id_to_remove, $gid);
 					}
 				}
 			}
-			if($is_groups_admin) {
-				$this->template_args['admin'] = "master";
-			}
-			$this->template_args['members'] = self::get_group_members($group);
+			$this->template_args['members'] = self::get_memberinfo_helper($group);
 			$this->template = "groups_group.tpl";
 		}
 		else {
@@ -171,6 +194,7 @@ class Groups implements Module {
 	private static function get_memberinfo_helper($gname) {
 		global $I2_SQL;
 		$group_members = array();
+		/*
 		//FIXME: this isn't abstracted enough...
 		$result = $I2_SQL->query('SELECT fname,lname,admin_all,admin_news FROM user INNER JOIN group_user_map USING (uid) INNER JOIN groups USING (gid) WHERE groups.name=%s', $gname);
 		while($member = $result->fetch_array(RESULT_ASSOC)) {
@@ -184,15 +208,34 @@ class Groups implements Module {
 			}
 			$group_members[] = $person_array;
 		}
+		*/
+		$uids = self::get_group_members_by_name($gname);
+		foreach($uids as $uid) {
+			$person_array = array();
+
+			d($uid);
+			$person_user = new User($uid);
+			$person_array['name'] = $person_user->name;
+
+			if (self::is_group_admin_by_name($uid, $gname)) {
+				$person_array['admin'] = "Admin";
+			}
+			else if (self::is_group_poster_by_name($uid, $gname)) {
+				$person_array['admin'] = "May post news";
+			}
+
+			$group_members[] = $person_array;
+		}
+
 		return $group_members;
 	}
 
 	public static function get_group_members($gid) {
 		global $I2_SQL;
-		return $I2_SQL->query("SELECT uid FROM group_user_map WHERE gid=%d",$gid);
+		return flatten($I2_SQL->query("SELECT uid FROM group_user_map WHERE gid=%d",$gid)->fetch_all_arrays(RESULT_NUM));
 	}
 	
-	public static function get_group_members_by_id($gname) {
+	public static function get_group_members_by_name($gname) {
 		return self::get_group_members(self::get_group_id($gname));
 	}
 
@@ -274,8 +317,26 @@ class Groups implements Module {
 		return self::remove_all_from_group(self::get_group_id($gname));
 	}
 
-	public static function is_group_member($uid,$groupname) {
-		$groups = self::get_user_groups($uid);
+	public static function bestow_admin_privileges($uid, $gid) {
+		global $I2_SQL;
+		return $I2_SQL->query('UPDATE group_user_map SET is_admin=1 WHERE uid=%d AND gid=%d', $uid, $gid);
+	}
+	
+	public static function bestow_admin_privileges_by_name($uid, $gname) {
+		return self::bestow_admin_privileges($uid, self::get_group_id($gname));
+	}
+
+	public static function deprive_of_admin_privileges($uid, $gid) {
+		global $I2_SQL;
+		return $I2_SQL->query('UPDATE group_user_map SET is_admin=0 WHERE uid=%d AND gid=%d', $uid, $gid);
+	}
+
+	public static function deprive_of_admin_privileges_by_name($uid, $gname) {
+		return self::deprive_of_admin_privileges($uid, self::get_group_id($gname));
+	}
+
+	public static function is_group_member_by_name($uid,$groupname) {
+		$groups = self::get_user_group_names($uid);
 		if ($groups != NULL && in_array($groupname,$groups,FALSE)) {
 			return TRUE;
 		}	
@@ -286,6 +347,30 @@ class Groups implements Module {
 			return TRUE;
 		}
 		return FALSE;
+	}
+
+	public static function is_group_admin($uid, $gid) {
+		global $I2_SQL;
+		if ($I2_SQL->query('SELECT is_admin FROM group_user_map WHERE uid=%d AND gid=%d', $uid, $gid)->fetch_single_value()) {
+			return TRUE;
+		}
+		return FALSE;
+	}
+
+	public static function is_group_admin_by_name($uid, $gname) {
+		return self::is_group_admin($uid, self::get_group_id($gname));
+	}
+
+	public static function is_group_poster($uid, $gid) {
+		global $I2_SQL;
+		if (self::is_group_admin($uid, $gid) || $I2_SQL->query('SELECT can_post FROM group_user_map WHERE uid=%d AND gid=%d', $uid, $gid)->fetch_single_value()) {
+			return TRUE;
+		}
+		return FALSE;
+	}
+
+	public static function is_group_poster_by_name($uid, $gname) {
+		return self::is_group_poster($uid, self::get_group_id($gname));
 	}
 
 	public static function set_group_name($gid,$name) {
@@ -300,12 +385,13 @@ class Groups implements Module {
 	* @param int $uid The userID of which to fetch the groups.
 	* @return array The group IDs of groups for the given user.
 	* @todo Make this return the grade_whatever group and have admin_all return all admin groups?
+	* @todo Return group names instead of ids?
 	*/
-	public static function get_user_groups($uid) {
+	public static function get_user_group_ids($uid) {
 		global $I2_SQL;
 		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$uid);
 		//TODO: consider this
-		return $res->fetch_all_arrays(RESULT_NUM);
+		return flatten($res->fetch_all_arrays(RESULT_NUM));
 	}
 
 	/**
@@ -316,10 +402,10 @@ class Groups implements Module {
 	* @todo Consider using a JOIN statement instead of a loop.
 	*/
 	public static function get_user_group_names($uid) {
-		$res = self::get_user_groups($uid);
+		$res = self::get_user_group_ids($uid);
 		$ret = array();
 		foreach ($res as $gid) {
-			$ret[] = self::get_group_name($gid[0]);
+			$ret[] = self::get_group_name($gid);
 		}	
 		return $ret;
 	}

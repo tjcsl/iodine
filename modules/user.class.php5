@@ -290,7 +290,7 @@ class User {
 	*	@return boolean Whether this User is a member of the passed group.
 	*/
 	public function is_group_member($groupname) {
-		return Groups::is_group_member($this->myuid,$groupname);
+		return Groups::is_group_member_by_name($this->myuid,$groupname);
 	}	
 
 	/**
