@@ -110,7 +110,7 @@ class Groups implements Module {
 		$is_groups_admin = $I2_USER->is_group_member("admin_groups");
 		$is_master_admin = $I2_USER->is_group_member("admin_all");
 
-		if($I2_USER->is_group_member($group) || (substr($group,0,6) != 'admin_' && $is_groups_admin) || $is_master_admin) {
+		if($is_master_admin || ($is_groups_admin || substr($group,0,6) != 'admin_') || $I2_USER->is_group_member($group)) {
 			// user is group member, groups admin if a normal group, or master admin if admin group
 
 			$is_single_admin = $I2_SQL->query('SELECT is_admin FROM group_user_map WHERE uid=%d AND gid=%d', $I2_USER->uid, $gid)->fetch_single_value();

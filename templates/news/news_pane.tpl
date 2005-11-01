@@ -3,7 +3,7 @@
 [</if>]
 [<foreach from=$news_stories item=story>]
 	[<if !$story.read>]
-		[<include file="news-disp.tpl">]
+		[<include file="news/news-disp.tpl">]
 	[</if>]
 [</foreach>]
 <br/>

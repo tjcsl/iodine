@@ -82,31 +82,38 @@ class IntraBox {
 	*/
 	public function display_box() {
 		global $I2_ERR,$I2_SQL;
+
 		if( is_string($this->module) ) {
 			$tpl = 'intrabox_'.$this->module.'.tpl';
 			$display_title = flatten($I2_SQL->query('SELECT display_name FROM intrabox WHERE name=%s', $this->module)->fetch_array(RESULT_NUM));
-			if( Display::get_template($tpl) ) {
-				$this->mydisplay->disp('intrabox_openbox.tpl', array('title' => ucwords($display_title[0])));
-				$this->mydisplay->disp($tpl);
-				$this->mydisplay->disp('intrabox_closebox.tpl');
+
+			try {
+				self::$display->disp('intrabox_openbox.tpl', array('title' => ucwords($display_title[0])));
+				self::$display->disp($tpl);
+				self::$display->disp('intrabox_closebox.tpl');
+				self::$display->flush_buffer();
 			}
-			else {
-				throw new I2Exception('Invalid intrabox `'.$this->module.'` was attempted to be displayed.');
+			catch(I2Exception $e) {
+				warn('Invalid intrabox `'.$this->module.'` was attempted to be displayed.');
+				self::$display->clear_buffer();
+
 			}
 		}
 		else {
 			$name = $this->module->get_name();
 			try {
 				if( ($title = $this->module->init_box(true)) ) {
-					$this->mydisplay->disp('intrabox_openbox.tpl', array('title' => $title));
 					try {
+						self::$display->disp('intrabox_openbox.tpl', array('title' => $title));
 						$this->module->display_box($this->mydisplay);
+						self::$display->disp('intrabox_closebox.tpl');
+						self::$display->flush_buffer();
 					}
 					catch( Exception $e ) {
-						$this->mydisplay->disp('intrabox_closebox.tpl');
-						throw $e;
+						warn($e->__toString());
+						self::$display->clear_buffer();
 					}
-					$this->mydisplay->disp('intrabox_closebox.tpl');
+
 				}
 			}
 			catch( Exception $e ) {

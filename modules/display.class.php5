@@ -42,7 +42,7 @@ class Display {
 	*
 	* @access private
 	*/
-	private $buffering = FALSE;
+	private $buffering = TRUE;
 
 	/**
 	* The core display object to get buffering data from.
@@ -96,7 +96,8 @@ class Display {
 			self::$core_display = $this;
 		}
 		self::$tpl_root = i2config_get('template_path','./','core');
-		$this->buffer = "";
+		$this->buffer = '';
+		$this->buffering = TRUE;
 
 		if (self::$style == NULL) {
 			self::style_changed();
@@ -290,8 +291,8 @@ class Display {
 		$this->smarty_assign($args);
 		
 		// Validate template given
-		if( ($tpl = self::get_template($template)) === NULL ) {
-			throw new I2Exception('Invalid template `'.$template.'` passed to Display');
+		if( ($tpl = self::get_template(strtolower($this->my_module_name).'/'.$template)) === NULL ) {
+			throw new I2Exception('Invalid template `'.$this->my_module_name.'/'.$template.'` passed to Display');
 		}
 		
 		if ($this->buffering_on()) {
@@ -319,10 +320,17 @@ class Display {
 	* Clear any output buffers, ensuring that all data is written to the browser.
 	*/
 	public function flush_buffer() {
-		if ($this == self::$core_display) {
+		if (1) {
 			echo(self::$core_display->buffer);
-			self::$core_display->buffer = "";
+			self::$core_display->buffer = '';
 		}
+	}
+
+	/**
+	* Clears any output buffers not current pushed through to the browser.
+	*/
+	public function clear_buffer() {
+		self::$core_display->buffer = '';
 	}
 	
 	/**
@@ -370,7 +378,6 @@ class Display {
 	* @param array $args The arguments passed to the Smarty template.
 	*/
 	public function open_content_pane($args) {
-		$this->set_buffering(false);
 		$this->disp('openmainbox.tpl',$args);
 	}
 
@@ -423,8 +430,10 @@ class Display {
 	*                found, NULL otherwise.
 	*/
 	public static function get_template($tpl) {
-		if( is_readable(self::$tpl_root . $tpl) ) {
-			return self::$tpl_root . $tpl;
+		$path = self::$tpl_root . $tpl;
+		
+		if (is_readable($path)) {
+			return $path;
 		}
 		return NULL;
 	}
