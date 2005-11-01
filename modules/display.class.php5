@@ -290,8 +290,8 @@ class Display {
 		$this->smarty_assign($args);
 		
 		// Validate template given
-		if( ($tpl = self::get_template($template)) === NULL ) {
-			throw new I2Exception('Invalid template `'.$template.'` passed to Display');
+		if( ($tpl = self::get_template($this->my_module_name.'/'.$template)) === NULL ) {
+			throw new I2Exception('Invalid template `'.$this->my_module_name.'/'.$template.'` passed to Display');
 		}
 		
 		if ($this->buffering_on()) {

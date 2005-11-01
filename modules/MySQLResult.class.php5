@@ -194,10 +194,30 @@ class MySQLResult implements Result {
 		return mysql_num_fields($this->mysql_result);
 	}
 
-		public function fetch_single_value() {
+	public function fetch_single_value() {
+		$this->rewind();
 		$array = $this->fetch_array(MYSQL_NUM);
 		return $array[0];
 	}
+
+	public function fetch_col($colname) {
+		$this->rewind();
+		$ret = array();
+		while ($arr = $this->fetch_array(MYSQL_ASSOC)) {
+			$ret[] = $arr[$colname];
+		}
+		return $ret;
+	}
+
+	public function fetch_all_single_values() {
+		$this->rewind();
+		$ret = array();
+		while ($arr = $this->fetch_array(MYSQL_NUM)) {
+			$ret[] = $arr[0];
+		}
+		return $ret;
+	}
+
 
 }
 ?>

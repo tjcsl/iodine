@@ -104,6 +104,22 @@ interface Result extends Iterator {
 	* @return mixed The first object in the next unfetched row.
 	*/
 	public function fetch_single_value();
+	
+	/**
+	* Fetch all values from the given column.
+	*
+	*
+	* @param mixed $colname The name of the column to fetch values for.
+	* @return array The values of the passed column.
+	*/
+	public function fetch_col($colname);
+
+	/**
+	* Fetches the entirety of the Result's first column.
+	*
+	* @return array All the values of the first column.
+	*/
+	public function fetch_all_single_values();
 }
 				
 ?>
