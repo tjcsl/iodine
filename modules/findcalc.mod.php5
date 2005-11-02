@@ -4,14 +4,14 @@
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
 * @package modules
-* @subpackage Findcalc
+* @subpackage Calc
 * @filesource
 */
 
 /**
 * The module that keeps TJ students happy.
 * @package modules
-* @subpackage Findcalc
+* @subpackage Calc
 */
 class Findcalc implements Module {
 
@@ -28,36 +28,56 @@ class Findcalc implements Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $message;
-	private $type;
-	private $number;
 	private $template_args = array();
 
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		
 		global $I2_USER, $I2_ARGS, $I2_SQL;
 
 		if( isset($_REQUEST['calc_form']) ) {
 			//form submitted
-			$this->type=$_REQUEST['calc_form'];
-			if ($_REQUEST['calc_form']=="sn")
-			{
-				if ($_REQUEST['number']==""||!is_numeric($_REQUEST['number']))
-				{
-					$this->message = "You didn't specify a valid serial number!";
+			$type = $_REQUEST['calc_form'];
+			if ($type == "sn") {
+				if ($_REQUEST['number']==""||!is_numeric($_REQUEST['number'])) {
+					$this->template_args['message'] = "You didn't specify a valid serial number!";
 				}
-				else{$this->number=$_REQUEST['number'];}
+				else {
+					$number= '%'.$_REQUEST['number'].'%';
+					$calcs = $I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcsn like %s',$number)->fetch_all_arrays(RESULT_ASSOC);
+				}
 			}
-			else if ($_REQUEST['calc_form']=="id")
-			{
-				if($_REQUEST['number']=="")
-				{
-					$this->message = "You didn't specify a valid calculator ID!";
+			else if ($type == "id") {
+				if($_REQUEST['number']=="") {
+					$this->template_args['message'] = "You didn't specify a valid calculator ID!";
 				}
-				else{$this->number=$_REQUEST['number'];}
+				else {
+					$number= '%'.$_REQUEST['number'].'%';
+					$calcs = $I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcid like %s',$number)->fetch_all_arrays(RESULT_ASSOC);
+				}
+			}
+		}
+
+		if(isset($calcs)) {
+			if(count($calcs)==0 && $type!="" && !isset($this->template_args['message'])) {
+				$this->template_args['message']="Calculator not found.";
+			}
+			else if(!isset($this->template_args['message']) && $calcs!="") {
+				$this->template_args['results'] = array();
+
+				foreach($calcs as $calc) {
+					$output_array = array();
+
+					$output_array['uid'] = $uid = $calc['uid'];
+					$possible_owner = new User($uid);
+					$output_array['name'] = $possible_owner->name;
+
+					$output_array['sn'] = $calc['calcsn'];
+					$output_array['id'] = $calc['calcid'];
+
+					$this->template_args['results'][] = $output_array;
+				}
 			}
 		}
 		return array('Identify Lost Calculator');
@@ -67,39 +87,7 @@ class Findcalc implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
-		global $I2_SQL, $I2_USER;
-		$this->number="%".$this->number."%";
-		$realname=array();
-		$result=array();
-		$calcs="";
-		if($this->type=="sn")
-		{
-			$calcs = flatten($I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcsn like %s',$this->number)->fetch_all_arrays(RESULT_ASSOC));
-		}else if($this->type=="id"){
-			$calcs = flatten($I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcid like %s',$this->number)->fetch_all_arrays(RESULT_ASSOC));
-		}
-		if(count($calcs)==0 && $this->type!="" && $this->message=="")
-		{
-			$this->message="Calculator not found.";
-		}
-		else if($this->message=="" && $calcs!="")
-		{
-			foreach($calcs as $key=>$calc)
-			{
-			if($key=="uid")
-			$realname = array_merge($realname,flatten($I2_SQL->query('SELECT fname,mname,lname FROM user WHERE uid=%s', $calc)->fetch_all_arrays(RESULT_ASSOC)));
-			}
-			$calcs = array_merge($calcs, $realname);
-		foreach($calcs as $key=>$calc)
-		{
-		if($calcs!=""&&$key=="uid")
-		{
-			$result=array_merge((array)$result,array("<a href=\"".$I2_ROOT."studentdirectory/info/".$calc."\">".$calcs["fname"]." ".$calcs["mname"]." ".$calcs["lname"]."</a> ".$calcs["calcsn"]." (".$calcs["calcid"].")<br />"));
-		}
-		}
-		}
-		$display->disp($this->template, array( 'message' => $this->message ,
-							'result' => $result));
+		$display->disp($this->template, $this->template_args);
 	}
 
 	/**
