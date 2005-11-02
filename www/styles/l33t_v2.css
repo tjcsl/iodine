@@ -1,0 +1,117 @@
+form, div, p, span, td, th, i {
+	font-family: courier, helvetica, verdana, sans-serif;
+	font-size: 10pt;
+}
+
+img {
+	border-width: 0px;
+}
+
+body {
+	font-family: courier, helvetica, verdana, sans-serif;
+	font-size: 10pt;
+	background: #000000 url(../pics/newlogo.png) no-repeat top left;	
+}
+tt {
+	font-family: monospace, courier;
+}
+a {
+	color: #009900;
+	text-decoration: none;
+}
+a:visited {
+	color: #006600;
+}
+a:active {
+	color: #004a2a;
+}
+a:hover {
+	text-decoration: underline;
+}
+
+.logo {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+}
+.header {
+	position: absolute;
+	top: 20px;
+	left: 310px;
+	right: 10px;
+}
+.title {
+	font-size: 14pt;
+	font-weight: bold;
+	color: #ffffff;
+	width: 100%;
+	border-bottom-style: solid;
+	border-bottom-color: #ffffff;
+	border-bottom-width: 2px;
+}
+.newsitem {
+	font-family: courier, helvetica, verdana, sans-serif;
+	font-size: 10pt;
+	margin-bottom: 10pt;
+	border-left: dotted 1px gray;
+	border-right: dotted 1px gray;
+	border-bottom: dotted 1px gray;
+}
+.newstitle {
+	font-family: courier, helvetica, verdana, sans-serif;
+	font-size: 12pt;
+	font-weight: bold;
+	border: solid 1px gray;
+}
+.newsposted {
+	font-style: italic;
+}
+.date {
+	position: absolute;
+	top: 45px;
+	float: right;
+	right: 25px;
+}
+.boxes {
+	position: absolute;
+	top: 110px;
+	left: 10px;
+	width: 305px;
+}
+.intrabox {
+	border: thin groove;
+	margin-bottom: 10pt;
+	background: #000000;
+}
+.boxheader {
+	color: #ffffff;
+	font-weight: bold;
+	background-color: #000000;
+	border-left: 4px solid #000000;
+	border-right: 4px solid #000000
+}
+.boxbuttons {
+	right: 0px;
+}
+.boxcontent {
+	margin-left: 4px;
+	margin-right: 4px;
+	color: #ffffff;
+}
+.boxform {
+	margin: 5px 4px;
+	color: #ffffff;
+}
+.mainbox {
+	position: absolute;
+	top: 110px;
+	left: 327px;
+	right: 10px;
+	border: thin groove;
+}
+.schedulebutton {
+	width: 150px;
+}
+.bold {
+	font-weight: bold;
+}
