@@ -85,7 +85,7 @@ class Groups implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function get_name() {
-		return "Eighth";
+		return "Groups";
 	}
 
 	/**
@@ -265,7 +265,7 @@ class Groups implements Module {
 	
 	public static function add_user_to_group($uid,$gid) {
 		global $I2_SQL;
-		return $I2_SQL->query('INSERT INTO group_user_map (gid,uid) VALUES(%d,%d)',$gid,$groupname);
+		return $I2_SQL->query('INSERT INTO group_user_map (gid,uid) VALUES(%d,%d)',$gid,$uid);
 	}
 
 	public static function add_user_to_group_by_name($uid,$gname) {

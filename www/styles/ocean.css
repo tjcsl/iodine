@@ -4,10 +4,10 @@ form, div, p, span, td, th, i {
 }
 
 input, select, textarea {
-	background-color: #009999;
-	color: #99FFFF;
+	background-color: #00FFFF;
+	color: #003333;
 	border-width: medium;
-	border-color: #009999;
+	border-color: #00FFFF;
 }
 
 img {
@@ -17,17 +17,18 @@ img {
 body {
 	font-family: arial, helvetica, verdana, sans-serif;
 	font-size: 10pt;
-	background-color: #009999;
+	background-color: #00BBBB;
+	color: #3333CC;
 }
 tt {
 	font-family: monospace, courier;
 }
 a {
-	color: #99FFFF;
+	color: #003333;
 	text-decoration: none;
 }
 a:visited {
-	color: #99FFFF;
+	color: #003333;
 }
 a:active {
 	color: #000000;
@@ -53,10 +54,10 @@ a:hover {
 .title {
 	font-size: 14pt;
 	font-weight: bold;
-	color: #000099;
+	color: #4444EE;
 	width: 100%;
 	border-bottom-style: solid;
-	border-bottom-color: #000099;
+	border-bottom-color: #4444EE;
 	border-bottom-width: 3px;
 }
 .newsitem {
@@ -91,13 +92,13 @@ a:hover {
 .intrabox {
 	border: #00CCCC thick ridge;
 	margin-bottom: 10pt;
-	background-color: #009999;
+	background-color: #00DDDD;
 }
 .boxheader {
-	color: #FFFFFF;
+	color: #99FFFF;
 	font-weight: bold;
-	background-color: #006666;
-	border: medium outset #006666;
+	background-color: #007777;
+	border: medium outset #007777;
 	padding: 0px 4px;
 }
 .boxbuttons {
@@ -105,11 +106,11 @@ a:hover {
 }
 .boxcontent {
 	margin: 4px;
-	color: #000099;
+	color: #4444EE;
 }
 .boxform {
 	margin: 5px 4px;
-	color: #000099;
+	color: #6666FF;
 }
 .mainbox {
 	position: absolute;
@@ -117,6 +118,7 @@ a:hover {
 	left: 337px;
 	right: 10px;
 	border: #00CCCC thick ridge;
+	background-color: #00DDDD;
 }
 .schedulebutton {
 	width: 150px;
