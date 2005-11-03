@@ -194,6 +194,7 @@ class Logging {
 				$I2_DISP = new Display();
 			}
 			$I2_DISP->disp('error_debug.tpl', array('errors' => $this->error_buf, 'debug' => $this->debug_buf));
+			$I2_DISP->flush_buffer();
 			$this->error_buf = NULL;
 			$this->debug_buf = NULL;
 			return;
