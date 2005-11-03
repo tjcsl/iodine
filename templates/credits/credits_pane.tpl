@@ -4,9 +4,9 @@ Intranet2 is a redeveloped version of Intranet made with many years of hindsight
 
 Intranet Groundwork:
 <ul>
-	<li>Brent Metz (1998)<li>
-	<li>Roger Braunstein (1999)<li>
-	<li>Justin Wienckowski (1999)<li>
+	<li>Brent Metz (1998)</li>
+	<li>Roger Braunstein (1999)</li>
+	<li>Justin Wienckowski (1999)</li>
 </ul>
 
 Intranet Development:
@@ -47,6 +47,7 @@ I2 (codename Iodine) Development Team:
 	<li>Dan "dtran" Tran (2006)</li>
 	<li>Josiah "Jobin" Boning (2008)</li>
 	<li>Jack "jbreese" Breese (2008)</li>
+	<li>Nathan Watson (2008)</li>
 	<li>William "wyang" Yang (2008)</li>
 	<li>(Add your own name or nickname if you or it are not listed.)</li>
 </ul>
