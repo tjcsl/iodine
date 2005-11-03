@@ -1,5 +1,5 @@
 form, div, p, span, td, th, i {
-	font-family: arial, helvetica, verdana, sans-serif;
+	font-family: courier, helvetica, verdana, sans-serif;
 	font-size: 10pt;
 }
 
@@ -8,7 +8,7 @@ img {
 }
 
 body {
-	font-family: arial, helvetica, verdana, sans-serif;
+	font-family: courier, helvetica, verdana, sans-serif;
 	font-size: 10pt;
 	background: #000000 url(../pics/newlogo.png) no-repeat top left;	
 }
@@ -50,7 +50,7 @@ a:hover {
 	border-bottom-width: 2px;
 }
 .newsitem {
-	font-family: arial, helvetica, verdana, sans-serif;
+	font-family: courier, helvetica, verdana, sans-serif;
 	font-size: 10pt;
 	margin-bottom: 10pt;
 	border-left: dotted 1px gray;
@@ -58,7 +58,7 @@ a:hover {
 	border-bottom: dotted 1px gray;
 }
 .newstitle {
-	font-family: arial, helvetica, verdana, sans-serif;
+	font-family: courier, helvetica, verdana, sans-serif;
 	font-size: 12pt;
 	font-weight: bold;
 	border: solid 1px gray;
