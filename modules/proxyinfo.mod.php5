@@ -45,6 +45,10 @@ class ProxyInfo {
 		return 'Proxy Info';
 	}
 
+	function is_intrabox() {
+		return false;
+	}
+
 	/**
 	* Performs all initialization necessary for this module to be 
 	* displayed in an ibox.

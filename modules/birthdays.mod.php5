@@ -44,5 +44,9 @@ class Birthdays implements Module {
 	function get_name() {
 		return "Birthdays";
 	}
+
+	function is_intrabox() {
+		return true;
+	}
 }
 ?>

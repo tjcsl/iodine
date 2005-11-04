@@ -45,6 +45,10 @@ class Resources {
 		return 'Resources';
 	}
 
+	function is_intrabox() {
+		return false;
+	}
+
 	/**
 	* Performs all initialization necessary for this module to be 
 	* displayed in an ibox.

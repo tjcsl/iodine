@@ -179,6 +179,10 @@ class News implements Module {
 	function get_name() {
 		return "News";
 	}
+
+	function is_intrabox() {
+		return true;
+	}
 }
 
 ?>

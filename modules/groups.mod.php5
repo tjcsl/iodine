@@ -88,6 +88,10 @@ class Groups implements Module {
 		return "Eighth";
 	}
 
+	function is_intrabox() {
+		return false;
+	}
+
 	/**
 	* View a group
 	*

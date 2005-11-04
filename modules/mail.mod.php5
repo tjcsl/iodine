@@ -41,6 +41,10 @@ class Mail implements Module {
 	function get_name() {
 		return "Mail";
 	}
+
+	function is_intrabox() {
+		return true;
+	}
 }
 
 ?>

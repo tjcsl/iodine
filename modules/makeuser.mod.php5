@@ -28,6 +28,10 @@ class Makeuser implements Module {
 		return "Make User";
 	}
 
+	function is_intrabox() {
+		return false;
+	}
+
 	function init_pane() {
 		global $I2_SQL;
 		if (isSet($_REQUEST['makeuser_uid'])) {
