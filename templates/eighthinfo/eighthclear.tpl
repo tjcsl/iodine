@@ -1,4 +1,5 @@
-   <ul>
+<a href="[<$I2_ROOT>]eighthinfo">Back to Eighth Period Info home</a>
+<ul>
    <li>Sign on to your Intranet Account.</li>
    <li>Click on <b>Full Schedule</b> in the Eighth Period box.</li>
 
@@ -9,5 +10,5 @@
    <li>Deliver your signed page to the 8th Period office  room 236 wk.</li>
    <li>Your absence will be removed within a few days.</li>
 
-   </ul>
-   Stay current with your 8th period attendance record.  An absence can only be cleared within <b>30 days</b> of the date of the absence.
+</ul>
+Stay current with your 8th period attendance record.  An absence can only be cleared within <b>30 days</b> of the date of the absence.

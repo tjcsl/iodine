@@ -4,18 +4,20 @@
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
-* @package core
+* @package modules
 * @subpackage Eighthinfo
 * @filesource
 */
 
 /**
-* The page for the credit everyone deserves.
-* @package core
+* The page for people (presumably freshmen...?) to learn about eighth period
+* @package modules
 * @subpackage Eighthinfo
 */
-class Eighthinfo {
+class Eighthinfo implements Module {
 
+	private $template;
+	
 	/**
 	* Displays all of a module's ibox content.
 	*
@@ -32,7 +34,7 @@ class Eighthinfo {
 	* @abstract
 	*/
 	function display_pane($display) {
-		$display->disp('eighthinfo.tpl');
+		$display->disp($this->template);
 	}
 	
 	/**
@@ -73,9 +75,55 @@ class Eighthinfo {
 	* @abstract
 	*/
 	function init_pane() {
+		global $I2_ARGS;
+
+		if( count($I2_ARGS) > 1) {
+			$method = $I2_ARGS[1];
+			if(method_exists($this, $method)) {
+				$pagename = $this->$method();
+				return 'Eighth Period Information: '.$pagename;
+			}
+		}
+
+		// catch anything that didn't return above
+		$this->template = "eighthinfo.tpl";
 		return 'Eighth Period Information';
 	}
+
+	function eighthwhat() {
+		$this->template = "eighthwhat.tpl";
+		return "What is eighth period?";
+	}
+
+	function eighthsignup() {
+		$this->template = "eighthsignup.tpl";
+		return "How to sign up for eighth period";
+	}
 	
+	function eighthclear() {
+		$this->template = "eighthclear.tpl";
+		return "How to clear an eighth period absence";
+	}
+
+	function eighthstart() {
+		$this->template = "eighthstart.tpl";
+		return "How to start a club";
+	}
+
+	function eighthmakeup() {
+		$this->template = "eighthmakeup.tpl";
+		return "How to use your eighth period record for make-up credit";
+	}
+	
+	function eighthactive() {
+		$this->template = "eighthactive.tpl";
+		return "Active clubs";
+	}
+		
+	function eighthinactive() {
+		$this->template = "eighthinactive.tpl";
+		return "Inactive clubs";
+	}
 }
 ?>
 

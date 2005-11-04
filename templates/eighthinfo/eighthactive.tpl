@@ -1,3 +1,4 @@
+<a href="[<$I2_ROOT>]eighthinfo">Back to Eighth Period Info home</a>
 <h3>Active Eighth Period Clubs as of Wednesday, May 05, 2004</h3>
 
 <h4>Academic Activities</h4>

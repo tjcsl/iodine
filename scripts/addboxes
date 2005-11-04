@@ -1,10 +1,26 @@
 #!/bin/bash
 
 cd /home/${USER}/intranet2
+
+passwd=`scripts/mysqlpass`
 mods=`ls --color=never modules/ | grep .mod.php5`
+
+mysql -D iodine -u iodine --password=$passwd -e "DELETE FROM intrabox"
+mysql -D iodine -u iodine --password=$passwd -e "ALTER TABLE intrabox AUTO_INCREMENT = 1"
 
 for mod in $mods; do
 	#echo $mod
 	mod=`echo $mod | sed s/\.mod\.php5// -`
 	echo $mod
+	mysql -D iodine -u iodine --password=$passwd -e "INSERT INTO intrabox SET name='$mod', display_name='$mod'"
+done
+
+otherboxes=`ls --color=never templates/intrabox/`
+for box in $otherboxes; do
+	box=`echo $box | sed s/intrabox_// - | sed s/\.tpl// -`
+	if [[ $box != 'open' && $box != 'openbox' && $box != 'close' && $box != 'closebox' ]]
+	then
+		echo $box
+		mysql -D iodine -u iodine --password=$passwd -e "INSERT INTO intrabox SET name='$box', display_name='$box'";
+	fi
 done

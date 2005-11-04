@@ -1,3 +1,4 @@
+<a href="[<$I2_ROOT>]eighthinfo">Back to Eighth Period Info home</a>
 <p><b>Selecting an Activity:</b></p>
 Activity selections are expected to be made by the end of lunch on the day of the activity. The sign up process can be done in three ways.
 

@@ -1,3 +1,4 @@
+<a href="[<$I2_ROOT>]eighthinfo">Back to Eighth Period Info home</a>
 <p>To start a club or new organization which will meet during 8th period or after school you must follow these guidelines:</p>
 
 <ul>
