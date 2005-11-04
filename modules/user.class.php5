@@ -65,7 +65,7 @@ class User {
 				$uid = $_SESSION['i2_uid'];
 				$this->info = $I2_SQL->query('SELECT * FROM user WHERE uid=%d', $uid)->fetch_array(RESULT_ASSOC);
 				if( ! $this->info ) {
-					$I2_ERR->nonfatal_error('A User object was created with a nonexistent uid');
+					warn('A User object was created with a nonexistent uid');
 				}
 			}
 			else {
