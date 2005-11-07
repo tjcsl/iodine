@@ -1,17 +1,17 @@
 <?php
 
-exec('intranet2/scripts/mysqlpass', $pass);
+exec('./mysqlpass', $pass);
 $link = mysql_connect(':/var/run/mysqld/mysqld.sock', 'iodine', $pass[0]);
 mysql_select_db('iodine', $link);
 mysql_query('DELETE FROM intrabox', $link);
 mysql_query('ALTER TABLE intrabox AUTO_INCREMENT = 1');
 
-require_once("intranet2/modules/Module.class.php5");
+require_once("../modules/Module.class.php5");
 
-exec('cd intranet2/modules/ && ls --color=never --width=1 *.mod.php5', $files);
+exec('cd ../modules/ && ls --color=never --width=1 *.mod.php5', $files);
 foreach($files as $fname) {
 	print("$fname\n");
-	require_once("intranet2/modules/".$fname);
+	require_once("../modules/".$fname);
 	exec("echo $fname | sed s/\.mod\.php5// -", $fname);
 	$fname = $fname[0];
 	print("$fname\n");
@@ -22,7 +22,7 @@ foreach($files as $fname) {
 }
 
 $files = null;
-exec('cd intranet2/templates/intrabox/ && ls --color=never --width=1', $files);
+exec('cd ../templates/intrabox/ && ls --color=never --width=1', $files);
 foreach($files as $fname) {
 	exec("echo $fname | sed s/intrabox_// -", $fname);
 	$fname = $fname[0];
