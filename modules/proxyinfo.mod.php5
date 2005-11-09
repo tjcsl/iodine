@@ -4,17 +4,17 @@
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
-* @package core
-* @subpackage ProxyInfo
+* @package modules
+* @subpackage Resources
 * @filesource
 */
 
 /**
-* The page for the credit everyone deserves.
-* @package core
-* @subpackage ProxyInfo
+* Information on that whole border.tjhsst.edu proxying thing.
+* @package modules
+* @subpackage Resources
 */
-class ProxyInfo {
+class ProxyInfo implements Module {
 
 	/**
 	* Displays all of a module's ibox content.
@@ -32,7 +32,7 @@ class ProxyInfo {
 	* @abstract
 	*/
 	function display_pane($display) {
-		$display->disp('proxy_info.tpl');
+		$display->disp('proxyinfo.tpl');
 	}
 	
 	/**

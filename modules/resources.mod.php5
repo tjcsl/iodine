@@ -4,17 +4,17 @@
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
-* @package core
+* @package modules
 * @subpackage Resources
 * @filesource
 */
 
 /**
-* The page for the credit everyone deserves.
-* @package core
+* Much databasey research fun!
+* @package modules
 * @subpackage Resources
 */
-class Resources {
+class Resources implements Module {
 
 	/**
 	* Displays all of a module's ibox content.
