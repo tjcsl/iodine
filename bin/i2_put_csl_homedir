@@ -1,0 +1,11 @@
+#!/usr/bin/perl
+
+# Syntax: i2_put_csl_homedir username [file+]
+
+my $username = shift @ARGV;
+my $homedir = `i2_csl_homedir $username`;
+my $file;
+
+while ($file = shift @ARGV) {
+	`i2_mv "$file" "$homedir"`;
+}

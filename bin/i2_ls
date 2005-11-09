@@ -1,0 +1,15 @@
+#!/usr/bin/perl
+
+# Syntax: i2_ls dir
+
+use strict;
+
+my $dir = shift @ARGV;
+my @res = `ls -F -a -1 "$dir"`;
+my $line;
+
+foreach $line (@res) {
+				# Only leave in the directories' terminating /
+				$line =~ s/[\*=@|]$//o;
+				print $line;
+}

@@ -1,0 +1,12 @@
+#!/usr/bin/perl
+
+# Syntax: i2_mv file [file+] dest
+
+use strict;
+
+my $dest = pop @ARGV;
+my $file;
+
+while ($file = shift @ARGV) {
+	`mv -g "$file" "$dest"`;
+}
