@@ -34,7 +34,7 @@ for i in `ls -1 *.sql`; do
 done
 
 echo "Adding modules to intraboxes..."
-scripts/addboxes
+php scripts/addboxes.php
 echo "Done"
 
 echo "Done!"

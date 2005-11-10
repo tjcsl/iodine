@@ -3,13 +3,6 @@ form, div, p, span, td, th, i {
 	font-size: 10pt;
 }
 
-input, select, textarea {
-	background-color: #f0e68c;
-	color: #660033;
-	border-width: medium;
-	border-color: #fcc303;
-}
-
 img {
 	border-width: 0px;
 }
@@ -17,20 +10,20 @@ img {
 body {
 	font-family: arial, helvetica, verdana, sans-serif;
 	font-size: 10pt;
-	background-color: #660033;
+	background: #950875 url(../pics/newlogo.png) no-repeat top left;	
 }
 tt {
 	font-family: monospace, courier;
 }
 a {
-	color: #cc6600;
+	color: #ff00c0;
 	text-decoration: none;
-}
+	}
 a:visited {
-	color: #cc99cc;
+	color: #ff00c0;
 }
 a:active {
-	color: #ffcc33;
+	color: #ff00c0;
 }
 a:hover {
 	text-decoration: underline;
@@ -38,26 +31,21 @@ a:hover {
 
 .logo {
 	position: absolute;
-	top: 0px;
-	left: 0px;
-	width: 100%;
-	height: 100%;
-	background: url(../pics/newlogo.png) no-repeat;
+	top: 10px;
+	left: 10px;
 }
 .header {
 	position: absolute;
 	top: 20px;
-	left: 300px;
+	left: 310px;
 	right: 10px;
 }
 .title {
 	font-size: 14pt;
 	font-weight: bold;
-	color: #87ceeb;
+	color: #f3a8e2;
 	width: 100%;
-	border-bottom-style: solid;
-	border-bottom-color: #fcc303;
-	border-bottom-width: 3px;
+	border-bottom: 1px solid #f3a8e2;
 }
 .newsitem {
 	font-family: arial, helvetica, verdana, sans-serif;
@@ -77,6 +65,7 @@ a:hover {
 	font-style: italic;
 }
 .date {
+	color: #f3a8e2;
 	position: absolute;
 	top: 45px;
 	float: right;
@@ -86,40 +75,37 @@ a:hover {
 	position: absolute;
 	top: 110px;
 	left: 10px;
-	width: 315px;
+	width: 305px;
 }
 .intrabox {
-	border: #fcc303 thick ridge;
 	margin-bottom: 10pt;
-	background-color: #990022;
+	background: #f3a8e2;
 }
 .boxheader {
-	color: #87ceeb;
+	color: #336699;
 	font-weight: bold;
-	background-color: #990022;
-	border-bottom-style: dotted;
-	border-bottom-width: 1px;
-	border-bottom-color: #fcc303;
-	padding: 0px 4px;
+	background-color: #f3a8e2;
+	border-left: 4px solid #f3a8e2;
+	border-right: 4px solid #f3a8e2;
 }
 .boxbuttons {
 	right: 0px;
 }
 .boxcontent {
-	margin: 4px;
-	color: #ffffff;
+	margin-left: 4px;
+	margin-right: 4px;
+	color: #000000;
 }
 .boxform {
 	margin: 5px 4px;
-	color: #ffffff;
+	color: #000000;
 }
 .mainbox {
-	background-color: #990022;
 	position: absolute;
 	top: 110px;
-	left: 337px;
+	left: 327px;
 	right: 10px;
-	border: #fcc303 thick ridge;
+	background-color: #f3a8e2;
 }
 .schedulebutton {
 	width: 150px;

@@ -75,6 +75,10 @@ class Credits {
 	function init_pane() {
 		return 'Credits';
 	}
+
+	function is_intrabox() {
+		return false;
+	}
 	
 }
 ?>

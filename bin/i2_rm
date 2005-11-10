@@ -1,0 +1,12 @@
+#!/usr/bin/perl
+
+# Syntax: i2_rm username [file+]
+
+use strict;
+
+my $file;
+my $username = shift @ARGV;
+
+while ($file = shift @ARGV) {
+	`i2_rm_safe $username "$file"`;
+}

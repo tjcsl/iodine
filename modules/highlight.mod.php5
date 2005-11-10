@@ -84,6 +84,10 @@ class Highlight implements Module {
 	function get_name() {
 		return "Highlight";
 	}
+
+	function is_intrabox() {
+		return false;
+	}
 }
 
 ?>

@@ -108,6 +108,10 @@ class Calc implements Module {
 	function get_name() {
 		return "Calculator Registration";
 	}
+
+	function is_intrabox() {
+		return false;
+	}
 }
 
 ?>

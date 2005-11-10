@@ -1,0 +1,9 @@
+#!/usr/bin/perl
+
+# Syntax: i2_get_csl_homedir username
+
+use strict;
+
+my $username = shift @ARGV;
+
+print "/afs/csl/user/$username/";

@@ -198,13 +198,6 @@ class Display {
 	}
 
 	/**
-	* Stops from anything being displayed? FIXME: explain this!
-	*/
-	public static function halt_display() {
-		self::$display_stopped = TRUE;
-	}
-
-	/**
 	* Clears any cached Smarty templates.
 	*/
 	public function clear_cache($template=FALSE) {
@@ -215,13 +208,6 @@ class Display {
 		}
 	}
 	
-	/**
-	* Resumes all display? FIXME: explain this!
-	*/
-	public static function resume_display() {
-		self::$display_stopped = FALSE;
-	}
-
 	/**
 	* Inform Dislay that the user's style has changed.
 	*/

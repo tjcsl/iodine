@@ -260,11 +260,6 @@ class User {
 	public function get_groups() {
 		
 		$ret = Groups::get_user_group_names($this->myuid);
-		
-		/* Add grade_n to the user's groups.
-		** Yes, This does mean there's a grade_staff.  Yes, it sounds funny.  Live with it.
-		*/
-		$ret[] = 'grade_' . $this->grade;
 		return $ret;
 	}
 

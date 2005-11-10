@@ -47,6 +47,10 @@ class Eighthinfo implements Module {
 		return 'Eighthinfo';
 	}
 
+	function is_intrabox() {
+		return false;
+	}
+
 	/**
 	* Performs all initialization necessary for this module to be 
 	* displayed in an ibox.
