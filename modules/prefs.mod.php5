@@ -46,10 +46,15 @@ class Prefs implements Module {
 			}
 
 			if( isset($_REQUEST['add_intrabox']) && isSet($_REQUEST['add_boxid']) ) {
-				Intrabox::add_box($_REQUEST['add_boxid']);
+				d("Boxes: ".print_r($_REQUEST['add_boxid'],TRUE));
+				foreach ($_REQUEST['add_boxid'] as $val) {
+					Intrabox::add_box($val);
+				}
 			}
 			if( isset($_REQUEST['delete_intrabox']) && isSet($_REQUEST['delete_boxid']) ) {
-				Intrabox::delete_box($_REQUEST['delete_boxid']);
+				foreach($_REQUEST['delete_boxid'] as $val) {
+					Intrabox::delete_box($val);
+				}
 			}
 
 			//redirect('prefs');
