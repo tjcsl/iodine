@@ -1,4 +1,10 @@
 <?php
+/**
+* The script to add intraboxes to the mysql 'intrabox' table
+* 
+* @package scripts
+* @subpackage mysql
+*/
 
 exec('./mysqlpass', $pass);
 $link = mysql_connect(':/var/run/mysqld/mysqld.sock', 'iodine', $pass[0]);
