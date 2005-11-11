@@ -44,7 +44,7 @@ Add/Remove intraboxes:<br />
 <table>
  <tr>
   <td>
-   <select name="delete_boxid" size="5">
+   <select name="delete_boxid[]" size="5" multiple>
     [<foreach from=$user_intraboxen item=box>]
      <option value="[<$box.boxid>]">[<$box.display_name>]</option>
     [</foreach>]
@@ -61,7 +61,7 @@ Add/Remove intraboxes:<br />
    </table>
   </td>
   <td>
-   <select name="add_boxid" size="5">
+   <select name="add_boxid[]" size="5" multiple>
     [<foreach from=$nonuser_intraboxen item=abox>]
      <option value="[<$abox.boxid>]">[<$abox.display_name>]</option>
     [</foreach>]
