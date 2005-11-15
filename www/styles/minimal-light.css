@@ -10,32 +10,29 @@ img {
 body {
 	font-family: arial, helvetica, verdana, sans-serif;
 	font-size: 10pt;
-	background-color: #ffffff;
+	background: white url(../pics/minimal_black.png) no-repeat top left;	
 }
 tt {
 	font-family: monospace, courier;
 }
 a {
-	color: #0000ff;
-	text-decoration: none;
+	color: black;
+	text-decoration: underline;
 }
 a:visited {
-	color: #0000ff;
+	color: black;
 }
 a:active {
-	color: #004a2a;
+	color: black;
 }
 a:hover {
-	text-decoration: underline;
+	text-decoration: none;
 }
 
 .logo {
 	position: absolute;
 	top: 10px;
 	left: 10px;
-	width: 100%;
-	height: 100%;
-	background: url(../pics/oldlogo.png) no-repeat;
 }
 .header {
 	position: absolute;
@@ -46,25 +43,25 @@ a:hover {
 .title {
 	font-size: 14pt;
 	font-weight: bold;
-	color: #000000;
+	color: black;
 	width: 100%;
 	border-bottom-style: solid;
-	border-bottom-color: #000000;
-	border-bottom-width: 3px;
+	border-bottom-color: white;
+	border-bottom-width: 2px;
 }
 .newsitem {
 	font-family: arial, helvetica, verdana, sans-serif;
 	font-size: 10pt;
 	margin-bottom: 10pt;
-	border-left: dotted 1px gray;
-	border-right: dotted 1px gray;
-	border-bottom: dotted 1px gray;
+	border-left: dotted 1px black;
+	border-right: dotted 1px black;
+	border-bottom: dotted 1px black;
 }
 .newstitle {
 	font-family: arial, helvetica, verdana, sans-serif;
 	font-size: 12pt;
 	font-weight: bold;
-	border: solid 1px gray;
+	border: solid 1px black;
 }
 .newsposted {
 	font-style: italic;
@@ -84,13 +81,14 @@ a:hover {
 .intrabox {
 	border: thin groove;
 	margin-bottom: 10pt;
+	background: white;
 }
 .boxheader {
-	color: #FFFFFF;
+	color: black;
 	font-weight: bold;
-	background-color: #000000;
-	border-left: 4px solid black;
-	border-right: 4px solid black;
+	background-color: white;
+	border-left: 4px solid white;
+	border-right: 4px solid white;
 }
 .boxbuttons {
 	right: 0px;
@@ -98,11 +96,11 @@ a:hover {
 .boxcontent {
 	margin-left: 4px;
 	margin-right: 4px;
-	color: #000000;
+	color: black;
 }
 .boxform {
 	margin: 5px 4px;
-	color: #000000;
+	color: black;
 }
 .mainbox {
 	position: absolute;
