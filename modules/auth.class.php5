@@ -151,7 +151,6 @@ class Auth {
 	* last attempt with the login box.
 	*
 	* @returns bool Whether or not the user has successfully logged in.
-	* @todo We need a check in here in case the user authenticated, but does not exist in the database.
 	*/
 	public function login() {
 		global $I2_SQL;
