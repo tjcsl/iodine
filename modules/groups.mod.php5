@@ -12,6 +12,7 @@
 * The module that runs groups
 * @package modules
 * @subpackage Groups
+* @todo We should probably pass around User objects instead of uids, in many cases.
 */
 class Groups implements Module {
 
@@ -38,7 +39,7 @@ class Groups implements Module {
 		$args = array();
 		if(count($I2_ARGS) <= 1) {
 			$this->template = "groups_home.tpl";
-			$this->template_args['groups'] = $I2_USER->get_groups();
+			$this->template_args['groups'] = self::get_user_group_names($I2_USER->uid,FALSE);
 			d("grps admin:");
 			d($I2_USER->is_group_member('admin_groups'));
 			if ($I2_USER->is_group_member("admin_groups")) {
@@ -264,11 +265,21 @@ class Groups implements Module {
 	*/
 	public static function get_group_id($gname) {
 		global $I2_SQL;
+
+		if(self::is_special_group($gname)) {
+			return self::get_special_group($gname);
+		}
+		
 		return $I2_SQL->query('SELECT gid FROM groups WHERE name=%s',$gname)->fetch_single_value();
 	}
 	
 	public static function add_user_to_group($uid,$gid) {
 		global $I2_SQL;
+
+		if(self::is_special_group($gid)) {
+			throw I2Exception("Attempted to add user $uid to invalid group $gid");
+		}
+		
 		return $I2_SQL->query('INSERT INTO group_user_map (gid,uid) VALUES(%d,%d)',$gid,$groupname);
 	}
 
@@ -278,6 +289,11 @@ class Groups implements Module {
 
 	public static function remove_user_from_group($uid,$gid) {
 		global $I2_SQL;
+
+		if(self::is_special_group($gid)) {
+			throw I2Exception("Attempted to add user $uid to invalid group $gid");
+		}
+		
 		return $I2_SQL->query('DELETE FROM group_user_map WHERE uid=%d AND gid=%d',$uid,$gid);
 	}
 
@@ -287,6 +303,11 @@ class Groups implements Module {
 
 	public static function remove_all_from_group($gid) {
 		global $I2_SQL;
+
+		if(self::is_special_group($gid)) {
+			throw I2Exception("Attempted to add user $uid to invalid group $gid");
+		}
+
 		return $I2_SQL->query("DELETE FROM group_user_map");
 	}
 
@@ -355,25 +376,33 @@ class Groups implements Module {
 	public static function get_user_group_ids($uid) {
 		global $I2_SQL;
 		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$uid);
-		//TODO: consider this
-		return flatten($res->fetch_all_arrays(RESULT_NUM));
+		$ids = flatten($res->fetch_all_arrays(RESULT_NUM));
+		$user = new User($uid);
+		if($user->grade) {
+			$ids[] = self::get_special_group("grade_{$user->grade}");
+		}
+		return $ids;
 	}
 
 	/**
 	* Gets the names of groups a user belongs to.
 	*
 	* @param int $uid The UID for which to fetch groups.
+	* @param bool $include_special Whether or not to include special groups in the result.
 	* @return array An array of the names of groups for the passed user.
 	* @todo Consider using a JOIN statement instead of a loop.
 	*/
-	public static function get_user_group_names($uid) {
+	public static function get_user_group_names($uid, $include_special = TRUE) {
 		$res = self::get_user_group_ids($uid);
 		$ret = array();
 		foreach ($res as $gid) {
 			$ret[] = self::get_group_name($gid);
 		}	
-		$user = new User($uid);
-		$ret[] = 'grade_'.$user->grade;
+		if($include_special) {
+			$user = new User($uid);
+			if($user->grade)
+				$ret[] = 'grade_'.$user->grade;
+		}
 		return $ret;
 	}
 
@@ -383,6 +412,66 @@ class Groups implements Module {
 	public static function delete_group($gid) {
 	}
 
+	/**
+	* Gets special group information.
+	*
+	* Given a special group name, returns the negative GID. Given a negative
+	* GID, returns the group name.
+	*
+	* @param $group mixed Either a string, the group name, or an int, the
+	*		GID.
+	* @return mixed Either a string, the group name, or an int, the GID.
+	*/
+	protected static function get_special_group($group) {
+		switch($group) {
+			case -9:
+			case '-9':
+				return 'grade_9';
+			case -10:
+			case '-10':
+				return 'grade_10';
+			case -11:
+			case '-11':
+				return 'grade_11';
+			case -12:
+			case '-12':
+				return 'grade_12';
+			case 'staff':
+				return 'grade_staff';
+			case 'grade_9':
+				return -9;
+			case 'grade_10':
+				return -10;
+			case 'grade_11':
+				return -11;
+			case 'grade_12':
+				return -12;
+			case 'grade_staff':
+				return -8;
+			case -8:
+			case '-8':
+				return 'grade_staff';
+		}
+		throw I2Exception('Invalid special group '.$group.' passed to get_special_group');
+	}
+
+	/**
+	* Determines whether a group is a special group or not.
+	*
+	* If the group is a special group, returns TRUE, otherwise FALSE.
+	*
+	* @param $group mixed A group name or GID.
+	* @return bool TRUE if the group is a special group, FALSE otherwise.
+	*/
+	protected static function is_special_group($group) {
+		try {
+			self::get_special_group($group);
+			return TRUE;
+		}
+		catch( I2Exception $e ) {
+			return FALSE;
+		}
+	}
 }
 
 ?>
