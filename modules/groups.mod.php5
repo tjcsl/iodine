@@ -372,6 +372,8 @@ class Groups implements Module {
 		foreach ($res as $gid) {
 			$ret[] = self::get_group_name($gid);
 		}	
+		$user = new User($uid);
+		$ret[] = 'grade_'.$user->grade;
 		return $ret;
 	}
 
