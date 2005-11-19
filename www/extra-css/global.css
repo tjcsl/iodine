@@ -17,7 +17,7 @@
 	background-color: #daa;
 	padding: 5px;
 	overflow: auto;
-	height: 25%;
+	height: 250px;
 /* Should this be included? */
 /*	text-align: right; */
 }
@@ -31,7 +31,7 @@
 	background-color: #aad;
 	padding: 5px;
 	overflow: auto;
-	height: 25%;
+	height: 250px;
 }
 
 .minimized {
