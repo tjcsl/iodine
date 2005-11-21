@@ -167,7 +167,7 @@ class Display {
 					$this->global_header($title[0]);
 					
 					if (!self::$display_stopped && $title) {
-						$this->open_content_pane(array('title' => $title[1]));
+						$this->open_content_pane(array('title' => htmlspecialchars($title[1])));
 						try {
 							$mod->display_pane($disp);
 						} catch (Exception $e) {
@@ -343,7 +343,7 @@ class Display {
 	*/
 	public function global_header($title = NULL) {
 		global $I2_USER;
-		$this->disp('header.tpl', array('title' => $title, 'first_name' => $I2_USER->fname));
+		$this->disp('header.tpl', array('title' => htmlspecialchars($title), 'first_name' => $I2_USER->fname));
 		$this->flush_buffer();
 	}
 
@@ -422,6 +422,17 @@ class Display {
 			return $path;
 		}
 		return NULL;
+	}
+
+	/**
+	* Determines if a module is valid.
+	*
+	* @param $tpl string The file name of the template, in <module>/<file.tpl> format.
+	*
+	* @return bool TRUE if the specified template exists, FALSE otherwise.
+	*/
+	public static function is_template($tpl) {
+		return (self::get_template($tpl)!==NULL);
 	}
 
 	/**

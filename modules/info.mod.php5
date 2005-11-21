@@ -34,7 +34,13 @@ class Info {
 	*/
 	function display_pane($disp) {
 		global $I2_ARGS;
-		$disp->disp($I2_ARGS[1].'.tpl');
+		
+		try {
+			$disp->disp($I2_ARGS[1].'.tpl');
+		}
+		catch( I2Exception $e ) {
+			$disp->disp('error.tpl', array('sec'=>$I2_ARGS[1]));
+		}
 	}
 	
 	/**
@@ -78,6 +84,12 @@ class Info {
 		
 		if(!isset($I2_ARGS[1])) {
 			redirect();
+		}
+		elseif(Display::is_template('info/'.$I2_ARGS[1].'.tpl')) {
+			return ucfirst($I2_ARGS[1]);
+		}
+		else {
+			return 'Error';
 		}
 	}
 
