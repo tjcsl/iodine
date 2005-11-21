@@ -1,5 +1,5 @@
 <a href="http://fcps.blackboard.com/">FCPS Blackboard</a><br />
-<a href="[<$I2_ROOT>]resources">Online Research Resources</a><br />
+<a href="[<$I2_ROOT>]info/resources">Online Research Resources</a><br />
 <a href="http://www.tjhsst.edu/~ccc/career.htm">College &amp; Career Center</a><br />
 <a href="[<$I2_ROOT>]calc">Calculator Registration</a><br />
 <a href="[<$I2_ROOT>]findcalc">Identify Lost Calculator</a><br />
