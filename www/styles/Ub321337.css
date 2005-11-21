@@ -10,7 +10,7 @@ img {
 body {
 	font-family: courier, helvetica, verdana, sans-serif;
 	font-size: 10pt;
-	background: #000000 url(../pics/newlogo.png) no-repeat top left;	
+	background: #000000 url(../pics/1337logo.gif) no-repeat top left;	
 }
 tt {
 	font-family: monospace, courier;
@@ -28,6 +28,10 @@ input {
 select {
 	color: #008800;
 	background: #000000;
+	scrollbar-3dlight: green;
+	scrollbar-arrow: green;
+	scrollbar-base: black;
+	scrollbar-shadow: green;
 	border-style: solid;
 	border-width: 0px;
 	border-color: 007700;
