@@ -24,7 +24,7 @@ class Groups implements Module {
 	/**
 	* Template for the specified action
 	*/
-	private $template = "groups_home.tpl";
+	private $template = 'groups_home.tpl';
 
 	/**
 	* Template arguments for the specified action
@@ -38,28 +38,28 @@ class Groups implements Module {
 		global $I2_ARGS, $I2_USER;
 		$args = array();
 		if(count($I2_ARGS) <= 1) {
-			$this->template = "groups_home.tpl";
+			$this->template = 'groups_home.tpl';
 			$this->template_args['groups'] = self::get_user_group_names($I2_USER->uid,FALSE);
-			d("grps admin:");
+			d('grps admin:');
 			d($I2_USER->is_group_member('admin_groups'));
-			if ($I2_USER->is_group_member("admin_groups")) {
+			if ($I2_USER->is_group_member('admin_groups')) {
 				$this->template_args['admin'] = 1;
 			}
-			return array("Groups: Home", "Groups");
+			return array('Groups: Home', 'Groups');
 		}
 		else {
 			$method = $I2_ARGS[1];
 			if(method_exists($this, $method)) {
 				$this->$method();
 				$this->template_args['method'] = $method;
-				return "Groups: " . ucwords(strtr($method, "_", " "));
+				return 'Groups: ' . ucwords(strtr($method, '_', ' '));
 			}
 			else {
-				$this->template = "groups_error.tpl";
-				$this->template_args = array("method" => $method, "args" => $I2_ARGS);
+				$this->template = 'groups_error.tpl';
+				$this->template_args = array('method' => $method, 'args' => $I2_ARGS);
 			}
 		}
-		return array("Error", "Error");
+		return array('Error', 'Error');
 	}
 
 	/**
@@ -86,7 +86,7 @@ class Groups implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function get_name() {
-		return "Eighth";
+		return 'Eighth';
 	}
 
 	function is_intrabox() {
@@ -111,8 +111,8 @@ class Groups implements Module {
 		$this->template_args['group'] = $group;
 		$gid = self::get_group_id($group);
 		$is_single_admin = self::is_group_admin($I2_USER->uid, $gid);
-		$is_groups_admin = $I2_USER->is_group_member("admin_groups");
-		$is_master_admin = $I2_USER->is_group_member("admin_all");
+		$is_groups_admin = $I2_USER->is_group_member('admin_groups');
+		$is_master_admin = $I2_USER->is_group_member('admin_all');
 		$is_higher_admin = ($is_master_admin || ($is_groups_admin && substr($group,0,6) != 'admin_'));
 
 		if($is_higher_admin || $I2_USER->is_group_member($group)) {
@@ -123,26 +123,26 @@ class Groups implements Module {
 
 				// differentiate between single group admin and admin_groups/admin_all
 				if($is_higher_admin) {
-					$this->template_args['admin'] = "master";
+					$this->template_args['admin'] = 'master';
 				}
 				else {
-					$this->template_args['admin'] = "all";
+					$this->template_args['admin'] = 'all';
 				}
 
 				if( isset($_REQUEST['group_form']) ) {
-					if($_REQUEST['group_form'] == "add") {
+					if($_REQUEST['group_form'] == 'add') {
 						$new_member_uid = $_REQUEST['uid'];
 						self::add_user_to_group($new_member_id, $gid);
 					}
-					if($_REQUEST['group_form'] == "remove") {
+					if($_REQUEST['group_form'] == 'remove') {
 						$id_to_remove = $_REQUEST['uid'];
 						self::remove_user_from_group($id_to_remove, $gid);
 					}
-					if($_REQUEST['group_form'] == "make_admin") {
+					if($_REQUEST['group_form'] == 'make_admin') {
 						$new_admin_id = $_REQUEST['uid'];
 						self::bestow_admin_privileges($new_admin_id, $gid);
 					}
-					if($_REQUEST['group_form'] == "remove_admin" && $is_groups_admin){
+					if($_REQUEST['group_form'] == 'remove_admin' && $is_groups_admin){
 						//to remove admin, must be more than single group admin
 						$id_to_remove = $_REQUEST['uid'];
 						self::deprive_of_admin_privileges($id_to_remove, $gid);
@@ -150,25 +150,25 @@ class Groups implements Module {
 				}
 			}
 			$this->template_args['members'] = self::get_memberinfo_helper($group);
-			$this->template = "groups_group.tpl";
+			$this->template = 'groups_group.tpl';
 		}
 		else {
-			d("not a member");
-			$this->template = "groups_error.tpl";
+			d('not a member');
+			$this->template = 'groups_error.tpl';
 		}
-		return array("Groups: Group", "Groups");
+		return array('Groups: Group', 'Groups');
 	}
 	/**
 	* The master admin interface
 	*/
 	function admin() {
 		global $I2_SQL, $I2_USER;
-		if($I2_USER->is_group_member("admin_groups")) {
+		if($I2_USER->is_group_member('admin_groups')) {
 			if(isset($_REQUEST['group_admin_form'])) {
-				if($_REQUEST['group_admin_form'] == "add") {
+				if($_REQUEST['group_admin_form'] == 'add') {
 					$I2_SQL->query('INSERT INTO groups SET name=%s', $_REQUEST['name']);
 				}
-				if($_REQUEST['group_admin_form'] == "remove") {
+				if($_REQUEST['group_admin_form'] == 'remove') {
 					$I2_SQL->query('DELETE FROM groups WHERE name=%s', $_REQUEST['name']);
 				}
 			}
@@ -177,10 +177,10 @@ class Groups implements Module {
 			while($group = $result->fetch_array(RESULT_NUM)) {
 				array_push($this->template_args['groups'], $group[0]);
 			}
-			$this->template = "groups_admin.tpl";
+			$this->template = 'groups_admin.tpl';
 		}
 		else {
-			$this->template = "groups_error.tpl";
+			$this->template = 'groups_error.tpl';
 		}
 	}
 	/**
@@ -199,7 +199,7 @@ class Groups implements Module {
 			$person_array['name'] = $person_user->name;
 
 			if (self::is_group_admin_by_name($uid, $gname)) {
-				$person_array['admin'] = "Admin";
+				$person_array['admin'] = 'Admin';
 			}
 
 			$group_members[] = $person_array;
@@ -210,7 +210,7 @@ class Groups implements Module {
 
 	public static function get_group_members($gid) {
 		global $I2_SQL;
-		return flatten($I2_SQL->query("SELECT uid FROM group_user_map WHERE gid=%d",$gid)->fetch_all_arrays(RESULT_NUM));
+		return flatten($I2_SQL->query('SELECT uid FROM group_user_map WHERE gid=%d',$gid)->fetch_all_arrays(RESULT_NUM));
 	}
 	
 	public static function get_group_members_by_name($gname) {
@@ -224,7 +224,7 @@ class Groups implements Module {
 	*/
 	public static function get_all_groups() {
 		global $I2_SQL;
-		return $I2_SQL->query("SELECT gid FROM groups");
+		return $I2_SQL->query('SELECT gid FROM groups');
 	}
 
 	/**
@@ -234,7 +234,7 @@ class Groups implements Module {
 	*/
 	public static function get_all_groups_names() {
 		global $I2_SQL;
-		return $I2_SQL->query("SELECT name FROM groups");
+		return $I2_SQL->query('SELECT name FROM groups');
 	
 	}
 	
@@ -308,7 +308,7 @@ class Groups implements Module {
 			throw I2Exception("Attempted to add user $uid to invalid group $gid");
 		}
 
-		return $I2_SQL->query("DELETE FROM group_user_map");
+		return $I2_SQL->query('DELETE FROM group_user_map');
 	}
 
 	public static function remove_all_from_group_by_name($gname) {
