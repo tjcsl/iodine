@@ -3,15 +3,15 @@
 [</if>]
 [<if isset($groups)>]
  You are currently a member of the following groups:<br />
- [<foreach from=$groups item=val>]
-  <a href="[<$I2_ROOT>]groups/group/[<$val>]">[<$val>]</a><br />
+ [<foreach from=$groups item=grp>]
+  <a href="[<$I2_ROOT>]groups/group/[<$grp->gid>]">[<$grp->name>]</a><br />
  [</foreach>]
 [<else>]
  You are not a member of any groups.<br />
 [</if>]
 [<if isset($group_admin)>]
  You are currently an admin in the following groups:<br />
- [<foreach from=$group_admin item=val>]
-   <a href="[<$I2_ROOT>]groups/group/[<$val>]">[<$val>]</a><br />
+ [<foreach from=$group_admin item=grp>]
+   <a href="[<$I2_ROOT>]groups/group/[<$grp.gid>]">[<$grp.name>]</a><br />
  [</foreach>]
 [</if>]

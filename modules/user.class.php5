@@ -255,15 +255,11 @@ class User {
 	*
 	* Used for finding all a user's groups.
 	*
-	* @return array An array of names of groups of which this user is a member.
+	* @return array An array of {link Group}s of which this user is a member.
 	*/
 	public function get_groups() {
-		
-		$ret = Groups::get_user_group_names($this->myuid);
-		return $ret;
+		return Group::get_user_groups($this);
 	}
-
-
 
 	/**
 	* Adds this user to the given group.
@@ -273,7 +269,8 @@ class User {
 	* @param string $groupname The name of the group to which this user should be added.
 	*/
 	public function add_to_group($groupname) {
-		return Groups::add_user_to_group($this->myuid,$groupname);
+		$group = new Group($groupname);
+		return $group->add_user($this);
 	}	
 
 	/**
@@ -285,7 +282,8 @@ class User {
 	*	@return boolean Whether this User is a member of the passed group.
 	*/
 	public function is_group_member($groupname) {
-		return Groups::is_group_member_by_name($this->myuid,$groupname);
+		$group = new Group($groupname);
+		return $group->has_member($this);
 	}	
 
 	/**
@@ -414,7 +412,7 @@ class User {
 	*/
 	public static function sort_users($userids) {
 		$users = self::id_to_user($userids);
-		usort($users, array("self", 'name_cmp'));
+		usort($users, array('self', 'name_cmp'));
 		return $users;
 	}
 
