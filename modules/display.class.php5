@@ -138,8 +138,14 @@ class Display {
 				$mod = NULL;
 
 				try {
-					eval('$mod = new '.$module.'();');
-					$title = $mod->init_pane();
+					$mod = new $module();
+					if(! $mod instanceof Module) {
+						// essentially, 'no such module'
+						$title = FALSE;
+					}
+					else {
+						$title = $mod->init_pane();
+					}
 				} catch( Exception $e ) {
 					$this->global_header('Error');
 					$this->open_content_pane(array('error' => 1));
