@@ -26,7 +26,7 @@ class EighthRoom {
 	*/
 	public function __construct($roomid) {
 		global $I2_SQL;
-		$this->data = $I2_SQL->query("SELECT * FROM eighth_rooms WHERE rid=%d", $roomid)->fetch_array(RESULT_ASSOC);
+		$this->data = $I2_SQL->query("SELECT * FROM eighth_rooms WHERE rid=%d", $roomid)->fetch_array(Result::ASSOC);
 	}
 
 	/**
@@ -40,7 +40,7 @@ class EighthRoom {
 	*/
 	public static function get_utilization($blockid, $columns, $overbooked) {
 		global $I2_SQL;
-		$activities = EighthActivity::is_to_activity($I2_SQL->query("SELECT eighth_block_map.activityid,bid FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d", $blockid)->fetch_all_arrays(RESULT_NUM));
+		$activities = EighthActivity::is_to_activity($I2_SQL->query("SELECT eighth_block_map.activityid,bid FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d", $blockid)->fetch_all_arrays(Result::NUM));
 		$utilizations = array();
 		foreach($activities as $activity) {
 			$rooms = $activity->block_rooms;
@@ -75,7 +75,7 @@ class EighthRoom {
 	*/
 	public static function get_conflicts($blockid) {
 		global $I2_SQL;
-		$result = $I2_SQL->query("SELECT aid,name,restricted,eighth_block_map.rooms FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d AND eighth_block_map.rooms != ''", $blockid)->fetch_all_arrays(RESULT_ASSOC);
+		$result = $I2_SQL->query("SELECT aid,name,restricted,eighth_block_map.rooms FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d AND eighth_block_map.rooms != ''", $blockid)->fetch_all_arrays(Result::ASSOC);
 		$conflicts = array();
 		foreach($result as $activity) {
 			$rooms = explode(",", $activity['rooms']);
@@ -109,7 +109,7 @@ class EighthRoom {
 	*/
 	public static function get_all_rooms() {
 		global $I2_SQL;
-		return $I2_SQL->query("SELECT rid, name FROM eighth_rooms ORDER BY name")->fetch_all_arrays(RESULT_ASSOC);
+		return $I2_SQL->query("SELECT rid, name FROM eighth_rooms ORDER BY name")->fetch_all_arrays(Result::ASSOC);
 	}
 
 	/**

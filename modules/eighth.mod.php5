@@ -811,7 +811,7 @@ class Eighth implements Module {
 		if($op == NULL || $op == "") {
 			$this->template = "eighth_vcp_schedule.tpl";
 			if(!empty($args['uid'])) {
-				$this->template_args['users'] = User::id_to_user(flatten($I2_SQL->query("SELECT uid FROM user WHERE uid LIKE %d", $args['uid'])->fetch_all_arrays(RESULT_NUM)));
+				$this->template_args['users'] = User::id_to_user(flatten($I2_SQL->query("SELECT uid FROM user WHERE uid LIKE %d", $args['uid'])->fetch_all_arrays(Result::NUM)));
 			}
 			else {
 				$this->template_args['users'] = User::search_info("{$args['fname']} {$args['lname']}");

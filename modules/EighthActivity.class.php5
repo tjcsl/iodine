@@ -28,7 +28,7 @@ class EighthActivity {
 	public function __construct($activityid, $blockid = NULL) {
 		global $I2_SQL;
 		if ($activityid != NULL && $activityid != "") {
-			$this->data = $I2_SQL->query("SELECT * FROM eighth_activities WHERE aid=%d", $activityid)->fetch_array(RESULT_ASSOC);
+			$this->data = $I2_SQL->query("SELECT * FROM eighth_activities WHERE aid=%d", $activityid)->fetch_array(Result::ASSOC);
 			$this->data['sponsors'] = (!empty($this->data['sponsors']) ? explode(",", $this->data['sponsors']) : array());
 			$this->data['rooms'] = (!empty($this->data['rooms']) ? explode(",", $this->data['rooms']) : array());
 			if($blockid != NULL && $blockid != "") {
@@ -38,7 +38,7 @@ class EighthActivity {
 					AS block_rooms,cancelled,comment,advertisement,attendancetaken 
 					FROM eighth_block_map 
 					WHERE bid=%d AND activityid=%d",
-					$blockid, $activityid)->fetch_array(RESULT_ASSOC);
+					$blockid, $activityid)->fetch_array(Result::ASSOC);
 				$this->data['block_sponsors'] = (!empty($this->data['block_sponsors']) ? explode(",", $this->data['block_sponsors']) : array());
 				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(",", $this->data['block_rooms']) : array());
 				$this->data['block'] = new EighthBlock($blockid);
@@ -110,7 +110,7 @@ class EighthActivity {
 	*/
 	public function get_members($blockid) {
 		global $I2_SQL;
-		return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $blockid, $this->data['aid'])->fetch_all_arrays(RESULT_NUM));
+		return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $blockid, $this->data['aid'])->fetch_all_arrays(Result::NUM));
 	}
 
 	/**
@@ -190,7 +190,7 @@ class EighthActivity {
 	*/
 	public function get_restricted_members() {
 		global $I2_SQL;
-		return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_permissions WHERE aid=%d", $this->data['aid'])->fetch_all_arrays(RESULT_NUM));
+		return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_permissions WHERE aid=%d", $this->data['aid'])->fetch_all_arrays(Result::NUM));
 	}
 
 	/**
@@ -254,10 +254,10 @@ class EighthActivity {
 	public static function get_all_activities($blockid = NULL, $restricted = FALSE) {
 		global $I2_SQL;
 		if($blockid == NULL) {
-			return self::id_to_activity(flatten($I2_SQL->query("SELECT aid FROM eighth_activities " . ($restricted ? "WHERE restricted=1 " : "") . "ORDER BY name")->fetch_all_arrays(RESULT_NUM)));
+			return self::id_to_activity(flatten($I2_SQL->query("SELECT aid FROM eighth_activities " . ($restricted ? "WHERE restricted=1 " : "") . "ORDER BY name")->fetch_all_arrays(Result::NUM)));
 		}
 		else {
-			return self::id_to_activity($I2_SQL->query("SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid=%d " . ($restricted ? "AND restricted=1 " : "") . "ORDER BY name", $blockid)->fetch_all_arrays(RESULT_NUM));
+			return self::id_to_activity($I2_SQL->query("SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid=%d " . ($restricted ? "AND restricted=1 " : "") . "ORDER BY name", $blockid)->fetch_all_arrays(Result::NUM));
 		}
 	}
 
@@ -352,7 +352,7 @@ class EighthActivity {
 			return implode(",", $temp_rooms);
 		}
 		else if($name == "members" && $this->data['bid']) {
-			return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $this->data['bid'], $this->data['aid'])->fetch_all_arrays(RESULT_NUM));
+			return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $this->data['bid'], $this->data['aid'])->fetch_all_arrays(Result::NUM));
 		}
 	}
 

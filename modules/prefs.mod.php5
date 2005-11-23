@@ -61,8 +61,8 @@ class Prefs implements Module {
 
 		$this->prefs = $I2_USER->info();
 
-		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED)->fetch_all_arrays(RESULT_ASSOC);
-		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED)->fetch_all_arrays(RESULT_ASSOC);
+		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED)->fetch_all_arrays(Result::ASSOC);
+		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED)->fetch_all_arrays(Result::ASSOC);
 		
 		d('nonuser_intraboxen:');
 		foreach($this->nonuser_intraboxen as $box) {

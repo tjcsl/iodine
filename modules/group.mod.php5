@@ -268,7 +268,7 @@ class Group implements Module {
 	public function get_members() {
 		global $I2_SQL;
 
-		return flatten($I2_SQL->query('SELECT uid FROM group_user_map WHERE gid=%d',$this->mygid)->fetch_all_arrays(RESULT_NUM));
+		return flatten($I2_SQL->query('SELECT uid FROM group_user_map WHERE gid=%d',$this->mygid)->fetch_all_arrays(Result::NUM));
 	}
 	
 	/**
@@ -394,7 +394,7 @@ class Group implements Module {
 		$ret = array();
 		
 		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$user->uid);
-		$groups = flatten($res->fetch_all_arrays(RESULT_NUM));
+		$groups = flatten($res->fetch_all_arrays(Result::NUM));
 		
 		foreach($groups as $gid) {
 			$ret[] = new Group($gid);

@@ -63,7 +63,7 @@ class User {
 		if( $uid === NULL ) {
 			if( isset($_SESSION['i2_uid']) ) {
 				$uid = $_SESSION['i2_uid'];
-				$this->info = $I2_SQL->query('SELECT * FROM user WHERE uid=%d', $uid)->fetch_array(RESULT_ASSOC);
+				$this->info = $I2_SQL->query('SELECT * FROM user WHERE uid=%d', $uid)->fetch_array(Result::ASSOC);
 				if( ! $this->info ) {
 					warn('A User object was created with a nonexistent uid');
 				}
@@ -148,7 +148,7 @@ class User {
 			$table = 'userinfo';
 		}
 		
-		$res = $I2_SQL->query('SELECT %c FROM %c WHERE uid=%d;', $name, $table, $this->myuid)->fetch_array(RESULT_NUM);
+		$res = $I2_SQL->query('SELECT %c FROM %c WHERE uid=%d;', $name, $table, $this->myuid)->fetch_array(Result::NUM);
 
 		if( $res === FALSE ) {
 			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information');
@@ -241,7 +241,7 @@ class User {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
 		}
 		
-		$ret = $I2_SQL->query('SELECT * FROM user LEFT JOIN userinfo USING (uid) WHERE user.uid=%d;', $this->myuid)->fetch_array(RESULT_ASSOC);
+		$ret = $I2_SQL->query('SELECT * FROM user LEFT JOIN userinfo USING (uid) WHERE user.uid=%d;', $this->myuid)->fetch_array(Result::ASSOC);
 
 		if( $ret === FALSE ) {
 			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information');
@@ -323,7 +323,7 @@ class User {
 			$cols = $argv;
 		}
 
-		$ret = $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid=%d;', $cols, $this->myuid)->fetch_array(RESULT_BOTH);
+		$ret = $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid=%d;', $cols, $this->myuid)->fetch_array(Result::BOTH);
 		
 		if( $ret === FALSE ) {
 			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information');
@@ -351,7 +351,7 @@ class User {
 			array_shift($cols);
 		}
 		
-		return $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid IN (%D);', $cols, $uids)->fetch_all_arrays(RESULT_ASSOC);
+		return $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid IN (%D);', $cols, $uids)->fetch_all_arrays(Result::ASSOC);
 	}
 
 	/**

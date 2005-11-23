@@ -344,7 +344,7 @@ class MySQL {
 	* @return bool TRUE if $col is in table $table, FALSE otherwise.
 	*/
 	public function column_exists($table, $col) {
-		foreach($this->query('DESCRIBE %c;', $table)->fetch_all_arrays(RESULT_ASSOC) as $field) {
+		foreach($this->query('DESCRIBE %c;', $table)->fetch_all_arrays(Result::ASSOC) as $field) {
 			if( $field['Field'] == $col ) {
 				return TRUE;
 			}

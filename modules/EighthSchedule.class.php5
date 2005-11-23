@@ -80,7 +80,7 @@ class EighthSchedule {
 	*/
 	public static function get_absentees($blockid, $activityid) {
 		global $I2_SQL;
-		return flatten($I2_SQL->query("SELECT eighth_absentees.userid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) WHERE eighth_absentees.bid=%d AND aid=%d", $blockid, $activityid)->fetch_all_arrays(RESULT_NUM));
+		return flatten($I2_SQL->query("SELECT eighth_absentees.userid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) WHERE eighth_absentees.bid=%d AND aid=%d", $blockid, $activityid)->fetch_all_arrays(Result::NUM));
 	}
 
 	/**
@@ -91,7 +91,7 @@ class EighthSchedule {
 	*/
 	public static function get_absences($userid) {
 		global $I2_SQL;
-		return flatten($I2_SQL->query("SELECT aid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) WHERE eighth_absentees.userid=%d", $userid)->fetch_all_arrays(RESULT_NUM));
+		return flatten($I2_SQL->query("SELECT aid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) WHERE eighth_absentees.userid=%d", $userid)->fetch_all_arrays(Result::NUM));
 	}
 
 	/**
@@ -101,7 +101,7 @@ class EighthSchedule {
 	*/
 	public static function get_next_date() {
 		global $I2_SQL;
-		$date = $I2_SQL->query("SELECT date FROM eighth_blocks WHERE date >= %t ORDER BY date,block LIMIT 1", date("Y-m-d"))->fetch_array(RESULT_NUM);
+		$date = $I2_SQL->query("SELECT date FROM eighth_blocks WHERE date >= %t ORDER BY date,block LIMIT 1", date("Y-m-d"))->fetch_array(Result::NUM);
 		return $date[0];
 	}
 
@@ -117,7 +117,7 @@ class EighthSchedule {
 		if($starting_date == NULL) {
 			$starting_date = date("Y-m-d");
 		}
-		return $I2_SQL->query("SELECT aid,eighth_blocks.bid FROM eighth_activity_map LEFT JOIN eighth_blocks USING (bid) WHERE userid=%d AND date >= %t AND date <= ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block", $userid, $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(RESULT_NUM);
+		return $I2_SQL->query("SELECT aid,eighth_blocks.bid FROM eighth_activity_map LEFT JOIN eighth_blocks USING (bid) WHERE userid=%d AND date >= %t AND date <= ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block", $userid, $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::NUM);
 	}
 
 	/**
