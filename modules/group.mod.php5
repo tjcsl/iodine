@@ -3,14 +3,14 @@
 * Just contains the definition for the class {@link Groups}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @package modules
+* @package core
 * @subpackage Group
 * @filesource
 */
 
 /**
 * The module that runs groups
-* @package modules
+* @package core
 * @subpackage Group
 */
 class Group implements Module {

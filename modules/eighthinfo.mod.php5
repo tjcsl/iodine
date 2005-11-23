@@ -5,14 +5,14 @@
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
 * @package modules
-* @subpackage Eighthinfo
+* @subpackage Eighth
 * @filesource
 */
 
 /**
 * The page for people (presumably freshmen...?) to learn about eighth period
 * @package modules
-* @subpackage Eighthinfo
+* @subpackage Eighth
 */
 class Eighthinfo implements Module {
 
