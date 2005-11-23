@@ -14,7 +14,7 @@
 * @package modules
 * @subpackage Info
 */
-class Info {
+class Info implements Module {
 
 	/**
 	* Displays all of a module's ibox content.
