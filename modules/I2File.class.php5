@@ -1,11 +1,24 @@
 <?php
+/**
+* Contains the definition for the I2File class for Iodine.
+*
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2004-2005 The Intranet 2 Development Team
+* @package modules
+* @subpackage File
+* @filesource
+*/
 
-
-define("FILES_ONLY",1);
-define("DIRS_ONLY",2);
-define("FILES_AND_DIRS",3);
-				
+/**
+* The file-access utility class for Iodine.
+*
+* @package modules
+* @subpackage File
+*/
 class I2File {
+	const FILES_ONLY = 1;
+	const DIRS_ONLY = 2;
+	const FILES_AND_DIRS = 3;
 				
 	private $path;
 	private $file;
@@ -81,7 +94,7 @@ class I2File {
 		exec('i2_mv "'.$this->get_full_name().'" "'.$dest.'"');
 	}
 
-	public function ls($type=FILES_AND_DIRS) {
+	public function ls($type=self::FILES_AND_DIRS) {
 		$this->checkdir(TRUE);
 		$ls = exec('i2_ls "'.$this->get_full_name().'"');
 		//TODO: this
