@@ -5,12 +5,14 @@
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
 * @package core
+* @subpackage Database
 * @filesource
 */
 
 /**
 * An interface representing the results of a data query.
 * @package core
+* @subpackage Database
 */			
 interface Result extends Iterator {
 

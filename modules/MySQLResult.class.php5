@@ -5,14 +5,14 @@
 * @copyright 2004 The Intranet 2 Development Team
 * @since 1.0
 * @package core
-* @subpackage MySQL
+* @subpackage Database
 * @filesource
 */
 
 /**
 * A class representing the results of a {@link MySQL} query.
 * @package core
-* @subpackage MySQL
+* @subpackage Database
 */
 class MySQLResult implements Result {
 	

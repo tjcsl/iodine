@@ -4,14 +4,14 @@
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2004 The Intranet 2 Development Team
 * @package core
-* @subpackage MySQL
+* @subpackage Database
 * @filesource
 */
 
 /**
 * The MySQL module for Iodine.
 * @package core
-* @subpackage MySQL
+* @subpackage Database
 * @see Result
 */
 class MySQL {
