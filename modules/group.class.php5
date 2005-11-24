@@ -224,9 +224,17 @@ class Group {
 	}
 
 	/**
-	* @todo Write this; it's not just dropping a group but also cleaning up.
+	*
 	*/
-	public static function delete_group($gid) {
+	public function delete_group() {
+		global $I2_SQL;
+		
+		if(!self::admin_groups()->has_member($GLOBALS['I2_USER'])) {
+			throw new I2Exception('User is not authorized to delete groups.');
+		}
+
+		$I2_SQL->query('DELETE FROM group_user_map WHERE gid=%d;', $this->mygid);
+		$I2_SQL->query('DELETE FROM groups WHERE gid=%d;', $this->mygid);
 	}
 
 	/**
@@ -234,6 +242,10 @@ class Group {
 	*/
 	public static function add_group($name) {
 		global $I2_SQL;
+
+		if(!self::admin_groups()->has_member($GLOBALS['I2_USER'])) {
+			throw new I2Exception('User is not authorized to create groups.');
+		}
 
 		$res = $I2_SQL->query('SELECT gid FROM groups WHERE name=%s;',$name);
 		if($res->num_rows() > 0) {
