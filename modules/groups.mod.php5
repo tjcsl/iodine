@@ -178,10 +178,7 @@ class Groups implements Module {
 					$group->delete();
 				}
 			}
-			$this->template_args['groups'] = array();
-			foreach(Group::get_all_groups() as $group) {
-				array_push($this->template_args['groups'], $group[0]);
-			}
+			$this->template_args['groups'] = Group::get_all_groups();
 			$this->template = 'groups_admin.tpl';
 		}
 		else {

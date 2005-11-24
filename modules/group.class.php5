@@ -21,6 +21,20 @@ class Group {
 	private static $admin_groups = NULL;
 	private static $admin_all = NULL;
 
+	public static function admin_all() {
+		if(self::$admin_all === NULL) {
+			self::$admin_all = new Group('admin_all');
+		}
+		return self::$admin_all;
+	}
+	
+	public static function admin_groups() {
+		if(self::$admin_groups === NULL) {
+			self::$admin_groups = new Group('admin_groups');
+		}
+		return self::$admin_groups;
+	}
+
 	private $mygid;
 
 	public function __get($var) {
@@ -35,16 +49,8 @@ class Group {
 		}
 	}
 
-	public function __construct($group=NULL) {
-		// Ensure that admin groups are initialized
-//		if( (self::$admin_groups === NULL || self::$admin_all === NULL) && $group != 'admin_groups' && $group != 'admin_all') { // these last two clauses are important; without them a infinitely-recursive constructor loop occurs, and apache segfaults
-//			self::$admin_groups = new Group('admin_groups');
-//			self::$admin_all = new Group('admin_all');
-//		}
-
-		if($group != NULL) {
-			$this->mygid = self::get_group_id($group);
-		}
+	public function __construct($group) {
+		$this->mygid = self::get_group_id($group);
 	}
 
 	private static function get_group_id($group) {
@@ -82,11 +88,15 @@ class Group {
 	/**
 	* Gets all groups.
 	*
-	* @return Result A Result containing gids of all groups.
+	* @return Array An containing all of the Group objects.
 	*/
 	public static function get_all_groups() {
 		global $I2_SQL;
-		return $I2_SQL->query('SELECT gid FROM groups');
+		$ret = array();
+		foreach($I2_SQL->query('SELECT gid FROM groups') as $row) {
+			$ret[] = new Group($row[0]);
+		}
+		return $ret;
 	}
 
 	/**
@@ -153,7 +163,7 @@ class Group {
 		global $I2_SQL;
 
 		// If the user is in admin_all, they're also admin_anything
-		if (substr($this->name,6) == 'admin_'  && $this->name != 'admin_all' && self::$admin_all->has_member($user)) {
+		if (substr($this->name,6) == 'admin_'  && $this->name != 'admin_all' && self::admin_all()->has_member($user)) {
 			return TRUE;
 		}
 
@@ -220,6 +230,20 @@ class Group {
 	}
 
 	/**
+	*
+	*/
+	public static function add_group($name) {
+		global $I2_SQL;
+
+		$res = $I2_SQL->query('SELECT gid FROM groups WHERE name=%s;',$name);
+		if($res->num_rows() > 0) {
+			throw new I2Exception("Tried to create group with name `$name`, which already exists as gid `{$res->fetch_single_value()}`");
+		}
+
+		$I2_SQL->query('INSERT INTO groups (name) VALUES (%s);',$name);
+	}
+
+	/**
 	* Gets special group information.
 	*
 	* Given a special group name, returns the negative GID. Given a negative
@@ -268,7 +292,7 @@ class Group {
 		$res = $I2_SQL->query('SELECT is_admin FROM group_user_map WHERE uid=%d AND gid=%d;',$user->uid,$this->gid);
 		if($res->num_rows() < 1) {
 			// admin_all members get admin access to all groups, I believe
-			if(self::$admin_all->has_member($user)) {
+			if(self::admin_all()->has_member($user)) {
 				return TRUE;
 			}
 			// They're not even a member of the group, so... not an admin
