@@ -89,6 +89,13 @@ class MySQLInterface implements Module {
 	*/
 	function init_pane() {
 		global $I2_SQL;
+
+		// Only available to people in the 'admin_mysql' group
+		$mysql_group = new Group('admin_mysql');
+		if(!$mysql_group->has_member()) {
+			return FALSE;
+		}
+		
 		if( isset($_POST['mysqlinterface_submit']) && $_POST['mysqlinterface_submit'] && $_POST['mysqlinterface_query']) {
 			$this->query = $_POST['mysqlinterface_query'];
 			try {
