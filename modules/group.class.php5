@@ -159,8 +159,20 @@ class Group {
 		return $I2_SQL->query('UPDATE group_user_map SET is_admin=0 WHERE uid=%d AND gid=%d', $uid, $gid);
 	}
 
-	public function has_member(User $user) {
+	/**
+	* Determine whether a user is a member of this group.
+	*
+	* Returns whether or not $user is a member of the group. If $user is ommitted, or NULL, the currently logged-in user is checked.
+	*
+	* @param User $user The user to check, or $I2_USER if unspecified.
+	* @return bool TRUE if the user is a member of the group, FALSE otherwise.
+	*/
+	public function has_member(User $user=NULL) {
 		global $I2_SQL;
+
+		if($user===NULL) {
+			$user = $GLOBALS['I2_USER'];
+		}
 
 		// If the user is in admin_all, they're also admin_anything
 		if (substr($this->name,6) == 'admin_'  && $this->name != 'admin_all' && self::admin_all()->has_member($user)) {
@@ -182,8 +194,12 @@ class Group {
 		return FALSE;
 	}
 
-	public function is_group_admin($user) {
+	public function is_group_admin(User $user=NULL) {
 		global $I2_SQL;
+
+		if($user === NULL) {
+			$user = $GLOBALS['I2_USER'];
+		}
 
 		if( $this->special ) {
 			throw I2Exception("is_group_admin() called on invalid group {$this->mygid} for user {$user->uid}");
