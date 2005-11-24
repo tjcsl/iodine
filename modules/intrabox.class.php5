@@ -63,12 +63,12 @@ class IntraBox {
 		else {
 			if( get_i2module($module_name) ) {
 				$mod = new $module_name();
-				if( ! in_array( 'Module', class_implements($mod)) ) {
+				if( ! $mod instanceof Module ) {
 					throw new I2Exception('The class '.$module_name.' was passed as an Intrabox, but it does not implement the Module interface.');
 				}
 				$this->module = $mod;
 			}
-			/* for static iboxen */
+			// for static iboxen
 			else {
 				$this->module = $module_name;
 			}
