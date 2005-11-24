@@ -6,4 +6,4 @@
 <a href="[<$I2_ROOT>]eighthinfo">Eighth Period Info</a><br />
 School Roster<br />
 <a href="http://postman.tjhsst.edu/">Postman (calendar)</a><br />
-<a href="[<$I2_ROOT>]groups">Groups</a><br />
+<a href="[<$I2_ROOT>]group">Groups</a><br />

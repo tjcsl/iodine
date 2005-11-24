@@ -144,7 +144,7 @@ class Group implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function get_name() {
-		return 'Eighth';
+		return 'groups';
 	}
 
 	function is_intrabox() {
