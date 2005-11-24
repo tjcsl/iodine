@@ -175,7 +175,7 @@ class Groups implements Module {
 				}
 				if($_REQUEST['group_admin_form'] == 'remove') {
 					$group = new Group($_REQUEST['name']);
-					$group->delete();
+					$group->delete_group();
 				}
 			}
 			$this->template_args['groups'] = Group::get_all_groups();
