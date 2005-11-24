@@ -35,11 +35,12 @@ class Info implements Module {
 	function display_pane($disp) {
 		global $I2_ARGS;
 		
+		$section = implode("/", array_slice($I2_ARGS, 1));
 		try {
-			$disp->disp($I2_ARGS[1].'.tpl');
+			$disp->disp($section . '.tpl');
 		}
 		catch( I2Exception $e ) {
-			$disp->disp('error.tpl', array('sec'=>$I2_ARGS[1]));
+			$disp->disp('error.tpl', array('sec'=>$section));
 		}
 	}
 	
