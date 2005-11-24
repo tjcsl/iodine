@@ -1,4 +1,4 @@
-<a href="[<$I2_ROOT>]eighthinfo">Back to Eighth Period Info home</a>
+<a href="[<$I2_ROOT>]info/eighth">Back to Eighth Period Info home</a>
 <h3>Inactive Clubs That Have Been Previously Approved</h3>
 
 <ul>

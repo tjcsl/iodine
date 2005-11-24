@@ -1,4 +1,4 @@
-<a href="[<$I2_ROOT>]eighthinfo">Back to Eighth Period Info home</a>
+<a href="[<$I2_ROOT>]info/eighth">Back to Eighth Period Info home</a>
 <p>Eighth period is an opportunity for students to meet with other students who share a common interest, (such as intramural sports, clubs or academic teams, etc.) under the supervision of a faculty/staff representative. Teachers within each department also offer tutoring and make up work in curricular subjects at this time.  Study halls are available for those who wish to work on assignments. These activities are offered as a part of the school day so that every student may participate in some activity that interests him/her. Regular buses do not leave until after eighth period. </p>
 
 <p>On anchor day 8th periods (called "TA" and normally held on Mondays), students are assigned to a specific teacher/advisor (TA) within grade level. The time is used for administrative, guidance, or BBC (Building a Better Community) activities, class meetings, assemblies, video presentations, and discussions. </p>

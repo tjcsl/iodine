@@ -1,4 +1,4 @@
-<a href="[<$I2_ROOT>]eighthinfo">Back to Eighth Period Info home</a>
+<a href="[<$I2_ROOT>]info/eighth">Back to Eighth Period Info home</a>
 <ul>
    <li>Sign on to your Intranet Account.</li>
    <li>Click on <b>Full Schedule</b> in the Eighth Period box.</li>
