@@ -16,7 +16,7 @@
 * @subpackage admin
 * @todo Check that the user is part of some administrative group
 */
-class MySQLInterface {
+class MySQLInterface implements Module {
 	private $query_data = FALSE;
 	private $query = FALSE;
 
