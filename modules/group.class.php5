@@ -167,7 +167,7 @@ class Group {
 	* @param User $user The user to check, or $I2_USER if unspecified.
 	* @return bool TRUE if the user is a member of the group, FALSE otherwise.
 	*/
-	public function has_member(User $user=NULL) {
+	public function has_member($user=NULL) {
 		global $I2_SQL;
 
 		if($user===NULL) {
@@ -194,7 +194,7 @@ class Group {
 		return FALSE;
 	}
 
-	public function is_group_admin(User $user=NULL) {
+	public function is_group_admin($user=NULL) {
 		global $I2_SQL;
 
 		if($user === NULL) {
