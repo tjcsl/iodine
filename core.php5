@@ -24,6 +24,12 @@ define('I2_VERSION', 0.1);
 */
 define('CONFIG_FILENAME', 'config.ini');
 
+/**
+* A few helpful globals, which need to be generated, so they cannot simply be define()'d.
+*/
+$I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
+$I2_SELF = $_SERVER['REDIRECT_URL'];
+
 /*
 The actual config file in CVS is config.user.ini and config.server.ini
 When you check out intranet2 to run it from your personal space, copy

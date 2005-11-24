@@ -259,16 +259,15 @@ class Display {
 	* Assigns all I2 variables which we want available in all templates.
 	*/
 	private function assign_i2vals() {
-		global $I2_USER;
-		$root = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
-		$this->smarty->assign('I2_ROOT', $root);
-		$this->smarty->assign('I2_SELF', $_SERVER['REDIRECT_URL']);
+		global $I2_USER,$I2_ROOT,$I2_SELF;
+		$this->smarty->assign('I2_ROOT', $I2_ROOT);
+		$this->smarty->assign('I2_SELF', $I2_SELF);
 		if( isSet($I2_USER) ) {
 			$this->smarty->assign('I2_UID', $I2_USER->uid);
-			$this->smarty->assign('I2_CSS', "{$root}www/styles/".self::$style.'.css');
+			$this->smarty->assign('I2_CSS', "{$I2_ROOT}www/styles/".self::$style.'.css');
 		}
 		else {
-			$this->smarty->assign('I2_CSS', "{$root}www/styles/default.css");
+			$this->smarty->assign('I2_CSS', "{$I2_ROOT}www/styles/default.css");
 		}
 	}
 
