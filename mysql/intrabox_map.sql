@@ -6,5 +6,6 @@ CREATE TABLE intrabox_map (
 	
 	boxid INT NOT NULL,
 
-	box_order TINYINT
+	box_order SMALLINT,
+	closed TINYINT
 );
