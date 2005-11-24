@@ -4,15 +4,15 @@
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
-* @package modules
-* @subpackage Intrabox
+* @package core
+* @subpackage Display
 * @filesource
 */
 
 /**
 * The {@link Module} to manage Intraboxen.
 * @package core
-* @subpackage Intrabox
+* @subpackage Display
 */
 class ManageIbox implements Module {
 
