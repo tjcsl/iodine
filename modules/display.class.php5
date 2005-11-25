@@ -278,6 +278,10 @@ class Display {
 	* @param array $args Associative array of Smarty arguments.
 	*/
 	public function disp($template, $args=array()) {
+		if(self::$display_stopped) {
+			return;
+		}
+	
 		$this->assign_i2vals();
 		$this->smarty_assign($args);
 		
@@ -299,6 +303,10 @@ class Display {
 	* @param string $text The text to display.
 	*/
 	public function raw_display($text) {
+		if(self::$display_stopped) {
+			return;
+		}
+	
 		$text = 'Raw display from module '.$this->my_module_name.': '.$text;
 		if ($this->buffering_on()) {
 			self::$core_display->buffer .= "$text";
@@ -445,6 +453,17 @@ class Display {
 	*/
 	public function __finalize() {
 		$this->flush_buffer();
+	}
+
+	/**
+	* Stop Display from displaying anything.
+	*
+	* Use this method in the case of outputting raw file data, or any other case where you need to ensure that the normal display does not get sent.
+	*/
+	public static function stop_display() {
+		self::$display_stopped = TRUE;
+		self::$core_display->clear_buffer();
+		self::$core_display->set_buffering(FALSE);
 	}
 }
 ?>
