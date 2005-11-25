@@ -104,14 +104,13 @@ class Auth {
 	*/
 	private function log_out($user) {
 		
-		if(isset($_SESSION['logout_funcs'])) {
-			foreach($_SESSION['logout_funcs'] as $callback) {
-				if( is_callable($callback) ) {
-					call_user_func($callback);
-				}
-				else {
-					d('Invalid callback in the logout_funcs SESSION array, skipping it. Callback: '.print_r($callback,TRUE));
-				}
+		foreach($_SESSION['logout_funcs'] as $callback) {
+			if( is_callable($callback) ) {
+				call_user_func($callback);
+				d("Called $callback");
+			}
+			else {
+				d('Invalid callback in the logout_funcs SESSION array, skipping it. Callback: '.print_r($callback,TRUE));
 			}
 		}
 		
@@ -165,6 +164,7 @@ class Auth {
 				$_SESSION['i2_username']= $_REQUEST['login_username'];
 				$_SESSION['i2_password']= $_REQUEST['login_password'];
 				$_SESSION['i2_login_time'] = time();
+				$_SESSION['logout_funcs'] = array();
 				
 				return TRUE;
 			} else {

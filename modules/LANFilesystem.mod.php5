@@ -25,25 +25,29 @@ class LANFilesystem implements Filesystem {
 	private $homedir;
 	
 	public function __construct($user, $pass) {
-		global $I2_USER;
-		
-		$volume = LANFilesystem::$grade_map[$I2_USER->grade] . '/students/' . $user;
 		$this->homedir = i2config_get("novell_base_dir", "/tmp/novell", "filecenter") . $user;
-
-		LANFilesystem::ncpmount($user, $pass, $volume, $this->homedir);
+		
+		if (!(file_exists($this->homedir) && isset($_SESSION['novell_mounted']))) {
+			$this->mount($user, $pass);
+			$_SESSION['novell_mounted'] = TRUE;
+			$_SESSION['logout_funcs'][] = array($this, 'unmount');
+		}
 	}
 
-	private static function ncpmount($user, $pass, $volume, $mount_point) {
-		$server = i2config_get("novell_server", "TECHNOLOGY", "filecenter");
+	private function mount($user, $pass) {
+		global $I2_USER;
 
-		d("Mounting $volume@$server to $mount_point as $user");
+		$server = i2config_get("novell_server", "TECHNOLOGY", "filecenter");
+		$volume = self::$grade_map[$I2_USER->grade] . '/students/' . $user;
+
+		d("Mounting $volume@$server to $this->homedir as $user");
 		
-		if (!file_exists($mount_point)) {
+		if (!file_exists($this->homedir)) {
 			d("Creating mount-point");
-			mkdir($mount_point, 0755);
+			mkdir($this->homedir, 0755);
 		}
 		
-		LANFilesystem::ncpumount($mount_point);
+		$this->unmount();
 
 		$descriptors = array(
 			0 => array('pipe', 'r'), 
@@ -54,7 +58,7 @@ class LANFilesystem implements Filesystem {
 		);
 
 		//TODO: figure out why ncpmount thinks it won't be given a password when run from php. Perhaps its because stdin is not tty?
-		$process = proc_open("ncpmount -S $server -A $server -V $volume -U $user $mount_point -P $pass", $descriptors, $pipes);
+		$process = proc_open("ncpmount -S $server -A $server -V $volume -U $user $this->homedir -P $pass", $descriptors, $pipes);
 		if(is_resource($process)) {
 			/*
 			fwrite($pipes[0], $pass);
@@ -80,10 +84,10 @@ class LANFilesystem implements Filesystem {
 
 	}
 	
-	private static function ncpumount($mount_point) {
-		d("Unmounting $mount_point");
-		
-		$status = exec("ncpumount $mount_point");
+	public function unmount() {
+		d("Unmounting $this->homedir");
+
+		$status = exec("ncpumount $this->homedir");
 
 		d("Unmount status: $status");
 	}

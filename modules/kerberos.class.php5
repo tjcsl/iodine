@@ -25,9 +25,6 @@ class Kerberos {
 			throw new I2Exception("Kerberos login for $user@$realm failed.");
 		}
 
-		if(!isset($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
-			$_SESSION['logout_funcs'] = array();
-		}
 		$_SESSION['logout_funcs'][] = array($this, 'destroy');
 	}
 
