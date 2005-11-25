@@ -55,7 +55,7 @@ class I2Exception extends Exception {
 	* @return string The exception in the form of a string.
 	*/
 	public function __toString() {
-		$I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
+		global $I2_ROOT;
 		$str = ($this->critical?'Critical ':'') . 'I2 Exception: '.$this->message;
 		$str .= "<br />\r\nBacktrace:<br />\r\n";
 		
