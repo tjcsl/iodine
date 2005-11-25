@@ -357,7 +357,8 @@ class Display {
 	public function global_header($title = NULL) {
 		global $I2_USER;
 		$this->disp('header.tpl', array('title' => htmlspecialchars($title), 'first_name' => $I2_USER->fname));
-		$this->flush_buffer();
+		//XXX: The following line needs to be commented out for raw data output to work. I don't know how necessary it is. -adeason
+//		$this->flush_buffer();
 	}
 
 	/**
