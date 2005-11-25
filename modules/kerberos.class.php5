@@ -83,10 +83,13 @@ class Kerberos {
 	*/
 	public static function get_ticket($user, $password, $realm) {
 
-		// Generates a cache name in the form /tmp/iodine-krb5-<username>-<randomstring>, where <randomstring> is 5 chars long
-		$mtime = microtime();
-		srand((float)(substr($mtime, 1+strpos($mtime, ' '))));
-		$cache = "/tmp/iodine-krb5-$user-".substr(md5(''.rand()),0,5);
+		do {
+			// Generates a cache name in the form /tmp/iodine-krb5-<randomstring>, where <randomstring> is 16 chars long
+			$mtime = microtime();
+			srand((float)(substr($mtime, 1+strpos($mtime, ' '))));
+			$cache = "/tmp/iodine-krb5-".substr(md5(''.rand()),0,16);
+			//$cache = "/tmp/iodine-krb5-$user-".substr(md5(''.rand()),0,16);
+		} while(file_exists($cache));
 	
 		$descriptors = array(0 => array('pipe', 'r'), 1 => array('file', '/dev/null', 'w'), 2 => array('file', '/dev/null', 'w'));
 
