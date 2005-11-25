@@ -26,7 +26,7 @@ class LANFilesystem implements Filesystem {
 	
 	public function __construct($user, $pass) {
 		global $I2_USER;
-		$this->homedir = i2config_get("novell_base_dir", "/tmp/novell", "filecenter") . $user;
+		$this->homedir = i2config_get("novell_base_dir", "/tmp/novell/", "filecenter") . $user;
 		
 		if (!(file_exists($this->homedir) && isset($_SESSION['novell_mounted']))) {
 			$volume = self::$grade_map[$I2_USER->grade] . '/students/' . $user;
