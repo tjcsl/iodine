@@ -25,13 +25,18 @@ class Auth {
 
 		if( isset($I2_ARGS[0]) && $I2_ARGS[0] == 'logout' ) {
 				if (isSet($_SESSION['i2_uid'])) {
-					self::log_out($_SESSION['i2_uid']);
+					self::log_out();
 				} else {
 					/*
 					** This person doesn't have a session.  They're probably not logged in at all.
 					** If they didn't log out last time, there's nothing we can do about it now.
 					*/
 				}
+				// Redirect to Iodine root. If we didn't do this, then
+				// 'logout' would still be in the query string if the user
+				// tried to log in again immediately, which would cause
+				// problems. So, we redirect instead. 
+				redirect();
 		}
 		
 		if( !$this->is_authenticated() && !$this->login() ) {
@@ -46,8 +51,12 @@ class Auth {
 	*/
 	public function is_authenticated() {
 		if (	isset($_SESSION['i2_uid']) 
-			&& isset($_SESSION['i2_login_time']) 
-			&& $_SESSION['i2_login_time'] <= time()+i2config_get('timeout',600,'login')) {
+			&& isset($_SESSION['i2_login_time'])) {
+			if( $_SESSION['i2_login_time'] > time()+i2config_get('timeout',600,'login')) {
+				$this->log_out();
+				return FALSE;
+			}
+
 			$_SESSION['i2_login_time'] = time();
 			return TRUE;
 		}
@@ -83,9 +92,12 @@ class Auth {
 			throw new I2Exception('Internal error: invalid authentication method '.$auth_method.' specified in the Iodine configuration.');
 		}
 
-		eval('$result = '.$auth_method.'::authenticate($user, $password);');
-
-		return $result;
+		try {
+			$_SESSION['i2_credentials'] = new $auth_method($user, $password);
+		} catch( I2Exception $e ) {
+			return FALSE;
+		}
+		return TRUE;
 	}
 
 	/**
@@ -95,19 +107,27 @@ class Auth {
 	* <ul>
 	*  <li>Calls all of the functions in the $_SESSION['logout_funcs'] array</li>
 	*  <li>Destroys all session information associated with the user</li>
-	*  <li>Redirects the user back to Iodine root (i.e. the login page)</li>
 	* </ul>
 	*
-	* @param string $user The username to log out.
+	* Each item in the $_SESSION['logout_funcs'] is an array with two things:
+	* The first index is the callback, either a function name or a callback in the
+	* form of array('class','method');. The second index is an array of parameters.
+	* So, if you wanted to call Class::stuff(1,2); when a user logs out, do:
+	* <pre>$_SESSION['logout_funcs'][] = array(array('class','stuff'),array(1,2));</pre>
+	*
+	* The callbacks in logout_funcs are called when the user clicks the 'logout' link
+	* or if their session times out and they try to access a page.
+	* @todo develop some kind of mechanism for calling the logout_funcs array
+	*	from a cron job, or something, to periodically make sure it gets called.
+	*
 	* @return bool TRUE if the user was successfully logged out.
-	XXX: would the return value ever be anything but true? Does this function need to return anything? -adeason
 	*/
-	private function log_out($user) {
+	private function log_out() {
+		global $I2_ARGS;
 		
 		foreach($_SESSION['logout_funcs'] as $callback) {
-			if( is_callable($callback) ) {
-				call_user_func($callback);
-				d("Called $callback");
+			if( is_callable($callback[0]) ) {
+				call_user_func_array($callback[0], $callback[1]);
 			}
 			else {
 				d('Invalid callback in the logout_funcs SESSION array, skipping it. Callback: '.print_r($callback,TRUE));
@@ -117,12 +137,6 @@ class Auth {
 		session_destroy();
 		unset($_SESSION);
 		 
-		// Redirect to Iodine root. If we didn't do this, then
-		// 'logout' would still be in the query string if the user
-		// tried to log in again immediately, which would cause
-		// problems. So, we redirect instead. 
-		
-		redirect();
 		return TRUE;
 	}
 	
@@ -154,6 +168,10 @@ class Auth {
 	public function login() {
 		global $I2_SQL;
 
+		if(!isset($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
+			$_SESSION['logout_funcs'] = array();
+		}
+
 		if (isset($_REQUEST['login_username']) && isset($_REQUEST['login_password'])) {
 		
 			if ($this->check_user($_REQUEST['login_username'],$_REQUEST['login_password'])) {
@@ -164,7 +182,6 @@ class Auth {
 				$_SESSION['i2_username']= $_REQUEST['login_username'];
 				$_SESSION['i2_password']= $_REQUEST['login_password'];
 				$_SESSION['i2_login_time'] = time();
-				$_SESSION['logout_funcs'] = array();
 				
 				return TRUE;
 			} else {
