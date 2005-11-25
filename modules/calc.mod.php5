@@ -109,6 +109,9 @@ class Calc implements Module {
 		return "Calculator Registration";
 	}
 
+	/**
+	* Required by the {@link Module} interface.
+	*/
 	function is_intrabox() {
 		return false;
 	}

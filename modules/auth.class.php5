@@ -163,6 +163,7 @@ class Auth {
 
 				$_SESSION['i2_uid'] = $uarr['uid'];
 				$_SESSION['i2_username']= $_REQUEST['login_username'];
+				$_SESSION['i2_password']= $_REQUEST['login_password'];
 				$_SESSION['i2_login_time'] = time();
 				
 				return TRUE;
