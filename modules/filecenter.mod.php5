@@ -24,9 +24,15 @@ class Filecenter implements Module {
 	private $template = "filecenter_pane.tpl";
 
 	/**
-	* Template arguments for the specified action
+	* Template arguments for intrabox
+	*/
+	private $box_args = array();
+
+	/**
+	* Template arguments for pane
 	*/
 	private $template_args = array();
+
 
 	private $filesystem;
 
@@ -43,7 +49,7 @@ class Filecenter implements Module {
 		if ($system_type == "lan") {
 			$this->filesystem = new LANFilesystem($_SESSION['i2_username'], $_SESSION['i2_password']);
 		} else if ($system_type == "csl") {
-			//TODO: CSL
+			$this->filesystem = new CSLProxy($_SESSION['i2_username'], $_SESSION['i2_password']);
 		} else {
 			throw new I2Exception("Unknown filesystem type $system_type");
 		}
@@ -61,7 +67,7 @@ class Filecenter implements Module {
 			header('Content-Disposition: attachment; filename="' . $file->get_name() . '"');
 			header('Content-length: ' . $file->get_size());
 			header('Pragma: public');
-			echo $file->get_contents();
+			echo $this->filesystem->get_file_contents($this->directory);
 
 			die;
 		}
@@ -112,6 +118,7 @@ class Filecenter implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_box() {
+		$this->box_args['csl_username'] = $_SESSION['i2_username'];
 		return "Filecenter";
 	}
 	
@@ -119,7 +126,7 @@ class Filecenter implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_box($display) {
-		$display->disp("filecenter_box.tpl");
+		$display->disp("filecenter_box.tpl", $this->box_args);
 	}
 	
 	/**

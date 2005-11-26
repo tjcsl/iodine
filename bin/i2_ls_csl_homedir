@@ -1,8 +1,0 @@
-#!/usr/bin/perl
-
-# Syntax: i2_ls_csl_homedir username
-
-my $username = shift @ARGV;
-my $dir = `i2_csl_homedir $username`;
-
-print `i2_ls "$dir"`;
