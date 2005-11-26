@@ -14,8 +14,6 @@ interface I2File {
 	
 	public function get_absolute_path();
 	
-	public function get_contents();
-	
 	public function get_name();
 	
 	public function get_parent();
