@@ -19,6 +19,29 @@ abstract class Filesystem {
 	//DEFINE ME!
 	protected $root_dir;
 
+	protected function convert_path($path, $must_exist=TRUE) {
+		$basename = basename($path);
+		
+		if ($must_exist == FALSE && $basename != '..' && $basename != '.') {
+			$new_path = convert_path(dirname($path)) . '/' . $basename;
+			if (!file_exists($new_path)) {
+				return $new_path;
+			}
+		}
+	
+		$absolute_path = realpath($this->root_dir . '/' . $path);
+	
+		if ($absolute_path === FALSE) {
+			throw new I2Exception('File ' . $this->root_dir . '/' . $path . ' does not exist');
+		}
+	
+		if ($absolute_path == $this->root_dir || fnmatch($this->root_dir. '/*', $absolute_path)) {
+			return $absolute_path;
+		} else {
+			throw new I2Exception("File $absolute_path is outside of user's homedir");
+		}
+	}
+
 	public function create_file($filename, $contents) {
 		$path = $this->convert_path($filename, FALSE);
 	
@@ -99,29 +122,6 @@ abstract class Filesystem {
 		
 		if (rmdir($path) === FALSE) {
 			throw new I2Exception("Could not remove directory $path");
-		}
-	}
-
-	protected function convert_path($path, $must_exist=TRUE) {
-		$basename = basename($path);
-		
-		if ($must_exist == FALSE && $basename != '..' && $basename != '.') {
-			$new_path = convert_path(dirname($path)) . '/' . $basename;
-			if (!file_exists($new_path)) {
-				return $new_path;
-			}
-		}
-	
-		$absolute_path = realpath($this->root_dir . '/' . $path);
-	
-		if ($absolute_path === FALSE) {
-			throw new I2Exception('File ' . $this->root_dir . '/' . $path . 'does not exist');
-		}
-	
-		if ($absolute_path == $this->root_dir || fnmatch($this->root_dir. '/*', $absolute_path)) {
-			return $absolute_path;
-		} else {
-			throw new I2Exception("File $absolute_path is outside of user's homedir");
 		}
 	}
 
