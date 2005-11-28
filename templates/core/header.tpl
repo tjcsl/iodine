@@ -17,7 +17,7 @@
   <a href="[<$I2_ROOT>]">Home</a>
 
   <span class="bold">&middot;</span>
-  <a href="#">SCT</a>
+  <a href="http://sct.tjhsst.edu/">SCT</a>
   <span class="bold">&middot;</span>
   <a href="[<$I2_ROOT>]prefs">Preferences</a>
   <span class="bold">&middot;</span>
