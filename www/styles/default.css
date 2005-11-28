@@ -71,7 +71,7 @@ a:hover {
 }
 .date {
 	position: absolute;
-	top: 45px;
+	top: 25px;
 	float: right;
 	right: 25px;
 }
@@ -84,6 +84,7 @@ a:hover {
 .intrabox {
 	border: thin groove;
 	margin-bottom: 10pt;
+	width: 315px;
 }
 .boxheader {
 	color: #FFFFFF;
@@ -93,7 +94,9 @@ a:hover {
 	border-right: 4px solid #464678;
 }
 .boxbuttons {
-	right: 0px;
+	float: right;
+	margin-right: 2px;
+	margin-top: -2px;
 }
 .boxcontent {
 	margin-left: 4px;

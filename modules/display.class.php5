@@ -138,8 +138,14 @@ class Display {
 				$mod = NULL;
 
 				try {
-					eval('$mod = new '.$module.'();');
-					$title = $mod->init_pane();
+					$mod = new $module();
+					if(! $mod instanceof Module) {
+						// essentially, 'no such module'
+						$title = FALSE;
+					}
+					else {
+						$title = $mod->init_pane();
+					}
 				} catch( Exception $e ) {
 					$this->global_header('Error');
 					$this->open_content_pane(array('error' => 1));
@@ -167,7 +173,7 @@ class Display {
 					$this->global_header($title[0]);
 					
 					if (!self::$display_stopped && $title) {
-						$this->open_content_pane(array('title' => $title[1]));
+						$this->open_content_pane(array('title' => htmlspecialchars($title[1])));
 						try {
 							$mod->display_pane($disp);
 						} catch (Exception $e) {
@@ -198,13 +204,6 @@ class Display {
 	}
 
 	/**
-	* Stops from anything being displayed? FIXME: explain this!
-	*/
-	public static function halt_display() {
-		self::$display_stopped = TRUE;
-	}
-
-	/**
 	* Clears any cached Smarty templates.
 	*/
 	public function clear_cache($template=FALSE) {
@@ -215,13 +214,6 @@ class Display {
 		}
 	}
 	
-	/**
-	* Resumes all display? FIXME: explain this!
-	*/
-	public static function resume_display() {
-		self::$display_stopped = FALSE;
-	}
-
 	/**
 	* Inform Dislay that the user's style has changed.
 	*/
@@ -267,16 +259,15 @@ class Display {
 	* Assigns all I2 variables which we want available in all templates.
 	*/
 	private function assign_i2vals() {
-		global $I2_USER;
-		$root = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
-		$this->smarty->assign('I2_ROOT', $root);
-		$this->smarty->assign('I2_SELF', $_SERVER['REDIRECT_URL']);
+		global $I2_USER,$I2_ROOT,$I2_SELF;
+		$this->smarty->assign('I2_ROOT', $I2_ROOT);
+		$this->smarty->assign('I2_SELF', $I2_SELF);
 		if( isSet($I2_USER) ) {
 			$this->smarty->assign('I2_UID', $I2_USER->uid);
-			$this->smarty->assign('I2_CSS', "{$root}www/styles/".self::$style.'.css');
+			$this->smarty->assign('I2_CSS', "{$I2_ROOT}www/styles/".self::$style.'.css');
 		}
 		else {
-			$this->smarty->assign('I2_CSS', "{$root}www/styles/default.css");
+			$this->smarty->assign('I2_CSS', "{$I2_ROOT}www/styles/default.css");
 		}
 	}
 
@@ -287,6 +278,10 @@ class Display {
 	* @param array $args Associative array of Smarty arguments.
 	*/
 	public function disp($template, $args=array()) {
+		if(self::$display_stopped) {
+			return;
+		}
+	
 		$this->assign_i2vals();
 		$this->smarty_assign($args);
 		
@@ -308,6 +303,10 @@ class Display {
 	* @param string $text The text to display.
 	*/
 	public function raw_display($text) {
+		if(self::$display_stopped) {
+			return;
+		}
+	
 		$text = 'Raw display from module '.$this->my_module_name.': '.$text;
 		if ($this->buffering_on()) {
 			self::$core_display->buffer .= "$text";
@@ -357,8 +356,9 @@ class Display {
 	*/
 	public function global_header($title = NULL) {
 		global $I2_USER;
-		$this->disp('header.tpl', array('title' => $title, 'first_name' => $I2_USER->fname));
-		$this->flush_buffer();
+		$this->disp('header.tpl', array('title' => htmlspecialchars($title), 'first_name' => $I2_USER->fname));
+		//XXX: The following line needs to be commented out for raw data output to work. I don't know how necessary it is. -adeason
+//		$this->flush_buffer();
 	}
 
 	/**
@@ -439,10 +439,32 @@ class Display {
 	}
 
 	/**
+	* Determines if a module is valid.
+	*
+	* @param $tpl string The file name of the template, in <module>/<file.tpl> format.
+	*
+	* @return bool TRUE if the specified template exists, FALSE otherwise.
+	*/
+	public static function is_template($tpl) {
+		return (self::get_template($tpl)!==NULL);
+	}
+
+	/**
 	* Automagical destructor for Display objects.  This flushes all output.
 	*/
 	public function __finalize() {
 		$this->flush_buffer();
+	}
+
+	/**
+	* Stop Display from displaying anything.
+	*
+	* Use this method in the case of outputting raw file data, or any other case where you need to ensure that the normal display does not get sent.
+	*/
+	public static function stop_display() {
+		self::$display_stopped = TRUE;
+		self::$core_display->clear_buffer();
+		self::$core_display->set_buffering(FALSE);
 	}
 }
 ?>

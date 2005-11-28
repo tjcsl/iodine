@@ -71,7 +71,7 @@ class Calc implements Module {
 
 	private function calc_exists($val) {
 		global $I2_SQL;
-		if ( flatten($I2_SQL->query('SELECT * FROM calculators WHERE calcsn=%d', $val)->fetch_array(RESULT_ASSOC)) != null )
+		if ( flatten($I2_SQL->query('SELECT * FROM calculators WHERE calcsn=%d', $val)->fetch_array(Result::ASSOC)) != null )
 		{
 			return true;
 		} else {
@@ -84,7 +84,7 @@ class Calc implements Module {
 	*/
 	function display_pane($display) {
 		global $I2_SQL, $I2_USER;
-		$calcs = $I2_SQL->query('SELECT calcsn, calcid FROM calculators WHERE uid=%d', $I2_USER->uid)->fetch_all_arrays(RESULT_ASSOC);
+		$calcs = $I2_SQL->query('SELECT calcsn, calcid FROM calculators WHERE uid=%d', $I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
 		$display->disp($this->template, array( 'message' => $this->message ,
 							'calcs' => $calcs));
 	}
@@ -107,6 +107,13 @@ class Calc implements Module {
 	*/
 	function get_name() {
 		return "Calculator Registration";
+	}
+
+	/**
+	* Required by the {@link Module} interface.
+	*/
+	function is_intrabox() {
+		return false;
 	}
 }
 

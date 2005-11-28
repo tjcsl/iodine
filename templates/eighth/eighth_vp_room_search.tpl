@@ -1,4 +1,4 @@
-[<include file="eighth_header.tpl">]
+[<include file="eighth/eighth_header.tpl">]
 Specify the report criteria:<br />
 <form action="[<$I2_ROOT>]eighth/vp_room/view/bid/[<$bid>]" method="post">
 	<table style="border: 0px; margin: 0px; padding: 0px;">

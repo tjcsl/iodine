@@ -92,6 +92,10 @@ class StudentDirectory implements Module {
 	function get_name() {
 		return 'StudentDirectory';
 	}
+
+	function is_intrabox() {
+		return true;
+	}
 }
 
 ?>

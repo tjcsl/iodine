@@ -15,20 +15,7 @@
 */
 class Highlight implements Module {
 
-	/**
-	* The display object to use
-	*/
-	private $display;
-
-	/**
-	* Template for the specified action
-	*/
-	private $template = "highlight.tpl";
-
-	/**
-	* Template arguments for the specified action
-	*/
-	private $template_args = array();
+	private $code;
 
 	/**
 	* Required by the {@link Module} interface.
@@ -41,10 +28,9 @@ class Highlight implements Module {
 		foreach (array_slice($I2_ARGS, 2) as $arg) {
 			$filename .= "/" . $arg;
 		}
-		$code = highlight_file($filename, TRUE);
-		$code = explode('<br />', $code);
+		$array = explode('<br />', highlight_file($filename, TRUE));
 		$num = 1;
-		foreach ($code as &$line) {
+		foreach ($array as &$line) {
 			if ($num == $linenum) {
 				$line = "<a name='$linenum'></a><b style='background:#CCCCCC'><font color='black'>" . $num . ": </font>" . $line . "</b>";
 
@@ -53,16 +39,15 @@ class Highlight implements Module {
 			}
 			$num++;
 		}
-		$code = implode("<br />\n", $code);
-		$this->template_args = array("code" => $code);
-		return array("Source Code Highlighter", "Highlight");
+		$this->code = implode("<br />\n", $array);
 	}
 
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
-		$display->disp($this->template, $this->template_args);
+		Display::stop_display();
+		echo $this->code;
 	}
 
 	/**
@@ -76,6 +61,7 @@ class Highlight implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_box($display) {
+		return FALSE;
 	}
 	
 	/**
@@ -83,6 +69,10 @@ class Highlight implements Module {
 	*/
 	function get_name() {
 		return "Highlight";
+	}
+
+	function is_intrabox() {
+		return false;
 	}
 }
 

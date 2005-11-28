@@ -1,4 +1,4 @@
-[<include file="eighth_header.tpl">]
+[<include file="eighth/eighth_header.tpl">]
 <form action="[<$I2_ROOT>]eighth/amr_activity/modify/aid/[<$activity->aid>]" method="post">
 	<table style="border: 0px; padding: 0px; margin: 0px;">
 		<tr>

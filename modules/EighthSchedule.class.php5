@@ -80,7 +80,7 @@ class EighthSchedule {
 	*/
 	public static function get_absentees($blockid, $activityid) {
 		global $I2_SQL;
-		return flatten($I2_SQL->query("SELECT eighth_absentees.userid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) WHERE eighth_absentees.bid=%d AND aid=%d", $blockid, $activityid)->fetch_all_arrays(RESULT_NUM));
+		return flatten($I2_SQL->query("SELECT eighth_absentees.userid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) WHERE eighth_absentees.bid=%d AND aid=%d", $blockid, $activityid)->fetch_all_arrays(Result::NUM));
 	}
 
 	/**
@@ -91,7 +91,7 @@ class EighthSchedule {
 	*/
 	public static function get_absences($userid) {
 		global $I2_SQL;
-		return flatten($I2_SQL->query("SELECT aid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) WHERE eighth_absentees.userid=%d", $userid)->fetch_all_arrays(RESULT_NUM));
+		return $I2_SQL->query("SELECT aid,eighth_activity_map.bid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) WHERE eighth_absentees.userid=%d", $userid)->fetch_all_arrays(Result::NUM);
 	}
 
 	/**
@@ -101,7 +101,7 @@ class EighthSchedule {
 	*/
 	public static function get_next_date() {
 		global $I2_SQL;
-		$date = $I2_SQL->query("SELECT date FROM eighth_blocks WHERE date >= %t ORDER BY date,block LIMIT 1", date("Y-m-d"))->fetch_array(RESULT_NUM);
+		$date = $I2_SQL->query("SELECT date FROM eighth_blocks WHERE date >= %t ORDER BY date,block LIMIT 1", date("Y-m-d"))->fetch_array(Result::NUM);
 		return $date[0];
 	}
 
@@ -117,7 +117,7 @@ class EighthSchedule {
 		if($starting_date == NULL) {
 			$starting_date = date("Y-m-d");
 		}
-		return $I2_SQL->query("SELECT aid,eighth_blocks.bid FROM eighth_activity_map LEFT JOIN eighth_blocks USING (bid) WHERE userid=%d AND date >= %t AND date <= ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block", $userid, $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(RESULT_NUM);
+		return $I2_SQL->query("SELECT aid,eighth_blocks.bid FROM eighth_activity_map LEFT JOIN eighth_blocks USING (bid) WHERE userid=%d AND date >= %t AND date <= ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block", $userid, $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::NUM);
 	}
 
 	/**
@@ -130,5 +130,53 @@ class EighthSchedule {
 	public static function count_members($blockid, $activityid) {
 		global $I2_SQL;
 		return $I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $blockid, $activityid)->num_rows();
+	}
+
+	/**
+	* Print the activity rosters for the given date and block(s).
+	*
+	* @access public
+	* @param array bids
+	*/
+	public static function printActivityRosters($bids) {
+		global $I2_SQL;
+		$activities = EighthActivity::id_to_activity($I2_SQL->query("SELECT activityid,bid FROM eighth_block_map WHERE bid IN (%D) ORDER BY activityid,bid", $bids)->fetch_all_arrays(MYSQL_NUM));
+		foreach($activities as $activity) {
+			$members = User::id_to_user($activity->members);
+			echo "<div style=\"display: none;\">
+<pre>
+\\documentclass[letterpaper,12pt]{article}
+\\usepackage{fullpage}
+\\pagestyle{empty}
+\\textheight 11in
+		
+\\begin{document}
+\\begin{tabular*}{6 in}{l@{\extracolsep{\fill}}cr@{\extracolsep{\fill}}}
+& Class Roster & \\\\
+Course No. {$activity->aid} & & {$activity->block_sponsors_comma} \\\\
+Room {$activity->block_rooms_comma} & {$activity->name} - {$activity->comment} & {$activity->block->date} \\\\
+Class Size " . count($activity->members) . " & & {$activity->block->block} Block \\\\*[1cm]
+\\end{tabular*}
+
+\\begin{tabular*}{6 in}{cl@{\extracolsep{\fill}}c}
+Check if Present & Student Name (ID) & Grade \\\\
+\\hline
+\\hline
+";
+			foreach($members as $member) {
+				echo "\hrulefill & {$member->name_comma} ({$member->uid}) & {$member->grade} \\\\\n";
+			}
+			echo "
+\\end{tabular*}
+\n\nFor additions to this roster, please call extension 5078.
+
+Please underline or highlight the names and ID numbers of the students who are NO-SHOWS.
+
+Thank you!
+
+\\end{document}
+</pre>
+</div>\n";
+		}
 	}
 }

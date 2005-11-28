@@ -45,7 +45,7 @@ class Findcalc implements Module {
 				}
 				else {
 					$number= '%'.$_REQUEST['number'].'%';
-					$calcs = $I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcsn like %s',$number)->fetch_all_arrays(RESULT_ASSOC);
+					$calcs = $I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcsn like %s',$number)->fetch_all_arrays(Result::ASSOC);
 				}
 			}
 			else if ($type == "id") {
@@ -54,7 +54,7 @@ class Findcalc implements Module {
 				}
 				else {
 					$number= '%'.$_REQUEST['number'].'%';
-					$calcs = $I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcid like %s',$number)->fetch_all_arrays(RESULT_ASSOC);
+					$calcs = $I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcid like %s',$number)->fetch_all_arrays(Result::ASSOC);
 				}
 			}
 		}
@@ -108,6 +108,10 @@ class Findcalc implements Module {
 	*/
 	function get_name() {
 		return "Identify Lost Calculator";
+	}
+
+	function is_intrabox() {
+		return false;
 	}
 }
 

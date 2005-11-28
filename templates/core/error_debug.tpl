@@ -49,7 +49,49 @@ function maximize(div) {
 	div.className += " resizeMe";
 }
 
+
 </script>
+<!--[if gte IE 5.5]>
+<![if lt IE 7]>
+<script type="text/javascript">
+function getYPos(id) {
+	var div = document.getElementById(id);
+	var element = document.documentElement;
+	var body = document.body;
+	return (element.clientHeight ? element.clientHeight : body.clientHeight)
+		+ (element.scrollTop ? element.scrollTop : body.scrollTop)
+		- div.offsetHeight;
+}
+
+
+function getXPos(id) {
+	var div = document.getElementById(id);
+	var element = document.documentElement;
+	var body = document.body;
+	return (element.clientWidth ? element.clientWidth : body.clientWidth) 
+		+ (element.scrollLeft ? element.scrollLeft : body.scrollLeft )
+		- div.offsetWidth;
+}
+</script>
+<style type="text/css">
+div#error, div#debug {
+	position:absolute;
+	right: auto;
+	bottom: auto;
+}
+
+div#error {
+	left: 0px;
+	top: expression(getYPos('error') + 'px');
+}
+
+div#debug {
+	left: expression(getXPos('debug') + 'px');
+	top:  expression(getYPos('debug') + 'px');
+}
+</style>
+<![endif]>
+<![endif]-->
 [<if $errors>]
  <div class="error minimized" id="error">
   <div class="button_container"><div class="minimize" onclick="swap('error')"></div></div>

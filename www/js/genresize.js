@@ -31,8 +31,9 @@ function getDirection(el) {
 	var xPos, yPos, offset, dir;
 	dir = "";
 
-	xPos = window.event.offsetX;
-	yPos = window.event.offsetY;
+	//Position relative to element
+	xPos = window.event.offsetX - el.scrollLeft;
+	yPos = window.event.offsetY - el.scrollTop;
 
 	offset = 7; //The distance from the edge in pixels
 
@@ -45,7 +46,7 @@ function getDirection(el) {
 }
 
 function doDown() {
-	var el = getReal(event.srcElement, "className", regex);
+	var el = event.srcElement;//getReal(event.srcElement, "className", regex);
 
 	if (el == null || !regex.test(el.className)) {
 		theobject = null;
@@ -60,12 +61,16 @@ function doDown() {
 	theobject.el = el;
 	theobject.dir = dir;
 
+	//Absolute position of mouse on screen
 	theobject.grabx = window.event.clientX;
 	theobject.graby = window.event.clientY;
+	
+	//Current size of object
 	theobject.width = el.offsetWidth - 14;
 	theobject.height = el.offsetHeight - 14;
-	theobject.left = el.offsetLeft;
-	theobject.top = el.offsetTop;
+	
+	//theobject.left = el.offsetLeft;
+	//theobject.top = el.offsetTop;
 
 	window.event.returnValue = false;
 	window.event.cancelBubble = true;
@@ -82,7 +87,7 @@ function doMove() {
 	xMin = 8; //The smallest width possible
 	yMin = 8; //             height
 	
-	el = getReal(event.srcElement, "className", regex);
+	el = event.srcElement;//getReal(event.srcElement, "className", regex);
 	if (theobject == null && regex.test(el.className)) {
 		str = getDirection(el);
 		//Fix the cursor	
@@ -117,17 +122,21 @@ function doMove() {
 }
 
 
-function getReal(el, type, testExp) {
+/*function getReal(el, type, testExp) {
 	temp = el;
-	/*while ((temp != null) && (temp.tagName != "BODY")) {
+	while ((temp != null) && (temp.tagName != "BODY")) {
 		if (testExp.test(eval("temp." + type))) {
 			el = temp;
 			return el;
 		}
 		temp = temp.parentElement;
-	}*/
+	}
+	window.status = el.id + " (" + el.className + ")" +
+			" event.offsetY=" + event.offsetY + " event.clientY=" + event.clientY + 
+			" event.scrollTop=" + event.scrollTop +
+			" el.offsetHeight=" + el.offsetHeight + " el.scrollTop=" + el.scrollTop;
 	return el;
-}
+}*/
 
 document.onmousedown = doDown;
 document.onmouseup   = doUp;

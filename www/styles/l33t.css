@@ -82,6 +82,7 @@ a:hover {
 	border: thin groove;
 	margin-bottom: 10pt;
 	background: #000000;
+	width: 315px;
 }
 .boxheader {
 	color: #ffffff;

@@ -1,15 +1,62 @@
 <script language="javascript" type="text/javascript">
-function popup ()
-{
-var newWin=window.open('','tempwin','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,width=650,height=450,resizable=0');
-newWin.focus();
+var max_height = 200;
+function show_help(height) {
+	var help_pane = document.getElementById("help_pane");
+	var	blocker_pane = document.getElementById("blocker");
+	if(height == 0) {
+		help_pane.style.display = "block";
+		help_pane.style.padding = "10px";
+		blocker_pane.style.display = "block";
+	}
+	help_pane.style.height = height + "px";
+	help_pane.style.width = 2 * height + "px";
+	help_pane.style.top = 20 + height / 2 + "px";
+	help_pane.style.left = height / 2 + "px";
+	help_pane.style.opacity = height / max_height;
+	help_pane.style.filter = "alpha(opacity=" + (100 * height / max_height) + ")";
+	blocker_pane.style.opacity = height / (2 * max_height);
+	blocker_pane.style.filter = "alpha(opacity=" + (50 * height / max_height) + ")";
+	if(height < max_height) {
+		setTimeout("show_help(" + (height + 20) + ")", 5);
+	}
+	else {
+	}
+}
+function hide_help(height) {
+	var help_pane = document.getElementById("help_pane");
+	var	blocker_pane = document.getElementById("blocker");
+	help_pane.style.height = height + "px";
+	help_pane.style.width = 2 * height + "px";
+	help_pane.style.top = 20 + height / 2 + "px";
+	help_pane.style.left = height / 2 + "px";
+	help_pane.style.opacity = height / max_height;
+	help_pane.style.filter = "alpha(opacity=" + (100 * height / max_height) + ")";
+	blocker_pane.style.opacity = height / (2 * max_height);
+	blocker_pane.style.filter = "alpha(opacity=" + (50 * height / max_height) + ")";
+	if(height > 0) {
+		setTimeout("hide_help(" + (height - 20) + ")", 5);
+	}
+	else {
+		help_pane.style.padding = "0px";
+		help_pane.style.display = "none";
+		blocker_pane.style.display = "none";
+	}
+}
+function move_help(e) {
+	if(!e) var e = window.event;
+	alert("hello");
 }
 </script>
-
-<table style="border: 0px; padding: 0px; margin: 0px">
+<div id="blocker" style="display: none; position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px; background-color: #666666;"></div>
+<div id="help_pane" onMouseDown="register_press(event)" >
+<div id="help_close" onClick="hide_help(max_height)">Close</div>
+<span class="bold">Help:</span><br /><br />
+	[<$help>]
+</div>
+<table style="border: 0px; padding: 0px; margin: 0px;">
 <tr>
 <td>
-<a href="[<$I2_ROOT>]eighth"><img src="[<$I2_ROOT>]www/pics/eighth/eighth.gif" style="border: 0; width: 300; height: 80"></a>
+<a href="[<$I2_ROOT>]eighth"><img src="[<$I2_ROOT>]www/pics/eighth/eighth.png" style="border: 0; width: 300; height: 80"></a>
 </td>
 <td style="width: 10"></td>
 <td style="valign: top">
@@ -19,7 +66,7 @@ newWin.focus();
 <b>[<$smarty.now|date_format:"%B %e, %Y, %l:%M %p">]</b>
 </td>
 <td style="text-align: right">
-<a href="help.phtml?page=/eighth/index.phtml" onclick="popup()" target="tempwin">Help</a>&nbsp;&nbsp;&nbsp;
+<span id="help_text" onclick="show_help(0)">Help</span>&nbsp;&nbsp;&nbsp;
 </td>
 </tr>
 </table>

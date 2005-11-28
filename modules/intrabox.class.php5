@@ -40,6 +40,8 @@ class IntraBox {
 	*/
 	private $mydisplay = NULL;
 
+	private $closed = 0;
+
 	const USED = 1;
 	const UNUSED = 2;
 
@@ -55,20 +57,26 @@ class IntraBox {
 	* @param string $module_name The name of the module to create an intrabox
 	*                            for.
 	*/
-	public function __construct($module_name) {
+	public function __construct($boxid) {
+		global $I2_SQL,$I2_SELF,$I2_USER;
+		
+		$this->boxid = $boxid;
+		$module_name = $I2_SQL->query('SELECT intrabox.name FROM intrabox WHERE boxid=%d;', $boxid)->fetch_single_value();
+		$this->closed = $I2_SQL->query('SELECT closed FROM intrabox_map WHERE uid=%d AND boxid=%d;', $I2_USER->uid, $boxid)->fetch_single_value();
 
+		// Do not re-instantiate if the main pane module is the same as this module
 		if( self::$main_module && strcasecmp($module_name, self::$main_module->get_name()) == 0 ) {
 			$this->module = self::$main_module;
 		}
 		else {
 			if( get_i2module($module_name) ) {
 				$mod = new $module_name();
-				if( ! in_array( 'Module', class_implements($mod)) ) {
+				if( ! $mod instanceof Module ) {
 					throw new I2Exception('The class '.$module_name.' was passed as an Intrabox, but it does not implement the Module interface.');
 				}
 				$this->module = $mod;
 			}
-			/* for static iboxen */
+			// for static iboxen
 			else {
 				$this->module = $module_name;
 			}
@@ -83,13 +91,16 @@ class IntraBox {
 	public function display_box() {
 		global $I2_ERR,$I2_SQL;
 
+		// for static iboxen
 		if( is_string($this->module) ) {
 			$tpl = 'intrabox_'.$this->module.'.tpl';
-			$display_title = flatten($I2_SQL->query('SELECT display_name FROM intrabox WHERE name=%s', $this->module)->fetch_array(RESULT_NUM));
+			$display_title = flatten($I2_SQL->query('SELECT display_name FROM intrabox WHERE boxid=%d', $this->boxid)->fetch_array(Result::NUM));
 
 			try {
-				self::$display->disp('intrabox_openbox.tpl', array('title' => ucwords($display_title[0])));
-				self::$display->disp($tpl);
+				self::$display->disp('intrabox_openbox.tpl', array('name' => $this->module, 'title' => ucwords($display_title[0]), 'boxid' => $this->boxid));
+				if(!$this->closed) {
+					self::$display->disp($tpl);
+				}
 				self::$display->disp('intrabox_closebox.tpl');
 				self::$display->flush_buffer();
 			}
@@ -99,13 +110,16 @@ class IntraBox {
 
 			}
 		}
+		// for Module iboxen
 		else {
 			$name = $this->module->get_name();
 			try {
-				if( ($title = $this->module->init_box(true)) ) {
+				if( ($title = $this->module->init_box()) ) {
 					try {
-						self::$display->disp('intrabox_openbox.tpl', array('title' => $title));
-						$this->module->display_box($this->mydisplay);
+						self::$display->disp('intrabox_openbox.tpl', array('name' => $this->module->get_name(), 'title' => $title, 'boxid' => $this->boxid));
+						if(!$this->closed) {
+							$this->module->display_box($this->mydisplay);
+						}
 						self::$display->disp('intrabox_closebox.tpl');
 						self::$display->flush_buffer();
 					}
@@ -144,9 +158,7 @@ class IntraBox {
 		self::$display->disp('intrabox_open.tpl');
 		
 		$b = self::get_user_boxes($I2_USER->uid);
-		foreach($b as $mod) {
-			//d("Box: $mod");
-			$box = new Intrabox($mod);
+		foreach($b as $box) {
 			$box->display_box();
 		}
 
@@ -158,15 +170,20 @@ class IntraBox {
 	*
 	* @param int $uid The user ID of the user from which to get the list of
 	*                 intraboxes.
-	* @return array The list of the names of the intraboxes.
+	* @return array The list of the boxids of the intraboxes.
 	*/
 	public static function get_user_boxes($uid) {
 		global $I2_SQL;
-		return flatten($I2_SQL->query(	'SELECT intrabox.name FROM intrabox 
+		$ids =	flatten($I2_SQL->query(	'SELECT intrabox.boxid FROM intrabox 
 					 JOIN intrabox_map USING (boxid) 
 					 WHERE intrabox_map.uid=%d 
 					 ORDER BY intrabox_map.box_order;'
-			,$uid)->fetch_all_arrays(RESULT_NUM));
+			,$uid)->fetch_all_arrays(Result::NUM));
+		$ret = array();
+		foreach($ids as $id) {
+			$ret[] = new Intrabox($id);
+		}
+		return $ret;
 	}
 
 	/**
@@ -177,7 +194,7 @@ class IntraBox {
 	*/
 	public static function get_all_boxes() {
 		global $I2_SQL;
-		return flatten($I2_SQL->query('SELECT name FROM intrabox;')->fetch_all_arrays(RESULT_NUM));
+		return flatten($I2_SQL->query('SELECT name FROM intrabox;')->fetch_all_arrays(Result::NUM));
 	}
 
 	/**
@@ -189,9 +206,9 @@ class IntraBox {
 		global $I2_SQL,$I2_USER;
 		
 		//This is possible to do in one query with subqueries in SQL, I believe, but not prior to MySQL 4.1 afaik. If anyone knows of a way to do this in one query, by all means do it
-		list($max) = $I2_SQL->query('SELECT MAX(box_order) FROM intrabox_map WHERE uid=%d', $I2_USER->uid)->fetch_array(RESULT_NUM);
+		list($max) = $I2_SQL->query('SELECT MAX(box_order) FROM intrabox_map WHERE uid=%d', $I2_USER->uid)->fetch_array(Result::NUM);
 		
-		$boxinfo = self::get_boxes_info(self::USED)->fetch_all_arrays(RESULT_ASSOC);
+		$boxinfo = self::get_boxes_info(self::USED)->fetch_all_arrays(Result::ASSOC);
 		
 		foreach ($boxinfo as $box) {
 			if ($box['boxid'] == $boxid) {
@@ -211,7 +228,7 @@ class IntraBox {
 	public static function delete_box($boxid) {
 		global $I2_SQL,$I2_USER;
 		
-		if( ! ($res = $I2_SQL->query('SELECT box_order FROM intrabox_map WHERE uid=%d AND boxid=%d;', $I2_USER->uid, $boxid)->fetch_array(RESULT_NUM)) ) {
+		if( ! ($res = $I2_SQL->query('SELECT box_order FROM intrabox_map WHERE uid=%d AND boxid=%d;', $I2_USER->uid, $boxid)->fetch_array(Result::NUM)) ) {
 			d('The specified intrabox '.$boxid.' was not already selected by the current user, but something asked to delete it. Ignoring this request', 5);
 			return;
 		}
@@ -268,6 +285,17 @@ class IntraBox {
 		}
 		else {
 			throw new I2Exception('Invalid parameter passed to Intrabox::get_boxes_info()');
+		}
+	}
+
+	public static function renormalize_order() {
+		global $I2_USER,$I2_SQL;
+
+		$count = 1;
+		foreach($I2_SQL->query('SELECT boxid FROM intrabox_map WHERE uid=%d ORDER BY box_order;',$I2_USER->uid) as $row) {
+			$boxid = $row[0];
+			$I2_SQL->query('UPDATE intrabox_map SET box_order=%d WHERE uid=%d AND boxid=%d;', $count, $I2_USER->uid, $boxid);
+			$count++;
 		}
 	}
 	

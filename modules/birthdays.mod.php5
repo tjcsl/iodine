@@ -23,7 +23,7 @@ class Birthdays implements Module {
 
 	function init_box() {
 		global $I2_SQL;
-		$this->namearr = $I2_SQL->query("SELECT CONCAT(`fname`, ' ', `lname`) as `name`, `grade`, `bdate` FROM user, userinfo WHERE user.uid=userinfo.uid AND `bdate` LIKE %s", "%-" . date("m-d"))->fetch_all_arrays(RESULT_NUM);
+		$this->namearr = $I2_SQL->query("SELECT CONCAT(`fname`, ' ', `lname`) as `name`, `grade`, `bdate` FROM user, userinfo WHERE user.uid=userinfo.uid AND `bdate` LIKE %s", "%-" . date("m-d"))->fetch_all_arrays(Result::NUM);
 		foreach($this->namearr as $key => $value)
 			$this->namearr[$key][2] = ((int)date("Y")) - ((int)substr($this->namearr[$key][2], 0, 4));
 		return "Today's Birthdays";
@@ -43,6 +43,10 @@ class Birthdays implements Module {
 
 	function get_name() {
 		return "Birthdays";
+	}
+
+	function is_intrabox() {
+		return true;
 	}
 }
 ?>

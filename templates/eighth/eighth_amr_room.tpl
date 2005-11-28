@@ -1,4 +1,4 @@
-[<include file="eighth_header.tpl">]
+[<include file="eighth/eighth_header.tpl">]
 <form action="[<$I2_ROOT>]eighth/amr_room/modify/rid/[<$room->rid>]" method="post">
 	Name: <input type="text" name="name" value="[<$room->name>]"><br />
 	Capacity: <input type="text" name="capacity" value="[<$room->capacity>]" size="4"><br />

@@ -26,7 +26,7 @@ class EighthSponsor {
 	*/
 	public function __construct($sponsorid) {
 		global $I2_SQL;
-		$this->data = $I2_SQL->query("SELECT * FROM eighth_sponsors WHERE sid=%d", $sponsorid)->fetch_array(RESULT_ASSOC);
+		$this->data = $I2_SQL->query("SELECT * FROM eighth_sponsors WHERE sid=%d", $sponsorid)->fetch_array(Result::ASSOC);
 	}
 
 	/**
@@ -36,7 +36,7 @@ class EighthSponsor {
 	*/
 	public static function get_all_sponsors() {
 		global $I2_SQL;
-		return $I2_SQL->query("SELECT sid,fname,lname,CONCAT(lname,', ',fname) AS name_comma FROM eighth_sponsors ORDER BY lname,fname")->fetch_all_arrays(RESULT_ASSOC);
+		return $I2_SQL->query("SELECT sid,fname,lname,CONCAT(lname,', ',fname) AS name_comma FROM eighth_sponsors ORDER BY lname,fname")->fetch_all_arrays(Result::ASSOC);
 	}
 	
 	/**

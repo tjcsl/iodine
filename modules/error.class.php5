@@ -35,6 +35,7 @@ class Error {
 	* specification on php.net.
 	*/
 	function default_error_handler($errno, $errstr, $errfile, $errline) {
+		global $I2_ROOT;
 		//Ignore messages from Smarty, as it generates a lot of them.
 		//Also ignore if error_reporting() is zero, i.e. error
 		//suppression is on.
@@ -44,7 +45,6 @@ class Error {
 			return;
 		}
 
-		$I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
 		$fileurl = str_replace('%2F', '/', urlencode($errfile));
 		switch( $errno ) {
 			case E_WARNING:

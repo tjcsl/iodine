@@ -1,31 +1,32 @@
 <?php
 /**
-* Just contains the definition for the {@link MySQLResult} class, and the defines for RESULT_ stuff.
+* Just contains the definition for the {@link MySQLResult} class, and the defines for Result:: stuff.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
 * @package core
+* @subpackage Database
 * @filesource
 */
-
-
-define("RESUlT_BOTh",MYSQL_BOTH);
-define("RESULT_NUM",MYSQL_NUM);
-define("RESULT_ASSOC",MYSQL_ASSOC);
 
 /**
 * An interface representing the results of a data query.
 * @package core
+* @subpackage Database
 */			
 interface Result extends Iterator {
+
+	const BOTH = MYSQL_BOTH;
+	const NUM = MYSQL_NUM;
+	const ASSOC = MYSQL_ASSOC;
 
 	/**
 	* Fetches the next ungotten row in the resultset.
 	*
-	* @param int $type RESULT_BOTH, RESULT_ASSOC, or RESULTL_NUM.
+	* @param int $type Result::BOTH, Result::ASSOC, or RESULTL_NUM.
 	* @return mixed An array containing cells indexed by the selected method.
 	*/
-	public function fetch_array($type=RESULT_BOTH);
+	public function fetch_array($type=Result::BOTH);
 	/**
 	* Gets the ID of the first row-creation statement associated with this Result object.
 	*
@@ -43,7 +44,7 @@ interface Result extends Iterator {
 	*
 	* @return array A two-dimensional array containing all the rows as-of-yet unfetched.
 	*/
-	public function fetch_all_arrays($type=RESULT_BOTH);
+	public function fetch_all_arrays($type=Result::BOTH);
 	/**
 	* Returns the number of rows fetched so far by this Result.
 	*
@@ -58,7 +59,7 @@ interface Result extends Iterator {
 	* @param int $type As fetch_array.
 	* @return mixed As fetch_array.
 	*/
-	public function fetch_row($rownum,$type=RESULT_BOTH);
+	public function fetch_row($rownum,$type=Result::BOTH);
 	/**
 	* Gets whether there are more unfetched rows in this Result object.
 	*

@@ -14,9 +14,8 @@
 * 
 * @package modules
 * @subpackage admin
-* @todo Check that the user is part of some administrative group
 */
-class MySQLInterface {
+class MySQLInterface implements Module {
 	private $query_data = FALSE;
 	private $query = FALSE;
 
@@ -58,6 +57,10 @@ class MySQLInterface {
 		return 'mysqlinterface';
 	}
 
+	function is_intrabox() {
+		return false;
+	}
+
 	/**
 	* Unused; we don't display a box
 	*
@@ -85,6 +88,13 @@ class MySQLInterface {
 	*/
 	function init_pane() {
 		global $I2_SQL;
+
+		// Only available to people in the 'admin_mysql' group
+		$mysql_group = new Group('admin_mysql');
+		if(!$mysql_group->has_member()) {
+			return FALSE;
+		}
+		
 		if( isset($_POST['mysqlinterface_submit']) && $_POST['mysqlinterface_submit'] && $_POST['mysqlinterface_query']) {
 			$this->query = $_POST['mysqlinterface_query'];
 			try {

@@ -46,10 +46,14 @@ class Prefs implements Module {
 			}
 
 			if( isset($_REQUEST['add_intrabox']) && isSet($_REQUEST['add_boxid']) ) {
-				Intrabox::add_box($_REQUEST['add_boxid']);
+				foreach($_REQUEST['add_boxid'] as $box){
+					Intrabox::add_box($box);
+				}
 			}
 			if( isset($_REQUEST['delete_intrabox']) && isSet($_REQUEST['delete_boxid']) ) {
-				Intrabox::delete_box($_REQUEST['delete_boxid']);
+				foreach($_REQUEST['delete_boxid'] as $box){
+					Intrabox::delete_box($box);
+				}
 			}
 
 			//redirect('prefs');
@@ -57,8 +61,8 @@ class Prefs implements Module {
 
 		$this->prefs = $I2_USER->info();
 
-		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED)->fetch_all_arrays(RESULT_ASSOC);
-		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED)->fetch_all_arrays(RESULT_ASSOC);
+		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED)->fetch_all_arrays(Result::ASSOC);
+		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED)->fetch_all_arrays(Result::ASSOC);
 		
 		d('nonuser_intraboxen:');
 		foreach($this->nonuser_intraboxen as $box) {
@@ -96,6 +100,10 @@ class Prefs implements Module {
 
 	function get_name() {
 		return 'Prefs';
+	}
+
+	function is_intrabox() {
+		return false;
 	}
 }
 

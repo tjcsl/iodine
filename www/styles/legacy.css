@@ -84,13 +84,14 @@ a:hover {
 .intrabox {
 	border: thin groove;
 	margin-bottom: 10pt;
+	width: 315px;
 }
 .boxheader {
 	color: #FFFFFF;
 	font-weight: bold;
 	background-color: #000000;
-	border-left: 4px solid #464678;
-	border-right: 4px solid #464678;
+	border-left: 4px solid black;
+	border-right: 4px solid black;
 }
 .boxbuttons {
 	right: 0px;

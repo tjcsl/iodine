@@ -93,6 +93,12 @@ a:hover {
 	border: #00CCCC thick ridge;
 	margin-bottom: 10pt;
 	background-color: #00DDDD;
+	width: 315px;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+}
+.intrabox:hover {
+	opacity: 1;
 }
 .boxheader {
 	color: #99FFFF;

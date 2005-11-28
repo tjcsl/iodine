@@ -69,6 +69,15 @@ interface Module {
 	* @abstract
 	*/
 	function init_pane();
+
+	/**
+	* Returns whether this module functions as an intrabox.
+	*
+	* @returns boolean True if the module has an intrabox, false if it does not.
+	*
+	* @abstract
+	*/
+	function is_intrabox();
 	
 }
 ?>

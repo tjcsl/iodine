@@ -1,8 +1,8 @@
 <a href="[<$I2_ROOT>]groups">Groups Home</a><br />
 <br />
 The current existant groups are:<br />
-[<foreach from=$groups item=val>]
- <a href="[<$I2_ROOT>]groups/group/[<$val>]">[<$val>]</a><br />
+[<foreach from=$groups item=grp>]
+ <a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a><br />
 [</foreach>]
 <br />
 To add a group, enter a new name here:<br />

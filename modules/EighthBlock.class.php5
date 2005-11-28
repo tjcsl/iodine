@@ -26,7 +26,7 @@ class EighthBlock {
 	*/
 	public function __construct($blockid) {
 		global $I2_SQL;
-		$this->data = $I2_SQL->query("SELECT * FROM eighth_blocks WHERE bid=%d", $blockid)->fetch_array(RESULT_ASSOC);
+		$this->data = $I2_SQL->query("SELECT * FROM eighth_blocks WHERE bid=%d", $blockid)->fetch_array(Result::ASSOC);
 	}
 
 	/**
@@ -39,7 +39,7 @@ class EighthBlock {
 	public static function add_block($date, $block) {
 		global $I2_SQL;
 		$result = $I2_SQL->query("INSERT INTO eighth_blocks (date,block) VALUES (%t,%s)", $date, $block);
-		$uids = flatten($I2_SQL->query("SELECT uid FROM user")->fetch_all_arrays(RESULT_NUM));
+		$uids = flatten($I2_SQL->query("SELECT uid FROM user")->fetch_all_arrays(Result::NUM));
 		// Figure out what the default should be, 999?
 		$block = new EighthBlock($result->get_insert_id());
 		$activity = new EighthActivity(1, $block->bid);
@@ -80,7 +80,7 @@ class EighthBlock {
 		if($starting_date == NULL) {
 			$starting_date = i2config_get('start_date', date("Y-m-d"), 'eighth');
 		}
-		return $I2_SQL->query("SELECT * FROM eighth_blocks WHERE date >= %t AND date <= ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block", $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(RESULT_ASSOC);
+		return $I2_SQL->query("SELECT * FROM eighth_blocks WHERE date >= %t AND date <= ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block", $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::ASSOC);
 	}
 
 	/**
@@ -97,12 +97,12 @@ class EighthBlock {
 		$activities = array();
 		$scheduled = TRUE;
 		foreach($blocks as $block) {
-			$result = $I2_SQL->query("SELECT rooms,sponsors from eighth_block_map WHERE bid=%d AND activityid=%d", $block['bid'], $activityid);
+			$result = $I2_SQL->query("SELECT rooms,sponsors,cancelled from eighth_block_map WHERE bid=%d AND activityid=%d", $block['bid'], $activityid);
 			if($result->num_rows() == 0) {
 				$result = $I2_SQL->query("SELECT rooms,sponsors FROM eighth_activities WHERE aid=%d", $activityid);
 				$scheduled = FALSE;
 			}
-			$activities[] = array("block" => $block, "scheduled" => $scheduled) + $result->fetch_array(MYSQL_ASSOC);
+			$activities[] = array("block" => $block, "scheduled" => $scheduled) + $result->fetch_array(Result::ASSOC);
 		}
 		return $activities;
 	}

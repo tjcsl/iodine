@@ -17,7 +17,7 @@
 	background-color: #daa;
 	padding: 5px;
 	overflow: auto;
-	height: 25%;
+	height: 250px;
 /* Should this be included? */
 /*	text-align: right; */
 }
@@ -31,7 +31,7 @@
 	background-color: #aad;
 	padding: 5px;
 	overflow: auto;
-	height: 25%;
+	height: 250px;
 }
 
 .minimized {
@@ -40,9 +40,6 @@
 	height:23px;
 	-moz-opacity: 0.5;
 	filter:alpha(opacity=50);
-/* in my experience, the above two lines, or at least the one right above is not valid css */
-/* maybe remove them? */
-/* --wyang */
 	opacity: 0.5;
 	overflow: hidden;
 }
@@ -88,4 +85,31 @@ div.minimize:hover {
 .directory {
 	margin-top: 5px;
 	margin-bottom: 5px;
+}
+#help_pane {
+	display: none;
+	z-index: 20;
+	position: absolute;
+	left: 0px;
+	width: 400px;
+	top: 20px;
+	height: 0px;
+	border: solid medium #000000;
+	padding: 10px;
+	background-color: #FFFFFF;
+	color: #000000;
+	overflow: hidden;
+}
+#help_text:hover {
+	text-decoration: underline;
+	cursor: help;
+	color: #FF0000;
+}
+#help_close {
+	float: right;
+}
+#help_close:hover {
+	text-decoration: underline;
+	cursor: pointer;
+	color: #FF0000;
 }
