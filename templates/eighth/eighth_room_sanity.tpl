@@ -1,4 +1,4 @@
-[<include file="eighth_header.tpl">]
+[<include file="eighth/eighth_header.tpl">]
 [<if count($conflicts) > 0 >]
 	<table cellspacing="0" style="border: 0px; padding: 0px; margin: 0px">
 	[<foreach from=$conflicts item="conflict" key="room">]

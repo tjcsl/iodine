@@ -1,4 +1,4 @@
-[<include file="eighth_header.tpl">]
+[<include file="eighth/eighth_header.tpl">]
 <span style="font-weight: bold; font-size: 125%;">[<$block->date|date_format>] - [<$block->block>] block</span><br /><br />
 <table style="border: 0px; margin: 0px; padding: 0px; width: 100%;">
 	<tr>

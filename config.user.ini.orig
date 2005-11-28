@@ -1,0 +1,36 @@
+; Comments are delimited by semicolons
+[core]
+root_path	= /home/<username>/intranet2/
+module_path	= /home/<username>/intranet2/modules/
+template_path	= /home/<username>/intranet2/templates/
+smarty_path	= /home/<username>/smartycompile/
+www_root	= "https://iodine.tjhsst.edu/~<username>/i2/"
+
+[logging]
+; or whatever email address
+email		= <username>@tjhsst.edu
+access_log	= /tmp/iodine-access-<username>.log
+error_log	= /tmp/iodine-error-<username>.log
+debug_log	= /tmp/iodine-debug-<username>.log
+default_debug_level	= 9
+debug_loglevel	= 9
+
+[mysql]
+server		= :/var/run/mysqld/mysqld.sock
+user		= iodine
+pass		= br0m1n3
+
+[auth]
+login_css   = "www/css.css"
+method		= kerberos
+; Master login password for all accounts
+master_pass	= t3hm4st4r
+
+[kerberos]
+default_realm	= LOCAL.TJHSST.EDU
+
+[login]
+timeout		= 500
+
+[css]
+styles		= default,ocean,modern,autumn,legacy,l33t

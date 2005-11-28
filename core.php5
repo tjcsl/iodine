@@ -134,7 +134,9 @@ try {
 	 *
 	 * @global Display $I2_DISP
 	 */
-	$I2_DISP = new Display(); 
+	$I2_DISP = new Display();
+
+	$I2_AJAX  = new Ajax();
 
 	/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here) */
 
@@ -144,9 +146,14 @@ try {
 		$I2_ARGS[0] :
 		$I2_USER->startpage;
 
-	/* Display will instantiate the module, we just pass the name */
-	d('Passing module ' . $module . ' to Display module', 9);
-	$I2_DISP->display_loop($module);
+	if(strtolower($module) == "ajax") {
+		$I2_AJAX->returnResponse($I2_ARGS[1]);
+	}
+	else {
+		/* Display will instantiate the module, we just pass the name */
+		d('Passing module ' . $module . ' to Display module', 9);
+		$I2_DISP->display_loop($module);
+	}
 
 } catch (Exception $e) {
 	if(isset($I2_ERR)) {

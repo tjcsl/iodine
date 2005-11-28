@@ -143,7 +143,7 @@ class MySQLResult implements Result {
 	* Rewind function for Iterator interface
 	*/
 	function rewind() {
-		if(mysql_num_rows($this->mysql_result) > 0) {
+		if($this->more_rows()) {
 			mysql_data_seek($this->mysql_result, 0);
 		}
 		$this->current_row_number = 0;

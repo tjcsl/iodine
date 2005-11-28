@@ -84,6 +84,7 @@ a:hover {
 .intrabox {
 	border: thin groove;
 	margin-bottom: 10pt;
+	width: 315px;
 }
 .boxheader {
 	color: #FFFFFF;

@@ -91,6 +91,7 @@ a:hover {
 .intrabox {
 	border: #fcc303 thick ridge;
 	margin-bottom: 10pt;
+	width: 315px;
 	background-color: #990022;
 }
 .boxheader {

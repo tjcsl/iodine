@@ -1,4 +1,4 @@
-[<include file="eighth_header.tpl">]
+[<include file="eighth/eighth_header.tpl">]
 [<if isset($user) >]
 	Choose a student to reschedule:<br />
 	<ul>

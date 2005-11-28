@@ -41,8 +41,7 @@ class EighthBlock {
 		$result = $I2_SQL->query("INSERT INTO eighth_blocks (date,block) VALUES (%t,%s)", $date, $block);
 		$uids = flatten($I2_SQL->query("SELECT uid FROM user")->fetch_all_arrays(Result::NUM));
 		// Figure out what the default should be, 999?
-		$block = new Block($result->get_insert_id());
-		EighthSchedule::schedule_activity($block->bid, 1);
+		$block = new EighthBlock($result->get_insert_id());
 		$activity = new EighthActivity(1, $block->bid);
 		$activity->add_members($users);
 		return $result->get_insert_id();
@@ -96,12 +95,14 @@ class EighthBlock {
 		global $I2_SQL;
 		$blocks = self::get_all_blocks($starting_date, $number_of_days);
 		$activities = array();
+		$scheduled = TRUE;
 		foreach($blocks as $block) {
-			$result = $I2_SQL->query("SELECT rooms,sponsors from eighth_block_map WHERE bid=%d AND activityid=%d", $block['bid'], $activityid);
+			$result = $I2_SQL->query("SELECT rooms,sponsors,cancelled from eighth_block_map WHERE bid=%d AND activityid=%d", $block['bid'], $activityid);
 			if($result->num_rows() == 0) {
 				$result = $I2_SQL->query("SELECT rooms,sponsors FROM eighth_activities WHERE aid=%d", $activityid);
+				$scheduled = FALSE;
 			}
-			$activities[] = array("block" => $block) + $result->fetch_array(Result::ASSOC);
+			$activities[] = array("block" => $block, "scheduled" => $scheduled) + $result->fetch_array(Result::ASSOC);
 		}
 		return $activities;
 	}

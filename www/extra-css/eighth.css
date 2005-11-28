@@ -1,0 +1,22 @@
+#help_pane {
+	display: none;
+	z-index: 20;
+	position: absolute;
+	left: 10%;
+	right: 10%;
+	top: 10%;
+	bottom: 10%;
+	border: solid medium #000000;
+	padding: 10px;
+	background-color: #FFFFFF;
+	color: #000000;
+}
+#help_close {
+	float: right;
+	padding: 2px;
+	font-family: monospace;
+	border: solid thin #000000;
+}
+#help_close:hover {
+	cursor: hand;
+}

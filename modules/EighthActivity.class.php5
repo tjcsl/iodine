@@ -31,14 +31,8 @@ class EighthActivity {
 			$this->data = $I2_SQL->query("SELECT * FROM eighth_activities WHERE aid=%d", $activityid)->fetch_array(Result::ASSOC);
 			$this->data['sponsors'] = (!empty($this->data['sponsors']) ? explode(",", $this->data['sponsors']) : array());
 			$this->data['rooms'] = (!empty($this->data['rooms']) ? explode(",", $this->data['rooms']) : array());
-			if($blockid != NULL && $blockid != "") {
-				$this->data += $I2_SQL->query(
-					"SELECT bid,sponsors 
-					AS block_sponsors,rooms 
-					AS block_rooms,cancelled,comment,advertisement,attendancetaken 
-					FROM eighth_block_map 
-					WHERE bid=%d AND activityid=%d",
-					$blockid, $activityid)->fetch_array(Result::ASSOC);
+			if($blockid) {
+				$this->data += $I2_SQL->query("SELECT bid,sponsors AS block_sponsors,rooms AS block_rooms,cancelled,comment,advertisement,attendancetaken FROM eighth_block_map WHERE bid=%d AND activityid=%d", $blockid, $activityid)->fetch_array(RESULT::ASSOC);
 				$this->data['block_sponsors'] = (!empty($this->data['block_sponsors']) ? explode(",", $this->data['block_sponsors']) : array());
 				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(",", $this->data['block_rooms']) : array());
 				$this->data['block'] = new EighthBlock($blockid);
@@ -108,9 +102,19 @@ class EighthActivity {
 	* @access public
 	* @param int $blockid The block ID to get the members for.
 	*/
-	public function get_members($blockid) {
+	public function get_members($blockid = NULL) {
 		global $I2_SQL;
-		return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $blockid, $this->data['aid'])->fetch_all_arrays(Result::NUM));
+		if($blockid == NULL) {
+			if($this->bid) {
+				return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $this->bid, $this->data['aid'])->fetch_all_arrays(RESULT_NUM));
+			}
+			else {
+				return array();
+			}
+		}
+		else {
+			return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $blockid, $this->data['aid'])->fetch_all_arrays(RESULT_NUM));
+		}
 	}
 
 	/**
@@ -335,6 +339,14 @@ class EighthActivity {
 			}
 			return implode(",", $temp_sponsors);
 		}
+		else if($name == "block_sponsors_comma_short") {
+			$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
+			$temp_sponsors = array();
+			foreach($sponsors as $sponsor) {
+				$temp_sponsors[] = substr($sponsor->fname, 0, 1) . ". {$sponsor->lname}";
+			}
+			return implode(",", $temp_sponsors);
+		}
 		else if($name == "rooms_comma") {
 			$rooms = EighthRoom::id_to_room($this->data['rooms']);
 			$temp_rooms = array();
@@ -420,7 +432,7 @@ class EighthActivity {
 			$this->data['advertisement'] = $value;
 		}
 		else if($name == "attendancetaken") {
-			$result = $I2_SQL->query("UPDATE eighth_block_map SET advertisement=%s WHERE bid=%d AND activityid=%d", (int)$value, $this->data['bid'], $this->data['aid']);
+			$result = $I2_SQL->query("UPDATE eighth_block_map SET attendancetaken=%d WHERE bid=%d AND activityid=%d", (int)$value, $this->data['bid'], $this->data['aid']);
 			$this->data['attendancetaken'] = $value;
 		}
 	}
@@ -442,6 +454,11 @@ class EighthActivity {
 			}
 		}
 		return $ret;
+	}
+
+	public static function cancel($blockid, $activityid) {
+		global $I2_SQL;
+		$I2_SQL->query("UPDATE eighth_block_map SET cancelled=1 WHERE bid=%d AND activityid=%d", $blockid, $activityid);
 	}
 }
 

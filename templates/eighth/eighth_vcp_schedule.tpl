@@ -1,4 +1,4 @@
-[<include file="eighth_header.tpl">]
+[<include file="eighth/eighth_header.tpl">]
 [<if count($users) == 0 >] 	 
 	No students matched search criteria. 	 
 [<else>] 	 

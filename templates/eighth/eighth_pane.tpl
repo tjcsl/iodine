@@ -1,6 +1,6 @@
 [<* A '*' next to an item means it's not quite done yet *>]
 
-[<include file="eighth_header.tpl">]
+[<include file="eighth/eighth_header.tpl">]
 <table style="border: 0px; padding: 0px; margin: 10px; width: 100%">
 [<* <tr><td colspan="2" style="color: #FF0000; font-weight: bold; font-family: courier;">** I'm updating the database.&nbsp;&nbsp;Please don't do anything. --Andrew **</td></tr> *>]
 
@@ -55,7 +55,7 @@
 <li>*<a href="[<$I2_ROOT>]eighth/chg_start"><b>Change starting date</b></a>
 <li><a href="[<$I2_ROOT>]eighth/ar_block">Add or remove 8th period block from system</a>
 
-<li>*<a href="[<$I2_ROOT>]eighth/rep_schedules">Repair broken schedules</a>
+<li><a href="[<$I2_ROOT>]eighth/rep_schedules">Repair broken schedules</a>
 [<* <li><a href="set.printer.phtml">Set printer</a> *>]
 </ol>
 </td>
