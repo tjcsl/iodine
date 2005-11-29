@@ -125,5 +125,9 @@ abstract class Filesystem {
 		}
 	}
 
+	public function is_valid() {
+		return TRUE;
+	}
+
 }
 ?>
