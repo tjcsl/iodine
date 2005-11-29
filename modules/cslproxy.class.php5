@@ -14,14 +14,29 @@
 class CSLProxy {
 
 	private $kerberos_cache;
+	private $valid;
 
 	public function __construct($user, $pass) {
+		global $I2_SQL,$I2_USER;
 		if (!isset($_SESSION['krb_csl_ticket'])) {
 			d("Getting kerberos ticket");
-			$kerberos = new Kerberos($user, $pass, 'CSL.TJHSST.EDU');
+			/*$res = $I2_SQL->query("SELECT user,pass FROM cslfiles WHERE uid=%d",$I2_USER->uid);
+			if ($res->more_rows) {
+				$row = $res->fetch_row(RESULT_ASSOC);
+				$user = $row['user'];
+				$pass = $row['pass'];
+			}*/
+			try {
+				$kerberos = new Kerberos($user, $pass, 'CSL.TJHSST.EDU');
+			} catch (I2Exception $e) {
+				//The user's CSL username doesn't match their normal username: we should prompt for a different username/password.
+				$this->valid = FALSE;
+				return;
+			}
 			$_SESSION['krb_csl_ticket'] = $kerberos->cache();
 		}
 		$this->kerberos_cache = $_SESSION['krb_csl_ticket'];
+		$this->valid = TRUE;
 	}
 
 	/**
@@ -67,6 +82,15 @@ class CSLProxy {
 		} else {
 			throw new I2Exception("Could not create process");
 		}
+	}
+
+	/**
+	* Returns whether this instance is actually connected to an authenticated CSL pagsh.
+	*
+	* @return bool Whether this is a valid CSL file proxy.
+	*/
+	public function is_valid() {
+		return $this->valid;
 	}
 }
 
