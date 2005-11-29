@@ -1,10 +1,14 @@
 <?php
 /**
-*
+* Code for the {@link Repository} interface.
+* @package modules
+* @subpackage scm
 */
 
 /**
-*
+* An interface for viewing SCM repositories.
+* @package modules
+* @subpackage scm
 */
 interface Repository {
 	public function __construct($root);

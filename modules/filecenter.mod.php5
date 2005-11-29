@@ -46,15 +46,34 @@ class Filecenter implements Module {
 
 		$system_type = $I2_ARGS[1];
 		
-		if ($system_type == "lan") {
+		if ($system_type == 'cslauth' && isSet($_REQUEST['user']) && isSet($_REQUEST['password'])) {
+			//$I2_SQL->query("INSERT INTO cslfiles (uid,user,pass) VALUES(%d,%s,%s)",);
+			$_SESSION['csl_username'] = $_REQUEST['user'];
+			$_SESSION['csl_password'] = $_REQUEST['password'];
+			redirect('filecenter/csl');
+		} else if (!isSet($_SESSION['csl_username'])) {
+			$_SESSION['csl_username'] = $_SESSION['i2_username'];
+			$_SESSION['csl_password'] = $_SESSION['i2_password'];
+		}
+		
+		if ($system_type == 'lan') {
 			$this->filesystem = new LANFilesystem($_SESSION['i2_username'], $_SESSION['i2_password']);
-		} else if ($system_type == "csl") {
-			$this->filesystem = new CSLProxy($_SESSION['i2_username'], $_SESSION['i2_password']);
+		} else if ($system_type == 'csl') {
+			$this->filesystem = new CSLProxy($_SESSION['csl_username'], $_SESSION['csl_password']);
+			if (!$this->filesystem->is_valid()) {
+				$this->template = 'csl_login.tpl';
+				return array('Filecenter','CSL Authentication');
+			}
 		} else {
 			throw new I2Exception("Unknown filesystem type $system_type");
 		}
+
+		if ($system_type == 'csl') {
+			$this->directory = '/user/'.$_SESSION['csl_username'];
+		} else {
+			$this->directory = '/';
+		}
 		
-		$this->directory = '/';
 		if (count($I2_ARGS) > 2) {
 			$this->directory .= implode("/", array_slice($I2_ARGS, 2));
 		}
@@ -71,6 +90,8 @@ class Filecenter implements Module {
 
 			die;
 		}
+		
+		$this->template = "filecenter_pane.tpl";
 
 		return array('Filecenter', 'Current directory: ' . $this->directory);
 	}
@@ -81,35 +102,37 @@ class Filecenter implements Module {
 	function display_pane($display) {
 		global $I2_SQL, $I2_USER;
 
+		if ($this->filesystem->is_valid()) {
 
-		$dirs = array();
-		$files = array();
+			$dirs = array();
+			$files = array();
 
-		if (!$this->filesystem->is_root($this->directory)) {
-			$file = $this->filesystem->get_file($this->directory . '/..');
-			$dirs[] = array(
-				"name" => "..",
-				"last_modified" => date("n/j/y g:i A", $file->last_modified()) 
-			);
-		}
-
-		foreach($this->filesystem->list_files($this->directory) as $file) {
-			$properties = array(
-				"name" => $file->get_name(),
-				"size" => round($file->get_size() / 1024),
-				"last_modified" => date("n/j/y g:i A", $file->last_modified())
-			);
-			
-			if ($file->is_directory()) {
-				$dirs[] = $properties;
-			} else {
-				$files[] = $properties;
+			if (!$this->filesystem->is_root($this->directory)) {
+				$file = $this->filesystem->get_file($this->directory . '/..');
+				$dirs[] = array(
+					'name' => '..',
+					'last_modified' => date('n/j/y g:i A', $file->last_modified()) 
+				);
 			}
 
-		}
+			foreach($this->filesystem->list_files($this->directory) as $file) {
+				$properties = array(
+					"name" => $file->get_name(),
+					"size" => round($file->get_size() / 1024),
+					"last_modified" => date("n/j/y g:i A", $file->last_modified())
+				);
+			
+				if ($file->is_directory()) {
+					$dirs[] = $properties;
+				} else {
+					$files[] = $properties;
+				}
+
+			}
 		
-		$this->template_args['dirs'] = $dirs;
-		$this->template_args['files'] = $files;
+			$this->template_args['dirs'] = $dirs;
+			$this->template_args['files'] = $files;
+		}
 		
 		$display->disp($this->template, $this->template_args);
 	}
@@ -118,15 +141,19 @@ class Filecenter implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_box() {
-		$this->box_args['csl_username'] = $_SESSION['i2_username'];
-		return "Filecenter";
+		if (isSet($_SESSION['csl_username'])) {
+			$this->box_args['csl_username'] = $_SESSION['csl_username'];
+		} else {
+			$this->box_args['csl_username'] = $_SESSION['i2_username'];
+		}
+		return 'Filecenter';
 	}
 	
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function display_box($display) {
-		$display->disp("filecenter_box.tpl", $this->box_args);
+		$display->disp('filecenter_box.tpl', $this->box_args);
 	}
 	
 	/**

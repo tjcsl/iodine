@@ -94,6 +94,7 @@ class LANFilesystem extends Filesystem {
 
 		d("Unmount status: $status");
 	}
+
 }
 
 ?>

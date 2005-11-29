@@ -12,6 +12,9 @@ body {
 	font-size: 10pt;
 	background: #FFFFFF url(../pics/newlogo.png) no-repeat top left;	
 }
+file {
+	background: url(../pics/filecenter/blank.png);
+}
 tt {
 	font-family: monospace, courier;
 }
