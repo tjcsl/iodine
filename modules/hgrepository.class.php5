@@ -1,10 +1,14 @@
 <?php
 /**
-*
+* Code for the {@link HGRepository} class.
+* @package modules
+* @subpackage scm
 */
 
 /**
-*
+* A {@link Repository} to view Mercurial repositories.
+* @package modules
+* @subpackage scm
 */
 
 class HGRepository implements Repository {
