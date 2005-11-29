@@ -64,11 +64,6 @@ class Prefs implements Module {
 		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED)->fetch_all_arrays(Result::ASSOC);
 		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED)->fetch_all_arrays(Result::ASSOC);
 		
-		d('nonuser_intraboxen:');
-		foreach($this->nonuser_intraboxen as $box) {
-			d(print_r($box,TRUE));
-		}
-
 		$this->themes = $this->get_available_styles();
 
 		return array('Your Preferences', 'Preferences');
