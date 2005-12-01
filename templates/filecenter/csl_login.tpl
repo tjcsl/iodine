@@ -1,4 +1,4 @@
-[<if $failedlogin>]
+[<if isSet($csl_failed_login)>]
 Your login failed.  Please check your username/password.
 [</if>]
 <form method="post" action="[<$I2_ROOT>]filecenter/cslauth">
