@@ -71,7 +71,7 @@ class CSLProxy {
 			$status = proc_close($process);
 			
 			if ($status == 0) {
-				d("pagsh xited with status 0");
+				d("pagsh exited with status 0");
 				$obj = unserialize($out);
 				return $obj;
 			} else {
