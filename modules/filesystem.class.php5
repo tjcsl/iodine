@@ -71,8 +71,11 @@ abstract class Filesystem {
 				if ($file == "." || $file == "..") {
 					continue;
 				}
-	
-				$files[] = new I2File($path, $file);
+				$i2file = new I2File($path, $file);
+				
+				if ($i2file->get_name() != "") {
+					$files[] = $i2file;
+				}
 			}
 			return $files;
 	
