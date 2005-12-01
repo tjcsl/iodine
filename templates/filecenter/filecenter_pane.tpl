@@ -1,4 +1,11 @@
-<table id="filetable">
+<div style="float: right;">
+   	<form method="post">
+		<input type="hidden" name="toggle_hide" value="1"/>
+		<input type="submit" value="Show/hide hidden files"/>
+	</form>
+</div>
+   
+<table id="filetable">   
  <tr>
   <th>&nbsp;</th>
   <th>Name</th>
@@ -16,12 +23,12 @@
  </tr>
  [</foreach>]
  [<foreach from=$files item=file>]
- <tr>
-  <td><a href="[<$file.name>]"><img src="[<$I2_ROOT>]www/pics/filecenter/blank.png" width="24" height="24"/></a></td>
-  <td><a href="[<$file.name>]">[<$file.name>]</a></td>
-  <td>[<$file.size>]KB</td>
-  <td>File</td>
-  <td>[<$file.last_modified>]</td>
- </tr>
+  <tr>
+   <td><a href="[<$file.name>]"><img src="[<$I2_ROOT>]www/pics/filecenter/blank.png" width="24" height="24"/></a></td>
+   <td><a href="[<$file.name>]">[<$file.name>]</a></td>
+   <td>[<$file.size>]KB</td>
+   <td>File</td>
+   <td>[<$file.last_modified>]</td>
+  </tr>
  [</foreach>]
 </table>
