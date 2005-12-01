@@ -68,11 +68,7 @@ class Filecenter implements Module {
 			throw new I2Exception("Unknown filesystem type $system_type");
 		}
 
-		if ($system_type == 'csl') {
-			$this->directory = '/user/'.$_SESSION['csl_username'];
-		} else {
-			$this->directory = '/';
-		}
+		$this->directory = '/';
 		
 		if (count($I2_ARGS) > 2) {
 			$this->directory .= implode("/", array_slice($I2_ARGS, 2));
