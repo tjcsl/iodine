@@ -46,14 +46,28 @@ class Filecenter implements Module {
 
 		$system_type = $I2_ARGS[1];
 		
+		if (isSet($_REQUEST['toggle_hide'])) {
+			if (!isSet($_SESSION['csl_hide'])) {
+				$_SESSION['csl_hide'] = TRUE;
+			} else {
+				unset($_SESSION['csl_hide']);
+			}
+		}
+
+		if (!isSet($_SESSION['csl_hide'])) {
+			$template_args['csl_show_hidden'] = TRUE;
+		}
+		
 		if ($system_type == 'cslauth' && isSet($_REQUEST['user']) && isSet($_REQUEST['password'])) {
 			//$I2_SQL->query("INSERT INTO cslfiles (uid,user,pass) VALUES(%d,%s,%s)",);
 			$_SESSION['csl_username'] = $_REQUEST['user'];
 			$_SESSION['csl_password'] = $_REQUEST['password'];
-			redirect('filecenter/csl');
+			redirect('filecenter/csl/user/'.$_SESSION['csl_username']);
 		} else if (!isSet($_SESSION['csl_username'])) {
 			$_SESSION['csl_username'] = $_SESSION['i2_username'];
 			$_SESSION['csl_password'] = $_SESSION['i2_password'];
+		} else {
+			$this->template_args['csl_failed_login'] = TRUE;
 		}
 		
 		if ($system_type == 'lan') {
@@ -117,6 +131,10 @@ class Filecenter implements Module {
 					"size" => round($file->get_size() / 1024),
 					"last_modified" => date("n/j/y g:i A", $file->last_modified())
 				);
+			
+				if (isSet($_SESSION['csl_hide']) && strpos($properties['name'],'.') == 0) {
+					continue;
+				}
 			
 				if ($file->is_directory()) {
 					$dirs[] = $properties;

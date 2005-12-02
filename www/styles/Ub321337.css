@@ -10,7 +10,7 @@ img {
 body {
 	font-family: courier, helvetica, verdana, sans-serif;
 	font-size: 10pt;
-	background: #000000 url(../pics/1337logo.gif) no-repeat top left;	
+	background: #000000 url(../pics/1337logo.gif) no-repeat 10px 10px;	
 }
 tt {
 	font-family: monospace, courier;
