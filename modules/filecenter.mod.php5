@@ -116,7 +116,8 @@ class Filecenter implements Module {
 
 			$dirs = array();
 			$files = array();
-
+			
+			//Add the .. directory
 			if (!$this->filesystem->is_root($this->directory)) {
 				$file = $this->filesystem->get_file($this->directory . '/..');
 				$dirs[] = array(
@@ -132,7 +133,7 @@ class Filecenter implements Module {
 					"last_modified" => date("n/j/y g:i A", $file->last_modified())
 				);
 			
-				if (isSet($_SESSION['csl_hide']) && strpos($properties['name'],'.') == 0) {
+				if (isSet($_SESSION['csl_hide']) && $file->is_hidden()) {
 					continue;
 				}
 			
@@ -141,8 +142,10 @@ class Filecenter implements Module {
 				} else {
 					$files[] = $properties;
 				}
-
 			}
+		
+			sort($dirs);
+			sort($files);
 		
 			$this->template_args['dirs'] = $dirs;
 			$this->template_args['files'] = $files;

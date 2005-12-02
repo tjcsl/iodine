@@ -64,6 +64,10 @@ class I2File {
 	public function is_file() {
 		return $this->type == self::FILE;
 	}
+
+	public function is_hidden() {
+		return strpos($this->get_name(), '.') === 0;
+	}
 	
 	public function last_modified() {
 		return $this->last_modified;
