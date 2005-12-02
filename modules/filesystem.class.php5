@@ -23,7 +23,7 @@ abstract class Filesystem {
 		$basename = basename($path);
 		
 		if ($must_exist == FALSE && $basename != '..' && $basename != '.') {
-			$new_path = convert_path(dirname($path)) . '/' . $basename;
+			$new_path = $this->convert_path(dirname($path)) . '/' . $basename;
 			if (!file_exists($new_path)) {
 				return $new_path;
 			}
@@ -39,6 +39,19 @@ abstract class Filesystem {
 			return $absolute_path;
 		} else {
 			throw new I2Exception("File $absolute_path is outside of user's homedir");
+		}
+	}
+
+	public function copy_file_into_system($oldfilename, $newfilename) {
+		$oldpath = realpath($oldfilename);
+		$newpath = $this->convert_path($newfilename, FALSE);
+		
+		if ($oldpath === FALSE) {
+			throw new I2Exception("$oldfilename does not exist.");
+		}
+
+		if (copy($oldpath, $newpath) === FALSE) {
+			throw new I2Exception("Could not copy $oldpath to $newpath in filesystem.");
 		}
 	}
 

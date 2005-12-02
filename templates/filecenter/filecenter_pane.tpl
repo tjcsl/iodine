@@ -1,8 +1,8 @@
 <div style="float: right;">
-   	<form method="post">
-		<input type="hidden" name="toggle_hide" value="1"/>
-		<input type="submit" value="Show/hide hidden files"/>
-	</form>
+ <form method="post">
+  <input type="hidden" name="toggle_hide" value="1"/>
+  <input type="submit" value="Show/hide hidden files"/>
+ </form>
 </div>
    
 <table id="filetable">   
@@ -32,3 +32,10 @@
   </tr>
  [</foreach>]
 </table>
+<div id="fileupload">
+ <form enctype="multipart/form-data" method="post">
+  <input type="hidden" name="MAX_FILE_SIZE" value="[<$max_file_size>]"/>
+  <input type="file" name="file"/><br/>
+  <input type="submit" value="Upload"/>
+ </form>
+</div>

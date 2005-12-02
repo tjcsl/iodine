@@ -76,7 +76,12 @@ class CSLProxy {
 				return $obj;
 			} else {
 				d("pagsh exited with status $status");
-				throw (object)unserialize($err);
+				list($type, $error) = unserialize($err);
+				if ($type == 'error') {
+					trigger_error($error);
+				} else {
+					throw (object)$error;
+				}
 			}
 		
 		} else {
