@@ -1,18 +1,18 @@
 <?php
 /**
-* Just contains the definition for the interface {@link Filesystem}.
+* Just contains the definition for the abstract class {@link Filesystem}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
-* @package core
-* @subpackage Filesystem
+* @package modules
+* @subpackage Filecenter
 * @filesource
 */
 
 /**
-* The Filesystem interface
-* @package core
-* @subpackage Filesystem
+* The Filesystem abstract class.
+* @package modules
+* @subpackage Filecenter
 */
 abstract class Filesystem {
 

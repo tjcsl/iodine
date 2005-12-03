@@ -1,4 +1,13 @@
 <?php
+/**
+* @package core
+* @subpackage Display
+*/
+
+/**
+* @package core
+* @subpackage Display
+*/
 class Ajax {
 	function returnResponse($module) {
 		global $I2_SQL, $I2_ARGS;

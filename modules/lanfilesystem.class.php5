@@ -3,13 +3,13 @@
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
 * @package modules
-* @subpackage LANFilesystem
+* @subpackage Filecenter
 * @filesource
 */
 
 /**
 * @package modules
-* @subpackage LANFilesystem
+* @subpackage Filecenter
 */
 class LANFilesystem extends Filesystem {
 

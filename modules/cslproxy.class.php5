@@ -3,13 +3,13 @@
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
 * @package modules
-* @subpackage CSLProxy
+* @subpackage Filecenter
 * @filesource
 */
 
 /**
 * @package modules
-* @subpackage CSLProxy
+* @subpackage Filecenter
 */
 class CSLProxy {
 
