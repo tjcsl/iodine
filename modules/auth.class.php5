@@ -184,6 +184,7 @@ class Auth {
 				$_SESSION['i2_password']= $_REQUEST['login_password'];
 				$_SESSION['i2_login_time'] = time();
 				
+				redirect();
 				return TRUE;
 			} else {
 				/* Attempted login failed */

@@ -73,16 +73,6 @@ interface Result extends Iterator {
 	*/
 	public function more_rows();
 	/**
-	* Fetches all cells that match the passed regular expression in the given columns.
-	* This is a VERY expensive operation, but it may be worthwhile. Please note that this
-	* will get every row in the Result, thus eliminating fetch_array's usefulness.
-	*
-	* @param array $colnames An array of the column names in which to search.
-	* @param string $pattern The PHP regular expression to match cells against.
-	* @return array An array of cells matching to the passed pattern.
-	*/
-	public function fetch_regex($colnames,$pattern);
-	/**
 	* Returns the number of rows in this Result.
 	*
 	*
