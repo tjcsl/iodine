@@ -5,14 +5,14 @@
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
 * @package core
-* @subpackage Module
+* @subpackage Auth
 * @filesource
 */
 
 /**
 * A module to clean up expired sessions.
 * @package core
-* @subpackage Module
+* @subpackage Auth
 */
 class SessionGC implements Module {
 	const SESS_DIR = '/var/lib/php5/';

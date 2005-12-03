@@ -4,15 +4,15 @@
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
-* @package core
-* @subpackage Module
+* @package modules
+* @subpackage scm
 * @filesource
 */
 
 /**
 * A module to display I2's code repository, ViewCVS style.
-* @package core
-* @subpackage Module
+* @package modules
+* @subpackage scm
 */
 class I2SCM implements Module {
 	/**

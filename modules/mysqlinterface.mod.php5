@@ -5,7 +5,7 @@
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
 * @package modules
-* @subpackage admin
+* @subpackage Admin
 * @filesource
 */
 
@@ -13,7 +13,7 @@
 * A module to run direct mysql queries (for admins/devs only).
 * 
 * @package modules
-* @subpackage admin
+* @subpackage Admin
 */
 class MySQLInterface implements Module {
 	private $query_data = FALSE;

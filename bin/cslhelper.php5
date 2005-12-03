@@ -3,6 +3,8 @@
 /**
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
+* @package modules
+* @subpackage Filecenter
 */
 require_once('modules/i2exception.class.php5');
 require_once('modules/i2file.class.php5');
