@@ -8,19 +8,25 @@ The specified student does not exist. Either you mistyped a URL, or something in
 <img src="[<$I2_ROOT>]www/pics/bomb.gif" vspace="2" width="172" height="228" /></td>
 <td valign="top">
 [<$info.fname>][<if $info.nickname>] ([<$info.nickname>])[</if>] [<$info.mname>] [<$info.lname>][<if $info.suffix>] [<$info.suffix>][</if>] (<a href="mailto:[<$info.username>]@tjhsst.edu">[<$info.username>]@tjhsst.edu</a>), Grade [<$info.grade>]<br />
-Born [<$info.bdate>]<br />
-Phone (home): [<$info.phone_home>]<br />
-[<$info.address1_street>]<br />
-[<$info.address1_city>], [<$info.address1_state>] [<$info.address1_zip>]<br />
-[<if $info.address2_street>]
-2nd address:<br />
-[<$info.address2_street>]<br />
-[<$info.address2_city>], [<$info.address2_state>] [<$info.address2_zip>]<br />
-[</if>]
-[<if $info.address3_street>]
-3rd address:<br />
-[<$info.address3_street>]<br />
-[<$info.address3_city>], [<$info.address3_state>] [<$info.address3_zip>]<br />
+[<if $info.bdate>]Born [<$info.bdate>]<br />[</if>]
+[<if $info.phone_home>]Phone (home): [<$info.phone_home>]
+ [<else>]Home phone information not available.
+[</if>]</br />
+[<if $info.address1_street>]
+ [<$info.address1_street>]<br />
+ [<$info.address1_city>], [<$info.address1_state>] [<$info.address1_zip>]<br />
+ [<if $info.address2_street>]
+  2nd address:<br />
+  [<$info.address2_street>]<br />
+  [<$info.address2_city>], [<$info.address2_state>] [<$info.address2_zip>]<br />
+ [</if>]
+ [<if $info.address3_street>]
+  3rd address:<br />
+  [<$info.address3_street>]<br />
+  [<$info.address3_city>], [<$info.address3_state>] [<$info.address3_zip>]<br />
+ [</if>]
+[<else>]
+ Address information not available.<br />
 [</if>]
 Map from home | Map from school<br />
 Counselor: [<$info.counselor>]<br />
@@ -42,6 +48,14 @@ Counselor: [<$info.counselor>]<br />
 [<if $info.webpage>]Webpage: <a href="[<$info.webpage>]">[<$info.webpage>]</a><br />[</if>]
 [<if $info.locker>]Locker Number: [<$info.locker>]<br />[</if>]
 </td></tr></table>
+
+[<if $schedule>]
+ <br />Classes:<br />
+ [<foreach from=$schedule item=class>]
+  Period: [<$class->period>], Name: [<$class->name>], Room: [<$class->room>]<br />
+ [</foreach>]
+[</if>]
+
 <br /><br />
 The DUMP:<br />
 Student: [<$info.fname>] [<if $info.nickname>] ([<$info.nickname>]) [</if>] [<$info.mname>] [<$info.lname>] [<$info.suffix>]
@@ -51,12 +65,6 @@ Student: [<$info.fname>] [<if $info.nickname>] ([<$info.nickname>]) [</if>] [<$i
 [<$key>]: [<$val>]<br />
 [</if>]
 [</foreach>]
-[<if $schedule>]
-<br />Classes:<br />
-[<foreach from=$schedule item=class>]
-Period: [<$class->period>], Name: [<$class->name>], Room: [<$class->room>]<br />
-[</foreach>]
-[</if>]
 
 [<elseif is_array($info)>]
 

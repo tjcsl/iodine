@@ -70,11 +70,11 @@ class StudentDirectory implements Module {
 			$display->disp('studentdirectory_help.tpl');
 		} else {
 			if($this->user !== NULL) {
-//				try {
+				try {
 					$sched = new Schedule($this->user);
-//				} catch( I2Exception $e) {
-//					$sched = NULL;
-//				}
+				} catch( I2Exception $e) {
+					$sched = NULL;
+				}
 			} else {
 				$sched = NULL;
 			}
