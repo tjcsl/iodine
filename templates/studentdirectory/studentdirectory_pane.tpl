@@ -51,6 +51,12 @@ Student: [<$info.fname>] [<if $info.nickname>] ([<$info.nickname>]) [</if>] [<$i
 [<$key>]: [<$val>]<br />
 [</if>]
 [</foreach>]
+[<if $schedule>]
+<br />Classes:<br />
+[<foreach from=$schedule item=class>]
+Period: [<$class->period>], Name: [<$class->name>], Room: [<$class->room>]<br />
+[</foreach>]
+[</if>]
 
 [<elseif is_array($info)>]
 

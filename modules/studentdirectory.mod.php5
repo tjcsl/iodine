@@ -20,6 +20,7 @@
 class StudentDirectory implements Module {
 	
 	private $information;
+	private $user = NULL;
 
 	/**
 	* Required by the {@link Module} interface.
@@ -35,8 +36,8 @@ class StudentDirectory implements Module {
 		switch($I2_ARGS[1]) {
 			//Get info about someone
 			case 'info':
-				$user = isset($I2_ARGS[2]) ? new User($I2_ARGS[2]) : $I2_USER;
-				if( ($this->information = $user->info()) === FALSE ) {
+				$this->user = isset($I2_ARGS[2]) ? new User($I2_ARGS[2]) : $I2_USER;
+				if( ($this->information = $this->user->info()) === FALSE ) {
 					return array('Error', 'Error: Student does not exist');
 				}
 				return array('Student Directory: '.$this->information['fname'].' '.$this->information['lname'], $this->information['fname'].' '.$this->information['lname']);
@@ -68,7 +69,16 @@ class StudentDirectory implements Module {
 		if( $this->information == 'help' ) {
 			$display->disp('studentdirectory_help.tpl');
 		} else {
-			$display->disp('studentdirectory_pane.tpl',array('info'=>$this->information));
+			if($this->user !== NULL) {
+//				try {
+					$sched = new Schedule($this->user);
+//				} catch( I2Exception $e) {
+//					$sched = NULL;
+//				}
+			} else {
+				$sched = NULL;
+			}
+			$display->disp('studentdirectory_pane.tpl',array('info'=>$this->information,'schedule'=>$sched));
 		}
 	}
 	
