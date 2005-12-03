@@ -392,7 +392,6 @@ class Display {
 	/**
 	* Wraps templates in {strip} tags before compilation if debugging is on.
 	*
-	* @todo Detect for 'debug mode', and actually enable the function.
 	* @param string $source The uncompiled template file.
 	* @param object $smarty The Smarty object.
 	* @return string The source, wrapped in {strip} tags if appropriate.

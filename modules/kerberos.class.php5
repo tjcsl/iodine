@@ -76,8 +76,6 @@ class Kerberos {
 	* @param string $user The user to authenticate.
 	* @param string $password The user's password to check.
 	* @param string $realm The realm to authenticate to.
-	* @todo	The cache file is generated randomly, but the algorithm to do
-	*	that seems like it could be improved.
 	* @return mixed	A string representing the absolute path to the cache
 	*		file on a successful authentication, FALSE otherwise.
 	*/

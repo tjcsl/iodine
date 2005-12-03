@@ -212,7 +212,6 @@ class User {
 	* and do whatever is necessary to get that user an account.
 	*
 	* @return mixed A new User object representing the fresh user.
-	* @todo This will have to be changed to LDAP when we move to it.
 	*/
 	public static function create_user($username,$fname,$lname) {
 		global $I2_SQL;

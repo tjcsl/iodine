@@ -123,14 +123,6 @@ class MySQLResult implements Result {
 		return FALSE;
 	}
 
-	/**
-	* @todo Implement fetch_regex
-	*/	
-	function fetch_regex($colnames, $pattern) {
-	}
-	
-
-	
 	function fetch_all_arrays($type = MYSQL_BOTH) {
 		$sum = array();
 		while ($arr = $this->fetch_array($type)) {

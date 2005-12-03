@@ -70,7 +70,6 @@ class ManageIbox implements Module {
 	*                that this module has no main content pane (and will
 	*                show an error if someone tries to access it as such),
 	*                return FALSE.
-	* @todo Check the security on the redirect() line. It's relative to I2_ROOT, so I don't _think_ it should be a concern, but I'm not really sure.
 	*/
 	public function init_pane() {
 		global $I2_ARGS,$I2_ROOT;

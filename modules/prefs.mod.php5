@@ -26,8 +26,7 @@ class Prefs implements Module {
 	private $themes;
 	
 	/**
-	* @todo Error checking of form values and such
-	* @TODO Don't allow users to set random stuff with faked POST values!
+	* @todo Input validation checks, so users can't just put whatever they want to in here.
 	*/
 	function init_pane() {
 		global $I2_USER,$I2_ARGS,$I2_SQL;
