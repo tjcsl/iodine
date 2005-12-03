@@ -42,5 +42,19 @@ class Section {
 
 		throw new I2Exception("Tried to retrieve invalid attribute $name for section {$this->sectionid}");
 	}
+	
+	/**
+	* @return array An array of Users that are in this section.
+	*/
+	public function get_students() {
+		global $I2_SQL;
+		$ret = array();
+
+		foreach($I2_SQL->query('SELECT uid FROM userinfo LEFT JOIN student_section_map USING (studentid) WHERE student_section_map.sectionid = %d;', $this->sectionid) as $row) {
+			$ret[] = new User($row[0]);
+		}
+
+		return $ret;
+	}
 }
 ?>

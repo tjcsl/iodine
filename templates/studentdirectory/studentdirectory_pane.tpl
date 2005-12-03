@@ -66,6 +66,11 @@ Student: [<$info.fname>] [<if $info.nickname>] ([<$info.nickname>]) [</if>] [<$i
 [</if>]
 [</foreach>]
 
+[<elseif isset($info.class)>]
+ [<foreach from=$info.students item=student>]
+  <a href="[<$I2_ROOT>]studentdirectory/info/[<$student->uid>]">[<$student->name>]</a><br />
+ [</foreach>]
+
 [<elseif is_array($info)>]
 
 	[<foreach from=$info item=user>]

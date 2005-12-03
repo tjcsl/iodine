@@ -55,6 +55,14 @@ class StudentDirectory implements Module {
 					return array('Student Directory search results for "'.$_REQUEST['studentdirectory_query'].'"', 'Search results for "'.$_REQUEST['studentdirectory_query'].'"');
 				}
 				break;
+			case 'class':
+				if(!isset($I2_ARGS[2])) {
+					redirect();
+				}
+				$sec = new Section($I2_ARGS[2]);
+				$this->information = array('class'=>$sec,'students'=>$sec->get_students());
+				return "Students in {$sec->name}, Period {$sec->period}";
+				break;
 			default:
 				$this->information = FALSE;
 				return array('Error', 'Error: Student does not exist');
