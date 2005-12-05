@@ -24,6 +24,10 @@ class Schedule implements Iterator {
 			$this->class_arr[] = new Section($row[0]);
 		}
 
+		if(count($this->class_arr) < 1) {
+			throw new I2Exception("User `{$user->uid}` does have have schedule information.");
+		}
+
 		usort($this->class_arr, array('Schedule','compare'));
 		reset($this->class_arr);
 	}
