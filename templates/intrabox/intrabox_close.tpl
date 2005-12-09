@@ -11,19 +11,15 @@
 	}
 	function doIntraboxDown(e) {
 		e = fixE(e);
-		var target = null;
-		if(e.target) {
-			target = e.target;
-		}
-		else if(e.srcElement) {
-			target = e.srcElement;
-		}
+		var target = (e.target) ? e.target : e.srcElement;
 		if(!target.href) {
 			drag_box = this;
-			drag_box.onDragStart();
 			this.lastMouseX = e.clientX;
 			this.lastMouseY = e.clientY;
-			document.onmousemove = doIntraboxMove;
+			document.onmousemove = function(){
+						drag_box.onDragStart();
+						document.onmousemove = doIntraboxMove;
+						}
 			document.onmouseup = doIntraboxPlace;
 		}
 		return false;
@@ -61,13 +57,7 @@
 		return m_ibox;
 	}
 	function fixE(e) {
-		if(typeof e == "undefined")
-			e = window.event;
-		if(typeof e.layerX == "undefined")
-			e.layerX = e.offsetX;
-		if(typeof e.layerY == "undefined")
-			e.layerY = e.offsetY;
-		return e;
+		return (typeof e == "undefined") ? window.event : e;
 	}
 	function getLeft(element) {
 		var offset = 0;
@@ -102,7 +92,7 @@
 	}
 	var http = createRequestObject();
 	function sendReq(info) {
-		http.open('get', '[<$I2_ROOT>]ajax/intrabox/[<$I2_UID>]/'+info);
+		http.open('GET', '[<$I2_ROOT>]ajax/intrabox/[<$I2_UID>]/'+info);
 		http.onreadystatechange = handleResponse;
 		http.send(null);
 	}
@@ -132,16 +122,16 @@
 			m_i.style.top = getTop(this) + "px";
 			m_i.style.height = this.offsetHeight;
 			m_i.style.width = this.offsetWidth;
-			m_i.style.display = "block";
 			m_i.style.opacity = 0.8;
 			m_i.style.filter = "alpha(opacity=80)";
 			m_i.innerHTML = this.innerHTML;
 			m_i.style.border = this.style.border;
-			this.innerHTML = "";
-			this.style.borderWidth = "2px";
-			this.style.borderStyle = "solid";
-			this.style.width = (parseInt(this.style.width) - 4) + "px";
+			m_i.style.borderWidth = this.style.borderWidth;
+			m_i.style.borderStyle = this.style.borderStyle;
+			m_i.style.borderColor = this.style.borderColor;
 			m_i.className = this.className;
+			m_i.style.display="block";
+			this.style.visibility="hidden";
 			this.dragged = false;
 		};
 		box.onDrag = function(new_left, new_top) {
@@ -161,8 +151,8 @@
 			if(box != null && this.nextSibling != box) {
 				box_after = box;
 				box.parentNode.insertBefore(this, box);
-				this.parentNode.style.display = "none";
-				this.parentNode.style.display = "";
+				//this.parentNode.style.display = "none";
+				//this.parentNode.style.display = "";
 			}
 			this.dragged = true;
 		};
@@ -174,9 +164,11 @@
 				var top = parseInt(make_intrabox().style.top);
 				var left_increment = (left - getLeft(this)) / dist;
 				var top_increment = (top - getTop(this)) / dist;
+				var box = this;
 				interval = setInterval(function() {
 					if(dist < 1) {
 						clearInterval(interval);
+						box.style.visibility="visible";
 						make_intrabox().style.display = "none";
 						return;
 					}
@@ -186,19 +178,11 @@
 					make_intrabox().style.left = left + "px";
 					make_intrabox().style.top = top + "px";
 				}, 10);
-				this.style.border = make_intrabox().style.border;
-				this.style.width = (parseInt(this.style.width) + 4) + "px";
-				this.innerHTML = make_intrabox().innerHTML;
 			}
 			else {
 				if(this.href) {
 					make_intrabox().style.display = "none";
-					if(this.target) {
-						window.open(this.href, this.target);
-					}
-					else {
-						document.location = this.href;
-					}
+					(this.target) ? window.open(this.href, this.target) : document.location = this.href;
 				}
 			}
 		};
