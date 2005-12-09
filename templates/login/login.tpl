@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>TJHSST Intranet2: Login</title>
-<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]/www/extra-css/login.css" />
+<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/login.css" />
 </head>
 <body>
  <div id="login_background">
