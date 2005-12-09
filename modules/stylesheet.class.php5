@@ -38,6 +38,7 @@ class StyleSheet {
 		$remaining = array_combine($selectors, $trues);
 		
 		foreach ($selectors as $selector) {
+			//Ignore any rules we have already dealt with
 			if (!$remaining[$selector]) {
 				continue;
 			}
@@ -50,6 +51,7 @@ class StyleSheet {
 				if ($old_rule->is_empty()) {
 					$this->files[$old_rule->get_filename()]->remove_rule($old_rule);
 				}
+				//Create a new rule based on the old rule
 				$new_rule = new CSSRule($rule->get_filename());
 				$new_rule->add_selectors($matching);
 				$new_rule->set_properties($old_rule->get_properties());
@@ -62,6 +64,7 @@ class StyleSheet {
 			}
 		}
 
+		//Add any rules that were not previously defined
 		$remaining = array_filter($remaining);
 		if (count($remaining) > 0) {
 			$rule->set_selectors(array_keys($remaining));
@@ -69,7 +72,7 @@ class StyleSheet {
 		}
 	}
 
-	private function add_rule_to_file($rule) {
+	private function add_rule_to_file(CSSRule $rule) {
 		$filename = $rule->get_filename();
 		//Create a CSSFile for this rule if one does not already exist
 		if (!isset($this->files[$filename])) {

@@ -227,4 +227,25 @@ function ends_with($str, $suffix) {
 	return substr($str, strlen($str) - strlen($suffix)) == $suffix;
 }
 
+/**
+* Determines the most recent modification time of all files and directories in a given directory.
+*
+* @param string $dir The directory
+* @return int The most recent modification time.
+*/
+function dirmtime($dir) {
+	$time = filemtime($dir);
+
+	$handle = opendir($dir);
+	while (($name = readdir($handle)) !== FALSE) {
+		$file = "$dir/$name";
+		if ($name != '.' && $name != '..' && is_dir($file)) {
+			$time = max($time, dirmtime($file));
+		}
+	}
+	closedir($handle);
+
+	return $time;
+}
+
 ?>

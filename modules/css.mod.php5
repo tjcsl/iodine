@@ -16,7 +16,9 @@ class CSS implements Module {
 
 	private $style_sheet;
 
-	private $css;
+	private $css_text;
+
+	private $warnings = array();
 
 	/**
 	* Required by the {@link Module} interface.
@@ -31,7 +33,7 @@ class CSS implements Module {
 	function display_pane($disp) {
 		Display::stop_display();
 		
-		echo $this->css;
+		echo $this->css_text;
 		
 		exit;
 	}
@@ -56,9 +58,6 @@ class CSS implements Module {
 	function init_pane() {
 		global $I2_ARGS;
 		
-		
-		$start = microtime(true);
-		
 		$current_style = $I2_ARGS[1];
 
 		if (ends_with($current_style, '.css')) {
@@ -68,7 +67,8 @@ class CSS implements Module {
 		$this->style_path = i2config_get('style_path', NULL, 'core');
 		$style_cache = i2config_get('style_cache', NULL, 'core') . $current_style;
 
-		if (!file_exists($style_cache) || filemtime($style_cache) < self::dirmtime($this->style_path)) {
+		//Recompile the cache if it's stale
+		if (!file_exists($style_cache) || filemtime($style_cache) < dirmtime($this->style_path)) {
 			$this->style_sheet = new StyleSheet();
 			$this->load_style('default');
 			if ($current_style != 'default') {
@@ -77,12 +77,19 @@ class CSS implements Module {
 
 			$date = date("D M j G:i:s T Y");
 			$contents = "/* Server cache '$current_style' created on $date */\n";
+
+			foreach ($this->warnings as $message) {
+				$contents .= "/* WARNING: $message */\n";
+			}
+			
 			$contents .= $this->style_sheet->__toString();
 			file_put_contents($style_cache, $contents);
 		}
 		
+		//Modification date of cache file
 		$gmdate = gmdate('D, d M Y H:i:s', filemtime($style_cache)) . ' GMT';
 
+		//Checks to see if the client's cache is stale
 		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 			$if_modified_since = preg_replace('/;.*$/', '', $_SERVER['HTTP_IF_MODIFIED_SINCE']);
 			if ($if_modified_since == $gmdate) {
@@ -95,35 +102,16 @@ class CSS implements Module {
 		header('Content-type: text/css');
 		header("Last-Modified: $gmdate");
 		header('Cache-Control: public');
-		header('Pragma:');
-		header('Expires:');
+		header('Pragma:'); //Unset pragma header
+		header('Expires:'); //Unset expires header
 		
 		$date = date("D M j G:i:s T Y");
 		echo "/* Server-Cache: $style_cache */\n";
 		echo "/* Client-Cached: $date */\n";
 
-		$this->css = file_get_contents($style_cache);
+		$this->css_text = file_get_contents($style_cache);
 		
-		$end = microtime(true);
-
-		echo '/* Created in ' . ($end - $start) . " s */\n";
-
 		return 'css';
-	}
-
-	public static function dirmtime($dir) {
-		$time = filemtime($dir);
-	
-		$handle = opendir($dir);
-		while (($name = readdir($handle)) !== FALSE) {
-			$file = "$dir/$name";
-			if ($name != '.' && $name != '..' && is_dir($file)) {
-				$time = max($time, self::dirmtime($file));
-			}
-		}
-		closedir($handle);
-
-		return $time;
 	}
 
 	public static function get_available_styles() {
@@ -203,7 +191,7 @@ class CSS implements Module {
 					} else if ($modifier == 'replace') {
 						$replace  = TRUE;
 					} else {
-						$this->warn("Unknown modifier $modifier in $path");
+						$this->warnings[] = "Unknown modifier $modifier in $path";
 					}
 				}
 				$keys = preg_replace('/\@.*?\s/s', '', $keys);
