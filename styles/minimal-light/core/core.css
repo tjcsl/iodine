@@ -6,5 +6,5 @@
 }
 @extend
 .title {
-	border-bottom-color: white;
+	border-bottom: 2px solid white;
 }

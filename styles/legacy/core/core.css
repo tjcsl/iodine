@@ -1,0 +1,13 @@
+@extend
+.logo {
+	background: url(/www/pics/oldlogo.png) no-repeat;
+}
+@extend
+.title {
+	border-bottom: 3px solid #000000;
+}
+
+@extend
+.date {
+	top: 45px;
+}

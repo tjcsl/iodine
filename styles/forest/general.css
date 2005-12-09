@@ -1,0 +1,14 @@
+@extend
+body {
+	background-color: #275715;
+}
+@extend
+a {
+	color: #41240d;
+}
+a:visited {
+	color: #41240d;
+}
+a:active {
+	color: #41240d;
+}

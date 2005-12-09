@@ -1,0 +1,19 @@
+@extend
+form, div, p, span, td, th, i {
+	font-family: courier, helvetica, verdana, sans-serif;
+}
+@extend
+body {
+	font-family: courier, helvetica, verdana, sans-serif;
+	background: #000000;
+}
+@extend
+a {
+	color: #009900;
+}
+a:visited {
+	color: #006600;
+}
+a:active {
+	color: #004a2a;
+}

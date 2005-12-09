@@ -1,0 +1,6 @@
+@extend
+.boxheader {
+	background-color: #000000;
+	border-left: 4px solid black;
+	border-right: 4px solid black;
+}

@@ -1,0 +1,18 @@
+.newsitem {
+	font-family: courier, helvetica, verdana, sans-serif;
+	font-size: 10pt;
+	margin-bottom: 10pt;
+	border-style: dashed;
+	border-color: #008800;
+	border-width: 1px;
+}
+.newstitle {
+	font-family: courier, helvetica, verdana, sans-serif;
+	font-size: 10pt;
+	font-weight: bold;
+	padding-left: 2pt;
+	border-style: dashed;
+	border-color: #008800;
+	border-width: 0px;
+	border-bottom-width: 1px;
+}

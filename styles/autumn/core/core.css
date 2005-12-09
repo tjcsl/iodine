@@ -1,5 +1,5 @@
 @extend
 .title {
 	color: #87ceeb;
-	border-bottom-color: #fcc303;
+	border-bottom: 3px solid #fcc303;
 }

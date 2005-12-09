@@ -1,0 +1,16 @@
+@extend
+.logo {
+	top: 0px;
+	left: 0px;
+	background: url(/www/pics/newlogo.png) no-repeat;	
+}
+@extend
+.title {
+	color: #ffffff;
+	border-bottom: 2px solid #ffffff;
+}
+@extend
+.date {
+	color: white;
+	top: 23px;
+}

@@ -1,0 +1,44 @@
+@extend
+body {
+	font-family: courier, helvetica, verdana, sans-serif;
+	background-color: #000000;
+}
+@extend
+form, div, p, span, td, th, i {
+	font-family:  courier, helvetica, verdana, sans-serif;
+}
+
+input {
+	font-family: courier, helvetica, verdana, sans-serif;
+	color: #008800;
+	background: transparent;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #007700;
+}
+select {
+	color: #008800;
+	background: #000000;
+	scrollbar-3dlight: green;
+	scrollbar-arrow: green;
+	scrollbar-base: black;
+	scrollbar-shadow: green;
+	border-style: solid;
+	border-width: 0px;
+	border-color: 007700;
+}
+option {
+	color: #008800;
+	background: #000000;
+	border-width: 0px;
+}
+@extend
+a {
+	color: #009900;
+}
+a:visited {
+	color: #007700;
+}
+a:active {
+	color: #004a2a;
+}

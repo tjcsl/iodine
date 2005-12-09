@@ -14,8 +14,7 @@
 @extend
 .title {
 	color: #4444EE;
-	border-bottom-color: #4444EE;
-	border-bottom-width: 3px;
+	border-bottom: 3px solid #4444EE;
 }
 
 .date {
