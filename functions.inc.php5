@@ -216,4 +216,15 @@ function flatten($arr) {
 	return $ret;
 }
 
+/**
+* Tests if the string starts with the specified prefix.
+*
+* @param string $str The string to test
+* @param string $suffix The suffix
+* @return bool True if the given string ends with the given suffix, false otherwise.
+*/
+function ends_with($str, $suffix) {
+	return substr($str, strlen($str) - strlen($suffix)) == $suffix;
+}
+
 ?>
