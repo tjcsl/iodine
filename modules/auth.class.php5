@@ -167,7 +167,7 @@ class Auth {
 	* @returns bool Whether or not the user has successfully logged in.
 	*/
 	public function login() {
-		global $I2_SQL;
+		global $I2_SQL, $I2_ARGS;
 
 		if(!isset($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
 			$_SESSION['logout_funcs'] = array();
@@ -184,7 +184,7 @@ class Auth {
 				$_SESSION['i2_password']= $_REQUEST['login_password'];
 				$_SESSION['i2_login_time'] = time();
 				
-				redirect();
+				redirect(implode('/', $I2_ARGS));
 				return TRUE;
 			} else {
 				/* Attempted login failed */
