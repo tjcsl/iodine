@@ -1,0 +1,23 @@
+input, select, textarea {
+	background-color: #f0e68c;
+	color: #660033;
+	border-width: medium;
+	border-color: #fcc303;
+}
+
+body {
+	font-family: arial, helvetica, verdana, sans-serif;
+	font-size: 10pt;
+	background-color: #660033;
+}
+
+a {
+	color: #cc6600;
+	text-decoration: none;
+}
+a:visited {
+	color: #cc99cc;
+}
+a:active {
+	color: #ffcc33;
+}

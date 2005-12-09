@@ -1,0 +1,7 @@
+.boxheader {
+	color: black;
+	font-weight: bold;
+	background-color: white;
+	border-left: 4px solid white;
+	border-right: 4px solid white;
+}

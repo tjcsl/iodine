@@ -1,0 +1,30 @@
+#help_pane {
+	display: none;
+	z-index: 20;
+	position: absolute;
+	left: 0px;
+	width: 400px;
+	top: 20px;
+	height: 0px;
+	border: solid medium #000000;
+	padding: 10px;
+	background-color: #FFFFFF;
+	color: #000000;
+	overflow: hidden;
+}
+
+#help_text:hover {
+	text-decoration: underline;
+	cursor: help;
+	color: #FF0000;
+}
+
+#help_close {
+	float: right;
+}
+
+#help_close:hover {
+	text-decoration: underline;
+	cursor: pointer;
+	color: #FF0000;
+}

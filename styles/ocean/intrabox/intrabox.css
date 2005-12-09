@@ -1,0 +1,40 @@
+@extend
+.boxes {
+	width: 315px;
+}
+.intrabox {
+	border: #00CCCC thick ridge;
+	margin-bottom: 10pt;
+	background-color: #00DDDD;
+	width: 315px;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+}
+.intrabox:hover {
+	opacity: 1;
+}
+.boxheader {
+	color: #99FFFF;
+	font-weight: bold;
+	background-color: #007777;
+	border: medium outset #007777;
+	padding: 0px 4px;
+}
+@extend
+.boxbuttons {
+	margin: 3px 7px;
+}
+.boxcontent {
+	margin: 4px;
+	color: #4444EE;
+}
+@extend
+.boxform {
+	color: #6666FF;
+}
+@extend
+.mainbox {
+	left: 337px;
+	border: #00CCCC thick ridge;
+	background-color: #00DDDD;
+}

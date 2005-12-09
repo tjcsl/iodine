@@ -1,0 +1,10 @@
+@extend
+.logo {
+	top: 0px;
+	left: 0px;
+	background: url(/www/pics/minimal_black.png) no-repeat;	
+}
+@extend
+.title {
+	border-bottom-color: white;
+}

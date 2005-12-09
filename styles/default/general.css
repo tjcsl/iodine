@@ -1,0 +1,40 @@
+form, div, p, span, td, th, i {
+	font-family: arial, helvetica, verdana, sans-serif;
+	font-size: 10pt;
+}
+
+img {
+	border-width: 0px;
+}
+
+body {
+	font-family: arial, helvetica, verdana, sans-serif;
+	font-size: 10pt;
+	background-color: #ffffff;
+	height: 100%;
+}
+
+tt {
+	font-family: monospace, courier;
+}
+
+a {
+	color: #0000ff;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #0000ff;
+}
+
+a:active {
+	color: #004a2a;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+.bold {
+	font-weight: bold;
+}

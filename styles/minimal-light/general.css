@@ -1,0 +1,17 @@
+@extend
+body {
+	background: white;
+}
+a {
+	color: black;
+	text-decoration: underline;
+}
+a:visited {
+	color: black;
+}
+a:active {
+	color: black;
+}
+a:hover {
+	text-decoration: none;
+}

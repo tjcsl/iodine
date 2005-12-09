@@ -1,0 +1,38 @@
+.boxes {
+	position: absolute;
+	top: 110px;
+	left: 10px;
+	width: 305px;
+}
+.intrabox {
+	border: thin groove;
+	margin-bottom: 10pt;
+	width: 305px;
+}
+.boxheader {
+	color: #FFFFFF;
+	font-weight: bold;
+	background-color: #464678;
+	border-left: 4px solid #464678;
+	border-right: 4px solid #464678;
+}
+.boxbuttons {
+	float: right;
+	margin: -2px 2px;
+}
+.boxcontent {
+	margin-left: 4px;
+	margin-right: 4px;
+	color: #000000;
+}
+.boxform {
+	margin: 5px 4px;
+	color: #000000;
+}
+.mainbox {
+	position: absolute;
+	top: 110px;
+	left: 327px;
+	right: 10px;
+	border: thin groove;
+}

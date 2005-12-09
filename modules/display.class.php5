@@ -264,10 +264,10 @@ class Display {
 		$this->smarty->assign('I2_SELF', $I2_SELF);
 		if( isSet($I2_USER) ) {
 			$this->smarty->assign('I2_UID', $I2_USER->uid);
-			$this->smarty->assign('I2_CSS', "{$I2_ROOT}www/styles/".self::$style.'.css');
+			$this->smarty->assign('I2_CSS', "{$I2_ROOT}css/".self::$style.'.css');
 		}
 		else {
-			$this->smarty->assign('I2_CSS', "{$I2_ROOT}www/styles/default.css");
+			$this->smarty->assign('I2_CSS', "{$I2_ROOT}css/default.css");
 		}
 	}
 

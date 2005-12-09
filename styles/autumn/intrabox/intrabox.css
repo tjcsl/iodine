@@ -1,0 +1,34 @@
+@replace
+.intrabox {
+	border: #fcc303 thick ridge;
+	margin-bottom: 10pt;
+	width: 315px;
+	background-color: #990022;
+}
+@replace
+.boxheader {
+	color: #87ceeb;
+	font-weight: bold;
+	background-color: #990022;
+	border-bottom-style: dotted;
+	border-bottom-width: 1px;
+	border-bottom-color: #fcc303;
+	padding: 0px 4px;
+}
+@extend
+.boxbuttons {
+	margin: -1px 4px;
+}
+@extend
+.boxcontent {
+	color: #ffffff;
+}
+@extend
+.boxform {
+	color: #ffffff;
+}
+@extend
+.mainbox {
+	border: #fcc303 thick ridge;
+	background-color: #990022;
+}

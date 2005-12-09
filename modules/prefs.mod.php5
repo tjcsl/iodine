@@ -63,16 +63,10 @@ class Prefs implements Module {
 		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED)->fetch_all_arrays(Result::ASSOC);
 		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED)->fetch_all_arrays(Result::ASSOC);
 		
-		$this->themes = $this->get_available_styles();
+		$this->themes = CSS::get_available_styles();
 
 		return array('Your Preferences', 'Preferences');
 		
-	}
-
-	public function get_available_styles() {
-		$styles = explode(',',i2config_get('styles','default','css'));
-		d('Available styles: '.print_r($styles,true));
-		return $styles;
 	}
 	
 	function display_pane($display) {

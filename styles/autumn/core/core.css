@@ -1,0 +1,5 @@
+@extend
+.title {
+	color: #87ceeb;
+	border-bottom-color: #fcc303;
+}

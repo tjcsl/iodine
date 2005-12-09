@@ -1,0 +1,19 @@
+.newsitem {
+	font-family: arial, helvetica, verdana, sans-serif;
+	font-size: 10pt;
+	margin-bottom: 10pt;
+	border-left: dotted 1px gray;
+	border-right: dotted 1px gray;
+	border-bottom: dotted 1px gray;
+}
+
+.newstitle {
+	font-family: arial, helvetica, verdana, sans-serif;
+	font-size: 12pt;
+	font-weight: bold;
+	border: solid 1px gray;
+}
+
+.newsposted {
+	font-style: italic;
+}
