@@ -372,8 +372,8 @@ class User {
 		$where_arr = array();
 
 		foreach(explode(' ', $str) as $item) {
-			$where .= '(fname LIKE %s OR mname LIKE %s OR lname LIKE %s) AND ';
-			$arr = array( '%'.$item.'%', '%'.$item.'%', '%'.$item.'%' );
+			$where .= '(username LIKE %s OR fname LIKE %s OR mname LIKE %s OR lname LIKE %s) AND ';
+			$arr = array( '%'.$item.'%', '%'.$item.'%', '%'.$item.'%', '%'.$item.'%' );
 			
 			$where_arr = array_merge($where_arr, $arr);
 		}

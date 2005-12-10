@@ -58,6 +58,7 @@ I2 User Experience Technicians:
 	<li>Eric Harmon</li>
 	<li>Andrew Smith</li>
 	<li>Dan Tran</li>
+	<li>Nathan Watson</li>
 	<li>William "wyang" Yang</li>
 </ul>
 <hr>
