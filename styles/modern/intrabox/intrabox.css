@@ -4,9 +4,12 @@
 }
 .intrabox {
 	border: none;
+	background: url(../www/pics/modern_header.png) no-repeat;
 }
 .boxheader {
-	background: url(/www/pics/modern_header.png) no-repeat;
-	height: 50px;
-	font-size: 20px;
+	position: relative;
+	top: 7px;
+	left: 2px;
+	height: 30px;
+	font-size: 18px;
 }
