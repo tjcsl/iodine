@@ -1,0 +1,12 @@
+@extend
+.boxes {
+	left: 0px;
+}
+.intrabox {
+	border: none;
+}
+.boxheader {
+	background: url(/www/pics/modern_header.png) no-repeat;
+	height: 50px;
+	font-size: 20px;
+}
