@@ -145,9 +145,11 @@ function init(box) {
 				box = boxes[i];
 			}
 		}
-		if(box != null && this.nextSibling != box) {
+		if(box != null) {
 			box_after = box;
-			box.parentNode.insertBefore(this, box);
+			if (this.nextSibling != box) {
+				box.parentNode.insertBefore(this, box);
+			}
 			//this.parentNode.style.display = "none";
 			//this.parentNode.style.display = "";
 		}
