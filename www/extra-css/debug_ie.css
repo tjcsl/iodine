@@ -1,0 +1,15 @@
+div#error, div#debug {
+	position:absolute;
+	right: auto;
+	bottom: auto;
+}
+
+div#error {
+	left: 0px;
+	top: expression(getYPos('error') + 'px');
+}
+
+div#debug {
+	left: expression(getXPos('debug') + 'px');
+	top:  expression(getYPos('debug') + 'px');
+}
