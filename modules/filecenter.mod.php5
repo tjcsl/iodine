@@ -38,6 +38,8 @@ class Filecenter implements Module {
 
 	private $directory;
 
+	private $show_hidden_files;
+
 	/**
 	* Required by the {@link Module} interface.
 	*/
@@ -46,18 +48,15 @@ class Filecenter implements Module {
 
 		$system_type = $I2_ARGS[1];
 		
-		if (isSet($_REQUEST['toggle_hide'])) {
-			if (!isSet($_SESSION['csl_hide'])) {
-				$_SESSION['csl_hide'] = TRUE;
-			} else {
-				unset($_SESSION['csl_hide']);
-			}
+		if (!isset($_SESSION['csl_show_hidden_files'])) {
+			$_SESSION['csl_show_hidden_files'] = FALSE;
+		}
+		if (isset($_REQUEST['toggle_hide'])) {
+			$_SESSION['csl_show_hidden_files'] = !$_SESSION['csl_show_hidden_files'];
 		}
 
-		if (!isSet($_SESSION['csl_hide'])) {
-			$this->template_args['csl_show_hidden'] = TRUE;
-		}
-		
+		$this->show_hidden_files = $_SESSION['csl_show_hidden_files'];
+
 		if ($system_type == 'cslauth' && isSet($_REQUEST['user']) && isSet($_REQUEST['password'])) {
 			//$I2_SQL->query("INSERT INTO cslfiles (uid,user,pass) VALUES(%d,%s,%s)",);
 			/* 
@@ -76,8 +75,6 @@ class Filecenter implements Module {
 			$this->template_args['csl_failed_login'] = TRUE;
 		}
 
-		 //10mb
-		
 		if ($system_type == 'lan') {
 			$this->filesystem = new LANFilesystem($_SESSION['i2_username'], $_SESSION['i2_password']);
 			$this->template_args['max_file_size'] = 10485760; //10 mb
@@ -149,7 +146,7 @@ class Filecenter implements Module {
 					"last_modified" => date("n/j/y g:i A", $file->last_modified())
 				);
 			
-				if (isSet($_SESSION['csl_hide']) && $file->is_hidden()) {
+				if (!$this->show_hidden_files && $file->is_hidden()) {
 					continue;
 				}
 			
