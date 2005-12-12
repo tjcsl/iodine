@@ -14,5 +14,6 @@
 	font-size: 18px;
 }
 .boxcontent {
-	background: url(../www/pics/modern_side.png);
+	background: url(../www/pics/modern_side.png) repeat-y top right;
+	border-bottom: url(../www/pics/modern_footer.png);
 }
