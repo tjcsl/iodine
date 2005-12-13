@@ -89,18 +89,26 @@ class Kerberos {
 			//$cache = "/tmp/iodine-krb5-$user-".substr(md5(''.rand()),0,16);
 		} while(file_exists($cache));
 	
-		$descriptors = array(0 => array('pipe', 'r'), 1 => array('file', '/dev/null', 'w'), 2 => array('file', '/dev/null', 'w'));
+		$descriptors = array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w'));
 
-		$process = proc_open("kinit $user@$realm -c $cache", $descriptors, $pipes);
+		$env = array('KRB5CCNAME' => $cache);
+
+		$process = proc_open("/usr/bin/kinit $user@$realm", $descriptors, $pipes, NULL, $env);
 		if(is_resource($process)) {
-			fwrite($pipes[0], $password);
+			fwrite($pipes[0], "$password\n");
 			fclose($pipes[0]);
+
+			$output = fread($pipes[1], 1024);
+			fclose($pipes[1]);
+			$output2 = fread($pipes[2], 1024);
+			fclose($pipes[2]);
 			
 			$status = proc_close($process);
 			
 			if($status == 0) {
 				return $cache;
 			}
+			d('Kerberos return: '.$status.', output: '.$output.', output2: '.$output2);
 	        }
                 return FALSE;	
 	}
