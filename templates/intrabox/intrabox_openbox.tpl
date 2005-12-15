@@ -1,4 +1,4 @@
-<div class="intrabox" id="intrabox_[<$name>]" style="filter:alpha(opacity=80);" onMouseOver="this.style.filter='alpha(opacity=100)';" onMouseOut="this.style.filter='alpha(opacity=80)';">
+<div class="intrabox" id="intrabox_[<$name>]" style="filter:alpha(opacity=90);" onMouseOver="this.style.filter='alpha(opacity=100)';" onMouseOut="this.style.filter='alpha(opacity=90)';">
 <div class="boxbuttons">
  <a href="[<$I2_ROOT>]manageibox/move/[<$boxid>]/-1"><img src="[<$I2_ROOT>]www/pics/up.gif" alt="up" /></a>
  <a href="[<$I2_ROOT>]manageibox/move/[<$boxid>]/1"><img src="[<$I2_ROOT>]www/pics/down.gif" alt="down" /></a>
