@@ -30,7 +30,7 @@ class Newsitem {
 			case 'authorID':
 				return $I2_SQL->query('SELECT authorID FROM news WHERE id=%d',$this->mynid)->fetch_single_value();
 			case 'author':
-				$user = new User($this->authorID);
+				$user = new User($this->__get('authorID'));
 				return $user->name;
 			case 'revised':
 				return $I2_SQL->query('SELECT revised FROM news WHERE id=%d',$this->mynid)->fetch_single_value();
@@ -131,7 +131,7 @@ class Newsitem {
 			// if no groups were specified, anyone can read it
 			return true;
 		}
-/* COMMENTED OUT FOR TESTING PURPOSES
+
 		if($this->authorID == $user->uid) {
 			// author can always read
 			return true;
@@ -141,7 +141,7 @@ class Newsitem {
 			// news admins can read anything
 			return true;
 		}
-*/
+
 		foreach($gids as $gid) {
 			$group = new Group($gid);
 			if($group->has_member($user)) {
