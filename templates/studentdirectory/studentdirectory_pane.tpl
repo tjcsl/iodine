@@ -5,7 +5,7 @@ The specified student does not exist. Either you mistyped a URL, or something in
 [<elseif isset($info.fname)>]
 <table>
 <tr><td valign="top">
-<img src="[<$I2_ROOT>]www/pics/bomb2.png" vspace="2" width="172" height="228" /></td>
+<img src="[<$I2_ROOT>]www/pics/bomb.png" vspace="2" width="172" height="228" /></td>
 <td valign="top">
 [<$info.fname>][<if $info.nickname>] ([<$info.nickname>])[</if>] [<$info.mname>] [<$info.lname>][<if $info.suffix>] [<$info.suffix>][</if>] (<a href="mailto:[<$info.username>]@tjhsst.edu">[<$info.username>]@tjhsst.edu</a>), Grade [<$info.grade>]<br />
 [<if $info.bdate>]Born [<$info.bdate>]<br />[</if>]
