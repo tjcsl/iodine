@@ -64,6 +64,10 @@ If you make changes and somebody else has already made changes at the same time,
 
 Voila, you're done!  This method will let you merge as many branches as you like into one.
 
+IMPORTANT:
+	If you haven't actually changed anything you want to keep, use 'hg update -C'.
+	Also, what you commit is EXACTLY what gets pushed into the repository!  This means you should ALWAYS update to the latest version of everything before you make a new commit and then push!
+
 IMPORTANT:  Use 'ssh -X' if you insist on working on humboldt!  Mercurial uses a very confusing vim-based merge if it doesn't have a GUI available.  So make sure to have meld accessible.  It's installed on humboldt for you.
 
 Config:
