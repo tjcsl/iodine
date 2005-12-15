@@ -45,7 +45,7 @@ I2 (codename Iodine) Development Team:
 	<li>Bryan "brj" Rau-Jacobs (2006)</li>
 	<li>Andrew "asmith" Smith (2006)</li>
 	<li>Dan "The Intranet Man" Tran (2006)</li>
-	<li>Logan "No Nickname" R. Kearsley (2007)</li>
+	<li>Logan "No Nickname" Kearsley (2007)</li>
 	<li>Josiah "Jobin" Boning (2008)</li>
 	<li>Jack "jbreese" Breese (2008)</li>
 	<li>Nathan Watson (2008)</li>
