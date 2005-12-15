@@ -1,8 +1,8 @@
 [<if $newsadmin>]
 	<a href="[<$I2_ROOT>]news/add">Post a news article</a><br/>
 [</if>]
-[<foreach from=$news_stories item=story>]
-	[<if !$story.read>]
+[<foreach from=$stories item=story>]
+	[<if !$story->has_been_read()>]
 		[<include file="news/news-disp.tpl">]
 	[</if>]
 [</foreach>]

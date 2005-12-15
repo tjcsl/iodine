@@ -22,14 +22,24 @@ class News implements Module {
 	private $display;
 
 	/**
-	* A 2-dimensional array containing all of the information for news posts.
+	* Template for the specified action
 	*/
-	private $newsdetails = NULL; 
+	private $template;
+
+	/**
+	* Template arguments for the specified action
+	*/
+	private $template_args = array();
+
+	/**
+	* A 1-dimensional array of all the stories
+	*/
+	private $stories;
 
 	/**
 	* A 1-dimensional array containing all of the titles for all news posts.
 	*/
-	private $summaries;
+	private $summaries = array();
 
 	/**
 	* Whether the current user is a news administrator.
@@ -41,6 +51,9 @@ class News implements Module {
 		$this->newsadmin = $I2_USER->is_group_member('admin_news');
 		if ($this->newsadmin) {
 			d('This user is a news administrator - news alteration privileges have been granted.');
+		}
+		else {
+			d('This user is not a news administrator');
 		}
 	}
 	
@@ -61,81 +74,82 @@ class News implements Module {
 		switch($I2_ARGS[1]) {
 
 			case 'add':
+				$this->template = 'news_add.tpl';
 				
 				if( isset($_REQUEST['add_form']) && $this->newsadmin) {
-					$I2_SQL->query('INSERT INTO news ( authorID, title, text, posted ) VALUES ( %d, %s, %s, CURRENT_TIMESTAMP );', $I2_USER->uid, $_REQUEST['add_title'], $_REQUEST['add_text']);
-					$this->newsdetails = 1;
+					$title = $_REQUEST['add_title'];
+					$groups = $_REQUEST['add_groups'];
+					$text = $_REQUEST['add_text'];
+					Newsitem::post_item($I2_USER, $title, $text, $groups);
+					$this->template_args['added'] = 1;
 					return array('Post News', 'News article posted');
 				}
 				return array('Post News', 'Add a news article');
 
 			case 'edit':
+				$this->template = 'news_edit.tpl';
 				if( !isset($I2_ARGS[2]) ) {
 					throw new I2Exception('ID of article to delete not specified.');
 				}
 				
-				$res = $I2_SQL->query('SELECT title,text,authorID FROM news WHERE id=%d;', $I2_ARGS[2])->fetch_array();
-				
-				if( $res === FALSE ) {
+				if( ! Newsitem::item_exists($I2_ARGS[2]) ) {
 					throw new I2Exception('Specified article ID does not exist.');
 				}
-				if( !$this->newsadmin ) {
+				$item = new Newsitem($I2_ARGS[2]);
+				if( !$item->editable() ) {
 					throw new I2Exception('You do not have permission to edit this article.');
 				}
 
 				if( isset($_REQUEST['edit_form']) ) {
-					$I2_SQL->query('UPDATE news SET title=%s, text=%s WHERE id=%d;', $_REQUEST['edit_title'], $_REQUEST['edit_text'], $I2_ARGS[2]);
-					$res = $I2_SQL->query('SELECT title,text,authorID FROM news WHERE id=%d;', $I2_ARGS[2])->fetch_array();
-					$res['edited'] = 1;
+					$title = $_REQUEST['edit_title'];
+					$groups = $_REQUEST['edit_groups'];
+					$text = $_REQUEST['edit_text'];
+					$item->edit($title, $text, $groups);
+					$this->template_args['edited'] = 1;
 				}
 
-				$this->newsdetails = $res;
+				$this->template_args['newsitem'] = $item;
 				return 'Edit News Post';
 				
 			case 'delete':
+				$this->template = 'news_delete.tpl';
 				if( !isset($I2_ARGS[2]) ) {
 					throw new I2Exception('ID of article to delete not specified.');
 				}
 				if (!$this->newsadmin) {
 					throw new I2Exception('You do not have permission to delete this article!');
 				}
-				$res = $I2_SQL->query('SELECT title,text,authorID FROM news WHERE id=%d;', $I2_ARGS[2])->fetch_array();
 				
-				if( $res === FALSE ) {
+				if( ! Newsitem::item_exists($I2_ARGS[2]) ) {
 					throw new I2Exception('Specified article ID does not exist.');
 				}
 
 				if( isset($_REQUEST['delete_confirm']) ) {
-					$I2_SQL->query('DELETE FROM news WHERE id=%d;', $I2_ARGS[2]);
+					$item = NULL;
+					Newsitem::delete_item($I2_ARGS[2]);
 					return 'News Post Deleted';
 				}
-				
-				$this->newsdetails = $res;
-				return array('Delete News Post', 'Confirm News Post Delete');
+				else {
+					$this->template_args['newsitem'] = new Newsitem($I2_ARGS[2]);
+					return array('Delete News Post', 'Confirm News Post Delete');
+				}
 				
 			default:
+				$this->template = 'news_pane.tpl';
 				$I2_ARGS[1] = '';
-				
-				$this->newsdetails = $I2_SQL->query('SELECT id,title,text,authorID,posted FROM news ORDER BY posted DESC;')->fetch_all_arrays(Result::ASSOC);
-				$this->summaries = &$this->newsdetails;
-		
-				$authors = array();
-				foreach( $this->newsdetails as $i=>$story ) {
-					if( $story['authorID'] ) {
-						if( isset($authors[$story['authorID']]) ) {
-							$this->newsdetails[$i]['author'] = $authors[$story['authorID']];
-						}
-						else {
-							$tmpuser = new User($story['authorID']);
-							$this->newsdetails[$i]['author'] = $tmpuser->fname .' '.$tmpuser->lname;
-							$authors[$story['authorID']] = $this->newsdetails[$i]['author'];
-						}
-					}	
-					//A story is editable if this person wrote it or if they're a newsadmin
-					$this->newsdetails[$i]['editable'] = ($story['authorID'] == $I2_USER->uid || $this->newsadmin );
-					//FIXME: eliminate this broken hack - make the SQL query above more extensive.
-					$this->newsdetails[$i]['read'] = FALSE;
+
+				$this->template_args['stories'] = array();
+
+				if( $this->stories === NULL) {
+					$this->stories = Newsitem::get_all_items();
 				}
+
+				foreach($this->stories as $story) {
+					if ($story->readable()) {
+						$this->template_args['stories'][] = $story;
+					}
+				}
+				
 				return array('News', 'Recent News Posts');
 		}
 		//should not happen
@@ -148,16 +162,22 @@ class News implements Module {
 	function display_pane($display) {
 		global $I2_ARGS;
 		
-		$display->disp('news_'.($I2_ARGS[1]?$I2_ARGS[1]:'pane').'.tpl',array('news_stories'=>$this->newsdetails,'newsadmin'=>$this->newsadmin));
+		$this->template_args['newsadmin'] = $this->newsadmin;
+		$display->disp($this->template, $this->template_args);
 	}
 	
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_box() {
-		if( $this->summaries === NULL ) {
+		if( $this->stories === NULL ) {
 			global $I2_SQL;
-			$this->summaries = $I2_SQL->query('SELECT title FROM news ORDER BY posted DESC;')->fetch_all_arrays(Result::ASSOC);
+			$this->stories = Newsitem::get_all_items();
+		}
+		foreach($this->stories as $story) {
+			if ($story->readable()) {
+				$this->summaries[] = $story->title;
+			}
 		}
 		$num = count($this->summaries);
 		if (!isSet($this->newsadmin)) {
