@@ -32,6 +32,13 @@ option {
 	background: #000000;
 	border-width: 0px;
 }
+textarea {
+	color: #008800;
+	background: #000000;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #007700;
+}
 @extend
 a {
 	color: #009900;
