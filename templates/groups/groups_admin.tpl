@@ -2,7 +2,13 @@
 <br />
 The current existant groups are:<br />
 [<foreach from=$groups item=grp>]
- <a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a><br />
+ [<if $grp->has_member()>]
+  <a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">
+ [</if>]
+ [<$grp->name>]</a><br />
+ [<if $grp->has_member()>]
+  </a>
+ [</if>]
 [</foreach>]
 <br />
 To add a group, enter a new name here:<br />

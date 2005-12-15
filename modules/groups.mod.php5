@@ -32,6 +32,12 @@ class Groups implements Module {
 	private static $admin_all = NULL;
 
 	/**
+	* Commonly accesed group memberships
+	*/
+	private static $is_admin_all = NULL;
+	private static $is_admin_groups = NULL;
+
+	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
@@ -41,6 +47,9 @@ class Groups implements Module {
 		if( self::$admin_groups === NULL || self::$admin_all === NULL) {
 			self::$admin_groups = new Group('admin_groups');
 			self::$admin_all = new Group('admin_all');
+
+			self::$is_admin_groups = self::$admin_groups->has_member($I2_USER);
+			self::$is_admin_all = self::$admin_all->has_member($I2_USER);
 		}
 		
 		$args = array();
@@ -117,9 +126,7 @@ class Groups implements Module {
 		$this->template_args['group'] = $group->name;
 		
 		$is_single_admin = $group->is_admin($I2_USER);
-		$is_groups_admin = $I2_USER->is_group_member('admin_groups');
-		$is_master_admin = $I2_USER->is_group_member('admin_all');
-		$is_higher_admin = ($is_master_admin || ($is_groups_admin && substr($group->name,0,6) != 'admin_'));
+		$is_higher_admin = (self::$is_admin_all || (self::$is_admin_groups && substr($group->name,0,6) != 'admin_'));
 
 		if($is_higher_admin || $group->has_member($I2_USER)) {
 			// user is group member, groups admin if a normal group, or master admin if admin group
@@ -148,7 +155,7 @@ class Groups implements Module {
 						$new_admin = new User($_REQUEST['uid']);
 						$group->grant_admin($new_admin);
 					}
-					if($_REQUEST['group_form'] == 'remove_admin' && $is_groups_admin){
+					if($_REQUEST['group_form'] == 'remove_admin' && $is_higher_admin){
 						//to remove admin, must be more than single group admin
 						$admin_to_remove = new User($_REQUEST['uid']);
 						$group->revoke_admin($admin_to_remove);
@@ -167,8 +174,8 @@ class Groups implements Module {
 	* The master admin interface
 	*/
 	function admin() {
-		global $I2_SQL, $I2_USER;
-		if(self::$admin_groups->has_member($I2_USER)) {
+		global $I2_USER;
+		if(self::$is_admin_groups) {
 			if(isset($_REQUEST['group_admin_form'])) {
 				if($_REQUEST['group_admin_form'] == 'add') {
 					Group::add_group($_REQUEST['name']);
