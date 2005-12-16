@@ -9,7 +9,8 @@ for(var i = 0; i < boxes.length - 1; i++) {
 function doIntraboxDown(e) {
 	e = fixE(e);
 	var target = (e.target) ? e.target : e.srcElement;
-	if(!target.href) {
+	//ignore links and inputs
+	if(!target.href && !target.type) {
 		drag_box = this;
 		this.lastMouseX = e.clientX;
 		this.lastMouseY = e.clientY;
@@ -18,6 +19,8 @@ function doIntraboxDown(e) {
 					document.onmousemove = doIntraboxMove;
 					}
 		document.onmouseup = doIntraboxPlace;
+	} else {
+		return true;
 	}
 	return false;
 }
