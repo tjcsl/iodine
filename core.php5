@@ -110,7 +110,7 @@ try {
 	 
 	  @global LDAP $I2_LDAP
 	 */
-	//$I2_LDAP = new LDAP();
+	$I2_LDAP = new LDAP();
 	/**
 	 * The global authentication mechanism.
 	 *
@@ -135,7 +135,13 @@ try {
 	 * @global Display $I2_DISP
 	 */
 	$I2_DISP = new Display();
-
+	/**
+	 * The control mechanism for all Asynchonous Javascript and XML.
+	 *
+	 * Use this {@link Display} object for nothing, unless you're core.php.
+	 *
+	 * @global Ajax $I2_AJAX
+	 */
 	$I2_AJAX  = new Ajax();
 
 	/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here) */

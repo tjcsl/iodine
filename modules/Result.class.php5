@@ -1,6 +1,6 @@
 <?php
 /**
-* Just contains the definition for the {@link MySQLResult} class, and the defines for Result:: stuff.
+* Just contains the definition for the {@link Result} class, and the defines for Result:: stuff.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
@@ -21,7 +21,8 @@ interface Result extends Iterator {
 	const ASSOC = MYSQL_ASSOC;
 
 	/**
-	* Fetches the next ungotten row in the resultset.
+	* Fetches the next ungotten row in the resultset.  This function will return FALSE
+	* if fetching the next row is impossible.
 	*
 	* @param int $type Result::BOTH, Result::ASSOC, or RESULTL_NUM.
 	* @return mixed An array containing cells indexed by the selected method.
@@ -30,7 +31,7 @@ interface Result extends Iterator {
 	/**
 	* Gets the ID of the first row-creation statement associated with this Result object.
 	*
-	* @return int The ID which the row was inserted into.
+	* @return mixed The ID which the row was inserted into.
 	*/
 	public function get_insert_id();
 	/**
