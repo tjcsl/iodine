@@ -381,7 +381,7 @@ class EighthActivity {
 		}
 		else {
 			switch($name) {
-				case "sponsor":
+				case "sponsors":
 					if(!is_array($value)) {
 						$value = array($value);
 					}
