@@ -20,7 +20,7 @@
   <tr>
    <td><a href="[<$dir.name|escape:"url">]/"><img src="[<$I2_ROOT>]www/pics/filecenter/dir2.png" width="16" height="16"/></a></td>
    <td>
-    [<if $dir.name == '..'>]<a href="..">[<else>]<a href="" onclick="options(this, 'dir'); return false">[</if>][<$dir.name|escape>]</a>
+    [<if $dir.name == '..'>]<a href="..">[<else>]<a href="" onclick="return options(this, 'dir')">[</if>][<$dir.name|escape>]</a>
    </td>
    <td>&nbsp;</td>
    <td>Directory</td>
@@ -30,7 +30,7 @@
   [<foreach from=$files item=file>]
   <tr>
    <td><a href="[<$file.name|escape:"url">]"><img src="[<$I2_ROOT>]www/pics/filecenter/file2.png" width="15" height="16"/></a></td>
-   <td><a href="" onclick="options(this, 'file'); return false">[<$file.name|escape>]</a></td>
+   <td><a href="" onclick="return options(this, 'file')">[<$file.name|escape>]</a></td>
    <td class="size">[<$file.size>]KB</td>
    <td>File</td>
    <td>[<$file.last_modified>]</td>
