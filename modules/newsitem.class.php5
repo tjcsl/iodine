@@ -3,14 +3,14 @@
 * Just contains the definition for the class {@link Newsitem}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @package core
+* @package modules
 * @subpackage News
 * @filesource
 */
 
 /**
 * The module that takes care of news items, posting, etc.
-* @package core
+* @package modules
 * @subpackage News
 */
 class Newsitem {
