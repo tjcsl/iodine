@@ -1,20 +1,18 @@
 [<if $query_data != NULL>]
 
- <p>
  [<if !is_string($query_data)>]
-  Query results:
-  <table id="ldapinterface_data" border="1">
+  Query results:<br/>
   [<foreach from=$query_data item=row key=dn>]
-  <tr>
-    <td>[<$dn>]</td>
+    <em>[<$dn>]</em><br/>
     [<foreach from=$row item=arr key=key>]
     [<foreach from=$arr item=cell>]
-      <td style="text-align:center;">[<if $cell != ''>][<$cell>][<else>]NULL[</if>]</td>
+      <b>[<$key>]</b>:
+      [<if $cell != ''>][<$cell>][<else>]NULL[</if>]
+      <br/>
      [</foreach>]
     [</foreach>]
-   </tr>
+    <br/>
   [</foreach>]
-  </table></p>
  [<else>]
   [<$query_data>]
  [</if>]
