@@ -3,14 +3,14 @@
 * Just contains the definition for the class {@link Groups}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @package modules
+* @package core
 * @subpackage Group
 * @filesource
 */
 
 /**
 * The module that runs groups
-* @package modules
+* @package core
 * @subpackage Group
 */
 class Group {
@@ -175,7 +175,7 @@ class Group {
 		}
 
 		// If the user is in admin_all, they're also admin_anything
-		if (substr($this->name, 0, 6) == 'admin_'  && $this->name != 'admin_all' && self::admin_all()->has_member($user)) {
+		if (substr($this->name,6) == 'admin_'  && $this->name != 'admin_all' && self::admin_all()->has_member($user)) {
 			return TRUE;
 		}
 

@@ -1,15 +1,15 @@
 @extend
 .intrabox {
-	border-style: dashed;
-	border-color: #008800;
-	border-width: 1px;
+	background: transparent;
+	border: dashed #008800 1px;
 	padding: 2pt;
 	margin-bottom: 10pt;
 }
 .boxheader {
+	background: transparent;
 	color: #008800;
 	font-weight: bold;
-	border-style: 1px dashed #008800;
+	border-bottom: 1px dashed #008800;
 }
 @extend
 .boxcontent {

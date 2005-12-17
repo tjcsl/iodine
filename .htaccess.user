@@ -2,9 +2,9 @@
 	RewriteEngine On
 	RewriteBase /~<username>/i2/
 
-	RewriteRule ^(/home/<username>/web-docs/i2$) /home/<username>/web-docs/i2/core.php5 [L]
+	RewriteRule ^(/home/<username>/web-docs/i2$|$) /home/<username>/web-docs/i2/core.php5 [L]
 
 	RewriteRule ^www/ - [L]
 	
-	RewriteRule ^(.*)$ /home/<username>/web-docs/i2/core.php5?$1?%{QUERY_STRING} [L]
+	RewriteRule ^(.*)$ /home/<username>/web-docs/i2/core.php5?$1 [L]
 </IfModule>

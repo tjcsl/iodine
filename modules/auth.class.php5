@@ -98,7 +98,6 @@ class Auth {
 		} catch( I2Exception $e ) {
 			return FALSE;
 		}
-		
 		return TRUE;
 	}
 

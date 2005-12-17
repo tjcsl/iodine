@@ -1,8 +1,0 @@
-dn: uid=brau-jac,ou=people,dc=tjhsst,dc=edu
-objectClass: inetOrgPerson
-objectClass: krb5Principal
-uid: brau-jac
-cn: Bryan Rau-Jacobs
-sn: Rau-Jacobs
-krb5PrincipalName: brau-jac@LOCAL.TJHSST.EDU
-userPassword: passwordHere

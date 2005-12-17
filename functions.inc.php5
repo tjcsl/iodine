@@ -248,22 +248,4 @@ function dirmtime($dir) {
 	return $time;
 }
 
-/**
-* Creates a unique filename which begins with prefix followed by 16 random characters
-* and ends with suffix. This function is different than the built in php function tempnam
-* by allowing a suffix and not actually creating the file.
-*
-* @param $prefix The prefix including the path to the temporary file
-* @param $suffix The optional suffix
-* @return string A unique filename beginning with prefix and ending with suffix
-*/
-function tempname($prefix, $suffix='') {
-	do {
-		$mtime = microtime();
-		srand((float)(substr($mtime, 1+strpos($mtime, ' '))));
-		$file = $prefix . substr(md5(''.rand()),0,16) . $suffix;
-	} while(file_exists($file));
-	return $file;
-}
-
 ?>

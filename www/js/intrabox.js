@@ -2,6 +2,7 @@ var m_ibox = null;
 var drag_box = null;
 var box_after = null;
 var interval = 0;
+var scroll = 0;
 var boxes = document.getElementById('intraboxes').childNodes;
 for(var i = 0; i < boxes.length - 1; i++) {
 	init(boxes[i]);
@@ -32,11 +33,29 @@ function doIntraboxMove(e) {
 	var left = parseInt(make_intrabox().style.left);
 	var new_left = left + x - drag_box.lastMouseX;
 	var new_top = top + y - drag_box.lastMouseY;
+	var wpos = parseInt(make_intrabox().style.top) - (document.all?document.documentElement.scrollTop:window.pageYOffset);
 	make_intrabox().style.left = new_left + "px";
 	make_intrabox().style.top = new_top + "px";
 	drag_box.lastMouseX = x;
 	drag_box.lastMouseY = y;
 	drag_box.onDrag(new_left, new_top);
+	if(wpos < 30) {
+		make_intrabox().style.top = (parseInt(make_intrabox().style.top)-1)+"px";
+		window.scrollBy(0,-1);
+		if(scroll==0) {
+			scroll = 1;
+			while(scroll) document.fireEvent("onmousemove");
+		}
+	}
+	else if(wpos + parseInt(make_intrabox().style.height) > (document.all?document.documentElement.clientHeight:window.innerHeight)) {
+		make_intrabox().style.top = (parseInt(make_intrabox().style.top)+1)+"px";
+		window.scrollBy(0,1);
+		if(scroll==0) {
+			scroll = 1;
+			while(scroll) document.fireEvent("onmousemove");
+		}
+	}
+	else scroll = 0;
 	return false;
 }
 function doIntraboxPlace() {
@@ -167,6 +186,7 @@ function init(box) {
 			var left_increment = (left - getLeft(this)) / dist;
 			var top_increment = (top - getTop(this)) / dist;
 			var box = this;
+			clearInterval(interval);
 			interval = setInterval(function() {
 				if(dist < 1) {
 					clearInterval(interval);

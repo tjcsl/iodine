@@ -44,7 +44,7 @@ class Filecenter implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_USER, $I2_ARGS, $I2_QUERY, $I2_SQL, $I2_LOG;
+		global $I2_USER, $I2_ARGS, $I2_SQL, $I2_LOG;
 
 		$system_type = $I2_ARGS[1];
 		
@@ -102,25 +102,16 @@ class Filecenter implements Module {
 		}
 
 		$file = $this->filesystem->get_file($this->directory);
-		if (isset($I2_QUERY['download']) || $file->is_file()) {
-			if ($file->is_directory()) {
-				$this->send_zipped_dir($this->directory);
-			} else {
-				if ($I2_QUERY['download'] == 'zip') {
-					$this->send_zipped_file($this->directory);
-				} else {
-					$contents = $this->filesystem->get_file_contents($this->directory);
-					$this->echo_file($file->get_name(), $file->get_size(), $contents);
-					die;
-				}
-			}
-		} else if (isset($I2_QUERY['rename'])) {
-			$from = $this->directory . $I2_QUERY['rename'];
-			$to = $this->directory . $I2_QUERY['to'];
-			if ($from != $to) {
-				$this->filesystem->move_file($from, $to);
-			}
-			redirect("filecenter/$system_type$this->directory");
+		if ($file->is_file()) {
+			Display::stop_display();
+			
+			header('Content-type: application/octet-stream');
+			header('Content-Disposition: attachment; filename="' . $file->get_name() . '"');
+			header('Content-length: ' . $file->get_size());
+			header('Pragma: public');
+			echo $this->filesystem->get_file_contents($this->directory);
+
+			die;
 		}
 		
 		$this->template = "filecenter_pane.tpl";
@@ -135,6 +126,7 @@ class Filecenter implements Module {
 		global $I2_SQL, $I2_USER;
 
 		if ($this->filesystem->is_valid()) {
+
 			$dirs = array();
 			$files = array();
 			
@@ -170,7 +162,6 @@ class Filecenter implements Module {
 		
 			$this->template_args['dirs'] = $dirs;
 			$this->template_args['files'] = $files;
-			$this->template_args['curdir'] = $this->directory;
 		}
 		
 		$display->disp($this->template, $this->template_args);
@@ -201,38 +192,6 @@ class Filecenter implements Module {
 		}
 
 		$this->filesystem->copy_file_into_system($file['tmp_name'], $this->directory . $file['name']);
-	}
-
-	public function echo_file($name, $size, $contents) {
-		Display::stop_display();
-		header('Content-type: application/octet-stream');
-		header('Content-Disposition: attachment; filename="' . $name . '"');
-		header('Content-length: ' . $size);
-		header('Pragma: public');
-		echo $contents;
-	}
-
-	public function send_zipped_dir($path) {
-		$zipfile = tempname('/tmp/iodine-filesystem-', '.zip');
-		$this->filesystem->zip_dir($path, $zipfile);
-		$name = basename($path) . '.zip';
-		$size = filesize($zipfile);
-		$contents = file_get_contents($zipfile);
-		$this->echo_file($name, $size, $contents);
-		unlink($zipfile);
-		die;
-	}
-
-	public function send_zipped_file($path) {
-		$zipfile = tempname('/tmp/iodine-filesystem-', '.zip');
-		$this->filesystem->zip_file($path, $zipfile);
-		$name = basename($path) . '.zip';
-		$size = filesize($zipfile);
-		$contents = file_get_contents($zipfile);
-		$this->echo_file($name, $size, $contents);
-		unlink($zipfile);
-		die;
-
 	}
 	
 	/**
