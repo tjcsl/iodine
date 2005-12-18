@@ -1,0 +1,22 @@
+table#birthdays {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+table#birthdays td {
+	padding: 0px;
+}
+
+table#birthdays th {
+	text-align: left;
+	width: 25%;
+}
+
+table#birthdays th#name {
+	width: 50%;
+}
+
+div#morebirthdays {
+	font-style: italic;
+	text-indent: 5px;
+}
