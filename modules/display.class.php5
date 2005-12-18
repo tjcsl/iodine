@@ -225,7 +225,7 @@ class Display {
 		else {
 			self::$style = 'default';
 		}
-		d('Style changed, is now: '.self::$style);
+		d('Style changed, is now: '.self::$style,7);
 	}
 
 	/**

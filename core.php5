@@ -176,7 +176,7 @@ try {
 	}
 	else {
 		/* Display will instantiate the module, we just pass the name */
-		d('Passing module ' . $module . ' to Display module', 9);
+		d('Passing module ' . $module . ' to Display module', 8);
 		$I2_DISP->display_loop($module);
 	}
 

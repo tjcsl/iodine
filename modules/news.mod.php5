@@ -50,11 +50,8 @@ class News implements Module {
 		global $I2_USER;
 		$this->newsadmin = $I2_USER->is_group_member('admin_news');
 		if ($this->newsadmin) {
-			d('This user is a news administrator - news alteration privileges have been granted.');
-		}
-		else {
-			d('This user is not a news administrator');
-		}
+			d('This user is a news administrator - news alteration privileges have been granted.',6);
+		}	
 	}
 	
 	/**

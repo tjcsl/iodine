@@ -18,16 +18,18 @@ class LDAP {
 	
 	function __construct() {
 		global $I2_USER;
-		$this->conn = ldap_connect(i2config_get('server','localhost','ldap'));
+		$server = i2config_get('server','localhost','ldap');
+		$this->conn = ldap_connect($server);
 		ldap_set_option($this->conn,LDAP_OPT_PROTOCOL_VERSION,3);
 		// We could use the old krb5 ticket instead of re-authing, but what the hey.
 		if (isSet($_SESSION['i2_username'])) {
-			$bind = ldap_bind($this->conn,'uid='.$_SESSION['i2_username'].',ou=people,'.$this->dnbase,$_SESSION['i2_password']);
+			$ldapuser = 'uid='.$_SESSION['i2_username'].',ou=people,'.$this->dnbase;
+			$bind = ldap_bind($this->conn,$ldapuser,$_SESSION['i2_password']);
 			if (!$bind) {
-				d("LDAP bind failed!");
+				d("LDAP bind failed!",2);
 				ldap_bind($this->conn);
 			} else {
-				d("Bound to LDAP server successfully.");
+				d("Bound to LDAP server $server successfully as $ldapuser.",8);
 			}
 		} else {
 			ldap_bind($this->conn);
@@ -52,12 +54,12 @@ class LDAP {
 			$query = addslashes($query);
 		}
 
-		d("LDAP Searching $dn for ".print_r($attributes,1)." where $query...");
+		d("LDAP Searching $dn for ".print_r($attributes,1)." where $query...",7);
 		
 		//TODO: consider how searching is done
 		$res = ldap_search($this->conn,$dn,$query,$attributes);//,0,0,0,LDAP_DEREF_SEARCH);
 
-		d('LDAP got '.ldap_count_entries($this->conn,$res).' results.');
+		d('LDAP got '.ldap_count_entries($this->conn,$res).' results.',7);
 		
 		//ldap_free_result($res);
 		//return NULL;
