@@ -1,5 +1,7 @@
 @extend
 .logo {
+	top: 10px;
+	left: 10px;
 	background: url(/www/pics/oldlogo.png) no-repeat;
 }
 @extend
