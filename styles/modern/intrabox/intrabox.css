@@ -18,3 +18,7 @@
 	background: url(../www/pics/modern_side.png) repeat-y top right;
 	border-bottom: url(../www/pics/modern_footer.png);
 }
+@extend
+.boxbuttons {
+	margin: 10px 12px;
+}
