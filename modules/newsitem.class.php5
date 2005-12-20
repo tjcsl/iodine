@@ -77,10 +77,12 @@ class Newsitem {
 			}
 		}
 
-		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP', $author->uid, $title, $text);
+		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP, gid=%d', $author->uid, $title, $text, (isset($groups[0]) ? $groups[0]->gid : NULL));
 		$nid = $I2_SQL->query('SELECT LAST_INSERT_ID()')->fetch_single_value();
+		
+		array_shift($groups);
 
-		if(isset($groups)) {
+		if(isset($groups[0])) {
 			foreach ($groups as $group) {
 				$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%d', $nid, $group->gid);
 			}

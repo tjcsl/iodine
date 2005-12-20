@@ -117,7 +117,9 @@ class News implements Module {
 					throw new I2Exception('You do not have permission to delete this article!');
 				}
 				
-				if( ! Newsitem::item_exists($I2_ARGS[2]) ) {
+				try {
+					$item = new Newsitem($I2_ARGS[2]);
+				} catch(I2Exception $e) {
 					throw new I2Exception('Specified article ID does not exist.');
 				}
 
