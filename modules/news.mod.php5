@@ -194,7 +194,7 @@ class News implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function get_name() {
-		return "News";
+		return 'News';
 	}
 
 	function is_intrabox() {

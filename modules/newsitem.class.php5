@@ -31,7 +31,7 @@ class Newsitem {
 				return $I2_SQL->query('SELECT authorID FROM news WHERE id=%d',$this->mynid)->fetch_single_value();
 			case 'author':
 				$user = new User($this->__get('authorID'));
-				return $user->name;
+				return $user;
 			case 'revised':
 				return $I2_SQL->query('SELECT revised FROM news WHERE id=%d',$this->mynid)->fetch_single_value();
 			case 'posted':
@@ -51,6 +51,10 @@ class Newsitem {
 
 	public function __construct($nid) {
 		$this->mynid = $nid;
+
+		if(!$this->item_exists()) {
+			throw new I2Exception("News item $nid was referenced, but does not exist");
+		}
 	}
 
 	public static function get_all_items() {
@@ -87,11 +91,12 @@ class Newsitem {
 		global $I2_SQL;
 		$I2_SQL->query('DELETE FROM news WHERE id=%d', $nid);
 		$I2_SQL->query('DELETE FROM news_group_map WHERE nid=%d', $nid);
+		$I2_SQL->query('DELETE FROM news_read_map WHERE nid=%d',$nid);
 	}
 	
-	public static function item_exists($nid) {
+	public function item_exists() {
 		global $I2_SQL;
-		if ($I2_SQL->query('SELECT id FROM news WHERE id=%d', $nid)->fetch_single_value() != NULL) {
+		if ($I2_SQL->query('SELECT id FROM news WHERE id=%d', $this->mynid)->fetch_single_value() != NULL) {
 			return true;
 		}
 		return false;
@@ -181,20 +186,5 @@ class Newsitem {
 
 		return false;
 	}
-
-	public function deletable($user = NULL) {
-		global $I2_SQL;
-		
-		if($user===NULL) {
-			$user = $GLOBALS['I2_USER'];
-		}
-
-		if($user->is_group_member('admin_news')) {
-			return true;
-		}
-
-		return false;
-	}
-
 }
 ?>
