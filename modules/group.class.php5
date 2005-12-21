@@ -36,6 +36,7 @@ class Group {
 	}
 
 	private $mygid;
+	private $myname;
 
 	public function __get($var) {
 		global $I2_SQL;
@@ -43,40 +44,53 @@ class Group {
 			case 'gid':
 				return $this->mygid;
 			case 'name':
-				return $I2_SQL->query('SELECT name FROM groups WHERE gid=%d',$this->mygid)->fetch_single_value();
+				return $this->myname;
 			case 'special':
 				return ($this->mygid < 0);
 		}
 	}
 
 	public function __construct($group) {
-		$this->mygid = self::get_group_id($group);
-	}
-
-	private static function get_group_id($group) {
 		global $I2_SQL;
 
 		if(is_numeric($group)) {
-			if( $I2_SQL->query('SELECT gid FROM groups WHERE gid=%d', $group)->num_rows() > 0 ) {
-				return $group;
-			}
-			else {
+		// Numeric $group passed; figure out group name
+			$name = $I2_SQL->query('SELECT name FROM groups WHERE gid=%d', $group)->fetch_single_value();
+			try {
+				if($name) {
+					$this->mygid = $group;
+					$this->myname = $name;
+				}
+				elseif($name = self::get_special_group($group)) {
+					$this->mygid = $group;
+					$this->myname = $name;
+				}
+				else {
+					throw new I2Exception("Nonexistent group id $group given to the Group module");
+				}
+			} catch(I2Exception $e) {
 				throw new I2Exception("Nonexistent group id $group given to the Group module");
 			}
 		}
 		else {
+		// Non-numeric $group passed; figure out GID
 			$gid = $I2_SQL->query('SELECT gid FROM groups WHERE name=%s',$group)->fetch_single_value();
 			if($gid) {
-				return $gid;
+				$this->mygid = $gid;
+				$this->myname = $group;
 			}
 			else {
 				try {
-					return self::get_special_group($group);
+					$this->mygid = self::get_special_group($group);
+					$this->myname = $group;
 				} catch (I2Exception $e) {
 					throw new I2Exception("Nonexistent group $group given to the Group module");
 				}
 			}
 		}
+	}
+
+	private static function get_group_id($group) {
 	}
 
 	public function get_members() {
