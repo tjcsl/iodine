@@ -13,6 +13,7 @@
 * around TJ.
 * @package modules
 * @subpackage News
+* @todo Make the interface for adding news items to groups better.
 */
 class News implements Module {
 	

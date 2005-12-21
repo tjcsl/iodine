@@ -13,6 +13,7 @@
 * The display module for Iodine.
 * @package core
 * @subpackage Display
+* @todo Somehow catch errors that happen when executing a Smarty template. Right now it screws up the page if you try to call an undefined function, or something.
 */
 class Display {
 
