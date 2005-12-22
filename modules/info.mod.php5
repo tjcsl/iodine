@@ -1,6 +1,6 @@
 <?php
 /**
-* Just contains the definition for the interface {@link Module}.
+* Just contains the definition for the {@link Module} Info.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
@@ -10,7 +10,7 @@
 */
 
 /**
-* The API for all Intranet2 modules to extend.
+* A Module to display static information, so that the information does not require an entire class devoted to it.
 * @package modules
 * @subpackage Info
 */
