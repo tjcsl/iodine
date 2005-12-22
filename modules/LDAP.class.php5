@@ -1,10 +1,12 @@
 <?php
 /**
 * @package core
+* @subpackage Database
 */
 
 /**
 * @package core
+* @subpackage Database
 */
 class LDAP {
 
