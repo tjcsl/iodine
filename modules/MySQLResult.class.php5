@@ -51,7 +51,7 @@ class MySQLResult implements Result {
 	function __construct($mysql_result,$query_type) {
 		global $I2_LOG;
 		if (!$mysql_result) {
-			d('Null SQL result constructed.');
+			d('Null SQL result constructed.',6);
 			$this->currect_row = 0;
 			/* Haha, it's brilliant!
 			** We just have to make sure to implement the same methods as MySQL results do.
@@ -97,7 +97,7 @@ class MySQLResult implements Result {
 				return $affected;
 			}
 		}
-		d("get_affected_rows called in invalid context",8);
+		d("get_affected_rows called in invalid context",5);
 		return -1;
 	}
 

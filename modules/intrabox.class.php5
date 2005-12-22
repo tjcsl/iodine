@@ -46,23 +46,24 @@ class IntraBox {
 	const UNUSED = 2;
 
 	/**
-	* Constructor, makes the intrabox with name $module_name.
+	* Constructor, makes the intrabox with info $info.
 	*
-	* This creates an IntraBox object for the module named by $module_name.
-	* If $module_name is not an Intranet2 module, then the intrabox created
+	* This creates an IntraBox object for the specified module.
+	* If the intrabox name is not an Intranet2 module, then the intrabox created
 	* is a 'static' intrabox, which is not represented by any class, but
 	* rather by the IntraBox class itself. (One example is the 'links'
 	* intrabox, which does not need an entire class for it.)
 	*
-	* @param string $module_name The name of the module to create an intrabox
-	*                            for.
+	* @param Array $info An array containing the information about the
+	*                    Intrabox, presumably from a Result object received
+	*                    from the Intrabox table in MySQL.
 	*/
-	public function __construct($boxid) {
+	public function __construct($info) {
 		global $I2_SQL,$I2_SELF,$I2_USER;
 		
-		$this->boxid = $boxid;
-		$module_name = $I2_SQL->query('SELECT intrabox.name FROM intrabox WHERE boxid=%d;', $boxid)->fetch_single_value();
-		$this->closed = $I2_SQL->query('SELECT closed FROM intrabox_map WHERE uid=%d AND boxid=%d;', $I2_USER->uid, $boxid)->fetch_single_value();
+		$this->boxid = $info['boxid'];
+		$module_name = $info['name'];
+		$this->closed = $info['closed'];
 
 		// Do not re-instantiate if the main pane module is the same as this module
 		if( self::$main_module && strcasecmp($module_name, self::$main_module->get_name()) == 0 ) {
@@ -174,14 +175,14 @@ class IntraBox {
 	*/
 	public static function get_user_boxes($uid) {
 		global $I2_SQL;
-		$ids =	flatten($I2_SQL->query(	'SELECT intrabox.boxid FROM intrabox 
+		$boxen = $I2_SQL->query( 'SELECT * FROM intrabox 
 					 JOIN intrabox_map USING (boxid) 
 					 WHERE intrabox_map.uid=%d 
-					 ORDER BY intrabox_map.box_order;'
-			,$uid)->fetch_all_arrays(Result::NUM));
+					 ORDER BY intrabox_map.box_order ASC;'
+			,$uid);
 		$ret = array();
-		foreach($ids as $id) {
-			$ret[] = new Intrabox($id);
+		foreach($boxen as $box) {
+			$ret[] = new Intrabox($box);
 		}
 		return $ret;
 	}

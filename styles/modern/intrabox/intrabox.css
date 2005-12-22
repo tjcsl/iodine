@@ -13,8 +13,24 @@
 	height: 30px;
 	font-size: 18px;
 }
+.upbutton {
+	background: url(/www/pics/up.gif);
+}
+.dnbutton {
+	background: url(/www/pics/down.gif);
+}
+.mnbutton {
+	background: url(/www/pics/min.gif);
+}
+.rmbutton {
+	background: url(/www/pics/close.gif);
+}
 .boxcontent {
 	margin-left: 2px;
 	background: url(../www/pics/modern_side.png) repeat-y top right;
 	border-bottom: url(../www/pics/modern_footer.png);
+}
+@extend
+.boxbuttons {
+	margin: 10px 12px;
 }

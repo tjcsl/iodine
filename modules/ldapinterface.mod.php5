@@ -1,26 +1,30 @@
 <?php
 /**
-* Just contains the definition for the {@link Module} Info.
+* Just contains the definition for the module {@link LDAPInterface}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
 * @package modules
-* @subpackage Info
+* @subpackage Admin
 * @filesource
 */
 
 /**
-* A Module to display static information, so that the information does not require an entire class devoted to it.
+* A module to run direct ldap queries (for admins/devs only).
+* Wholeheartedly ripped off from the MySQL interface.
+* 
 * @package modules
-* @subpackage Info
+* @subpackage Admin
 */
-class Info implements Module {
+class LDAPInterface implements Module {
+
+	private $query_data = FALSE;
+	private $query = FALSE;
 
 	/**
-	* Displays all of a module's ibox content.
+	* Unused; we don't display a box (yet)
 	*
 	* @param Display $disp The Display object to use for output.
-	* @abstract
 	*/
 	function display_box($disp) {
 		return FALSE;
@@ -30,37 +34,31 @@ class Info implements Module {
 	* Displays all of a module's main content.
 	*
 	* @param Display $disp The Display object to use for output.
-	* @abstract
 	*/
 	function display_pane($disp) {
-		global $I2_ARGS;
-		
-		$section = implode("/", array_slice($I2_ARGS, 1));
-		try {
-			$disp->disp($section . '.tpl');
-		}
-		catch( I2Exception $e ) {
-			$disp->disp('error.tpl', array('sec'=>$section));
-		}
+		$header_data = NULL;
+		$disp->disp('ldapinterface_pane.tpl', array( 'query_data' => $this->query_data, 'query' => $this->query));
 	}
 	
 	/**
 	* Gets the module's name.
 	*
 	* @returns string The name of the module.
-	* @abstract
 	*/
 	function get_name() {
-		return 'info';
+		return 'ldapinterface';
 	}
+
+	function is_intrabox() {
+		return false;
+	}
+
 	/**
-	* Performs all initialization necessary for this module to be 
-	* displayed in an ibox.
+	* Unused; we don't display a box
 	*
 	* @returns string The title of the box if it is to be displayed,
 	*                 otherwise FALSE if this module doesn't have an
 	*                 intrabox.
-	* @abstract
 	*/
 	function init_box() {
 		return FALSE;
@@ -81,28 +79,29 @@ class Info implements Module {
 	* @abstract
 	*/
 	function init_pane() {
-		global $I2_ARGS;
-		
-		if(!isset($I2_ARGS[1])) {
-			redirect();
-		}
-		elseif(Display::is_template('info/'.$I2_ARGS[1].'.tpl')) {
-			return ucfirst($I2_ARGS[1]);
-		}
-		else {
-			return 'Error';
-		}
-	}
+		global $I2_LDAP;
 
-	/**
-	* Returns whether this module functions as an intrabox.
-	*
-	* @returns boolean True if the module has an intrabox, false if it does not.
-	*
-	* @abstract
-	*/
-	function is_intrabox() {
-		return FALSE;
+		// Only available to people in the 'admin_mysql' group
+		$ldap_group = new Group('admin_ldap');
+		if(!$ldap_group->has_member()) {
+			return FALSE;
+		}
+		
+		if( isset($_POST['ldapinterface_submit']) && $_POST['ldapinterface_submit'] && $_POST['ldapinterface_query']) {
+			$this->query = $_POST['ldapinterface_query'];
+			//try {
+				//$this->query_data = $I2_LDAP->search($this->query,"()",array("objectClass"));
+				$res = $I2_LDAP->search("",$this->query,array('*'));
+
+				$this->query_data = $res->fetch_all_arrays(Result::ASSOC);
+				
+				d('LDAP Search Results:');
+				d(print_r($this->query_data,1));
+			/*} catch (I2Exception $e) {
+				$this->query_data = 'LDAP error: '.$e->get_message();
+			}*/
+		}
+		return 'LDAP Admin Interface';
 	}
 	
 }

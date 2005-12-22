@@ -1,0 +1,12 @@
+#date_prompt {
+	text-align: right;
+	margin: 3px;
+}
+
+.birthdate {
+	font-weight: bold;
+}
+
+.red {
+	color: red;
+}

@@ -13,6 +13,7 @@
 * around TJ.
 * @package modules
 * @subpackage News
+* @todo Make the interface for adding news items to groups better.
 */
 class News implements Module {
 	
@@ -50,11 +51,8 @@ class News implements Module {
 		global $I2_USER;
 		$this->newsadmin = $I2_USER->is_group_member('admin_news');
 		if ($this->newsadmin) {
-			d('This user is a news administrator - news alteration privileges have been granted.');
-		}
-		else {
-			d('This user is not a news administrator');
-		}
+			d('This user is a news administrator - news alteration privileges have been granted.',6);
+		}	
 	}
 	
 	/**
@@ -120,7 +118,9 @@ class News implements Module {
 					throw new I2Exception('You do not have permission to delete this article!');
 				}
 				
-				if( ! Newsitem::item_exists($I2_ARGS[2]) ) {
+				try {
+					$item = new Newsitem($I2_ARGS[2]);
+				} catch(I2Exception $e) {
 					throw new I2Exception('Specified article ID does not exist.');
 				}
 
@@ -197,7 +197,7 @@ class News implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function get_name() {
-		return "News";
+		return 'News';
 	}
 
 	function is_intrabox() {

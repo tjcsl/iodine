@@ -1,125 +1,163 @@
 <?php
 /**
-Ignore this for now, not in use presently.
-* @ignore
 * @package core
+* @subpackage Database
 */
 
 /**
-Ignore this for now, not in use presently.
-* @ignore
 * @package core
+* @subpackage Database
 */
 class LDAP {
 
+	const LDAP_SEARCH = 100;
+	const LDAP_MODIFY = 200;
+	const LDAP_DELETE = 300;
+	const LDAP_COMPARE = 400;
+
 	private $conn = null;
-	private $dnbase = "dc=tjhsst,dc=edu";
-	private final $student_dnbase="ou=users,$dnbase";
-	private final $teacher_dnbase="ou=users,$dnbase";
+	private $dnbase = 'dc=tjhsst,dc=edu';
 	
 	function __construct() {
+<<<<<<< /home/lkearsle/intranet2/modules/LDAP.class.php5
+<<<<<<< /home/lkearsle/intranet2/modules/LDAP.class.php5
+		global $I2_USER;
 		$this->conn = ldap_connect(i2config_get('server','localhost','ldap'));
-		ldap_bind($this->conn,i2config_get('user','iodine','ldap'),i2config_get('password','iodine','ldap')));
+		ldap_set_option($this->conn,LDAP_OPT_PROTOCOL_VERSION,3);
+		// We could use the old krb5 ticket instead of re-authing, but what the hey.
+		if (isSet($_SESSION['i2_username'])) {
+			$bind = ldap_bind($this->conn,'uid='.$_SESSION['i2_username'].',ou=people,'.$this->dnbase,$_SESSION['i2_password']);
+			if (!$bind) {
+				d("LDAP bind failed!");
+				ldap_bind($this->conn);
+			} else {
+				d("Bound to LDAP server successfully.");
+			}
+		} else {
+			ldap_bind($this->conn);
+		}
+=======
+		global $I2_USER;
+		$server = i2config_get('server','localhost','ldap');
+		$this->conn = ldap_connect($server);
+		ldap_set_option($this->conn,LDAP_OPT_PROTOCOL_VERSION,3);
+		// We could use the old krb5 ticket instead of re-authing, but what the hey.
+		if (isSet($_SESSION['i2_username'])) {
+			$ldapuser = 'uid='.$_SESSION['i2_username'].',ou=people,'.$this->dnbase;
+			$bind = ldap_bind($this->conn,$ldapuser,$_SESSION['i2_password']);
+			if (!$bind) {
+				d("LDAP bind failed!",2);
+				ldap_bind($this->conn);
+			} else {
+				d("Bound to LDAP server $server successfully as $ldapuser.",8);
+			}
+		} else {
+			ldap_bind($this->conn);
+		}
+>>>>>>> /tmp/LDAP.class.php5~other.hT05r_
+=======
+		global $I2_USER;
+		$server = i2config_get('server','localhost','ldap');
+		$this->conn = ldap_connect($server);
+		ldap_set_option($this->conn,LDAP_OPT_PROTOCOL_VERSION,3);
+		// We could use the old krb5 ticket instead of re-authing, but what the hey.
+		if (isSet($_SESSION['i2_username'])) {
+			$ldapuser = 'uid='.$_SESSION['i2_username'].',ou=people,'.$this->dnbase;
+			$bind = ldap_bind($this->conn,$ldapuser,$_SESSION['i2_password']);
+			if (!$bind) {
+				d("LDAP bind failed!",2);
+				ldap_bind($this->conn);
+			} else {
+				d("Bound to LDAP server $server successfully as $ldapuser.",8);
+			}
+		} else {
+			ldap_bind($this->conn);
+		}
+>>>>>>> /tmp/LDAP.class.php5~other.8dBKEp
 	}
 
 	function __destruct() {
 		ldap_close($this->conn);
 	}
 
-#	private funtion catenate_dnbases($bases) {
-#		$ret = array_shift($bases);
-#		foreach ($bases as $base) {
-#			$ret += ",$base";
-#		}
-#		return $ret;
-#	}
+	public function search($dn,$query,$attributes) {
 
-	private function query_studentid($sid) {
-		return "(tjhsstStudentId=$sid)";
-	}
-
-	private function query_teacherid($tid) {
-		return "(employeeId=$tid)";
-	}
-
-	private function query_classid($cid) {
-		return "()";
-	}
-
-	private function query_period($pd) {
-	}
-
-	private function query_year($yr) {
-	}
-
-	private function info_student() {
-		return "";
-	}
-
-	private function info_teacher() {
-		return "()";
-	}
-
-	private function search_studn
-
-	private function check($property,$accesstype) {
-		global $I2_ERR;
-		return 1;
-	}
-
-	function get_teachers_by_class($classid, $year = false, $period = false) {
+	
+		//FIXME: we need careful, considered escaping here.
+		if ($dn && $dn != "") {
+			$dn = addslashes($dn.','.$this->dnbase);
+		} else {
+			$dn = $this->dnbase;
+		}
 		
+		if ($query) {
+			$query = addslashes($query);
+		}
+
+<<<<<<< /home/lkearsle/intranet2/modules/LDAP.class.php5
+<<<<<<< /home/lkearsle/intranet2/modules/LDAP.class.php5
+		d("LDAP Searching $dn for ".print_r($attributes,1)." where $query...");
+		
+		//TODO: consider how searching is done
+		$res = ldap_search($this->conn,$dn,$query,$attributes);//,0,0,0,LDAP_DEREF_SEARCH);
+=======
+		d("LDAP Searching $dn for ".print_r($attributes,1)." where $query...",7);
+		
+		//TODO: consider how searching is done
+		$res = ldap_search($this->conn,$dn,$query,$attributes);//,0,0,0,LDAP_DEREF_SEARCH);
+>>>>>>> /tmp/LDAP.class.php5~other.hT05r_
+=======
+		d("LDAP Searching $dn for ".print_r($attributes,1)." where $query...",7);
+		
+		//TODO: consider how searching is done
+		$res = ldap_search($this->conn,$dn,$query,$attributes);//,0,0,0,LDAP_DEREF_SEARCH);
+>>>>>>> /tmp/LDAP.class.php5~other.8dBKEp
+
+<<<<<<< /home/lkearsle/intranet2/modules/LDAP.class.php5
+<<<<<<< /home/lkearsle/intranet2/modules/LDAP.class.php5
+		d('LDAP got '.ldap_count_entries($this->conn,$res).' results.');
+		
+		//ldap_free_result($res);
+		//return NULL;
+=======
+		d('LDAP got '.ldap_count_entries($this->conn,$res).' results.',7);
+		
+		//ldap_free_result($res);
+		//return NULL;
+>>>>>>> /tmp/LDAP.class.php5~other.hT05r_
+=======
+		d('LDAP got '.ldap_count_entries($this->conn,$res).' results.',7);
+		
+		//ldap_free_result($res);
+		//return NULL;
+>>>>>>> /tmp/LDAP.class.php5~other.8dBKEp
+		
+		return new LDAPResult($this->conn,$res,LDAP::LDAP_SEARCH);
 	}
 
-	function get_classes_by_name($classname) {
-		$res = ;
+	public function delete($dn) {
+		$dn = addslashes($dn.','.$this->dnbase);
+		$res = ldap_delete($this->conn,$dn);
+		return new LDAPResult($this->conn,$res,LDAP::LDAP_DELETE);
 	}
 
-	function get_students_by_name_exact($lname,$fname=false) {
-		$query = "(sn)";
+	public function modify_val($dn,$attribute_name,$value) {
 	}
 
-	function get_classes_by_teacher($teacherid, $year = false, $period = false) {
+	public function modify_object($dn,$vals) {
 	}
 
-	function get_students_by_class($classid, $year = false, $period = false, $grade = false) {
-	}
-
-	function get_periods_by_class($classid, $year = false) {
-	}
-
-	function get_years_by_class($classid, $period = false) {
-	}
-
-	function get_students_by_teacher($teacherid, $year = false, $period = false, $grade = false) {
-	}
-
-	function get_classes_by_year($year, $period = false) {
-	}
-
-	function get_students_by_year($year = false, $period = false, $grade = false) {
-		"";
-	}
-
-	function get_students_by_grade($grade, $year = false) {
-	}
-
-	function get_teachers_by_year($year = false) {
-	}
-
-	function get_classes_by_student($studentid, $year = false, $period = false) {
+	public function compare($dn,$attribute,$value) {
+		$dn = addslashes($dn.','.$this->dnbase);
+		$attribute = addslashes($attribute);
+		$value = addslashes($value);
+		$res = ldap_compare($this->conn,$dn,$attribute,$value);
+		if ($res === -1) {
+			throw new I2Exception(ldap_error($this->conn));
+		}
+		return $res;
 	}
 	
-	function get_student_info($studentid) {
-		return ldap_get_entries($this->conn,ldap_search($this->conn,$this->teacher_dnbase,$this->query_studentid($studentid)));
-	}
-
-	function get_class_info($classid) {
-	}
-
-	function get_teacher_info($teacherid) {
-	}
-
 }
 
 ?>

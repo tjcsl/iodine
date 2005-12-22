@@ -18,8 +18,10 @@
  <tbody>
   [<foreach from=$dirs item=dir>]
   <tr>
-   <td><a href="[<$dir.name>]/"><img src="[<$I2_ROOT>]www/pics/filecenter/dir2.png" width="16" height="16"/></a></td>
-   <td><a href="[<$dir.name>]/">[<$dir.name>]</a></td>
+   <td><a href="[<$dir.name|escape:"url">]/"><img src="[<$I2_ROOT>]www/pics/filecenter/dir2.png" width="16" height="16"/></a></td>
+   <td>
+    [<if $dir.name == '..'>]<a href="..">[<else>]<a href="" onclick="return options(this, 'dir')">[</if>][<$dir.name|escape>]</a>
+   </td>
    <td>&nbsp;</td>
    <td>Directory</td>
    <td>[<$dir.last_modified>]</td>
@@ -27,8 +29,8 @@
   [</foreach>]
   [<foreach from=$files item=file>]
   <tr>
-   <td><a href="[<$file.name>]"><img src="[<$I2_ROOT>]www/pics/filecenter/file2.png" width="15" height="16"/></a></td>
-   <td><a href="[<$file.name>]">[<$file.name>]</a></td>
+   <td><a href="[<$file.name|escape:"url">]"><img src="[<$I2_ROOT>]www/pics/filecenter/file2.png" width="15" height="16"/></a></td>
+   <td><a href="" onclick="return options(this, 'file')">[<$file.name|escape>]</a></td>
    <td class="size">[<$file.size>]KB</td>
    <td>File</td>
    <td>[<$file.last_modified>]</td>
@@ -44,3 +46,4 @@
   <input type="submit" value="Upload"/>
  </form>
 </div>
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/filecenter.js"></script>

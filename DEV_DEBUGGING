@@ -1,0 +1,29 @@
+1: Major errors being concealed
+	- Failing to load a template or file
+2: Minor errors being concealed
+	- Incorrectly formatted queries
+	- Attempting to set an invalid style
+	- Having to use the default value of something in an INI file
+
+If it would be level 1 or 2, carefully consider throwing an exception instead of trying to continue.
+	
+3: Strange events which are almost certainly abnormal
+	- Queries returning errors
+4: Strange events which are probably abnormal
+	- Queries timing out
+	- Weird combinations of session variables (user but no password, etc)
+5: Strange events which are not necessarily abnormal
+	- No 8th-period activities in the given future
+6: Less frequent, but normal, events
+	- Construction of null objects
+	- User not having CSL files but attempting to access them anyway
+	- User's CSL auth failing with their LAN username and password
+7: Routine module usage and high-volume stuff
+	- LDAP queries
+	- MySQL queries
+	- Group-status messages ("user is an XYZ admin")
+8: Server connections
+	- LDAP and MySQL connections
+	- Authentication babble
+9: Module loading
+	- "Loading Module XYZ"

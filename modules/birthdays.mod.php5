@@ -19,26 +19,73 @@
 
 class Birthdays implements Module {
 
-	private $namearr;
+	private $birthdays;
+
+	private $template_args = array();
 
 	function init_box() {
-		global $I2_SQL;
-		$this->namearr = $I2_SQL->query("SELECT CONCAT(`fname`, ' ', `lname`) as `name`, `grade`, `bdate` FROM user, userinfo WHERE user.uid=userinfo.uid AND `bdate` LIKE %s", "%-" . date("m-d"))->fetch_all_arrays(Result::NUM);
-		foreach($this->namearr as $key => $value)
-			$this->namearr[$key][2] = ((int)date("Y")) - ((int)substr($this->namearr[$key][2], 0, 4));
+		global $I2_ROOT;
+
+		$this->birthdays = $this->get_birthdays(time());
+		
 		return "Today's Birthdays";
 	}
 	
 	function display_box($disp) {
-		$disp->disp('birthdays_box.tpl',array('birthdays' => $this->namearr));
+		$disp->disp('birthdays_box.tpl', array('birthdays' => $this->birthdays));
 	}
 	
 	function init_pane() {
-		return FALSE;
+		global $I2_ARGS;
+		
+		if (isset($_POST['date'])) {
+			redirect('birthdays/' . str_replace('.', '/', $_POST['date']));
+		}
+
+		if (count($I2_ARGS) == 4) {
+			list($month, $day, $year) = array_slice($I2_ARGS, 1);
+		} else {
+			$today = getdate();
+			$month = $today['mon'];
+			$day = $today['mday'];
+			$year = $today['year'];
+		}
+
+		$birthdays = array();
+		for($i = -3; $i <= 3; $i+=1) {
+			$time = mktime(0, 0, 0, $month, $day+$i, $year);
+			$birthday = array();
+			$birthday['date'] = $time;
+			$birthday['people'] = $this->get_birthdays($time);
+			$birthdays[] = $birthday;
+		}
+		
+		$this->template_args['date'] = mktime(0, 0, 0, $month, $day, $year);
+		$this->template_args['today'] = mktime(0, 0, 0);
+		$this->template_args['birthdays'] = $birthdays;
+
+		return "Birthdays";
 	}
 	
 	function display_pane($disp) {
-		return;
+		$disp->disp('birthdays_pane.tpl', $this->template_args);
+	}
+
+	private function get_birthdays($timestamp) {
+		global $I2_SQL;
+		
+		$date = getdate($timestamp);
+		$month = $date['mon'];
+		$day = $date['mday'];
+		$year = $date['year'];
+		
+		$birthdays = $I2_SQL->query("SELECT CONCAT(`fname`, ' ', `lname`) as `name`, `grade`, `bdate`, user.uid FROM userinfo JOIN user USING (uid) WHERE `bdate` LIKE %s ORDER BY bdate, grade DESC, lname, fname", "%-%$month-%$day")->fetch_all_arrays(Result::ASSOC);
+		
+		foreach($birthdays as &$birthday) {
+			$birthday['age'] = $year - ((int)substr($birthday['bdate'], 0, 4));
+		}
+		
+		return $birthdays;
 	}
 
 	function get_name() {

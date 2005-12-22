@@ -9,11 +9,19 @@
  <div id="login_background">
   <table class="centering_table">
    <tr><td class="centering_td">
-   [<if $failed>]
-   <div id="login_failed">
-    Your login as [<$uname>] failed.  Maybe your password is incorrect?<br />
+   [<if $failed eq 1>]
+    <div id="login_failed">
+     Your login as [<$uname>] failed.  Maybe your password is incorrect?<br />
     </div>
-    [</if>]
+   [<elseif $failed eq 2>]
+    <div id="login_failed">
+     Your password and username were correct, but you don't appear to exist in our database. If this is a mistake, please contact the intranetmaster about it.
+    </div>
+   [<elseif $failed>]
+    <div id="login_failed">
+     An unidentified error has occurred. Please contact the intranetmaster and tell him you received this error message immediately.
+    </div>
+   [</if>]
     <form action='[<$I2_SELF>]' method='post'>
      <table id="login_box">
       <tr>

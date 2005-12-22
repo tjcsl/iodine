@@ -20,6 +20,18 @@
 	border: medium outset #007777;
 	padding: 0px 4px;
 }
+.upbutton {
+	background: url(/www/pics/up.gif);
+}
+.dnbutton {
+	background: url(/www/pics/down.gif);
+}
+.mnbutton {
+	background: url(/www/pics/min.gif);
+}
+.rmbutton {
+	background: url(/www/pics/close.gif);
+}
 @extend
 .boxbuttons {
 	margin: 3px 7px;

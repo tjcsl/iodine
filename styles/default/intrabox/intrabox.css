@@ -20,6 +20,18 @@
 	float: right;
 	margin: -2px 2px;
 }
+.upbutton {
+	background: url(/www/pics/up.gif);
+}
+.dnbutton {
+	background: url(/www/pics/down.gif);
+}
+.mnbutton {
+	background: url(/www/pics/min.gif);
+}
+.rmbutton {
+	background: url(/www/pics/close.gif);
+}
 .boxcontent {
 	margin-left: 4px;
 	margin-right: 4px;

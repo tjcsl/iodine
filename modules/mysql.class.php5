@@ -89,7 +89,7 @@ class MySQL {
 	* @param string $password The MySQL password.
 	*/
 	protected function connect($server, $user, $password) {
-		d("Connecting to mysql server $server as $user");
+		d("Connecting to mysql server $server as $user",8);
 		$this->link = @mysql_pconnect($server, $user, $password);
 		if( $this->link === FALSE ) {
 			throw new I2Exception('Could not connect to MySQL server');
@@ -115,7 +115,7 @@ class MySQL {
 	*/
 	protected function raw_query($query) {
 		global $I2_ERR;
-		d('Running query: '.$query);
+		d('Running MySQL query: '.$query,7);
 		$r = mysql_query($query, $this->link);
 		if ($err = mysql_error($this->link)) {
 			throw new I2Exception('MySQL error: '.$err);

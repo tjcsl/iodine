@@ -11,6 +11,18 @@
 	font-weight: bold;
 	border-bottom: 1px dashed #008800;
 }
+.upbutton {
+	background: url(/www/pics/testbutton.gif);
+}
+.dnbutton {
+	background: url(/www/pics/l33tdn.gif);
+}
+.mnbutton {
+	background: url(/www/pics/l33tmin.gif);
+}
+.rmbutton {
+	background: url(/www/pics/l33tclose.gif);
+}
 @extend
 .boxcontent {
 	color: #008800;

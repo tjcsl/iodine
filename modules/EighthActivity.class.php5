@@ -320,51 +320,49 @@ class EighthActivity {
 		if(array_key_exists($name, $this->data)) {
 			return $this->data[$name];
 		}
-		else if($name == "name_r") {
-			return $this->data['name'] . ($this->data['restricted'] ? " (R)" : "");
-		}
-		else if($name == "sponsors_comma") {
-			$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
-			$temp_sponsors = array();
-			foreach($sponsors as $sponsor) {
-				$temp_sponsors[] = $sponsor->name;
-			}
-			return implode(",", $temp_sponsors);
-		}
-		else if($name == "block_sponsors_comma") {
-			$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
-			$temp_sponsors = array();
-			foreach($sponsors as $sponsor) {
-				$temp_sponsors[] = $sponsor->name;
-			}
-			return implode(",", $temp_sponsors);
-		}
-		else if($name == "block_sponsors_comma_short") {
-			$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
-			$temp_sponsors = array();
-			foreach($sponsors as $sponsor) {
-				$temp_sponsors[] = substr($sponsor->fname, 0, 1) . ". {$sponsor->lname}";
-			}
-			return implode(",", $temp_sponsors);
-		}
-		else if($name == "rooms_comma") {
-			$rooms = EighthRoom::id_to_room($this->data['rooms']);
-			$temp_rooms = array();
-			foreach($rooms as $room) {
-				$temp_rooms[] = $room->name;
-			}
-			return implode(",", $temp_rooms);
-		}
-		else if($name == "block_rooms_comma") {
-			$rooms = EighthRoom::id_to_room($this->data['block_rooms']);
-			$temp_rooms = array();
-			foreach($rooms as $room) {
-				$temp_rooms[] = $room->name;
-			}
-			return implode(",", $temp_rooms);
-		}
 		else if($name == "members" && $this->data['bid']) {
 			return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $this->data['bid'], $this->data['aid'])->fetch_all_arrays(Result::NUM));
+		}
+		else {
+			switch($name) {
+				case "name_r":
+					return $this->data['name'] . ($this->data['restricted'] ? " (R)" : "");
+				case "sponsors_comma":
+					$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
+					$temp_sponsors = array();
+					foreach($sponsors as $sponsor) {
+						$temp_sponsors[] = $sponsor->name;
+					}
+					return implode(",", $temp_sponsors);
+				case "block_sponsors_comma":
+					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
+					$temp_sponsors = array();
+					foreach($sponsors as $sponsor) {
+						$temp_sponsors[] = $sponsor->name;
+					}
+					return implode(",", $temp_sponsors);
+				case "block_sponsors_comma_short":
+					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
+					$temp_sponsors = array();
+					foreach($sponsors as $sponsor) {
+						$temp_sponsors[] = substr($sponsor->fname, 0, 1) . ". {$sponsor->lname}";
+					}
+					return implode(",", $temp_sponsors);
+				case "rooms_comma":
+					$rooms = EighthRoom::id_to_room($this->data['rooms']);
+					$temp_rooms = array();
+					foreach($rooms as $room) {
+						$temp_rooms[] = $room->name;
+					}
+					return implode(",", $temp_rooms);
+				case "block_rooms_comma":
+					$rooms = EighthRoom::id_to_room($this->data['block_rooms']);
+					$temp_rooms = array();
+					foreach($rooms as $room) {
+						$temp_rooms[] = $room->name;
+					}
+					return implode(",", $temp_rooms);
+			}
 		}
 	}
 
@@ -381,59 +379,63 @@ class EighthActivity {
 			$result = $I2_SQL->query("UPDATE eighth_activities SET name=%s WHERE aid=%d", $value, $this->data['aid']);
 			$this->data['name'] = $value;
 		}
-		else if($name == "sponsors") {
-			if(!is_array($value)) {
-				$value = array($value);
+		else {
+			switch($name) {
+				case "sponsors":
+					if(!is_array($value)) {
+						$value = array($value);
+					}
+					$result = $I2_SQL->query("UPDATE eighth_activities SET sponsors='%D' WHERE aid=%d", $value, $this->data['aid']);
+					$this->data['sponsors'] = $value;
+					return;
+				case "rooms":
+					if(!is_array($value)) {
+						$value = array($value);
+					}
+					$result = $I2_SQL->query("UPDATE eighth_activities SET rooms='%D' WHERE aid=%d", $value, $this->data['aid']);
+					$this->data['rooms'] = $value;
+					return;
+				case "description":
+					$result = $I2_SQL->query("UPDATE eighth_activities SET description=%s WHERE aid=%d", $value, $this->data['aid']);
+					$this->data['description'] = $value;
+					return;
+				case "restricted":
+					$result = $I2_SQL->query("UPDATE eighth_activities SET restricted=%d WHERE aid=%d", (int)$value, $this->data['aid']);
+					$this->data['restricted'] = $value;
+					return;
+				case "presign":
+					$result = $I2_SQL->query("UPDATE eighth_activities SET presign=%d WHERE aid=%d", (int)$value, $this->data['aid']);
+					$this->data['presign'] = $value;
+					return;
+				case "oneaday":
+					$result = $I2_SQL->query("UPDATE eighth_activities SET oneaday=%d WHERE aid=%d", (int)$value, $this->data['aid']);
+					$this->data['oneaday'] = $value;
+					return;
+				case "bothblocks":
+					$result = $I2_SQL->query("UPDATE eighth_activities SET bothblocks=%d WHERE aid=%d", (int)$value, $this->data['aid']);
+					$this->data['bothblocks'] = $value;
+					return;
+				case "sticky":
+					$result = $I2_SQL->query("UPDATE eighth_activities SET sticky=%d WHERE aid=%d", (int)$value, $this->data['aid']);
+					$this->data['sticky'] = $value;
+					return;
+				case "cancelled":
+					$result = $I2_SQL->query("UPDATE eighth_block_map SET cancelled=%d WHERE bid=%d AND activityid=%d", (int)$value, $this->data['bid'], $this->data['aid']);
+					$this->data['cancelled'] = $value;
+					return;
+				case "comment":
+					$result = $I2_SQL->query("UPDATE eighth_block_map SET comment=%s WHERE bid=%d AND activityid=%d", $value, $this->data['bid'], $this->data['aid']);
+					$this->data['comment'] = $value;
+					return;
+				case "advertisement":
+					$result = $I2_SQL->query("UPDATE eighth_block_map SET advertisement=%s WHERE bid=%d AND activityid=%d", $value, $this->data['bid'], $this->data['aid']);
+					$this->data['advertisement'] = $value;
+					return;
+				case "attendancetaken":
+					$result = $I2_SQL->query("UPDATE eighth_block_map SET attendancetaken=%d WHERE bid=%d AND activityid=%d", (int)$value, $this->data['bid'], $this->data['aid']);
+					$this->data['attendancetaken'] = $value;
+					return;
 			}
-			$result = $I2_SQL->query("UPDATE eighth_activities SET sponsors='%D' WHERE aid=%d", $value, $this->data['aid']);
-			$this->data['sponsors'] = $value;
-		}
-		else if($name == "rooms") {
-			if(!is_array($value)) {
-				$value = array($value);
-			}
-			$result = $I2_SQL->query("UPDATE eighth_activities SET rooms='%D' WHERE aid=%d", $value, $this->data['aid']);
-			$this->data['rooms'] = $value;
-		}
-		else if($name == "description") {
-			$result = $I2_SQL->query("UPDATE eighth_activities SET description=%s WHERE aid=%d", $value, $this->data['aid']);
-			$this->data['description'] = $value;
-		}
-		else if($name == "restricted") {
-			$result = $I2_SQL->query("UPDATE eighth_activities SET restricted=%d WHERE aid=%d", (int)$value, $this->data['aid']);
-			$this->data['restricted'] = $value;
-		}
-		else if($name == "presign") {
-			$result = $I2_SQL->query("UPDATE eighth_activities SET presign=%d WHERE aid=%d", (int)$value, $this->data['aid']);
-			$this->data['presign'] = $value;
-		}
-		else if($name == "oneaday") {
-			$result = $I2_SQL->query("UPDATE eighth_activities SET oneaday=%d WHERE aid=%d", (int)$value, $this->data['aid']);
-			$this->data['oneaday'] = $value;
-		}
-		else if($name == "bothblocks") {
-			$result = $I2_SQL->query("UPDATE eighth_activities SET bothblocks=%d WHERE aid=%d", (int)$value, $this->data['aid']);
-			$this->data['bothblocks'] = $value;
-		}
-		else if($name == "sticky") {
-			$result = $I2_SQL->query("UPDATE eighth_activities SET sticky=%d WHERE aid=%d", (int)$value, $this->data['aid']);
-			$this->data['sticky'] = $value;
-		}
-		else if($name == "cancelled") {
-			$result = $I2_SQL->query("UPDATE eighth_block_map SET cancelled=%d WHERE bid=%d AND activityid=%d", (int)$value, $this->data['bid'], $this->data['aid']);
-			$this->data['cancelled'] = $value;
-		}
-		else if($name == "comment") {
-			$result = $I2_SQL->query("UPDATE eighth_block_map SET comment=%s WHERE bid=%d AND activityid=%d", $value, $this->data['bid'], $this->data['aid']);
-			$this->data['comment'] = $value;
-		}
-		else if($name == "advertisement") {
-			$result = $I2_SQL->query("UPDATE eighth_block_map SET advertisement=%s WHERE bid=%d AND activityid=%d", $value, $this->data['bid'], $this->data['aid']);
-			$this->data['advertisement'] = $value;
-		}
-		else if($name == "attendancetaken") {
-			$result = $I2_SQL->query("UPDATE eighth_block_map SET attendancetaken=%d WHERE bid=%d AND activityid=%d", (int)$value, $this->data['bid'], $this->data['aid']);
-			$this->data['attendancetaken'] = $value;
 		}
 	}
 

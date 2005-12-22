@@ -32,9 +32,8 @@ $I2_SELF = $_SERVER['REDIRECT_URL'];
 
 /*
 The actual config file in CVS is config.user.ini and config.server.ini
-When you check out intranet2 to run it from your personal space, copy
-config.user.ini to config.ini and edit the values to work in your own
-personal space. Do _NOT_ add config.ini to CVS, as it's different for
+When you check out intranet2 to run it from your personal space, run
+setup. Do _NOT_ add config.ini to HG, as it's different for
 everyone. Edit config.server.ini to edit the server (production) config.
 */
 
@@ -64,21 +63,41 @@ try {
 	*/
 	$I2_ARGS = array();
 
+	/**
+	* The global associative array for a module's query arguments.
+	*
+	* As an example, the URL
+	* https://intranet.tjhsst.edu/module/?a&b=c&d will yield an
+	* $I2_QUERY of ['a'] = TRUE, ['b'] = 'c', ['d'] = TRUE
+	*
+	* @global array $I2_QUERY
+	*/
+	$I2_QUERY = array();
+
 	/* Eliminates extraneous slashes in the PATH_INFO
 	** And splits them into the global I2_ARGS array
 	*/
 	if(isset($_SERVER['REDIRECT_QUERY_STRING'])) {
-		$query = $_SERVER['REDIRECT_QUERY_STRING'];
-	}
-	else {
-		$query = '';
-	}
-	foreach(explode('/', $query) as $arg) {
-		if($arg) {
-			$I2_ARGS[] = $arg;
+		$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
+		$args = substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index);
+		foreach(explode('/', $args) as $arg) {
+			if($arg) {
+				$I2_ARGS[] = $arg;
+			}
+		}
+		$queries = substr($_SERVER['REDIRECT_QUERY_STRING'], $index+1);
+		foreach(explode('&', $queries) as $query) {
+			if ($query) {
+				$element = explode('=', urldecode($query));
+				if (sizeof($element) > 1) {
+					$I2_QUERY[$element[0]] = $element[1];
+				} else {
+					$I2_QUERY[$element[0]] = TRUE;
+				}
+			}
 		}
 	}
-	
+		
 	/**
 	 * The global error-handling mechanism.
 	 *
@@ -110,7 +129,7 @@ try {
 	 
 	  @global LDAP $I2_LDAP
 	 */
-	//$I2_LDAP = new LDAP();
+	$I2_LDAP = new LDAP();
 	/**
 	 * The global authentication mechanism.
 	 *
@@ -135,7 +154,13 @@ try {
 	 * @global Display $I2_DISP
 	 */
 	$I2_DISP = new Display();
-
+	/**
+	 * The control mechanism for all Asynchonous Javascript and XML.
+	 *
+	 * Use this {@link Display} object for nothing, unless you're core.php.
+	 *
+	 * @global Ajax $I2_AJAX
+	 */
 	$I2_AJAX  = new Ajax();
 
 	/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here) */
@@ -151,7 +176,7 @@ try {
 	}
 	else {
 		/* Display will instantiate the module, we just pass the name */
-		d('Passing module ' . $module . ' to Display module', 9);
+		d('Passing module ' . $module . ' to Display module', 8);
 		$I2_DISP->display_loop($module);
 	}
 

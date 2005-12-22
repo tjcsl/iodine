@@ -100,7 +100,11 @@ abstract class Filesystem {
 	public function move_file($oldpath, $newpath) {
 		$oldpath = $this->convert_path($oldpath);
 		$newpath = $this->convert_path($newpath, FALSE);
-		
+
+		if (file_exists($newpath)) {
+			throw new I2Exception("File $newpath already exists");
+		}
+
 		if (rename($oldpath, $newpath) === FALSE) {
 			throw new I2Exception("Could not rename $oldpath to $newpath");
 		}
@@ -138,6 +142,33 @@ abstract class Filesystem {
 		
 		if (rmdir($path) === FALSE) {
 			throw new I2Exception("Could not remove directory $path");
+		}
+	}
+
+	//TODO: prevent zipping HUGE files!
+	public function zip_dir($dirpath, $zippath) {
+		$dirpath = $this->convert_path($dirpath);
+		$descriptors = array(
+			0 => array('file', '/dev/null', 'w'), 
+			1 => array('file', '/dev/null', 'w'), 
+			2 => array('file', '/dev/null', 'w')
+		);
+
+		$process = proc_open("zip $zippath -r .", $descriptors, $pipes, $dirpath);
+		$code = proc_close($process);
+
+		if ($code !== 0) {
+			throw new I2Exception("Zip exited with error code $code");
+		}
+	}
+
+	public function zip_file($filepath, $zippath) {
+		$filepath = escapeshellarg($this->convert_path($filepath));
+		
+		exec("zip $zippath -j $filepath", $output, $code);
+	
+		if ($code !== 0) {
+			throw new I2Exception("Zip exited with error code $code");
 		}
 	}
 

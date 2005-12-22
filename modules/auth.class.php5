@@ -98,6 +98,7 @@ class Auth {
 		} catch( I2Exception $e ) {
 			return FALSE;
 		}
+		
 		return TRUE;
 	}
 
@@ -179,16 +180,23 @@ class Auth {
 
 				$uarr = $I2_SQL->query('SELECT uid FROM user WHERE username=%s;',$_REQUEST['login_username'])->fetch_array();
 
-				$_SESSION['i2_uid'] = $uarr['uid'];
-				$_SESSION['i2_username']= $_REQUEST['login_username'];
-				$_SESSION['i2_password']= $_REQUEST['login_password'];
-				$_SESSION['i2_login_time'] = time();
+				if(!isset($uarr['uid'])) {
+					// User authenticated successfully, but they are not in the database
+					$loginfailed = 2;
+					$uname = $_REQUEST['login_username'];
+				}
+				else {
+					$_SESSION['i2_uid'] = $uarr['uid'];
+					$_SESSION['i2_username']= $_REQUEST['login_username'];
+					$_SESSION['i2_password']= $_REQUEST['login_password'];
+					$_SESSION['i2_login_time'] = time();
 				
-				redirect(implode('/', $I2_ARGS));
-				return TRUE;
+					redirect(implode('/', $I2_ARGS));
+					return TRUE; //never reached
+				}
 			} else {
-				/* Attempted login failed */
-				$loginfailed = TRUE;
+				// Attempted login failed
+				$loginfailed = 1;
 				$uname = $_REQUEST['login_username'];
 			}
 		} else {

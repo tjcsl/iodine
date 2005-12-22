@@ -19,6 +19,18 @@
 .boxbuttons {
 	margin: -1px 4px;
 }
+.upbutton {
+	background: url(/www/pics/up.gif);
+}
+.dnbutton {
+	background: url(/www/pics/down.gif);
+}
+.mnbutton {
+	background: url(/www/pics/min.gif);
+}
+.rmbutton {
+	background: url(/www/pics/close.gif);
+}
 @extend
 .boxcontent {
 	color: #ffffff;
