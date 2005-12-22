@@ -102,7 +102,6 @@ class Kerberos {
 			if($status == 0) {
 				return $cache;
 			}
-			d('Kerberos return: '.$status.', output: '.$output.', output2: '.$output2);
 	        }
                 return FALSE;	
 	}
