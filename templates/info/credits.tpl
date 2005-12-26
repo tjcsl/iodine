@@ -29,7 +29,7 @@ Intranet Maintainers:
 	<li>Dan Tran (2006)</li>
 </ul>
 
-<hr>
+<hr />
 Intranet2 Development Initiative:
 <ul>
 	<li>Aman Gupta (2004)</li>
@@ -59,7 +59,7 @@ I2 User Experience Technicians:
 	<li>Dan Tran</li>
 	<li>William "wyang" Yang</li>
 </ul>
-<hr>
+<hr />
 Special Thanks to:
 <ul>
 	<li>Mr. Richard Slivoskey</li>

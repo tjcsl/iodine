@@ -4,7 +4,6 @@
 <ul>
    <li>Check the list of existing clubs, both active and inactive, to determine if a club similar to the idea you have in mind has been previously approved.</li>
    <li>Ask a current staff member to be a faculty/staff representative.  Parent volunteers may serve in this capacity only if they have completed FCPS requirements for fingerprinting, TB Tine testing and have submitted letters of recommendation.  Application forms for volunteer sponsors are available in the 8th period office  (236wk)</li>
-
    <li>If no existing club fits your criteria, obtain a New Club Application form (NCA) from the 8th period activities office.</li>
    <li>Complete the form by providing an accurate description of the philosophy, objectives, and any fundraising information of the club.</li>
    <li>Attach to the NCA form a list of 20 students signatures, indicating that they would be willing to attend the club on a regular basis. Return these forms to the 8th period office.</li>

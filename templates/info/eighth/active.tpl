@@ -17,7 +17,6 @@
 
 <ul>
 <li>Athletic Training</li>
-
 <li>College/Career Center</li>
 <li>Future Business Leaders of America</li>
 </ul>
@@ -29,7 +28,6 @@
 <li>Asian Awareness (Asian)</li>
 <li>Black Student Union </li>
 <li>Chinese Connection</li>
-
 <li>Hispanic Alliance</li>
 <li>Namaste (India/Pakistan)</li>
 <li>Scottish-Irish Club</li>
@@ -42,7 +40,6 @@
 <ul>
 <li>Catholic Student Association</li>
 <li>Fellowship of Christian Athletes</li>
-
 <li>Jewish Culture Club</li>
 <li>Muslim Student Association </li>
 </ul>
@@ -55,7 +52,6 @@
 <li>Chamber Music (Orchestra)</li>
 <li>Chamber Singers and Colonial Singers SATB Chorus</li>
 <li>Color Guard (Flag Corp)</li>
-
 <li>Dance Dance Revolution (DDR) </li>
 <li>Drama Rehearsals</li>
 <li>Indoor Winter Drumline</li>
@@ -65,7 +61,6 @@
 <li>Shakespeare Troupe</li>
 <li>Stage Crew</li>
 <li>Stagestruck Dance Team (hip hop)</li>
-
 <li>Swing Dance Club and Team</li>
 <li>Theater Sports</li>
 </ul>
@@ -90,7 +85,6 @@
 <li>Basketball Intramurals</li>
 <li>Bowling </li>
 <li>Bridge Club</li>
-
 <li>Chess Club and Team</li>
 <li>Dead Parrot Society (comedy)</li>
 <li>DJ Club</li>
@@ -99,7 +93,6 @@
 <li>Go Club</li>
 <li>Juggling and Flying Apparatus </li>
 <li>Knit &amp; Crochet Club</li>
-
 <li>Redskins Club</li>
 <li>War Games Club</li>
 <li>Washington Wizards Club</li>
@@ -120,7 +113,6 @@
 <li>Russian National Honor Society (SLAVA)</li>
 <li>Spanish National Honor Society</li>
 <li>Thespian Society</li>
-
 </ul>
 
 
@@ -154,7 +146,6 @@
 <li>Mosaic (Philosophical pub.)</li>
 <li>Newspaper (TJ Today)</li>
 <li>Poetry &amp; Prose</li>
-
 <li>Sci Fi Writers Club</li>
 <li>Student Library Advisory Board</li>
 <li>Teknos (Science, Math &amp; Technology Journal)</li>
@@ -174,7 +165,6 @@
 <li>Chemistry Society</li>
 <li>Chesapeake Bay Club </li>
 <li>Computer Teams, Sr. &amp; Frosh </li>
-
 <li>Entomology Club</li>
 <li>Greenhouse Club</li>
 <li>Math Teams, V &amp; JV</li>
@@ -183,7 +173,6 @@
 <li>Science Bowl</li>
 <li>Science Olympiad</li>
 <li>Stream Monitoring Club</li>
-
 </ul>
 
 
@@ -195,7 +184,6 @@
 <li>Community Outreach Efforts(CORE)</li>
 <li>Environmental Science Club</li>
 <li>GEMS (Girls in Engineering, Math &amp; Science)</li>
-
 <li>Jefferson Society</li>
 <li>Key Club and Keyettes</li>
 <li>Leewood Friends (nursing home visits)</li>
@@ -205,7 +193,6 @@
 <li>Optimists (Octagon)</li>
 <li>Red Cross Youth Task Force</li>
 <li>Stand for Children</li>
-
 <li>Students Against Destructive Decisions</li>
 </ul>
 
@@ -218,7 +205,6 @@
 <li>Gay Straight Alliance</li>
 <li>John Adams Historical Society</li>
 <li>Junior State of America</li>
-
 <li>Libertarian Club</li>
 <li>Mock Trial Club</li>
 <li>Model Student Judiciary</li>
@@ -228,7 +214,6 @@
 <li>Psychology Club</li>
 <li>Quarterly Forums</li>
 <li>Student Action Network</li>
-
 <li>Students for a Free Tibet</li>
 <li>Teenage Republicans</li>
 <li>Young Democrats</li>
@@ -242,7 +227,6 @@
 
 <ul>
 <li>Student Government Association (SGA) </li>
-
 <li>Class of 2005, 2006, 2007, 2008</li>
 </ul>
 
@@ -255,7 +239,6 @@
 <li>Aeromodeling</li>
 <li>Botball Robotics </li>
 <li>Computer Repair Club</li>
-
 <li>Team America Rocketry Challenge</li>
 <li>Tomorrows Women in Sci &amp; Tech (TWIST)</li>
 <li>Women in Sci &amp; Engineering (WISE)</li>
@@ -267,7 +250,6 @@
 
 <ul>
 <li>Art</li>
-
 <li>Cinema 8</li>
 <li>Classic Old Movies</li>
 <li>Corny Comedy</li>
@@ -277,6 +259,5 @@
 <li>Seinfeld Society- (movie)</li>
 <li>Stonecutters Club  (movie)</li>
 <li>Sports Movie Club</li>
-
 <li>Wildlife, Nature &amp; Landscape Photography</li>
 </ul>

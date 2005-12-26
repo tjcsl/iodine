@@ -5,12 +5,10 @@ Activity selections are expected to be made by the end of lunch on the day of th
 <p><b>First Method:</b></p>
 <ul>
    <li>Go online to the TJ Homepage (wwww.tjhsst.edu)</li>
-
    <li>Click on the Intranet link (located under the school address, next to the word Navigation)</li>
    <li>Once the intranet log-in window appears type in your log-in name and your password.  The intranet will not accept your school ID# as your password.  It is very important to change your password as soon as possible during the first week of school</li>
    <li>On the left side of the screen, under the word INTRANET you will find the 8th period menu. Click on <b>Full Schedule</b> to see all of the offerings for the next 8 weeks.</li>
    <li>To sign up for an activity for a specific date and block click on the word <b>Change</b> next to the preferred date and block. A window will pop up with all the possible choices for that block.  Type the activity number that interests you into the Enter an Activity ID box (or highlight the activity name).  To learn more about that activity click on View Description.  If you wish to select that activity, click on <b>Change</b>.  If you decide against that choice highlight a different activity and continue the process until you find something you like.</li>
-
    <li>To sign up for the same activity multiple times (for several days or blocks), click on the box next to the word change for each date or block that you wish to change.  Then at the top of the page click on the button marked <b>Change Selected</b>, highlight the activity, click on <b>Change</b> and all of the blocks that you have checked off will be changed to that activity, provided they are scheduled.</li>
    <li>Special Events - On the left side of the screen, under the word INTRANET adjacent to <b>Full Schedule</b> is the link to Special Activities. This links you to the special or one-time events that are being offered.  You can sign up for these from this link or from the full schedule menu.</li>
 </ul>
@@ -26,7 +24,6 @@ Activity selections are expected to be made by the end of lunch on the day of th
 <p><b>Second Method:</b></p>
 <ul>
    <li>Obtain an Activity Change form from the box outside the 8th Period Office (236 wk).</li>
-
    <li>Complete the form, using the daily schedule of activities posted outside the office as a guide.</li>
    <li>Return the form to the box by the door or above the lockers.  This method can be used prior to 11 am the day the activity is to occur.</li>
 </ul>
@@ -35,7 +32,6 @@ Activity selections are expected to be made by the end of lunch on the day of th
 <ul>
    <li>You do not have to spend time to find a computer to sign up.</li>
    <li>You may ask questions of the 8th period office staff, if necessary.</li>
-
 </ul>
 
 <p><b>Third Method</b>:</p>
@@ -46,7 +42,6 @@ Activity selections are expected to be made by the end of lunch on the day of th
 <p>Advantages to this method:</p>
 <ul>
    <li>You do not have to access or write anything. You just have to know what activities in which you wish to participate.</li>
-
    <li>If an activity is full you can discuss alternatives with an 8th period staff member.</li>
 </ul>
 <p><b>Note:</b></p>
