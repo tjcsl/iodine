@@ -1,4 +1,4 @@
-<p>The first 5 messages in your inbox:</p>
+The first 5 messages in your inbox:
 <table>
 <tbody>
 	<tr>

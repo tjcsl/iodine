@@ -1,6 +1,6 @@
 [<if $message>]<strong>[<$message>]</strong><br /><br />[</if>]
 Enter your calculator information, one at a time.<br />
-<form method="POST" action="[<$I2_ROOT>]calc" class="boxform">
+<form method="post" action="[<$I2_ROOT>]calc" class="boxform">
 <input type="hidden" name="calc_form" value="add" />
 <table border="0"><tr><td>
 Serial number: (the digits up to, but excluding, the first letter) on the back of your calculator.<br />
@@ -15,7 +15,7 @@ ID number: Turn on your calculator.  Press [2nd], then [+] for the memory menu. 
 </td></tr></table>
 </form><br />
 If you do not own one of the calculators listed below, click on it, then click "Delete"
-<form method="POST" action="[<$I2_ROOT>]calc" class="boxform">
+<form method="post" action="[<$I2_ROOT>]calc" class="boxform">
 <input type="hidden" name="calc_form" value="delete" />
 <table border="0"><tr><td>
 Serial number (ID number)
