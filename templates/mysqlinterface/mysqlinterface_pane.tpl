@@ -22,10 +22,9 @@
   [<$query_data>]
  [</if>]
 [</if>]
-<p>
-<form action="[<$I2_SELF>]" method="POST">
+<br />
+<form action="[<$I2_SELF>]" method="post">
  Query:<br />
  <textarea name="mysqlinterface_query" rows="5" cols="50">[<$query>]</textarea>
  <br /><input type="submit" name="mysqlinterface_submit" value="Submit" />
 </form>
-</p>
