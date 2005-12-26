@@ -1,4 +1,4 @@
-<div name="Placeholder"></div>
+<div><!-- Placeholder --></div>
 </div>
 <script type="text/javascript">
 	ajax_page = '[<$I2_ROOT>]ajax/intrabox/[<$I2_UID>]/';
