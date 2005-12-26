@@ -13,11 +13,11 @@
 <br />
 <br />
 <form action="[<$I2_ROOT>]eighth/[<$method>]/add" method="post">
-	Date: <input type="text" name="date"><br />
+	Date: <input type="text" name="date" /><br />
 	Block: <select name="block">
 		<option value="A">A</option>
 		<option value="B">B</option>
 	</select><br />
-	<input type="submit" value="Add">
+	<input type="submit" value="Add" />
 </form>
 [</if>]

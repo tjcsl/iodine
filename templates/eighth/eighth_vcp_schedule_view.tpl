@@ -1,5 +1,5 @@
 [<include file="eighth/eighth_header.tpl">]
-<script language="JavaScript">
+<script language="javascript" type="text/javascript">
 	<!--
 		function CA() {
 			var trk=0;
@@ -32,15 +32,15 @@
 <a href="[<$I2_ROOT>]eighth/vcp_schedule/absences/uid/[<$user->uid>]">[<$count>] absence[<if $count != 1>]s[</if>]</a><br />
 <a href="[<$I2_ROOT>]eighth/edit/comments/uid/[<$user->uid>]">Edit Comments</a> - <a href="[<$I2_ROOT>]eighth/edit/student/uid/[<$user->uid>]">Edit Student</a><br />
 <form name="activities" action="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>]" method="post">
-	<input type="submit" value="Change Selected">
+	<input type="submit" value="Change Selected" />
 	<div style="display: inline; margin-left: 100px;">
-		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="< Back Two Weeks"></a>
-		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="Forward Two Weeks >"></a>
+		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="&lt; Back Two Weeks" /></a>
+		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="Forward Two Weeks &gt;" /></a>
 	</div>
 	<br /><br />
 	<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; border: 0px; width: 100%;">
 		<tr>
-			<th><input type="checkbox" name="selectall" onClick="CA();"></td>
+			<th><input type="checkbox" name="selectall" onclick="CA();" /></th>
 			<td>&nbsp;</td>
 			<th>Day of Week</th>
 			<th>Block</th>
@@ -52,7 +52,7 @@
 		</tr>
 [<foreach from=$activities item="activity">]
 		<tr style="background-color: [<cycle values="#CCCCCC,#FFFFFF">];">
-			<td style="text-align: center;"><input type="checkbox" name="change[[<$activity->bid>]]" value="1" onClick="CCA(this);"></td>
+			<td style="text-align: center;"><input type="checkbox" name="change[[<$activity->bid>]]" value="1" onclick="CCA(this);" /></td>
 			<td style="text-align: center;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>]/bid/[<$activity->bid>]">Change</a></td>
 			<td style="text-align: center;">[<$activity->block->date|date_format:"%a">]</td>
 			<td style="text-align: center;">[<$activity->block->block>]</td>
@@ -65,13 +65,13 @@
 [</foreach>]
 	</table>
 	<br />
-	<input type="submit" value="Change Selected">
+	<input type="submit" value="Change Selected" />
 	<div style="display: inline; margin-left: 100px;">
-		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="< Back Two Weeks"></a>
-		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="Forward Two Weeks >"></a>
+		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="&lt; Back Two Weeks" /></a>
+		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="Forward Two Weeks &gt;" /></a>
 	</div>
 </form>
-<script language="JavaScript">
+<script language="javascript" type="text/javascript">
 	<!--
 		var frm = document.activities;
 	// -->

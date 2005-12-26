@@ -1,6 +1,6 @@
 [<include file="eighth/eighth_header.tpl">]
 <form action="[<$I2_ROOT>]eighth/sch_activity/modify/aid/[<$aid>]" method="post">
-	<input type="submit" value="Modify"><input type="button" value="Select All" onClick=";"><br /><br />
+	<input type="submit" value="Modify" /><input type="button" value="Select All" onclick=";" /><br /><br />
 <table cellspacing="0" style="border: 0px; padding: 0px; margin: 0px; width: 600px;">
 	<tr>
 		<td style="width:  20px;">&nbsp;</td>
@@ -10,7 +10,7 @@
 	</tr>
 [<foreach from=$activities item="activity">]
 	<tr style="background-color: [<cycle values="#CCCCCC,#FFFFFF">]">
-		<td style="text-align: center;"><input type="checkbox" name="modify[]" value="[<$activity.block.bid>]"[<if $activity.scheduled>] id="check_[<$activity.block.bid>]"[</if>]></td>
+		<td style="text-align: center;"><input type="checkbox" name="modify[]" value="[<$activity.block.bid>]"[<if $activity.scheduled>] id="check_[<$activity.block.bid>]"[</if>] /></td>
 		<td style="padding: 5px 5px 5px 0px;">
 			[<$activity.block.date|date_format:"%a">] [<$activity.block.block>], [<$activity.block.date|date_format:"%m/%d/%y">]
 [<if $activity.scheduled>]
@@ -80,9 +80,9 @@
 					}
 				}
 			</script>
-			<br /><a id="reschedule_[<$activity.block.bid>]" onClick="do_action('reschedule', '[<$activity.block.bid>]');" href="#" style="visibility: [<if $activity.cancelled>]hidden[<else>]visible[</if>]">Reschedule</a>
-			<br /><a id="unschedule_[<$activity.block.bid>]" onClick="do_action('unschedule', '[<$activity.block.bid>]');" href="#" style="visibility: visible">Unschedule</a>
-			<br /><a id="cancel_[<$activity.block.bid>]" onClick="do_action('cancel', '[<$activity.block.bid>]');" href="#" style="visibility: visible">[<if $activity.cancelled>]Uncancel[<else>]Cancel[</if>]</a>
+			<br /><a id="reschedule_[<$activity.block.bid>]" onclick="do_action('reschedule', '[<$activity.block.bid>]');" href="#" style="visibility: [<if $activity.cancelled>]hidden[<else>]visible[</if>]">Reschedule</a>
+			<br /><a id="unschedule_[<$activity.block.bid>]" onclick="do_action('unschedule', '[<$activity.block.bid>]');" href="#" style="visibility: visible">Unschedule</a>
+			<br /><a id="cancel_[<$activity.block.bid>]" onclick="do_action('cancel', '[<$activity.block.bid>]');" href="#" style="visibility: visible">[<if $activity.cancelled>]Uncancel[<else>]Cancel[</if>]</a>
 [</if>]
 		</td>
 		<td style="padding: 5px;" colspan="2">
@@ -108,5 +108,5 @@
 	</tr>
 [</foreach>]
 </table><br />
-<input type="submit" value="Modify">
+<input type="submit" value="Modify" />
 </form>

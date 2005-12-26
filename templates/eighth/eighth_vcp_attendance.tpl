@@ -5,7 +5,7 @@ Room(s):&nbsp;&nbsp;&nbsp;&nbsp;[<$activity->block_rooms_comma>]<br />
 Sponsor(s):&nbsp;[<$activity->block_sponsors_comma>]<br />
 <br />
 <form action="[<$I2_ROOT>]eighth/vcp_attendance/update/bid/[<$activity->bid>]/aid/[<$activity->aid>]" method="post">
-	<input type="button" value="Select All" onClick=";"> <input type="submit" value="Update"><br />
+	<input type="button" value="Select All" onclick=";" /> <input type="submit" value="Update" /><br />
 	<table cellspacing="0" style="border: 0px; margin: 0px; padding: 0px;">
 		<tr>
 			<th>Absent</th>
@@ -17,11 +17,11 @@ Sponsor(s):&nbsp;[<$activity->block_sponsors_comma>]<br />
 [</php>]
 [<foreach from=$users item="user">]
 		<tr style="background-color: [<cycle values="#CCCCCC,#FFFFFF">]">
-			<td style="padding: 0px 5px;"><input type="checkbox" name="absentees[]" value="[<$user->uid>]"[<if in_array($user->uid, $absentees) >] checked[</if>]></td>
+			<td style="padding: 0px 5px;"><input type="checkbox" name="absentees[]" value="[<$user->uid>]"[<if in_array($user->uid, $absentees) >] checked="checked"[</if>] /></td>
 			<td style="padding: 0px 5px;">[<$user->name_comma>] ([<$user->uid>])</td>
 			<td style="padding: 0px 5px;">[<$user->grade>]</td>
 		</tr>
 [</foreach>]
 	</table><br />
-	<input type="submit" value="Update">
+	<input type="submit" value="Update" />
 </form>

@@ -12,21 +12,21 @@ Specify the report criteria:<br />
 		</tr>
 		<tr>
 			<th style="text-align: right;">Include:</th>
-			<td style="text-align: center;"><input type="checkbox" name="include[]" value="room" checked></td>
-			<td style="text-align: center;"><input type="checkbox" name="include[]" value="aid" checked></td>
-			<td style="text-align: center;"><input type="checkbox" name="include[]" value="name" checked></td>
-			<td style="text-align: center;"><input type="checkbox" name="include[]" value="teacher" checked></td>
-			<td style="text-align: center;"><input type="checkbox" name="include[]" value="students" checked></td>
+			<td style="text-align: center;"><input type="checkbox" name="include[]" value="room" checked="checked" /></td>
+			<td style="text-align: center;"><input type="checkbox" name="include[]" value="aid" checked="checked" /></td>
+			<td style="text-align: center;"><input type="checkbox" name="include[]" value="name" checked="checked" /></td>
+			<td style="text-align: center;"><input type="checkbox" name="include[]" value="teacher" checked="checked" /></td>
+			<td style="text-align: center;"><input type="checkbox" name="include[]" value="students" checked="checked" /></td>
 		</tr>
 		<tr>
 			<th style="text-align: right;">Sort:</th>
-			<td style="text-align: center;"><input type="radio" name="sort" value="room" checked></td>
-			<td style="text-align: center;"><input type="radio" name="sort" value="aid"></td>
-			<td style="text-align: center;"><input type="radio" name="sort" value="name"></td>
-			<td style="text-align: center;"><input type="radio" name="sort" value="teacher"></td>
-			<td style="text-align: center;"><input type="radio" name="sort" value="students"></td>
+			<td style="text-align: center;"><input type="radio" name="sort" value="room" checked="checked" /></td>
+			<td style="text-align: center;"><input type="radio" name="sort" value="aid" /></td>
+			<td style="text-align: center;"><input type="radio" name="sort" value="name" /></td>
+			<td style="text-align: center;"><input type="radio" name="sort" value="teacher" /></td>
+			<td style="text-align: center;"><input type="radio" name="sort" value="students" /></td>
 		</tr>
 	</table>
-	<input type="checkbox" name="overbooked"> Show only overbooked activities<br />
-	<input type="submit" value="Next">
+	<input type="checkbox" name="overbooked" /> Show only overbooked activities<br />
+	<input type="submit" value="Next" />
 </form>

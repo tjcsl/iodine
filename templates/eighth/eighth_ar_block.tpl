@@ -16,7 +16,7 @@
 <br />
 <form action="[<$I2_ROOT>]eighth/ar_block/add" method="post">
 [<html_select_date prefix="" start_year="-1" end_year="+1" day_format="%d" day_value_format="%02d">]<br />
-	<input type="checkbox" name="blocks[]" value="A" checked> A block<br />
-	<input type="checkbox" name="blocks[]" value="B" checked> B block<br />
-	<input type="submit" value="Add">
+	<input type="checkbox" name="blocks[]" value="A" checked="checked" /> A block<br />
+	<input type="checkbox" name="blocks[]" value="B" checked="checked" /> B block<br />
+	<input type="submit" value="Add" />
 </form>

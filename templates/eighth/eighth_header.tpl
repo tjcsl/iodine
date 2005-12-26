@@ -48,15 +48,15 @@ function move_help(e) {
 }
 </script>
 <div id="blocker" style="display: none; position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px; background-color: #666666;"></div>
-<div id="help_pane" onMouseDown="register_press(event)" >
-<div id="help_close" onClick="hide_help(max_height)">Close</div>
+<div id="help_pane" onmousedown="register_press(event)" >
+<div id="help_close" onclick="hide_help(max_height)">Close</div>
 <span class="bold">Help:</span><br /><br />
 	[<$help>]
 </div>
 <table style="border: 0px; padding: 0px; margin: 0px;">
 <tr>
 <td>
-<a href="[<$I2_ROOT>]eighth"><img src="[<$I2_ROOT>]www/pics/eighth/eighth.png" style="border: 0; width: 300; height: 80"></a>
+<a href="[<$I2_ROOT>]eighth"><img src="[<$I2_ROOT>]www/pics/eighth/eighth.png" style="border: 0; width: 300; height: 80" alt="Eighth Period Office Online"/></a>
 </td>
 <td style="width: 10"></td>
 <td style="valign: top">
@@ -71,19 +71,19 @@ function move_help(e) {
 </tr>
 </table>
 <form action="[<$I2_ROOT>]eighth/vcp_schedule" method="post" name="scheduleform">
-<input type="hidden" name="op" value="search">
+<input type="hidden" name="op" value="search" />
 <table style="border: 0px; padding: 0px; margin: 0px">
 <tr>
-<td style="width: 80">First name:</TD>
-<td style="width: 120"><input type="text" name="fname" style="width: 115px;"></td>
-<td style="width: 80">Student ID:</TD>
-<td style="width: 120"><input type="text" name="uid" style="width: 115px;"></td>
+<td style="width: 80">First name:</td>
+<td style="width: 120"><input type="text" name="fname" style="width: 115px;" /></td>
+<td style="width: 80">Student ID:</td>
+<td style="width: 120"><input type="text" name="uid" style="width: 115px;" /></td>
 </tr> 
 <tr>
 <td style="width: 80">Last name:</td>
-<td style="width: 120"><input type="text" name="lname" style="width: 115px;" ></td>
+<td style="width: 120"><input type="text" name="lname" style="width: 115px;" /></td>
 <td style="width: 80">&nbsp;</td>
-<td style="width: 120"><input type="submit" value="View Schedule" style="width: 115px;" tabindex="4"></td>
+<td style="width: 120"><input type="submit" value="View Schedule" style="width: 115px;" tabindex="4" /></td>
 </tr>
 </table>
 </form>

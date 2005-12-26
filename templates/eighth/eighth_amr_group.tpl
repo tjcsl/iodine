@@ -1,6 +1,6 @@
 [<include file="eighth/eighth_header.tpl">]
 <form name="theform" action="[<$I2_ROOT>]eighth/amr_group/add_member/gid/[<$gid>]" method="post">
-	Student ID: <input type="text" name="uid"> <input type="submit" value="Add">
+	Student ID: <input type="text" name="uid" /> <input type="submit" value="Add" />
 </form>
 <script language="javascript" type="text/javascript">
 	<!--
