@@ -1,0 +1,14 @@
+@extend
+.newstitle {
+	border: none;
+}
+
+@extend
+.newsitem {
+	border-top: dotted 1px gray;
+}
+.newsgroups {
+	font-size: 8pt;
+	font-style: italic;
+	font-color: black;
+}
