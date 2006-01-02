@@ -1,5 +1,6 @@
-<div class="newsitem">
- <div class="newstitle">[<$story->title>]</div>[<if $story->groupsstring>]<div class="newsgroups">Posted to: [<$story->groupsstring>]</div>[</if>]<br />
+
+ <div class="newstitle">[<$story->title>]</div>
+ <div class="newsitem">[<if $story->groupsstring>]<div class="newsgroups">Posted to: [<$story->groupsstring>]</div>[</if>]<br />
  [<$story->text>]<br/><br/>
  <div class="newsposted">Posted [<if $story->author>]by [<$story->author->name>] [</if>]at [<$story->posted|date_format:'%l:%M %p on %a %B %e, %Y'>]</div>
  [<if $story->editable()>]

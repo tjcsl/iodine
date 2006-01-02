@@ -16,3 +16,7 @@
 	border-width: 0px;
 	border-bottom-width: 1px;
 }
+.newsgroups {
+	font-style: italic;
+	color: #008800;
+}

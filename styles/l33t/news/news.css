@@ -6,3 +6,8 @@
 .newstitle {
 	font-family: courier, helvetica, verdana, sans-serif;
 }
+
+.newsgroups {
+	font-style: italic;
+	color: white;
+}

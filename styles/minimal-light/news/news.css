@@ -4,3 +4,9 @@
 	border-right: dotted 1px black;
 	border-bottom: dotted 1px black;
 }
+
+.newsgroups {
+	font-size: 8pt;
+	font-style: italic;
+	color: black;
+}
