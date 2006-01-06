@@ -131,6 +131,17 @@ class User {
 				$nick = $this->__get('nickname');
 				$mid = $this->__get('mname');
 				return $this->__get('lname') . ', ' . $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . ($mid ? "$mid " : '');
+			case 'grad_year':
+				$grade = $this->__get('grade');
+				/**
+				 * @todo Should NOT be hardcoded
+				 */
+				$grad_years = array(
+					9 => 2009,
+					10 => 2008,
+					11 => 2007,
+					12 => 2006 );
+				return $grad_years[$grade];
 		}
 		
 		//Check which table the information is in

@@ -78,6 +78,9 @@ class Filecenter implements Module {
 		if ($system_type == 'lan') {
 			$this->filesystem = new LANFilesystem($_SESSION['i2_username'], $_SESSION['i2_password']);
 			$this->template_args['max_file_size'] = 10485760; //10 mb
+		} else if ($system_type == 'portfolio') {
+			$this->filesystem = new PortfolioFilesystem($_SESSION['i2_username'], $_SESSION['i2_password']);
+			$this->template_args['max_file_size'] = 10485760; //FIXME: is 10 mb correct?
 		} else if ($system_type == 'csl') {
 			$this->filesystem = new CSLProxy($_SESSION['csl_username'], $_SESSION['csl_password']);
 			if (!$this->filesystem->is_valid()) {
@@ -180,6 +183,10 @@ class Filecenter implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_box() {
+		global $I2_USER;
+
+		$this->box_args['i2_username'] = $_SESSION['i2_username'];
+		$this->box_args['grad_year'] = $I2_USER->grad_year;
 		if (isSet($_SESSION['csl_username'])) {
 			$this->box_args['csl_username'] = $_SESSION['csl_username'];
 		} else {
