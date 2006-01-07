@@ -41,6 +41,23 @@ class Filecenter implements Module {
 	private $show_hidden_files;
 
 	/**
+	* Returns $size in a human-readable format.
+	*
+	* Takes the size of a file ($size) in bytes, and returns a string,
+	* representing the same size, but in terms of KB, MB, etc.
+	*
+	* @param int $size The size in bytes.
+	* @returns string The file size in a human-readable format.
+	*/
+	public static function human_readable_size($size) {
+		if($size == 0) {
+			return("0 Bytes");
+		}
+		$filesizename = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
+		return round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $filesizename[$i];
+	}
+
+	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
@@ -153,7 +170,7 @@ class Filecenter implements Module {
 			foreach($this->filesystem->list_files($this->directory) as $file) {
 				$properties = array(
 					"name" => $file->get_name(),
-					"size" => round($file->get_size() / 1024),
+					"size" => self::human_readable_size($file->get_size()),
 					"last_modified" => date("n/j/y g:i A", $file->last_modified())
 				);
 			

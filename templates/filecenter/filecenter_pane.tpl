@@ -31,7 +31,7 @@
   <tr>
    <td><a href="[<$file.name|escape:"url">]"><img src="[<$I2_ROOT>]www/pics/filecenter/file2.png" width="15" height="16"/></a></td>
    <td><a href="" onclick="return options(this, 'file')">[<$file.name|escape>]</a></td>
-   <td class="size">[<$file.size>]KB</td>
+   <td class="size">[<$file.size>]</td>
    <td>File</td>
    <td>[<$file.last_modified>]</td>
   </tr>
