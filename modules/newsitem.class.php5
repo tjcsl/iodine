@@ -157,19 +157,18 @@ class Newsitem {
 	/**
 	 * Determine if this news item exists.
 	 *
-	 * Finds out if this Newsitem object exists in the database.
+	 * Finds out if this Newsitem object exists in the database. This is
+	 * just an internal method, called by the constructor, to make the code
+	 * look easier and more modularized.
 	 *
-	 * @access public
 	 * @return boolean Whether this item exists or not.
-	 * @todo Why is this not a static method? (An item shouldn't be created
-	 *  if it doesn't exist in the first place.
 	 */
-	public function item_exists() {
+	private function item_exists() {
 		global $I2_SQL;
 		if ($I2_SQL->query('SELECT id FROM news WHERE id=%d', $this->mynid)->fetch_single_value() != NULL) {
-			return true;
+			return TRUE;
 		}
-		return false;
+		return TRUE;
 	}
 
 	/**
