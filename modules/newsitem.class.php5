@@ -168,7 +168,7 @@ class Newsitem {
 		if ($I2_SQL->query('SELECT id FROM news WHERE id=%d', $this->mynid)->fetch_single_value() != NULL) {
 			return TRUE;
 		}
-		return TRUE;
+		return FALSE;
 	}
 
 	/**
