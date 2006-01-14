@@ -12,7 +12,6 @@
 * The auth module for Iodine.
 * @package core
 * @subpackage Auth
-* @todo Get rid of the plaintext passwords stored in $_SESSION. Probably need some kind of 'hook' functionality to still allow filecenter stuff to work.
 */
 class Auth {
 	/**

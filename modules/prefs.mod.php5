@@ -25,9 +25,6 @@ class Prefs implements Module {
 	protected $nonuser_intraboxen;
 	private $themes;
 	
-	/**
-	* @todo Input validation checks, so users can't just put whatever they want to in here.
-	*/
 	function init_pane() {
 		global $I2_USER,$I2_ARGS,$I2_SQL;
 

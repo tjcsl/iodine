@@ -13,8 +13,6 @@
 * The API for all Intranet2 modules to extend.
 * @package core
 * @subpackage Module
-* @todo The staff intranet module
-(Just put modules to be done in here, since there's really no other place)
 */
 interface Module {
 

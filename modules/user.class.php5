@@ -134,7 +134,7 @@ class User {
 			case 'grad_year':
 				$grade = $this->__get('grade');
 				/**
-				 * @todo Should NOT be hardcoded
+				 * FIXME Should NOT be hardcoded
 				 */
 				$grad_years = array(
 					9 => 2009,
@@ -367,8 +367,6 @@ class User {
 	/**
 	* Search for users based on their information.
 	*
-	* @todo Implement more searching functionality. Right now we just search
-	* by name.
 	* @param string The search string.
 	* @return array An array of {@link User} objects of the results. An
 	* empty array is returned if no match is found.
