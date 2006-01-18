@@ -30,6 +30,14 @@ define('CONFIG_FILENAME', 'config.ini');
 $I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
 $I2_SELF = $_SERVER['REDIRECT_URL'];
 
+/**
+* If this line is not present, it generates a lot of warning messages in recent
+* versions of PHP.
+*/
+if(version_compare(PHP_VERSION, '5.1.0', '>')) {
+	date_default_timezone_set('US/Eastern');
+}
+
 /*
 The actual config file in CVS is config.user.ini and config.server.ini
 When you check out intranet2 to run it from your personal space, run
