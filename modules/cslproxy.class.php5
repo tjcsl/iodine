@@ -79,6 +79,7 @@ class CSLProxy {
 				return $obj;
 			} else {
 				d("pagsh exited with status $status", 1);
+				d($out, 1);
 				list($type, $error) = unserialize($out);
 				if ($type == 'error') {
 					trigger_error($error);
@@ -88,7 +89,6 @@ class CSLProxy {
 			}
 		
 		} else {
-			fclose($temp);
 			throw new I2Exception("Could not create process");
 		}
 	}
