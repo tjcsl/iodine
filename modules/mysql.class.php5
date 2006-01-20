@@ -214,95 +214,11 @@ class MySQL {
 				was matched. $arg is the argument, if the tag
 				needs one, and $replacement is the string to
 				replace the tag with*/
-				switch($tag[0][1]) {
-					/* 'argument' tags first */
-					
-					/*alphanumeric string*/
-					case 'a':
-						if ( !ctype_alnum($arg) ) {
-							throw new I2Exception('String `'.$arg.'` contains non-alphanumeric characters, and was passed as an %a string in a mysql query');
-							$replacement = '';
-						}
-					case 's':
-						$replacement = '\''.mysql_real_escape_string($arg).'\'';
-						break;
 
-					case 'S':
-						if( !is_array($arg) ) {
-							throw new I2Exception('Non-array passed as %S in a mysql query');
-						}
-						foreach($arg as $i=>$str) {
-							$arg[$i] = mysql_real_escape_string($str);
-						}
-						$replacement = '\''.implode('\',\'', $arg).'\'';
-						break;
-
-					case 'c':
-						if( is_array($arg) ) {
-							foreach($arg as $i=>$col) {
-								$arg[$i] = mysql_real_escape_string($col);
-							}
-							$replacement = '`'.implode('`,`', $arg).'`';
-						}
-						else {
-							$replacement = '`'.mysql_real_escape_string($arg).'`';
-						}
-						break;
-
-					case 'I':
-					case 'D':
-						if( !is_array($arg) ) {
-							throw new I2Exception('Non-array passed to %D in a mysql query');
-						}
-						foreach($arg as $num) {
-							if(!(	is_int($num) ||
-								ctype_digit($num) ||
-								(ctype_digit(substr($num,1)) && $num[0]=='-') //negatives
-							)) {
-								throw new I2Exception('Non-integer `'.$num.'` passed in the array passed to %D in a mysql query');
-							}
-						}
-						$replacement = implode($arg, ',');
-						break;
-
-					/* integer*/
-					case 'd':
-					case 'i':
-						if (	is_int($arg) ||
-							ctype_digit($arg) ||
-							(ctype_digit(substr($arg,1)) && $arg[0]=='-') //negatives
-						) {
-							$replacement = ''.$arg;
-						}
-						else {
-							throw new I2Exception('The string `'.$arg.'` is not an integer, but was passed as %d or %i in a mysql query');
-							$replacement = '0';
-						}
-						break;
-					case 't':
-						if(is_string($arg)) {
-							$parts = explode("-", $arg);
-							if(count($parts) == 3 && !empty($parts[1]) && !empty($parts[2]) && strlen($parts[0]) == 4 && strlen($parts[1]) <= 2 && strlen($parts[2]) <= 2 && ctype_digit($parts[0]) && ctype_digit($parts[1]) && ctype_digit($parts[2]) && checkdate($parts[1], $parts[2], $parts[0])) {
-								$replacement = '\''.$arg.'\'';
-								break;
-							}
-						}
-						throw new I2Exception('The string `'.$arg.'` is not a properly formatted date, but was passed as %t in a mysql query');
-						break;
-					
-					/* Non-argument tags below here */
-					
-					/*Iodine version string*/
-					case 'V':
-						$replacement = 'TJHSST Intranet2 Iodine version '.I2_VERSION;
-						break;
-					case '%':
-						$replacement = '%';
-						break;
-					
-					/* sanity check */
-					default:
-						$I2_ERR->fatal_error('Internal error, undefined mysql printf tag `%'.$tag[0][1].'`', TRUE);
+				if ($arg === NULL) {
+					$replacement = 'NULL';
+				} else {
+					$replacement = $this->replace_tag($arg, $tag[0][1]);
 				}
 
 				$query = substr_replace($query,$replacement,$tag[1],2);
@@ -334,6 +250,93 @@ class MySQL {
 		}
 
 		return new MySQLResult($this->raw_query($query),$query_t);
+	}
+
+	private function replace_tag($arg, $tag) {
+		switch($tag) {
+			/* 'argument' tags first */
+			
+			/*alphanumeric string*/
+			case 'a':
+				if ( !ctype_alnum($arg) ) {
+					throw new I2Exception('String `'.$arg.'` contains non-alphanumeric characters, and was passed as an %a string in a mysql query');
+				}
+			case 's':
+				return '\''.mysql_real_escape_string($arg).'\'';
+
+			/* array of strings */
+			case 'S':
+				if( !is_array($arg) ) {
+					throw new I2Exception('Non-array passed as %S in a mysql query');
+				}
+				foreach($arg as $i=>$str) {
+					$arg[$i] = mysql_real_escape_string($str);
+				}
+				return '\''.implode('\',\'', $arg).'\'';
+
+			/* table or column name or array of table or column names*/
+			case 'c':
+				if( is_array($arg) ) {
+					foreach($arg as $i=>$col) {
+						$arg[$i] = mysql_real_escape_string($col);
+					}
+					return '`'.implode('`,`', $arg).'`';
+				}
+				else {
+					return '`'.mysql_real_escape_string($arg).'`';
+				}
+
+			/* array of integers */
+			case 'I':
+			case 'D':
+				if( !is_array($arg) ) {
+					throw new I2Exception('Non-array passed to %D in a mysql query');
+				}
+				foreach($arg as $num) {
+					if(!(	is_int($num) ||
+						ctype_digit($num) ||
+						(ctype_digit(substr($num,1)) && $num[0]=='-') //negatives
+					)) {
+						throw new I2Exception('Non-integer `'.$num.'` passed in the array passed to %D in a mysql query');
+					}
+				}
+				return implode($arg, ',');
+
+			/* integer*/
+			case 'd':
+			case 'i':
+				if (	is_int($arg) ||
+					ctype_digit($arg) ||
+					(ctype_digit(substr($arg,1)) && $arg[0]=='-') //negatives
+				) {
+					return ''.$arg;
+				}
+				else {
+					throw new I2Exception('The string `'.$arg.'` is not an integer, but was passed as %d or %i in a mysql query');
+				}
+
+			/* date */
+			case 't':
+				if(is_string($arg)) {
+					$parts = explode("-", $arg);
+					if(count($parts) == 3 && !empty($parts[1]) && !empty($parts[2]) && strlen($parts[0]) == 4 && strlen($parts[1]) <= 2 && strlen($parts[2]) <= 2 && ctype_digit($parts[0]) && ctype_digit($parts[1]) && ctype_digit($parts[2]) && checkdate($parts[1], $parts[2], $parts[0])) {
+						return '\''.$arg.'\'';
+					}
+				}
+				throw new I2Exception('The string `'.$arg.'` is not a properly formatted date, but was passed as %t in a mysql query');
+			
+			/* Non-argument tags below here */
+			
+			/*Iodine version string*/
+			case 'V':
+				return 'TJHSST Intranet2 Iodine version '.I2_VERSION;
+			case '%':
+				return '%';
+			
+			/* sanity check */
+			default:
+				$I2_ERR->fatal_error('Internal error, undefined mysql printf tag `%'.$tag[0][1].'`', TRUE);
+		}
 	}
 	
 	/**
