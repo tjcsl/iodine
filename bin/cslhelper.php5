@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/local/bin/php
 <?php
 /**
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
@@ -25,9 +25,11 @@ set_error_handler('error');
 set_exception_handler('exception');
 
 list($function, $args) = unserialize(stream_get_contents(STDIN));
+
 $filesystem = new CSLFilesystem();
 $ret_val = call_user_func_array(array($filesystem, $function), $args);
-fwrite(STDOUT, serialize($ret_val));
-exit(0);
 
+fwrite(STDERR, serialize($ret_val));
+
+exit(0);
 ?>

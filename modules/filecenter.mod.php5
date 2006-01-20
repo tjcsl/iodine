@@ -129,8 +129,8 @@ class Filecenter implements Module {
 				if ($I2_QUERY['download'] == 'zip') {
 					$this->send_zipped_file($this->directory);
 				} else {
-					$contents = $this->filesystem->get_file_contents($this->directory);
-					$this->echo_file($file->get_name(), $file->get_size(), $contents);
+					$this->file_header($file->get_name(), $file->get_size());
+					$this->filesystem->echo_contents($this->directory);
 					die;
 				}
 			}
@@ -227,22 +227,19 @@ class Filecenter implements Module {
 		$this->filesystem->copy_file_into_system($file['tmp_name'], $this->directory . $file['name']);
 	}
 
-	public function echo_file($name, $size, $contents) {
+	public function file_header($name, $size) {
 		Display::stop_display();
 		header('Content-type: application/octet-stream');
 		header('Content-Disposition: attachment; filename="' . $name . '"');
 		header('Content-length: ' . $size);
 		header('Pragma: public');
-		echo $contents;
 	}
 
 	public function send_zipped_dir($path) {
 		$zipfile = tempname('/tmp/iodine-filesystem-', '.zip');
 		$this->filesystem->zip_dir($path, $zipfile);
-		$name = basename($path) . '.zip';
-		$size = filesize($zipfile);
-		$contents = file_get_contents($zipfile);
-		$this->echo_file($name, $size, $contents);
+		$this->file_header(basename($path) . '.zip', filesize($zipfile));
+		readfile($zipfile);
 		unlink($zipfile);
 		die;
 	}
@@ -250,13 +247,10 @@ class Filecenter implements Module {
 	public function send_zipped_file($path) {
 		$zipfile = tempname('/tmp/iodine-filesystem-', '.zip');
 		$this->filesystem->zip_file($path, $zipfile);
-		$name = basename($path) . '.zip';
-		$size = filesize($zipfile);
-		$contents = file_get_contents($zipfile);
-		$this->echo_file($name, $size, $contents);
+		$this->file_header(basename($path) . '.zip', filesize($zipfile));
+		readfile($zipfile);
 		unlink($zipfile);
 		die;
-
 	}
 	
 	/**

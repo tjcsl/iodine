@@ -44,9 +44,11 @@ class CSLProxy {
 	 * return exit status
 	 */
 	public function __call($function, $args) {
+		$temp = tmpfile();
+
 		$descriptors = array(
 			0 => array('pipe', 'r'), 
-			1 => array('pipe', 'w'),
+			1 => $temp,
 			2 => array('pipe', 'w')
 		);
 
@@ -56,27 +58,28 @@ class CSLProxy {
 
 		$root_path = i2config_get('root_path', NULL, 'core');
 		$peer =  $root_path . 'bin/cslhelper.php5';
-		
-		$process = proc_open('pagsh -c "aklog; ' . $peer . '"', $descriptors, $pipes, $root_path, $env);
+
+		$process = proc_open('pagsh -c "aklog;' . $peer . '"', $descriptors, $pipes, $root_path, $env);
 		if(is_resource($process)) {
 			fwrite($pipes[0], serialize(array($function, $args)));
 			fclose($pipes[0]);
 			
-			$out = stream_get_contents($pipes[1]);
-			fclose($pipes[1]);
-			
-			$err = stream_get_contents($pipes[2]);
+			$out = stream_get_contents($pipes[2]);
 			fclose($pipes[2]);
-			
+
 			$status = proc_close($process);
+			
+			fseek($temp, 0);
+			fpassthru($temp);
+			fclose($temp);
 			
 			if ($status == 0) {
 				d("pagsh exited with status 0");
 				$obj = unserialize($out);
 				return $obj;
 			} else {
-				d("pagsh exited with status $status");
-				list($type, $error) = unserialize($err);
+				d("pagsh exited with status $status", 1);
+				list($type, $error) = unserialize($out);
 				if ($type == 'error') {
 					trigger_error($error);
 				} else {
@@ -85,6 +88,7 @@ class CSLProxy {
 			}
 		
 		} else {
+			fclose($temp);
 			throw new I2Exception("Could not create process");
 		}
 	}

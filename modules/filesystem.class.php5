@@ -115,13 +115,9 @@ abstract class Filesystem {
 		return new I2File($path);
 	}	
 	
-	public function get_file_contents($filename) {
+	public function echo_contents($filename) {
 		$path = $this->convert_path($filename);
-		$contents = file_get_contents($path);
-		if ($contents === FALSE) {
-			throw new I2Exception("Error reading $path");
-		}
-		return $contents;
+		readfile($path);
 	}
 
 	public function is_root($pathname) {
