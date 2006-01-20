@@ -9,7 +9,7 @@ The specified student does not exist. Either you mistyped a URL, or something in
 <td valign="top">
 [<$info.fname>][<if $info.nickname>] ([<$info.nickname>])[</if>] [<$info.mname>] [<$info.lname>][<if $info.suffix>] [<$info.suffix>][</if>] (<a href="mailto:[<$info.username>]@tjhsst.edu">[<$info.username>]@tjhsst.edu</a>), Grade [<$info.grade>]<br />
 [<if $info.bdate>]Born [<$info.bdate>]<br />[</if>]
-[<if $info.phone_home>]Phone (home): [<$info.phone_home>]
+[<if $info.phone_home>]Phone (home): [<$info.phone_home>]<br/>
  [<else>]Home phone information not available.
 [</if>]</br />
 [<if $info.address1_street>]
@@ -28,7 +28,7 @@ The specified student does not exist. Either you mistyped a URL, or something in
 [<else>]
  Address information not available.<br />
 [</if>]
-Map from home | Map from school<br />
+<a href="http://maps.google.com/maps?saddr=[<$info.address1_full|escape:"url">]&daddr=[<$user.address1_full>]">Map from home</a> | Map from school<br />
 Counselor: [<$info.counselor>]<br />
 <br />
 [<if $info.email0>]Personal e-mail: <a href="mailto:[<$info.email0>]">[<$info.email0>]</a><br />[</if>]

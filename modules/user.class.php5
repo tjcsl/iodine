@@ -245,7 +245,7 @@ class User {
 	*               about this user.
 	*/
 	public function info() {
-		global $I2_SQL;
+		global $I2_SQL, $I2_ERR;
 
 		if( $this->myuid === NULL ) {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
