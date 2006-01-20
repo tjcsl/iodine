@@ -89,9 +89,6 @@ class News implements Module {
 					throw new I2Exception('ID of article to delete not specified.');
 				}
 				
-				if( ! Newsitem::item_exists($I2_ARGS[2]) ) {
-					throw new I2Exception('Specified article ID does not exist.');
-				}
 				$item = new Newsitem($I2_ARGS[2]);
 				if( !$item->editable() ) {
 					throw new I2Exception('You do not have permission to edit this article.');
