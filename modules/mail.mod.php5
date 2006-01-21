@@ -18,6 +18,8 @@ class Mail implements Module {
 	
 	private $box_args = array();
 
+	private $pane_args = array();
+
 	private $messages;
 	private $nmsgs;
 
@@ -28,11 +30,29 @@ class Mail implements Module {
 	}
 	
 	function init_pane() {
+		if (!is_array($this->messages)) {
+			self::download_msgs();
+		}
+		$this->pane_args['messages'] = array(); 
+		$this->pane_args['nmsgs'] = $this->nmsgs;
+
+		for($n = $this->nmsgs; $n > 0; $n--) {
+			$message = array();
+
+			$message['from'] = $this->messages[$n - 1]['from'][0]->personal;
+			if (! $message['from']) {
+				$message['from'] = $this->messages[$n - 1]['from'][0]->mailbox . '@' . $this->messages[$n - 1]['from'][0]->host;
+			}
+			$message['subject'] = $this->messages[$n - 1]['subject'];
+			$message['date'] = $this->messages[$n - 1]['date'];
+
+			$this->pane_args['messages'][] = $message;
+		}
 		return array("Mail", "Mail");
 	}
 	
 	function display_pane($display) {
-		$display->disp('mail_pane.tpl',array());
+		$display->disp('mail_pane.tpl',$this->pane_args);
 	}
 	
 	function init_box() {

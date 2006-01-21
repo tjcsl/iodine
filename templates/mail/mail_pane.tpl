@@ -1,6 +1,6 @@
+Login to your <a href="https://mail.tjhsst.edu">TJ Mail Account</a> to send mail.<br /><br />
 You have [<$nmsgs>] messages in your inbox.<br />
-[<if $nmsgs_to_show>]
-	The latest [<$nmsgs_to_show>] messages are:
+[<if $nmsgs>]
 	<table>
 	<tbody>
 		<tr>
