@@ -10,9 +10,9 @@ You have [<$nmsgs>] messages in your inbox.<br />
 		</tr>
 		[<foreach from=$messages item=msg>]
 			<tr>
-				<td align="left">[<$msg.from>]</td>
-				<td align="center">[<$msg.subject>]</td>
-				<td align="right">[<$msg.date>]</td>
+				<td align="left">[<if $msg.unread>]<b>[</if>][<$msg.from>][<if $msg.unread>]</b>[</if>]</td>
+				<td align="center">[<if $msg.unread>]<b>[</if>]<a href="[<$I2_ROOT>]mail/message/[<$msg.number>]">[<$msg.subject>]</a>[<if $msg.unread>]</b>[</if>]</td>
+				<td align="right">[<if $msg.unread>]<b>[</if>][<$msg.date>][<if $msg.unread>]</b>[</if>]</td>
 			</tr>
 		[</foreach>]
 	</tbody>

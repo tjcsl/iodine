@@ -1,4 +1,5 @@
 You have [<$nmsgs>] messages in your inbox.<br />
+<a href="[<$I2_ROOT>]mail">View your messages</a><br />
 [<if $nmsgs_to_show>]
 	The latest [<$nmsgs_to_show>] messages are:
 	<table>
@@ -10,9 +11,9 @@ You have [<$nmsgs>] messages in your inbox.<br />
 		</tr>
 		[<foreach from=$messages item=msg>]
 			<tr>
-				<td align="left">[<$msg.from>]</td>
-				<td align="center">[<$msg.subject>]</td>
-				<td align="right">[<$msg.date>]</td>
+				<td align="left">[<if $msg.unread>]<b>[</if>][<$msg.from>][<if $msg.unread>]</b>[</if>]</td>
+				<td align="center">[<if $msg.unread>]<b>[</if>][<$msg.subject>][<if $msg.unread>]</b>[</if>]</td>
+				<td align="right">[<if $msg.unread>]<b>[</if>][<$msg.date>][<if $msg.unread>]</b>[</if>]</td>
 			</tr>
 		[</foreach>]
 	</tbody>
