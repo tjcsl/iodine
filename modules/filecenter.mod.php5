@@ -54,7 +54,7 @@ class Filecenter implements Module {
 			return("0 Bytes");
 		}
 		$filesizename = array(' Bytes', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB');
-		return round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $filesizename[$i];
+		return round($size/pow(1024, ($i = floor(log($size, 1024)))), 1) . $filesizename[$i];
 	}
 
 	/**
