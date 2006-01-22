@@ -21,7 +21,7 @@ class Filecenter implements Module {
 	/**
 	* Template for the specified action
 	*/
-	private $template = "filecenter_pane.tpl";
+	private $template = 'filecenter_pane.tpl';
 
 	/**
 	* Template arguments for intrabox
@@ -53,7 +53,7 @@ class Filecenter implements Module {
 		if($size == 0) {
 			return("0 Bytes");
 		}
-		$filesizename = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
+		$filesizename = array(' Bytes', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB');
 		return round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $filesizename[$i];
 	}
 
@@ -87,16 +87,16 @@ class Filecenter implements Module {
 			redirect('filecenter/csl/user/'.$_SESSION['csl_username']);
 		} else if (!isSet($_SESSION['csl_username'])) {
 			$_SESSION['csl_username'] = $_SESSION['i2_username'];
-			$_SESSION['csl_password'] = $_SESSION['i2_password'];
+			$_SESSION['csl_password'] = Auth::get_user_password();
 		} else {
 			$this->template_args['csl_failed_login'] = TRUE;
 		}
 
 		if ($system_type == 'lan') {
-			$this->filesystem = new LANFilesystem($_SESSION['i2_username'], $_SESSION['i2_password']);
+			$this->filesystem = new LANFilesystem($_SESSION['i2_username'], Auth::get_user_password());
 			$this->template_args['max_file_size'] = 10485760; //10 mb
 		} else if ($system_type == 'portfolio') {
-			$this->filesystem = new PortfolioFilesystem($_SESSION['i2_username'], $_SESSION['i2_password']);
+			$this->filesystem = new PortfolioFilesystem($_SESSION['i2_username'], Auth::get_user_password());
 			$this->template_args['max_file_size'] = 10485760; //FIXME: is 10 mb correct?
 		} else if ($system_type == 'csl') {
 			$this->filesystem = new CSLProxy($_SESSION['csl_username'], $_SESSION['csl_password']);

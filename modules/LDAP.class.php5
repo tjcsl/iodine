@@ -26,7 +26,7 @@ class LDAP {
 		// We could use the old krb5 ticket instead of re-authing, but what the hey.
 		if (isSet($_SESSION['i2_username'])) {
 			$ldapuser = 'uid='.$_SESSION['i2_username'].',ou=people,'.$this->dnbase;
-			$bind = ldap_bind($this->conn,$ldapuser,$_SESSION['i2_password']);
+			$bind = ldap_bind($this->conn,$ldapuser,Auth::get_user_password());
 			if (!$bind) {
 				d("LDAP bind failed!",2);
 				ldap_bind($this->conn);

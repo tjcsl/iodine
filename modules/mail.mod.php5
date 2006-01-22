@@ -96,7 +96,7 @@ class Mail implements Module {
 	}
 
 	private function download_msgs() {
-		$connection = imap_open("{mail.tjhsst.edu:993/imap/ssl/novalidate-cert}INBOX", $_SESSION['i2_username'], $_SESSION['i2_password']);
+		$connection = imap_open("{mail.tjhsst.edu:993/imap/ssl/novalidate-cert}INBOX", $_SESSION['i2_username'], Auth::get_user_password());
 		if (! $connection) {
 			throw new I2Exception("Could not connect to mail server!");
 		}

@@ -118,8 +118,6 @@ class Auth {
 	*
 	* The callbacks in logout_funcs are called when the user clicks the 'logout' link
 	* or if their session times out and they try to access a page.
-	* @todo develop some kind of mechanism for calling the logout_funcs array
-	*	from a cron job, or something, to periodically make sure it gets called.
 	*
 	* @return bool TRUE if the user was successfully logged out.
 	*/
@@ -186,8 +184,13 @@ class Auth {
 				}
 				else {
 					$_SESSION['i2_uid'] = $uarr['uid'];
-					$_SESSION['i2_username']= $_REQUEST['login_username'];
-					$_SESSION['i2_password']= $_REQUEST['login_password'];
+					$_SESSION['i2_username'] = $_REQUEST['login_username'];
+					
+					$_SESSION['i2_auth_passkey'] = substr(md5(rand(0,RAND_MAX)),0,16);
+					list($_SESSION['i2_password'], ,$iv) = self::encrypt($_REQUEST['login_password'],$_SESSION['i2_auth_passkey'].substr(md5($_SERVER['REMOTE_ADDR']),0,16));
+					setcookie('IODINE_PASS_VECTOR',$iv,0,'/',i2config_get('domain','iodine.tjhsst.edu','core'));
+					$_REQUEST['login_password'] = '';
+					
 					$_SESSION['i2_login_time'] = time();
 				
 					redirect(implode('/', $I2_ARGS));
@@ -208,6 +211,55 @@ class Auth {
 		$disp->disp('login.tpl',array('failed' => $loginfailed,'uname' => $uname, 'css' => i2config_get('www_root', NULL, 'core') . i2config_get('login_css', NULL, 'auth')));
 
 		return FALSE;
+	}
+
+	/**
+	* Encrypts a string with the given key.
+	*
+	* encrypt() takes $str, and uses $key to encrypt it. It uses the TripleDES in CBC mode as the encryption algorithm, with /dev/urandom as a random source.
+	*
+	* @return Array An array containing three elements. The first one is the encrypted string, the second is the key used (if it was altered at all from the one passed), and the third is the initialization vector used to encrypt the string. You will need all three of these items in order to decrypt the string again.
+	*/
+	public static function encrypt($str, $key) {
+		$td = mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
+		$iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td),MCRYPT_DEV_URANDOM);
+		$keysize = mcrypt_enc_get_key_size($td);
+		$mkey = substr(md5($key),0,$keysize);
+		mcrypt_generic_init($td,$mkey,$iv);
+		$ret = mcrypt_generic($td, $str);
+		mcrypt_generic_deinit($td);
+		mcrypt_module_close($td);
+		return array($ret,$key,$iv);
+	
+	}
+	/**
+	* Decrypts a string with the given key and initialization vector.
+	*
+	* decrypt() takes $str, and uses $key and $iv to decrypt it (all items that are returned by encrypt()). It uses the TripleDES in CBC mode as the encryption algorithm.
+	*
+	* @return String The decrypted string.
+	*/
+	public static function decrypt($str, $key, $iv) {
+		$td = mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
+		$keysize = mcrypt_enc_get_key_size($td);
+		$key = substr(md5($key),0,$keysize);
+		mcrypt_generic_init($td, $key, $iv);
+		$ret = mdecrypt_generic($td, $str);
+		mcrypt_generic_deinit($td);
+		mcrypt_module_close($td);
+		return trim($ret);
+	}
+
+	/**
+	* Gets the password of the logged in user.
+	*
+	* @return string The user's password, or FALSE on error (such as if we don't have enough information to decrypt it, indicating nobody has logged in yet).
+	*/
+	public function get_user_password() {
+		if( !( isset($_SESSION['i2_password']) && isset($_SESSION['i2_auth_passkey']) && isset($_COOKIE['IODINE_PASS_VECTOR']))) {
+			return FALSE;
+		}
+		return self::decrypt($_SESSION['i2_password'], $_SESSION['i2_auth_passkey'].substr(md5($_SERVER['REMOTE_ADDR']),0,16), $_COOKIE['IODINE_PASS_VECTOR']);
 	}
 }
 
