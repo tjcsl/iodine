@@ -74,7 +74,7 @@ class Filecenter implements Module {
 
 		$this->show_hidden_files = $_SESSION['csl_show_hidden_files'];
 
-		if ($system_type == 'cslauth' && isSet($_REQUEST['user']) && isSet($_REQUEST['password'])) {
+		if ($system_type == 'cslauth' && isset($_REQUEST['user']) && isset($_REQUEST['password'])) {
 			//$I2_SQL->query("INSERT INTO cslfiles (uid,user,pass) VALUES(%d,%s,%s)",);
 			/* 
 			 * We shouldn't store pass in a mysql table, but we could store a cslusername
@@ -84,7 +84,7 @@ class Filecenter implements Module {
 			 */
 			$_SESSION['csl_username'] = $_REQUEST['user'];
 			$_SESSION['csl_password'] = $_REQUEST['password'];
-			redirect('filecenter/csl/user/'.$_SESSION['csl_username']);
+			redirect('filecenter/csl/user/'.$_SESSION['csl_username'].'/');
 		} else if (!isSet($_SESSION['csl_username'])) {
 			$_SESSION['csl_username'] = $_SESSION['i2_username'];
 			$_SESSION['csl_password'] = Auth::get_user_password();
