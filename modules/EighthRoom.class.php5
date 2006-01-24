@@ -40,7 +40,7 @@ class EighthRoom {
 	*/
 	public static function get_utilization($blockid, $columns, $overbooked) {
 		global $I2_SQL;
-		$activities = EighthActivity::is_to_activity($I2_SQL->query("SELECT eighth_block_map.activityid,bid FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d", $blockid)->fetch_all_arrays(Result::NUM));
+		$activities = EighthActivity::id_to_activity($I2_SQL->query("SELECT eighth_block_map.activityid,bid FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d", $blockid)->fetch_all_arrays(Result::NUM));
 		$utilizations = array();
 		foreach($activities as $activity) {
 			$rooms = $activity->block_rooms;

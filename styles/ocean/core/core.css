@@ -2,7 +2,7 @@
 .logo {
 	top: 0px;
 	left: 0px;
-	background: url(/www/pics/newlogo.png) no-repeat;
+	background: url(www/pics/newlogo.png) no-repeat;
 }
 
 @extend
@@ -13,8 +13,8 @@
 
 @extend
 .title {
-	color: #4444EE;
-	border-bottom: 3px solid #4444EE;
+	color: #006666;
+	border-bottom: 3px solid #006666;
 }
 
 .date {

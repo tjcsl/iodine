@@ -1,24 +1,24 @@
 @extend
 .boxes {
-	width: 315px;
+	width: 305px;
 }
 .intrabox {
-	border: #00CCCC thick ridge;
+	border: #009999 2px solid;
 	margin-bottom: 10pt;
-	background-color: #00DDDD;
-	width: 315px;
-	opacity: 0.5;
-	filter: alpha(opacity=50);
-}
-.intrabox:hover {
-	opacity: 1;
+	background-color: #00EEEE;
+	width: 305px;
+	padding: 1px;
+	-moz-border-radius: 10px;
 }
 .boxheader {
-	color: #99FFFF;
+	color: #66CCFF;
 	font-weight: bold;
-	background-color: #007777;
-	border: medium outset #007777;
-	padding: 0px 4px;
+	background-color: #4477AA;
+	border: 2px outset #007777;
+	padding: 0px 10px;
+	-moz-user-select: none;
+	cursor: default;
+	-moz-border-radius: 10px;
 }
 .upbutton {
 	background: url(/www/pics/up.gif);
@@ -34,19 +34,23 @@
 }
 @extend
 .boxbuttons {
-	margin: 3px 7px;
+	margin-right: 10px;
+	margin-top: 2px;
 }
 .boxcontent {
 	margin: 4px;
-	color: #4444EE;
+	color: #006666;
 }
 @extend
 .boxform {
+	margin: 5px 4px;
 	color: #6666FF;
 }
 @extend
 .mainbox {
 	left: 337px;
-	border: #00CCCC thick ridge;
-	background-color: #00DDDD;
+	border: #009999 2px solid;
+	background-color: #00EEEE;
+	padding: 1px;
+	-moz-border-radius: 10px;
 }

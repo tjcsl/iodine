@@ -17,6 +17,12 @@
 class EighthActivity {
 
 	private $data = array();
+	const CANCELLED = 1;
+	const PERMISSIONS = 2;
+	const CAPACITY = 4;
+	const STICKY = 8;
+	const ONEADAY = 16;
+	const PRESIGN = 32;
 
 	/**
 	* The constructor for the {@link EighthActivity} class
@@ -32,7 +38,7 @@ class EighthActivity {
 			$this->data['sponsors'] = (!empty($this->data['sponsors']) ? explode(",", $this->data['sponsors']) : array());
 			$this->data['rooms'] = (!empty($this->data['rooms']) ? explode(",", $this->data['rooms']) : array());
 			if($blockid) {
-				$this->data += $I2_SQL->query("SELECT bid,sponsors AS block_sponsors,rooms AS block_rooms,cancelled,comment,advertisement,attendancetaken FROM eighth_block_map WHERE bid=%d AND activityid=%d", $blockid, $activityid)->fetch_array(RESULT::ASSOC);
+				$this->data += $I2_SQL->query("SELECT bid,sponsors AS block_sponsors,rooms AS block_rooms,cancelled,comment,advertisement,attendancetaken FROM eighth_block_map WHERE bid=%d AND activityid=%d", $blockid, $activityid)->fetch_array(MYSQL_ASSOC);
 				$this->data['block_sponsors'] = (!empty($this->data['block_sponsors']) ? explode(",", $this->data['block_sponsors']) : array());
 				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(",", $this->data['block_rooms']) : array());
 				$this->data['block'] = new EighthBlock($blockid);
@@ -45,14 +51,43 @@ class EighthActivity {
 	*
 	* @access public
 	* @param int $userid The student's user ID.
+	* @param boolean $force Force the change.
 	* @param int $blockid The block ID to add them to.
 	*/
-	public function add_member($userid, $blockid = NULL) {
+	public function add_member($userid, $force = false, $blockid = NULL) {
 		global $I2_SQL;
 		if($blockid == NULL) {
 			$blockid = $this->data['bid'];
 		}
-		$result = $I2_SQL->query("REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES (%d,%d,%d)", $this->data['aid'], $blockid, $userid);
+		$ret = 0;
+		if(count($this->get_members()) > $this->__get("capacity")) {
+			$ret |= EighthActivity::CAPACITY;
+		}
+		if($this->cancelled) {
+			$ret |= EighthActivity::CANCELLED;
+		}
+		if($this->data['restricted'] && !in_array($userid, $this->get_restricted_members())) {
+			$ret |= EighthActivity::PERMISSIONS;
+		}
+		if(0/* check sticky */) {
+			$ret |= EighthActivity::STICKY;
+		}
+		if(0/* check for one-a-day */) {
+			$ret |= EighthActivity::ONEADAY;
+		}
+		if($this->presign && 0/* check days till */) {
+			$ret |= EighthActivity::PRESIGN;
+		}
+		if(!$ret || $force) {
+			$result = $I2_SQL->query("REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES (%d,%d,%d)", $this->data['aid'], $blockid, $userid);
+			if(mysql_error()) {
+				$ret = -1;
+			}
+		}
+		if($force && $ret != -1) {
+			return 0;
+		}
+		return $ret;
 	}
 	
 	/**
@@ -62,9 +97,9 @@ class EighthActivity {
 	* @param array $userids The students' user IDs.
 	* @param int $blockid The block ID to add them to.
 	*/
-	public function add_members($userids, $blockid = NULL) {
+	public function add_members($userids, $force = FALSE, $blockid = NULL) {
 		foreach($userids as $userid) {
-			$this->add_member($userid, $blockid);
+			$this->add_member($userid, $force, $blockid);
 		}
 	}
 
@@ -75,7 +110,7 @@ class EighthActivity {
 	* @param int $userid The student's user ID.
 	* @param int $blockid The block ID to remove them from.
 	*/
-	public function remove_member($userid, $blockid) {
+	public function remove_member($userid, $blockid = NULL) {
 		global $I2_SQL;
 		if($blockid == NULL) {
 			$blockid = $this->data['bid'];
@@ -87,10 +122,10 @@ class EighthActivity {
 	* Removes multiple members from the activity.
 	*
 	* @access public
-	* @param int $userid The students' user IDs.
+	* @param array $userid The students' user IDs.
 	* @param int $blockid The block ID to remove them from.
 	*/
-	public function remove_members($userids, $blockid) {
+	public function remove_members($userids, $blockid = NULL) {
 		foreach($userids as $userid) {
 			$this->remove_member($userid, $blockid);
 		}
@@ -105,15 +140,15 @@ class EighthActivity {
 	public function get_members($blockid = NULL) {
 		global $I2_SQL;
 		if($blockid == NULL) {
-			if($this->bid) {
-				return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $this->bid, $this->data['aid'])->fetch_all_arrays(RESULT_NUM));
+			if($this->data['bid']) {
+				return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $this->data['bid'], $this->data['aid'])->fetch_all_arrays(Result::NUM));
 			}
 			else {
 				return array();
 			}
 		}
 		else {
-			return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $blockid, $this->data['aid'])->fetch_all_arrays(RESULT_NUM));
+			return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $blockid, $this->data['aid'])->fetch_all_arrays(Result::NUM));
 		}
 	}
 
@@ -146,7 +181,7 @@ class EighthActivity {
 	* Adds multiple members to the restricted activity.
 	*
 	* @access public
-	* @param int $userids The students' user ID.
+	* @param array $userids The students' user IDs.
 	*/
 	public function add_restricted_members($userids) {
 		foreach($userids as $userid) {
@@ -169,7 +204,7 @@ class EighthActivity {
 	* Removes multiple members from the restricted activity.
 	*
 	* @access public
-	* @param int $userids The students' user ID.
+	* @param array $userids The students' user IDs.
 	*/
 	public function remove_restricted_members($userids) {
 		foreach($userids as $userid) {
@@ -321,7 +356,10 @@ class EighthActivity {
 			return $this->data[$name];
 		}
 		else if($name == "members" && $this->data['bid']) {
-			return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $this->data['bid'], $this->data['aid'])->fetch_all_arrays(Result::NUM));
+			return $this->get_members();
+		}
+		else if($name == "members_obj" && $this->data['bid']) {
+			return User::id_to_user($this->get_members());
 		}
 		else {
 			switch($name) {
@@ -362,6 +400,12 @@ class EighthActivity {
 						$temp_rooms[] = $room->name;
 					}
 					return implode(",", $temp_rooms);
+				case "restricted_members":
+					return $this->get_restricted_members();
+				case "restricted_members_obj":
+					return User::id_to_user($this->get_restricted_members());
+				case "capacity":
+					return $I2_SQL->query("SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)", $this->data['rooms'])->fetch_single_value();
 			}
 		}
 	}

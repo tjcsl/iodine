@@ -84,6 +84,30 @@ class EighthSchedule {
 	}
 
 	/**
+	* Get all the absentees with lower # <= absences <= upper# and start date <= date <= end date
+	*
+	* @access public
+	* @param int $lower The lower number
+	* @param int $upper The upper number
+	* @param string $start The start date
+	* @param string $end The end date
+	*/
+	public static function get_delinquents($lower = 1, $upper = 1000, $start = null, $end = null) {
+		global $I2_SQL;
+		$wheres = array();
+		if($start != null) {
+			$wheres[] = "date >= %T";
+		}
+		if($end != null) {
+			$wheres[] = "date <= %T";
+		}
+		if(($start == null || $end == null) && count($wheres) == 1) {
+			return $I2_SQL->query("SELECT userid, COUNT(userid) AS absences FROM eighth_absentees LEFT JOIN eighth_blocks USING (bid) WHERE {$wheres[0]} GROUP BY userid HAVING COUNT(*) >= %d AND COUNT(*) <= %d", ($start == null ? $end : $start), $lower, $upper)->fetch_all_arrays(MYSQL_ASSOC);
+		}
+		return $I2_SQL->query("SELECT userid, COUNT(userid) AS absences FROM eighth_absentees LEFT JOIN eighth_blocks USING (bid) " . (count($wheres) != 0 ? "WHERE " : "") . implode(" AND ", $wheres) . " GROUP BY userid HAVING COUNT(*) >= %d AND COUNT(*) <= %d", $start, $end, $lower, $upper)->fetch_all_arrays(MYSQL_ASSOC);
+	}
+
+	/**
 	* Get the absences for a student.
 	*
 	* @access public
@@ -140,43 +164,63 @@ class EighthSchedule {
 	*/
 	public static function printActivityRosters($bids) {
 		global $I2_SQL;
-		$activities = EighthActivity::id_to_activity($I2_SQL->query("SELECT activityid,bid FROM eighth_block_map WHERE bid IN (%D) ORDER BY activityid,bid", $bids)->fetch_all_arrays(MYSQL_NUM));
-		foreach($activities as $activity) {
-			$members = User::id_to_user($activity->members);
-			echo "<div style=\"display: none;\">
+		$activities = EighthActivity::id_to_activity($I2_SQL->query("SELECT activityid,bid FROM eighth_block_map WHERE bid IN (%D) ORDER BY sponsors ASC, activityid ASC, bid ASC", $bids)->fetch_all_arrays(MYSQL_NUM));
+			echo "<div style=\"position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px; padding: 10px; background-color: #FFFFFF; color: #000000; z-index: 100; overflow: auto;\" onDblClick=\"void(this.style.display='none');\">
 <pre>
 \\documentclass[letterpaper,12pt]{article}
 \\usepackage{fullpage}
 \\pagestyle{empty}
 \\textheight 11in
 		
-\\begin{document}
-\\begin{tabular*}{6 in}{l@{\extracolsep{\fill}}cr@{\extracolsep{\fill}}}
+\\begin{document}";
+		foreach($activities as $activity) {
+			$members = User::id_to_user($activity->members);
+			$header = "
+\\begin{tabular*}{6 in}{l@{\\extracolsep{\\fill}}cr@{\\extracolsep{\\fill}}}
 & Class Roster & \\\\
 Course No. {$activity->aid} & & {$activity->block_sponsors_comma} \\\\
-Room {$activity->block_rooms_comma} & {$activity->name} - {$activity->comment} & {$activity->block->date} \\\\
+Room {$activity->block_rooms_comma} & {$activity->name_r} - {$activity->comment} & {$activity->block->date} \\\\
 Class Size " . count($activity->members) . " & & {$activity->block->block} Block \\\\*[1cm]
 \\end{tabular*}
 
-\\begin{tabular*}{6 in}{cl@{\extracolsep{\fill}}c}
+\\begin{tabular*}{6 in}{cl@{\\extracolsep{\\fill}}c}
 Check if Present & Student Name (ID) & Grade \\\\
 \\hline
 \\hline
 ";
-			foreach($members as $member) {
-				echo "\hrulefill & {$member->name_comma} ({$member->uid}) & {$member->grade} \\\\\n";
-			}
-			echo "
-\\end{tabular*}
-\n\nFor additions to this roster, please call extension 5078.
+			echo $header;
+			foreach($members as $num=>$member) {
+				echo "\\hrulefill & {$member->name_comma} ({$member->uid}) & {$member->grade} \\\\\n";
+				if($num > 0 && $num % 32 == 0) {
+					echo "\\end{tabular*}\n";
+					if($num == 32) {
+						echo "
 
-Please underline or highlight the names and ID numbers of the students who are NO-SHOWS.
+For additions to this roster, please call extension 5046, 5076, or 5078.
+
+Please underline or highlight the names and ID numbers of the students who are
+
+NO-SHOWS.
 
 Thank you!
+\\pagebreak\n{$header}";
+					}
+				}
+			}
+			if(count($members) < 32) {
+				echo "\\end{tabular*}\n";
+					echo "
+					
+For additions to this roster, please call extension 5046, 5076, or 5078.
 
-\\end{document}
-</pre>
-</div>\n";
+Please underline or highlight the names and ID numbers of the students who are
+
+NO-SHOWS.
+
+Thank you!\n";
+			}
+			echo "\\pagebreak\n";
 		}
+		echo "\\end{document}\n</pre>\n</div>\n";
 	}
 }

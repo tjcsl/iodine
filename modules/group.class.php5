@@ -20,6 +20,7 @@ class Group {
 	*/
 	private static $admin_groups = NULL;
 	private static $admin_all = NULL;
+	private static $admin_eighth = NULL;
 
 	public static function admin_all() {
 		if(self::$admin_all === NULL) {
@@ -35,6 +36,13 @@ class Group {
 		return self::$admin_groups;
 	}
 
+	public static function admin_eighth() {
+		if(self::$admin_eighth === NULL) {
+			self::$admin_eighth = new Group('admin_eighth');
+		}
+		return self::$admin_eighth;
+	}
+
 	private $mygid;
 	private $myname;
 
@@ -47,6 +55,10 @@ class Group {
 				return $this->myname;
 			case 'special':
 				return ($this->mygid < 0);
+			case 'members':
+				return $this->get_members();
+			case 'members_obj':
+				return User::id_to_user($this->get_members());
 		}
 	}
 
@@ -104,10 +116,14 @@ class Group {
 	*
 	* @return Array An containing all of the Group objects.
 	*/
-	public static function get_all_groups() {
+	public static function get_all_groups($module = NULL) {
 		global $I2_SQL;
+		$prefix = "%";
+		if($module) {
+			$prefix = strtolower($module) . "_%";
+		}
 		$ret = array();
-		foreach($I2_SQL->query('SELECT gid FROM groups') as $row) {
+		foreach($I2_SQL->query('SELECT gid FROM groups WHERE name LIKE %s', $prefix) as $row) {
 			$ret[] = new Group($row[0]);
 		}
 		return $ret;
@@ -124,9 +140,12 @@ class Group {
 	
 	}
 
-	public function add_user(User $user) {
+	public function add_user($user) {
 		global $I2_SQL;
 
+		if(is_numeric($user)) {
+			$user = new User($user);
+		}
 		if($this->special) {
 			throw I2Exception("Attempted to add user {$user->uid} to invalid group {$this->mygid}");
 		}
@@ -259,7 +278,7 @@ class Group {
 	public function delete_group() {
 		global $I2_SQL;
 		
-		if(!self::admin_groups()->has_member($GLOBALS['I2_USER'])) {
+		if(!self::admin_groups()->has_member($GLOBALS['I2_USER']) && !(self::admin_eighth()->has_member($GLOBAL['I2_USER']) && substr($this->name, 0, 7) == "eighth_")) {
 			throw new I2Exception('User is not authorized to delete groups.');
 		}
 
@@ -273,7 +292,7 @@ class Group {
 	public static function add_group($name) {
 		global $I2_SQL;
 
-		if(!self::admin_groups()->has_member($GLOBALS['I2_USER'])) {
+		if(!self::admin_groups()->has_member($GLOBALS['I2_USER']) && !(self::admin_eighth()->has_member($GLOBALS['I2_USER']) && substr($name, 0, 7) == "eighth_")) {
 			throw new I2Exception('User is not authorized to create groups.');
 		}
 

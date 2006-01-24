@@ -1,6 +1,6 @@
 input, select, textarea {
 	background-color: #00FFFF;
-	color: #003333;
+	color: #006666;
 	border-width: medium;
 	border-color: #00FFFF;
 }
@@ -8,19 +8,19 @@ input, select, textarea {
 body {
 	font-family: arial, helvetica, verdana, sans-serif;
 	font-size: 10pt;
-	background-color: #00BBBB;
-	color: #3333CC;
+	background-color: #00DDDD;
+	color: #006666;
 }
 
 a {
-	color: #003333;
+	color: #006666;
 	text-decoration: none;
 }
 
 a:visited {
-	color: #003333;
+	color: #006666;
 }
 
 a:active {
-	color: #000000;
+	color: #6666FF;
 }

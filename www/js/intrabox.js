@@ -3,6 +3,7 @@ var drag_box = null;
 var box_after = null;
 var interval = 0;
 var scroll = 0;
+var box_index = -1, to_box_index = -1;
 var boxes = document.getElementById('intraboxes').childNodes;
 for(var i = 0; i < boxes.length - 1; i++) {
 	init(boxes[i]);
@@ -157,29 +158,31 @@ function init(box) {
 		var box = null;
 		var max = 100000000;
 		for(var i = 0; i < boxes.length; i++) {
-			if(boxes[i] == this)
+			if(boxes[i] == this) {
+				if(box_index == -1) {
+					box_index = i;
+				}
 				continue;
+			}
 			var dist = Math.sqrt(Math.pow(new_left - boxes[i].pagePosLeft, 2) + Math.pow(new_top - boxes[i].pagePosTop, 2));
 			if(isNaN(dist))
 				continue;
 			if(dist < max) {
 				max = dist;
 				box = boxes[i];
+				to_box_index = i;
 			}
 		}
-		if(box != null) {
-			box_after = box;
-			if (this.nextSibling != box) {
-				box.parentNode.insertBefore(this, box);
-			}
-			//this.parentNode.style.display = "none";
-			//this.parentNode.style.display = "";
+		if(box != null && this.nextSibling != box) {
+			box.parentNode.insertBefore(this, box);
+			this.parentNode.style.display = "none";
+			this.parentNode.style.display = "";
 		}
 		this.dragged = true;
 	};
 	box.onDragEnd = function() {
 		if(this.dragged) {
-			sendReq(this.id + "," + box_after.id);
+			sendReq(this.id.replace(/intrabox_/, "") + "/" + (to_box_index - box_index - 1));
 			var dist = 15;
 			var left = parseInt(make_intrabox().style.left);
 			var top = parseInt(make_intrabox().style.top);
@@ -190,7 +193,6 @@ function init(box) {
 			interval = setInterval(function() {
 				if(dist < 1) {
 					clearInterval(interval);
-					box.style.visibility="visible";
 					make_intrabox().style.display = "none";
 					return;
 				}
@@ -200,11 +202,18 @@ function init(box) {
 				make_intrabox().style.left = left + "px";
 				make_intrabox().style.top = top + "px";
 			}, 10);
+			this.style.visibility = "visible"
 		}
 		else {
 			if(this.href) {
 				make_intrabox().style.display = "none";
-				(this.target) ? window.open(this.href, this.target) : document.location = this.href;
+				this.style.visibility = "visible";
+				if(this.target) {
+					window.open(this.href, this.target);
+				}
+				else {
+					document.location = this.href;
+				}
 			}
 		}
 	};

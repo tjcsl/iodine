@@ -169,9 +169,9 @@ class Eighth implements Module {
 	* @param string $title The title for the group list.
 	*/
 	private function setup_group_selection($add = FALSE, $title = "Select a group:") {
-		$groups = Groups::get_all_groups();
+		$groups = Group::get_all_groups("eighth");
 		$this->template = "eighth_group_selection.tpl";
-		$this->template_args += array("groups" => flatten($groups->fetch_all_arrays(MYSQL_NUM)), "add" => $add);
+		$this->template_args += array("groups" => $groups, "add" => $add);
 		$this->template_args['title'] = $title;
 		$this->title = "Select a Group";
 		$this->help_text = "Select a Group";
@@ -232,8 +232,8 @@ class Eighth implements Module {
 		}
 		else if($op == "commit") {
 			$activity = new EighthActivity($args['aid'], $args['bid']);
-			//FIXME: broken
-			$activity->add_members(Groups::get_group_members($args['gid']));
+			$group = new Group($args['gid']);
+			$activity->add_members($group->members);
 			redirect("eighth");
 		}
 	}
@@ -250,35 +250,36 @@ class Eighth implements Module {
 			$this->setup_group_selection(true);
 		}
 		else if($op == "add") {
-			Groups::create_group($args['name']);
+			Group::add_group("eighth_" . $args['name']);
+			redirect("eighth");
 		}
 		else if($op == "modify") {
-			Groups::set_group_name($args['gid'],$args['name']);
+			Group::set_group_name($args['gid'],$args['name']);
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
 		}
 		else if($op == "remove") {
-			Groups::delete_group($args['gid']);
+			Group::delete_group($args['gid']);
 			redirect("eighth");
 		}
 		else if($op == "view") {
-			//$group = new EighthGroup($args['gid']);
-			$members = User::id_to_user(Groups::get_group_members($args['gid']));
-			usort($members, array($this, 'name_cmp'));
+			$group = new Group($args['gid']);
 			$this->template = "eighth_amr_group.tpl";
-			$this->template_args['members'] = $members;
-			$this->template_args['gid'] = $args['gid'];
-			$this->title = "View Groups";
+			$this->template_args['group'] = $group;
+			$this->title = "View Group (" . substr($group->name,7) . ")";
 		}
 		else if($op == "add_member") {
-			Groups::add_user_to_group($args['uid'],$args['gid']);
+			$group = new Group($args['gid']);
+			$group->add_user($args['uid']);
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
 		}
 		else if($op == "remove_member") {
-			Groups::remove_user_from_group($args['uid'],$args['gid']);
+			$group = new Group($args['gid']);
+			$group->remove_user($args['uid']);
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
 		}
 		else if($op == "remove_all") {
-			Groups::remove_all_from_group($args['gid']);
+			$group = new Group($args['gid']);
+			$group->remove_all_members();
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
 		}
 		else if($op == "add_members") {
@@ -298,22 +299,32 @@ class Eighth implements Module {
 		if($op == "") {
 			$this->setup_activity_selection(FALSE, NULL, TRUE);
 		}
+		else if($op == "view") {
+			$this->template = "eighth_alt_permissions.tpl";
+			$this->template_args['activity'] = new EighthActivity($args['aid']);
+			$this->template_args['groups'] = Group::get_all_groups("eighth");
+			$this->title = "Alter Permissions to Restricted Activities";
+		}
 		else if($op == "add_group") {
 			$activity = new EighthActivity($args['aid']);
-			$group = new EighthGroup($args['gid']);
+			$group = new Group($args['gid']);
 			$activity->add_restricted_members($group->members);
+			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
 		}
 		else if($op == "add_member") {
 			$activity = new EighthActivity($args['aid']);
 			$activity->add_restricted_member($args['uid']);
+			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
 		}
 		else if($op == "remove_member") {
 			$activity = new EighthActivity($args['aid']);
 			$activity->remove_restricted_member($args['uid']);
+			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
 		}
 		else if($op == "remove_all") {
 			$activity = new EighthActivity($args['aid']);
 			$activity->remove_restricted_all();
+			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
 		}
 	}
 
@@ -748,6 +759,30 @@ class Eighth implements Module {
 		// TODO: Sorting and exporting for all
 		if($op == "") {
 			// TODO: Print a list of delinquents
+			$lower = 1;
+			$upper = 1000;
+			$start = null;
+			$end = null;
+			if(!empty($args['lower']) && ctype_digit($args['lower'])) {
+				$lower = $args['lower'];
+			}
+			if(!empty($args['upper']) && ctype_digit($args['upper'])) {
+				$upper = $args['upper'];
+			}
+			if(!empty($args['start'])) {
+				$start = $args['start'];
+			}
+			if(!empty($args['end'])) {
+				$end = $args['end'];
+			}
+			$delinquents = EighthSchedule::get_delinquents($lower, $upper, $start, $end);
+			$this->template_args['students'] = array();
+			$this->template_args['absences'] = array();
+			for($i = 0; $i < count($delinquents); $i++) {
+				$this->template_args['students'][] = $delinquents[$i]['userid'];
+				$this->template_args['absences'][] = $delinquents[$i]['absences'];
+			}
+			$this->template_args['students'] = User::id_to_user($this->template_args['students']);
 			$this->template = "eighth_vp_delinquent.tpl";
 			$this->title = "View Delinquent Students";
 		}
@@ -755,6 +790,8 @@ class Eighth implements Module {
 			// TODO: Query the delinquents
 			$this->template = "eighth_vp_delinquent.tpl";
 			$this->title = "Query Delinquent Students";
+		}
+		else if($op == "sort") {
 		}
 	}
 
@@ -862,7 +899,7 @@ class Eighth implements Module {
 				$activity = new EighthActivity(1);
 				EighthSchedule::schedule_activity($bid, $activity->aid, $activity->sponsors, $activity->rooms);
 				$uids = flatten($I2_SQL->query("SELECT uid FROM user WHERE uid NOT IN (SELECT userid FROM eighth_activity_map WHERE bid=%d)", $bid)->fetch_all_arrays(MYSQL_NUM));
-				$activity->add_members($uids, $bid);
+				$activity->add_members($uids, false, $bid);
 			}
 			redirect("eighth");
 		}
@@ -881,6 +918,9 @@ class Eighth implements Module {
 			$this->template = "eighth_vcp_schedule.tpl";
 			if(!empty($args['uid'])) {
 				$this->template_args['users'] = User::id_to_user(flatten($I2_SQL->query("SELECT uid FROM user WHERE uid LIKE %d", $args['uid'])->fetch_all_arrays(Result::NUM)));
+				if(count($this->template_args['users']) == 1) {
+					redirect("eighth/vcp_schedule/view/uid/{$this->template_args['users'][0]->uid}");
+				}
 			}
 			else {
 				$this->template_args['users'] = User::search_info("{$args['fname']} {$args['lname']}");
@@ -899,6 +939,17 @@ class Eighth implements Module {
 			$this->template = "eighth_vcp_schedule_view.tpl";
 			$this->title = "View Schedule";
 		}
+		else if($op == "print") {
+			if(!isset($args['start_date'])) {
+				$args['start_date'] = NULL;
+			}
+			$this->template_args['start_date'] = ($args['start_date'] ? strtotime($args['start_date']) : time());
+			$this->template_args['user'] = new User($args['uid']);
+			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($args['uid'], $args['start_date']));
+			$this->template_args['absences'] = EighthSchedule::get_absences($args['uid']);
+			$this->template = "eighth_vcp_schedule_print.tpl";
+			$this->title = "View Printer Friendly Schedule";
+		}
 		else if($op == "choose") {
 			$this->template_args['activities'] = EighthActivity::get_all_activities($args['bid']);
 			$this->template_args['bid'] = $args['bid'];
@@ -909,13 +960,47 @@ class Eighth implements Module {
 		else if($op == "change") {
 			if ($args['bid'] && $args['aid']) {
 				$activity = new EighthActivity($args['aid'], $args['bid']);
-				$activity->add_member($args['uid']);
+				$ret = $activity->add_member($args['uid'], false);
+				$status = "";
+				if($ret & EighthActivity::CANCELLED) {
+					$status .= "[Cancelled]";
+				}
+				if($ret & EighthActivity::PERMISSIONS) {
+					$status .= "[Insufficient permissions]";
+				}
+				if($ret & EighthActivity::CAPACITY) {
+					$status .= "[Over capacity]";
+				}
+				if($ret & EighthActivity::STICKY) {
+					$status .= "[Can't switch out]";
+				}
+				if($ret & EighthActivity::ONEADAY) {
+					$status .= "[Only one a day]";
+				}
+				if($ret & EighthActivity::PRESIGN) {
+					$status .= "[Pre-sign activity]";
+				}
+				if(!$ret) {
+					$status .= "[Successful]";
+				}
+				else if($ret >= 64 || $ret < 0) {
+					$status .= "[Unsuccessful]";
+				}
+				$this->template = "eighth_vcp_schedule_change.tpl";
+				$this->template_args['status'] = $status;
+				//redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
+			}
+		}
+		else if($op == "force_change") {
+			if ($args['bid'] && $args['aid']) {
+				$activity = new EighthActivity($args['aid'], $args['bid']);
+				$activity->add_member($args['uid'], true);
 				redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
 			}
 		}
 		else if($op == "roster") {
-			$activity = new EighthActivity($args['aid'], $args['bid']);
-			$this->template_args['activity'] = $activity;
+			$this->template_args['activity'] = new EighthActivity($args['aid'], $args['bid']);
+			$this->template_args['num_members'] = count($this->template_args['activity']->members);
 			$this->template = "eighth_vcp_schedule_roster.tpl";
 			$this->title = "Activity Roster";
 		}
@@ -932,16 +1017,36 @@ class Eighth implements Module {
 		}
 	}
 
-	public function edit($op, $args) {
+	public function view($op, $args) {
 		if($op == "") {
 		}
-		else if("comments") {
+		else if($op == "comments") {
 			/* Editing comments code */
+			$this->template = "eighth_edit_comments.tpl";
+			$user = new User($args['uid']);
+			$this->template_args['user'] = $user;
 			$this->title = "Edit Comments";
 		}
 		else if($op == "student") {
 			/* Editing student code */
+			$this->template = "eighth_edit_student.tpl";
+			$user = new User($args['uid']);
+			$this->template_args['user'] = $user;
 			$this->title = "Edit Student Data";
+		}
+	}
+	public function edit($op, $args) {
+		if($op == "") {
+		}
+		else if($op == "comments") {
+			/* Editing comments code */
+			$user = new User($args['uid']);
+			$user->comments = $args['comments'];
+			redirect("eighth");
+		}
+		else if($op == "student") {
+			/* Editing student code */
+			$user = new User($args['uid']);
 		}
 	}
 }

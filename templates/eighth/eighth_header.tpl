@@ -48,10 +48,10 @@ function move_help(e) {
 }
 </script>
 <div id="blocker" style="display: none; position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px; background-color: #666666;"></div>
-<div id="help_pane" onmousedown="register_press(event)" >
-<div id="help_close" onclick="hide_help(max_height)">Close</div>
+<div id="help_pane" onMouseDown="register_press(event)">
+<div id="help_close" onClick="hide_help(max_height)">Close</div>
 <span class="bold">Help:</span><br /><br />
-	[<$help>]
+[<$help>]
 </div>
 <table style="border: 0px; padding: 0px; margin: 0px;">
 <tr>

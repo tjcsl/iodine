@@ -6,7 +6,7 @@ Room: [<$activity->block_rooms_comma>]<br />
 		<th>Grade</th>
 [<* Insert more personal information *>]
 	</tr>
-[<foreach from=$activity->members item="member">]
+[<foreach from=$activity->members_obj item="member">]
 	<tr style="background-color: [<cycle values="#CCCCCC,#FFFFFF">];">
 		<td style="padding: 0px 5px;">[<$member->name_comma>]</td>
 		<td style="padding: 0px 5px;">[<$member->grade>]</td>

@@ -202,7 +202,7 @@ class MySQL {
 				/*$tag[0] is the string, $tag[1] is the offset*/
 				
 				/* tags that require an argument */
-				if ( strpos(self::TAGS_ARG, $tag[0][1]) !== NULL) {
+				if ( strpos(self::TAGS_ARG, $tag[0][1]) !== FALSE) {
 					if($argc < 1) {
 						throw new I2Exception('Insufficient arguments to mysql query string');
 					}
@@ -248,7 +248,6 @@ class MySQL {
 			default:
 				throw new I2Exception('Attempted MySQL query of unauthorized command `'.substr($query, 0, strpos($query, ' ')).'`');
 		}
-
 		return new MySQLResult($this->raw_query($query),$query_t);
 	}
 

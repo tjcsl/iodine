@@ -126,7 +126,7 @@ class ManageIbox implements Module {
 
 		$max = $I2_SQL->query('SELECT max(box_order) FROM intrabox_map WHERE uid=%d;',$I2_USER->uid)->fetch_single_value();
 		$from_index = $I2_SQL->query('SELECT box_order FROM intrabox_map WHERE uid=%d AND boxid=%d;',$I2_USER->uid,$boxid)->fetch_single_value();
-		if(!$from_index) {
+		if($from_index === FALSE) {
 			throw new I2Exception("Tried to move box `$boxid`, which is not currently enabled for this user");
 		}
 		$to_index = $from_index + $delta_index;
@@ -141,9 +141,9 @@ class ManageIbox implements Module {
 		}
 
 		$delta_index = $to_index - $from_index;
-		d("delta_index: $delta_index, to_index: $to_index, from_index: $from_index");
+		echo("<div style=\"position: absolute; left: 300px; top: 10px; z-index: 100\">delta_index: $delta_index, to_index: $to_index, from_index: $from_index</div>");
 		if($delta_index != 0) {
-			$I2_SQL->query('UPDATE intrabox_map SET box_order = box_order+(%d) WHERE uid=%d AND (box_order BETWEEN %d AND %d OR box_order = %d);', ($delta_index>0?-1:1), $I2_USER->uid, $from_index, $to_index, $to_index);
+			$I2_SQL->query('UPDATE intrabox_map SET box_order = box_order+(%d) WHERE uid=%d AND (box_order BETWEEN %d AND %d OR box_order = %d);', ($delta_index>0?-1:1), $I2_USER->uid, min($from_index, $to_index), max($from_index, $to_index), $to_index);
 			$I2_SQL->query('UPDATE intrabox_map SET box_order = %d WHERE uid=%d AND boxid=%d;', $to_index, $I2_USER->uid, $boxid);
 		}
 	}
