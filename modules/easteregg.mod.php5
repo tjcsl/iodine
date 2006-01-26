@@ -35,11 +35,14 @@ class Easteregg implements Module {
 	function display_pane($disp) {
 		global $I2_ARGS;
 		
-		if ($I2_ARGS[1] == 't3h_Ub3r1337_h4x') {
+		if ($I2_ARGS[1] == 'pwnage') {
 			$disp->disp('realegg.tpl');
 		}
-		else {
-			$disp->disp('easteregg_pane.tpl');
+		else if($I2_ARGS[1] =='wootzor') {
+			$disp->disp('egg.tpl');
+		}
+		else{
+		$disp->disp('easteregg_pane.tpl');
 		}
 	}
 	
