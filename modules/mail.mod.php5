@@ -25,11 +25,19 @@ class Mail implements Module {
 	private $connection;
 	private $messages;
 	private $nmsgs;
+	private $cache_file;
 
 	/**
 	* The Mail class constructor.
 	*/
 	function __construct() {
+		$cache_dir = i2config_get('cache_dir','/var/cache/iodine/','core') . 'mail/';
+
+		if(!is_dir($cache_dir)) {
+			mkdir($cache_dir, 0700, TRUE);
+		}
+
+		$this->cache_file = $cache_dir . session_id();
 	}
 	
 	function init_pane() {
@@ -77,6 +85,13 @@ class Mail implements Module {
 	}
 
 	private function download_msgs() {
+		if(($this->messages = self::get_cache()) !== FALSE) {
+			d('Using IMAP header cache',6);
+			$this->nmsgs = count($this->messages);
+			return;
+		}
+		
+		d('Not using IMAP cache, downloading messages',6);
 		$this->connection = imap_open("{mail.tjhsst.edu:993/imap/ssl/novalidate-cert}INBOX", $_SESSION['i2_username'], Auth::get_user_password());
 		if (! $this->connection) {
 			throw new I2Exception("Could not connect to mail server!");
@@ -105,8 +120,31 @@ class Mail implements Module {
 				$message->short_from = $message->from;
 			}
 		}
+
+		self::store_cache($this->messages);
 	}
 
-}
+	private function get_cache() {
+		if(!file_exists($this->cache_file)) {
+			d('Cache file does not exist',6);
+			return FALSE;
+		}
+		
+		if(time() - filemtime($this->cache_file) > i2config_get('imap_cache_time',300,'mail')) {
+			d('Cache file is too stale');
+			return FALSE;
+		}
 
+		$ret = unserialize(file_get_contents($this->cache_file));
+		return $ret;
+	}
+
+	private function store_cache($messages) {
+		$data = serialize($messages);
+		
+		$fh = fopen($this->cache_file, 'w');
+		fwrite($fh, $data);
+		fclose($fh);
+	}
+}
 ?>
