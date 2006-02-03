@@ -86,7 +86,7 @@ class Mail implements Module {
 
 	private function download_msgs() {
 		if(($this->messages = self::get_cache()) !== FALSE) {
-			d('Using IMAP header cache',6);
+			d('Using IMAP header cache',7);
 			$this->nmsgs = count($this->messages);
 			return;
 		}
