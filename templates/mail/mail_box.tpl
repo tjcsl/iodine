@@ -11,8 +11,8 @@ You have [<$nmsgs>] messages in your inbox.<br />
 		</tr>
 		[<section name=id loop=$messages max=$nmsgs_show step=-1>]
 			<tr>
-				<td align="left">[<if $messages[id]->unread>]<span class="mail_unread">[</if>][<$messages[id]->from>][<if $messages[id]->unread>]</span>[</if>]</td>
-				<td align="left" style="width:10em;">[<if $messages[id]->unread>]<span class="mail_unread">[</if>][<$messages[id]->subject>][<if $messages[id]->unread>]</span>[</if>]</td>
+				<td align="left">[<if $messages[id]->unread>]<span class="mail_unread">[</if>][<$messages[id]->short_from>][<if $messages[id]->unread>]</span>[</if>]</td>
+				<td align="left" style="width:10em;">[<if $messages[id]->unread>]<span class="mail_unread">[</if>][<$messages[id]->short_subject>][<if $messages[id]->unread>]</span>[</if>]</td>
 				<td align="left">[<if $messages[id]->unread>]<span class="mail_unread">[</if>][<$messages[id]->date|date_format:"%m/%d/%y">][<if $messages[id]->unread>]</span>[</if>]</td>
 			</tr>
 		[</section>]
