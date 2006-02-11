@@ -1,3 +1,6 @@
+[<if isset($err)>]
+There was an error retrieving your email messages. Either your password for the mail system is different than your Intranet password, or the mail server is unavailable.
+[<else>]
 You have [<$nmsgs>] messages in your inbox.<br />
 <a href="[<$I2_ROOT>]mail">View your messages</a><br />
 [<if $nmsgs_show>]
@@ -18,4 +21,5 @@ You have [<$nmsgs>] messages in your inbox.<br />
 		[</section>]
 	</tbody>
 	</table>
+[</if>]
 [</if>]

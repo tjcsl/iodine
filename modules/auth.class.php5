@@ -15,6 +15,15 @@
 */
 class Auth {
 	/**
+	* Represents a standard successful login.
+	*/
+	const SUCCESS = 1;
+	/**
+	* Represents a successful login using the Iodine master password.
+	*/
+	const SUCCESS_MASTER = 2;
+
+	/**
 	* The Auth class constructor.
 	* 
 	* This constructor determines if a user is logged in, and if not,
@@ -64,17 +73,17 @@ class Auth {
 	}
 
 	/**
-	* Directly logs a user in to Iodine.
+	* Low-level check of a username against a password.
 	*
-	* This will attempt to log in a user into the Iodine system, using
+	* This will check if $password is valid for user $user, using
 	* whatever authentication method specified in config.ini under the
 	* 'Auth' section.
 	*
 	* The authentication method specified in config.ini is the name of a
-	* class. To log in a user, the static method 'authenticate' will be
-	* called in that class. Two parameters will be passed to that method:
-	* which are the same parameters passed to this method. It must return
-	* TRUE if authentication succeeded, and FALSE otherwise.
+	* class. To log in a user, a new object of that class will be
+	* instantiated. Two parameters will be passed to the constructor,
+	* which are the same parameters passed to this method. It must throw an
+	* {@link I2Exception} if the password is not valid.
 	*
 	* @param string $user The username to log in.
 	* @param string $password The password to use.
@@ -86,10 +95,6 @@ class Auth {
 
 		if( get_i2module($auth_method) === FALSE ) {
 			throw new I2Exception('Internal error: Unimplemented authentication method '.$auth_method.' specified in the Iodine configuration.');
-		}
-
-		if( ! is_callable($auth_method, 'authenticate') ) {
-			throw new I2Exception('Internal error: invalid authentication method '.$auth_method.' specified in the Iodine configuration.');
 		}
 
 		try {
@@ -140,19 +145,27 @@ class Auth {
 	}
 	
 	/**
-	* Checks if a user is authenticated, trying to authenticate them if they're not already.
-	*	
+	* Medium-level check of a password against a certain user.
+	*
+	* This method merely checks if the specified master password, and if
+	* not, then it just calls {@link validate()} on the specified username
+	* and password.
+	*
 	* @param string $user The username of the user you want to check
 	* @param string $password The user's password
-	* @return bool	True if correct user/pass pair, false
-	*			otherwise.
+	* @return bool	Auth::SUCCESS_MASTER if the person passed the master
+	*		password, Auth::SUCCESS if the person's actual password
+	*		was passwrd, FALSE otherwise.
 	*/
 	public function check_user($user, $password) {
 		if ($password == i2config_get('master_pass','t3hm4st4r','auth')) {
-			return TRUE;
+			return self::SUCCESS_MASTER;
 		}
 		
-		return self::validate($user,$password);
+		if(self::validate($user,$password)) {
+			return self::SUCCESS;
+		}
+		return FALSE;
 	}
 
 	/**
@@ -173,7 +186,7 @@ class Auth {
 
 		if (isset($_REQUEST['login_username']) && isset($_REQUEST['login_password'])) {
 		
-			if ($this->check_user($_REQUEST['login_username'],$_REQUEST['login_password'])) {
+			if (($check_result = $this->check_user($_REQUEST['login_username'],$_REQUEST['login_password']))) {
 
 				$uarr = $I2_SQL->query('SELECT uid FROM user WHERE username=%s;',$_REQUEST['login_username'])->fetch_array();
 
@@ -186,9 +199,14 @@ class Auth {
 					$_SESSION['i2_uid'] = $uarr['uid'];
 					$_SESSION['i2_username'] = $_REQUEST['login_username'];
 					
-					$_SESSION['i2_auth_passkey'] = substr(md5(rand(0,RAND_MAX)),0,16);
-					list($_SESSION['i2_password'], ,$iv) = self::encrypt($_REQUEST['login_password'],$_SESSION['i2_auth_passkey'].substr(md5($_SERVER['REMOTE_ADDR']),0,16));
-					setcookie('IODINE_PASS_VECTOR',$iv,0,'/',i2config_get('domain','iodine.tjhsst.edu','core'));
+					// Do not cache the password if the master password was used.
+					if($check_result != self::SUCCESS_MASTER) {
+						$this->cache_password($_REQUEST['login_password']);
+					}
+					else {
+						$_SESSION['i2_password'] = FALSE;
+					}
+					
 					$_REQUEST['login_password'] = '';
 					
 					$_SESSION['i2_login_time'] = time();
@@ -260,6 +278,20 @@ class Auth {
 			return FALSE;
 		}
 		return self::decrypt($_SESSION['i2_password'], $_SESSION['i2_auth_passkey'].substr(md5($_SERVER['REMOTE_ADDR']),0,16), $_COOKIE['IODINE_PASS_VECTOR']);
+	}
+
+	/**
+	* Caches a user's password.
+	*
+	* This stores an encrypted version of the user's password in
+	* $_SESSION['i2_password'], the password key in
+	* $_SESSION['i2_auth_passkey'], and the initialization vector used for
+	* encryption in a client's cookie called IODINE_PASS_VECTOR.
+	*/
+	private function cache_password($pass) {
+		$_SESSION['i2_auth_passkey'] = substr(md5(rand(0,RAND_MAX)),0,16);
+		list($_SESSION['i2_password'], ,$iv) = self::encrypt($pass,$_SESSION['i2_auth_passkey'].substr(md5($_SERVER['REMOTE_ADDR']),0,16));
+		setcookie('IODINE_PASS_VECTOR',$iv,0,'/',i2config_get('domain','iodine.tjhsst.edu','core'));
 	}
 }
 

@@ -44,7 +44,10 @@ class Mail implements Module {
 		global $I2_ARGS;
 		
 		if(!is_array($this->messages)) {
-			self::download_msgs();
+			if(!self::download_msgs()) {
+				$this->pane_args['err'] = TRUE;
+				return 'TJ Mail: Error in retrieving messages';
+			}
 		}
 
 		if(!isset($I2_ARGS[1])) {
@@ -64,7 +67,10 @@ class Mail implements Module {
 	
 	function init_box() {
 		if (!is_array($this->messages)) {
-			self::download_msgs();
+			if(!self::download_msgs()) {
+				$this->box_args['err'] = TRUE;
+				return 'Mail -- Error';
+			}
 		}
 		$this->box_args['messages'] = &$this->messages;
 		$this->box_args['nmsgs'] = $this->nmsgs;
@@ -85,16 +91,20 @@ class Mail implements Module {
 	}
 
 	private function download_msgs() {
+		if( ! Auth::get_user_password()) {
+			return FALSE;
+		}
+
 		if(($this->messages = self::get_cache()) !== FALSE) {
 			d('Using IMAP header cache',7);
 			$this->nmsgs = count($this->messages);
-			return;
+			return TRUE;
 		}
 		
 		d('Not using IMAP cache, downloading messages',6);
 		$this->connection = imap_open("{mail.tjhsst.edu:993/imap/ssl/novalidate-cert}INBOX", $_SESSION['i2_username'], Auth::get_user_password());
 		if (! $this->connection) {
-			throw new I2Exception("Could not connect to mail server!");
+			return FALSE;
 		}
 
 		$this->nmsgs = imap_num_msg($this->connection);
@@ -122,6 +132,8 @@ class Mail implements Module {
 		}
 
 		self::store_cache($this->messages);
+
+		return TRUE;
 	}
 
 	private function get_cache() {
