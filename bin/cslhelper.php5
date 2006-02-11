@@ -1,4 +1,4 @@
-#!/home/sgross/php
+#!/usr/bin/php5
 <?php
 /**
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
