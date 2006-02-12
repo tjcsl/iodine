@@ -143,22 +143,28 @@ class Groups implements Module {
 				}
 
 				if( isset($_REQUEST['group_form']) ) {
-					if($_REQUEST['group_form'] == 'add') {
-						$new_member = new User($_REQUEST['uid']);
-						$group->add_user($new_member);
+					if(is_numeric($_REQUEST['uid'])) {
+						$user = new User($_REQUEST['uid']);
 					}
-					if($_REQUEST['group_form'] == 'remove') {
-						$user_to_remove = new User($_REQUEST['uid']);
-						$group->remove_user($user_to_remove);
+					else {
+						$user = User::get_by_uname($_REQUEST['uid']);
 					}
-					if($_REQUEST['group_form'] == 'make_admin') {
-						$new_admin = new User($_REQUEST['uid']);
-						$group->grant_admin($new_admin);
+					if(!$user) {
+						throw new I2Exception('Invalid user specified');
 					}
-					if($_REQUEST['group_form'] == 'remove_admin' && $is_higher_admin){
-						//to remove admin, must be more than single group admin
-						$admin_to_remove = new User($_REQUEST['uid']);
-						$group->revoke_admin($admin_to_remove);
+					switch($_REQUEST['group_form']) {
+						case 'add':	$group->add_user($user);
+								break;
+						case 'remove':	$group->remove_user($user);
+								break;
+						case 'make_admin':	$group->grant_admin($user);
+									break;
+						case 'remove_admin':
+								if($is_higher_admin) {
+								//to remove admin, must be more than single group admin
+									$group->revoke_admin($user);
+								}
+								break;
 					}
 				}
 			}

@@ -217,6 +217,23 @@ class User {
 	}
 
 	/**
+	* Get a user by their username.
+	*
+	* Returns a new User object that has the username $username.
+	*
+	* @param string $username The username to get.
+	* @return User The user corresponding to that username.
+	*/
+	public static function get_by_uname($username) {
+		global $I2_SQL;
+		$uid = $I2_SQL->query('SELECT uid FROM user WHERE username=%s;',$username)->fetch_single_value();
+		if(!$uid) {
+			return FALSE;
+		}
+		return new User($uid);
+	}
+
+	/**
 	* Creates a new user.
 	*
 	* This will insert the necessary information about a user into the applicable databases,
