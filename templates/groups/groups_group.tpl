@@ -2,10 +2,14 @@
 <br />
 Group: [<$group>]<br />
 <br />
+[<if count($members) > 0>]
 This group has the following members:<br />
 [<foreach from=$members item=person>]
   [<$person.name>][<if isset($person.admin) && ($admin == "all" || $admin == "master")>] ([<$person.admin>])[</if>]<br />
 [</foreach>]
+[<else>]
+This group has no members.<br />
+[</if>]
 [<if $admin == "all" || $admin == "master">]
 <br />
 You may add and remove people from this group.<br />
