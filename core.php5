@@ -165,8 +165,6 @@ try {
 	/**
 	 * The control mechanism for all Asynchonous Javascript and XML.
 	 *
-	 * Use this {@link Display} object for nothing, unless you're core.php.
-	 *
 	 * @global Ajax $I2_AJAX
 	 */
 	$I2_AJAX  = new Ajax();
