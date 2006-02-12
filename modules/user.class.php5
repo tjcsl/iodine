@@ -133,15 +133,7 @@ class User {
 				return $this->__get('lname') . ', ' . $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . ($mid ? "$mid " : '');
 			case 'grad_year':
 				$grade = $this->__get('grade');
-				/**
-				 * FIXME Should NOT be hardcoded
-				 */
-				$grad_years = array(
-					9 => 2009,
-					10 => 2008,
-					11 => 2007,
-					12 => 2006 );
-				return $grad_years[$grade];
+				return i2config_get('senior_gradyear',2006,'user') - $grade + 12;
 		}
 		
 		//Check which table the information is in
