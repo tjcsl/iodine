@@ -73,13 +73,31 @@ class News implements Module {
 			case 'add':
 				$this->template = 'news_add.tpl';
 				
-				if( isset($_REQUEST['add_form']) && $this->newsadmin) {
+				if( isset($_REQUEST['add_form'])) {
 					$title = $_REQUEST['add_title'];
-					$groups = $_REQUEST['add_groups'];
+					$groupname = $_REQUEST['add_groups'];
 					$text = $_REQUEST['add_text'];
-					Newsitem::post_item($I2_USER, $title, $text, $groups);
-					$this->template_args['added'] = 1;
+
+					$group = new Group($groupname);
+					if(!($group->is_admin($I2_USER) || $this->newsadmin)) {
+						throw new I2Exception("You do not have permission to add a new item to group $groupname");
+					}
+					
+					if(Newsitem::post_item($I2_USER, $title, $text, $group)) {
+						$this->template_args['added'] = 1;
+					}
+					else {
+						$this->template_args['added'] = 0;
+					}
+
 					return array('Post News', 'News article posted');
+				}
+				if($this->newsadmin) {
+					// If they are a news admin, they can post to anything.
+					$this->template_args['groups'] = Group::get_all_groups();
+				}
+				else {
+					$this->template_args['groups'] = Group::get_admin_groups($I2_USER);
 				}
 				return array('Post News', 'Add a news article');
 

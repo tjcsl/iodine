@@ -112,30 +112,23 @@ class Newsitem {
 	 * @param string $author The author of the news post.
 	 * @param string $title The title of the news post.
 	 * @param string $text The content of the news post.
-	 * @param string $groupnames A comma-seperated list of groups that
-	 *  will have access to the news post.
+	 * @param string $group
 	 */
-	public static function post_item($author, $title, $text, $groupnames = NULL) {
+	public static function post_item($author, $title, $text, $group) {
 		global $I2_SQL;
 
-		if ($groupnames != NULL) {
-			$groups = array();
-			foreach (explode(',', $groupnames) as $groupname) {
-				$groupname = trim($groupname);
-				$groups[] = new Group($groupname);
-			}
-		}
+		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP, gid=%d', $author->uid, $title, $text, $group->gid);
 
-		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP, gid=%d', $author->uid, $title, $text, (isset($groups[0]) ? $groups[0]->gid : NULL));
-		$nid = $I2_SQL->query('SELECT LAST_INSERT_ID()')->fetch_single_value();
-		
-		array_shift($groups);
-
-		if(isset($groups[0])) {
-			foreach ($groups as $group) {
-				$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%d', $nid, $group->gid);
-			}
-		}
+		return TRUE;
+//		$nid = $I2_SQL->query('SELECT LAST_INSERT_ID()')->fetch_single_value();
+//		
+//		array_shift($groups);
+//
+//		if(isset($groups[0])) {
+//			foreach ($groups as $group) {
+//				$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%d', $nid, $group->gid);
+//			}
+//		}
 	}
 
 	/**
