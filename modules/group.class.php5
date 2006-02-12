@@ -227,23 +227,6 @@ class Group {
 		return FALSE;
 	}
 
-	public function is_group_admin($user=NULL) {
-		global $I2_SQL;
-
-		if($user === NULL) {
-			$user = $GLOBALS['I2_USER'];
-		}
-
-		if( $this->special ) {
-			throw I2Exception("is_group_admin() called on invalid group {$this->mygid} for user {$user->uid}");
-		}
-		
-		if ($I2_SQL->query('SELECT is_admin FROM group_user_map WHERE uid=%d AND gid=%d', $user->uid, $group)->fetch_single_value()) {
-			return TRUE;
-		}
-		return FALSE;
-	}
-
 	public function set_group_name($name) {
 		global $I2_SQL;
 		return $I2_SQL->query('UPDATE groups SET name=%s WHERE gid=%d',$name,$this->mygid);
@@ -261,10 +244,9 @@ class Group {
 		$ret = array();
 		
 		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$user->uid);
-		$groups = flatten($res->fetch_all_arrays(Result::NUM));
 		
-		foreach($groups as $gid) {
-			$ret[] = new Group($gid);
+		foreach($res as $row) {
+			$ret[] = new Group($row['gid']);
 		}
 		if($include_special && $user->grade) {
 			$ret[] = new Group("grade_{$user->grade}");
@@ -272,6 +254,24 @@ class Group {
 		return $ret;
 	}
 
+	/**
+	* Gets the admin groups of which a user is a member.
+	*
+	*
+	* @param int $uid The userID of which to fetch the groups.
+	* @return array The group IDs of admin groups for the given user.
+	*/
+	public static function get_admin_groups(User $user) {
+		$groups = self::get_user_groups($user, FALSE);
+		$ret = array();
+		
+		foreach($groups as $group) {
+			if($group->is_admin($user)) {
+				$ret[] = $group;
+			}
+		}
+		return $ret;
+	}
 	/**
 	*
 	*/
@@ -359,7 +359,10 @@ class Group {
 			// They're not even a member of the group, so... not an admin
 			return FALSE;
 		}
-		return $res->fetch_single_value();
+		if($res->fetch_single_value()) {
+			return TRUE;
+		}
+		return FALSE;
 	}
 
 	public function get_name() {
