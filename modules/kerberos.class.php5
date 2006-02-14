@@ -29,7 +29,10 @@ class Kerberos {
 			throw new I2Exception("Kerberos login for $user@$realm failed.");
 		}
 
-		self::destroy($this->cache);
+		$_SESSION['logout_funcs'][] = array(
+						array('Kerberos', 'destroy'),
+						array($this->cache)
+					);
 	}
 
 	/**
