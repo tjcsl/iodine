@@ -46,7 +46,7 @@ class LANFilesystem extends Filesystem {
 		
 		if (!file_exists($mount_point)) {
 			d("Creating mount-point");
-			mkdir($mount_point, 0755);
+			mkdir($mount_point, 0755, TRUE);
 		}
 		
 		self::ncpumount($mount_point);
