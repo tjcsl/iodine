@@ -52,7 +52,7 @@ Counselor: [<$info.counselor>]<br />
 [<if $schedule>]
  <br />Classes:<br />
  [<foreach from=$schedule item=class>]
-  Period: [<$class->period>], Name: [<$class->name>], Room: [<$class->room>]<br />
+  <a href="[<$I2_ROOT>]studentdirectory/class/[<$class->sectionid>]">Period: [<$class->period>], Name: [<$class->name>], Room: [<$class->room>]</a><br />
  [</foreach>]
 [</if>]
 
