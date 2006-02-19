@@ -43,4 +43,7 @@
 .mainbox {
 	border: #fcc303 thick ridge;
 	background-color: #990022;
+	left: 337px;
+	padding: 1px;
+	-moz-border-radius: 0px;
 }
