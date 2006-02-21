@@ -38,6 +38,14 @@ class Mail implements Module {
 		}
 
 		$this->cache_file = $cache_dir . session_id();
+
+		$timeout = i2config_get('imap_timeout','','mail');
+		if($timeout) {
+			d('Setting IMAP timeout to '.$timeout,8);
+			foreach(array(1,2,3,4) as $i) {
+				imap_timeout($i, $timeout);
+			}
+		}
 	}
 	
 	function init_pane() {
@@ -102,8 +110,9 @@ class Mail implements Module {
 			return TRUE;
 		}
 		
-		d('Not using IMAP cache, downloading messages',6);
-		$this->connection = imap_open("{mail.tjhsst.edu:993/imap/ssl/novalidate-cert}INBOX", $_SESSION['i2_username'], $I2_AUTH->get_user_password());
+		$path = i2config_get('imap_path','{mail.tjhsst.edu:993/imap/ssl/novalidate-cert}INBOX', 'mail');
+		d("Not using IMAP cache, downloading messages from $path",6);
+		$this->connection = imap_open($path, $_SESSION['i2_username'], $I2_AUTH->get_user_password());
 		if (! $this->connection) {
 			return FALSE;
 		}
