@@ -19,14 +19,14 @@ class LDAP {
 	private $dnbase = 'dc=tjhsst,dc=edu';
 	
 	function __construct() {
-		global $I2_USER;
+		global $I2_USER,$I2_AUTH;
 		$server = i2config_get('server','localhost','ldap');
 		$this->conn = ldap_connect($server);
 		ldap_set_option($this->conn,LDAP_OPT_PROTOCOL_VERSION,3);
 		// We could use the old krb5 ticket instead of re-authing, but what the hey.
 		if (isSet($_SESSION['i2_username'])) {
 			$ldapuser = 'uid='.$_SESSION['i2_username'].',ou=people,'.$this->dnbase;
-			$bind = ldap_bind($this->conn,$ldapuser,Auth::get_user_password());
+			$bind = ldap_bind($this->conn,$ldapuser,$I2_AUTH->get_user_password());
 			if (!$bind) {
 				d("LDAP bind failed!",2);
 				ldap_bind($this->conn);

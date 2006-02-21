@@ -91,7 +91,8 @@ class Mail implements Module {
 	}
 
 	private function download_msgs() {
-		if( ! Auth::get_user_password()) {
+		global $I2_AUTH;
+		if( ! $I2_AUTH->get_user_password()) {
 			return FALSE;
 		}
 
@@ -102,7 +103,7 @@ class Mail implements Module {
 		}
 		
 		d('Not using IMAP cache, downloading messages',6);
-		$this->connection = imap_open("{mail.tjhsst.edu:993/imap/ssl/novalidate-cert}INBOX", $_SESSION['i2_username'], Auth::get_user_password());
+		$this->connection = imap_open("{mail.tjhsst.edu:993/imap/ssl/novalidate-cert}INBOX", $_SESSION['i2_username'], $I2_AUTH->get_user_password());
 		if (! $this->connection) {
 			return FALSE;
 		}

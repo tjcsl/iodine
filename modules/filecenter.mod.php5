@@ -61,7 +61,7 @@ class Filecenter implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_USER, $I2_ARGS, $I2_QUERY, $I2_SQL, $I2_LOG;
+		global $I2_USER, $I2_ARGS, $I2_QUERY, $I2_SQL, $I2_LOG, $I2_AUTH;
 
 		$system_type = $I2_ARGS[1];
 		
@@ -87,16 +87,16 @@ class Filecenter implements Module {
 			redirect('filecenter/csl/user/'.$_SESSION['csl_username'].'/');
 		} else if (!isSet($_SESSION['csl_username'])) {
 			$_SESSION['csl_username'] = $_SESSION['i2_username'];
-			$_SESSION['csl_password'] = Auth::get_user_password();
+			$_SESSION['csl_password'] = $I2_AUTH->get_user_password();
 		} else {
 			$this->template_args['csl_failed_login'] = TRUE;
 		}
 
 		if ($system_type == 'lan') {
-			$this->filesystem = new LANFilesystem($_SESSION['i2_username'], Auth::get_user_password());
+			$this->filesystem = new LANFilesystem($_SESSION['i2_username'], $I2_AUTH->get_user_password());
 			$this->template_args['max_file_size'] = 10485760; //10 mb
 		} else if ($system_type == 'portfolio') {
-			$this->filesystem = new PortfolioFilesystem($_SESSION['i2_username'], Auth::get_user_password());
+			$this->filesystem = new PortfolioFilesystem($_SESSION['i2_username'], $I2_AUTH->get_user_password());
 			$this->template_args['max_file_size'] = 10485760; //FIXME: is 10 mb correct?
 		} else if ($system_type == 'csl') {
 			$this->filesystem = new CSLProxy($_SESSION['csl_username'], $_SESSION['csl_password']);
