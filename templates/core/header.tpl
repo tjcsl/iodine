@@ -5,21 +5,21 @@
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
 <link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
-<!--[if lt IE 7.]>
-<script defer type="text/javascript" src="[<$I2_ROOT>]www/pngfix.js"></script>
+<!--[if IE]>
+<script src="[<$I2_ROOT>]www/ie7-core.js" type="text/javascript"></script>
+<script src="[<$I2_ROOT>]www/ie7-graphics.js" type="text/javascript"></script>
 <![endif]-->
 </head>
 <body>
-<div class="logo">
+<div class="logo"></div>
 
-</div>
 <div class="header">
  <div class="title"> Welcome, [<$first_name>]! </div>
  <span id="menu">
   <a href="[<$I2_ROOT>]">Home</a>
 
   <span class="bold">&middot;</span>
-  <a href="http://sct.tjhsst.edu/">SCT</a>
+  <a href="http://www.yourmom.com/">SCT</a>
   <span class="bold">&middot;</span>
   <a href="[<$I2_ROOT>]prefs">Preferences</a>
   <span class="bold">&middot;</span>
