@@ -5,6 +5,9 @@
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
 <link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
+<!--[if lt IE 7.]>
+<script defer type="text/javascript" src="[<$I2_ROOT>]www/pngfix.js"></script>
+<![endif]-->
 </head>
 <body>
 <div class="logo">
