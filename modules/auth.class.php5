@@ -24,6 +24,11 @@ class Auth {
 	const SUCCESS_MASTER = 2;
 
 	/**
+	* Whether encryption of the user's password in $_SESSION is enabled.
+	*/
+	private $encryption = 0;
+
+	/**
 	* The Auth class constructor.
 	* 
 	* This constructor determines if a user is logged in, and if not,
@@ -31,6 +36,8 @@ class Auth {
 	*/
 	public function __construct() {	
 		global $I2_ARGS;
+
+		//$this->encryption = i2config_get('encryption','1','core');
 
 		if( isset($I2_ARGS[0]) && $I2_ARGS[0] == 'logout' ) {
 				if (isSet($_SESSION['i2_uid'])) {
@@ -184,6 +191,8 @@ class Auth {
 			$_SESSION['logout_funcs'] = array();
 		}
 
+		$this->cache_password($_REQUEST['login_password']);
+			
 		if (isset($_REQUEST['login_username']) && isset($_REQUEST['login_password'])) {
 		
 			if (($check_result = $this->check_user($_REQUEST['login_username'],$_REQUEST['login_password']))) {
@@ -207,7 +216,7 @@ class Auth {
 						$_SESSION['i2_password'] = FALSE;
 					}
 					
-					$_REQUEST['login_password'] = '';
+					//$_REQUEST['login_password'] = '';
 					
 					$_SESSION['i2_login_time'] = time();
 				
@@ -274,7 +283,11 @@ class Auth {
 	* @return string The user's password, or FALSE on error (such as if we don't have enough information to decrypt it, indicating nobody has logged in yet).
 	*/
 	public function get_user_password() {
+		if ($this->encryption == 0) {
+			return $_SESSION['i2_password'];
+		}
 		if( !( isset($_SESSION['i2_password']) && isset($_SESSION['i2_auth_passkey']) && isset($_COOKIE['IODINE_PASS_VECTOR']))) {
+			d('Unable to retrieve the user password!',3);
 			return FALSE;
 		}
 		return self::decrypt($_SESSION['i2_password'], $_SESSION['i2_auth_passkey'].substr(md5($_SERVER['REMOTE_ADDR']),0,16), $_COOKIE['IODINE_PASS_VECTOR']);
@@ -289,7 +302,12 @@ class Auth {
 	* encryption in a client's cookie called IODINE_PASS_VECTOR.
 	*/
 	private function cache_password($pass) {
-		$_SESSION['i2_auth_passkey'] = substr(md5(rand(0,RAND_MAX)),0,16);
+		if ($this->encryption == 0) {
+			$_SESSION['i2_password'] = $pass;
+			//throw new Exception();
+			return;
+		}
+		$_SESSION['i2_auth_passkey'] = substr(md5(rand(0,i2config_get('rand_max',65025,'core'))),0,16);
 		list($_SESSION['i2_password'], ,$iv) = self::encrypt($pass,$_SESSION['i2_auth_passkey'].substr(md5($_SERVER['REMOTE_ADDR']),0,16));
 		setcookie('IODINE_PASS_VECTOR',$iv,0,'/',i2config_get('domain','iodine.tjhsst.edu','core'));
 	}

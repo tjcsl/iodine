@@ -20,7 +20,13 @@
 <p>
 <form action="[<$I2_SELF>]" method="POST">
  Query:<br />
- <textarea name="ldapinterface_query" rows="5" cols="50">[<$query>]</textarea>
- <br /><input type="submit" name="ldapinterface_submit" value="Search" />
+ <textarea name="ldapinterface_query" rows="5" cols="70">[<$query>]</textarea><br />
+ Base DN:<br />
+ <textarea name="ldapinterface_dn" rows="1" cols="70">[<$last_dn>]</textarea><br />
+ Attributes:<br />
+ <textarea name="ldapinterface_attrs" rows="3" cols="70">[<$last_attrs>]</textarea><br />
+ <input type="radio" name="ldap_searchtype" value="search" [<if $searchtype=='search'>]checked[</if>]/>Search<br />
+ <input type="radio" name="ldap_searchtype" value="list" [<if $searchtype=='list'>]checked[</if>]/>List<br />
+ <br /><input type="submit" name="ldapinterface_submit" value="Search"/>
 </form>
 </p>

@@ -19,6 +19,9 @@ class StudentDirectory implements Module {
 	private $information;
 	private $user = NULL;
 
+	public function get_classes($studentId) {
+	}
+
 	/**
 	* Required by the {@link Module} interface.
 	*/

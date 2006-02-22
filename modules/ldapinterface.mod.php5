@@ -20,6 +20,9 @@ class LDAPInterface implements Module {
 
 	private $query_data = FALSE;
 	private $query = FALSE;
+	private $dn = FALSE;
+	private $searchtype = 'search';
+	private $attrs = FALSE;
 
 	/**
 	* Unused; we don't display a box (yet)
@@ -37,7 +40,14 @@ class LDAPInterface implements Module {
 	*/
 	function display_pane($disp) {
 		$header_data = NULL;
-		$disp->disp('ldapinterface_pane.tpl', array( 'query_data' => $this->query_data, 'query' => $this->query));
+		$disp->disp('ldapinterface_pane.tpl', 
+			array( 
+				'query_data' => $this->query_data, 
+				'query' => addslashes($this->query), 
+				'last_dn' => addslashes($this->dn),
+				'searchtype' => $this->searchtype,
+				'last_attrs' => $this->attrs
+			));
 	}
 	
 	/**
@@ -89,17 +99,40 @@ class LDAPInterface implements Module {
 		
 		if( isset($_POST['ldapinterface_submit']) && $_POST['ldapinterface_submit'] && $_POST['ldapinterface_query']) {
 			$this->query = $_POST['ldapinterface_query'];
-			//try {
+			if (isSet($_POST['ldapinterface_dn'])) {
+				$this->dn = $_POST['ldapinterface_dn'];
+			}
+			if (isSet($_POST['ldap_searchtype']) && $_POST['ldap_searchtype'] == 'list') {
+				$this->searchtype = 'list';
+			} else {
+				$this->searchtype = 'search';
+			}
+
+			$myattrs = array('*');
+
+			if (isSet($_POST['ldapinterface_attrs']) && $_POST['ldapinterface_attrs'] != "") {
+				$this->attrs = $_POST['ldapinterface_attrs'];
+				$myattrs = explode(',',$this->attrs);
+			} else {
+				$this->attrs = FALSE;
+			}
+			
+			try {
 				//$this->query_data = $I2_LDAP->search($this->query,"()",array("objectClass"));
-				$res = $I2_LDAP->search("",$this->query,array('*'));
+				$res = NULL;
+				if ($this->searchtype == 'search') {
+					$res = $I2_LDAP->search($this->dn,$this->query,$myattrs);
+				} else {	
+					$res = $I2_LDAP->search_one($this->dn,$this->query,$myattrs);
+				}
 
 				$this->query_data = $res->fetch_all_arrays(Result::ASSOC);
 				
-				d('LDAP Search Results:');
-				d(print_r($this->query_data,1));
-			/*} catch (I2Exception $e) {
+				d("LDAP $this->searchtype Results:",7);
+				d(print_r($this->query_data,1),7);
+			} catch (I2Exception $e) {
 				$this->query_data = 'LDAP error: '.$e->get_message();
-			}*/
+			}
 		}
 		return 'LDAP Admin Interface';
 	}

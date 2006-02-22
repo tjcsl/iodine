@@ -40,7 +40,7 @@ class LDAPResult implements Result {
 	public function fetch_array($type=Result::BOTH) {
 	
 		if (!$this->query_type=LDAP::LDAP_SEARCH) {
-			throw new I2Exception("A resultset array cannot be fetched from a non-SEARCH LDAP query!");
+			throw new I2Exception('A resultset array cannot be fetched from a non-SEARCH LDAP query!');
 		}
 	
 		if ($this->current_row == NULL) {
@@ -74,7 +74,7 @@ class LDAPResult implements Result {
 		$res = array();
 		foreach ($rawres as $key=>$value) {
 			//TODO: think hard about this.
-			d($key . '=>' . $value);
+			//d($key . '=>' . $value);
 			if ($key=='count') {
 				continue;
 			}
@@ -131,7 +131,7 @@ class LDAPResult implements Result {
 	
 	public function get_insert_id() {
 		if (!$this->query_type == LDAP::LDAP_ADD) {
-			throw new I2Exception("Attempted to get the insert ID of a non-ADD LDAP query!");
+			throw new I2Exception('Attempted to get the insert ID of a non-ADD LDAP query!');
 		}
 		return ldap_get_dn($this->ldap,$this->current_row);
 	}
