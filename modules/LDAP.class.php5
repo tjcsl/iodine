@@ -61,10 +61,8 @@ class LDAP {
 		}
 		// We could use the old krb5 ticket instead of re-authing, but what the hey.
 		$ldapuser = 'iodineUid='.$_SESSION['i2_username'].',year=2006,ou=students,ou=people,'.$this->dnbase;
-		//$ldapuser = 'iodineUid=brau-jac,year=2006,ou=students,ou=people,dc=tjhsst,dc=edu';
 		$uname = $_SESSION['i2_username'];
 		$pass = $I2_AUTH->get_user_password();
-		d($pass,1);
 		$realm = i2config_get('default_realm','LOCAL.TJHSST.EDU','kerberos');
 		//$ldapuser = "iodineUid=$uname,cn=$realm,cn=gssapi,cn=auth";
 		
@@ -72,7 +70,6 @@ class LDAP {
 		
 		//$bind = ldap_bind($this->connect(),$ldapuser,Auth::get_user_password());
 		//$bind = ldap_sasl_bind($conn,$ldapuser,$pass,'gssapi',$realm);
-		//$bind = ldap_bind($conn,'cn=Manager,dc=tjhsst,dc=edu','secret');
 		$bind = ldap_bind($conn,$ldapuser,$pass);
 		
 		if (!$bind) {
