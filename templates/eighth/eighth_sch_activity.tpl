@@ -7,6 +7,7 @@
 		<th style="width: 100px; padding: 5px;">Block</th>
 		<th style="width: 240px; padding: 5px;">Room(s)</th>
 		<th style="width: 240px; padding: 5px;">Sponsor(s)</th>
+		<td</td>
 	</tr>
 [<foreach from=$activities item="activity">]
 	<tr style="background-color: [<cycle values="#CCCCCC,#FFFFFF">]">
@@ -15,6 +16,71 @@
 			[<$activity.block.date|date_format:"%a">] [<$activity.block.block>], [<$activity.block.date|date_format:"%m/%d/%y">]
 [<if $activity.scheduled>]
 			<script language="javascript" type="text/javascript">
+				var comment_bid = -1;
+				function show_comment_dialog(e, bid) {
+					comment_bid = bid;
+					var dialog = document.createElement("div");
+					dialog.style.position = "absolute";
+					dialog.style.left = e.clientX + "px";
+					dialog.style.top = e.clientY + "px";
+					dialog.style.width = "300px";
+					dialog.style.height = "150px";
+					dialog.style.zIndex = 100;
+					dialog.style.backgroundColor = "#FFFFCC";
+					dialog.style.color = "#000000";
+					dialog.style.border = "2px solid #000000";
+					dialog.style.padding = "5px";
+					var title = document.createElement("div");
+					title.innerHTML = "Add a comment:";
+					title.style.fontFamily = "sans-serif";
+					title.style.fontSize = "12pt";
+					title.style.fontWeight = "bold";
+					dialog.appendChild(title);
+					var comment_area = document.createElement("textarea");
+					comment_area.id = "comment_area";
+					comment_area.style.width = "288px";
+					comment_area.style.height = "85px";
+					comment_area.style.backgroundColor = "#FFFFCC";
+					comment_area.style.color = "#000000";
+					comment_area.style.border = "1px solid #CCCCCC";
+					comment_area.style.padding = "5px";
+					comment_area.style.fontFamily = "sans-serif";
+					comment_area.value = document.getElementById("comment_" + bid).value;
+					dialog.appendChild(comment_area);
+					var set_button = document.createElement("div");
+					set_button.style.border = "2px outset #000000";
+					set_button.style.position = "absolute";
+					set_button.style.left = "90px";
+					set_button.style.bottom = "5px";
+					set_button.style.width = "120px";
+					set_button.style.height = "20px";
+					set_button.style.backgroundColor = "#FFFFFF";
+					set_button.style.color = "#000000";
+					set_button.innerHTML = "Add Comment";
+					set_button.style.textAlign = "center";
+					set_button.style.fontWeight = "bold"
+					set_button.style.fontSize = "16px";
+					set_button.style.MozUserSelect = "none";
+					set_button.style.cursor = "default";
+					set_button.onmousedown = function() {
+						add_comment();
+						dialog.style.display = "none";
+					};
+					dialog.appendChild(set_button);
+					document.body.appendChild(dialog);
+				}
+				function add_comment() {
+					if(comment_bid != -1) {
+						var comment_field = document.getElementById("comment_" + comment_bid);
+						var new_comment = document.getElementById("comment_area").value;
+						if(comment_field.value != new_comment) {
+							var check = document.getElementById("check_" + comment_bid);
+							check.checked = "true";
+							comment_field.value = new_comment;
+						}
+						comment_bid = -1;
+					}
+				}
 				function do_action(action, bid) {
 					var reschedule_id = document.getElementById("reschedule_" + bid);
 					var unschedule_id = document.getElementById("unschedule_" + bid);
@@ -105,6 +171,7 @@
 			</div>
 			<input type="hidden" id="activity_status_[<$activity.block.bid>]" name="activity_status[[<$activity.block.bid>]]" value="SCHEDULED" />
 		</td>
+		<td><img src="[<$I2_ROOT>]www/pics/eighth/notepad.gif" alt="Add Comment" title="Add Comment" onMouseDown="show_comment_dialog(event, [<$activity.block.bid>])"><input type="hidden" id= "comment_[<$activity.block.bid>]" name="comments[[<$activity.block.bid>]]" value="[<$activity.comment>]" /></td>
 	</tr>
 [</foreach>]
 </table><br />

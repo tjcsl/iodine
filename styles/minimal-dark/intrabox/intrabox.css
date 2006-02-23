@@ -1,0 +1,19 @@
+@extend
+.intrabox {
+	background: black;
+}
+.boxheader {
+	color: #FFFFFF;
+	font-weight: bold;
+	background-color: black;
+	border-left: 4px solid black;
+	border-right: 4px solid black;
+}
+@extend
+.boxcontent {
+	color: white;
+}
+@extend
+.boxform {
+	color: white;
+}

@@ -4,6 +4,7 @@
 	border: dashed #008800 1px;
 	padding: 2pt;
 	margin-bottom: 10pt;
+	width: 320px;
 }
 .boxheader {
 	background: transparent;
@@ -11,15 +12,23 @@
 	font-weight: bold;
 	border-bottom: 1px dashed #008800;
 }
+@extend
+.boxbuttons {
+	margin-top: -4px;
+}
+@extend
 .upbutton {
 	background: url(/www/pics/l33tup.gif);
 }
+@extend
 .dnbutton {
 	background: url(/www/pics/l33tdn.gif);
 }
+@extend
 .mnbutton {
 	background: url(/www/pics/l33tmin.gif);
 }
+@extend
 .rmbutton {
 	background: url(/www/pics/l33tclose.gif);
 }
@@ -33,6 +42,20 @@
 }
 @extend
 .mainbox {
+	margin-left: 20px;
 	padding: 2pt;
 	border: 1px dashed #008800
+}
+@extend
+.activity_cancelled {
+	background-color: #008800;
+	color: #000000;
+}
+@extend
+.activity_cancelled td {
+	color: #000000;
+}
+@extend
+.activity_cancelled td a {
+	color: #000000;
 }

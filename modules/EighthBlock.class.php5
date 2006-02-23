@@ -84,30 +84,6 @@ class EighthBlock {
 	}
 
 	/**
-	* Gets the schedule for a particular activity.
-	*
-	* @access public
-	* @param int $activityid The activity ID.
-	* @param string $starting_date The starting date for the list, usually NULL.
-	* @param int $number_of_days The number of days to return.
-	*/
-	public static function get_activity_schedule($activityid, $starting_date = NULL, $number_of_days = 14) {
-		global $I2_SQL;
-		$blocks = self::get_all_blocks($starting_date, $number_of_days);
-		$activities = array();
-		$scheduled = TRUE;
-		foreach($blocks as $block) {
-			$result = $I2_SQL->query("SELECT rooms,sponsors,cancelled from eighth_block_map WHERE bid=%d AND activityid=%d", $block['bid'], $activityid);
-			if($result->num_rows() == 0) {
-				$result = $I2_SQL->query("SELECT rooms,sponsors FROM eighth_activities WHERE aid=%d", $activityid);
-				$scheduled = FALSE;
-			}
-			$activities[] = array("block" => $block, "scheduled" => $scheduled) + $result->fetch_array(Result::ASSOC);
-		}
-		return $activities;
-	}
-
-	/**
 	* The magic __get function.
 	*
 	* @access public

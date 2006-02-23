@@ -1,0 +1,39 @@
+\documentclass[fullpage,12pt]{article}
+\usepackage{fullpage}
+\pagestyle{empty}
+
+\begin{document}
+\begin{tabular}{ll}
+Activity: & %@$activity->name_r@% %@($activity->comment ? ' -- ' . $activity->comment_short : '')@% (%@$activity->aid@%) \\
+Date: & %@date('l, F j, Y', strtotime($activity->block->date))@% -- %@$activity->block->block@% block \\
+Room%@(count($activity->block_rooms) > 1 ? 's' : '')@%: & %@$activity->block_rooms_comma@% \\
+Sponsor%@(count($activity->block_sponsors) > 1 ? 's' : '')@%: & %@$activity->block_sponsors_comma@% \\*[1cm]
+\end{tabular}
+
+%@begin header
+\begin{tabular}{clc}
+{\bf Absent} & {\bf Student} & {\bf Grade} \\
+\hline
+\hline
+%@end header
+%@begin footer
+\end{tabular}
+\pagebreak
+%@end footer
+%@include header
+%@?
+$absentees = $activity->absentees;
+foreach($activity->members_obj as $num=>$member) {
+@%
+%@(in_array($member->uid, $absentees) ? "Yes" : "No")@% & %@$member->name_comma@% (%@$member->uid@%) & %@$member->grade@% \\
+%@?
+	if($num % 35 == 0 && $num != 0) {
+@%
+%@include footer
+%@include header
+%@?
+	}
+}
+@%
+%@include footer
+\end{document}

@@ -24,7 +24,7 @@ class EighthSchedule {
 	* @param array $sponsors The sponsors for that activity for that block.
 	* @param array $rooms The rooms for that activity for that block.
 	*/
-	public static function schedule_activity($blockid, $activityid, $sponsors = array(), $rooms = array()) {
+	public static function schedule_activity($blockid, $activityid, $sponsors = array(), $rooms = array(), $comment = "") {
 		global $I2_SQL;
 		if(!is_array($sponsors)) {
 			$sponsors = array($sponsors);
@@ -32,7 +32,7 @@ class EighthSchedule {
 		if(!is_array($rooms)) {
 			$rooms = array($rooms);
 		}
-		$result = $I2_SQL->query("REPLACE INTO eighth_block_map (bid,activityid,sponsors,rooms) VALUES (%d,%d,'%D','%D')", $blockid, $activityid, $sponsors, $rooms);
+		$result = $I2_SQL->query("REPLACE INTO eighth_block_map (bid,activityid,sponsors,rooms,comment) VALUES (%d,%d,'%D','%D',%s)", $blockid, $activityid, $sponsors, $rooms, $comment);
 	}
 
 	/**
@@ -145,6 +145,30 @@ class EighthSchedule {
 	}
 
 	/**
+	* Gets the schedule for a particular activity.
+	*
+	* @access public
+	* @param int $activityid The activity ID.
+	* @param string $starting_date The starting date for the list, usually NULL.
+	* @param int $number_of_days The number of days to return.
+	*/
+	public static function get_activity_schedule($activityid, $starting_date = NULL, $number_of_days = 14) {
+		global $I2_SQL;
+		$blocks = EighthBlock::get_all_blocks($starting_date, $number_of_days);
+		$activities = array();
+		$scheduled = TRUE;
+		foreach($blocks as $block) {
+			$result = $I2_SQL->query("SELECT rooms,sponsors,cancelled,comment from eighth_block_map WHERE bid=%d AND activityid=%d", $block['bid'], $activityid);
+			if($result->num_rows() == 0) {
+				$result = $I2_SQL->query("SELECT rooms,sponsors FROM eighth_activities WHERE aid=%d", $activityid);
+				$scheduled = FALSE;
+			}
+			$activities[] = array("block" => $block, "scheduled" => $scheduled) + $result->fetch_array(Result::ASSOC);
+		}
+		return $activities;
+	}
+
+	/**
 	* Counts the number of students in an activity and block.
 	*
 	* @access public
@@ -154,73 +178,5 @@ class EighthSchedule {
 	public static function count_members($blockid, $activityid) {
 		global $I2_SQL;
 		return $I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $blockid, $activityid)->num_rows();
-	}
-
-	/**
-	* Print the activity rosters for the given date and block(s).
-	*
-	* @access public
-	* @param array bids
-	*/
-	public static function printActivityRosters($bids) {
-		global $I2_SQL;
-		$activities = EighthActivity::id_to_activity($I2_SQL->query("SELECT activityid,bid FROM eighth_block_map WHERE bid IN (%D) ORDER BY sponsors ASC, activityid ASC, bid ASC", $bids)->fetch_all_arrays(MYSQL_NUM));
-			echo "<div style=\"position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px; padding: 10px; background-color: #FFFFFF; color: #000000; z-index: 100; overflow: auto;\" onDblClick=\"void(this.style.display='none');\">
-<pre>
-\\documentclass[letterpaper,12pt]{article}
-\\usepackage{fullpage}
-\\pagestyle{empty}
-\\textheight 11in
-		
-\\begin{document}";
-		foreach($activities as $activity) {
-			$members = User::id_to_user($activity->members);
-			$header = "
-\\begin{tabular*}{6 in}{l@{\\extracolsep{\\fill}}cr@{\\extracolsep{\\fill}}}
-& Class Roster & \\\\
-Course No. {$activity->aid} & & {$activity->block_sponsors_comma} \\\\
-Room {$activity->block_rooms_comma} & {$activity->name_r} - {$activity->comment} & {$activity->block->date} \\\\
-Class Size " . count($activity->members) . " & & {$activity->block->block} Block \\\\*[1cm]
-\\end{tabular*}
-
-\\begin{tabular*}{6 in}{cl@{\\extracolsep{\\fill}}c}
-Check if Present & Student Name (ID) & Grade \\\\
-\\hline
-\\hline
-";
-			echo $header;
-			foreach($members as $num=>$member) {
-				echo "\\hrulefill & {$member->name_comma} ({$member->uid}) & {$member->grade} \\\\\n";
-				if($num > 0 && $num % 32 == 0) {
-					echo "\\end{tabular*}\n";
-					if($num == 32) {
-						echo "
-
-For additions to this roster, please call extension 5046, 5076, or 5078.
-
-Please underline or highlight the names and ID numbers of the students who are
-
-NO-SHOWS.
-
-Thank you!
-\\pagebreak\n{$header}";
-					}
-				}
-			}
-			if(count($members) < 32) {
-				echo "\\end{tabular*}\n";
-					echo "
-					
-For additions to this roster, please call extension 5046, 5076, or 5078.
-
-Please underline or highlight the names and ID numbers of the students who are
-
-NO-SHOWS.
-
-Thank you!\n";
-			}
-			echo "\\pagebreak\n";
-		}
-		echo "\\end{document}\n</pre>\n</div>\n";
 	}
 }

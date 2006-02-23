@@ -10,20 +10,12 @@
 	border-left: 4px solid #f3a8e2;
 	border-right: 4px solid #f3a8e2;
 }
-.upbutton {
-	background: url(/www/pics/up.gif);
-}
-.dnbutton {
-	background: url(/www/pics/down.gif);
-}
-.mnbutton {
-	background: url(/www/pics/min.gif);
-}
-.rmbutton {
-	background: url(/www/pics/close.gif);
-}
 @extend
 .mainbox {
 	background-color: #f3a8e2;
 	border: none;
+}
+@extend
+.activity_cancelled {
+	background-color: #ff00c0;
 }

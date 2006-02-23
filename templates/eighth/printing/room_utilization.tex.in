@@ -1,0 +1,27 @@
+\documentclass[landscape,letterpaper,12pt]{report}
+\usepackage{tabularx}
+\pagestyle{empty}
+\special{landscape}
+\oddsidemargin -0.75in
+\topmargin -0.75in
+\textwidth 10in
+
+\begin{document}
+\begin{center}
+{\Huge January 23, 2006 - A block} \\
+\end{center}
+
+\begin{tabularx}{10in}{|X|p{6in}|X|}
+\hline
+{\centering\bf\Large Location} & \begin{center}\bf\Large Activity\end{center} & \begin{center}\bf\Large Teacher\end{center} \\
+\hline
+%@?
+foreach($activities as $activity) {
+@%
+\begin{center}%@$activity->block_rooms_comma@%\end{center} & %@$activity->name@%: %@$activity->description@% & \begin{center}%@$activity->block_sponsors_comma_short@%\end{center} \\
+\hline
+%@?
+}
+@%
+\end{tabularx}
+\end{document}

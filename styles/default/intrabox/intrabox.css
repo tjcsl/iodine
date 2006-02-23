@@ -24,19 +24,31 @@
 }
 .boxbuttons {
 	float: right;
-	margin: -2px 2px;
+	margin-top: 0px;
+	margin-right: 5px;
+}
+.boxbuttons span a {
+	text-decoration: none;
+}
+.boxbuttons span a img {
+	width: 8px;
+	height: 16px;
 }
 .upbutton {
 	background: url(/www/pics/up.gif);
+	background-repeat: no-repeat;
 }
 .dnbutton {
 	background: url(/www/pics/down.gif);
+	background-repeat: no-repeat;
 }
 .mnbutton {
 	background: url(/www/pics/min.gif);
+	background-repeat: no-repeat;
 }
 .rmbutton {
 	background: url(/www/pics/close.gif);
+	background-repeat: no-repeat;
 }
 .boxcontent {
 	margin-left: 4px;
@@ -53,6 +65,16 @@
 	left: 327px;
 	right: 10px;
 	border: thin groove;
+}
+.activity_cancelled {
+	background-color: #FF3333;
+	color: #FFFFFF; font-weight: bold;
+}
+.activity_cancelled td {
+	color: #FFFFFF;
+}
+.activity_cancelled td a {
+	color: #FFFFFF;
 }
 .mainbox_noheader {
 	position: absolute;

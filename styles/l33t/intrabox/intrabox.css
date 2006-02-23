@@ -1,24 +1,13 @@
 @extend
 .intrabox {
 	background: #000000;
+	width: 320px;
 }
 @extend
 .boxheader {
 	background-color: #000000;
 	border-left: 4px solid #000000;
 	border-right: 4px solid #000000
-}
-.upbutton {
-	background: url(/www/pics/up.gif);
-}
-.dnbutton {
-	background: url(/www/pics/down.gif);
-}
-.mnbutton {
-	background: url(/www/pics/min.gif);
-}
-.rmbutton {
-	background: url(/www/pics/close.gif);
 }
 @extend
 .boxcontent {
@@ -27,4 +16,12 @@
 @extend
 .boxform {
 	color: #ffffff;
+}
+@extend
+.mainbox {
+	margin-left: 20px;
+}
+@extend
+.activity_cancelled {
+	background-color: #006600;
 }

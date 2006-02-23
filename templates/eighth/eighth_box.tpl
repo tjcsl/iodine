@@ -7,8 +7,8 @@ You have been absent <a href="[<$I2_ROOT>]eighth/vcp_schedule/absences/uid/[<$I2
 			<th style="width: 25%;">Block</th>
 		</tr>
 		[<foreach from=$activities item="activity">]
-			<tr[<if $activity->cancelled>] style="background-color: #FF0000; color: #FFFFFF; font-weight: bold;"[</if>]>
-				<td style="text-align: left;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$I2_UID>]/bid/[<$activity->bid>]">[<$activity->name_r>]</a></td>
+			<tr[<if $activity->cancelled>] class="activity_cancelled"[</if>]>
+				<td style="text-align: left;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$I2_UID>]/bid/[<$activity->bid>]" title="[<$activity->comment>]">[<$activity->name_r>]</a></td>
 				<td style="text-align: center;">[<if $activity->cancelled>]CANCELLED[<else>][<$activity->block_rooms_comma>][</if>]</td>
 				<td style="text-align: center;">[<$activity->block->block>] block</td>
 			</tr>
@@ -17,4 +17,4 @@ You have been absent <a href="[<$I2_ROOT>]eighth/vcp_schedule/absences/uid/[<$I2
 [<else>]
 	<br />There are currently no activities.<br />
 [</if>]
-<span style="font-style: italic;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$I2_UID>]">Full Schedule</a> | <a href="[<$I2_ROOT>]eighth">Special Activities</a> | <a href="[<$I2_ROOT>]eighth/vcp_schedule/print/uid/[<$I2_UID>]">Printer Friendly</a></span>
+<span style="font-style: italic;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$I2_UID>]">Full Schedule</a> | <a href="[<$I2_ROOT>]eighth">Special Activities</a> | <a href="[<$I2_ROOT>]eighth/vcp_schedule/format/uid/[<$I2_UID>]">Printer Friendly</a></span>

@@ -25,3 +25,6 @@ Sponsor(s):&nbsp;[<$activity->block_sponsors_comma>]<br />
 	</table><br />
 	<input type="submit" value="Update" />
 </form>
+<div style="float: right; margin: 10px;">
+	<a href="[<$I2_ROOT>]eighth/vcp_attendance/format/aid/[<$activity->aid>]/bid/[<$activity->bid>]"><img src="[<$I2_ROOT>]www/pics/eighth/printer.png" alt="Print" title="Print" /></a>
+</div>

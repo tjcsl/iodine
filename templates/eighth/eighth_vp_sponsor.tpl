@@ -1,4 +1,5 @@
 [<include file="eighth/eighth_header.tpl">]
+<h2>Schedule for [<$sponsor->name>]:</h2>
 [<if count($activities) > 0 >]
 	<table cellspacing="0" style="border: 0px; padding: 0px; margin: 0px">
 		<tr>
@@ -15,7 +16,10 @@
 			<td style="padiing: 0px 5px; text-align: center;">[<php>] echo count($this->_tpl_vars['activity']->members); [</php>]</td>
 		</tr>
 	[</foreach>]
-	</table>
+	</table><br />
+	<div style="float: right; margin: 10px;">
+		<a href="[<$I2_ROOT>]eighth/vp_sponsor/format/sid/[<$sponsor->sid>]"><img src="[<$I2_ROOT>]www/pics/eighth/printer.png" alt="Print" title="Print" /></a>
+	</div>
 [<else>]
 	<span style="color: red; font-weight: bold;">This sponsor is not scheduled for any activities</span>
 [</if>]

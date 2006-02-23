@@ -2,7 +2,7 @@
 .intrabox {
 	border: #fcc303 thick ridge;
 	margin-bottom: 10pt;
-	width: 315px;
+	width: 305px;
 	background-color: #990022;
 }
 @replace
@@ -17,19 +17,8 @@
 }
 @extend
 .boxbuttons {
-	margin: -1px 4px;
-}
-.upbutton {
-	background: url(/www/pics/up.gif);
-}
-.dnbutton {
-	background: url(/www/pics/down.gif);
-}
-.mnbutton {
-	background: url(/www/pics/min.gif);
-}
-.rmbutton {
-	background: url(/www/pics/close.gif);
+	margin-top: 1px;
+	margin-right: 6px;
 }
 @extend
 .boxcontent {
@@ -46,4 +35,8 @@
 	left: 337px;
 	padding: 1px;
 	-moz-border-radius: 0px;
+}
+@extend
+.activity_cancelled {
+	background-color: #cc6600;
 }

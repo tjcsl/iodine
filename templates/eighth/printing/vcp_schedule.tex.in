@@ -1,0 +1,18 @@
+\documentclass[fullpage,12pt]{article}
+\usepackage{fullpage}
+\pagestyle{empty}
+
+\begin{document}
+\begin{tabular}{cccccc}
+{\bf Date} & {\bf Block} & {\bf Attended} & {\bf Activity} & {\bf Sponsor(s)} & {\bf Room(s)} \\
+\hline
+\hline
+%@?
+foreach($activities as $activity) {
+@%
+%@$activity->date@% & %@$activity->block@% & %@(in_array(array($activity->aid, $activity->bid), $absences) ? "No" : ($activity->attendance->taken ? "Yes" : "---"))@% & %@$activity->name_r@% (%@$activity->aid@%) & %@$activity->block_sponsors_comma_short@% & %@$activity->block_rooms_comma@% \\
+%@?
+}
+@%
+\end{tabular}
+\end{document}

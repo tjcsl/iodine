@@ -56,7 +56,7 @@ function move_help(e) {
 <table style="border: 0px; padding: 0px; margin: 0px;">
 <tr>
 <td>
-<a href="[<$I2_ROOT>]eighth"><img src="[<$I2_ROOT>]www/pics/eighth/eighth.png" style="border: 0; width: 300; height: 80" alt="Eighth Period Office Online"/></a>
+<a href="[<$I2_ROOT>]eighth"><img src="[<$I2_ROOT>]www/pics/eighth/eighth.png" style="width: 300px; height: 80px;" alt="Eighth Period Office Online" title="Return to 8th Period Office Menu" /></a>
 </td>
 <td style="width: 10"></td>
 <td style="valign: top">

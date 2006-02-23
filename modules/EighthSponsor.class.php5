@@ -92,7 +92,7 @@ class EighthSponsor {
 			return "{$this->data['lname']}, {$this->data['fname']}";
 		}
 		else if($name == "schedule") {
-			$result = $I2_SQL->query("SELECT bid,activityid,sponsors FROM eighth_block_map");
+			$result = $I2_SQL->query("SELECT bid,activityid,sponsors FROM eighth_block_map ORDER BY bid");
 			$activities = array();
 			foreach($result as $activity) {
 				$sponsors = explode(",", $activity['sponsors']);

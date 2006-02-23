@@ -208,6 +208,27 @@ class Eighth implements Module {
 		$this->title = "Select a Sponsor";
 		$this->help_text = "Select a Sponsor";
 	}
+	
+	/**
+	* Sets up for displaying the printing format selection screen.
+	*
+	* @access private
+	* @param string $module The module that we are printing from.
+	*/
+	private function setup_format_selection($module, $title = "", $args = array(), $user = FALSE) {
+		$this->template = "eighth_format_selection.tpl";
+		$this->template_args['module'] = $module;
+		$this->template_args['title'] = $title;
+		$this->template_args['user'] = $user;
+		$this->template_args['args'] = "";
+		foreach($args as $key=>$value) {
+			$this->template_args['args'] .= "/{$key}/{$value}";
+		}
+		$this->title = "Choose an Output Format for {$title}";
+		if(!$user) {
+			$this->help_text = "<span style=\"font-weight: bold; font-size: 125%;\">Choose an output format:</span><br /><br />\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"bold\">Print -</span> Print the data<br />\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"bold\">PDF -</span> Output as a PDF file<br />\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"bold\">PostScript -</span> Output as a PostScript file<br />\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"bold\">DVI -</span> Output as a DVI file<br />\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"bold\">LaTeX -</span> Output the raw LaTeX data";
+		}
+	}
 
 	/**
 	* Register a group of students for an activity
@@ -398,7 +419,7 @@ class Eighth implements Module {
 			$activity = new EighthActivity($args['aid']);
 			$activity->name = $args['name'];
 			$activity->sponsors = $args['sponsors'];
-			//$activity->rooms = $args['rooms'];
+			$activity->rooms = $args['rooms'];
 			$activity->description = $args['description'];
 			$activity->restricted = ($args['restricted'] == "on");
 			$activity->presign = ($args['presign'] == "on");
@@ -519,7 +540,7 @@ class Eighth implements Module {
 			$this->template = "eighth_sch_activity.tpl";
 			$this->template_args['rooms'] = EighthRoom::get_all_rooms();
 			$this->template_args['sponsors'] = EighthSponsor::get_all_sponsors();
-			$this->template_args['activities'] = EighthBlock::get_activity_schedule($args['aid']);
+			$this->template_args['activities'] = EighthSchedule::get_activity_schedule($args['aid']);
 			$this->template_args['aid'] = $args['aid'];
 			$this->title = "Schedule an Activity";
 		}
@@ -532,7 +553,7 @@ class Eighth implements Module {
 					EighthSchedule::unschedule_activity($bid, $args['aid']);
 				}
 				else {
-					EighthSchedule::schedule_activity($bid, $args['aid'], $args['sponsor_list'][$bid], $args['room_list'][$bid]);
+					EighthSchedule::schedule_activity($bid, $args['aid'], $args['sponsor_list'][$bid], $args['room_list'][$bid], $args['comments'][$bid]);
 				}
 			}
 			redirect("eighth");
@@ -560,6 +581,12 @@ class Eighth implements Module {
 			$this->template = "eighth_vp_roster.tpl";
 			$this->template_args['activity'] = $activity;
 			$this->title = "View Roster";
+		}
+		else if($op == "format") {
+			$this->setup_format_selection("vp_roster", "Class Roster", array("aid" => $args['aid'], "bid" => $args['bid']));
+		}
+		else if($op == "print") {
+			EighthPrint::print_class_roster($args['aid'], $args['bid'], $args['format']);
 		}
 	}
 
@@ -650,8 +677,15 @@ class Eighth implements Module {
 		else if($op == "view") {
 			$sponsor = new EighthSponsor($args['sid']);
 			$this->template = "eighth_vp_sponsor.tpl";
+			$this->template_args['sponsor'] = $sponsor;
 			$this->template_args['activities'] = $sponsor->schedule;
 			$this->title = "View Sponsor Schedule";
+		}
+		else if($op == "format") {
+			$this->setup_format_selection("vp_sponsor", "Sponsor Schedule", array("sid" => $args['sid']));
+		}
+		else if($op == "print") {
+			EighthPrint::print_sponsor_schedule($args['sid'], $args['format']);
 		}
 	}
 
@@ -722,6 +756,12 @@ class Eighth implements Module {
 			}
 			$activity->attendancetaken = TRUE;
 			redirect("eighth/vcp_attendance/view/bid/{$args['bid']}/aid/{$args['aid']}");
+		}
+		else if($op == "format") {
+			$this->setup_format_selection("vcp_attendance", "Attendance Data", array("aid" => $args['aid'], "bid" => $args['bid']));
+		}
+		else if($op == "print") {
+			EighthPrint::print_attendance_data($args['aid'], $args['bid'], $args['format']);
 		}
 	}
 
@@ -829,14 +869,17 @@ class Eighth implements Module {
 	*/
 	public function prn_attendance($op, $args) {
 		if($op == "") {
-			$this->template_args['op'] = "print";
+			$this->template_args['op'] = "format";
 			$this->setup_block_selection();
 		}
 		else if($op == "confirm") {
 
 		}
+		else if($op == "format") {
+			$this->setup_format_selection("prn_attendance", "Activity Rosters", array("bid" => $args['bid']));
+		}
 		else if($op == "print") {
-			EighthSchedule::printActivityRosters(explode(",", $args['bid']));
+			EighthPrint::print_activity_rosters(explode(",", $args['bid']), $args['format']);
 		}
 	}
 
@@ -918,17 +961,17 @@ class Eighth implements Module {
 			$this->template = "eighth_vcp_schedule.tpl";
 			if(!empty($args['uid'])) {
 				$this->template_args['users'] = User::id_to_user(flatten($I2_SQL->query("SELECT uid FROM user WHERE uid LIKE %d", $args['uid'])->fetch_all_arrays(Result::NUM)));
-				if(count($this->template_args['users']) == 1) {
-					redirect("eighth/vcp_schedule/view/uid/{$this->template_args['users'][0]->uid}");
-				}
 			}
 			else {
 				$this->template_args['users'] = User::search_info("{$args['fname']} {$args['lname']}");
-				usort($this->template_args['users'], array("User", 'name_cmp'));
 			}
+			if(count($this->template_args['users']) == 1) {
+				redirect("eighth/vcp_schedule/view/uid/{$this->template_args['users'][0]->uid}");
+			}
+			usort($this->template_args['users'], array("User", 'name_cmp'));
 			$this->title = "Search Students";
 		}
-		else if($op == "view") {
+		else if($op == 'view') {
 			if(!isset($args['start_date'])) {
 				$args['start_date'] = NULL;
 			}
@@ -936,19 +979,18 @@ class Eighth implements Module {
 			$this->template_args['user'] = new User($args['uid']);
 			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($args['uid'], $args['start_date']));
 			$this->template_args['absences'] = EighthSchedule::get_absences($args['uid']);
-			$this->template = "eighth_vcp_schedule_view.tpl";
-			$this->title = "View Schedule";
+			$this->template_args['absence_count'] = count($this->template_args['absences']);
+			$this->template = 'eighth_vcp_schedule_view.tpl';
+			$this->title = 'View Schedule';
+		}
+		else if($op == 'format') {
+			if(!isset($args['start_date'])) {
+				$args['start_date'] = NULL;
+			}
+			$this->setup_format_selection("vcp_schedule", "Student Schedule", array("uid" => $args['uid']) + ($args['start_date'] ? array("start_date" => $args['start_date']) : array()), TRUE);
 		}
 		else if($op == "print") {
-			if(!isset($args['start_date'])) {
-				$args['start_date'] = NULL;
-			}
-			$this->template_args['start_date'] = ($args['start_date'] ? strtotime($args['start_date']) : time());
-			$this->template_args['user'] = new User($args['uid']);
-			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($args['uid'], $args['start_date']));
-			$this->template_args['absences'] = EighthSchedule::get_absences($args['uid']);
-			$this->template = "eighth_vcp_schedule_print.tpl";
-			$this->title = "View Printer Friendly Schedule";
+			EighthPrint::print_student_schedule($args['uid'], $args['start_date'], $args['format']);
 		}
 		else if($op == "choose") {
 			$this->template_args['activities'] = EighthActivity::get_all_activities($args['bid']);
