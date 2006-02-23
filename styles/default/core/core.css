@@ -14,6 +14,13 @@
 	right: 10px;
 }
 
+.header_small {
+		  position: absolute;
+		  top: 0px;
+		  right: 5px;
+		  text-align: right;
+}
+
 .title {
 	font-size: 14pt;
 	font-weight: bold;

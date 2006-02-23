@@ -156,7 +156,15 @@ class IntraBox {
 			self::$display = new Display('Intrabox');
 		}
 
-		self::$display->disp('intrabox_open.tpl');
+		$openclass = null;
+
+		if ($I2_USER->header) {
+			$openclass = 'boxes';
+		} else {
+			$openclass = 'boxes_noheader';
+		}
+
+		self::$display->disp('intrabox_open.tpl',array('intrabox_open_class'=>$openclass));
 		
 		$b = self::get_user_boxes($I2_USER->uid);
 		foreach($b as $box) {

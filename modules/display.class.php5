@@ -260,9 +260,10 @@ class Display {
 	* Assigns all I2 variables which we want available in all templates.
 	*/
 	private function assign_i2vals() {
-		global $I2_USER,$I2_ROOT,$I2_SELF;
+		global $I2_USER,$I2_ROOT,$I2_SELF,$I2_ARGS;
 		$this->smarty->assign('I2_ROOT', $I2_ROOT);
 		$this->smarty->assign('I2_SELF', $I2_SELF);
+		$this->smarty->assign('I2_ARGSTRING', implode('/',$I2_ARGS));
 		if( isSet($I2_USER) ) {
 			$this->smarty->assign('I2_UID', $I2_USER->uid);
 			$this->smarty->assign('I2_CSS', "{$I2_ROOT}css/".self::$style.'.css');
@@ -357,7 +358,12 @@ class Display {
 	*/
 	public function global_header($title = NULL) {
 		global $I2_USER;
-		$this->disp('header.tpl', array('title' => htmlspecialchars($title), 'first_name' => $I2_USER->fname));
+		if ($I2_USER->header) {
+			$this->disp('header.tpl', array('title' => htmlspecialchars($title), 'first_name' => $I2_USER->fname));
+		} else {
+			d('The user has minimized their header',6);
+			$this->disp('header-small.tpl', array('title' => htmlspecialchars($title), 'first_name' => $I2_USER->fname));
+		}
 		//XXX: The following line needs to be commented out for raw data output to work. I don't know how necessary it is. -adeason
 //		$this->flush_buffer();
 	}
@@ -379,6 +385,19 @@ class Display {
 	* @param array $args The arguments passed to the Smarty template.
 	*/
 	public function open_content_pane($args) {
+		global $I2_USER;
+		$numboxes = count(Intrabox::get_user_boxes($I2_USER->uid));
+		if ($I2_USER->header) {
+			if ($numboxes > 0) {
+				$args['mainbox_class'] = 'mainbox';
+			} else {
+				$args['mainbox_class'] = 'mainbox_nointraboxes';
+			}
+		} else if ($numboxes > 0) {
+			$args['mainbox_class'] = 'mainbox_noheader';
+		} else {
+			$args['mainbox_class'] = 'mainbox_noheader_nointraboxes';
+		}
 		$this->disp('openmainbox.tpl',$args);
 	}
 

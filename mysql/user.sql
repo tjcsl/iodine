@@ -26,5 +26,7 @@ CREATE TABLE user (
 	table than userinfo */
 	startpage VARCHAR(127) DEFAULT "news" NOT NULL, /* Default I2 module */
 
-	style VARCHAR(255) DEFAULT "default" NOT NULL /* User style */
+	style VARCHAR(255) DEFAULT "default" NOT NULL, /* User style */
+
+	header BOOLEAN DEFAULT TRUE NOT NULL /* Whether to display a full titlebar for the user */
 );

@@ -21,7 +21,6 @@ class LDAP {
 	private $server;
 	
 	function __construct() {
-<<<<<<< /home/braujac/intranet2/modules/LDAP.class.php5
 		global $I2_USER;
 		$this->server = i2config_get('server','localhost','ldap');
 		$this->binds = array();

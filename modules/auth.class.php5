@@ -191,7 +191,7 @@ class Auth {
 			$_SESSION['logout_funcs'] = array();
 		}
 
-		$this->cache_password($_REQUEST['login_password']);
+		//$this->cache_password($_REQUEST['login_password']);
 			
 		if (isset($_REQUEST['login_username']) && isset($_REQUEST['login_password'])) {
 		

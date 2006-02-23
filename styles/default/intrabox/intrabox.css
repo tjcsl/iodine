@@ -4,6 +4,12 @@
 	left: 10px;
 	width: 305px;
 }
+.boxes_noheader {
+	position: absolute;
+	top: 20px;
+	left: 5px;
+	width: 305px;
+}
 .intrabox {
 	border: thin groove;
 	margin-bottom: 10pt;
@@ -46,5 +52,27 @@
 	top: 110px;
 	left: 327px;
 	right: 10px;
+	border: thin groove;
+}
+.mainbox_noheader {
+	position: absolute;
+	top: 20px;
+	left: 327px;
+	right: 10px;
+	border: thin groove;
+}
+.mainbox_noheader_nointraboxes {
+	position: absolute;
+	top: 20px;
+	left: 10px;
+	right: 10px;
+	border: thin groove;
+}
+
+.mainbox_nointraboxes {
+	position: absolute;
+	top: 110px;
+	left: 10px;
+	right: 110px;
 	border: thin groove;
 }

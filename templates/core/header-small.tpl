@@ -11,10 +11,8 @@
 <![endif]-->
 </head>
 <body>
-<div class="logo"></div>
-
-<div class="header">
- <div class="title"> Welcome, [<$first_name>]! </div>
- [<include file='core/menu.tpl'>]
+<div class="header_small">
+ <span id="menu">
+ 	[<include file='core/menu.tpl'>]
+ </span>
 </div>
-<div class="date">[<$smarty.now|date_format:"%B %e, %Y">]</div>
