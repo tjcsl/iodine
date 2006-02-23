@@ -38,7 +38,7 @@ class EighthBlock {
 	*/
 	public static function add_block($date, $block) {
 		global $I2_SQL;
-		$result = $I2_SQL->query("INSERT INTO eighth_blocks (date,block) VALUES (%t,%s)", $date, $block);
+		$result = $I2_SQL->query("REPLACE INTO eighth_blocks (date,block) VALUES (%t,%s)", $date, $block);
 		$uids = flatten($I2_SQL->query("SELECT uid FROM user")->fetch_all_arrays(Result::NUM));
 		// Figure out what the default should be, 999?
 		$block = new EighthBlock($result->get_insert_id());
