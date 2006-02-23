@@ -74,10 +74,7 @@
 </td>
 
 <td style="width: 50%; valign: top">
-<b>Other Options</b>
-<ol>
-<li><a href="[<$I2_ROOT>]logout">Logout</a></li>
-</ol>
+&nbsp;
 </td>
 </tr>
 </table>
