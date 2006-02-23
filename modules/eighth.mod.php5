@@ -557,6 +557,7 @@ class Eighth implements Module {
 					EighthSchedule::schedule_activity($bid, $args['aid'], $args['sponsor_list'][$bid], $args['room_list'][$bid], $args['comments'][$bid]);
 				}
 			}
+			redirect("eighth/sch_activity/view/aid/{$args['aid']}");
 		}
 	}
 
