@@ -482,14 +482,15 @@ class Eighth implements Module {
 			EighthRoom::add_room($args['name'], $args['capacity']);
 		}
 		else if($op == "modify") {
-			$room = new EighthRoom($args['rid']);
-			$room->name = $args['name'];
-			$room->capacity = $args['capacity'];
-			redirect("eighth/amr_room/view/rid/{$args['rid']}");
-		}
-		else if($op == "remove") {
-			EighthRoom::remove_room($args['rid']);
-			redirect("eighth");
+			if ($args['modify_or_remove'] == 'modify') {
+				$room = new EighthRoom($args['rid']);
+				$room->name = $args['name'];
+				$room->capacity = $args['capacity'];
+				redirect("eighth/amr_room/view/rid/{$args['rid']}");
+			} else if ($args['modify_or_remove'] == 'remove') {
+				EighthRoom::remove_room($args['rid']);
+				redirect("eighth");
+			}
 		}
 	}
 
