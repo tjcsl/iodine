@@ -9,9 +9,8 @@ td, th {
 	color: #999999;
 }
 
+@extend
 body {
-	font-family: arial, helvetica, verdana, sans-serif;
-	font-size: 10pt;
 	background-color: #CCDDFF;
 	color: #FFFFFF;
 }

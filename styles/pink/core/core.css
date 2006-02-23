@@ -2,7 +2,7 @@
 .logo {
 	top: 0px;
 	left: 0px;
-	background: url(/www/pics/newlogo.png) no-repeat;
+	background: url(www/pics/newlogo.png) no-repeat;
 }
 @extend
 .title {
