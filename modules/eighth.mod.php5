@@ -278,17 +278,17 @@ class Eighth implements Module {
 			Group::set_group_name($args['gid'],$args['name']);
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
 		}
-		else if($op == "remove") {
+		else if($op == 'remove') {
 			Group::delete_group($args['gid']);
 			redirect("eighth");
 		}
-		else if($op == "view") {
+		else if($op == 'view') {
 			$group = new Group($args['gid']);
 			$this->template = "eighth_amr_group.tpl";
 			$this->template_args['group'] = $group;
-			$this->title = "View Group (" . substr($group->name,7) . ")";
+			$this->title = 'View Group (' . substr($group->name,7) . ')';
 		}
-		else if($op == "add_member") {
+		else if($op == 'add_member') {
 			$group = new Group($args['gid']);
 			$group->add_user($args['uid']);
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
@@ -415,7 +415,7 @@ class Eighth implements Module {
 			$aid = EighthActivity::add_activity($args['name']);
 			redirect("eighth/amr_activity/view/aid/{$aid}");
 		}
-		else if($op == "modify") {
+		else if($op == 'modify') {
 			$activity = new EighthActivity($args['aid']);
 			$activity->name = $args['name'];
 			$activity->sponsors = $args['sponsors'];
@@ -557,7 +557,6 @@ class Eighth implements Module {
 					EighthSchedule::schedule_activity($bid, $args['aid'], $args['sponsor_list'][$bid], $args['room_list'][$bid], $args['comments'][$bid]);
 				}
 			}
-			redirect("eighth");
 		}
 	}
 
