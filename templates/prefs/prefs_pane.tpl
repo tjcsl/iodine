@@ -31,6 +31,9 @@
  <tr>
   <td>Locker Number:</td>
   <td><input type="text" name="pref_locker" value="[<$prefs.locker>]" /></td></tr>
+ <tr>
+  <td>Homepage module:</td>
+  <td><input type="text" name="pref_startpage" value="[<$prefs.startpage>]" /></td></tr>
 <tr>
  <td>Style:</td>
  <td><select name="pref_style">
