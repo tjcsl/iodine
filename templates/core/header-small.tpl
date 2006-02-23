@@ -11,8 +11,10 @@
 <![endif]-->
 </head>
 <body>
-<div class="header_small">
- <span id="menu">
- 	[<include file='core/menu.tpl'>]
- </span>
-</div>
+[<if $chrome>]
+	<div class="header_small">
+ 		<span id="menu">
+ 			[<include file='core/menu.tpl'>]
+ 		</span>
+	</div>
+[</if>]

@@ -28,5 +28,7 @@ CREATE TABLE user (
 
 	style VARCHAR(255) DEFAULT "default" NOT NULL, /* User style */
 
-	header BOOLEAN DEFAULT TRUE NOT NULL /* Whether to display a full titlebar for the user */
+	header BOOLEAN DEFAULT TRUE NOT NULL, /* Whether to display a full titlebar for the user */
+
+	chrome BOOLEAN DEFAULT TRUE NOT NULL /* Whether the user wants any embellishments at all */
 );

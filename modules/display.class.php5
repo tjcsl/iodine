@@ -115,7 +115,7 @@ class Display {
 	*                panel and give processing control to.
 	*/
 	public function display_loop($module) {
-		global $I2_ERR;
+		global $I2_ERR,$I2_USER;
 
 		if (self::$display_stopped) {
 			return;
@@ -171,18 +171,26 @@ class Display {
 						$title = array( NULL, '&nbsp;' );
 					}
 				
-					$this->global_header($title[0]);
+					$display_chrome = $I2_USER->chrome;
+					
+					$this->global_header($title[0],$display_chrome);
 					
 					if (!self::$display_stopped && $title) {
-						$this->open_content_pane(array('title' => htmlspecialchars($title[1])));
+						if ($display_chrome) {
+							$this->open_content_pane(array('title' => htmlspecialchars($title[1])));
+						}
 						try {
 							$mod->display_pane($disp);
 						} catch (Exception $e) {
 							/* Make sure to close the content pane*/
-							$this->close_content_pane();
+							if ($display_chrome) {
+								$this->close_content_pane();
+							}
 							throw $e;
 						}
-						$this->close_content_pane();
+						if ($display_chrome) {
+							$this->close_content_pane();
+						}
 					}
 				}
 			}
@@ -355,14 +363,15 @@ class Display {
 	* that this is not global:  it is called only on the core's Display instance.
 	*
 	* @param string $title The title for the page.
+	* @param boolean $chrome Whether to embellish the top of the page.
 	*/
-	public function global_header($title = NULL) {
+	public function global_header($title = NULL,$chrome = TRUE) {
 		global $I2_USER;
-		if ($I2_USER->header) {
+		if ($I2_USER->header && $chrome) {
 			$this->disp('header.tpl', array('title' => htmlspecialchars($title), 'first_name' => $I2_USER->fname));
 		} else {
 			d('The user has minimized their header',6);
-			$this->disp('header-small.tpl', array('title' => htmlspecialchars($title), 'first_name' => $I2_USER->fname));
+			$this->disp('header-small.tpl', array('title' => htmlspecialchars($title), 'first_name' => $I2_USER->fname, 'chrome' => $chrome));
 		}
 		//XXX: The following line needs to be commented out for raw data output to work. I don't know how necessary it is. -adeason
 //		$this->flush_buffer();
