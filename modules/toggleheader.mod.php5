@@ -1,6 +1,6 @@
 <?php
 /**
-* Just contains the definition for the class {@link toggleheader}.
+* Just contains the definition for the {@link Module} toggleheader.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
 * @since 1.0
@@ -12,7 +12,7 @@
 /**
 * A module which toggles the visibility of the header bar.
 * @package core
-* @subpackage Module
+* @subpackage Utility
 */
 class toggleheader implements Module {
 
