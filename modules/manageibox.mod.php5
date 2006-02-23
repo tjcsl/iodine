@@ -92,7 +92,8 @@ class ManageIbox implements Module {
 				return 'Error';
 		}
 
-		redirect(str_replace($I2_ROOT,'',$_SERVER['HTTP_REFERER']));
+		//redirect(str_replace($I2_ROOT,'',$_SERVER['HTTP_REFERER']));
+		redirect(implode('/',array_slice($I2_ARGS,1)));
 	}
 
 	/**
@@ -141,6 +142,15 @@ class ManageIbox implements Module {
 		}
 
 		$delta_index = $to_index - $from_index;
+
+		/*
+		** You CANNOT display content in the init_ routines!!!
+		** There's a good reason that no Display object is passed to them.
+		** Displaying anything makes a redirect impossible.
+		** This must be eliminated.
+		*/
+
+		
 		echo("<div style=\"position: absolute; left: 300px; top: 10px; z-index: 100\">delta_index: $delta_index, to_index: $to_index, from_index: $from_index</div>");
 		if($delta_index != 0) {
 			$I2_SQL->query('UPDATE intrabox_map SET box_order = box_order+(%d) WHERE uid=%d AND (box_order BETWEEN %d AND %d OR box_order = %d);', ($delta_index>0?-1:1), $I2_USER->uid, min($from_index, $to_index), max($from_index, $to_index), $to_index);
