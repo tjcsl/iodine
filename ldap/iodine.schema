@@ -1,0 +1,413 @@
+#
+#	TJHSST Intranet 2 LDAP Schemas
+#
+# 1.3.6.1.4.1						- iso.org.dod.internet.private.enterprise
+#				 .20601				- TJHSST
+#						 .1 			- Intranet 2 LDAP Elements
+#							.1			- Attributes
+#							  .1		- graduationYear
+#							  .2		- tjhsstStudentId
+#							  .3		- classPeriod
+#							  .4		- shortClassName
+#							  .5		- perm_showpictures
+#							  .6		- perm_showaddress
+#							  .7		- perm_showtelephone
+#							.2			- Objectclasses
+#							  .1		- tjhsstStudent
+#							  .2		- tjhsstTeacher
+#							  .3		- tjhsstSection
+#							  .4		- tjhsstClass
+
+
+# Define macros so wo don't have to type out a thousand OIDs
+objectIdentifier tjOID				1.3.6.1.4.1.20601
+objectIdentifier i2OID				tjOID:1
+objectIdentifier i2Attr				i2OID:1
+objectIdentifier i2OC				i2OID:2
+
+# And a few handy shortcuts for syntaxes, etc.
+objectIdentifier boolSyntax			1.3.6.1.4.1.1466.115.121.1.7
+objectIdentifier integerSyntax		1.3.6.1.4.1.1466.115.121.1.27
+objectIdentifier stringSyntax			1.3.6.1.4.1.1466.115.121.1.15
+objectIdentifier dnSyntax				1.3.6.1.4.1.1466.115.121.1.12
+#objectIdentifier classPeriodSyntax	####
+objectIdentifier ia5Syntax				1.3.6.1.4.1.1466.115.121.1.26
+objectIdentifier telephoneSyntax		1.3.6.1.4.1.1466.115.121.1.50
+objectIdentifier timeSyntax			1.3.6.1.4.1.1466.115.121.1.24
+objectIdentifier addressSyntax		1.3.6.1.4.1.1466.115.121.1.41
+#objectIdentifier dateSyntax		####
+
+# Define syntaxes
+
+
+
+attributetype ( i2Attr:1 
+	NAME ('graduationYear' 'gradYear' 'year')
+	DESC 'A year of graduation' 
+	EQUALITY integerMatch 
+	SYNTAX integerSyntax{4}
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:2
+	NAME ('tjhsstStudentId' 'studentId' 'fcpsStudentId')
+	DESC 'The FCPS Student ID Number'
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:3
+	NAME ('classPeriod' 'period' 'tjhsstPeriod' 'periodNo' 'periodNumber')
+	DESC 'The period of a class'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	)
+
+attributetype ( i2Attr:4
+	NAME ('shortClassName' 'abbrevClassName')
+	DESC 'The abbreviated name of a class'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
+	SYNTAX stringSyntax
+	)
+
+attributetype ( i2Attr:5
+	NAME ('perm-showpictures' 'showpictures')
+	DESC 'Whether the pictures should be visible to others'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+
+
+attributetype ( i2Attr:6
+	NAME ('perm-showaddress' 'showaddress')
+	DESC 'Whether the address should be visible to others'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:7
+	NAME ('perm-showtelephone' 'showtelephone' 'showphone' 'showphonenumber')
+	DESC 'Whether the telephone number(s) should be visible to others'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:8
+	NAME ('block' 'blockLetter' 'eighthBlock')
+	DESC 'The block of an activity'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	)
+
+attributetype ( i2Attr:9
+	NAME ('classRef' 'classDn' 'memberClass')
+	DESC 'A reference to a class by DN'
+	EQUALITY distinguishedNameMatch
+	SYNTAX dnSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:10
+	NAME ('eighthoffice-comments' 'comments')
+	DESC 'Comments the 8th-period office has about an activity'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	)
+
+attributetype ( i2Attr:11
+	NAME ('sponsorDn' 'sponsor')
+	DESC 'The DN of the teacher(s) sponsoring an activity'
+	EQUALITY distinguishedNameMatch
+	SYNTAX dnSyntax
+	)
+
+attributetype ( i2Attr:12
+	NAME ('groupLeader' 'leader' 'master' 'groupAdmin' 'administrator' 'admin' 'groupAdministrator')
+	DESC 'The DN of the people in charge of a group'
+	EQUALITY distinguishedNameMatch
+	SYNTAX dnSyntax
+	)
+
+attributetype ( i2Attr:13
+	NAME ('counselor' 'couns')
+	DESC 'The iodineUid of the counselor a student is assigned to'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:14
+	NAME ('iodineUid' 'i2uid' 'lanuid' 'schooluid' 'localuid')
+	DESC 'A log-in username'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:17
+	NAME ('tjhsstSectionId' 'sectionId')
+	DESC 'The ID of a class/period pairing'
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:18
+	NAME ('prerequisite' 'requiredClass' 'prerequisiteDN' 'requiredClassDN')
+	DESC 'A  required class'
+	EQUALITY distinguishedNameMatch
+	SYNTAX dnSyntax
+	)
+
+attributetype ( i2Attr:19
+	NAME ('corequisite' 'corequisiteDN')
+	DESC 'A corequisite class'
+	EQUALITY distinguishedNameMatch
+	SYNTAX dnSyntax
+	)
+
+attributetype ( i2Attr:20
+	NAME ('tjhsstClassId' 'classId' 'courseId' 'tjhsstCourseId' 'associatedClassId')
+	DESC 'A number identifying a TJHSST class'
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:21
+	NAME ('tjhsstActivityId' 'activityId' 'aid')
+	DESC 'A unique number identifying an activity'
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:22
+	NAME ('tjhsstGroupId' 'groupId' 'gid' 'i2GroupId')
+	DESC 'A unique number identifying a group'
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:23
+	NAME ('courseLength' 'length' 'quarters' 'numQuarters')
+	DESC 'How long a course is, in quarters'
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:24
+	NAME ('eighthBlockId' 'eighthBlockNumber' 'blockNumber' 'blockId')
+	DESC 'A unique number identifying an 8th-period block'
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:25
+	NAME ('associatedTeacher' 'teacher' 'associatedTeacherUid')
+	DESC 'The UID of an associated teacher'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	)
+
+attributetype ( i2Attr:26
+	NAME ('enrolledStudent' 'classMember')
+	DESC 'The StudentID of a student enrolled in a class'
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
+	)
+
+attributetype ( i2Attr:27
+	NAME ('middlename' 'mname')
+	DESC 'A middle name'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	)
+
+
+objectclass ( i2OC:3
+	NAME ('tjhsstSection' 'section')
+	MUST (
+		tjhsstSectionId $
+		classPeriod $
+		associatedClassId
+	)
+	MAY (
+		displayname $
+		description $
+		year $
+		roomNumber $
+		enrolledStudent $
+		associatedTeacher
+	)
+	)
+
+objectclass ( i2OC:4
+	NAME ('tjhsstClass' 'tjhsstCourse')
+	MUST (
+		tjhsstClassId $
+		courselength $
+		cn
+	)
+	MAY (
+		shortClassName $
+		description $
+		displayname $
+		year
+	)
+	)
+
+objectclass ( i2OC:5
+	NAME 'eighthActivity'
+	MUST (
+		tjhsstActivityId $
+		cn
+	)
+	MAY (
+		description $
+		comments $
+		enrolledStudent $
+		associatedTeacher
+	)
+	)
+
+objectclass ( i2OC:6
+	NAME ('eighthBlock' 'block')
+	MUST (
+		blockId
+	)
+	)
+
+objectclass ( i2OC:7
+	NAME 'i2Group'
+	MUST (
+		groupId $
+		cn $
+		groupAdministrator
+	)
+	MAY (
+		description
+	)
+	)
+
+objectclass ( i2OC:8
+	NAME 'syslabUser'
+	SUP posixAccount AUXILIARY
+	MUST (
+		cn $
+		uid $
+		uidNumber $
+		gidNumber $
+		homeDirectory
+	)
+	)
+
+objectclass ( i2OC:9
+	NAME ('tjhsstRoom')
+	MUST (
+		roomNumber
+	)
+	MAY (
+		cn $
+		description $
+		displayName
+	)
+	)
+
+objectclass ( i2OC:10
+	NAME ('tjhsstYear' 'year' 'y')
+	MUST (
+		year
+	)
+	)
+
+objectclass ( i2OC:11
+	NAME 'prerequisiteGrouping'
+	)
+
+objectclass ( i2OC:12
+	NAME 'corequisiteGrouping'
+	)
+
+objectclass ( i2OC:13
+	NAME 'prerequisiteANDGrouping'
+	SUP prerequisiteGrouping STRUCTURAL
+	)
+
+objectclass ( i2OC:14
+	NAME 'prerequisiteORGrouping'
+	SUP prerequisiteGrouping STRUCTURAL
+	)
+
+objectclass ( i2OC:15
+	NAME 'corequisiteANDGrouping'
+	SUP corequisiteGrouping STRUCTURAL
+	)
+
+objectclass ( i2OC:16
+	NAME 'corequisiteORGrouping'
+	SUP corequisiteGrouping STRUCTURAL
+	)
+
+objectclass ( i2OC:17
+	NAME 'iodineAlias'
+	SUP alias STRUCTURAL
+	MAY (
+		iodineUid $
+		groupId $
+		activityId $
+		studentId $
+		sectionId $
+		classId $
+		roomNumber $
+		uid
+	)
+	)
+
+objectclass ( i2OC:1
+	NAME ('tjhsstStudent' 'iodineStudent')
+	SUP inetOrgPerson STRUCTURAL
+	MUST (
+		graduationYear $
+		iodineUid $
+		cn $
+		sn $
+		tjhsstStudentId
+	)
+	MAY (
+		perm-showpictures $
+		perm-showaddress $
+		perm-showtelephone $
+		displayName $
+		middlename $
+		counselor
+	)
+	)
+
+objectclass ( i2OC:2
+	NAME ('tjhsstTeacher' 'iodineTeacher' 'tjhsstStaff' 'tjhsstFaculty')
+	SUP inetOrgPerson STRUCTURAL
+	MUST (
+		cn $
+		iodineUid $
+		sn
+	)
+	MAY (
+		employeeNumber $
+		displayName $
+		middlename
+	)
+	)
+
+objectclass ( i2OC:18
+	NAME ('tjhsstCounselor' 'iodineCounselor')
+	SUP tjhsstTeacher STRUCTURAL
+	)

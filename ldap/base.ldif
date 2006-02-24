@@ -1,0 +1,21 @@
+dn: dc=tjhsst,dc=edu
+objectClass: dcObject
+objectClass: organization
+dc: tjhsst
+o: TJHSST
+description: Thomas Jefferson High School for Science and Technology
+
+dn: ou=people,dc=tjhsst,dc=edu
+objectClass: organizationalUnit
+ou: people
+description: Human beings
+
+dn: ou=schedule,dc=tjhsst,dc=edu
+objectClass: organizationalUnit
+ou: schedule
+description: Class schedule information
+
+dn: ou=rooms,dc=tjhsst,dc=edu
+objectClass: organizationalUnit
+ou: rooms
+description: Rooms in the building
