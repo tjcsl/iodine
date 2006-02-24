@@ -21,6 +21,13 @@ class Group {
 	private static $admin_groups = NULL;
 	private static $admin_all = NULL;
 	private static $admin_eighth = NULL;
+	private static $admin_ldap = NULL;
+	private static $admin_mysql = NULL;
+
+	/**
+	* groupname to GID mapping
+	*/
+	private static $gid;
 
 	public static function admin_all() {
 		if(self::$admin_all === NULL) {
@@ -41,6 +48,20 @@ class Group {
 			self::$admin_eighth = new Group('admin_eighth');
 		}
 		return self::$admin_eighth;
+	}
+
+	public static function admin_ldap() {
+		if (self::$admin_ldap === NULL) {
+			self::$admin_ldap = new Group('admin_ldap');
+		}
+		return self::$admin_ldap;
+	}
+
+	public static function admin_mysql() {
+		if (self::$admin_mysql === NULL) {
+			self::$admin_mysql = new Group('admin_mysql');
+		}
+		return self::$admin_mysql;
 	}
 
 	private $mygid;
@@ -65,6 +86,14 @@ class Group {
 	public function __construct($group) {
 		global $I2_SQL;
 
+		if (self::$gid === NULL) {
+			self::$gid = array();
+			 $res = $I2_SQL->query('SELECT name,gid FROM groups');
+			 while ($row = $res->fetch_array(Result::ASSOC)) {
+			 	self::$gid[$row['name']] = $row['gid'];
+			 }
+		}
+
 		if(is_numeric($group)) {
 		// Numeric $group passed; figure out group name
 			$name = $I2_SQL->query('SELECT name FROM groups WHERE gid=%d', $group)->fetch_single_value();
@@ -86,9 +115,8 @@ class Group {
 		}
 		else {
 		// Non-numeric $group passed; figure out GID
-			$gid = $I2_SQL->query('SELECT gid FROM groups WHERE name=%s',$group)->fetch_single_value();
-			if($gid) {
-				$this->mygid = $gid;
+			if(isSet(self::$gid[$group])) {
+				$this->mygid = self::$gid[$group];
 				$this->myname = $group;
 			}
 			else {
@@ -100,9 +128,6 @@ class Group {
 				}
 			}
 		}
-	}
-
-	private static function get_group_id($group) {
 	}
 
 	public function get_members() {
@@ -137,7 +162,6 @@ class Group {
 	public static function get_all_group_names() {
 		global $I2_SQL;
 		return $I2_SQL->query('SELECT name FROM groups');
-	
 	}
 
 	public function add_user($user) {

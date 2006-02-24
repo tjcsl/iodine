@@ -367,11 +367,21 @@ class Display {
 	*/
 	public function global_header($title = NULL,$chrome = TRUE) {
 		global $I2_USER;
+		$this->smarty_assign(
+			array(
+					'title' => htmlspecialchars($title), 
+					'first_name' => $I2_USER->fname, 
+					'admin_mysql' => Group::admin_mysql()->has_member($I2_USER),
+					'admin_ldap' => Group::admin_ldap()->has_member($I2_USER),
+					'admin_groups' => Group::admin_groups()->has_member($I2_USER),
+					'chrome' => $chrome
+			)
+		);
 		if ($I2_USER->header && $chrome) {
-			$this->disp('header.tpl', array('title' => htmlspecialchars($title), 'first_name' => $I2_USER->fname));
+			$this->disp('header.tpl');
 		} else {
 			d('The user has minimized their header',6);
-			$this->disp('header-small.tpl', array('title' => htmlspecialchars($title), 'first_name' => $I2_USER->fname, 'chrome' => $chrome));
+			$this->disp('header-small.tpl');
 		}
 		//XXX: The following line needs to be commented out for raw data output to work. I don't know how necessary it is. -adeason
 //		$this->flush_buffer();
