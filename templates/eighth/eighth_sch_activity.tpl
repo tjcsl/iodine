@@ -173,7 +173,7 @@
 			</div>
 			<input type="hidden" id="activity_status_[<$activity.block.bid>]" name="activity_status[[<$activity.block.bid>]]" value="SCHEDULED" />
 		</td>
-		<td><img src="[<$I2_ROOT>]www/pics/eighth/notepad.gif" alt="Add Comment" title="Add Comment" onMouseDown="show_comment_dialog(event, [<$activity.block.bid>])"><input type="hidden" id= "comment_[<$activity.block.bid>]" name="comments[[<$activity.block.bid>]]" value="[<$activity.comment>]" /></td>
+		<td><img src="[<$I2_ROOT>]www/pics/eighth/notepad.gif" alt="Add Comment" title="Add Comment" onMouseDown="show_comment_dialog(event, [<$activity.block.bid>])"><input type="hidden" id= "comment_[<$activity.block.bid>]" name="comments[[<$activity.block.bid>]]" [<if isSet($activity.comment)>]value="[<$activity.comment>]"[</if>] /></td>
 	</tr>
 [</foreach>]
 </table><br />
