@@ -65,13 +65,15 @@ class Schedule {
 
 	public function get_class_name($classid) {
 		//TODO: input checking
-		return $this->ldap->search('ou=schedule',"tjhsstClassId=$classid",'cn')->fetch_array(LDAP::ASSOC)['cn'];
+		$ret = $this->ldap->search('ou=schedule',"tjhsstClassId=$classid",'cn')->fetch_array(LDAP::ASSOC);
+		return $ret['cn'];
 	}
 
 	public function get_section_name($sectionid) {
 		$res = $this->ldap->search('ou=schedule',"tjhsstSectionId=$sectionid",'associatedClass');
 		$res = $this->ldap->search_one($res->fetch_single_value(),'objectClass=*','cn');
-		return $res->fetch_array(LDAP::ASSOC)['cn'];
+		$ret = $res->fetch_array(LDAP::ASSOC);
+		return $ret['cn'];
 	}
 
 }	
