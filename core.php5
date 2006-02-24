@@ -137,7 +137,7 @@ try {
 	 
 	  @global LDAP $I2_LDAP
 	 */
-	$I2_LDAP = new LDAP();
+	//$I2_LDAP = new LDAP();
 	/**
 	 * The global authentication mechanism.
 	 *
