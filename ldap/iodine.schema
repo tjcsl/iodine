@@ -12,11 +12,13 @@
 #							  .5		- perm_showpictures
 #							  .6		- perm_showaddress
 #							  .7		- perm_showtelephone
+#				...
 #							.2			- Objectclasses
 #							  .1		- tjhsstStudent
 #							  .2		- tjhsstTeacher
 #							  .3		- tjhsstSection
 #							  .4		- tjhsstClass
+#				...
 
 
 # Define macros so wo don't have to type out a thousand OIDs

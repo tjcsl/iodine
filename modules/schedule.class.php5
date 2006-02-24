@@ -14,17 +14,30 @@
 * @package core
 * @subpackage Scheduling
 */
-class Schedule {
+class Schedule implements Iterator {
 
+	/**
+	* An {@link LDAP} object to use for data access.
+	*/
 	private $ldap;
+	/**
+	* An array of the sectionIds in which the student is enrolled.
+	*/
+	private $sections;
 	
-	public function __construct($username) {
+	public function __construct() {
 		global $I2_LDAP;
 		$this->ldap = $I2_LDAP;
 	}
 
 	public function set_ldap($ldap) {
 		$this->ldap = $ldap;
+	}
+
+	public function fill_schedule(User $user) {
+		global $I2_LDAP;
+		$res = $this->get_sections($user->uid);
+		$this->sections = $res->fetch_all_single_values(Result::NUM);
 	}
 
 	public function add_class() {
@@ -74,6 +87,25 @@ class Schedule {
 		$res = $this->ldap->search_one($res->fetch_single_value(),'objectClass=*','cn');
 		$ret = $res->fetch_array(LDAP::ASSOC);
 		return $ret['cn'];
+	}
+
+	public function next() {
+	}
+
+	public function prev() {
+	}
+
+	public function key() {
+	}
+
+	public function rewind() {
+	}
+
+	public function current() {
+	}
+
+	public function valid() {
+		return $this->current() !== FALSE;
 	}
 
 }	

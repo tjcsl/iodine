@@ -21,7 +21,7 @@ class ScheduleSQL implements Iterator {
 		global $I2_SQL;
 
 		foreach($I2_SQL->query('SELECT sectionid FROM student_section_map WHERE studentid = %d;',$user->studentid) as $row) {
-			$this->class_arr[] = new Section($row[0]);
+			$this->class_arr[] = new SectionSQL($row[0]);
 		}
 
 		if(count($this->class_arr) < 1) {

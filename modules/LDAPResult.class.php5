@@ -14,7 +14,6 @@
 * @package core
 * @subpackage Database
 */
-
 class LDAPResult implements Result {
 	
 	private $ldap = NULL;
@@ -137,7 +136,7 @@ class LDAPResult implements Result {
 	}
 
 	public function get_affected_rows() {
-		throw new I2Exception('Call to unimplemented method get_affected_rows() is LDAPResult!');
+		throw new I2Exception('Call to unimplemented method get_affected_rows() in LDAPResult!');
 	}
 
 	public function get_num_fetched() {
@@ -184,7 +183,11 @@ class LDAPResult implements Result {
 	}
 
 	public function fetch_single_value() {
-		return $this->fetch_array()[0];
+		$row = $this->fetch_array(Result::NUM);
+		if (!$row) {
+			return FALSE;
+		}
+		return $row[0];
 	}
 
 	public function fetch_col($colname) {
@@ -199,7 +202,7 @@ class LDAPResult implements Result {
 
 	public function fetch_all_single_values() {
 		$ret = array();
-		while ($row = $this->fetch_array()) {
+		while ($row = $this->fetch_array(Result::NUM)) {
 			$ret[] = $row[0];
 		}
 		return $ret;

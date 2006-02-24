@@ -64,7 +64,11 @@ class LDAP {
 		return new LDAP($ldapuser,$pass);
 	}
 
-	public function search($dn='',$query='objectClass=*',$attributes='*') {
+	public function search_base($dn='',$attributes='*') {
+		$this->search($dn,'objectClass=*',$attributes,LDAP::SCOPE_BASE);
+	}
+
+	public function search($dn='',$query='objectClass=*',$attributes='*',$depth=LDAP::SCOPE_SUB) {
 		if (!is_array($attributes)) {
 			$attributes = array($attributes);
 		}
@@ -80,6 +84,8 @@ class LDAP {
 		
 		if ($query) {
 			$query = addslashes($query);
+		} else {
+			$query = 'objectClass=*';
 		}
 
 		d("LDAP Searching $dn for ".print_r($attributes,1)." where $query...",7);
