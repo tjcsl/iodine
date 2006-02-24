@@ -79,7 +79,7 @@ class StudentDirectory implements Module {
 		} else {
 			if($this->user !== NULL) {
 				try {
-					$sched = new Schedule($this->user);
+					$sched = $this->user->schedule();
 				} catch( I2Exception $e) {
 					$sched = NULL;
 				}

@@ -408,6 +408,13 @@ class User {
 	}
 
 	/**
+	* Returns a student's schedule.
+	*/
+	public function schedule() {
+		return new ScheduleSQL($this);
+	}
+
+	/**
 	* Convert an array of user IDs into an array or {@link User} objects
 	*
 	* @param array An array of user IDs.
