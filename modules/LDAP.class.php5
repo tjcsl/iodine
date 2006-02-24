@@ -80,15 +80,22 @@ class LDAP {
 		return $conn;
 	}
 
-	public function search($dn,$query,$attributes,$conn=NULL) {
+	public function search($dn='',$query='objectClass=*',$attributes='*',$conn=NULL) {
 
 	
 		if (!$conn) {
 			$conn = $this->get_user_bind();
 		}
-	
+		
+		
+		if (!is_array($attributes)) {
+			$attributes = array($attributes);
+		}
+		
 		//FIXME: we need careful, considered escaping here.
-		if ($dn && $dn != "") {
+		if (substr($dn,-strlen($this->dnbase)) == $this->dnbase) {
+			//We're OK, the dn ends with the dnbase.
+		} else if ($dn && $dn != "") {
 			$dn = addslashes($dn.','.$this->dnbase);
 		} else {
 			$dn = $this->dnbase;
@@ -111,12 +118,18 @@ class LDAP {
 		return new LDAPResult($conn,$res,LDAP::LDAP_SEARCH);
 	}
 
-	public function search_one($dn,$query,$attributes,$conn=NULL) {
+	public function search_one($dn='',$query='objectClass=*',$attributes='*',$conn=NULL) {
 		if (!$conn) {
 			$conn = $this->get_user_bind();
 		}
 
-		if ($dn && $dn != "") {
+		if (!is_array($attributes)) {
+			$attributes = array($attributes);
+		}
+
+		if (substr($dn,-strlen($this->dnbase)) == $this->dnbase) {
+			//We're OK, the dn ends with the dnbase.
+		} else if ($dn && $dn != "") {
 			$dn = addslashes($dn.','.$this->dnbase);
 		} else {
 			$dn = $this->dnbase;
@@ -140,7 +153,9 @@ class LDAP {
 	}
 
 	public function delete($dn,$bind=NULL) {
-		$dn = addslashes($dn.','.$this->dnbase);
+		if (substr($dn,-strlen($this->dnbase)) != $this->dnbase) {
+			$dn = addslashes($dn.','.$this->dnbase);
+		}
 		$res = ldap_delete($bind,$dn);
 		return new LDAPResult($bind,$res,LDAP::LDAP_DELETE);
 	}
@@ -155,7 +170,9 @@ class LDAP {
 		if (!$bind) {
 			$bind = $this->get_user_bind();
 		}
-		$dn = addslashes($dn.','.$this->dnbase);
+		if (substr($dn,-strlen($this->dnbase)) != $this->dnbase) {
+			$dn = addslashes($dn.','.$this->dnbase);
+		}
 		$attribute = addslashes($attribute);
 		$value = addslashes($value);
 		$res = ldap_compare($bind,$dn,$attribute,$value);

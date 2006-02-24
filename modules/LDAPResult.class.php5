@@ -137,6 +137,7 @@ class LDAPResult implements Result {
 	}
 
 	public function get_affected_rows() {
+		throw new I2Exception('Call to unimplemented method get_affected_rows() is LDAPResult!');
 	}
 
 	public function get_num_fetched() {
@@ -179,16 +180,29 @@ class LDAPResult implements Result {
 		/*
 		** This doesn't mean anything in LDAP, because our data aren't rectangular..
 		*/
-		return -1;
+		throw new I2Exception('Attempted to get the number of columns in an LDAP result!');
 	}
 
 	public function fetch_single_value() {
+		return $this->fetch_array()[0];
 	}
 
 	public function fetch_col($colname) {
+		$ret = array();
+		while ($arr = $this->fetch_array()) {
+			if (isSet($arr[$colname])) {
+				$ret[] = $arr[$colname];
+			}
+		}
+		return $ret;
 	}
 
 	public function fetch_all_single_values() {
+		$ret = array();
+		while ($row = $this->fetch_array()) {
+			$ret[] = $row[0];
+		}
+		return $ret;
 	}
 
 	public function rewind() {
