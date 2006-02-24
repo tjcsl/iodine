@@ -1,12 +1,12 @@
 [<include file="eighth/eighth_header.tpl">]
 <form action="[<$I2_ROOT>]eighth/sch_activity/modify/aid/[<$aid>]" method="post">
 	<input type="submit" value="Modify" /><input type="button" value="Select All" onclick=";" /><br /><br />
-<table cellspacing="0" style="border: 0px; padding: 0px; margin: 0px; width: 600px;">
+<table cellspacing="0" style="border: 0px; padding: 0px; margin: 0px; width: 100%;">
 	<tr>
-		<td style="width:  20px;">&nbsp;</td>
-		<th style="width: 100px; padding: 5px;">Block</th>
-		<th style="width: 240px; padding: 5px;">Room(s)</th>
-		<th style="width: 240px; padding: 5px;">Sponsor(s)</th>
+		<td style="width:  20px; text-align: left;">&nbsp;</td>
+		<th style="padding: 5px; text-align: left; width: 120px;">Block</th>
+		<th style="padding: 5px; text-align: left;">Room(s)</th>
+		<th style="padding: 5px; text-align: left;">Sponsor(s)</th>
 		<td</td>
 	</tr>
 [<foreach from=$activities item="activity">]
@@ -151,19 +151,21 @@
 			<br /><a id="cancel_[<$activity.block.bid>]" onclick="do_action('cancel', '[<$activity.block.bid>]');" href="#" style="visibility: visible">[<if $activity.cancelled>]Uncancel[<else>]Cancel[</if>]</a>
 [</if>]
 		</td>
-		<td style="padding: 5px;" colspan="2">
+		<td style="padding: 5px;">
 [<if $activity.scheduled>]
 			<div id="status_[<$activity.block.bid>]" style="display: block; color: #FF0000; font-weight: bold; text-align: center; font-size: 14pt;">[<if $activity.cancelled>]Cancelled[<else>]Scheduled[</if>]</div>
 [</if>]
-			<div id="room_[<$activity.block.bid>]" style="visibility: [<if $activity.scheduled>]hidden; display: none[<else>]visible[</if>]; float: left;">
-				<select id="room_list_[<$activity.block.bid>]" name="room_list[[<$activity.block.bid>]][]" size="3" style="width: 220px;" multiple>
+			<div id="room_[<$activity.block.bid>]" style="visibility: [<if $activity.scheduled>]hidden; display: none[<else>]visible[</if>];">
+				<select id="room_list_[<$activity.block.bid>]" name="room_list[[<$activity.block.bid>]][]" size="3" style="width: 100%;" multiple>
 [<foreach from=$rooms item='room'>]
 					<option value="[<$room.rid>]"[<if in_array($room.rid, explode(",", $activity.rooms))>] selected[</if>]>[<$room.name>]</option>
 [</foreach>]
 				</select>
 			</div>
-			<div id="sponsor_[<$activity.block.bid>]" style="visibility: [<if $activity.scheduled>]hidden; display: none[<else>]visible[</if>]; float: right;">
-				<select id="sponsor_list_[<$activity.block.bid>]" name="sponsor_list[[<$activity.block.bid>]][]" size="3" style="width: 220px;" multiple>
+		</td>
+		<td style="padding: 5px;">
+			<div id="sponsor_[<$activity.block.bid>]" style="visibility: [<if $activity.scheduled>]hidden; display: none[<else>]visible[</if>];">
+				<select id="sponsor_list_[<$activity.block.bid>]" name="sponsor_list[[<$activity.block.bid>]][]" size="3" style="width: 100%;" multiple>
 [<foreach from=$sponsors item='sponsor'>]
 				<option value="[<$sponsor.sid>]"[<if in_array($sponsor.sid, explode(",", $activity.sponsors))>] selected[</if>]>[<$sponsor.name_comma>]</option>
 [</foreach>]
