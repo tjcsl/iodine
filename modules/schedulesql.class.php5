@@ -32,7 +32,7 @@ class ScheduleSQL implements Iterator {
 		reset($this->class_arr);
 	}
 
-	private function compare(Section $s1, Section $s2) {
+	private static function compare(Section $s1, Section $s2) {
 		if($s1->period > $s2->period) {
 			return 1;
 		}
