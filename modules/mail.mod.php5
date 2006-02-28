@@ -119,7 +119,8 @@ class Mail implements Module {
 
 		$this->nmsgs = imap_num_msg($this->connection);
 
-		$this->messages = imap_fetch_overview($this->connection, "1:{$this->nmsgs}");
+		$sorted = imap_sort($this->connection, SORTDATE, 1);
+		$this->messages = imap_fetch_overview($this->connection, implode(',',$sorted));
 
 		foreach($this->messages as $message) {
 			$message->unread = $message->recent || !$message->seen;
@@ -153,7 +154,7 @@ class Mail implements Module {
 		}
 		
 		if(time() - filemtime($this->cache_file) > i2config_get('imap_cache_time',300,'mail')) {
-			d('Cache file is too stale');
+			d('Cache file is too stale',6);
 			return FALSE;
 		}
 
