@@ -11,8 +11,6 @@
 
 /**
 * A module that displays users with birthdays close to the current date.
-* @todo Cache the results for a day, since these don't need to calculated every
- * time.
 * @package modules
 * @subpackage Birthday
 */
@@ -26,7 +24,13 @@ class Birthdays implements Module {
 	function init_box() {
 		global $I2_ROOT;
 
-		$this->birthdays = $this->get_birthdays(time());
+		$this->cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'birthdays.cache';
+		$mytime = getdate(time());
+
+		if(!($this->birthdays = $this->get_cache($mytime))) {
+			$this->birthdays = $this->get_birthdays(time());
+			$this->store_cache($this->birthdays,$mytime);
+		}
 		
 		return "Today's Birthdays";
 	}
@@ -86,6 +90,34 @@ class Birthdays implements Module {
 		}
 		
 		return $birthdays;
+	}
+
+	private function get_cache($mytime) {
+		if(!file_exists($this->cachefile) || !($contents = file_get_contents($this->cachefile))) {
+			return FALSE;
+		}
+		
+		$cache = unserialize($contents);
+		d(print_r($cache,TRUE),2);
+		
+		if($cache['mday'] == $mytime['mday'] && $cache['mon'] == $mytime['mon']) {
+			return $cache['bdays'];
+		}
+		return FALSE;
+		
+	}
+
+	private function store_cache($birthdays,$mytime) {
+		$store = array(
+			'bdays' => $birthdays,
+			'mday' => $mytime['mday'],
+			'mon' => $mytime['mon']
+		);
+
+		$fh = fopen($this->cachefile,'w');
+		$serial = serialize($store);
+		fwrite($fh,$serial);
+		fclose($fh);
 	}
 
 	function get_name() {
