@@ -185,10 +185,6 @@ class Logging {
 	public function flush_debug_output() {
 		global $I2_DISP;
 		
-		if( !( $this->error_buf || $this->debug_buf) ) {
-			return;
-		}
-		
 		try {
 			if( ! isset($I2_DISP) ) {
 				$I2_DISP = new Display();
