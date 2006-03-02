@@ -6,8 +6,8 @@
 <link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <!--[if IE]>
-<script src="[<$I2_ROOT>]www/ie7-core.js" type="text/javascript"></script>
-<script src="[<$I2_ROOT>]www/ie7-graphics.js" type="text/javascript"></script>
+<script src="[<$I2_ROOT>]www/js/ie7-core.js" type="text/javascript"></script>
+<script src="[<$I2_ROOT>]www/js/ie7-graphics.js" type="text/javascript"></script>
 <![endif]-->
 </head>
 <body>
