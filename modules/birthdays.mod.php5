@@ -98,7 +98,6 @@ class Birthdays implements Module {
 		}
 		
 		$cache = unserialize($contents);
-		d(print_r($cache,TRUE),2);
 		
 		if($cache['mday'] == $mytime['mday'] && $cache['mon'] == $mytime['mon']) {
 			return $cache['bdays'];
