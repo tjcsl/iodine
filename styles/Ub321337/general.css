@@ -2,7 +2,7 @@
 body {
 	font-family: courier, helvetica, verdana, sans-serif;
 	background-color: #000000;
-	cursor: url(www/pics/l33tcursor.cur);
+	/*cursor: url(www/pics/l33tcursor.cur);*/
 }
 @extend
 form, div, p, span, td, th, i {
@@ -49,7 +49,8 @@ a:visited {
 }
 a:hover {
 	color: #00aa00;
-	cursor: url(www/pics/l33tcursor.cur);
+	/*cursor: url(www/pics/l33tcursor.cur);*/
+}
 a:active {
 	color: #00aa00;
 }
