@@ -5,7 +5,6 @@ form, div, p, span, td, th, i {
 
 img {
 	border-width: 0px;
-	behavior: url(www/js/pngbehavior.htc);
 }
 
 body {
