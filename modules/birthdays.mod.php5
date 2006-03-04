@@ -83,7 +83,7 @@ class Birthdays implements Module {
 		$day = $date['mday'];
 		$year = $date['year'];
 		
-		$birthdays = $I2_SQL->query("SELECT CONCAT(`fname`, ' ', `lname`) as `name`, `grade`, `bdate`, user.uid FROM userinfo JOIN user USING (uid) WHERE `bdate` LIKE %s ORDER BY bdate, grade DESC, lname, fname", "%-%$month-%$day")->fetch_all_arrays(Result::ASSOC);
+		$birthdays = $I2_SQL->query("SELECT CONCAT(`fname`, ' ', `lname`) as `name`, `grade`, `bdate`, user.uid FROM userinfo JOIN user USING (uid) WHERE `bdate` LIKE %s ORDER BY bdate, grade DESC, lname, fname", '%-'.str_pad($month,2,'0',STR_PAD_LEFT).'-'.str_pad($day,2,'0',STR_PAD_LEFT))->fetch_all_arrays(Result::ASSOC);
 		
 		foreach($birthdays as &$birthday) {
 			$birthday['age'] = $year - ((int)substr($birthday['bdate'], 0, 4));
@@ -98,7 +98,6 @@ class Birthdays implements Module {
 		}
 		
 		$cache = unserialize($contents);
-		d(print_r($cache,TRUE),2);
 		
 		if($cache['mday'] == $mytime['mday'] && $cache['mon'] == $mytime['mon']) {
 			return $cache['bdays'];
