@@ -122,7 +122,9 @@ function doMove() {
 		if (ie) {
 			theobject.el.runtimeStyle.width = width + "px";
 			theobject.el.runtimeStyle.height = height + "px";
-			theobject.el.runtimeStyle.screenLeft += oldwidth - width;
+			if (theobject.el.runtimeStyle.autoLeft) {
+				theobject.el.runtimeStyle.screenLeft += oldwidth - width;
+			}
 			theobject.el.runtimeStyle.screenTop += oldheight - height;
 		}
 	

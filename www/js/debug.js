@@ -30,7 +30,9 @@ function swap(id) {
 
 function minimize(div) {
 	if (ie) {
-		div.runtimeStyle.screenLeft -= 13 - (div.offsetWidth - 14);
+		if (div.runtimeStyle.autoLeft) {
+			div.runtimeStyle.screenLeft -= 13 - (div.offsetWidth - 14);
+		}
 		div.runtimeStyle.screenTop -= 13 - (div.offsetHeight - 14);
 	}
 	divs[div.id].width = div.style.width;
@@ -53,7 +55,9 @@ function maximize(div) {
 	if (ie) {
 		div.runtimeStyle.width = div.style.width;
 		div.runtimeStyle.height = div.style.height;
-		div.runtimeStyle.screenLeft += 13 - (div.offsetWidth - 14);
+		if (div.runtimeStyle.autoLeft) {
+			div.runtimeStyle.screenLeft += 13 - (div.offsetWidth - 14);
+		}
 		div.runtimeStyle.screenTop += 13 - (div.offsetHeight - 14);
 	}
 }
