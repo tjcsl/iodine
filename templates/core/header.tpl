@@ -5,9 +5,11 @@
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
 <link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
-<!--[if IE]>
-<script src="[<$I2_ROOT>]www/js/ie7-core.js" type="text/javascript"></script>
-<script src="[<$I2_ROOT>]www/js/ie7-graphics.js" type="text/javascript"></script>
+<!--[if lt IE 7]>
+<script type="text/javascript">
+IE7_PNG_SUFFIX = ".png";
+</script>
+<script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 <![endif]-->
 </head>
 <body>

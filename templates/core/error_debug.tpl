@@ -19,11 +19,5 @@ default_width = '[<if $debug && $errors>]45%[<else>]90%[</if>]';
  </div>
 [</if>]
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/debug.js"></script>
-<!--[if gte IE 5.5]>
-<![if lt IE 7]>
-<script type="text/javascript" src="[<$I2_ROOT>]www/js/debug_ie.js"></script>
-<link type="text/css" rel="stylesheet" href="[<$I2_ROOT>]www/extra-css/debug_ie.css" />
-<![endif]>
-<![endif]-->
 </body>
 </html>

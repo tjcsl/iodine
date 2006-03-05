@@ -69,8 +69,10 @@ function doDown() {
 	theobject.width = el.offsetWidth - 14;
 	theobject.height = el.offsetHeight - 14;
 	
-	//theobject.left = el.offsetLeft;
-	//theobject.top = el.offsetTop;
+	if (ie) {
+		theobject.left = el.runtimeStyle.screenLeft;
+		theobject.top = el.runtimeStyle.screenTop;
+	}
 
 	window.event.returnValue = false;
 	window.event.cancelBubble = true;
@@ -98,21 +100,32 @@ function doMove() {
 
 	//Dragging starts here
 	if(theobject != null) {
-		if (dir.indexOf("e") != -1)
-			theobject.el.style.width = Math.max(xMin, theobject.width + window.event.clientX - theobject.grabx) + "px";
-	
-		if (dir.indexOf("s") != -1)
-			theobject.el.style.height = Math.max(yMin, theobject.height + window.event.clientY - theobject.graby) + "px";
+		var width = oldwidth = theobject.el.offsetWidth - 14;
+		var height = oldheight = theobject.el.offsetHeight - 14;
 
+		if (dir.indexOf("e") != -1) {
+			width = Math.max(xMin, theobject.width + window.event.clientX - theobject.grabx);
+		}
+		if (dir.indexOf("s") != -1) {
+			height = Math.max(yMin, theobject.height + window.event.clientY - theobject.graby);
+		}
 		if (dir.indexOf("w") != -1) {
-			//theobject.el.style.left = Math.min(theobject.left + window.event.clientX - theobject.grabx, theobject.left + theobject.width - xMin) + "px";
-			theobject.el.style.width = Math.max(xMin, theobject.width - window.event.clientX + theobject.grabx) + "px";
+			width = Math.max(xMin, theobject.width - window.event.clientX + theobject.grabx);
 		}
 		if (dir.indexOf("n") != -1) {
-			//theobject.el.style.top = Math.min(theobject.top + window.event.clientY - theobject.graby, theobject.top + theobject.height - yMin) + "px";
-			theobject.el.style.height = Math.max(yMin, theobject.height - window.event.clientY + theobject.graby) + "px";
+			height = Math.max(yMin, theobject.height - window.event.clientY + theobject.graby);
 		}
 		
+		theobject.el.style.width = width + "px";
+		theobject.el.style.height = height + "px";
+		
+		if (ie) {
+			theobject.el.runtimeStyle.width = width + "px";
+			theobject.el.runtimeStyle.height = height + "px";
+			theobject.el.runtimeStyle.screenLeft += oldwidth - width;
+			theobject.el.runtimeStyle.screenTop += oldheight - height;
+		}
+	
 		window.event.returnValue = false;
 		window.event.cancelBubble = true;
 	

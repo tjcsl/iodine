@@ -29,12 +29,20 @@ function swap(id) {
 }
 
 function minimize(div) {
+	if (ie) {
+		div.runtimeStyle.screenLeft -= 13 - (div.offsetWidth - 14);
+		div.runtimeStyle.screenTop -= 13 - (div.offsetHeight - 14);
+	}
 	divs[div.id].width = div.style.width;
 	divs[div.id].height = div.style.height;
 	div.style.width = "";
 	div.style.height = "";
 	div.className = div.className.replace(/ resizeMe/, "");
 	div.className += " minimized";
+	if (ie) {
+		div.runtimeStyle.width = div.style.width;
+		div.runtimeStyle.height = div.style.height;
+	}
 }
 
 function maximize(div) {
@@ -42,6 +50,12 @@ function maximize(div) {
 	div.style.height = divs[div.id].height;
 	div.className = div.className.replace(/ minimized/, "");
 	div.className += " resizeMe";
+	if (ie) {
+		div.runtimeStyle.width = div.style.width;
+		div.runtimeStyle.height = div.style.height;
+		div.runtimeStyle.screenLeft += 13 - (div.offsetWidth - 14);
+		div.runtimeStyle.screenTop += 13 - (div.offsetHeight - 14);
+	}
 }
 
 if (eval(getCookie('error_open', 'true'))) {

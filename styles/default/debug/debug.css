@@ -12,8 +12,8 @@
 
 .debug {
 	position:fixed;
-	right:0;
-	bottom:0;
+	right:0px;
+	bottom:0px;
 	z-index:10;
 	border: 2px #00f dashed;
 	background-color: #aad;
@@ -24,7 +24,7 @@
 
 .minimized {
 	padding: 0px;
-	width:23px;
+	width: 23px;
 	height:23px;
 	-moz-opacity: 0.5;
 	filter:alpha(opacity=50);
@@ -42,7 +42,7 @@
 }
 
 .minimize {
-	position: fixed;
+	position: absolute;
 	width:15px;
 	height:15px;
 	background-color: #f11;
