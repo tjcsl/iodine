@@ -155,6 +155,7 @@ class Mail implements Module {
 		
 		if(time() - filemtime($this->cache_file) > i2config_get('imap_cache_time',300,'mail')) {
 			d('Cache file is too stale',6);
+			unlink($this->cache_file);
 			return FALSE;
 		}
 
