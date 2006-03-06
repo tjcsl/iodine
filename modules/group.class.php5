@@ -27,7 +27,7 @@ class Group {
 	/**
 	* groupname to GID mapping
 	*/
-	private static $gid;
+	private static $gid_map;
 
 	public static function admin_all() {
 		if(self::$admin_all === NULL) {
@@ -86,11 +86,11 @@ class Group {
 	public function __construct($group) {
 		global $I2_SQL;
 
-		if (self::$gid === NULL) {
-			self::$gid = array();
+		if (self::$gid_map === NULL) {
+			self::$gid_map = array();
 			 $res = $I2_SQL->query('SELECT name,gid FROM groups');
 			 while ($row = $res->fetch_array(Result::ASSOC)) {
-			 	self::$gid[$row['name']] = $row['gid'];
+			 	self::$gid_map[$row['name']] = $row['gid'];
 			 }
 		}
 
@@ -115,8 +115,8 @@ class Group {
 		}
 		else {
 		// Non-numeric $group passed; figure out GID
-			if(isSet(self::$gid[$group])) {
-				$this->mygid = self::$gid[$group];
+			if(isSet(self::$gid_map[$group])) {
+				$this->mygid = self::$gid_map[$group];
 				$this->myname = $group;
 			}
 			else {
