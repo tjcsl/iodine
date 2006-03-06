@@ -392,8 +392,6 @@ class Display {
 	* after the modules.
 	*/
 	public function global_footer() {
-		global $I2_LOG;
-		$I2_LOG->flush_debug_output();
 		$this->disp('footer.tpl');
 		$this->flush_buffer();
 	}
