@@ -384,7 +384,12 @@ class User {
 		global $I2_SQL;
 		
 		//Change BASH/DOS-style globbing to MySQL-style wildcards
-		$str = strtr($str, '*?', '%_');
+		$str = strtr($str, array(
+			'%'=>'\%',
+			'_'=>'\_',
+			'*'=>'%%',
+			'?'=>'_')
+		);
 
 		$where = '';
 		$where_arr = array();
