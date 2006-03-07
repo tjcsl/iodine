@@ -20,9 +20,11 @@ class ScheduleSQL implements Iterator {
 	public function __construct(User $user) {
 		global $I2_SQL;
 
+		$sids = array();
 		foreach($I2_SQL->query('SELECT sectionid FROM student_section_map WHERE studentid = %d;',$user->studentid) as $row) {
-			$this->class_arr[] = new SectionSQL($row[0]);
+			$sids[] = $row[0];
 		}
+		$this->class_arr = SectionSQL::generate($sids);
 
 		if(count($this->class_arr) < 1) {
 			throw new I2Exception("User `{$user->uid}` does have have schedule information.");
