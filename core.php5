@@ -35,7 +35,7 @@ $I2_SELF = $_SERVER['REDIRECT_URL'];
 * versions of PHP.
 */
 if(version_compare(PHP_VERSION, '5.1.0', '>')) {
-	date_default_timezone_set('US/Eastern');
+	date_default_timezone_set(i2config_get('timezone','US/Eastern','core'));
 }
 
 /*
