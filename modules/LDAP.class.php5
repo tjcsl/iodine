@@ -20,6 +20,10 @@ class LDAP {
 	const LDAP_DELETE = 300;
 	const LDAP_COMPARE = 400;
 
+	const SCOPE_SUB = 1;
+	const SCOPE_BASE = 2;
+	const SCOPE_ONE = 3;
+
 	private $dnbase = 'dc=tjhsst,dc=edu';
 	private $bind;
 	private $conn;
@@ -27,17 +31,28 @@ class LDAP {
 	
 	function __construct($dn=NULL,$pass=NULL,$server=NULL) {
 		global $I2_USER;
-		if ($server) {
+		if ($server !== NULL) {
 			$this->server = $server;
 		} else {
 			$this->server = i2config_get('server','localhost','ldap');
 		}
+		d("Connecting to LDAP server {$this->server}...",8);
 		$this->conn = $this->connect();
-		$this->bind = ldap_bind($this->conn,$dn,$pass);
-		if (!$this->bind) {
-			throw new I2Exception('Unable to connect to LDAP server!');
+		if ($dn !== NULL && $pass !== NULL) {
+			$this->bind = ldap_bind($this->conn,$dn,$pass);
+			d("Bound to LDAP as $dn",8);
+		} else {
+			$this->bind = ldap_bind($this->conn);
+			d('Bound to LDAP anonymously',8);
 		}
-		d("Connected to the LDAP server as $dn",8);
+		//$this->bind = ldap_sasl_bind($this->conn,$dn,'','GSSAPI',i2config_get('default_realm','TJHSST.EDU','kerberos'));
+		//$this->bind = ldap_sasl_bind($this->conn,'','','GSSAPI');
+		/*if (ldap_error($this->conn)) {
+			throw new I2Exception(ldap_error($this->conn));
+		}*/
+		if (!$this->bind) {
+			throw new I2Exception('Unable to bind to LDAP server!');
+		}
 	}
 
 	function __destruct() {
@@ -58,7 +73,7 @@ class LDAP {
 	public static function get_user_bind() {
 		global $I2_AUTH;
 		// We could use the old krb5 ticket instead of re-authing, but what the hey.
-		$ldapuser = 'iodineUid='.$_SESSION['i2_username'].',year=2006,ou=students,ou=people,'.$this->dnbase;
+		$ldapuser = 'iodineUid='.$_SESSION['i2_username'].',ou=students,ou=people,'.$this->dnbase;
 		$pass = $I2_AUTH->get_user_password();
 		
 		return new LDAP($ldapuser,$pass);
@@ -91,14 +106,14 @@ class LDAP {
 		d("LDAP Searching $dn for ".print_r($attributes,1)." where $query...",7);
 		
 		//TODO: consider how searching is done
-		$res = ldap_search($this->bind,$dn,$query,$attributes);
+		$res = ldap_search($this->conn,$dn,$query,$attributes);
 
-		d('LDAP got '.ldap_count_entries($this->bind,$res).' results.',7);
+		d('LDAP got '.ldap_count_entries($this->conn,$res).' results.',7);
 		
 		//ldap_free_result($res);
 		//return NULL;
 		
-		return new LDAPResult($this->bind,$res,LDAP::LDAP_SEARCH);
+		return new LDAPResult($this->conn,$res,LDAP::LDAP_SEARCH);
 	}
 
 	public function search_one($dn='',$query='objectClass=*',$attributes='*') {
@@ -120,14 +135,14 @@ class LDAP {
 		
 		d("LDAP Listing $dn for ".print_r($attributes,1)." where $query...",7);
 		
-		$res = ldap_list($this->bind,$dn,$query,$attributes);
+		$res = ldap_list($this->conn,$dn,$query,$attributes);
 
-		d('LDAP got '.ldap_count_entries($this->bind,$res).' results.',7);
+		d('LDAP got '.ldap_count_entries($this->conn,$res).' results.',7);
 		
 		//ldap_free_result($res);
 		//return NULL;
 		
-		return new LDAPResult($this->bind,$res,LDAP::LDAP_SEARCH);
+		return new LDAPResult($this->conn,$res,LDAP::LDAP_SEARCH);
 
 	}
 
