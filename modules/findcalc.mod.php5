@@ -109,10 +109,6 @@ class Findcalc implements Module {
 	function get_name() {
 		return "Identify Lost Calculator";
 	}
-
-	function is_intrabox() {
-		return false;
-	}
 }
 
 ?>

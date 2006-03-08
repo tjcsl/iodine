@@ -87,10 +87,5 @@ class dataimport implements Module {
 	public function display_pane($disp) {
 		$disp->disp('dataimport_pane.tpl',array('data' => $this->datatable));
 	}
-
-	public function is_intrabox() {
-		return FALSE;
-	}
-
 }
 ?>

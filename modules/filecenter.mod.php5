@@ -259,13 +259,6 @@ class Filecenter implements Module {
 	function get_name() {
 		return "Filecenter";
 	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function is_intrabox() {
-		return true;
-	}
 }
 
 ?>

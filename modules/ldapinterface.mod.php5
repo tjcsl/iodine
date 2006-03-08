@@ -59,10 +59,6 @@ class LDAPInterface implements Module {
 		return 'ldapinterface';
 	}
 
-	function is_intrabox() {
-		return false;
-	}
-
 	/**
 	* Unused; we don't display a box
 	*

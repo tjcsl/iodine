@@ -93,17 +93,5 @@ class Info implements Module {
 			return 'Error';
 		}
 	}
-
-	/**
-	* Returns whether this module functions as an intrabox.
-	*
-	* @returns boolean True if the module has an intrabox, false if it does not.
-	*
-	* @abstract
-	*/
-	function is_intrabox() {
-		return FALSE;
-	}
-	
 }
 ?>

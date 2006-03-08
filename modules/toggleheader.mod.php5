@@ -48,10 +48,5 @@ class toggleheader implements Module {
 		//throw new I2Exception("Failed to redirect to $dest");
 		return;
 	}
-
-	function is_intrabox() {
-		return FALSE;
-	}
-	
 }
 ?>

@@ -225,14 +225,6 @@ class CSS implements Module {
 			}
 		}
 	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function is_intrabox() {
-		return FALSE;
-	}
-	
 }
 
 ?>

@@ -104,14 +104,6 @@ class SessionGC implements Module {
 		return 'Success';
 	}
 
-	/**
-	* Returns whether this module functions as an intrabox.
-	*
-	* @returns boolean True if the module has an intrabox, false if it does not.
-	*/
-	function is_intrabox() {
-		return FALSE;
-	}
 	private static function unserializesession($data) {
 		$vars=preg_split(
 			'/([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\|/',

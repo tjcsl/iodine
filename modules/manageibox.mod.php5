@@ -97,15 +97,6 @@ class ManageIbox implements Module {
 	}
 
 	/**
-	* Returns whether this module functions as an intrabox.
-	*
-	* @returns boolean True if the module has an intrabox, false if it does not.
-	*/
-	public function is_intrabox() {
-		return FALSE;
-	}
-	
-	/**
 	* Move an intrabox.
 	*
 	* $I2_ARGS parameters:

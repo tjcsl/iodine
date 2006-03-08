@@ -94,10 +94,6 @@ class Mail implements Module {
 		return 'Mail';
 	}
 
-	function is_intrabox() {
-		return true;
-	}
-
 	private function download_msgs() {
 		global $I2_AUTH;
 		if( ! $I2_AUTH->get_user_password()) {

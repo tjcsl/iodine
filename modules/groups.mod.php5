@@ -104,10 +104,6 @@ class Groups implements Module {
 		return 'Groups';
 	}
 
-	function is_intrabox() {
-		return false;
-	}
-
 	/**
 	* View a group
 	*

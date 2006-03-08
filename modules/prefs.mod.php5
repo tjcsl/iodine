@@ -86,10 +86,6 @@ class Prefs implements Module {
 	function get_name() {
 		return 'Prefs';
 	}
-
-	function is_intrabox() {
-		return false;
-	}
 }
 
 ?>

@@ -57,10 +57,6 @@ class MySQLInterface implements Module {
 		return 'mysqlinterface';
 	}
 
-	function is_intrabox() {
-		return false;
-	}
-
 	/**
 	* Unused; we don't display a box
 	*

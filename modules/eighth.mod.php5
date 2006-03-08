@@ -110,10 +110,6 @@ class Eighth implements Module {
 		return "Eighth";
 	}
 
-	function is_intrabox() {
-		return true;
-	}
-
 	/**
 	* Comparison function for sorting names
 	*
