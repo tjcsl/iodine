@@ -783,7 +783,7 @@ class Eighth implements Module {
 		}
 		else if($op == "mark_absent") {
 			EighthSchedule::add_absentee($args['bid'], $args['uid']);
-			redirect("eighth");
+			redirect('eighth/ent_attendance/user/bid/'.$args['bid']);
 		}
 	}
 
