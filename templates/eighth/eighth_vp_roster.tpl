@@ -8,6 +8,13 @@ Sponsor(s):&nbsp;[<$activity->block_sponsors_comma>]<br />
 [<php>]
 	$this->_tpl_vars['users'] = User::sort_users($this->_tpl_vars['activity']->members);
 [</php>]
+
+[<* FIXME: get rid of embedded PHP *>]
+
+Special Info: [<$activity->advertisement>]
+<br />
+
+
 [<foreach from=$users item="user">]
 ________ [<$user->name_comma>] ([<$user->uid>]) - [<$user->grade>]<br />
 [</foreach>]

@@ -485,7 +485,7 @@ class Eighth implements Module {
 				redirect("eighth/amr_room/view/rid/{$args['rid']}");
 			} else if ($args['modify_or_remove'] == 'remove') {
 				EighthRoom::remove_room($args['rid']);
-				redirect("eighth");
+				redirect("eighth/amr_room");
 			}
 		}
 	}
@@ -508,13 +508,13 @@ class Eighth implements Module {
 		}
 		else if($op == "add") {
 			$sid = EighthSponsor::add_sponsor($args['fname'], $args['lname']);
-			redirect("eighth/amr_sponsor/view/sid/{$sid}");
+			redirect("eighth/amr_sponsor");
 		}
 		else if($op == "modify") {
 			$sponsor = new EighthSponsor($args['sid']);
 			$sponsor->fname = $args['fname'];
 			$sponsor->lname = $args['lname'];
-			redirect("eighth/amr_sponsor/view/sid/{$args['sid']}");
+			redirect("eighth/amr_sponsor");
 		}
 		else if($op == "remove") {
 			EighthSponsor::remove_sponsor($args['sid']);
@@ -581,8 +581,8 @@ class Eighth implements Module {
 			$this->template_args['activity'] = $activity;
 			$this->title = "View Roster";
 		}
-		else if($op == "format") {
-			$this->setup_format_selection("vp_roster", "Class Roster", array("aid" => $args['aid'], "bid" => $args['bid']));
+		else if($op == 'format') {
+			$this->setup_format_selection('vp_roster', 'Class Roster', array('aid' => $args['aid'], "bid" => $args['bid']));
 		}
 		else if($op == "print") {
 			EighthPrint::print_class_roster($args['aid'], $args['bid'], $args['format']);
