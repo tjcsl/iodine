@@ -30,11 +30,11 @@ class ScheduleSQL implements Iterator {
 			throw new I2Exception("User `{$user->uid}` does have have schedule information.");
 		}
 
-		usort($this->class_arr, array('self','compare'));
+		usort($this->class_arr, array($this,'usort_compare'));
 		reset($this->class_arr);
 	}
 
-	private static function compare(Section $s1, Section $s2) {
+	private static function usort_compare(Section $s1, Section $s2) {
 		if($s1->period > $s2->period) {
 			return 1;
 		}
