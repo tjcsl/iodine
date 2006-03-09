@@ -207,6 +207,7 @@ class Groups implements Module {
 
 			$person_user = new User($uid);
 			$person_array['name'] = $person_user->name;
+			$person_array['uid'] = $person_user->uid;
 
 			if ($group->is_admin($person_user)) {
 				$person_array['admin'] = 'Admin';

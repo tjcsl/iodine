@@ -3,9 +3,11 @@
 [</if>]
 [<if isset($groups)>]
  You are currently a member of the following groups:<br />
+ <ul>
  [<foreach from=$groups item=grp>]
-  <a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a><br />
+  <li><a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a></li>
  [</foreach>]
+ </ul>
 [<else>]
  You are not a member of any groups.<br />
 [</if>]

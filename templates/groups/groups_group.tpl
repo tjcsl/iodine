@@ -1,12 +1,14 @@
 <a href="[<$I2_ROOT>]groups">Groups Home</a><br />
 <br />
-Group: [<$group>]<br />
+Group: <strong>[<$group>]</strong><br />
 <br />
 [<if count($members) > 0>]
 This group has the following members:<br />
+<ul>
 [<foreach from=$members item=person>]
-  [<$person.name>][<if isset($person.admin) && ($admin == "all" || $admin == "master")>] ([<$person.admin>])[</if>]<br />
+  <li><a href="[<$I2_ROOT>]studentdirectory/info/[<$person.uid>]">[<$person.name>]</a>[<if isset($person.admin) && ($admin == "all" || $admin == "master")>] ([<$person.admin>])[</if>]</li>
 [</foreach>]
+</ul>
 [<else>]
 This group has no members.<br />
 [</if>]
