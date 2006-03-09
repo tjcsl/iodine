@@ -1083,7 +1083,7 @@ class Eighth implements Module {
 			/* Editing comments code */
 			$user = new User($args['uid']);
 			$user->comments = $args['comments'];
-			redirect("eighth");
+			redirect("eighth/vcp_schedule/view/uid/".$args['uid']);
 		}
 		else if($op == "student") {
 			/* Editing student code */
