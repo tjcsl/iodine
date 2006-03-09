@@ -7,7 +7,7 @@
 .boxes_noheader {
 	position: absolute;
 	top: 20px;
-	left: 5px;
+	left: 10px;
 	width: 305px;
 }
 .intrabox {
@@ -19,8 +19,9 @@
 	color: #FFFFFF;
 	font-weight: bold;
 	background-color: #464678;
-	border-left: 4px solid #464678;
-	border-right: 4px solid #464678;
+	/*border-left: 4px solid #464678;
+	border-right: 4px solid #464678;*/
+	padding: 1px 4px;
 }
 .boxbuttons {
 	float: right;
@@ -86,7 +87,7 @@
 .mainbox_noheader_nointraboxes {
 	position: absolute;
 	top: 20px;
-	left: 2px;
+	left: 10px;
 	right: 10px;
 	border: thin groove;
 }
@@ -94,7 +95,7 @@
 .mainbox_nointraboxes {
 	position: absolute;
 	top: 110px;
-	left: 2px;
-	right: 110px;
+	left: 10px;
+	right: 10px;
 	border: thin groove;
 }

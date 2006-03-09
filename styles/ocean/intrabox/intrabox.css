@@ -47,3 +47,18 @@
 .activity_cancelled {
 	background-color: #006699;
 }
+@extend
+.mainbox_noheader {
+	border: #009999 2px solid;
+	-moz-border-radius: 10px;
+}
+@extend
+.mainbox_noheader_nointraboxes {
+	border: #009999 2px solid;
+	-moz-border-radius: 10px;
+}
+@extend
+.mainbox_nointraboxes {
+	border: #009999 2px solid;
+	-moz-border-radius: 10px;
+}

@@ -15,10 +15,10 @@
 }
 
 .header_small {
-		  position: absolute;
-		  top: 0px;
-		  right: 5px;
-		  text-align: right;
+	position: absolute;
+	top: 0px;
+	right: 10px;
+	text-align: right;
 }
 
 .title {

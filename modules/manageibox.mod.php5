@@ -93,7 +93,7 @@ class ManageIbox implements Module {
 		}
 
 		//redirect(str_replace($I2_ROOT,'',$_SERVER['HTTP_REFERER']));
-		redirect(implode('/',array_slice($I2_ARGS,1)));
+		redirect('');
 	}
 
 	/**

@@ -40,6 +40,8 @@ class MySQLResult implements Result {
 	** The current row number.
 	*/
 	private $current_row_number = 0;
+
+	private $insert_id = -1;
 	
 	/**
 	* The constructor for a Result object.
@@ -49,20 +51,25 @@ class MySQLResult implements Result {
 	* @param mixed $query_type See join_right.
 	*/
 	function __construct($mysql_result,$query_type) {
-		global $I2_LOG;
+		global $I2_LOG, $I2_SQL;
 		if (!$mysql_result) {
 			d('Null SQL result constructed.',6);
-			$this->currect_row = 0;
 			/* Haha, it's brilliant!
 			** We just have to make sure to implement the same methods as MySQL results do.
 			** Doing this will make things more likely to work in the event of disaster.
 			*/
-		$this->mysql_result = $this;
+			$this->mysql_result = $this;
 
 			return;
 		}
 		$this->mysql_result = $mysql_result;
 		$this->query_type = $query_type;
+		//FIXME: DANGER - HACKS AHEAD!
+		if ($query_type == MySQL::INSERT || $query_type == MySQL::REPLACE) {
+			$arr = mysql_fetch_row($I2_SQL->raw_query('SELECT LAST_INSERT_ID()'));
+			$this->insert_id = $arr[0];
+			//mysql_insert_id($mysql_result);//mysql_query(
+		}
 	}
 
 	public static function nil() {
@@ -80,24 +87,24 @@ class MySQLResult implements Result {
 
 	
 	function get_insert_id() {
-		if ($this->query_type == MySQL::INSERT) {
+		return $this->insert_id;
+		/*
+		if ($this->query_type == MySQL::INSERT || $this->query_type == MySQL::REPLACE) {
 			$id = mysql_insert_id($this->mysql_result);
-			if ($id) {
-				return $id;
-			}
+			return $id;
 		}
-		return 0;
+		return -1;*/
 	}
 
 	
 	function get_affected_rows() {
-		if ($this->query_type == MySQL::INSERT || $this->query_type == MySQL::UPDATE || $this->query_type == MySQL::DELETE) {
+		if ($this->query_type == MySQL::INSERT || $this->query_type == MySQL::UPDATE || $this->query_type == MySQL::DELETE || $this->query_type == MySQL::REPLACE) {
 			$affected = mysql_affected_rows($this->mysql_result);
 			if ($affected) {
 				return $affected;
 			}
 		}
-		d("get_affected_rows called in invalid context",5);
+		d('get_affected_rows called in invalid context',5);
 		return -1;
 	}
 

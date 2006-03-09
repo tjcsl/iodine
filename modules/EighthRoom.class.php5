@@ -26,7 +26,7 @@ class EighthRoom {
 	*/
 	public function __construct($roomid) {
 		global $I2_SQL;
-		$this->data = $I2_SQL->query("SELECT * FROM eighth_rooms WHERE rid=%d", $roomid)->fetch_array(Result::ASSOC);
+		$this->data = $I2_SQL->query('SELECT * FROM eighth_rooms WHERE rid=%d', $roomid)->fetch_array(Result::ASSOC);
 	}
 
 	/**
@@ -40,7 +40,7 @@ class EighthRoom {
 	*/
 	public static function get_utilization($blockid, $columns, $overbooked) {
 		global $I2_SQL;
-		$activities = EighthActivity::id_to_activity($I2_SQL->query("SELECT eighth_block_map.activityid,bid FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d", $blockid)->fetch_all_arrays(Result::NUM));
+		$activities = EighthActivity::id_to_activity($I2_SQL->query('SELECT eighth_block_map.activityid,bid FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d', $blockid)->fetch_all_arrays(Result::NUM));
 		$utilizations = array();
 		foreach($activities as $activity) {
 			$rooms = $activity->block_rooms;
@@ -48,7 +48,7 @@ class EighthRoom {
 				$room = new EighthRoom($room);
 				$students = EighthSchedule::count_members($blockid, $activity->aid);
 				if(!$overbooked || $students > $room->capacity) {
-					$utilizations[] = array("room" => $room, "activity" => $activity, "students" => $students);
+					$utilizations[] = array('room' => $room, 'activity' => $activity, 'students' => $students);
 				}
 			}
 		}
@@ -85,7 +85,7 @@ class EighthRoom {
 					$conflicts[$eighth_room->name] = array(array("aid" => $activity['aid'], "name" => ($activity['name'] . ($activity['restricted'] ? " (R)" :""))));
 				}
 				else {
-					$conflicts[$eighth_room->name][] = array("aid" => $activity['aid'], "name" => ($activity['name'] . ($activity['restricted'] ? " (R)" :"")));
+					$conflicts[$eighth_room->name][] = array("aid" => $activity['aid'], 'name' => ($activity['name'] . ($activity['restricted'] ? " (R)" :"")));
 				}
 			}
 		}
@@ -109,7 +109,7 @@ class EighthRoom {
 	*/
 	public static function get_all_rooms() {
 		global $I2_SQL;
-		return $I2_SQL->query("SELECT rid, name FROM eighth_rooms ORDER BY name")->fetch_all_arrays(Result::ASSOC);
+		return $I2_SQL->query('SELECT rid, name FROM eighth_rooms ORDER BY name')->fetch_all_arrays(Result::ASSOC);
 	}
 
 	/**
@@ -121,7 +121,7 @@ class EighthRoom {
 	*/
 	public static function add_room($name, $capacity) {
 		global $I2_SQL;
-		$result = $I2_SQL->query("INSERT INTO eighth_rooms (name, capacity) VALUES (%s,%d)", $number, $name, $capacity);
+		$result = $I2_SQL->query('INSERT INTO eighth_rooms (name, capacity) VALUES (%s,%d)', $name, $capacity);
 		return $result->get_insert_id();
 	}
 
@@ -133,7 +133,7 @@ class EighthRoom {
 	*/
 	public static function remove_room($roomid) {
 		global $I2_SQL;
-		$result = $I2_SQL->query("DELETE FROM eighth_rooms WHERE rid=%d", $roomid);
+		$result = $I2_SQL->query('DELETE FROM eighth_rooms WHERE rid=%d', $roomid);
 		// TODO: Fix all the problems caused by taking away a room
 	}
 

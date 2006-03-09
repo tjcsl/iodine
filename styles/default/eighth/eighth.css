@@ -1,4 +1,4 @@
-#help_pane {
+#eighth_help_pane {
 	display: none;
 	z-index: 20;
 	position: absolute;
@@ -13,18 +13,59 @@
 	overflow: hidden;
 }
 
-#help_text:hover {
+#eighth_help_text:hover {
 	text-decoration: underline;
 	cursor: help;
 	color: #FF0000;
 }
 
-#help_close {
+#eighth_help_close {
 	float: right;
 }
 
-#help_close:hover {
+#eighth_help_close:hover {
 	text-decoration: underline;
 	cursor: pointer;
 	color: #FF0000;
+}
+
+#eighth_help_blocker {
+	display: none;
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	background-color: #666666;
+}
+
+#eighth_header_logo {
+	width: 300px;
+	height: 80px;
+}
+
+#eighth_header_table {
+	padding: 0px;
+	margin: 10px;
+	width: 95%;
+}
+
+#eighth_pane_table {
+	padding: 0px;
+	margin: 10px;
+	width: 100%;
+}
+
+#eighth_pane_table td {
+	width: 50%;
+	vertical-align: top;
+}
+
+#eighth_pane_logout {
+	border: 1px dashed #CCCCCC;
+	padding: 5px;
+	float: right;
+	margin-top: -50px;
+	margin-right: 20px;
+	margin-bottom: 0px;
 }

@@ -65,8 +65,7 @@ class Eighth implements Module {
 				return "Eighth Period Office Online: {$this->title}";
 			}
 			else {
-				$this->template = "eighth_test_pane.tpl";
-				$this->template_args = array("method" => $method, "args" => $args);
+				return array("Eighth Period Office Online: ERROR - SubModule Doesn't Exist");
 			}
 		}
 		return array("Error", "Error");
@@ -475,7 +474,8 @@ class Eighth implements Module {
 			$this->title = "View Rooms";
 		}
 		else if($op == "add") {
-			EighthRoom::add_room($args['name'], $args['capacity']);
+			$rid = EighthRoom::add_room($args['name'], $args['capacity']);
+			redirect("eighth/amr_room/view/rid/{$rid}");
 		}
 		else if($op == "modify") {
 			if ($args['modify_or_remove'] == 'modify') {
@@ -539,7 +539,7 @@ class Eighth implements Module {
 			$this->template_args['sponsors'] = EighthSponsor::get_all_sponsors();
 			$this->template_args['activities'] = EighthSchedule::get_activity_schedule($args['aid']);
 			$this->template_args['aid'] = $args['aid'];
-			$this->title = "Schedule an Activity";
+			$this->title = "Schedule an Activity ({$args['aid']})";
 		}
 		else if($op == "modify") {
 			foreach($args['modify'] as $bid) {

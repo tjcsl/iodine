@@ -113,7 +113,7 @@ class MySQL {
 	* @param string $query The query string.
 	* @return resource A raw mysql result resourse.
 	*/
-	protected function raw_query($query) {
+	function raw_query($query) {
 		global $I2_ERR;
 		d('Running MySQL query: '.$query,7);
 		$r = mysql_query($query, $this->link);
@@ -191,7 +191,9 @@ class MySQL {
 
 		$query = trim($query);
 		
-		/* matches Iodine custom printf-style tags */
+		/* 
+		** matches Iodine custom printf-style tags
+		*/
 		if( preg_match_all(
 			'/(?<!%)%['.self::TAGS_ARG.self::TAGS_NOARG.']/',
 			$query,
