@@ -539,6 +539,8 @@ class Eighth implements Module {
 			$this->template_args['sponsors'] = EighthSponsor::get_all_sponsors();
 			$this->template_args['activities'] = EighthSchedule::get_activity_schedule($args['aid']);
 			$this->template_args['aid'] = $args['aid'];
+			$act = new EighthActivity($args['aid']);
+			$this->template_args['activity_name'] = $act->name;
 			$this->title = "Schedule an Activity ({$args['aid']})";
 		}
 		else if($op == "modify") {

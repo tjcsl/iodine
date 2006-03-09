@@ -141,6 +141,7 @@
 					frm.selectall.checked=(TO==TB)?true:false;
 				}
 			</script>
+<div style="width: 100%; text-align: center; margin-top: 10px;"><font style="font: 18pt bold;">[<$activity_name>]</font></div><br />
 <form name="activities" action="[<$I2_ROOT>]eighth/sch_activity/modify/aid/[<$aid>]" method="post">
 	<input type="submit" value="Save" /><br /><br />
 <table cellspacing="0" style="border: 0px; padding: 0px; margin: 0px; width: 100%;">
