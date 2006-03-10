@@ -260,8 +260,8 @@ class Group {
 	* Gets the groups of which a user is a member.
 	*
 	*
-	* @param int $uid The userID of which to fetch the groups.
-	* @return array The group IDs of groups for the given user.
+	* @param User $user The {@link User} for which to fetch the groups.
+	* @return array The Groups in which the user has membership.
 	*/
 	public static function get_user_groups(User $user, $include_special = TRUE) {
 		global $I2_SQL;
