@@ -60,6 +60,7 @@ class LANFilesystem extends Filesystem {
 		);
 
 		//TODO: figure out why ncpmount thinks it won't be given a password when run from php. Perhaps its because stdin is not tty?
+		//CONFIRMED: by wyang: ncpmount only waits on stdin if tty exists (does same if you do ssh iodine ncpmount -S ......)
 		//so maybe we should use ncpmount script that uses expect from original intranet (called stdinmnt or something)
 		$process = proc_open("ncpmount -S $server -A $server -V $volume -U $user $mount_point -P $pass", $descriptors, $pipes);
 		if(is_resource($process)) {
