@@ -4,8 +4,6 @@
 */
 class SavePad implements Module {
 
-	private $tpl = NULL;
-
 	/**
 	* Unused; required to implement {@link Module}
 	*
@@ -44,11 +42,11 @@ class SavePad implements Module {
 
 	/**
 	* I2_ARGS accepted:
-	*	I2_ARGS[1] = text to save
+	*	I2_ARGS[0] = text to save
 	*/
 	public function init_pane() {
 		global $I2_ARGS,$I2_SQL,$I2_USER;
-		$I2_SQL->query("UPDATE scratchpad SET scratchtext='%s' WHERE username=%s", $I2_ARGS[1], $I2_USER->username);
+		$I2_SQL->query("UPDATE scratchpad SET scratchtext='%s' WHERE username=%s", $I2_ARGS[0], $I2_USER->username);
 		redirect('');
 	}
 
