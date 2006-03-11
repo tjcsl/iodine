@@ -92,8 +92,8 @@ class ManageIbox implements Module {
 				return 'Error';
 		}
 
-		//redirect(str_replace($I2_ROOT,'',$_SERVER['HTTP_REFERER']));
-		redirect('');
+		// Redirect to the page the user was just viewing.
+		redirect(str_replace($I2_ROOT,'',$_SERVER['HTTP_REFERER']));
 	}
 
 	/**
