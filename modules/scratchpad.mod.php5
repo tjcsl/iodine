@@ -13,7 +13,7 @@ class Scratchpad implements Module {
 		GLOBAL $I2_USER, $I2_SQL;
 		$this->template_args['text'] = $I2_SQL->query('SELECT padtext FROM scratchpad WHERE username=%s',$I2_USER->username)->fetch_single_value();
 	
-		return "Scratchpad";
+		return 'Scratchpad';
 	}
 
 	function display_box($disp) {
@@ -21,14 +21,14 @@ class Scratchpad implements Module {
 	}
 	
 	function init_pane() {
-		return "Scratchpad";
+		return 'Scratchpad';
 	}
 	
 	function display_pane($disp) {
 	}
 
 	function get_name() {
-		return "Scratchpad";
+		return 'Scratchpad';
 	}
 
 	function is_intrabox() {

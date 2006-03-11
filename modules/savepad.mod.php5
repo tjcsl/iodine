@@ -46,7 +46,10 @@ class SavePad implements Module {
 	*/
 	public function init_pane() {
 		global $I2_ARGS,$I2_SQL,$I2_USER;
-		$I2_SQL->query("UPDATE scratchpad SET scratchtext='%s' WHERE username=%s", $I2_ARGS[0], $I2_USER->username);
+		if (count($I2_ARGS) == 0) {
+			return;
+		}
+		$I2_SQL->query("UPDATE scratchpad SET scratchtext='%s' WHERE username=%s", $I2_ARGS[1], $I2_USER->username);
 		redirect('');
 	}
 
