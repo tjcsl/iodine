@@ -40,7 +40,7 @@ function doIntraboxMove(e) {
 	drag_box.lastMouseX = x;
 	drag_box.lastMouseY = y;
 	drag_box.onDrag(new_left, new_top);
-	if(wpos < 30) {
+	if(wpos < 30) { //If the top of the ibox is dragged near the top of the screen, scroll up.
 		make_intrabox().style.top = (parseInt(make_intrabox().style.top)-1)+"px";
 		window.scrollBy(0,-1);
 		if(scroll==0) {
@@ -48,7 +48,7 @@ function doIntraboxMove(e) {
 			while(scroll) document.fireEvent("onmousemove");
 		}
 	}
-	else if(wpos + parseInt(make_intrabox().style.height) > (document.all?document.documentElement.clientHeight:window.innerHeight)) {
+	else if(wpos + parseInt(make_intrabox().style.height) > (document.all?document.documentElement.clientHeight:window.innerHeight)) { //If part of the ibox goes below the screen, scroll down.
 		make_intrabox().style.top = (parseInt(make_intrabox().style.top)+1)+"px";
 		window.scrollBy(0,1);
 		if(scroll==0) {
