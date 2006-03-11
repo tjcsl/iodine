@@ -62,10 +62,15 @@ class I2Exception extends Exception {
 		$trace = $this->getTrace();
 		
 		foreach($trace as $level) {
-			$file = $level['file'];
-			$line = $level['line'];
-			$fileurl = str_replace('%2F', '/', urlencode($file));
-			$str .= "<a href='" . $I2_ROOT . "highlight/$line$fileurl#$line'>$file:$line</a><br />\r\n";
+			if(isset($level['file'])) {
+				$line = $level['line'];
+				$file = $level['file'];
+				$fileurl = str_replace('%2F', '/', urlencode($file));
+				$str .= "<a href='" . $I2_ROOT . "highlight/$line$fileurl#$line'>$file:$line</a><br />\r\n";
+			}
+			else {
+				$str .= "Unknown file, Unknown line<br />\r\n";
+			}
 		}
 		
 		return $str;
