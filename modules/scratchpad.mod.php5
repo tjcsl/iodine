@@ -7,20 +7,17 @@
 
 class Scratchpad implements Module {
 
-	private $template;
 	private $template_args = array();
 
 	function init_box() {
 		GLOBAL $I2_USER, $I2_SQL;
-		$this->template = "scratchpad_box.tpl";
-		$query="SELECT * FROM scratchpad WHERE username=%s";
-		$this->template_args['text'] = $I2_SQL->query($query, $I2_USER->username)->fetch_array(Result::ASSOC)['padtext'];
+		$this->template_args['text'] = $I2_SQL->query('SELECT padtext FROM scratchpad WHERE username=%s',$I2_USER->username)->fetch_single_value();
 	
 		return "Scratchpad";
 	}
 
 	function display_box($disp) {
-		$disp->disp($this->template, $this->template_args);
+		$disp->disp('scratchpad_box.tpl', $this->template_args);
 	}
 	
 	function init_pane() {
