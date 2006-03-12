@@ -49,7 +49,8 @@ class SavePad implements Module {
 		if (count($I2_ARGS) == 0) {
 			return;
 		}
-		$I2_SQL->query("UPDATE scratchpad SET scratchtext='%s' WHERE username=%s", $I2_ARGS[1], $I2_USER->username);
+		d("Scratch text: "+$I2_ARGS[1],7);
+		$I2_SQL->query("UPDATE scratchpad SET scratchtext='%s' WHERE uid=%d", $I2_ARGS[1], $I2_USER->uid);
 		redirect('');
 	}
 

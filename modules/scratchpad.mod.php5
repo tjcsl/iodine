@@ -11,8 +11,7 @@ class Scratchpad implements Module {
 
 	function init_box() {
 		GLOBAL $I2_USER, $I2_SQL;
-		$this->template_args['text'] = $I2_SQL->query('SELECT padtext FROM scratchpad WHERE username=%s',$I2_USER->username)->fetch_single_value();
-	
+		$this->template_args['text'] = $I2_SQL->query('SELECT padtext FROM scratchpad WHERE uid=%d',$I2_USER->uid)->fetch_single_value();
 		return 'Scratchpad';
 	}
 
