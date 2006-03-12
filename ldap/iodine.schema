@@ -234,6 +234,13 @@ attributetype ( i2Attr:27
 	SYNTAX stringSyntax
 	)
 
+attributetype ( i2Attr:28
+	NAME ('groupMembership' 'group')
+	DESC 'The ID of a group the entry is a member of'
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
+	)
+
 
 objectclass ( i2OC:3
 	NAME ('tjhsstSection' 'section')
@@ -309,6 +316,9 @@ objectclass ( i2OC:8
 		uidNumber $
 		gidNumber $
 		homeDirectory
+	)
+	MAY (
+		group
 	)
 	)
 
@@ -390,7 +400,8 @@ objectclass ( i2OC:1
 		perm-showtelephone $
 		displayName $
 		middlename $
-		counselor
+		counselor $
+		group
 	)
 	)
 
@@ -405,7 +416,8 @@ objectclass ( i2OC:2
 	MAY (
 		employeeNumber $
 		displayName $
-		middlename
+		middlename $
+		group
 	)
 	)
 
