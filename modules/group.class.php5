@@ -109,12 +109,16 @@ class Group {
 		return $this->wrap->remove_all_members();
 	}
 
-	public function grant_admin(User $user) {
-		return $this->wrap->grant_admin($user);
+	public function grant_permission(User $user, $perm) {
+		return $this->wrap->grant_permission($user, $perm);
 	}
 	
-	public function revoke_admin(User $user) {
-		return $this->wrap->revoke_admin($user);
+	public function revoke_permission(User $user, $perm) {
+		return $this->wrap->revoke_permission($user, $perm);
+	}
+
+	public function get_permissions(User $user) {
+		return $this->wrap->get_permissions($user);
 	}
 
 	/**

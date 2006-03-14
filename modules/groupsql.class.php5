@@ -119,7 +119,7 @@ class GroupSQL {
 		if($this->special) {
 			throw I2Exception("Attempted to add user {$user->uid} to invalid group {$this->mygid}");
 		}
-		return $I2_SQL->query('INSERT INTO group_user_map (gid,uid) VALUES(%d,%d)',$this->mygid,$user->uid);
+		return $I2_SQL->query('INSERT INTO group_user_map (gid,uid) VALUES (%d,%d)',$this->mygid,$user->uid);
 	}
 
 	public function remove_user(User $user) {
@@ -136,30 +136,40 @@ class GroupSQL {
 		global $I2_SQL;
 
 		if($this->special) {
-			throw I2Exception("Attempted to remove all users from invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to remove all users from invalid group {$this->mygid}");
 		}
 
 		return $I2_SQL->query('DELETE FROM group_user_map WHERE gid=%d', $this->mygid);
 	}
 
-	public function grant_admin(User $user) {
+	public function grant_permission(User $user, $perm) {
 		global $I2_SQL;
 
 		if($this->special) {
-			throw I2Exception("Attempted to grant admin privileges to user {$user->uid} for invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to grant privileges to user {$user->uid} for invalid group {$this->mygid}");
 		}
 		
-		return $I2_SQL->query('UPDATE group_user_map SET is_admin=1 WHERE uid=%d AND gid=%d', $user->uid, $this->mygid);
+		return $I2_SQL->query('INSERT INTO groups_perms (uid,gid,permission) VALUES (%d,%d,%s)', $user->uid, $this->mygid, $perm);
 	}
 	
-	public function revoke_admin(User $user) {
+	public function revoke_permission(User $user, $perm) {
 		global $I2_SQL;
 
 		if($this->special) {
-			throw I2Exception("Attempted to revoke admin privileges from user {$user->uid} for invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to revoke privileges from user {$user->uid} for invalid group {$this->mygid}");
 		}
 
-		return $I2_SQL->query('UPDATE group_user_map SET is_admin=0 WHERE uid=%d AND gid=%d', $user->uid, $this->mygid);
+		return $I2_SQL->query('DELETE FROM groups_perms WHERE uid=%d AND gid=%d AND permission=%s', $user->uid, $this->mygid, $perm);
+	}
+
+	public function get_permissions(User $user) {
+		global $I2_SQL;
+		
+		if($this->special) {
+			throw new I2Exception("Attempted to list privileges for user {$user->uid} in invalid group {$this->mygid}");
+		}
+
+		return $I2_SQL->query('SELECT permission FROM groups_perms WHERE uid=%d AND gid=%d', $user->uid, $this->mygid);
 	}
 
 	public function has_member($user=NULL) {
@@ -235,7 +245,7 @@ class GroupSQL {
 	public static function add_group($name) {
 		global $I2_SQL;
 
-		if(!Group::admin_groups()->has_member($GLOBALS['I2_USER']) && !(Group::admin_eighth()->has_member($GLOBALS['I2_USER']) && substr($name, 0, 7) == "eighth_")) {
+		if(!Group::admin_groups()->has_member($GLOBALS['I2_USER']) && !(Group::admin_eighth()->has_member($GLOBALS['I2_USER']) && substr($name, 0, 7) == 'eighth_')) {
 			throw new I2Exception('User is not authorized to create groups.');
 		}
 
@@ -250,18 +260,16 @@ class GroupSQL {
 	public function is_admin(User $user) {
 		global $I2_SQL;
 
-		$res = $I2_SQL->query('SELECT is_admin FROM group_user_map WHERE uid=%d AND gid=%d;',$user->uid,$this->gid);
-		if($res->num_rows() < 1) {
-			// admin_all members get admin access to all groups, I believe
-			if(Group::admin_all()->has_member($user)) {
-				return TRUE;
-			}
-			// They're not even a member of the group, so... not an admin
-			return FALSE;
-		}
-		if($res->fetch_single_value()) {
+		$res = $I2_SQL->query('SELECT * FROM groups_perms WHERE uid=%d AND gid=%d AND permission=%s;',$user->uid,$this->mygid, 'I2_ADMIN');
+		if($res->num_rows() >= 1) {
 			return TRUE;
 		}
+
+		// admin_all members get admin access to all groups, I believe
+		if(Group::admin_all()->has_member($user)) {
+			return TRUE;
+		}
+		// They're not even a member of the group, so... not an admin
 		return FALSE;
 	}
 
