@@ -1,13 +1,35 @@
 <script type="text/javascript">
-var save_page = '[<$I2_ROOT>]savepad/';
+var load_page = "[<$I2_ROOT>]scratchpad/load/";
+var save_page = "[<$I2_ROOT>]scratchpad/save/";
 
-window.onunload= function(){
-	var info = document.scratchForm.elements[0].value;
-//	alert("Saving "+info);
-	if(info == "") return;
+window.onload = function(){
+	// load the text dynamically
+	http.onreadystatechange = function() {
+		if(http.readyState == 4 && http.status == 200) {
+			if(document.getElementById) {
+				document.getElementById("scratchtext").value = http.responseText;
+			}
+			else {
+				document.scratchtext.value = http.responseText;
+			}
+		}
+	};
+	http.open('GET', load_page, true);
+	http.send(null);
+}
+
+window.onunload = function(){
+	var info;
+	if(document.getElementById) {
+		info = document.getElementById("scratchtext").value;
+	}
+	else {
+		info = document.scratchtext.value;
+	}
+	if(info == "") return; //Don't bother saving an empty pad.
 	http.open('GET', save_page+escape(info));
 	http.onreadystatechange = handleResponse;
 	http.send(null);
 }
 </script>
-<form name="scratchForm"><textarea width=20 height=15 >[<$text>]</textarea></form>
+<textarea id="scratchtext" width=20 height=15>[<$text>]</textarea>

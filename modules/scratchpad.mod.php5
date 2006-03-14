@@ -8,27 +8,54 @@
 class Scratchpad implements Module {
 
 	private $template_args = array();
+	private $text;
 
 	function init_box() {
 		GLOBAL $I2_USER, $I2_SQL;
-		$this->template_args['text'] = $I2_SQL->query('SELECT padtext FROM scratchpad WHERE username=%s',$I2_USER->username)->fetch_single_value();
-	
-		return "Scratchpad";
+		$this->template_args['text'] = ''; //$I2_SQL->query('SELECT padtext FROM scratchpad WHERE uid=%d',$I2_USER->uid)->fetch_single_value();
+		return 'Scratchpad';
 	}
 
 	function display_box($disp) {
 		$disp->disp('scratchpad_box.tpl', $this->template_args);
+		//$disp->disp('scratchpad_box.tpl', array());
 	}
 	
-	function init_pane() {
-		return "Scratchpad";
+	/**
+	* I2_ARGS accepted:
+	*	I2_ARGS[1] = whether to save or load
+	*	I2_ARGS[2] = text to save (if saving)
+	*/
+	public function init_pane() {
+		global $I2_ARGS,$I2_SQL,$I2_USER;
+
+		if (!(isset($I2_ARGS[1]) && $I2_ARGS[1])) {
+			return FALSE;
+		}
+
+		switch ($I2_ARGS[1]) {
+			case "save":
+				$I2_SQL->query("REPLACE INTO scratchpad (uid, padtext) VALUES (%d, %s)", $I2_USER->uid, $I2_ARGS[2]);
+				return FALSE;
+			case "load":
+				$this->text = $I2_SQL->query("SELECT padtext FROM scratchpad WHERE uid=%d", $I2_USER->uid)->fetch_single_value('padtext');
+				return TRUE;
+			default :
+				return FALSE;
+		}
+
 	}
 	
-	function display_pane($disp) {
+	function display_pane($disp) { //returns text to AJAX
+		Display::stop_display();
+
+		echo $this->text;
+
+		exit;
 	}
 
 	function get_name() {
-		return "Scratchpad";
+		return 'Scratchpad';
 	}
 
 	function is_intrabox() {
