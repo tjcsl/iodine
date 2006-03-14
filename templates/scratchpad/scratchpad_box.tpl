@@ -1,5 +1,5 @@
 <script type="text/javascript">
-var save_page = "[<$I2_ROOT>]savepad/";
+var save_page = "[<$I2_ROOT>]scratchpad/";
 window.onunload = function(){
 	var info;
 	if(document.getElementById) {

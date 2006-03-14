@@ -19,7 +19,19 @@ class Scratchpad implements Module {
 		$disp->disp('scratchpad_box.tpl', $this->template_args);
 	}
 	
-	function init_pane() {
+	/**
+	* I2_ARGS accepted:
+	*	I2_ARGS[1] = text to save
+	*/
+	public function init_pane() {
+		global $I2_ARGS,$I2_SQL,$I2_USER;
+
+		if (!(isset($I2_ARGS[1]) && $I2_ARGS[1])) {
+			return FALSE;
+		}
+
+		$I2_SQL->query("REPLACE INTO scratchpad (uid, padtext) VALUES (%d, %s)", $I2_USER->uid, $I2_ARGS[1]);
+
 		return FALSE;
 	}
 	
