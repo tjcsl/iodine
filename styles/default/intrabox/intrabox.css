@@ -36,20 +36,16 @@
 	height: 16px;
 }
 .upbutton {
-	background: url(/www/pics/up.gif);
-	background-repeat: no-repeat;
+	background: url(/www/pics/up.gif) center no-repeat;
 }
 .dnbutton {
-	background: url(/www/pics/down.gif);
-	background-repeat: no-repeat;
+	background: url(/www/pics/down.gif) center no-repeat;
 }
 .mnbutton {
-	background: url(/www/pics/min.gif);
-	background-repeat: no-repeat;
+	background: url(/www/pics/min.gif) center no-repeat;
 }
 .rmbutton {
-	background: url(/www/pics/close.gif);
-	background-repeat: no-repeat;
+	background: url(/www/pics/close.gif) center no-repeat;
 }
 .boxcontent {
 	margin-left: 4px;

@@ -10,16 +10,16 @@
 	border-right: 4px solid black;
 }
 .upbutton {
-	background: url(/www/pics/up.gif);
+	background: url(/www/pics/up.gif) center no-repeat;
 }
 .dnbutton {
-	background: url(/www/pics/down.gif);
+	background: url(/www/pics/down.gif) center no-repeat;
 }
 .mnbutton {
-	background: url(/www/pics/min.gif);
+	background: url(/www/pics/min.gif) center no-repeat;
 }
 .rmbutton {
-	background: url(/www/pics/close.gif);
+	background: url(/www/pics/close.gif) center no-repeat;
 }
 @extend
 .boxcontent {
