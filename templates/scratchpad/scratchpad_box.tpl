@@ -1,9 +1,15 @@
 <script type="text/javascript">
-var save_page = [<$I2_ROOT>]+"savepad/";
+var save_page = "[<$I2_ROOT>]savepad/";
 window.onunload = function(){
-	var info = document.scratchtext.value;
+	var info;
+	if(document.getElementById) {
+		info = document.getElementById("scratchtext").value;
+	}
+	else {
+		info = document.scratchtext.value;
+	}
 	if(info == "") return;
-	http.open('GET', save_page+info);
+	http.open('GET', save_page+escape(info));
 	http.onreadystatechange = handleResponse;
 	http.send(null);
 }
