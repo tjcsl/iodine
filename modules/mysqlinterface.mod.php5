@@ -44,6 +44,7 @@ class MySQLInterface implements Module {
 				}
 				break;
 			}
+			$this->query_data->rewind();
 		}
 		$disp->disp('mysqlinterface_pane.tpl', array( 'query_data' => $this->query_data, 'header_data' => $header_data, 'query' => $this->query));
 	}
