@@ -52,7 +52,7 @@ class EighthRoom {
 				}
 			}
 		}
-		usort($utilizations, array("self", "sort_rooms"));
+		usort($utilizations, array('EighthRoom', 'sort_rooms'));
 		return $utilizations;
 	}
 

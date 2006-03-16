@@ -262,12 +262,12 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	private function amr_group($op, $args) {
-		if($op == "") {
+		if($op == '') {
 			$this->setup_group_selection(true);
 		}
-		else if($op == "add") {
+		else if($op == 'add') {
 			Group::add_group("eighth_" . $args['name']);
-			redirect("eighth");
+			redirect("eighth/amr_group");
 		}
 		else if($op == "modify") {
 			Group::set_group_name($args['gid'],$args['name']);
@@ -704,16 +704,19 @@ class Eighth implements Module {
 			$this->setup_activity_selection(FALSE, $args['bid']);
 			$this->template_args['op'] = "user/bid/{$args['bid']}";
 		}
-		else if($op == "user") {
+		else if($op == 'user') {
 			$this->template = "eighth_res_student.tpl";
 			$this->template_args['block'] = new EighthBlock($args['bid']);
 			$this->template_args['activity'] = new EighthActivity($args['aid']);
 			if(isset($args['uid'])) {
 				$this->template_args['user'] = new User($args['uid']);
+				if (!$this->template_args['user']->is_valid()) {
+					redirect('eighth/res_student/user/bid/'.$args['bid'].'/aid/'.$args['aid']);
+				}
 			}
 			$this->title = "Reschedule a Student";
 		}
-		else if($op == "reschedule") {
+		else if($op == 'reschedule') {
 			$activity = new EighthActivity($args['aid'], $args['bid']);
 			$activity->add_member($args['uid']);
 			redirect("eighth/res_student/user/bid/{$args['bid']}/aid/{$args['aid']}");
@@ -772,17 +775,25 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	public function ent_attendance($op, $args) {
-		if($op == "") {
+		if($op == '') {
 			$this->setup_block_selection();
 			$this->template_args['op'] = "user";
 		}
-		else if($op == "user") {
-			$this->template = "eighth_ent_attendance.tpl";
+		else if($op == 'user') {
+			$this->template = 'eighth_ent_attendance.tpl';
 			$this->template_args['bid'] = $args['bid'];
-			$this->title = "Enter TA Attendance";
+			if (isSet($args['lastuid'])) {
+				$this->template_args['lastuid'] = $args['lastuid'];
+				$user = new User($args['lastuid']);
+				$this->template_args['lastname'] = $user->name;
+			}
+			$this->title = 'Enter TA Attendance';
 		}
 		else if($op == "mark_absent") {
 			EighthSchedule::add_absentee($args['bid'], $args['uid']);
+			redirect('eighth/ent_attendance/user/bid/'.$args['bid'].'/lastuid/'.$args['uid']);
+		} else if ($op == 'unmark_absent') {
+			EighthSchedule::remove_absentee($args['bid'], $args['uid']);
 			redirect('eighth/ent_attendance/user/bid/'.$args['bid']);
 		}
 	}

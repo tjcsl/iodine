@@ -78,6 +78,14 @@ class User {
 		}
 
 		$this->myuid = $uid;
+		if (!$I2_SQL->query("SELECT fname FROM user WHERE uid=%d",$uid)->fetch_single_value()) {
+			$I2_ERR->nonfatal_error("Invalid user with uid $uid constructed!");
+			$this->myuid = NULL;
+		}
+	}
+
+	public function is_valid() {
+		return $this->myuid !== NULL;
 	}
 
 	/**
@@ -156,7 +164,6 @@ class User {
 		if( $res === FALSE ) {
 			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information');
 			return FALSE;
-			
 		}
 		
 		return $res[0];
