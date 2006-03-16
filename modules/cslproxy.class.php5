@@ -75,7 +75,10 @@ class CSLProxy {
 			
 			if ($status == 0) {
 				d("pagsh exited with status 0");
-				$obj = unserialize($out);
+				$obj = @unserialize($out);
+				if($obj === FALSE && $out != serialize(FALSE)) {
+					throw new I2Exception("Pagsh gave invalid serialized output: $out");
+				}
 				return $obj;
 			} else {
 				d("pagsh exited with status $status", 1);

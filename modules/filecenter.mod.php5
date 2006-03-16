@@ -122,6 +122,9 @@ class Filecenter implements Module {
 		}
 
 		$file = $this->filesystem->get_file($this->directory);
+		if(!$file) {
+			throw new I2Exception('Filesystem returned invalid file object.');
+		}
 		if (isset($I2_QUERY['download']) || $file->is_file()) {
 			if ($file->is_directory()) {
 				$this->send_zipped_dir($this->directory);

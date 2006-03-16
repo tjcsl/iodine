@@ -104,6 +104,16 @@ class Groups implements Module {
 		return 'Groups';
 	}
 
+	public function grant() {
+		$this->template = 'permissions.tpl';
+		return 'Grant Permissions';
+	}
+
+	public function revoke() {
+		$this->template = 'permissions.tpl';
+		return 'Revoke Permissions';
+	}
+
 	/**
 	* View a group
 	*
@@ -120,6 +130,7 @@ class Groups implements Module {
 
 		$group = new Group($I2_ARGS[2]);
 		$this->template_args['group'] = $group->name;
+		$this->template_args['gid'] = $group->gid;
 		
 		$is_single_admin = $group->is_admin($I2_USER);
 		$is_higher_admin = (self::$is_admin_all || (self::$is_admin_groups && substr($group->name,0,6) != 'admin_'));
@@ -152,14 +163,6 @@ class Groups implements Module {
 						case 'add':	$group->add_user($user);
 								break;
 						case 'remove':	$group->remove_user($user);
-								break;
-						case 'make_admin':	$group->grant_admin($user);
-									break;
-						case 'remove_admin':
-								if($is_higher_admin) {
-								//to remove admin, must be more than single group admin
-									$group->revoke_admin($user);
-								}
 								break;
 					}
 				}
@@ -208,6 +211,8 @@ class Groups implements Module {
 			$person_user = new User($uid);
 			$person_array['name'] = $person_user->name;
 			$person_array['uid'] = $person_user->uid;
+			$person_array['perms'] = $group->get_permissions($person_user);
+			$person_array['has_perms'] = $person_array['perms']->num_rows() > 0;
 
 			if ($group->is_admin($person_user)) {
 				$person_array['admin'] = 'Admin';

@@ -32,4 +32,4 @@ window.onunload = function(){
 	http.send(null);
 }
 </script>
-<textarea id="scratchtext" width=20 height=15>[<$text>]</textarea>
+<textarea id="scratchtext" width=20 height=15></textarea>

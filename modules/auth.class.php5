@@ -26,7 +26,7 @@ class Auth {
 	/**
 	* Whether encryption of the user's password in $_SESSION is enabled.
 	*/
-	private $encryption = 0;
+	private $encryption;
 
 	/**
 	* The Auth class constructor.
@@ -37,7 +37,13 @@ class Auth {
 	public function __construct() {	
 		global $I2_ARGS;
 
-		//$this->encryption = i2config_get('encryption','1','core');
+		$this->encryption = i2config_get('encryption',1,'core');
+
+		if($this->encryption && !function_exists('mcrypt_module_open')) {
+			d('Encryption is enabled, but the mcrypt module is not enabled in PHP. Mcrypt is necessary for encrypting cached passwords.',1);
+			$this->encryption = 0;
+		}
+
 
 		if( isset($I2_ARGS[0]) && $I2_ARGS[0] == 'logout' ) {
 				if (isSet($_SESSION['i2_uid'])) {
@@ -283,9 +289,10 @@ class Auth {
 	* @return string The user's password, or FALSE on error (such as if we don't have enough information to decrypt it, indicating nobody has logged in yet).
 	*/
 	public function get_user_password() {
-		if ($this->encryption == 0) {
+		if (!$this->encryption) {
 			return $_SESSION['i2_password'];
 		}
+
 		if( !( isset($_SESSION['i2_password']) && isset($_SESSION['i2_auth_passkey']) && isset($_COOKIE['IODINE_PASS_VECTOR']))) {
 			d('Unable to retrieve the user password!',3);
 			return FALSE;
@@ -302,12 +309,11 @@ class Auth {
 	* encryption in a client's cookie called IODINE_PASS_VECTOR.
 	*/
 	private function cache_password($pass) {
-		if ($this->encryption == 0) {
+		if (!$this->encryption) {
 			$_SESSION['i2_password'] = $pass;
-			//throw new Exception();
 			return;
 		}
-		$_SESSION['i2_auth_passkey'] = substr(md5(rand(0,i2config_get('rand_max',65025,'core'))),0,16);
+		$_SESSION['i2_auth_passkey'] = substr(md5(rand(0,RAND_MAX)),0,16);
 		list($_SESSION['i2_password'], ,$iv) = self::encrypt($pass,$_SESSION['i2_auth_passkey'].substr(md5($_SERVER['REMOTE_ADDR']),0,16));
 		setcookie('IODINE_PASS_VECTOR',$iv,0,'/',i2config_get('domain','iodine.tjhsst.edu','core'));
 	}

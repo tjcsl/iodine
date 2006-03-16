@@ -73,6 +73,7 @@ class LDAP {
 	public static function get_user_bind() {
 		global $I2_AUTH;
 		// We could use the old krb5 ticket instead of re-authing, but what the hey.
+		//FIXME: use Kerberos ticket for GSSAPI SASL bind - no password or username should be needed.
 		$ldapuser = 'iodineUid='.$_SESSION['i2_username'].',ou=students,ou=people,'.$this->dnbase;
 		$pass = $I2_AUTH->get_user_password();
 		
@@ -103,10 +104,21 @@ class LDAP {
 			$query = 'objectClass=*';
 		}
 
-		d("LDAP Searching $dn for ".print_r($attributes,1)." where $query...",7);
-		
+		$res = null;
+
 		//TODO: consider how searching is done
-		$res = ldap_search($this->conn,$dn,$query,$attributes);
+		if ($depth == LDAP::SCOPE_SUB) {
+			d("LDAP Searching $dn for ".print_r($attributes,1)." where $query...",7);
+			$res = ldap_search($this->conn,$dn,$query,$attributes);
+		} elseif ($depth == LDAP::SCOPE_ONE) {
+			d("LDAP Listing $dn for ".print_r($attributes,1)." where $query...",7);
+			$res = ldap_list($this->conn,$dn,$query,$attributes);
+		} elseif ($depth == LDAP::SCOPE_BASE) {
+			d("LDAP Reading $dn's values for ".print_r($attributes,1)." where $query...",7);
+			$res = ldap_read($this->conn,$dn,$query,$attributes);
+		} else {
+			throw new I2Exception("Unknown scope number $depth passed to ldap_search!");
+		}
 
 		d('LDAP got '.ldap_count_entries($this->conn,$res).' results.',7);
 		
@@ -117,33 +129,7 @@ class LDAP {
 	}
 
 	public function search_one($dn='',$query='objectClass=*',$attributes='*') {
-		if (!is_array($attributes)) {
-			$attributes = array($attributes);
-		}
-
-		if (substr($dn,-strlen($this->dnbase)) == $this->dnbase) {
-			//We're OK, the dn ends with the dnbase.
-		} else if ($dn && $dn != "") {
-			$dn = addslashes($dn.','.$this->dnbase);
-		} else {
-			$dn = $this->dnbase;
-		}
-
-		if ($query) {
-			$query = addslashes($query);
-		}
-		
-		d("LDAP Listing $dn for ".print_r($attributes,1)." where $query...",7);
-		
-		$res = ldap_list($this->conn,$dn,$query,$attributes);
-
-		d('LDAP got '.ldap_count_entries($this->conn,$res).' results.',7);
-		
-		//ldap_free_result($res);
-		//return NULL;
-		
-		return new LDAPResult($this->conn,$res,LDAP::LDAP_SEARCH);
-
+		$this->search($dn,$query,$attributes,LDAP::SCOPE_ONE);
 	}
 
 	public function delete($dn) {
