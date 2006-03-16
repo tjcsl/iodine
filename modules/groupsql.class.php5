@@ -13,7 +13,7 @@
 * @package modules
 * @subpackage Group
 */
-class GroupSQL {
+class GroupSQL extends Group {
 
 	private $mygid;
 	private $myname;

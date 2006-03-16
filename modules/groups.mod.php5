@@ -105,12 +105,25 @@ class Groups implements Module {
 	}
 
 	public function grant() {
-		$this->template = 'permissions.tpl';
+		$this->template = 'grant_perm.tpl';
 		return 'Grant Permissions';
 	}
 
+	/**
+	* Revokes a permission from a user in a certain group.
+	*
+	* Uses parameters in $I2_ARGS:
+	* <ul><li>$I2_ARGS[2]: UID of user</li>
+	* <li>$I2_ARGS[3]: GID of group</li>
+	* <li>$I2_ARGS[4]: Permission to revoke</li></ul>
+	*/	
 	public function revoke() {
-		$this->template = 'permissions.tpl';
+		global $I2_ARGS;
+		$grp = new Group($I2_ARGS[3]);
+
+		$grp->revoke_permission(new User($I2_ARGS[2]), $I2_ARGS[4]);
+
+		$this->template = 'revoke_perm.tpl';
 		return 'Revoke Permissions';
 	}
 

@@ -4,20 +4,27 @@ Group: <strong>[<$group>]</strong><br />
 <br />
 [<if count($members) > 0>]
 This group has the following members:<br />
-<ul>
+<table width="100%">
+  <th>User</th>
+  <th>Permissions</th>
+  <th>Grant</th>
 [<foreach from=$members item=person>]
-  <li><a href="[<$I2_ROOT>]studentdirectory/info/[<$person.uid>]">[<$person.name>]</a>
-    [<if $person.has_perms>]
-    <br />Permissions <a href="[<$I2_ROOT>]groups/grant/[<$person.uid>]/[<$gid>]">[grant new permission]</a>:
+  <tr><td><a href="[<$I2_ROOT>]studentdirectory/info/[<$person.uid>]">[<$person.name>]</a></td>
+  <td>
+  [<if $person.has_perms>]
     <ul>
     [<foreach from=$person.perms item=perm>]
       <li>[<$perm[0]>] <a href="[<$I2_ROOT>]groups/revoke/[<$person.uid>]/[<$gid>]/[<$perm[0]>]">[revoke]</a></li>
     [</foreach>]
     </ul>
-    [</if>]
-  </li>
+  [<else>]
+  User has no special permissions.
+  [</if>]
+  </td>
+  <td><a href="[<$I2_ROOT>]groups/grant/[<$person.uid>]/[<$gid>]">[grant new permission]</a></td>
+  </tr>
 [</foreach>]
-</ul>
+</table>
 [<else>]
 This group has no members.<br />
 [</if>]

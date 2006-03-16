@@ -184,7 +184,7 @@ class Group {
 	*		GID.
 	* @return mixed Either a string, the group name, or an int, the GID.
 	*/
-	private static function get_special_group($group) {
+	protected static function get_special_group($group) {
 		switch($group) {
 			case -9:
 			case '-9':
