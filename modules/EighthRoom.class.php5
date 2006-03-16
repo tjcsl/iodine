@@ -154,7 +154,7 @@ class EighthRoom {
 	* @param string $name The name of the field to get.
 	*/
 	public function __get($name) {
-		if(array_key_exists($name, $this->data)) {
+		if(is_array($this->data) && array_key_exists($name, $this->data)) {
 			return $this->data[$name];
 		}
 	}
