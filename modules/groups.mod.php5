@@ -104,7 +104,25 @@ class Groups implements Module {
 		return 'Groups';
 	}
 
+	/**
+	* Grants a new permission to a user in a certain group.
+	*
+	* Uses parameters in $I2_ARGS:
+	* <ul><li>$I2_ARGS[2]: UID of user</li>
+	* <li>$I2_ARGS[3]: GID of group</li></ul>
+	*/
 	public function grant() {
+		global $I2_ARGS;
+		$grp = new Group($I2_ARGS[3]);
+
+		if(isset($_REQUEST['groups_grant_permission'])) {
+			$grp->grant_permission(new User($I2_ARGS[2]), $_REQUEST['groups_grant_permission']);
+			redirect('groups/pane/'.$grp->gid);
+		}
+		else {
+			$this->template_args['user'] = new User($I2_ARGS[2]);
+			$this->template_args['group'] = new Group($I2_ARGS[3]);
+		}
 		$this->template = 'grant_perm.tpl';
 		return 'Grant Permissions';
 	}
@@ -123,8 +141,7 @@ class Groups implements Module {
 
 		$grp->revoke_permission(new User($I2_ARGS[2]), $I2_ARGS[4]);
 
-		$this->template = 'revoke_perm.tpl';
-		return 'Revoke Permissions';
+		redirect('groups/pane/'.$grp->gid);
 	}
 
 	/**
