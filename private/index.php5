@@ -11,7 +11,7 @@ Your credentials:
 	exec('klist',$out);
 	foreach ($out as $line) {
 		echo $line;
-		echo "<br />';
+		echo "<br />";
 	}
 ?>
 </body></html>
