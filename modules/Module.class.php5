@@ -2,8 +2,7 @@
 /**
 * Just contains the definition for the interface {@link Module}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
-* @copyright 2005 The Intranet 2 Development Team
-* @since 1.0
+* @copyright 2005-2006 The Intranet 2 Development Team
 * @package core
 * @subpackage Module
 * @filesource
