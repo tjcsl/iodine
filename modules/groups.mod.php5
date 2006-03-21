@@ -252,5 +252,9 @@ class Groups implements Module {
 
 		return $group_members;
 	}
+
+	public function display_help($disp, $args) {
+		$disp->disp('helpstuff.tpl',array('args'=>$args));
+	}
 }
 ?>

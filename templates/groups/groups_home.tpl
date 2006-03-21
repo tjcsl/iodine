@@ -5,7 +5,7 @@
  You are currently a member of the following groups:<br />
  <ul>
  [<foreach from=$groups item=grp>]
-  <li><a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a></li>
+  <li><a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a> ([<$grp->description>])</li>
  [</foreach>]
  </ul>
 [<else>]

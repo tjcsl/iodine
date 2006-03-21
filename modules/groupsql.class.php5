@@ -30,6 +30,8 @@ class GroupSQL extends Group {
 				return $this->mygid;
 			case 'name':
 				return $this->myname;
+			case 'description':
+				return $this->mydescription;
 			case 'special':
 				return ($this->mygid < 0);
 			case 'members':
@@ -53,10 +55,12 @@ class GroupSQL extends Group {
 		if(is_numeric($group)) {
 		// Numeric $group passed; figure out group name
 			$name = $I2_SQL->query('SELECT name FROM groups WHERE gid=%d', $group)->fetch_single_value();
+			$description = $I2_SQL->query('SELECT description FROM groups WHERE gid=%d', $group)->fetch_single_value();
 			try {
 				if($name) {
 					$this->mygid = $group;
 					$this->myname = $name;
+					$this->mydescription = $description;
 				}
 				elseif($name = Group::get_special_group($group)) {
 					$this->mygid = $group;
