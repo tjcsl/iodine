@@ -27,5 +27,13 @@ Your credentials:
 		fclose($pipes[1]);
 	}
 	//echo shell_exec('echo $KRB5CCNAME');
+?><br />
+WebAuth-fetched LDAP attributes:<br />
+<?php
+	foreach ($_SERVER as $key=>$value) {
+		if (substr($key,0,12) == 'WEBAUTH_LDAP') {
+			echo "$key => $value<br />";
+		}
+	}
 ?>
 </body></html>

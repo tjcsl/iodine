@@ -425,3 +425,10 @@ objectclass ( i2OC:18
 	NAME ('tjhsstCounselor' 'iodineCounselor')
 	SUP tjhsstTeacher STRUCTURAL
 	)
+
+objectclass ( i2OC:19
+	NAME ('machineUser' 'fakeUser')
+	MUST (
+		iodineUid
+	)
+	)
