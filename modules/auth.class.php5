@@ -82,6 +82,10 @@ class Auth {
 			$_SESSION['i2_login_time'] = time();
 			return TRUE;
 		}
+		if (isSet($_SERVER['REMOTE_USER'])) {
+			$_SESSION['i2_login_time'] = time();
+			$_SESSION['i2_uid'] = $_SERVER['WEBAUTH_LDAP_IODINEUIDNUMBER'];
+		}
 		return FALSE;
 	}
 

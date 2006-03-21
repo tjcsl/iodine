@@ -241,6 +241,12 @@ attributetype ( i2Attr:28
 	SYNTAX integerSyntax
 	)
 
+attributetype ( i2Attr:29
+	NAME ('iodineUidNumber' 'iodineUserNumber')
+	DESC 'The numerical ID of an iodine user'
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
+	)
 
 objectclass ( i2OC:3
 	NAME ('tjhsstSection' 'section')
@@ -392,7 +398,8 @@ objectclass ( i2OC:1
 		iodineUid $
 		cn $
 		sn $
-		tjhsstStudentId
+		tjhsstStudentId $
+		iodineUidNumber
 	)
 	MAY (
 		perm-showpictures $
@@ -411,13 +418,14 @@ objectclass ( i2OC:2
 	MUST (
 		cn $
 		iodineUid $
-		sn
+		sn $
+		iodineUidNumber
 	)
 	MAY (
 		employeeNumber $
 		displayName $
 		middlename $
-		group
+		group 
 	)
 	)
 
