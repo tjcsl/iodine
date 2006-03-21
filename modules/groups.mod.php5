@@ -56,7 +56,6 @@ class Groups implements Module {
 		if(count($I2_ARGS) <= 1) {
 			$this->template = 'groups_home.tpl';
 			$this->template_args['groups'] = Group::get_user_groups($I2_USER,FALSE);
-			d(self::$admin_groups->has_member($I2_USER));
 			if (self::$admin_groups->has_member($I2_USER)) {
 				$this->template_args['admin'] = 1;
 			}
