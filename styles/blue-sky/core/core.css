@@ -1,0 +1,33 @@
+.logo {}
+
+#logotext {
+	position: absolute;
+	top: 40px;
+	left: 25px;
+	color: #FFFFFF;
+	font-family: "Trebuchet MS", Arial, Tahoma, sans-serif;
+	font-weight: bold;
+	font-size: 3.4em;
+	text-decoration: none;
+}
+
+.title {
+	font-size: 1.8em;
+	font-family: "Trebuchet MS", Arial, Tahoma, sans-serif;
+	color: #FFFFFF;
+	line-height: 1em;
+	border-bottom: 2px solid #000000;
+}
+
+#menu a {
+	color: rgb(185, 241, 255);
+}
+
+#menu a:hover {
+	color: white;
+}
+
+@extend
+.date {
+	color: white;
+}

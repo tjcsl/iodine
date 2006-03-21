@@ -13,8 +13,7 @@ IE7_PNG_SUFFIX = ".png";
 <![endif]-->
 </head>
 <body>
-<div class="logo"></div>
-
+<div class="logo"><a href="[<$I2_ROOT>]"><span id="logotext">Intranet 2</span></a></div>
 <div class="header">
  <div class="title"> Welcome, [<$first_name>]! </div>
  [<include file='core/menu.tpl'>]
