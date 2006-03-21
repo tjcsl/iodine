@@ -5,7 +5,7 @@
 
 	RewriteRule ^www/ - [L]
 
-	RewriteRule ^private.* - [L]
+	RewriteRule ^private - [L]
 
 	RewriteRule ^webkdc-service - [L]
 	
