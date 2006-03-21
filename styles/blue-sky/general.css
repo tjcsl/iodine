@@ -1,0 +1,23 @@
+body {
+	margin: 0.5em 0em 2em 0em;
+	
+	font-size: 100%;
+	font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+	line-height: 1.1em;
+	
+	background-color: #A5DDF8;
+	background-image: url(www/pics/blue-sky/background.png);
+	background-repeat: repeat-x;
+}
+
+a {}
+
+a:link, a:visited {
+	color: #2E668B;
+	text-decoration: none;
+}
+
+a:hover {
+	color: black;
+	text-decoration: underline;
+}

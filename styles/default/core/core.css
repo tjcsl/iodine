@@ -7,6 +7,10 @@
 	background: url(www/pics/newlogo.png) no-repeat;
 }
 
+#logotext {
+	display: none;
+}
+
 .header {
 	position: absolute;
 	top: 20px;

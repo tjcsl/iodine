@@ -1,0 +1,21 @@
+.newsitem {
+	font-family: arial, helvetica, verdana, sans-serif;
+	font-size: 10pt;
+	margin-top: -15px;
+	margin-bottom: 10pt;
+}
+
+.newstitle {
+	margin-top: 10pt;
+	font-size: 1.3em;
+	font-family: "Trebuchet MS", Arial, sans-serif;
+	color: #FF6300;
+	border-bottom: 0.05em solid #FF9853;
+	line-height: 1em;
+}
+
+@extend
+.newsgroups {
+	float: right;
+	margin-right: 5px;
+}
