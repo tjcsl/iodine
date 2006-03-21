@@ -9,7 +9,7 @@
   <a href="[<$I2_ROOT>]info/credits">Credits</a>
   <span class="bold">&middot;</span>
 
-  <a href="#">Help</a>
+  <a href="[<$I2_ROOT>]help/[<$I2_ARGSTRING>]">Help</a>
   <span class="bold">&middot;</span>
   [<if $admin_mysql>]
   	<a href="[<$I2_ROOT>]mysqlinterface">MySQL Interface</a>
