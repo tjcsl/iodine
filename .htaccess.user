@@ -1,8 +1,8 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine On
-	RewriteBase /~braujac/i2/
+	RewriteBase /~<username>/i2/
 
-	RewriteRule ^(/home/braujac/web-docs/i2$) /home/braujac/web-docs/i2/core.php5 [L]
+	RewriteRule ^(/home/<username>/web-docs/i2$) /home/<username>/web-docs/i2/core.php5 [L]
 
 	RewriteRule ^www/ - [L]
 
@@ -10,7 +10,7 @@
 
 	RewriteRule ^login - [L]
 	
-	RewriteRule ^(.*)$ /home/braujac/web-docs/i2/core.php5?$1?%{QUERY_STRING} [L]
+	RewriteRule ^(.*)$ /home/<username>/web-docs/i2/core.php5?$1?%{QUERY_STRING} [L]
 </IfModule>
 <IfModule mod_webauth.c>
 	AuthType WebAuth
