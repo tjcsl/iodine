@@ -12,12 +12,12 @@
 	
 	RewriteRule ^(.*)$ /home/<username>/web-docs/i2/core.php5?$1?%{QUERY_STRING} [L]
 </IfModule>
-<IfModule mod_webauth.c>
-	AuthType WebAuth
-	Require valid-user
-#	WebAuthUseCreds on
-#	WebAuthCred krb5 afs/csl.tjhsst.edu@CSL.TJHSST.EDU
-	WebAuthLdapAttribute cn 
-	WebAuthLdapAttribute iodineUid 
-	WebAuthLdapAttribute tjhsstStudentId
-</IfModule>
+#<IfModule mod_webauth.c>
+#	AuthType WebAuth
+#	Require valid-user
+##	WebAuthUseCreds on
+##	WebAuthCred krb5 afs/csl.tjhsst.edu@CSL.TJHSST.EDU
+#	WebAuthLdapAttribute cn 
+#	WebAuthLdapAttribute iodineUid 
+#	WebAuthLdapAttribute tjhsstStudentId
+#</IfModule>
