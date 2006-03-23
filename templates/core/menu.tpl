@@ -2,8 +2,6 @@
   <a href="[<$I2_ROOT>]">Home</a>
 
   <span class="bold">&middot;</span>
-  <a href="[<$I2_ROOT>]sct">SCT</a>
-  <span class="bold">&middot;</span>
   <a href="[<$I2_ROOT>]prefs">Preferences</a>
   <span class="bold">&middot;</span>
   <a href="[<$I2_ROOT>]info/credits">Credits</a>
