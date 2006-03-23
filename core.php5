@@ -176,6 +176,9 @@ try {
 	$module = isset($I2_ARGS[0]) ?
 		$I2_ARGS[0] :
 		$I2_USER->startpage;
+	
+	if($module == '')
+		$module = 'news';
 
 	if(strtolower($module) == "ajax") {
 		$I2_AJAX->returnResponse($I2_ARGS[1]);
