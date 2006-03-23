@@ -78,6 +78,10 @@ class Eighth implements Module {
 		$display->disp($this->template, $this->template_args);
 	}
 
+	function display_help() {
+		redirect($I2_ROOT . 'info/eighth');
+	}
+
 	/**
 	* Required by the {@link Module} interface.
 	*/
