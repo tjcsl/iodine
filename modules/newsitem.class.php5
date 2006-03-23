@@ -60,8 +60,11 @@ class Newsitem {
 				$groupsarray = array();
 				$gidsarray = $this->__get('groups');
 				foreach($gidsarray as $gid) {
-					$group = new Group($gid);
-					$groupsarray[] = $group->name;
+					try {
+						$group = new Group($gid);
+						$groupsarray[] = $group->name;
+					} catch (I2Exception $e) {
+					}
 				}
 				return implode(', ', $groupsarray);
 		}
@@ -115,8 +118,16 @@ class Newsitem {
 	 * @param string $group
 	 */
 	public static function post_item($author, $title, $text, $groups) {
-		global $I2_SQL;
+		global $I2_SQL,$I2_USER;
 
+		$newsadm = new Group('admin_news');
+		if(!$newsadm->has_member()) {
+			foreach($groups as $group) {
+				if(!$group->has_permission($I2_USER,News::PERM_POST)) {
+					throw new I2Exception("You do not have permission to post to the group {$group->name}");
+				}
+			}
+		}
 		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP', $author->uid, $title, $text);
 
 		$nid = $I2_SQL->query('SELECT LAST_INSERT_ID()')->fetch_single_value();

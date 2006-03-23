@@ -52,7 +52,12 @@ class GroupSQL extends Group {
 			 }
 		}
 
-		if(is_numeric($group)) {
+		if(is_array($group)) {
+			$this->mygid = $group['gid'];
+			$this->myname = $group['name'];
+			$this->mydescription = $group['description'];
+		}
+		elseif(is_numeric($group)) {
 		// Numeric $group passed; figure out group name
 			$name = $I2_SQL->query('SELECT name FROM groups WHERE gid=%d', $group)->fetch_single_value();
 			$description = $I2_SQL->query('SELECT description FROM groups WHERE gid=%d', $group)->fetch_single_value();
@@ -176,6 +181,17 @@ class GroupSQL extends Group {
 		return $I2_SQL->query('SELECT permission FROM groups_perms WHERE uid=%d AND gid=%d', $user->uid, $this->mygid);
 	}
 
+	public function has_permission(User $user, $perm) {
+		global $I2_SQL;
+
+		if($this->special) {
+			throw new I2Exception("Attempted to see if user {$user->uid} has permission $perm in invalid group {$this->mygid}");
+		}
+
+		$res = $I2_SQL->query('SELECT count(*) FROM groups_perms WHERE uid=%d AND gid=%d AND permission=%s;', $user->uid,$this->mygid,$perm);
+		return ($res->fetch_single_value() > 0);
+	}
+
 	public function has_member($user=NULL) {
 		global $I2_SQL;
 
@@ -208,11 +224,19 @@ class GroupSQL extends Group {
 		return $I2_SQL->query('UPDATE groups SET name=%s WHERE gid=%d',$name,$this->mygid);
 	}
 
-	public static function get_user_groups(User $user, $include_special = TRUE) {
+	public static function get_user_groups(User $user, $include_special = TRUE, $perms = NULL) {
 		global $I2_SQL;
 		$ret = array();
+
+		if($perms && !is_array($perms)) {
+			$perms = array($perms);
+		}
 		
-		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$user->uid);
+		if(is_array($perms)) {
+			$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d AND gid IN (SELECT gid FROM groups_perms WHERE uid=%d AND permission IN (%S))',$user->uid, $user->uid, $perms);
+		} else {
+			$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$user->uid);
+		}
 		
 		foreach($res as $row) {
 			$ret[] = new Group($row['gid']);
@@ -277,5 +301,28 @@ class GroupSQL extends Group {
 		return FALSE;
 	}
 
+	/**
+	* Generate a bunch of groups at once.
+	*
+	* @param Array $gids An array of Group IDs to generate groups for.
+	* @return Array An array of {@link Group} objects
+	*/
+	public static function generate($gids) {
+		global $I2_SQL;
+		if(is_array($gids)) {
+			$ret = array();
+			foreach($gids as $gid) {
+				if(Group::get_special_group($gid)) {
+					$ret[] = new Group($gid);
+				}
+			}
+			foreach($I2_SQL->query('SELECT * FROM groups WHERE gid IN (%D);',$gids) as $row) {
+				$ret[] = new Group($row);
+			}
+			return $ret;
+		} else {
+			return new Group($gids);
+		}
+	}
 }
 ?>

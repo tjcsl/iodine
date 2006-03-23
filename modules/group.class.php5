@@ -121,6 +121,10 @@ class Group {
 		return $this->wrap->get_permissions($user);
 	}
 
+	public function has_permission(User $user, $perm) {
+		return $this->wrap->has_permission($user, $perm);
+	}
+
 	/**
 	* Determine whether a user is a member of this group.
 	*
@@ -144,8 +148,8 @@ class Group {
 	* @param User $user The {@link User} for which to fetch the groups.
 	* @return array The Groups in which the user has membership.
 	*/
-	public static function get_user_groups(User $user, $include_special = TRUE) {
-		return GroupSQL::get_user_groups($user,$include_special);
+	public static function get_user_groups(User $user, $include_special = TRUE, $perms = NULL) {
+		return GroupSQL::get_user_groups($user,$include_special, $perms);
 	}
 
 	/**
@@ -214,12 +218,45 @@ class Group {
 			case '-8':
 				return 'grade_staff';
 		}
-		throw new I2Exception('Invalid special group '.$group.' passed to get_special_group');
+		return FALSE;
+	}
+
+	public static function get_special_groups() {
+		return array(
+			new Group(array(
+				'gid'=>-9,
+				'name'=>'grade_9',
+				'description'=>'Freshmen')
+			),
+			new Group(array(
+				'gid'=>-10,
+				'name'=>'grade_10',
+				'description'=>'Sophomores')
+			),
+			new Group(array(
+				'gid'=>-11,
+				'name'=>'grade_11',
+				'description'=>'Juniors')
+			),
+			new Group(array(
+				'gid'=>-12,
+				'name'=>'grade_12',
+				'description'=>'Seniors')
+			),
+			new Group(array(
+				'gid'=>-8,
+				'name'=>'grade_staff',
+				'description'=>'Staff')
+			)
+		);
 	}
 
 	public function is_admin(User $user) {
 		return $this->wrap->is_admin($user);
 	}
 
+	public static function generate($gids) {
+		return GroupSQL::generate($gids);
+	}
 }
 ?>
