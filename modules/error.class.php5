@@ -92,7 +92,7 @@ class Error {
 		
 		if ($critical) {
 			$I2_LOG->log_mail($out.'\r\nBacktrace: \r\n'.print_r(debug_backtrace(),TRUE));
-			$out .= "\r\n".'<br />This is a critical error, so an email is being sent to the developers, so hopefully this problem will be fixed soon.';
+			$out .= "\r\n".'<br />This is a critical error, so an email is being sent to the developers, hopefully this problem will be fixed soon.';
 		}
 		else {
 			$out .= "<br />\r\n".'If this problem persists, please contact the intranetmaster.';
