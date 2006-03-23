@@ -7,6 +7,5 @@ CREATE TABLE news(
 	authorID MEDIUMINT UNSIGNED,			/*Student/teacher ID*/
 	revised TIMESTAMP NOT NULL DEFAULT 'CURRENT_TIMESTAMP',	/*Date revised*/
 	posted TIMESTAMP NOT NULL DEFAULT 'CURRENT_TIMESTAMP',	/*Date posted*/
-	gid MEDIUMINT,
 	KEY(posted)
 );
