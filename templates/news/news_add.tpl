@@ -1,3 +1,4 @@
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/news_groups.js"></script>
 [<if isset($added)>]
  [<if $added>]
   Your news item has been posted.
@@ -8,14 +9,28 @@
 [<else>]
  <form action="[<$I2_SELF>]" method="POST">
   <input type="hidden" name="add_form" value="1" />
-  Title: <input type="text" name="add_title" size="30" /><br />
-  Group: <select name="add_groups">
-  [<foreach from=$groups item=group>]
-  	<option value="[<$group->gid>]">[<$group->name>]</option>
-  [</foreach>]
-  </select><br />
+  Title: <input type="text" name="add_title" size="30" /><br/>
+  <table id="groups_table" cellpadding="0">
+   <tr>
+    <td>Groups:</td>
+    <td>
+     <select id="groups" class="groups_list" name="add_groups[]">
+      <option value="all">All Users</option>
+      [<foreach from=$groups item=group>]
+      	<option value="[<$group->gid>]">[<$group->name>]</option>
+      [</foreach>]
+     </select>
+    </td>
+    <td>&nbsp;</td>
+   </tr>
+   <tr>
+    <td>&nbsp;</td>
+    <td><a href="#" onclick="addGroup(); return false">Add another group</a></td>
+    <td>&nbsp;</td>
+   </tr>
+  </table>
   Text: <br />
-  <textarea name="add_text" cols="80" rows="15"></textarea><br />
+  <textarea id="news_add_text" name="add_text" rows="15"></textarea><br />
   <input type="submit" value="Submit" name="submit" />
  </form>
 [</if>]

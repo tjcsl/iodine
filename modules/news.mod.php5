@@ -75,15 +75,10 @@ class News implements Module {
 				
 				if( isset($_REQUEST['add_form'])) {
 					$title = $_REQUEST['add_title'];
-					$groupname = $_REQUEST['add_groups'];
 					$text = $_REQUEST['add_text'];
-
-					$group = new Group($groupname);
-					if(!($group->is_admin($I2_USER) || $this->newsadmin)) {
-						throw new I2Exception("You do not have permission to add a new item to group $groupname");
-					}
+					$groups = $this->get_groups($_REQUEST['add_groups']);
 					
-					if(Newsitem::post_item($I2_USER, $title, $text, $group)) {
+					if(Newsitem::post_item($I2_USER, $title, $text, $groups)) {
 						$this->template_args['added'] = 1;
 					}
 					else {
@@ -104,7 +99,7 @@ class News implements Module {
 			case 'edit':
 				$this->template = 'news_edit.tpl';
 				if( !isset($I2_ARGS[2]) ) {
-					throw new I2Exception('ID of article to delete not specified.');
+					throw new I2Exception('ID of article to edit not specified.');
 				}
 				
 				$item = new Newsitem($I2_ARGS[2]);
@@ -114,10 +109,18 @@ class News implements Module {
 
 				if( isset($_REQUEST['edit_form']) ) {
 					$title = $_REQUEST['edit_title'];
-					$groups = $_REQUEST['edit_groups'];
 					$text = $_REQUEST['edit_text'];
+					$groups = $this->get_groups($_REQUEST['add_groups']);
 					$item->edit($title, $text, $groups);
 					$this->template_args['edited'] = 1;
+				}
+
+				if($this->newsadmin) {
+					// If they are a news admin, they can post to anything.
+					$this->template_args['groups'] = Group::get_all_groups();
+				}
+				else {
+					$this->template_args['groups'] = Group::get_admin_groups($I2_USER);
 				}
 
 				$this->template_args['newsitem'] = $item;
@@ -169,7 +172,25 @@ class News implements Module {
 		//should not happen
 		throw new I2Exception('Internal error: sanity check, reached end of init_pane in news.');
 	}
-	
+
+	private function get_groups($groupids) {
+		global $I2_USER;
+
+		$groups = array();
+		foreach ($groupids as $groupid) {
+			if ($groupid == "all") {
+				continue;
+			}
+			$groups[] = new Group($groupid);
+		}
+		foreach ($groups as $group) {
+			if(!($group->is_admin($I2_USER) || $this->newsadmin)) {
+				throw new I2Exception("You do not have permission to add a new item to group $group->name");
+			}
+		}
+		return $groups;
+	}
+
 	/**
 	* Required by the {@link Module} interface.
 	*/

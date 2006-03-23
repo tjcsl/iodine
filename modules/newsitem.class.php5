@@ -114,21 +114,18 @@ class Newsitem {
 	 * @param string $text The content of the news post.
 	 * @param string $group
 	 */
-	public static function post_item($author, $title, $text, $group) {
+	public static function post_item($author, $title, $text, $groups) {
 		global $I2_SQL;
 
-		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP, gid=%d', $author->uid, $title, $text, $group->gid);
+		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP', $author->uid, $title, $text);
 
-		return TRUE;
-//		$nid = $I2_SQL->query('SELECT LAST_INSERT_ID()')->fetch_single_value();
-//		
-//		array_shift($groups);
-//
-//		if(isset($groups[0])) {
-//			foreach ($groups as $group) {
-//				$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%d', $nid, $group->gid);
-//			}
-//		}
+		$nid = $I2_SQL->query('SELECT LAST_INSERT_ID()')->fetch_single_value();
+		
+		foreach ($groups as $group) {
+			$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%d', $nid, $group->gid);
+		}
+
+		return true;
 	}
 
 	/**
@@ -174,25 +171,15 @@ class Newsitem {
 	 * @param string $text The new content for the news post.
 	 * @param string $groupnames The new comma-seperated list of groups.
 	 */
-	public function edit($title, $text, $groupnames = NULL) {
+	public function edit($title, $text, $groups) {
 		global $I2_SQL;
-
-		if ($groupnames != NULL) {
-			$groups = array();
-			foreach (explode(',', $groupnames) as $groupname) {
-				$groupname = trim($groupname);
-				$groups[] = new Group($groupname);
-			}
-		}
 
 		$I2_SQL->query('UPDATE news SET title=%s, text=%s, revised=CURRENT_TIMESTAMP WHERE id=%d', $title, $text, $this->mynid);
 
 		// flush the group mappings for this post and recreate them entirely
 		$I2_SQL->query('DELETE FROM news_group_map WHERE nid=%d', $this->mynid);
-		if(isset($groups)) {
-			foreach ($groups as $group) {
-				$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%d', $this->mynid, $group->gid);
-			}
+		foreach ($groups as $group) {
+			$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%d', $this->mynid, $group->gid);
 		}
 	}
 
