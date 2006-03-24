@@ -79,7 +79,7 @@ class News implements Module {
 					$title = $_REQUEST['add_title'];
 					$text = $_REQUEST['add_text'];
 					$groups = Group::generate($_REQUEST['add_groups']);
-					
+
 					if(Newsitem::post_item($I2_USER, $title, $text, $groups)) {
 						$this->template_args['added'] = 1;
 					}
@@ -119,7 +119,7 @@ class News implements Module {
 
 				if($this->newsadmin) {
 					// If they are a news admin, they can post to anything.
-					$this->template_args['groups'] = Group::get_all_groups();
+					$this->template_args['groups'] = array_merge(Group::get_all_groups(), Group::get_special_groups());
 				}
 				else {
 					$this->template_args['groups'] = Group::get_user_groups($I2_USER,FALSE,News::PERM_POST);
