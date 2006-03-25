@@ -44,12 +44,31 @@ function warn($msg) {
 }
 
 /**
+* A quick function call for displaying a fatal error
+*
+* This function executes $I2_ERR->fatal_error() if $I2_ERR exists, otherwise
+* it displays the message and dies.
+*
+* @param string @msg The error message.
+* @param bool @critical The error message.
+*/
+function error($msg, $critical=FALSE) {
+	global $I2_ERR;
+	if ($I2_ERR) {
+		$I2_ERR->fatal_error($msg, $critical);
+	} else {
+		echo("$msg\n");
+		die(1);
+	}
+}
+
+/**
 * The __autoload function, used for autoloading modules.
 *
 * This is the function used by PHP as a last resort for loading 
 * noninstantiated classes before it throws an error. It checks for
 * readability of the module (if one exists) in the module path.
-* Throws an exception if it does not exist.
+* Triggers an error if it does not exist.
 * 
 * @param string $class_name Name of noninstantiated class.
 */
@@ -59,15 +78,48 @@ function __autoload($class_name) {
 	$class_file = '';
 
 	if (!($class_file=get_i2module($class_name))) {
-		$err = 	'Cannot load module/class '.$class_name.': the file '.$class_file.' is not readable.';
-		if ($I2_ERR) {
-			$I2_ERR->fatal_error($err);
-		} else {
-			echo($err);
-		}
+		error('Cannot load module/class '.$class_name.': the file '.$class_file.' is not readable.');
 	}
 	else {
 		require_once($class_file);
+	}
+}
+
+/**
+* Loads the module map.
+*
+*/
+function load_module_map() {
+	global $I2_MODULE_MAP;
+	
+	$filename = i2config_get('cache_dir', NULL, 'core') . 'module.map';
+	
+	if (!file_exists($filename)) {
+		generate_module_map();
+	}
+	
+	$contents = file_get_contents($filename);
+	if ($contents === FALSE) {
+		error('Could not load module map: could not read file ' . $filename);
+	}
+	
+	$I2_MODULE_MAP = unserialize($contents);
+	if ($I2_MODULE_MAP === FALSE) {
+		error('Could not load module map: could unserialize contents of file ' . $filename);
+	}
+}
+
+/**
+* Generates the module map.
+*
+*/
+function generate_module_map() {
+	d('Generating module map', 4);
+
+	exec('bin/mapmodules', $output, $ret_val);
+
+	if ($ret_val !== 0) {
+		error("Could not generate module map: bin/mapmodules returned $ret_val. \nOutput=" . print_r($output, TRUE));
 	}
 }
 
@@ -83,26 +135,22 @@ function __autoload($class_name) {
 * @return string The file name of the module to load, if it exists; false if it doesn't.
 */
 function get_i2module($module_name) {
+	global $I2_MODULE_MAP;
+	
 	/* Do not run autoload, since it will throw an exception if the
 	class does not exist */
-	$prepath = i2config_get('module_path', NULL, 'core');
+
+	$key = strtolower($module_name);
 	
-	$file = $prepath.strtolower($module_name).'.mod.php5';
+	if (!isset($I2_MODULE_MAP[$key])) {
+		return FALSE;
+	}
+	
+	$file = $I2_MODULE_MAP[$key];
 	if (is_readable($file)) {
 		return $file;
 	}
-	$file = $prepath.$module_name.'.mod.php5';
-	if (is_readable($file)) {
-		return $file;
-	}
-	$file = $prepath.strtolower($module_name).'.class.php5';
-	if (is_readable($file)) {
-		return $file;
-	}
-	$file = $prepath.$module_name.'.class.php5';
-	if (is_readable($file)) {
-		return $file;
-	}
+
 	return FALSE;
 }
 
@@ -132,11 +180,7 @@ function i2config_get($field, $default = NULL, $section = NULL) {
 			to send critical errors to is in the config
 			file! */
 			/* hence, put a hard-coded mail() call here */
-			if ($I2_ERR) {
-				$I2_ERR->fatal_error('The master Iodine configuration file '.CONFIG_FILENAME.' cannot be read.', FALSE);
-			} else {
-				echo('The master Iodine configuration file '.CONFIG_FILENAME.' cannot be read.');
-			}
+			error('The master Iodine configuration file '.CONFIG_FILENAME.' cannot be read.');
 		}
 		
 		$config = parse_ini_file(CONFIG_FILENAME, TRUE);
@@ -148,9 +192,10 @@ function i2config_get($field, $default = NULL, $section = NULL) {
 		}
 		if ($default === NULL) {
 			/* Return error, should probably also make a logging call here */
-			d("Attempted to read bad config value $field in section $section");
+			d("Attempted to read bad config value $field in section $section", 1);
 			return NULL;
 		}
+		d("Using default value $default for $field in section $section", 2);
 		return $default;
 		
 	}

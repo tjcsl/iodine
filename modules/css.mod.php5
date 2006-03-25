@@ -65,7 +65,11 @@ class CSS implements Module {
 		}
 		
 		$this->style_path = i2config_get('style_path', NULL, 'core');
-		$style_cache = i2config_get('style_cache', NULL, 'core') . $current_style;
+		$cache_dir = i2config_get('cache_dir', NULL, 'core') . 'styles/';
+		if (!is_dir($cache_dir)) {
+			mkdir($cache_dir, 0700, TRUE);
+		}
+		$style_cache = $cache_dir . $current_style;
 
 		//Recompile the cache if it's stale
 		if (!file_exists($style_cache) || filemtime($style_cache) < dirmtime($this->style_path)) {
