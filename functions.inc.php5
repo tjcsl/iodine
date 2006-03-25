@@ -115,12 +115,10 @@ function load_module_map() {
 */
 function generate_module_map() {
 	d('Generating module map', 4);
+	
+	require_once('modules/admin/modulesmapper.class.php5');
 
-	exec('bin/mapmodules', $output, $ret_val);
-
-	if ($ret_val !== 0) {
-		error("Could not generate module map: bin/mapmodules returned $ret_val. \nOutput=" . print_r($output, TRUE));
-	}
+	ModulesMapper::generate();
 }
 
 /**

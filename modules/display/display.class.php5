@@ -80,7 +80,7 @@ class Display {
 		//$this->smarty->register_outputfilter(array(&$this,'outputfilter'));
 		$this->smarty->left_delimiter = '[<';
 		$this->smarty->right_delimiter = '>]';
-		$this->smarty->compile_dir = i2config_get('smarty_path','./','core');
+		$this->smarty->compile_dir = i2config_get('cache_dir', NULL, 'core') . 'smarty/';
 		$this->smarty->plugins_dir = array('plugins',i2config_get('root_path',NULL,'core').'smarty');
 		$this->smarty->cache_dir = $this->smarty->compile_dir.'cache';
 
