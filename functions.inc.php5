@@ -95,7 +95,9 @@ function load_module_map() {
 	$filename = i2config_get('cache_dir', NULL, 'core') . 'module.map';
 	
 	if (!file_exists($filename)) {
-		generate_module_map();
+		d('Generating module map', 4);
+		require_once('modules/admin/modulesmapper.class.php5');
+		ModulesMapper::generate();
 	}
 	
 	$contents = file_get_contents($filename);
@@ -107,18 +109,6 @@ function load_module_map() {
 	if ($I2_MODULE_MAP === FALSE) {
 		error('Could not load module map: could unserialize contents of file ' . $filename);
 	}
-}
-
-/**
-* Generates the module map.
-*
-*/
-function generate_module_map() {
-	d('Generating module map', 4);
-	
-	require_once('modules/admin/modulesmapper.class.php5');
-
-	ModulesMapper::generate();
 }
 
 /**
