@@ -72,6 +72,7 @@ class Auth {
 	* @return bool True if user is authenticated, False otherwise.
 	*/
 	public function is_authenticated() {
+		global $I2_SQL;
 		if (	isset($_SESSION['i2_uid']) 
 			&& isset($_SESSION['i2_login_time'])) {
 			if( $_SESSION['i2_login_time'] > time()+i2config_get('timeout',600,'login')) {
@@ -84,7 +85,20 @@ class Auth {
 		}
 		if (isSet($_SERVER['REMOTE_USER'])) {
 			$_SESSION['i2_login_time'] = time();
-			$_SESSION['i2_uid'] = $_SERVER['WEBAUTH_LDAP_IODINEUIDNUMBER'];
+			/*
+			** Strip kerberos realm if necessary
+			*/
+			$user = $_SERVER['REMOTE_USER'];
+			$atpos = strpos($user,'@');
+			if ($atpos !== -1) {
+				$user = substr($user,0,$atpos);
+			}
+			$_SESSION['i2_uid'] = 
+				$I2_SQL->query('SELECT uid from user where username=%s',$user)->fetch_single_value();
+			$_SESSION['i2_username'] = $user;
+			#$_SESSION['i2_uid'] = $_SERVER['WEBAUTH_LDAP_IODINEUIDNUMBER'];
+			d('Kerberos pre-auth succeeded for principal '.$_SERVER['REMOTE_USER']);
+			return TRUE;
 		}
 		return FALSE;
 	}
@@ -157,7 +171,12 @@ class Auth {
 		
 		session_destroy();
 		unset($_SESSION);
-		 
+		
+		/*
+		** Try to get rid of Kerberos credentials
+		*/
+		`kdestroy`;
+		
 		return TRUE;
 	}
 	

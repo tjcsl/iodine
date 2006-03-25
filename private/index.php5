@@ -1,5 +1,5 @@
 <?php
-	$user = getenv('WEBAUTH_USER');
+	$user = getenv('REMOTE_USER');
 	$creds = getenv('KRB5CCNAME');
 ?>
 <html><head><title>Auth Successful</title></head><body>
