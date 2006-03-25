@@ -6,23 +6,25 @@
 * @package modules
 * @subpackage Filecenter
 */
-require_once('modules/i2exception.class.php5');
-require_once('modules/i2file.class.php5');
-require_once('modules/filesystem.class.php5');
-require_once('modules/cslfilesystem.class.php5');
 
-function error($err) {
+define('CONFIG_FILENAME', 'config.ini');
+
+require_once('functions.inc.php5');
+
+load_module_map();
+
+function csl_error($err) {
 	fwrite(STDERR, serialize(array('error', $err)));
 	exit(1);
 }
 
-function exception($err) {
+function csl_exception($err) {
 	fwrite(STDERR, serialize(array('exception', $err)));
 	exit(1);
 }
 
-set_error_handler('error');
-set_exception_handler('exception');
+set_error_handler('csl_error');
+set_exception_handler('csl_exception');
 
 list($function, $args) = unserialize(stream_get_contents(STDIN));
 
