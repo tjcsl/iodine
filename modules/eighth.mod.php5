@@ -131,8 +131,24 @@ class Eighth implements Module {
 	* @param bool $add Whether to include the add field or not.
 	* @param string $title The title for the block list.
 	*/
-	private function setup_block_selection($add = FALSE, $field = "bid", $title = "Select a block:") {
-		$blocks = EighthBlock::get_all_blocks(i2config_get("start_date", date("Y-m-d"), "eighth"));
+	private function setup_block_selection($add = FALSE, $field = NULL, $title = NULL, $startdate = NULL, $daysf = NULL) {
+		if ($field === NULL) {
+			$field = 'bid';
+		}
+		if ($title === NULL) {
+			$title = 'Select a block:';
+		}
+		if ($startdate === NULL) {
+			if (isSet($args['startdate'])) {
+				$startdate = $args['startdate'];
+			} else {
+				$startdate = date('Y-m-d');
+			}
+		}
+		if ($daysf === NULL && isSet($args['daysforward'])) {
+			$daysf = $args['daysforward'];
+		}
+		$blocks = EighthBlock::get_all_blocks($startdate,$daysf);
 		$this->template = "eighth_block_selection.tpl";
 		$this->template_args += array("blocks" => $blocks, "add" => $add);
 		$this->template_args['title'] = $title;
@@ -237,9 +253,9 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	private function reg_group($op, $args) {
-		if($op == "") {
+		if($op == '') {	
 			$this->setup_block_selection();
-			$this->template_args['op'] = "activity";
+			$this->template_args['op'] = 'activity';
 		}
 		else if($op == "activity") {
 			$this->setup_activity_selection(FALSE, $args['bid']);
@@ -356,8 +372,8 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	private function people_switch($op, $args) {
-		if($op == "") {
-			$this->setup_block_selection(FALSE, "bid_from");
+		if($op == '') {
+			$this->setup_block_selection(FALSE, 'bid_from');
 			$this->template_args['op'] = "activity_from";
 			$this->title = "Select a Block to Move From";
 		}
@@ -928,11 +944,11 @@ class Eighth implements Module {
 			$this->template_args['blocks'] = EighthBlock::get_all_blocks(i2config_get("start_date", date("Y-m-d"), "eighth"));
 			$this->title = "Add/Remove Block";
 		}
-		else if($op == "add") {
+		else if($op == 'add') {
 			foreach($args['blocks'] as $block) {
 				EighthBlock::add_block("{$args['Year']}-{$args['Month']}-{$args['Day']}", $block);
 			}
-			redirect("eighth/ar_block");
+			redirect('eighth/ar_block');
 		}
 		else if($op == "remove") {
 			EighthBlock::remove_block($args['bid']);

@@ -78,7 +78,7 @@ class EighthBlock {
 	* @param string $starting_date The starting date for the list, usually NULL.
 	* @param int $number_of_days The number of days to return.
 	*/
-	public static function get_all_blocks($starting_date = NULL, $number_of_days = 14) {
+	public static function get_all_blocks($starting_date = NULL, $number_of_days = 9999) {
 		global $I2_SQL;
 		if($starting_date == NULL) {
 			$starting_date = i2config_get('start_date', date("Y-m-d"), 'eighth');

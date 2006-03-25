@@ -6,7 +6,9 @@
 
 	RewriteRule ^www/ - [L]
 
-	RewriteRule ^private - [L]
+	RewriteRule ^private/ - [L]
+
+	RewriteRule ^images/ - [L]
 
 	RewriteRule ^login - [L]
 	
