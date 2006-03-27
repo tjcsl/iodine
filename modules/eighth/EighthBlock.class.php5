@@ -42,12 +42,15 @@ class EighthBlock {
 			return -1;
 		}
 		$result = $I2_SQL->query("INSERT INTO eighth_blocks (date,block) VALUES (%t,%s)", $date, $block);
+		$bid = $result->get_insert_id();
+		$default_aid = i2config_get('default_aid', 3, 'eighth');
+		//schedule the default activity
+		EighthSchedule::schedule_activity($bid, $default_aid);
+		//add all students to default activity
 		$uids = flatten($I2_SQL->query("SELECT uid FROM user")->fetch_all_arrays(Result::NUM));
-		// Figure out what the default should be, 999?
-		$block = new EighthBlock($result->get_insert_id());
-		$activity = new EighthActivity(1, $block->bid);
-		$activity->add_members($users);
-		return $result->get_insert_id();
+		$activity = new EighthActivity($aid, $bid);
+		$activity->add_members($uids);
+		return $bid;
 	}
 
 	/**
