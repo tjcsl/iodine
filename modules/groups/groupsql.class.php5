@@ -121,6 +121,12 @@ class GroupSQL extends Group {
 		}
 	}
 
+	public function get_members() {
+		global $I2_SQL;
+
+		return flatten($I2_SQL->query('SELECT uid FROM group_user_map WHERE gid=%d',$this->mygid)->fetch_all_arrays(Result::NUM));
+	}
+
 	public static function get_all_groups($module = NULL) {
 		global $I2_SQL;
 		$prefix = '%';
