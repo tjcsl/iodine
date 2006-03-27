@@ -1,4 +1,4 @@
-#!/usr/bin/php5
+#!/etc/iodine/php_wrapper
 <?php
 /**
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>

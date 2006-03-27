@@ -1,4 +1,4 @@
-#!/usr/bin/php5
+#!/etc/iodine/php_wrapper
 <?php
 	
 define('CONFIG_FILENAME', 'config.ini');
