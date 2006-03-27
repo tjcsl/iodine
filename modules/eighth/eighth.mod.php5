@@ -130,6 +130,8 @@ class Eighth implements Module {
 	* @access private
 	* @param bool $add Whether to include the add field or not.
 	* @param string $title The title for the block list.
+	* @param date $startdate The date from which to show blocks.
+	* @param int $daysf  The number of days forward to show blocks.
 	*/
 	private function setup_block_selection($add = FALSE, $field = NULL, $title = NULL, $startdate = NULL, $daysf = NULL) {
 		if ($field === NULL) {
@@ -147,6 +149,8 @@ class Eighth implements Module {
 		}
 		if ($daysf === NULL && isSet($args['daysforward'])) {
 			$daysf = $args['daysforward'];
+		} else {
+			$daysf = 9999;
 		}
 		$blocks = EighthBlock::get_all_blocks($startdate,$daysf);
 		$this->template = "eighth_block_selection.tpl";
