@@ -25,7 +25,7 @@ class Group {
 	private static $admin_mysql = NULL;
 
 	/**
-	* An encapsulated GroupSQL or GroupLDAP object
+	* The encapsulated Group backend object to use for Group database info.
 	*/
 	private $wrap;
 	
@@ -74,76 +74,123 @@ class Group {
 	public function __construct($group) {
 		$this->wrap = new GroupSQL($group);
 	}
-
+	
+	/**
+	* Gets all of the members in this group.
+	*
+	* @return Array An array of UIDs, one for each member in this group.
+	*/
 	public function get_members() {
 		return $this->wrap->get_members();
 	}
 	
 	/**
-	* Gets all groups.
+	* Gets all groups at once, or all groups with a certain prefix.
 	*
-	* @return Array An containing all of the Group objects.
+	* @param string $module If passed, all returned group names will start with this string. If not passed, just return all groups in the system.
+	* @return Array An array of {@link Group} objects for all of the groups requested.
 	*/
 	public static function get_all_groups($module = NULL) {
 		return GroupSQL::get_all_groups($module);
 	}
 
 	/**
-	* Gets the name of every group
+	* Gets the names of all groups in the database.
 	*
-	* @return Result A Result containing each group's name.
+	* @return Result A {@link Result} object with all group names.
 	*/
 	public static function get_all_group_names() {
 		return GroupSQL::get_all_group_names();
 	}
 
+	/**
+	* Adds a user to this group.
+	*
+	* @param mixed $user Either the {@link User} object or the UID of the user you want to add to this group.
+	*/
 	public function add_user($user) {
 		return $this->wrap->add_user($user);
 	}
 
+	/**
+	* Removes a certain user from this group.
+	* @param User $user The user to remove from this group.
+	*/
 	public function remove_user(User $user) {
 		return $this->wrap->remove_user($user);
 	}
 
+	/**
+	* Removes all users from this group.
+	*/
 	public function remove_all_members() {
 		return $this->wrap->remove_all_members();
 	}
 
+	/**
+	* Grants a permission to a certain user in this group.
+	*
+	* @param User $user The user to grant the permission to.
+	* @param string $perm The permission to grant.
+	*/
 	public function grant_permission(User $user, $perm) {
 		return $this->wrap->grant_permission($user, $perm);
 	}
 	
+	/**
+	* Revokes a permission from a user for this group.
+	*
+	* @param User $user The user to revoke the permission from.
+	* @param string $perm The permission to revoke.
+	*/
 	public function revoke_permission(User $user, $perm) {
 		return $this->wrap->revoke_permission($user, $perm);
 	}
 
+	/**
+	* Get all permissions for a certain user in this group.
+	*
+	* @param User $user Which user to list permissions for.
+	* @return Result A {@link Result} object containing all of the permissions for this group for the specified user.
+	*/
 	public function get_permissions(User $user) {
 		return $this->wrap->get_permissions($user);
 	}
 
+	/**
+	* Determines whether the specified user has a certain permission in this group.
+	*
+	* @param User $user The user for which to check the permission.
+	* @param string $perm Which permission to check to see if the user has.
+	* @return bool TRUE if $user has permission $perm in this group, FALSE otherwise.
+	*/
 	public function has_permission(User $user, $perm) {
 		return $this->wrap->has_permission($user, $perm);
 	}
 
 	/**
-	* Determine whether a user is a member of this group.
+	* Determines if a user is a member of this group.
 	*
-	* Returns whether or not $user is a member of the group. If $user is ommitted, or NULL, the currently logged-in user is checked.
+	* If this is an admin_* group, this method also checks to see if the user is a member of the admin_all group, and returns TRUE if they are. Otherwise, just checks if this group is listed as one that the user is a member of.
 	*
-	* @param User $user The user to check, or $I2_USER if unspecified.
-	* @return bool TRUE if the user is a member of the group, FALSE otherwise.
+	* @param User $user The user for which to check membership. If not specified or NULL, defaults to the currently logged-in user.
+	* @return bool TRUE if the user is considered a member of this group, FALSE otherwise.
 	*/
 	public function has_member($user=NULL) {
 		return $this->wrap->has_member($user);
 	}
 
+	/**
+	* Change the name of this group in the database.
+	*
+	* @param string $name The new name of the group.
+	*/
 	public function set_group_name($name) {
 		return $this->wrap->set_group_name($name);
 	}
 
 	/**
 	* Gets the groups of which a user is a member.
-	*
 	*
 	* @param User $user The {@link User} for which to fetch the groups.
 	* @return array The Groups in which the user has membership.
@@ -153,26 +200,26 @@ class Group {
 	}
 
 	/**
-	* Gets the admin groups of which a user is a member.
+	* Gets all groups for which a user is an admin.
 	*
-	*
-	* @param int $uid The userID of which to fetch the groups.
-	* @return array The group IDs of admin groups for the given user.
+	* @param User $user The user who must be considered an admin in the groups that are returned.
+	* @return Array An array of {@link Group} objects that the user is an administrator in.
 	*/
 	public static function get_admin_groups(User $user) {
 		return GroupSQL::get_admin_groups($user);
 	}
+	
 	/**
-	* Deletes this group.
+	* Deletes this group from the database, including all membership information associated with this group.
 	*/
 	public function delete_group() {
 		return $this->wrap->delete_group();
 	}
 
 	/**
-	* Adds a new group with the passed name.
+	* Creates a new group.
 	*
-	* @param string $name The name of the new group
+	* @param string $name The name for the new group.
 	*/
 	public static function add_group($name) {
 		return $this->wrap->add_group($name);
@@ -251,10 +298,24 @@ class Group {
 		);
 	}
 
+	/**
+	* Determines if a user is an administrator for this group.
+	*
+	* To be considered an admin for a group, a user must either be a member with the administrator privilege, or must be part of the admin_all group.
+	*
+	* @param User $user Which user to check admin-ness of.
+	* @return bool TRUE if the user is an administrator of the group, FALSE otherwise.
+	*/
 	public function is_admin(User $user) {
 		return $this->wrap->is_admin($user);
 	}
 
+	/**
+	* Generate a bunch of groups at once.
+	*
+	* @param Array $gids An array of Group IDs to generate groups for.
+	* @return Array An array of {@link Group} objects
+	*/
 	public static function generate($gids) {
 		return GroupSQL::generate($gids);
 	}

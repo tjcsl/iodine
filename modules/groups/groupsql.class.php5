@@ -9,13 +9,19 @@
 */
 
 /**
-* The module runs groups using MySQL
+* The module runs groups using MySQL as a backend.
 * @package modules
 * @subpackage Group
 */
 class GroupSQL extends Group {
 
+	/**
+	* This group's GID.
+	*/
 	private $mygid;
+	/**
+	* This group's name.
+	*/
 	private $myname;
 	
 	/**
@@ -23,6 +29,19 @@ class GroupSQL extends Group {
 	*/
 	private static $gid_map;
 
+	/**
+	* The magical PHP __get method.
+	*
+	* Fields supported:
+	* <ul>
+	* <li>gid: Returns the GID of this group.</li>
+	* <li>name: Returns the group's name.</li>
+	* <li>description: Returns the group's description.</li>
+	* <li>special: A boolean, TRUE if this is a 'special' group (such as grade_X), FALSE otherise.</li>
+	* <li>members: An array of all of the members in the group. See get_members().</li>
+	* <li>members_obj: An array of {@link User} objects for all of the members of this group.</li>
+	* </ul>
+	*/
 	public function __get($var) {
 		global $I2_SQL;
 		switch($var) {
@@ -41,6 +60,13 @@ class GroupSQL extends Group {
 		}
 	}
 
+	/**
+	* The constructor.
+	*
+	* One of three things can be passed as an argument to __construct for GroupSQL. A GID or group name will cause Group to lookup the information in the database based on the specified info. Passing an array will cause the Group information to be determined just from that information in the array. This functionality should only be used for Group internally, such as by the generate() method, and is implemented just so creating a large amount of groups can be done with a single database query instead of numerous small ones.
+	*
+	* @param mixed $group Either a group name, a GID, or an array of group information, as outlined above.
+	*/
 	public function __construct($group) {
 		global $I2_SQL;
 
@@ -95,12 +121,6 @@ class GroupSQL extends Group {
 		}
 	}
 
-	public function get_members() {
-		global $I2_SQL;
-
-		return flatten($I2_SQL->query('SELECT uid FROM group_user_map WHERE gid=%d',$this->mygid)->fetch_all_arrays(Result::NUM));
-	}
-	
 	public static function get_all_groups($module = NULL) {
 		global $I2_SQL;
 		$prefix = '%';
@@ -301,12 +321,6 @@ class GroupSQL extends Group {
 		return FALSE;
 	}
 
-	/**
-	* Generate a bunch of groups at once.
-	*
-	* @param Array $gids An array of Group IDs to generate groups for.
-	* @return Array An array of {@link Group} objects
-	*/
 	public static function generate($gids) {
 		global $I2_SQL;
 		if(is_array($gids)) {
