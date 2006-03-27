@@ -38,7 +38,7 @@ class EighthPrint {
 		}
 		else {
 			if($format == "pdf") {
-				self::add_info(&$output, "Print Class Roster", "{$activity->name} ({$activity->block->date} - {$activity->block->block} Block)");
+				self::add_info($output, "Print Class Roster", "{$activity->name} ({$activity->block->date} - {$activity->block->block} Block)");
 			}
 			self::do_display($output, $format, "Class Roster for {$activity->name} ({$activity->block->date} - {$activity->block->block} Block)");
 		}
@@ -62,7 +62,7 @@ class EighthPrint {
 		}
 		else {
 			if($format == "pdf") {
-				self::add_info(&$output, "Print Sponsor Schedule", $sponsor->name);
+				self::add_info($output, "Print Sponsor Schedule", $sponsor->name);
 			}
 			self::do_display($output, $format, "Sponsor Schedule for {$sponsor->name}");
 		}
@@ -87,7 +87,7 @@ class EighthPrint {
 		}
 		else {
 			if($format == "pdf") {
-				self::add_info(&$output, "Print Attendance Data", "{$activity->name} ({$activity->block->date} - {$activity->block->block} Block)");
+				self::add_info($output, "Print Attendance Data", "{$activity->name} ({$activity->block->date} - {$activity->block->block} Block)");
 			}
 			self::do_display($output, $format, "Attendance Data for {$activity->name} ({$activity->block->date} - {$activity->block->block} Block)");
 		}
@@ -118,7 +118,7 @@ class EighthPrint {
 		}
 		else {
 			if($format == "pdf") {
-				self::add_info(&$output, "Print Activity Rosters", implode(", ", $blocks) . " Activity Rosters");
+				self::add_info($output, "Print Activity Rosters", implode(", ", $blocks) . " Activity Rosters");
 			}
 			self::do_display($output, $format, "Activity Rosters for " . implode(", ", $blocks));
 		}
@@ -144,7 +144,7 @@ class EighthPrint {
 		}
 		else {
 			if($format == "pdf") {
-				self::add_info(&$output, "Print Student Schedule", $user->name);
+				self::add_info($output, "Print Student Schedule", $user->name);
 			}
 			self::do_display($output, $format, "Student Schedule for " . $user->name);
 		}
