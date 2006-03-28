@@ -222,7 +222,7 @@ class Group {
 	* @param string $name The name for the new group.
 	*/
 	public static function add_group($name) {
-		return $this->wrap->add_group($name);
+		return GroupSQL::add_group($name);
 	}
 
 	/**
