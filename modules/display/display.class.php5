@@ -377,14 +377,7 @@ class Display {
 					'chrome' => $chrome
 			)
 		);
-		if ($I2_USER->header && $chrome) {
-			$this->disp('header.tpl');
-		} else {
-			d('The user has minimized their header',6);
-			$this->disp('header-small.tpl');
-		}
-		//XXX: The following line needs to be commented out for raw data output to work. I don't know how necessary it is. -adeason
-//		$this->flush_buffer();
+		TopBar::display($this, $chrome);
 	}
 
 	/**
