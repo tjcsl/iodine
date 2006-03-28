@@ -28,7 +28,7 @@ This group has the following members:<br />
 [<else>]
 This group has no members.<br />
 [</if>]
-[<if $admin == "all" || $admin == "master">]
+[<if $admin>]
 <br />
 You may add and remove people from this group.<br />
 To add a person, enter their user id here:<br />

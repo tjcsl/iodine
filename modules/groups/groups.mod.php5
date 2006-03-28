@@ -64,14 +64,10 @@ class Groups implements Module {
 		else {
 			$method = $I2_ARGS[1];
 			if(method_exists($this, $method)) {
-				$this->$method();
-				$this->template_args['method'] = $method;
-				return 'Groups: ' . ucwords(strtr($method, '_', ' '));
+				return $this->$method();
 			}
-			else {
-				$this->template = 'groups_error.tpl';
-				$this->template_args = array('method' => $method, 'args' => $I2_ARGS);
-			}
+			$this->template = 'groups_error.tpl';
+			$this->template_args = array('method' => $method, 'args' => $I2_ARGS);
 		}
 		return array('Error', 'Error');
 	}
@@ -111,8 +107,13 @@ class Groups implements Module {
 	* <li>$I2_ARGS[3]: GID of group</li></ul>
 	*/
 	public function grant() {
-		global $I2_ARGS;
+		global $I2_USER, $I2_ARGS;
 		$grp = new Group($I2_ARGS[3]);
+
+		if (!$grp->is_admin($I2_USER)) {
+			$this->template = 'groups_error.tpl';
+			return 'Permission denied';
+		}
 
 		if(isset($_REQUEST['groups_grant_permission'])) {
 			$grp->grant_permission(new User($I2_ARGS[2]), $_REQUEST['groups_grant_permission']);
@@ -123,7 +124,7 @@ class Groups implements Module {
 			$this->template_args['group'] = new Group($I2_ARGS[3]);
 		}
 		$this->template = 'grant_perm.tpl';
-		return 'Grant Permissions';
+		return 'Groups: Grant Permissions';
 	}
 
 	/**
@@ -135,8 +136,13 @@ class Groups implements Module {
 	* <li>$I2_ARGS[4]: Permission to revoke</li></ul>
 	*/	
 	public function revoke() {
-		global $I2_ARGS;
+		global $I2_USER, $I2_ARGS;
 		$grp = new Group($I2_ARGS[3]);
+
+		if (!$grp->is_admin($I2_USER)) {
+			$this->template = 'groups_error.tpl';
+			return 'Permission denied';
+		}
 
 		$grp->revoke_permission(new User($I2_ARGS[2]), $I2_ARGS[4]);
 
@@ -161,22 +167,14 @@ class Groups implements Module {
 		$this->template_args['group'] = $group->name;
 		$this->template_args['gid'] = $group->gid;
 		
-		$is_single_admin = $group->is_admin($I2_USER);
-		$is_higher_admin = (self::$is_admin_all || (self::$is_admin_groups && substr($group->name,0,6) != 'admin_'));
+		$is_admin = $group->is_admin($I2_USER);
 
-		if($is_higher_admin || $group->has_member($I2_USER)) {
+		if ($is_admin || $group->has_member($I2_USER)) {
 			// user is group member, groups admin if a normal group, or master admin if admin group
-
-			if($is_single_admin || $is_higher_admin) {
+			if($is_admin) {
 				// user is single-group admin or groups admin (or master admin)
 
-				// differentiate between single group admin and admin_groups/admin_all
-				if($is_higher_admin) {
-					$this->template_args['admin'] = 'master';
-				}
-				else {
-					$this->template_args['admin'] = 'all';
-				}
+				$this->template_args['admin'] = true;
 
 				if( isset($_REQUEST['group_form']) ) {
 					if(is_numeric($_REQUEST['uid'])) {
@@ -195,6 +193,8 @@ class Groups implements Module {
 								break;
 					}
 				}
+			} else {
+				$this->template_args['admin'] = false;
 			}
 			$this->template_args['members'] = self::get_memberinfo($group);
 			$this->template = 'groups_group.tpl';
@@ -202,7 +202,7 @@ class Groups implements Module {
 		else {
 			$this->template = 'groups_error.tpl';
 		}
-		return array('Groups: Group', 'Groups');
+		return 'Groups: ' .  $group->name;
 	}
 	/**
 	* The master admin interface
@@ -225,6 +225,7 @@ class Groups implements Module {
 		else {
 			$this->template = 'groups_error.tpl';
 		}
+		return 'Groups: Admin';
 	}
 
 	/**

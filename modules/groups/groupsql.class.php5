@@ -15,6 +15,8 @@
 */
 class GroupSQL extends Group {
 
+	const PERM_ADMIN = 'GROUP_ADMIN';
+
 	/**
 	* This group's GID.
 	*/
@@ -213,6 +215,11 @@ class GroupSQL extends Group {
 		if($this->special) {
 			throw new I2Exception("Attempted to see if user {$user->uid} has permission $perm in invalid group {$this->mygid}");
 		}
+		
+		// admin_all has all permissions
+		if (Group::admin_all()->has_member($user)) {
+			return true;
+		}
 
 		$res = $I2_SQL->query('SELECT count(*) FROM groups_perms WHERE uid=%d AND gid=%d AND permission=%s;', $user->uid,$this->mygid,$perm);
 		return ($res->fetch_single_value() > 0);
@@ -314,16 +321,22 @@ class GroupSQL extends Group {
 	public function is_admin(User $user) {
 		global $I2_SQL;
 
-		$res = $I2_SQL->query('SELECT * FROM groups_perms WHERE uid=%d AND gid=%d AND permission=%s;',$user->uid,$this->mygid, 'I2_ADMIN');
+		$res = $I2_SQL->query('SELECT * FROM groups_perms WHERE uid=%d AND gid=%d AND permission=%s;',$user->uid,$this->mygid, GroupSQL::PERM_ADMIN);
 		if($res->num_rows() >= 1) {
 			return TRUE;
 		}
 
-		// admin_all members get admin access to all groups, I believe
+		// admin_all members get admin access to all groups
 		if(Group::admin_all()->has_member($user)) {
 			return TRUE;
 		}
-		// They're not even a member of the group, so... not an admin
+		
+		// admin_groups members get admin to non admin groups
+		if (substr($this->name, 0, 6) != 'admin_' && Group::admin_groups()->has_member($user)) {
+			return true;
+		}
+
+		// They're not an admin of this group nor are they a member of admin_all
 		return FALSE;
 	}
 
