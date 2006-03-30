@@ -8,6 +8,10 @@
 	RewriteRule ^private - [L]
 
 	RewriteRule ^webkdc-service - [L]
-	
+
+	RewriteRule ^webauth-status - [L]
+
+	RewriteRule ^login - [L]
+
 	RewriteRule ^(.*)$ /shared/apache2/iodine/intranet2/core.php5?$1?%{QUERY_STRING} [L]
 </IfModule>
