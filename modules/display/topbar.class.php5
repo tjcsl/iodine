@@ -17,7 +17,17 @@ class TopBar {
 	public static function display($disp, $chrome) {
 		global $I2_USER;
 		if($I2_USER->header && $chrome) {
-			$disp->disp('header.tpl');
+			$stories = Newsitem::get_all_items();
+			$max = i2config_get('max_header_stories',5,'display');
+			$i = 1;
+			$titles = array();
+			foreach($stories as $story) {
+				if($max < $i) {
+					break;
+				}
+				$titles[] = $story->title;
+			}
+			$disp->disp('header.tpl', array('news_titles' => $story->title));
 		} else {
 			d('This user has minimized their header',6);
 			$disp->disp('header-small.tpl');
