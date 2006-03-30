@@ -290,18 +290,36 @@ class MySQL {
 			/* array of integers */
 			case 'I':
 			case 'D':
+				if (!$arg) {
+					return '';
+				}
 				if( !is_array($arg) ) {
 					throw new I2Exception('Non-array passed to %D in a mysql query');
 				}
+				$ret = '';
+				/*
+				** Check argument integerness
+				*/
 				foreach($arg as $num) {
+					if (is_array($num)) {
+						$num = $num[0];
+						//throw new I2Exception('Nested array '.print_r($num,1).' passed to %D in a mysql query!');
+					}
+					/*
+					** Strip null strings, etc. which may have worked their way in
+					*/
+					if (!$num) {
+						continue;
+					}
 					if(!(	is_int($num) ||
 						ctype_digit($num) ||
 						(ctype_digit(substr($num,1)) && $num[0]=='-') //negatives
 					)) {
 						throw new I2Exception('Non-integer `'.$num.'` passed in the array passed to %D in a mysql query');
 					}
+					$ret .= "$num,";
 				}
-				return implode($arg, ',');
+				return substr($ret,0,-1);
 
 			/* integer*/
 			case 'd':

@@ -147,7 +147,7 @@
 <table cellspacing="0" style="border: 0px; padding: 0px; margin: 0px; width: 100%;">
 	<tr>
 		<td style="width:  20px; text-align: left;"><input type="checkbox" name="selectall" onclick="CA();" /></td>
-		<th style="padding: 5px; text-align: left; width: 120px;">Block</th>
+		<th style="padding: 5px; text-align: left; width: 120px;">Select All</th>
 		<th style="padding: 5px; text-align: left;">Room(s)</th>
 		<th style="padding: 5px; text-align: left;">Sponsor(s)</th>
 		<td>&nbsp;</td>

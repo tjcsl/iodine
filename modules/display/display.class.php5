@@ -274,6 +274,7 @@ class Display {
 		$this->smarty->assign('I2_ARGSTRING', implode('/',$I2_ARGS));
 		if( isSet($I2_USER) ) {
 			$this->smarty->assign('I2_UID', $I2_USER->uid);
+			$this->smarty->assign('I2_USER', $I2_USER);
 			$this->smarty->assign('I2_CSS', "{$I2_ROOT}css/".self::$style.'.css');
 		}
 		else {

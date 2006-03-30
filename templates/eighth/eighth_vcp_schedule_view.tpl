@@ -25,7 +25,7 @@
 	// -->
 </script>
 
-[<if $user->is_group_member('admin_eighth')>]
+[<if $I2_USER->is_group_member('admin_eighth')>]
 	[<include file="eighth/eighth_header.tpl">]
 	<h2>[<$user->name_comma>] ([<$user->uid>], [<$user->grade>]th)</h2>
 	<b>Counselor: [<$user->counselor>], TA: </b><br />
@@ -36,8 +36,8 @@
 	<form name="activities" action="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>]" method="post">
 	<input type="submit" value="Change Selected" />
 	<div style="display: inline; margin-left: 100px;">
-		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="&lt; Back Two Weeks" /></a>
-		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="Forward Two Weeks &gt;" /></a>
+		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]">&lt; Back Two Weeks</a>
+		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]">Forward Two Weeks &gt;</a>
 	</div>
 	<br /><br />
 	<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; border: 0px; width: 100%;">
@@ -69,8 +69,8 @@
 	<br />
 	<input type="submit" value="Change Selected" />
 	<div style="display: inline; margin-left: 100px;">
-		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="&lt; Back Two Weeks" /></a>
-		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]"><input type="button" value="Forward Two Weeks &gt;" /></a>
+		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]">&lt; Back Two Weeks</a>
+		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]">Forward Two Weeks &gt;</a>
 	</div>
 </form>
 <script language="javascript" type="text/javascript">

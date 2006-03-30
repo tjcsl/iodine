@@ -299,7 +299,7 @@ class Eighth implements Module {
 		}
 		else if($op == 'remove') {
 			Group::delete_group($args['gid']);
-			redirect("eighth");
+			redirect('eighth');
 		}
 		else if($op == 'view') {
 			$group = new Group($args['gid']);
@@ -312,7 +312,7 @@ class Eighth implements Module {
 			$group->add_user($args['uid']);
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
 		}
-		else if($op == "remove_member") {
+		else if($op == 'remove_member') {
 			$group = new Group($args['gid']);
 			$group->remove_user($args['uid']);
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
@@ -567,7 +567,7 @@ class Eighth implements Module {
 			$this->template_args['activity_name'] = $act->name;
 			$this->title = "Schedule an Activity ({$args['aid']})";
 		}
-		else if($op == "modify") {
+		else if($op == 'modify') {
 			foreach($args['modify'] as $bid) {
 				if($args['activity_status'][$bid] == "CANCELLED") {
 					EighthActivity::cancel($bid, $args['aid']);
@@ -576,7 +576,26 @@ class Eighth implements Module {
 					EighthSchedule::unschedule_activity($bid, $args['aid']);
 				}
 				else {
-					EighthSchedule::schedule_activity($bid, $args['aid'], $args['sponsor_list'][$bid], $args['room_list'][$bid], $args['comments'][$bid]);
+					$sponsorlist = NULL;
+					$roomlist = NULL;
+					$commentslist = NULL;
+					$aid = NULL;
+					if (isSet($args['aid'])) {
+						$aid = $args['aid'];
+					}
+					if (isSet($args['sponsor_list']) && isSet($args['sponsor_list'][$bid])) {
+						$sponsorlist = $args['sponsor_list'][$bid];
+					}
+					if (isSet($args['room_list'])) {
+						$roomlist = $args['room_list'];
+					}
+					if (isSet($args['comments']) && isSet($args['comments'][$bid])) {
+						$commentslist = $args['comments'][$bid];
+					}
+					if (isSet($args['aid'])) {
+						$aid = $args['aid'];
+					}
+					EighthSchedule::schedule_activity($bid, $aid, $sponsorlist, $roomlist, $commentslist);
 				}
 			}
 			redirect("eighth/sch_activity/view/aid/{$args['aid']}");
@@ -1028,6 +1047,10 @@ class Eighth implements Module {
 		}
 		else if($op == 'choose') {
 			$this->template_args['activities'] = EighthActivity::get_all_activities($args['bid']);
+			$changing_bids = array_keys($args['change']);
+			foreach ($changing_bids as $bid) {
+				
+			}
 			$this->template_args['bid'] = $args['bid'];
 			$this->template_args['uid'] = $args['uid'];
 			$this->template = 'eighth_vcp_schedule_choose.tpl';
@@ -1064,7 +1087,7 @@ class Eighth implements Module {
 				}
 				$this->template = "eighth_vcp_schedule_change.tpl";
 				$this->template_args['status'] = $status;
-				//redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
+				redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
 			}
 		}
 		else if($op == 'force_change') {
