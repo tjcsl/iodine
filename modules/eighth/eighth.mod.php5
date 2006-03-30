@@ -926,12 +926,12 @@ class Eighth implements Module {
 	* @todo Figure out where to store the starting date, in config.ini for now.
 	*/
 	public function chg_start($op, $args) {
-		if($op == "") {
-			$this->template = "eighth_chg_start.tpl";
-			$this->title = "Change Start Date";
+		if($op == '') {
+			$this->template = 'eighth_chg_start.tpl';
+			$this->title = 'Change Start Date';
 		}
-		else if($op == "change") {
-			// TODO: Change starting date
+		else if($op == 'change') {
+			//TODO: Change starting date
 		}
 	}
 
@@ -943,10 +943,10 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	public function ar_block($op, $args) {
-		if($op == "") {
-			$this->template = "eighth_ar_block.tpl";
-			$this->template_args['blocks'] = EighthBlock::get_all_blocks(i2config_get("start_date", date("Y-m-d"), "eighth"));
-			$this->title = "Add/Remove Block";
+		if($op == '') {
+			$this->template = 'eighth_ar_block.tpl';
+			$this->template_args['blocks'] = EighthBlock::get_all_blocks(i2config_get('start_date', date('Y-m-d'), 'eighth'));
+			$this->title = 'Add/Remove Block';
 		}
 		else if($op == 'add') {
 			foreach($args['blocks'] as $block) {
@@ -954,9 +954,9 @@ class Eighth implements Module {
 			}
 			redirect('eighth/ar_block');
 		}
-		else if($op == "remove") {
+		else if($op == 'remove') {
 			EighthBlock::remove_block($args['bid']);
-			redirect("eighth/ar_block");
+			redirect('eighth/ar_block');
 		}
 	}
 	
@@ -970,12 +970,12 @@ class Eighth implements Module {
 	*/
 	public function rep_schedules($op, $args) {
 		global $I2_SQL;
-		if($op == "") {
-			$bids = flatten($I2_SQL->query("SELECT bid FROM eighth_blocks")->fetch_all_arrays(MYSQL_NUM));
+		if($op == '') {
+			$bids = flatten($I2_SQL->query('SELECT bid FROM eighth_blocks')->fetch_all_arrays(MYSQL_NUM));
 			foreach($bids as $bid) {
 				$activity = new EighthActivity(1);
 				EighthSchedule::schedule_activity($bid, $activity->aid, $activity->sponsors, $activity->rooms);
-				$uids = flatten($I2_SQL->query("SELECT uid FROM user WHERE uid NOT IN (SELECT userid FROM eighth_activity_map WHERE bid=%d)", $bid)->fetch_all_arrays(MYSQL_NUM));
+				$uids = flatten($I2_SQL->query('SELECT uid FROM user WHERE uid NOT IN (SELECT userid FROM eighth_activity_map WHERE bid=%d)', $bid)->fetch_all_arrays(MYSQL_NUM));
 				$activity->add_members($uids, false, $bid);
 			}
 			redirect("eighth");
@@ -991,10 +991,10 @@ class Eighth implements Module {
 	*/
 	public function vcp_schedule($op, $args) {
 		global $I2_SQL;
-		if($op == "") {
-			$this->template = "eighth_vcp_schedule.tpl";
+		if($op == '') {
+			$this->template = 'eighth_vcp_schedule.tpl';
 			if(!empty($args['uid'])) {
-				$this->template_args['users'] = User::id_to_user(flatten($I2_SQL->query("SELECT uid FROM user WHERE uid LIKE %d", $args['uid'])->fetch_all_arrays(Result::NUM)));
+				$this->template_args['users'] = User::id_to_user(flatten($I2_SQL->query('SELECT uid FROM user WHERE uid LIKE %d', $args['uid'])->fetch_all_arrays(Result::NUM)));
 			}
 			else {
 				$this->template_args['users'] = User::search_info("{$args['fname']} {$args['lname']}");
@@ -1002,8 +1002,8 @@ class Eighth implements Module {
 			if(count($this->template_args['users']) == 1) {
 				redirect("eighth/vcp_schedule/view/uid/{$this->template_args['users'][0]->uid}");
 			}
-			usort($this->template_args['users'], array("User", 'name_cmp'));
-			$this->title = "Search Students";
+			usort($this->template_args['users'], array('User', 'name_cmp'));
+			$this->title = 'Search Students';
 		}
 		else if($op == 'view') {
 			if(!isset($args['start_date'])) {
@@ -1021,106 +1021,106 @@ class Eighth implements Module {
 			if(!isset($args['start_date'])) {
 				$args['start_date'] = NULL;
 			}
-			$this->setup_format_selection("vcp_schedule", "Student Schedule", array("uid" => $args['uid']) + ($args['start_date'] ? array("start_date" => $args['start_date']) : array()), TRUE);
+			$this->setup_format_selection('vcp_schedule', 'Student Schedule', array('uid' => $args['uid']) + ($args['start_date'] ? array('start_date' => $args['start_date']) : array()), TRUE);
 		}
-		else if($op == "print") {
+		else if($op == 'print') {
 			EighthPrint::print_student_schedule($args['uid'], $args['start_date'], $args['format']);
 		}
-		else if($op == "choose") {
+		else if($op == 'choose') {
 			$this->template_args['activities'] = EighthActivity::get_all_activities($args['bid']);
 			$this->template_args['bid'] = $args['bid'];
 			$this->template_args['uid'] = $args['uid'];
-			$this->template = "eighth_vcp_schedule_choose.tpl";
-			$this->title = "Choose an Activity";
+			$this->template = 'eighth_vcp_schedule_choose.tpl';
+			$this->title = 'Choose an Activity';
 		}
-		else if($op == "change") {
+		else if($op == 'change') {
 			if ($args['bid'] && $args['aid']) {
 				$activity = new EighthActivity($args['aid'], $args['bid']);
 				$ret = $activity->add_member($args['uid'], false);
-				$status = "";
+				$status = '';
 				if($ret & EighthActivity::CANCELLED) {
-					$status .= "[Cancelled]";
+					$status .= '[Cancelled]';
 				}
 				if($ret & EighthActivity::PERMISSIONS) {
-					$status .= "[Insufficient permissions]";
+					$status .= '[Insufficient permissions]';
 				}
 				if($ret & EighthActivity::CAPACITY) {
-					$status .= "[Over capacity]";
+					$status .= '[Over capacity]';
 				}
 				if($ret & EighthActivity::STICKY) {
-					$status .= "[Can't switch out]";
+					$status .= '[Can't switch out]';
 				}
 				if($ret & EighthActivity::ONEADAY) {
-					$status .= "[Only one a day]";
+					$status .= '[Only one a day]';
 				}
 				if($ret & EighthActivity::PRESIGN) {
-					$status .= "[Pre-sign activity]";
+					$status .= '[Pre-sign activity]';
 				}
 				if(!$ret) {
-					$status .= "[Successful]";
+					$status .= '[Successful]';
 				}
 				else if($ret >= 64 || $ret < 0) {
-					$status .= "[Unsuccessful]";
+					$status .= '[Unsuccessful]';
 				}
 				$this->template = "eighth_vcp_schedule_change.tpl";
 				$this->template_args['status'] = $status;
 				//redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
 			}
 		}
-		else if($op == "force_change") {
+		else if($op == 'force_change') {
 			if ($args['bid'] && $args['aid']) {
 				$activity = new EighthActivity($args['aid'], $args['bid']);
 				$activity->add_member($args['uid'], true);
 				redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
 			}
 		}
-		else if($op == "roster") {
+		else if($op == 'roster') {
 			$this->template_args['activity'] = new EighthActivity($args['aid'], $args['bid']);
 			$this->template_args['num_members'] = count($this->template_args['activity']->members);
-			$this->template = "eighth_vcp_schedule_roster.tpl";
-			$this->title = "Activity Roster";
+			$this->template = 'eighth_vcp_schedule_roster.tpl';
+			$this->title = 'Activity Roster';
 		}
-		else if($op == "absences") {
+		else if($op == 'absences') {
 			$absences = EighthActivity::id_to_Activity(EighthSchedule::get_absences($args['uid']));
 			$this->template_args['absences'] = $absences;
 			$this->template_args['uid'] = $args['uid'];
 			$this->template_args['admin'] = TRUE;
-			$this->template = "eighth_vcp_schedule_absences.tpl";
+			$this->template = 'eighth_vcp_schedule_absences.tpl';
 		}
-		else if($op == "remove_absence") {
+		else if($op == 'remove_absence') {
 			EighthSchedule::remove_absentee($args['bid'], $args['uid']);
-			redirect("eighth");
+			redirect('eighth');
 		}
 	}
 
 	public function view($op, $args) {
-		if($op == "") {
+		if($op == '') {
 		}
-		else if($op == "comments") {
+		else if($op == 'comments') {
 			/* Editing comments code */
-			$this->template = "eighth_edit_comments.tpl";
+			$this->template = 'eighth_edit_comments.tpl';
 			$user = new User($args['uid']);
 			$this->template_args['user'] = $user;
-			$this->title = "Edit Comments";
+			$this->title = 'Edit Comments';
 		}
-		else if($op == "student") {
+		else if($op == 'student') {
 			/* Editing student code */
-			$this->template = "eighth_edit_student.tpl";
+			$this->template = 'eighth_edit_student.tpl';
 			$user = new User($args['uid']);
 			$this->template_args['user'] = $user;
-			$this->title = "Edit Student Data";
+			$this->title = 'Edit Student Data';
 		}
 	}
 	public function edit($op, $args) {
-		if($op == "") {
+		if($op == '') {
 		}
-		else if($op == "comments") {
+		else if($op == 'comments') {
 			/* Editing comments code */
 			$user = new User($args['uid']);
 			$user->comments = $args['comments'];
-			redirect("eighth/vcp_schedule/view/uid/".$args['uid']);
+			redirect('eighth/vcp_schedule/view/uid/'.$args['uid']);
 		}
-		else if($op == "student") {
+		else if($op == 'student') {
 			/* Editing student code */
 			$user = new User($args['uid']);
 		}
