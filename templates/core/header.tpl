@@ -16,6 +16,12 @@ IE7_PNG_SUFFIX = ".png";
 <div class="logo"><a href="[<$I2_ROOT>]"><span id="logotext">Intranet 2</span></a></div>
 <div class="header">
  <div class="title"> Welcome, [<$first_name>]! </div>
- [<include file='core/menu.tpl'>]
+ [<include file='core/menu.tpl'>]<br /><br />
+ <span id="top_news">
+ News: [<foreach from=$news_posts item=story name=titles>]
+ <a href="[<$I2_ROOT>]news#newspost[<$story->id>]">[<$story->title>]</a>
+ [<if not $smarty.foreach.titles.last>]<span class="bold">&middot;</span>[</if>]
+ [</foreach>]
+ </span>
 </div>
 <div class="date">[<$smarty.now|date_format:"%B %e, %Y">]</div>

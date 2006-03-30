@@ -20,14 +20,15 @@ class TopBar {
 			$stories = Newsitem::get_all_items();
 			$max = i2config_get('max_header_stories',5,'display');
 			$i = 1;
-			$titles = array();
+			$tpl_stories = array();
 			foreach($stories as $story) {
 				if($max < $i) {
 					break;
 				}
-				$titles[] = $story->title;
+				$tpl_stories[] = $story;
+				$i++;
 			}
-			$disp->disp('header.tpl', array('news_titles' => $story->title));
+			$disp->disp('header.tpl', array('news_posts' => $tpl_stories));
 		} else {
 			d('This user has minimized their header',6);
 			$disp->disp('header-small.tpl');
