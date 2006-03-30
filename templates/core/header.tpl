@@ -15,8 +15,22 @@ IE7_PNG_SUFFIX = ".png";
 <body>
 <div class="logo"><a href="[<$I2_ROOT>]"><span id="logotext">Intranet 2</span></a></div>
 <div class="header">
- <div class="title"> Welcome, [<$first_name>]! </div>
- [<include file='core/menu.tpl'>]<br /><br />
+ <div class="title"> Welcome, [<$first_name>]!</div>
+ <div class="blurb">Today is [<$smarty.now|date_format:"%B %e, %Y">]. 
+ [<if $date != "none">]
+ 	The next 8th period is [<$date>], and you are currently signed up for 
+ 	[<foreach from=$activities item="activity" name="activities">]
+ 		[<if $smarty.foreach.activities.last and not $smarty.foreach.activities.first>]
+			and
+		[<elseif not $smarty.foreach.activities.first>]
+			,
+		[</if>]
+		[<$activity->name_r>]
+	[</foreach>]
+ [<else>]
+ 	There aren't any currently scheduled 8th period activities
+ [</if>]
+ .</div><br />
  <span id="top_news">
  News: [<foreach from=$news_posts item=story name=titles>]
  <a href="[<$I2_ROOT>]news#newspost[<$story->id>]">[<$story->title>]</a>
@@ -24,4 +38,4 @@ IE7_PNG_SUFFIX = ".png";
  [</foreach>]
  </span>
 </div>
-<div class="date">[<$smarty.now|date_format:"%B %e, %Y">]</div>
+<div class="date">[<include file='core/menu.tpl'>]</div>

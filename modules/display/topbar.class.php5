@@ -27,8 +27,17 @@ class TopBar {
 				}
 				$tpl_stories[] = $story;
 				$i++;
+			$date = EighthSchedule::get_next_date();
+			$activites = array();
+			if($date) {
+			        $activities = EighthActivity::id_to_activity(EighthSchedule::get_activities($I2_USER->uid, $date, 1));
+			        }
+			else {
+			        $activities = array();
 			}
-			$disp->disp('header.tpl', array('news_posts' => $tpl_stories));
+			$dates = array($date => date("n/j/Y", @strtotime($date)), date("Y-m-d") => "today", date("Y-m-d", time() + 3600 * 24) => "tomorrow", "" => "none");
+			}
+			$disp->disp('header.tpl', array('news_posts' => $tpl_stories,'activities' => $activities, 'date' => $dates[$date]));
 		} else {
 			d('This user has minimized their header',6);
 			$disp->disp('header-small.tpl');

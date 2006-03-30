@@ -37,3 +37,7 @@
 	top: 25px;
 	right: 25px;
 }
+#menu {
+	width: 100%;
+	text-align: right;
+}
