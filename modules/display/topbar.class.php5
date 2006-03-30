@@ -20,7 +20,7 @@ class TopBar {
 			$disp->disp('header.tpl');
 		} else {
 			d('This user has minimized their header',6);
-			$disp->disp('header-smaller.tpl');
+			$disp->disp('header-small.tpl');
 		}
 	}
 }
