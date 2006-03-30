@@ -1048,7 +1048,7 @@ class Eighth implements Module {
 					$status .= '[Over capacity]';
 				}
 				if($ret & EighthActivity::STICKY) {
-					$status .= '[Can't switch out]';
+					$status .= '[Can\'t switch out]';
 				}
 				if($ret & EighthActivity::ONEADAY) {
 					$status .= '[Only one a day]';
