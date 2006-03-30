@@ -18,7 +18,7 @@ class TopBar {
 		global $I2_USER;
 		if($I2_USER->header && $chrome) {
 			$stories = Newsitem::get_all_items();
-			$max = i2config_get('max_header_stories',5,'display');
+			$max = i2config_get('max_header_stories',3,'display');
 			$i = 1;
 			$tpl_stories = array();
 			foreach($stories as $story) {

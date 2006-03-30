@@ -29,8 +29,8 @@ IE7_PNG_SUFFIX = ".png";
 	[</foreach>]
  [<else>]
  	There aren't any currently scheduled 8th period activities
- [</if>]
- .</div><br />
+ [</if>].
+ </div><br />
  <span id="top_news">
  News: [<foreach from=$news_posts item=story name=titles>]
  <a href="[<$I2_ROOT>]news#newspost[<$story->id>]">[<$story->title>]</a>
