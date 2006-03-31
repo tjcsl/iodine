@@ -27,7 +27,7 @@ class CSLProxy {
 				$pass = $row['pass'];
 			}*/
 			try {
-				$kerberos = new Kerberos($user, $pass, 'CSL.TJHSST.EDU');
+				$kerberos = new Kerberos($user, $pass, i2config_get('afs_realm','CSL.TJHSST.EDU','kerberos'));
 			} catch (I2Exception $e) {
 				//The user's CSL username doesn't match their normal username: we should prompt for a different username/password.
 				$this->valid = FALSE;
@@ -59,7 +59,10 @@ class CSLProxy {
 		$root_path = i2config_get('root_path', NULL, 'core');
 		$peer =  $root_path . 'bin/cslhelper.php5';
 
-		$process = proc_open('pagsh -c "aklog;' . $peer . '"', $descriptors, $pipes, $root_path, $env);
+		$AFS_CELL = i2config_get('cell','csl.tjhsst.edu','afs');
+		$KRB_REALM = i2config_get('afs_realm','CSL.TJHSST.EDU','kerberos');
+
+		$process = proc_open('pagsh -c "aklog -c $AFS_CELL -k $KRB_REALM;' . $peer . '"', $descriptors, $pipes, $root_path, $env);
 		if(is_resource($process)) {
 			fwrite($pipes[0], serialize(array($function, $args)));
 			fclose($pipes[0]);
