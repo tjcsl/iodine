@@ -56,7 +56,7 @@ class User {
 			if( isset($_SESSION['i2_uid']) ) {
 				$this->username = $_SESSION['i2_uid'];
 				$uid = $this->username;
-				$this->info = $I2_LDAP->search_base("iodineUid=$uid,ou=people")->fetch_array(RESULT::ASSOC);
+				$this->info = $I2_LDAP->search('ou=people',"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
 			}
 			else {
 				$I2_ERR->fatal_error('Your password and username were correct, but you don\'t appear to exist in our database. If this is a mistake, please contact the intranetmaster about it.');
@@ -328,14 +328,7 @@ class User {
 	*               associative array with the column as the key.
 	*/
 	public function get_multi( $uids, $cols ) {
-		global $I2_SQL;
-	
-		if( !is_array($cols)) {
-			$cols = func_get_args();
-			array_shift($cols);
-		}
-		
-		return $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid IN (%D);', $cols, $uids)->fetch_all_arrays(Result::ASSOC);
+		throw new I2Exception('get_multi not implemented!');
 	}
 
 	/**
@@ -346,35 +339,7 @@ class User {
 	* empty array is returned if no match is found.
 	*/
 	public function search_info($str) {
-		global $I2_SQL;
-		
-		//Change BASH/DOS-style globbing to MySQL-style wildcards
-		$str = strtr($str, array(
-			'%'=>'\%',
-			'_'=>'\_',
-			'*'=>'%',
-			'?'=>'_')
-		);
-
-		$where = '';
-		$where_arr = array();
-
-		foreach(explode(' ', $str) as $item) {
-			$where .= '(nickname LIKE %s OR username LIKE %s OR fname LIKE %s OR mname LIKE %s OR lname LIKE %s) AND ';
-			$arr = array( '%'.$item.'%', '%'.$item.'%', '%'.$item.'%', '%'.$item.'%', '%'.$item.'%' );
-			
-			$where_arr = array_merge($where_arr, $arr);
-		}
-
-		//Cut off last 'AND '
-		$where = substr($where, 0, strlen($where)-4);
-		$ret = array();
-
-		foreach( $I2_SQL->query_arr('SELECT uid FROM user WHERE '.$where.';', $where_arr) as $row ) {
-			$ret[] = new User($row[0]);
-		}
-
-		return $ret;
+		throw new I2Exception('search_info not implemented!');
 	}
 
 	/**
