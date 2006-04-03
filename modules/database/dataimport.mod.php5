@@ -3,6 +3,7 @@ class dataimport implements Module {
 
 	private $oldsql;
 	private $usertable;
+	private $teachertable;
 	private $args = array();
 	private $admin_pass;
 	private $num;
@@ -10,9 +11,64 @@ class dataimport implements Module {
 	public function __autoconstruct() {
 		//TODO: ?
 		//$this->oldsql = mysql_connect('intranet');
-		$this->num = 0;
+		$this->num = 10000;
 	}
 
+	/**
+	* @todo FINISH THIS METHOD
+	*/
+	private function import_teacher_data($filename) {
+
+		//TODO: fill in
+		$mysql = mysql_connect('','','');
+		mysql_select_db('');
+	
+		$file = @fopen($filename,'r');
+		
+		d("Importing data from teacher data file $filename...",6);
+		
+		$line = null;
+		$this->teachertable = array();
+
+		while ($line = fgets($file)) {
+			list($id,$lastname,$firstname) = explode('","',$line);
+			if ($lastname == 'NA' || $firstname === '') {
+				continue;
+			}
+			/*
+			** Strip remaining quotes
+			*/
+			$id = substr($id,1);
+			$firstname = substr($firstname,-1);
+			
+			/*
+			** Retrieve username from current Intranet (pray that it works, kiddos)
+			*/
+			//FIXME: This WON'T work for some teachers!
+			$firstnameescape = mysql_escape($firstname);
+			$lastnameescape = mysql_escape($lastname);
+			$res = mysql_query("SELECT username FROM TeacherInfo WHERE Firstname=\"$firstnameescape\" AND Lastname=\"$lastnameescape\"");
+			$username = mysql_fetch_array($res);
+			
+			$this->teachertable[] = array(
+					'lname' => str_replace('\'','\\\'',$lastname),
+					'fname' => $firstname,
+					'uid' => str_replace('\'','\\\'',$id),
+					'username' => $username
+				);
+		}
+		
+		d("$numlines users imported.",6);
+
+		$ldap = LDAP::get_admin_bind($this->admin_pass);
+
+		foreach ($this->teachertable as $teacher) {
+			$this->add_teacher($teacher,$ldap);
+		}
+
+		mysql_close($mysql);
+
+	}
 
 	/** 
 	* Import student data from a dump file into $datatable;
@@ -72,6 +128,28 @@ class dataimport implements Module {
 		foreach ($this->usertable as $user) {
 			$this->create_user($user,$ldap);
 		}
+	}
+
+	private function create_teacher($teacher,$ldap=NULL) {
+		global $I2_LDAP;
+		if (!$ldap) {
+			$ldap = $I2_LDAP;
+		}
+		$newteach = array();
+		$newteach['objectClass'] = 'tjhsstTeacher';
+		$newteach['iodineUid'] = $teacher['username'];
+		$newteach['iodineUidNumber'] = $teacher['uid'];
+		$newteach['cn'] = $teacher['fname'].' '.$teacher['lname'];
+		$newteach['sn'] = $teacher['lname'];
+		$newteach['givenName'] = $teacher['fname'];
+		$newteach['style'] = 'default';
+		$newteach['startpage'] = 'news';
+		$newteach['header'] = 'TRUE';
+		$newteach['chrome'] = 'TRUE';
+		$this->num = $this->num + 1;
+		$dn = "iodineUid={$newteach['iodineUid']},ou=people";
+		d("Creating teacher \"{$newteach['iodineUid']}\"...",5);
+		$ldap->add($dn,$newteach);
 	}
 
 	private function create_user($user,$ldap=NULL) {
@@ -139,6 +217,7 @@ class dataimport implements Module {
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'userdata' && isSet($_REQUEST['userfile'])) {
 			$this->import_student_data($_REQUEST['userfile']);
 		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherdata' && isSet
 		return array(TRUE,'Import Legacy Data');
 	}
 
