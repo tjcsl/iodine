@@ -19,7 +19,7 @@ class CSLProxy {
 	public function __construct($user, $pass) {
 		global $I2_SQL,$I2_USER;
 		if (!isset($_SESSION['krb_csl_ticket'])) {
-			d("Getting kerberos ticket");
+			d('Getting kerberos ticket');
 			/*$res = $I2_SQL->query("SELECT user,pass FROM cslfiles WHERE uid=%d",$I2_USER->uid);
 			if ($res->more_rows) {
 				$row = $res->fetch_row(RESULT_ASSOC);
@@ -62,7 +62,7 @@ class CSLProxy {
 		$AFS_CELL = i2config_get('cell','csl.tjhsst.edu','afs');
 		$KRB_REALM = i2config_get('afs_realm','CSL.TJHSST.EDU','kerberos');
 
-		$process = proc_open('pagsh -c "aklog -c $AFS_CELL -k $KRB_REALM;' . $peer . '"', $descriptors, $pipes, $root_path, $env);
+		$process = proc_open("pagsh -c \"aklog -c $AFS_CELL -k $KRB_REALM; $peer\"", $descriptors, $pipes, $root_path, $env);
 		if(is_resource($process)) {
 			fwrite($pipes[0], serialize(array($function, $args)));
 			fclose($pipes[0]);
@@ -77,7 +77,7 @@ class CSLProxy {
 			fclose($temp);
 			
 			if ($status == 0) {
-				d("pagsh exited with status 0");
+				d('pagsh exited with status 0', 2);
 				$obj = @unserialize($out);
 				if($obj === FALSE && $out != serialize(FALSE)) {
 					throw new I2Exception("Pagsh gave invalid serialized output: $out");
