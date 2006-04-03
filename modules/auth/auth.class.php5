@@ -72,7 +72,6 @@ class Auth {
 	* @return bool True if user is authenticated, False otherwise.
 	*/
 	public function is_authenticated() {
-		global $I2_SQL;
 		if (	isset($_SESSION['i2_uid']) 
 			&& isset($_SESSION['i2_login_time'])) {
 			if( $_SESSION['i2_login_time'] > time()+i2config_get('timeout',600,'login')) {
@@ -213,7 +212,7 @@ class Auth {
 	* @returns bool Whether or not the user has successfully logged in.
 	*/
 	public function login() {
-		global $I2_SQL, $I2_ARGS;
+		global $I2_ARGS, $I2_LDAP;
 
 		if(!isset($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
 			$_SESSION['logout_funcs'] = array();
@@ -225,32 +224,23 @@ class Auth {
 		
 			if (($check_result = $this->check_user($_REQUEST['login_username'],$_REQUEST['login_password']))) {
 
-				$uarr = $I2_SQL->query('SELECT uid FROM user WHERE username=%s;',$_REQUEST['login_username'])->fetch_array();
-
-				if(!isset($uarr['uid'])) {
-					// User authenticated successfully, but they are not in the database
-					$loginfailed = 2;
-					$uname = $_REQUEST['login_username'];
+				$_SESSION['i2_uid'] = $_REQUEST['login_username'];
+				$_SESSION['i2_username'] = $_REQUEST['login_username'];
+					
+				// Do not cache the password if the master password was used.
+				if($check_result != self::SUCCESS_MASTER) {
+					$this->cache_password($_REQUEST['login_password']);
 				}
 				else {
-					$_SESSION['i2_uid'] = $_REQUEST['login_username'];
-					$_SESSION['i2_username'] = $_REQUEST['login_username'];
-					
-					// Do not cache the password if the master password was used.
-					if($check_result != self::SUCCESS_MASTER) {
-						$this->cache_password($_REQUEST['login_password']);
-					}
-					else {
-						$_SESSION['i2_password'] = FALSE;
-					}
-					
-					//$_REQUEST['login_password'] = '';
-					
-					$_SESSION['i2_login_time'] = time();
-				
-					redirect(implode('/', $I2_ARGS));
-					return TRUE; //never reached
+					$_SESSION['i2_password'] = FALSE;
 				}
+					
+				//$_REQUEST['login_password'] = '';
+					
+				$_SESSION['i2_login_time'] = time();
+				
+				redirect(implode('/', $I2_ARGS));
+				return TRUE; //never reached
 			} else {
 				// Attempted login failed
 				$loginfailed = 1;
