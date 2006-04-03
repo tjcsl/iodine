@@ -248,6 +248,63 @@ attributetype ( i2Attr:29
 	SYNTAX integerSyntax
 	)
 
+attributetype ( i2Attr:30
+	NAME ('birthday' 'bday')
+	DESC 'The birthday of a person'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:31
+	NAME ('nickname' 'nick' 'nname')
+	DESC 'The nickname of a person'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	SINGLE-VALUE	
+	)
+
+attributetype ( i2Attr:32
+	NAME ('gender' 'sex')
+	DESC 'The gender of a person'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	SINGLE-VALUE
+	)
+	
+attributetype ( i2Attr:33
+	NAME ('startpage' 'defaultmodule')
+	DESC 'The default Iodine module of a user'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	SINGLE-VALUE	
+	)
+	
+attributetype ( i2Attr:34
+	NAME ('style' 'css' 'theme')
+	DESC 'The default Iodine style of a user'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	SINGLE-VALUE	
+	)
+	
+	
+attributetype ( i2Attr:35
+	NAME ('header' 'headertype' 'fullheader')
+	DESC 'Whether the user prefers a full header'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE	
+	)
+	
+attributetype ( i2Attr:36
+	NAME ('chrome' 'usechrome')
+	DESC 'Whether the user prefers chrome'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE	
+	)
+	
 objectclass ( i2OC:3
 	NAME ('tjhsstSection' 'section')
 	MUST (
@@ -399,7 +456,10 @@ objectclass ( i2OC:1
 		cn $
 		sn $
 		tjhsstStudentId $
-		iodineUidNumber
+		startpage $
+		style $
+		header $
+		chrome
 	)
 	MAY (
 		perm-showpictures $
@@ -407,8 +467,12 @@ objectclass ( i2OC:1
 		perm-showtelephone $
 		displayName $
 		middlename $
+		nickname $
 		counselor $
-		group
+		group $
+		iodineUidNumber $
+		birthday $
+		sex
 	)
 	)
 
@@ -418,14 +482,21 @@ objectclass ( i2OC:2
 	MUST (
 		cn $
 		iodineUid $
-		sn $
-		iodineUidNumber
+		sn
 	)
 	MAY (
 		employeeNumber $
 		displayName $
 		middlename $
-		group 
+		group $
+		nickname $
+		iodineUidNumber $
+		birthday $
+		sex $
+		startpage $
+		header $
+		style $
+		chrome
 	)
 	)
 

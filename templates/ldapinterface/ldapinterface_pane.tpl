@@ -25,8 +25,20 @@
  <textarea name="ldapinterface_dn" rows="1" cols="70">[<$last_dn>]</textarea><br />
  Attributes:<br />
  <textarea name="ldapinterface_attrs" rows="3" cols="70">[<$last_attrs>]</textarea><br />
- <input type="radio" name="ldap_searchtype" value="search" [<if $searchtype=='search'>]checked[</if>]/>Search<br />
- <input type="radio" name="ldap_searchtype" value="list" [<if $searchtype=='list'>]checked[</if>]/>List<br />
+ <input type="radio" name="ldap_searchtype" value="search" [<if $searchtype=='search'>]checked="checked"[</if>]/>Search<br />
+ <input type="radio" name="ldap_searchtype" value="list" [<if $searchtype=='list'>]checked="checked"[</if>]/>List<br />
+ <input type="radio" name="ldap_searchtype" value="read" [<if $searchtype=='read'>]checked="checked"[</if>]/>Read<br />
+ <input type="radio" name="ldap_searchtype" value="delete" [<if $searchtype=='delete'>]checked="checked"[</if>]/>Delete<br />
+ <input type="radio" name="ldap_searchtype" value="delete_recursive" [<if $searchtype=='delete_recursive'>]checked="checked"[</if>]/>Delete (Recursive)<br />
  <br /><input type="submit" name="ldapinterface_submit" value="Search"/>
 </form>
 </p>
+<br />
+[<if !$master_pass>]
+	<form action="[<$I2_SELF>]" method="POST">
+		LDAP Master Password: <input type="password" name="master_pass"/><br />
+		<input type="submit" value="Set Master Password"/>
+	</form>
+[<else>]
+LDAP Master Password: <a href="[<$I2_SELF>]/unset_password">SET</a>
+[</if>]

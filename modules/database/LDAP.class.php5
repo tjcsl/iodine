@@ -24,10 +24,14 @@ class LDAP {
 	const SCOPE_BASE = 2;
 	const SCOPE_ONE = 3;
 
-	private $dnbase = 'dc=tjhsst,dc=edu';
+	private $dnbase;
 	private $bind;
 	private $conn;
 	private $server;
+	private $sizelimit;
+	private $timelimit;
+	
+	private $conns = array();
 	
 	function __construct($dn=NULL,$pass=NULL,$server=NULL) {
 		global $I2_USER;
@@ -36,6 +40,9 @@ class LDAP {
 		} else {
 			$this->server = i2config_get('server','localhost','ldap');
 		}
+		$this->dnbase = i2config_get('base_dn','dc=tjhsst,dc=edu','ldap');
+		$this->sizelimit = i2config_get('max_rows',500,'ldap');
+		$this->timelimit = i2config_get('max_time',0,'ldap');
 		d("Connecting to LDAP server {$this->server}...",8);
 		$this->conn = $this->connect();
 		if ($dn !== NULL && $pass !== NULL) {
@@ -56,13 +63,19 @@ class LDAP {
 	}
 
 	function __destruct() {
-		ldap_close($this->conn);
+		/*
+		** Close all LDAP connections made by this module instance
+		*/
+		foreach ($this->conns as $conn) {
+			ldap_close($conn);
+		}
 	}
 
 	private function connect() {
 		$conn = ldap_connect($this->server);
 		ldap_set_option($conn,LDAP_OPT_PROTOCOL_VERSION,3);
 		ldap_set_option($conn,LDAP_OPT_DEREF,LDAP_DEREF_ALWAYS);
+		$this->conns[] = $conn;
 		return $conn;
 	}
 
@@ -80,24 +93,36 @@ class LDAP {
 		return new LDAP($ldapuser,$pass);
 	}
 
-	public function search_base($dn='',$attributes='*') {
-		$this->search($dn,'objectClass=*',$attributes,LDAP::SCOPE_BASE);
+	/**
+	* Gets an administrative simple bind.
+	*/
+	public static function get_admin_bind($pass) {
+		return self::get_simple_bind(i2config_get('admin_dn','cn=Manager,dc=tjhsst,dc=edu','ldap'),$pass);
 	}
 
-	public function search($dn='',$query='objectClass=*',$attributes='*',$depth=LDAP::SCOPE_SUB) {
+	public static function get_simple_bind($userdn,$pass) {
+		return new LDAP($userdn,$pass);	
+	}
+
+	public function search_base($dn=NULL,$attributes='*',$bind=NULL) {
+		return $this->search($dn,'objectClass=*',$attributes,LDAP::SCOPE_BASE,$bind);
+	}
+
+	public function search_sub($dn=NULL,$query='objectClass=*',$attributes='*',$bind=NULL) {
+		return $this->search($dn,$query,$attributes,LDAP::SCOPE_SUB,$bind);
+	}
+
+	public function search($dn=NULL,$query='objectClass=*',$attributes='*',$depth=LDAP::SCOPE_SUB,$bind=NULL) {
 		if (!is_array($attributes)) {
 			$attributes = array($attributes);
 		}
 		
-		//FIXME: we need careful, considered escaping here.
-		if (substr($dn,-1*strlen($this->dnbase)) == $this->dnbase) {
-			//We're OK, the dn ends with the dnbase.
-		} else if ($dn && $dn != '') {
-			$dn = addslashes($dn.','.$this->dnbase);
-		} else {
-			$dn = $this->dnbase;
+		$this->rebase($dn);
+
+		if (!$bind) {
+			$bind = $this->conn;
 		}
-		
+			
 		if ($query) {
 			$query = addslashes($query);
 		} else {
@@ -105,58 +130,140 @@ class LDAP {
 		}
 
 		$res = null;
-
+	
+		try {
+	
 		//TODO: consider how searching is done
-		if ($depth == LDAP::SCOPE_SUB) {
-			d("LDAP Searching $dn for ".print_r($attributes,1)." where $query...",7);
-			$res = ldap_search($this->conn,$dn,$query,$attributes);
-		} elseif ($depth == LDAP::SCOPE_ONE) {
-			d("LDAP Listing $dn for ".print_r($attributes,1)." where $query...",7);
-			$res = ldap_list($this->conn,$dn,$query,$attributes);
-		} elseif ($depth == LDAP::SCOPE_BASE) {
-			d("LDAP Reading $dn's values for ".print_r($attributes,1)." where $query...",7);
-			$res = ldap_read($this->conn,$dn,$query,$attributes);
-		} else {
-			throw new I2Exception("Unknown scope number $depth passed to ldap_search!");
+			if ($depth == LDAP::SCOPE_SUB) {
+				d("LDAP Searching $dn for ".print_r($attributes,1)." where $query...",7);
+				$res = ldap_search($bind,$dn,$query,$attributes,0,$this->sizelimit,$this->timelimit);
+			} elseif ($depth == LDAP::SCOPE_ONE) {
+				d("LDAP Listing $dn for ".print_r($attributes,1)." where $query...",7);
+				$res = ldap_list($bind,$dn,$query,$attributes,0,$this->sizelimit,$this->timelimit);
+			} elseif ($depth == LDAP::SCOPE_BASE) {
+				d("LDAP Reading $dn's values for ".print_r($attributes,1)." where $query...",7);
+				$res = ldap_read($bind,$dn,$query,$attributes,0,$this->sizelimit,$this->timelimit);
+			} else {
+				throw new I2Exception("Unknown scope number $depth passed to ldap_search!");
+			}
+
+		} catch (Exception $e) {
+			d("LDAP error: $e",5);
 		}
 
-		d('LDAP got '.ldap_count_entries($this->conn,$res).' results.',7);
+		//d('LDAP got '.ldap_count_entries($bind,$res).' results.',7);
 		
 		//ldap_free_result($res);
 		//return NULL;
 		
-		return new LDAPResult($this->conn,$res,LDAP::LDAP_SEARCH);
+		return new LDAPResult($bind,$res,LDAP::LDAP_SEARCH);
 	}
 
 	public function search_one($dn='',$query='objectClass=*',$attributes='*') {
-		$this->search($dn,$query,$attributes,LDAP::SCOPE_ONE);
+		return $this->search($dn,$query,$attributes,LDAP::SCOPE_ONE);
 	}
 
-	public function delete($dn) {
+	/**
+	* Adds the base dn if necessary, and escapes special characters
+	*
+	* @param string $dn The DN to fix
+	*/
+	private function rebase(&$dn) {
+		if (!$dn || $dn === '') {
+			$dn = $this->dnbase;
+		}
+		//FIXME: consider better escaping - this won't always work correctly.
 		if (substr($dn,-strlen($this->dnbase)) != $this->dnbase) {
 			$dn = addslashes($dn.','.$this->dnbase);
+		} else {
+			$dn = addslashes($dn);
 		}
-		$res = ldap_delete($this->bind,$dn);
-		return new LDAPResult($this->bind,$res,LDAP::LDAP_DELETE);
+	}
+
+	public function delete($dn,$bind=NULL) {
+		$this->rebase($dn);
+		if (!$bind) {
+			$bind = $this->conn;
+		}
+		d("LDAP deleting $dn...",7);
+		$res = ldap_delete($bind,$dn);
+		return new LDAPResult($bind,$res,LDAP::LDAP_DELETE);
+	}
+
+	public function delete_recursive($dn,$bind=NULL) {
+		$this->rebase($dn);
+		if (!$bind) {
+			$bind = $this->conn;
+		}
+		/*
+		** Find all objects below the given DN and delete each one
+		*/
+		$res = $this->search_one($dn,FALSE,array('*'),$bind)->fetch_all_arrays(RESULT::ASSOC);
+		foreach ($res as $itemdn=>$meh) {
+			//d("Deleting dn $itemdn from LDAP recursive delete",6);
+			$this->delete_recursive($itemdn,$bind);
+		}
+		$this->delete($dn,$bind);
 	}
 
 	public function modify_val($dn,$attribute_name,$value,$bind=NULL) {
+		return $this->modify_object($dn,array($attribute_name=>$value),$bind);
 	}
 
 	public function modify_object($dn,$vals,$bind=NULL) {
+		if (!$vals) {
+			d("Null LDAP modification made to dn $dn",5);
+			return TRUE;
+		}
+		if (!is_array($vals)) {
+			throw new I2Exception("Non-array \"$vals\" passed to LDAP modify_object method!");
+		}
+		$this->rebase($dn);
+		if (!$bind) {
+			$bind = $this->conn;
+		}
+		d("LDAP modifying $dn: ".print_r($vals,TRUE),7);
+		return ldap_modify($bind,$dn,$vals);
 	}
 
-	public function compare($dn,$attribute,$value) {
-		if (substr($dn,-strlen($this->dnbase)) != $this->dnbase) {
-			$dn = addslashes($dn.','.$this->dnbase);
-		}
+	public function compare($dn,$attribute,$value,$bind=NULL) {
+		$this->rebase($dn);
+		//FIXME: better escaping
 		$attribute = addslashes($attribute);
 		$value = addslashes($value);
-		$res = ldap_compare($this->bind,$dn,$attribute,$value);
+		if (!$bind) {
+			$bind = $this->conn;
+		}
+		//TODO: return LDAPResult
+		$res = ldap_compare($bind,$dn,$attribute,$value);
 		if ($res === -1) {
-			throw new I2Exception(ldap_error($this->bind));
+			throw new I2Exception(ldap_error($bind));
 		}
 		return $res;
+	}
+
+	public function add($dn,$values,$bind=NULL) {
+		$this->rebase($dn);
+		if (!$bind) {
+			$bind = $this->conn;
+		}
+		if (!$values) {
+			throw new I2Exception("Attempted to create null LDAP object with dn $dn");
+		}
+		if (!is_array($values)) {
+			throw new I2Exception("Cannot create LDAP object $dn with non-array \"$values\"");
+		}
+		$newvalues = array();
+		/*
+		** Filter out empty-string and null values
+		*/
+		foreach ($values as $key=>$value) {
+			if ($value && $value != "") {
+				$newvalues[$key] = $value;
+			}
+		}
+		d("LDAP adding dn $dn: ".print_r($newvalues,TRUE),7);
+		return ldap_add($bind,$dn,$newvalues);
 	}
 	
 }

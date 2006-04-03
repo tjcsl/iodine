@@ -8,6 +8,18 @@ sn: Rau-Jacobs
 graduationYear: 2006
 counselor: sconnelly
 tjhsstStudentId: 913423
+displayName: Bryan  Rau-Jacobs
+title: Mr.
+street: 2164 Westglen Ct.
+l: Vienna
+postalCode: 22182
+st: Virginia
+birthday: 10-11-1988
+header: TRUE
+startpage: news
+style: default
+iodineUidNumber: 5
+chrome: TRUE
 
 # A teacher
 dn: iodineUid=storbert,ou=people,dc=tjhsst,dc=edu

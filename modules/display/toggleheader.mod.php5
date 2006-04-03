@@ -35,9 +35,9 @@ class toggleheader implements Module {
 		$dest = null;
 		d("Args:".print_r($I2_ARGS,1));
 		if ($I2_USER->header) {
-			$I2_USER->header = FALSE;
+			$I2_USER->header = 'FALSE';
 		} else {
-			$I2_USER->header = TRUE;
+			$I2_USER->header = 'TRUE';
 		}
 		if (count($I2_ARGS) == 1) {
 			$dest = '';

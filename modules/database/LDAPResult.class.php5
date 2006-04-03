@@ -14,6 +14,7 @@
 * @package core
 * @subpackage Database
 */
+
 class LDAPResult implements Result {
 	
 	private $ldap = NULL;
@@ -22,18 +23,53 @@ class LDAPResult implements Result {
 
 	private $query_type = NULL;
 
+	/**
+	* Row IDENTIFIER of the current row
+	*/
 	private $current_row = NULL;
 
 	private $current_row_number = 0;
+
+	/**
+	* The number of the last row fetched from LDAP
+	*/
+	private $last_row_fetched = -1;
+	
+	private $current_dn;
+
+	/**
+	* The number of rows in the LDAP result
+	*/
+	private $num_rows;
+
+	/**
+	* Row DATA of previously fetched rows
+	*/
+	private $rows;
+
+	/**
+	* Previously fetched DNs
+	*/
+	private $dns;
 
 	public function __construct($ldap,$result,$type) {
 		$this->ldap = $ldap;
 		$this->ldap_result = $result;
 		$this->query_type = $type;
+		$this->dns = array();
+		$this->rows = array();
+		//FIXME: fix whatever else is broken that requires this +1
+		if ($type == LDAP::LDAP_SEARCH) {
+			$rows = ldap_count_entries($ldap,$result);
+			$this->num_rows = $rows+1;
+			d("LDAP Search Result with $rows rows constructed",8);
+		}
 	}
 
 	public function __destruct() {
-		ldap_free_result($this->ldap_result);
+		/*if ($this->ldap_result) {
+			ldap_free_result($this->ldap_result);
+		}*/
 	}
 	
 	public function fetch_array($type=Result::BOTH) {
@@ -42,20 +78,39 @@ class LDAPResult implements Result {
 			throw new I2Exception('A resultset array cannot be fetched from a non-SEARCH LDAP query!');
 		}
 	
-		if ($this->current_row == NULL) {
+		if ($this->current_row === NULL) {
 			$this->current_row = $this->get_first_row();
+			$this->current_dn = $this->get_current_dn();
 		} else {
 			$this->current_row = $this->get_next_row($this->current_row);
+			$this->current_dn = $this->get_current_dn();
 		}
 
 		if (!$this->current_row) {
 			return FALSE;
 		}
 
-		$this->current_row_number++;
+		$this->last_row_fetched = $this->last_row_fetched+1;
 
-		return $this->extract_data($this->current_row,$type);
+		/*
+		** Free the LDAP result object as soon as possible
+		*/
+		if ($this->ldap_result && $this->last_row_fetched >= $this->num_rows-1) {
+			ldap_free_result($this->ldap_result);
+			$this->ldap_result = FALSE;
+		}
 
+		$data = $this->extract_data($this->current_row,$type);
+
+		$this->rows[] = $data;
+		$this->dns[] = $this->current_dn;
+
+		return $data;
+
+	}
+
+	private function get_current_dn() {
+		return ldap_get_dn($this->ldap,$this->current_row);
 	}
 
 	private function get_first_row() {
@@ -66,11 +121,15 @@ class LDAPResult implements Result {
 		return ldap_next_entry($this->ldap,$row);
 	}
 
+	/**
+	* @fixme This method is broken and needs to be rewritten
+	*/
 	private function extract_data($row,$type) {
 
 		$rawres = ldap_get_attributes($this->ldap,$row);
 
 		$res = array();
+		
 		foreach ($rawres as $key=>$value) {
 			//TODO: think hard about this.
 			//d($key . '=>' . $value);
@@ -78,7 +137,7 @@ class LDAPResult implements Result {
 				continue;
 			}
 			
-			if (($type==Result::ASSOC && is_int($key)) || ($type==Result::NUM && !is_int($key))) {
+			if (is_int($key)) {
 				continue;
 			}
 
@@ -111,28 +170,45 @@ class LDAPResult implements Result {
 	public function fetch_all_arrays($type=Result::BOTH) {
 		$retarr = array();
 
-		/*
-		** We must loop here to avoid breaking Result's contract.
-		** It's probably good to have one entry point into the LDAP server, anyhow...
-		*/
-		if ($type == RESULT::NUM) {
-			while ($row = $this->fetch_array($type)) {
-				$retarr[] = $row;
+		for ($a = 0; $a < $this->num_rows-1; $a++) {
+			if ($type == Result::NUM || $type == Result::BOTH) {
+				$retarr[$a] = $this->fetch_row($a,$type);
 			}
-		} else {
-			while ($row = $this->fetch_array($type)) {
-				$retarr[ldap_get_dn($this->ldap,$this->current_row)] = $row;
+			if ($type == Result::ASSOC || $type == Result::BOTH) {
+				$retarr[$this->get_dn($a)] = $this->fetch_row($a,$type);
 			}
 		}
-	
+		
 		return $retarr;
+	}
+
+	/**
+	* Fetch up until the passed row (for cache filling)
+	*/
+	private function fetch_to($rownum) {
+		if ($rownum > $this->num_rows-1) {
+			throw new I2Exception("Row number $rownum requested of an LDAP Result containing only {$this->num_rows} entries!");
+		}
+		$fetched = $this->last_row_fetched;
+		/*
+		** Fetch until our cache is sufficiently filled
+		*/
+		while ($fetched < $rownum) {
+			$this->fetch_array();
+			$fetched++;
+		}
+	}
+
+	private function get_dn($rownum) {
+		$this->fetch_to($rownum);
+		return $this->dns[$rownum];
 	}
 	
 	public function get_insert_id() {
 		if (!$this->query_type == LDAP::LDAP_ADD) {
 			throw new I2Exception('Attempted to get the insert ID of a non-ADD LDAP query!');
 		}
-		return ldap_get_dn($this->ldap,$this->current_row);
+		return $this->current_dn;
 	}
 
 	public function get_affected_rows() {
@@ -144,27 +220,12 @@ class LDAPResult implements Result {
 	}
 
 	public function fetch_row($rownum,$type=Result::BOTH) {
-
-		if ($rownum == $this->current_row_number) {
-			return $this->extract_data($this->current_row,$type);
-		}
-
-		$num = 1;
-		$row = NULL;
-
-		if (!$this->current_row || $rownum < $this->current_row_number) {
-			$row = $this->get_first_row();
-		} else if ($this->current_row) {
-			$row = $this->current_row;
-			$num = $this->current_row_number;
-		}
-
-		while ($num < $rownum) {
-			$num++;
-			$row = $this->get_next_row($row);
-		}
-
-		return $this->extract_data($row,$type);	
+		$this->fetch_to($rownum);
+		/*
+		** You CANNOT switch the $type!
+		** If you do, cached data is wrong and will still be given to you
+		*/
+		return $this->rows[$rownum];
 	}
 
 	public function more_rows() {
@@ -172,7 +233,7 @@ class LDAPResult implements Result {
 	}
 
 	public function num_rows() {
-		return ldap_count_entries($this->ldap,$this->ldap_result);
+		return $this->num_rows;
 	}
 
 	public function num_cols() {
@@ -187,7 +248,14 @@ class LDAPResult implements Result {
 		if (!$row) {
 			return FALSE;
 		}
-		return $row[0];
+		if (isSet($row[0])) {
+			return $row[0];
+		}
+		if (isSet($row['dn'])) {
+			return $row['dn'];
+		}
+		$keys = array_keys($row);
+		return $row[$keys[0]];
 	}
 
 	public function fetch_col($colname) {
@@ -209,7 +277,6 @@ class LDAPResult implements Result {
 	}
 
 	public function rewind() {
-		$this->current_row = NULL;
 		$this->current_row_number = 0;
 	}
 
@@ -217,12 +284,11 @@ class LDAPResult implements Result {
 		if (!$this->current_row) {
 			return $this->fetch_array();
 		}
-		//This is wrong.
-		return $this->current_row;
+		return $this->fetch_row($this->current_row_number);
 	}
 
 	public function key() {
-		return $this->current_row_number - 1;
+		return $this->current_row_number;
 	}
 
 	public function valid() {
@@ -230,7 +296,12 @@ class LDAPResult implements Result {
 	}
 
 	public function next() {
-		return $this->fetch_array();
+		if (!$this->current_row) {
+			return $this->fetch_array();
+		}
+		$data = $this->fetch_row($this->current_row_number);
+		$this->current_row_number++;
+		return $data;
 	}
 
 }

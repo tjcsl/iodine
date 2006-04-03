@@ -30,9 +30,9 @@ class User {
 	private $myuid;
 
 	/**
-	* Cache for which columns are in the `user` table
+	* The username of the user.
 	*/
-	private static $user_cols = NULL;
+	private $username;
 
 	/**
 	* The User class constructor.
@@ -50,23 +50,13 @@ class User {
 	* @access public
 	*/
 	public function __construct($uid = NULL) {
-		global $I2_SQL, $I2_ERR;
+		global $I2_ERR, $I2_LDAP;
 
-		//Construct column cache, if it does not already exist
-		if( self::$user_cols === NULL ) {
-			self::$user_cols = array();
-			foreach( $I2_SQL->query('DESCRIBE `user`;') as $col ) {
-				self::$user_cols[] = $col['Field'];
-			}
-		}
-		
 		if( $uid === NULL ) {
 			if( isset($_SESSION['i2_uid']) ) {
-				$uid = $_SESSION['i2_uid'];
-				$this->info = $I2_SQL->query('SELECT * FROM user WHERE uid=%d', $uid)->fetch_array(Result::ASSOC);
-				if( ! $this->info ) {
-					warn('A User object was created with a nonexistent uid');
-				}
+				$this->username = $_SESSION['i2_uid'];
+				$uid = $this->username;
+				$this->info = $I2_LDAP->search_base("iodineUid=$uid,ou=people")->fetch_array(RESULT::ASSOC);
 			}
 			else {
 				$I2_ERR->fatal_error('Your password and username were correct, but you don\'t appear to exist in our database. If this is a mistake, please contact the intranetmaster about it.');
@@ -77,11 +67,10 @@ class User {
 			$this->info = &$GLOBALS['I2_USER']->info;
 		}
 
-		$this->myuid = $uid;
-		if (!$I2_SQL->query("SELECT fname FROM user WHERE uid=%d",$uid)->fetch_single_value()) {
-			$I2_ERR->nonfatal_error("Invalid user with uid $uid constructed!");
-			$this->myuid = NULL;
-		}
+		/*
+		** Cover up legacy-SQL cheating
+		*/
+		$this->myuid = $this->info['iodineUidNumber'];
 	}
 
 	public function is_valid() {
@@ -114,9 +103,9 @@ class User {
 	* @return mixed The data you requested.
 	*/
 	public function __get( $name ) {
-		global $I2_SQL,$I2_ERR;
+		global $I2_SQL,$I2_ERR,$I2_LDAP;
 
-		if( $this->myuid === NULL ) {
+		if( $this->username === NULL ) {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
 		}
 
@@ -126,7 +115,7 @@ class User {
 		*/
 		switch( $name ) {
 			case 'name':
-				$nick = $this->__get('nickname');
+				return $this->__get('nickname');
 				return $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . $this->__get('lname');
 			case 'name_comma':
 				$nick = $this->__get('nickname');
@@ -140,33 +129,36 @@ class User {
 				$mid = $this->__get('mname');
 				return $this->__get('lname') . ', ' . $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . ($mid ? "$mid " : '');
 			case 'grad_year':
-				$grade = $this->__get('grade');
-				return i2config_get('senior_gradyear',2006,'user') - $grade + 12;
+				return $this->__get('graduationYear');
+			case 'lname':
+				return $this->__get('sn');
+			case 'fname':
+				return $this->__get('givenName');
+			case 'mname':
+				return $this->__get('middlename');
+			case 'nickname':
+				return $this->__get('displayName');
+			case 'uid':
+				return $this->__get('iodineUidNumber');
+			case 'username':
+				return $this->__get('iodineUid');
 		}
 		
 		//Check which table the information is in
-		if( in_array($name, self::$user_cols) ) {
-			if( $this->info != NULL ) {
-				//returned cached info if we are caching
-				return $this->info[$name];
-			}
-			$table = 'user';
-		}
-		elseif( ! $I2_SQL->column_exists('userinfo', $name) ) {
-			throw new I2Exception('Tried to get unknown User information `'.$name.'`.');
-		}
-		else {
-			$table = 'userinfo';
+		if( $this->info != NULL && isSet($this->info[$name])) {
+			//returned cached info if we are caching
+			return $this->info[$name];
 		}
 		
-		$res = $I2_SQL->query('SELECT %c FROM %c WHERE uid=%d;', $name, $table, $this->myuid)->fetch_array(Result::NUM);
+		$row = $I2_LDAP->search_base("iodineUid={$this->username},ou=people",$name);
+		$res = $row->fetch_single_value();
 
 		if( $res === FALSE ) {
 			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information');
 			return FALSE;
 		}
 		
-		return $res[0];
+		return $res;
 	}
 
 	/**
@@ -181,38 +173,10 @@ class User {
 	* @param mixed $val The data to set the field to.
 	*/
 	public function __set( $name, $val ) {
-	/* Can't use __set easily, because we need another argument for the type
-	** technically, we _could_ look up the type in the mysql table, and check
-	** for that type, but I'm not sure it's worth the trouble & extra
-	** processing time when we can just pass the extra argument
-	*/
-		global $I2_SQL;
-
-		if( $this->myuid === NULL ) {
-			throw new I2Exception('Tried to set information for nonexistant user!');
-		}
-
-		//This could really screw up some SQL stuff, so I'm disallowing it
-		if( $name == 'uid' ) {
-			throw new I2Exception('Something tried to change the uid of a user. This is not permitted.');
-		}
-
-		//Check which table the information is in
-		if( in_array($name, self::$user_cols) ) {
-			$table = 'user';
-		}
-		elseif( ! $I2_SQL->column_exists('userinfo', $name) ) {
-			throw new I2Exception('Tried to set unknown User information `'.$name.'`.');
-		}
-		else {
-			$table = 'userinfo';
-		}
-
-		$I2_SQL->query('UPDATE %c SET %c=%s WHERE uid=%d;', $table, $name, $val, $this->myuid);
-
-		if( $this->info != NULL && in_array($name, array_keys($this->info)) ) {
-			$this->info[$name] = $val;
-		}
+		global $I2_LDAP;
+		//throw new I2Exception("Changing user info is not yet supported!");
+		$ldap = LDAP::get_admin_bind(i2config_get('admin_pw','ld4pp4ss','ldap'));
+		$ldap->modify_val("iodineUid={$this->username},ou=people",$name,$val);
 	}
 
 	/**
@@ -224,8 +188,8 @@ class User {
 	* @return User The user corresponding to that username.
 	*/
 	public static function get_by_uname($username) {
-		global $I2_SQL;
-		$uid = $I2_SQL->query('SELECT uid FROM user WHERE username=%s;',$username)->fetch_single_value();
+		global $I2_LDAP;
+		$uid = $I2_LDAP->search_base("iodineUid=$username,ou=people",'iodineUidNumber')->fetch_single_value();
 		if(!$uid) {
 			return FALSE;
 		}
@@ -241,13 +205,7 @@ class User {
 	* @return mixed A new User object representing the fresh user.
 	*/
 	public static function create_user($username,$fname,$lname) {
-		global $I2_SQL;
-		$res = $I2_SQL->query(
-		"INSERT INTO user (	username,	fname,	lname) VALUES(%s,%s,%s,%s,%d)",
-									$username,	$fname,	$lname);
-		$uid = $res->get_insert_id();
-		$res = $I2_SQL->query("INSERT INTO userinfo (uid) VALUES(%d)",$uid);
-		return new User($uid);
+		throw new I2Exception("User creation not supported!");
 	}
 
 	/**
@@ -261,16 +219,16 @@ class User {
 	*               about this user.
 	*/
 	public function info() {
-		global $I2_SQL, $I2_ERR;
+		global $I2_LDAP, $I2_ERR;
 
-		if( $this->myuid === NULL ) {
+		if( $this->username === NULL ) {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
 		}
 		
-		$ret = $I2_SQL->query('SELECT * FROM user LEFT JOIN userinfo USING (uid) WHERE user.uid=%d;', $this->myuid)->fetch_array(Result::ASSOC);
+		$ret = $I2_LDAP->search('ou=people',"iodineUid={$this->username}")->fetch_array(Result::ASSOC);
 
 		if( $ret === FALSE ) {
-			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information');
+			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->username.'` was used in obtaining information');
 		}
 
 		return $ret;
@@ -330,7 +288,7 @@ class User {
 	* @return Array The information in the columns you requested.
 	*/
 	public function get_cols() {
-		global $I2_SQL;
+		global $I2_LDAP;
 
 		if( $this->myuid === NULL ) {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
@@ -349,10 +307,10 @@ class User {
 			$cols = $argv;
 		}
 
-		$ret = $I2_SQL->query('SELECT %c FROM user JOIN userinfo USING (uid) WHERE user.uid=%d;', $cols, $this->myuid)->fetch_array(Result::BOTH);
+		$ret = $I2_LDAP->query('ou=people',"iodineUid={$this->username}",$cols)->fetch_array(Result::BOTH);
 		
 		if( $ret === FALSE ) {
-			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information');
+			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->username.'` was used in obtaining information');
 		}
 
 		return $ret;
@@ -462,6 +420,7 @@ class User {
 	public static function name_cmp($user1, $user2) {
 		return strcasecmp($user1->name_comma, $user2->name_comma);
 	}
+
 }
 
 ?>

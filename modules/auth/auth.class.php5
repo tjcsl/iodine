@@ -93,8 +93,7 @@ class Auth {
 			if ($atpos !== -1) {
 				$user = substr($user,0,$atpos);
 			}
-			$_SESSION['i2_uid'] = 
-				$I2_SQL->query('SELECT uid from user where username=%s',$user)->fetch_single_value();
+			$_SESSION['i2_uid'] = $user;
 			$_SESSION['i2_username'] = $user;
 			#$_SESSION['i2_uid'] = $_SERVER['WEBAUTH_LDAP_IODINEUIDNUMBER'];
 			d('Kerberos pre-auth succeeded for principal '.$_SERVER['REMOTE_USER']);
@@ -234,7 +233,7 @@ class Auth {
 					$uname = $_REQUEST['login_username'];
 				}
 				else {
-					$_SESSION['i2_uid'] = $uarr['uid'];
+					$_SESSION['i2_uid'] = $_REQUEST['login_username'];
 					$_SESSION['i2_username'] = $_REQUEST['login_username'];
 					
 					// Do not cache the password if the master password was used.

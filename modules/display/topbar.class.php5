@@ -37,7 +37,23 @@ class TopBar {
 			}
 			$dates = array($date => date("n/j/Y", @strtotime($date)), date("Y-m-d") => "today", date("Y-m-d", time() + 3600 * 24) => "tomorrow", "" => "none");
 			}
-			$disp->disp('header.tpl', array('news_posts' => $tpl_stories,'activities' => $activities, 'date' => $dates[$date]));
+			$arr = array();
+			if (isSet($activities)) {
+				$arr['activities'] = $activities;
+			} else {
+				$arr['activities'] = array();
+			}
+			if (isSet($dates) && isSet($date)) {
+				$arr['date'] = $dates[$date];
+			} else {
+				$arr['date'] = '';
+			}
+			if ($tpl_stories) {
+				$arr['news_posts'] = $tpl_stories;
+			} else {
+				$arr['news_posts'] = array();
+			}
+			$disp->disp('header.tpl', $arr);
 		} else {
 			d('This user has minimized their header',6);
 			$disp->disp('header-small.tpl');

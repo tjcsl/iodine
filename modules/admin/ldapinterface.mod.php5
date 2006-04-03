@@ -23,6 +23,7 @@ class LDAPInterface implements Module {
 	private $dn = FALSE;
 	private $searchtype = 'search';
 	private $attrs = FALSE;
+	private $admin_pass = FALSE;
 
 	/**
 	* Unused; we don't display a box (yet)
@@ -46,7 +47,8 @@ class LDAPInterface implements Module {
 				'query' => addslashes($this->query), 
 				'last_dn' => addslashes($this->dn),
 				'searchtype' => $this->searchtype,
-				'last_attrs' => $this->attrs
+				'last_attrs' => $this->attrs,
+				'master_pass' => $this->admin_pass?TRUE:FALSE
 			));
 	}
 	
@@ -85,7 +87,7 @@ class LDAPInterface implements Module {
 	* @abstract
 	*/
 	function init_pane() {
-		global $I2_LDAP;
+		global $I2_LDAP, $I2_ARGS;
 
 		// Only available to people in the 'admin_mysql' group
 		$ldap_group = new Group('admin_ldap');
@@ -93,36 +95,79 @@ class LDAPInterface implements Module {
 			return FALSE;
 		}
 		
-		if( isset($_POST['ldapinterface_submit']) && $_POST['ldapinterface_submit'] && $_POST['ldapinterface_query']) {
-			$this->query = $_POST['ldapinterface_query'];
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_password') {
+			unset($_SESSION['ldap_admin_pass']);
+			$this->admin_pass = FALSE;
+			redirect('ldapinterface');
+		}	
+		if (isSet($_POST['master_pass'])) {
+			$_SESSION['ldap_admin_pass'] = $_POST['master_pass'];
+		}
+		if (isSet($_SESSION['ldap_admin_pass'])) {
+			$this->admin_pass = $_SESSION['ldap_admin_pass'];
+		}
+
+		if( isset($_POST['ldapinterface_submit']) && $_POST['ldapinterface_submit']) {
+			if (isSet($_POST['ldapinterface_query'])) {
+				$this->query = $_POST['ldapinterface_query'];
+			} elseif (!$this->query) {
+				$this->query = 'objectClass=*';
+			}
+			
 			if (isSet($_POST['ldapinterface_dn'])) {
 				$this->dn = $_POST['ldapinterface_dn'];
+			} elseif (!$this->dn) {
+				$this->dn = i2config_get('base_dn','dc=tjhsst,dc=edu','ldap');
 			}
-			if (isSet($_POST['ldap_searchtype']) && $_POST['ldap_searchtype'] == 'list') {
-				$this->searchtype = 'list';
-			} else {
-				$this->searchtype = 'search';
+			
+			if (isSet($_POST['ldap_searchtype'])) {
+				if ($_POST['ldap_searchtype'] == 'list') {
+					$this->searchtype = 'list';
+				} else if ($_POST['ldap_searchtype'] == 'search') {
+					$this->searchtype = 'search';
+				} else if ($_POST['ldap_searchtype'] == 'read') {
+					$this->searchtype = 'read';
+				} else if ($_POST['ldap_searchtype'] == 'delete') {
+					$this->searchtype = 'delete';
+				} else if ($_POST['ldap_searchtype'] == 'delete_recursive') {
+					$this->searchtype = 'delete_recursive';
+				}
 			}
 
 			$myattrs = array('*');
 
-			if (isSet($_POST['ldapinterface_attrs']) && $_POST['ldapinterface_attrs'] != "") {
+			if (isSet($_POST['ldapinterface_attrs']) && $_POST['ldapinterface_attrs'] != '') {
 				$this->attrs = $_POST['ldapinterface_attrs'];
 				$myattrs = explode(',',$this->attrs);
 			} else {
 				$this->attrs = FALSE;
 			}
 			
+			$ldap = $I2_LDAP;
+			if ($this->admin_pass) {
+				$ldap = LDAP::get_admin_bind($this->admin_pass);
+			}
+			
 			try {
 				//$this->query_data = $I2_LDAP->search($this->query,"()",array("objectClass"));
 				$res = NULL;
 				if ($this->searchtype == 'search') {
-					$res = $I2_LDAP->search($this->dn,$this->query,$myattrs);
-				} else {	
-					$res = $I2_LDAP->search_one($this->dn,$this->query,$myattrs);
+					$res = $ldap->search($this->dn,$this->query,$myattrs);
+					$this->query_data = $res->fetch_all_arrays(Result::ASSOC);
+				} else if ($this->searchtype == 'list') {	
+					$res = $ldap->search_one($this->dn,$this->query,$myattrs);
+					$this->query_data = $res->fetch_all_arrays(Result::ASSOC);
+				} else if ($this->searchtype == 'read') {
+					$res = $ldap->search_base($this->dn);
+					$this->query_data = $res->fetch_all_arrays(Result::ASSOC);
+				} else if ($this->searchtype == 'delete') {
+					$res = $ldap->delete($this->dn);
+					$this->query_data = $res;
+				} else if ($this->searchtype == 'delete_recursive') {
+					$res = $ldap->delete_recursive($this->dn);
+					$this->query_data = $res;
 				}
 
-				$this->query_data = $res->fetch_all_arrays(Result::ASSOC);
 				
 				d("LDAP $this->searchtype Results:",7);
 				d(print_r($this->query_data,1),7);

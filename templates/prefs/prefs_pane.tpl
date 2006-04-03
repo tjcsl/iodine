@@ -1,37 +1,6 @@
 <form method="post" action="[<$I2_ROOT>]prefs" class="boxform">
 <input type="hidden" name="prefs_form" value="" />
 <table>
- <tr>
-  <td>Cell Phone:</td>
-  <td><input type="text" maxlength="10" name="pref_phone_cell" value="[<$prefs.phone_cell>]" /></td></tr>
- <tr>
-  <td>AIM Screename:</td>
-  <td><input type="text" name="pref_sn0" value="[<$prefs.sn0>]" /></td></tr>
- <tr>
-  <td>Yahoo! ID:</td>
-  <td><input type="text" name="pref_sn1" value="[<$prefs.sn1>]" /></td></tr>
- <tr>
-  <td>MSN Username:</td>
-  <td><input type="text" name="pref_sn2" value="[<$prefs.sn2>]" /></td></tr>
- <tr>
-  <td>Jabber:</td>
-  <td><input type="text" name="pref_sn3" value="[<$prefs.sn3>]" /></td></tr>
- <tr>
-  <td>ICQ Number:</td>
-  <td><input type="text" name="pref_sn4" value="[<$prefs.sn4>]" /></td></tr>
- <tr>
-  <td>Google Talk Username:</td>
-  <td><input type="text" name="pref_sn5" value="[<$prefs.sn5>]" /></td></tr>
- <tr>
-  <td>Email:</td>
-  <td><input type="text" name="pref_email0" value="[<$prefs.email0>]" /></td></tr>
- <tr>
-  <td>Personal Webpage:</td>
-  <td><input type="text" name="pref_webpage" value="[<$prefs.webpage>]" /></td></tr>
- <tr>
-  <td>Locker Number:</td>
-  <td><input type="text" name="pref_locker" value="[<$prefs.locker>]" /></td></tr>
- <tr>
   <td>Homepage module:</td>
   <td><input type="text" name="pref_startpage" value="[<$prefs.startpage>]" /></td></tr>
 <tr>
