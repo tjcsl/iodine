@@ -16,17 +16,17 @@ class LANFilesystem extends Filesystem {
 	//I am not sure if these mapping are correct (esp. "freshmen")
 	//TODO: staff
 	private static $grade_map = array(
-		"12" => "senior",
-		"11" => "junior",
-		"10" => "sophmore",
-		"9" => "freshmen"
+		'12' => 'senior',
+		'11' => 'junior',
+		'10' => 'sophmore',
+		'9' => 'freshmen'
 	);
 
 	protected $root_dir;
 	
 	public function __construct($user, $pass) {
 		global $I2_USER;
-		$this->root_dir = i2config_get("novell_base_dir", "/tmp/novell/", "filecenter") . $user;
+		$this->root_dir = i2config_get('novell_base_dir', '/tmp/novell/', 'filecenter') . $user;
 		
 		if (!(file_exists($this->root_dir) && isset($_SESSION['novell_mounted']))) {
 			$volume = self::$grade_map[$I2_USER->grade] . '/students/' . $user;
@@ -40,12 +40,12 @@ class LANFilesystem extends Filesystem {
 	}
 
 	private static function ncpmount($user, $pass, $volume, $mount_point) {
-		$server = i2config_get("novell_server", "TECHNOLOGY", "filecenter");
+		$server = i2config_get('novell_server', 'TECHNOLOGY', 'filecenter');
 
 		d("Mounting $volume@$server to $mount_point as $user");
 		
 		if (!file_exists($mount_point)) {
-			d("Creating mount-point");
+			d('Creating mount-point');
 			mkdir($mount_point, 0755, TRUE);
 		}
 		
