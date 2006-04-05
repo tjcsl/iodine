@@ -11,24 +11,31 @@ class dataimport implements Module {
 	public function __autoconstruct() {
 		//TODO: ?
 		//$this->oldsql = mysql_connect('intranet');
+		/*
+		** Set this high to avoid interfering with teachers' SASI numbers
+		*/
 		$this->num = 10000;
 	}
 
 	/**
 	* @todo FINISH THIS METHOD
 	*/
-	private function import_teacher_data($filename) {
+	private function import_teacher_data($filename,$teachersfiletwo) {
 
-		//TODO: fill in
-		$mysql = mysql_connect('','','');
-		mysql_select_db('');
-	
+		/*
+		** First pass through teacher.##a file
+		*/
 		$file = @fopen($filename,'r');
 		
 		d("Importing data from teacher data file $filename...",6);
 		
 		$line = null;
 		$this->teachertable = array();
+
+		/*
+		** Store a map of last names => people, for later use
+		*/
+		$last_to_people = array();
 
 		while ($line = fgets($file)) {
 			list($id,$lastname,$firstname) = explode('","',$line);
@@ -39,34 +46,78 @@ class dataimport implements Module {
 			** Strip remaining quotes
 			*/
 			$id = substr($id,1);
-			$firstname = substr($firstname,-1);
+			$firstname = ucFirst(strtolower(substr($firstname,-1)));
+			$lastname = ucFirst(strtolower($lastname));
+
+			if (!isset($last_to_people[$lastname])) {
+				$last_to_people[$lastname] = array($id);
+			} else {
+				$last_to_people[$lastname][] = $fname;
+			}
 			
-			/*
-			** Retrieve username from current Intranet (pray that it works, kiddos)
-			*/
-			//FIXME: This WON'T work for some teachers!
-			$firstnameescape = mysql_escape($firstname);
-			$lastnameescape = mysql_escape($lastname);
-			$res = mysql_query("SELECT username FROM TeacherInfo WHERE Firstname=\"$firstnameescape\" AND Lastname=\"$lastnameescape\"");
-			$username = mysql_fetch_array($res);
-			
-			$this->teachertable[] = array(
+			$this->teachertable[$id] = array(
 					'lname' => str_replace('\'','\\\'',$lastname),
 					'fname' => $firstname,
-					'uid' => str_replace('\'','\\\'',$id),
-					'username' => $username
+					'uid' => str_replace('\'','\\\'',$id)
 				);
 		}
 		
-		d("$numlines users imported.",6);
+		d("$numlines teachers imported.",6);
+
+		fclose($file);
+
+		/*
+		** Second pass through staff.# file
+		*/
+
+		$file = @fopen($filename,'r');
+
+		while ($line = fgets($file)) {
+			/*
+			** There's a ton of extra junk after the comma
+			*/
+			list($username,$extra) = explode(',',$line);
+			$extraarr = explode(' ',$extra);
+			$username = strtolower($username);
+			/*
+			** Username is almost certainly f+m+last, so trim two chars
+			*/
+			$lastname = ucFirst(substr($username,2));
+			/*
+			** Now get rid of numbers
+			*/
+			$numchar = substr($lastname,strlen($lastname)-2,strlen($lastname)-1);
+			while (is_int($numchar)) {
+				/*
+				** Chop a character off the last name b/c it's numeric
+				*/
+				$lastname = substr($lastname,0,strlen($lastname)-1);
+				$numchar = substr($lastname,strlen($lastname)-2,strlen($lastname)-1);
+			}
+
+			if (!isSet($last_to_people[$lastname])) {
+				//TODO: how to handle this?  Should we try weird name-guessing games?
+				throw new I2Exception("Last name \"$lastname\" not recognized");
+			} else {
+				$choices = $last_to_people[$lastname];
+				if (count($choices) == 1) {
+					/*
+					** We have exactly one match.  We've got our teacher.
+					*/
+					$this->teachertable[$choices[0]]['username'] = $username;
+				} else {
+					//TODO: handle
+					throw new I2Exception("Multiple choices for last name \"$lastname\"");
+				}
+			}
+
+		}
 
 		$ldap = LDAP::get_admin_bind($this->admin_pass);
 
-		foreach ($this->teachertable as $teacher) {
-			$this->add_teacher($teacher,$ldap);
+		foreach ($this->teachertable as $id=>$teacher) {
+			$this->create_teacher($teacher,$ldap);
 		}
-
-		mysql_close($mysql);
 
 	}
 
@@ -146,8 +197,10 @@ class dataimport implements Module {
 		$newteach['startpage'] = 'news';
 		$newteach['header'] = 'TRUE';
 		$newteach['chrome'] = 'TRUE';
-		$this->num = $this->num + 1;
 		$dn = "iodineUid={$newteach['iodineUid']},ou=people";
+
+		//FIXME: check if iodineUidNumber exists and update previous entry if so
+		
 		d("Creating teacher \"{$newteach['iodineUid']}\"...",5);
 		$ldap->add($dn,$newteach);
 	}
@@ -187,6 +240,9 @@ class dataimport implements Module {
 		$usernew['chrome'] = 'TRUE';
 		$this->num = $this->num + 1;
 		$dn = "iodineUid={$usernew['iodineUid']},ou=people";
+
+		//FIXME: check if iodineUidNumber or tjhsstStudentId exists
+		
 		d("Creating user \"{$usernew['iodineUid']}\"...",5);
 		$ldap->add($dn,$usernew);
 	}
