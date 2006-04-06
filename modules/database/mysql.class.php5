@@ -67,7 +67,7 @@ class MySQL {
 	/**
 	* A string representing all custom printf tags for mysql queries which do not require an argument. Each character represents a different tag.
 	*/
-	const TAGS_NOARG = 'V%';
+	const TAGS_NOARG = 'rV%';
 		
 	
 	/**
@@ -221,6 +221,7 @@ class MySQL {
 					$replacement = 'NULL';
 				} else {
 					$replacement = $this->replace_tag($arg, $tag[0][1]);
+					$tag[0][1] = $replacement;
 				}
 
 				$query = substr_replace($query,$replacement,$tag[1],2);
@@ -345,6 +346,10 @@ class MySQL {
 				throw new I2Exception('The string `'.$arg.'` is not a properly formatted date, but was passed as %t in a mysql query');
 			
 			/* Non-argument tags below here */
+
+			/* Repeat the last value */
+			case 'r':
+				return $arg;
 			
 			/*Iodine version string*/
 			case 'V':

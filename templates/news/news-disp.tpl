@@ -8,5 +8,6 @@
   <br />
   <a href="[<$I2_ROOT>]news/edit/[<$story->id>]">Edit</a>
   | <a href="[<$I2_ROOT>]news/delete/[<$story->id>]">Delete</a>
+  | <a href="[<$I2_ROOT>]news/xpost/[<$story->id>]">Cross-Post</a>
  [</if>]
 </div>

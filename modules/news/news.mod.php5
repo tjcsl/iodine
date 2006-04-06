@@ -140,12 +140,11 @@ class News implements Module {
 				try {
 					$item = new Newsitem($I2_ARGS[2]);
 				} catch(I2Exception $e) {
-					throw new I2Exception('Specified article ID does not exist.');
+					throw new I2Exception("Specified article ID {$I2_ARGS[2]} is invalid.");
 				}
 
 				if( isset($_REQUEST['delete_confirm']) ) {
-					$item = NULL;
-					Newsitem::delete_item($I2_ARGS[2]);
+					$item->delete();
 					return 'News Post Deleted';
 				}
 				else {
@@ -153,6 +152,24 @@ class News implements Module {
 					return array('Delete News Post', 'Confirm News Post Delete');
 				}
 				
+			case 'xpost':
+				$this->template = 'news_xpost.tpl';
+				
+				if( !isset($I2_ARGS[2]) ) {
+					throw new I2Exception('ID of article to cross-post not specified.');
+				}
+
+				try {
+					$item = new Newsitem($I2_ARGS[2]);
+				} catch(I2Exception $e) {
+					throw new I2Exception("Specified article ID {$I2_ARGS[2]} invalid.");
+				}
+
+				if( isset($_REQUEST['xpost_groups']) ) {
+					$item->xpost($_REQUEST['xpost_groups']);
+					return 'News Post Successfully Cross-Posted';
+				}
+			
 			default:
 				$this->template = 'news_pane.tpl';
 				$I2_ARGS[1] = '';

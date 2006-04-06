@@ -13,7 +13,7 @@
 * @package modules
 * @subpackage News
 */
-class Newsitem {
+class NewsItem {
 
 	/**
 	 * The id number for this newsitem.
@@ -154,6 +154,15 @@ class Newsitem {
 		$I2_SQL->query('DELETE FROM news_group_map WHERE nid=%d', $nid);
 		$I2_SQL->query('DELETE FROM news_read_map WHERE nid=%d',$nid);
 	}
+
+	/**
+	* Deletes this news item.
+	*
+	* @see delete_item
+	*/
+	public function delete() {
+		return self::delete_item($this->mynid);
+	}
 	
 	/**
 	 * Determine if this news item exists.
@@ -282,6 +291,29 @@ class Newsitem {
 		}
 
 		return false;
+	}
+
+	/**
+	* Cross posts this news post to a set of groups.
+	*
+	* @param Array $groups An array of GIDs to cross post the news post to.
+	*/
+	public function xpost($gids) {
+		global $I2_SQL, $I2_USER;
+
+		$groups = Groups::generate($gids);
+
+		$query = 'INSERT INTO news_group_map (nid, gid) VALUES ';
+		foreach($groups as $group) {
+			if(!$group->has_permission($I2_USER,News::PERM_POST)) {
+				throw new I2Exception("You do not have permission to post something to {$group->name}");
+			}
+			$query .= "({$this->mynid},%d),";
+		}
+		$query = substr($query,0,-1) . ';';
+
+
+		$I2_SQL
 	}
 }
 ?>
