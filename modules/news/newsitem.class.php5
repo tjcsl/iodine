@@ -313,7 +313,7 @@ class NewsItem {
 		$query = substr($query,0,-1) . ';';
 
 
-		$I2_SQL
+	//	$I2_SQL
 	}
 }
 ?>
