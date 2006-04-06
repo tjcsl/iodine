@@ -251,13 +251,48 @@ class Auth {
 			$uname='';
 		}
 		
+		$images = self::getFiles(i2config_get('root_path', NULL, 'core') . 'www/pics/logins');
+		
+		$image = 'www/pics/logins/' . $images[rand(0,count($images)-1)];
+	
 		// Show the login box
 		$disp = new Display('login');
-		$disp->disp('login.tpl',array('failed' => $loginfailed,'uname' => $uname, 'css' => i2config_get('www_root', NULL, 'core') . i2config_get('login_css', NULL, 'auth')));
+		$disp->disp('login.tpl',array('failed' => $loginfailed,'uname' => $uname, 'css' => i2config_get('www_root', NULL, 'core') . i2config_get('login_css', NULL, 'auth') , 'bg' => $image));
 
 		return FALSE;
 	}
 
+	/**
+	* Recursively grabs the contents of a directory
+	*
+	* getFiles() takes $directory, a directory to search for files. Pulled from http://us2.php.net/manual/en/function.opendir.php comments.
+	*
+	* @return Array An array containing the path to the various files in that directory
+	*
+	*
+	*/
+	
+	public static function getFiles($directory) {
+		if($dir = opendir($directory)) {
+		        $tmp = Array();
+			while($file = readdir($dir)) {
+				if($file != "." && $file != ".." && $file[0] != '.') {
+					if(is_dir($directory . "/" . $file)) {
+						$tmp2 = getFiles($directory . "/" . $file);
+						if(is_array($tmp2)) {
+							$tmp = array_merge($tmp, $tmp2);
+						}
+						} else {
+						        array_push($tmp, $file);
+						}
+	     		                 }
+	                 }
+	         closedir($dir);
+	         return $tmp;
+	 	}
+	}
+	
+	
 	/**
 	* Encrypts a string with the given key.
 	*
