@@ -1,0 +1,24 @@
+@extend
+.boxes {
+	left: 0px;
+}
+.intrabox {
+	border: none;
+	background: url(../www/pics/modern_header.png) no-repeat;
+}
+.boxheader {
+	position: relative;
+	top: 7px;
+	left: 2px;
+	height: 30px;
+	font-size: 18px;
+}
+.boxcontent {
+	margin-left: 2px;
+	background: url(../www/pics/modern_side.png) repeat-y top right;
+	border-bottom: url(../www/pics/modern_footer.png);
+}
+@extend
+.boxbuttons {
+	margin: 10px 12px;
+}
