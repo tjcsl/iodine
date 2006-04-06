@@ -1,52 +1,52 @@
-[<if $info === FALSE>]
+[<if $info === FALSE and not $user>]
 
 The specified student does not exist. Either you mistyped a URL, or something in Intranet is broken.
-
-[<elseif isset($info.fname)>]
+[</if>]
+[<if $user->fname>]
 <table>
 <tr><td valign="top">
 <img src="[<$I2_ROOT>]www/pics/bomb.png" vspace="2" width="172" height="228" /></td>
 <td valign="top">
-[<$info.fname>][<if $info.nickname>] ([<$info.nickname>])[</if>] [<$info.mname>] [<$info.lname>][<if $info.suffix>] [<$info.suffix>][</if>] (<a href="mailto:[<$info.username>]@tjhsst.edu">[<$info.username>]@tjhsst.edu</a>), Grade [<$info.grade>]<br />
-[<if $info.bdate>]Born [<$info.bdate>]<br />[</if>]
-[<if $info.phone_home>]Phone (home): [<$info.phone_home>]
+[<$user->fname>][<if $user->nickname>] ([<$user->nickname>])[</if>] [<$user->mname>] [<$user->lname>][<if $user->suffix>] [<$user->suffix>][</if>] (<a href="mailto:[<$user->username>]@tjhsst.edu">[<$user->username>]@tjhsst.edu</a>), Grade [<$user->grade>]<br />
+[<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]
+[<if $user->phone_home>]Phone (home): [<$user->phone_home>]
  [<else>]Home phone information not available.
 [</if>]</br />
-[<if $info.address1_street>]
- [<$info.address1_street>]<br />
- [<$info.address1_city>], [<$info.address1_state>] [<$info.address1_zip>]<br />
- [<if $info.address2_street>]
+[<if $user->address1_street>]
+ [<$user->address1_street>]<br />
+ [<$user->address1_city>], [<$user->address1_state>] [<$user->address1_zip>]<br />
+ [<if $user->address2_street>]
   2nd address:<br />
-  [<$info.address2_street>]<br />
-  [<$info.address2_city>], [<$info.address2_state>] [<$info.address2_zip>]<br />
+  [<$user->address2_street>]<br />
+  [<$user->address2_city>], [<$user->address2_state>] [<$user->address2_zip>]<br />
  [</if>]
- [<if $info.address3_street>]
+ [<if $user->address3_street>]
   3rd address:<br />
-  [<$info.address3_street>]<br />
-  [<$info.address3_city>], [<$info.address3_state>] [<$info.address3_zip>]<br />
+  [<$user->address3_street>]<br />
+  [<$user->address3_city>], [<$user->address3_state>] [<$user->address3_zip>]<br />
  [</if>]
 [<else>]
  Address information not available.<br />
 [</if>]
 Map from home | Map from school<br />
-Counselor: [<$info.counselor>]<br />
+Counselor: [<$user->counselor>]<br />
 <br />
-[<if $info.email0>]Personal e-mail: <a href="mailto:[<$info.email0>]">[<$info.email0>]</a><br />[</if>]
-[<if $info.email1>]2nd personal e-mail: <a href="mailto:[<$info.email1>]">[<$info.email1>]</a><br />[</if>]
-[<if $info.email2>]3rd personal e-mail: <a href="mailto:[<$info.email2>]">[<$info.email2>]</a><br />[</if>]
-[<if $info.email3>]4th personal e-mail: <a href="mailto:[<$info.email3>]">[<$info.email3>]</a><br />[</if>]
-[<if $info.phone_other>]Alternate phone: [<$info.phone_other>]<br />[</if>]
-[<if $info.phone_cell>]Cell phone: [<$info.phone_cell>]<br />[</if>]
-[<if $info.sn0>]AIM/AOL Screenname: <a href="aim:goim?screenname=[<$info.sn0>]">[<$info.sn0>]</a><br />[</if>]
-[<if $info.sn1>]Yahoo! ID: [<$info.sn1>]<br />[</if>]
-[<if $info.sn2>]MSN Username: [<$info.sn2>]<br />[</if>]
-[<if $info.sn3>]Jabber: [<$info.sn3>]<br />[</if>]
-[<if $info.sn4>]ICQ Number: [<$info.sn4>]<br />[</if>]
-[<if $info.sn5>]Google Talk: [<$info.sn5>]<br />[</if>]
-[<if $info.sn6>]sn6: [<$info.sn6>]<br />[</if>]
-[<if $info.sn7>]sn7: [<$info.sn7>]<br />[</if>]
-[<if $info.webpage>]Webpage: <a href="[<$info.webpage>]">[<$info.webpage>]</a><br />[</if>]
-[<if $info.locker>]Locker Number: [<$info.locker>]<br />[</if>]
+[<if $user->email0>]Personal e-mail: <a href="mailto:[<$user->email0>]">[<$user->email0>]</a><br />[</if>]
+[<if $user->email1>]2nd personal e-mail: <a href="mailto:[<$user->email1>]">[<$user->email1>]</a><br />[</if>]
+[<if $user->email2>]3rd personal e-mail: <a href="mailto:[<$user->email2>]">[<$user->email2>]</a><br />[</if>]
+[<if $user->email3>]4th personal e-mail: <a href="mailto:[<$user->email3>]">[<$user->email3>]</a><br />[</if>]
+[<if $user->phone_other>]Alternate phone: [<$user->phone_other>]<br />[</if>]
+[<if $user->phone_cell>]Cell phone: [<$user->phone_cell>]<br />[</if>]
+[<if $user->sn0>]AIM/AOL Screenname: <a href="aim:goim?screenname=[<$user->sn0>]">[<$user->sn0>]</a><br />[</if>]
+[<if $user->sn1>]Yahoo! ID: [<$user->sn1>]<br />[</if>]
+[<if $user->sn2>]MSN Username: [<$user->sn2>]<br />[</if>]
+[<if $user->sn3>]Jabber: [<$user->sn3>]<br />[</if>]
+[<if $user->sn4>]ICQ Number: [<$user->sn4>]<br />[</if>]
+[<if $user->sn5>]Google Talk: [<$user->sn5>]<br />[</if>]
+[<if $user->sn6>]sn6: [<$user->sn6>]<br />[</if>]
+[<if $user->sn7>]sn7: [<$user->sn7>]<br />[</if>]
+[<if $user->webpage>]Webpage: <a href="[<$user->webpage>]">[<$user->webpage>]</a><br />[</if>]
+[<if $user->locker>]Locker Number: [<$user->locker>]<br />[</if>]
 </td></tr></table>
 
 [<if $schedule>]
@@ -58,7 +58,7 @@ Counselor: [<$info.counselor>]<br />
 
 <br /><br />
 The DUMP:<br />
-Student: [<$info.fname>] [<if $info.nickname>] ([<$info.nickname>]) [</if>] [<$info.mname>] [<$info.lname>] [<$info.suffix>]
+Student: [<$user->fname>] [<if $user->nickname>] ([<$user->nickname>]) [</if>] [<$user->mname>] [<$user->lname>] [<$user->suffix>]
 <br />Info:<br /><br />
 [<foreach from=$info item=val key=key>]
 [<if ! ($key == "fname" || $key == "nickname" || $key == "mname" || $key == "lname" || $key == "suffix")>]
@@ -66,7 +66,7 @@ Student: [<$info.fname>] [<if $info.nickname>] ([<$info.nickname>]) [</if>] [<$i
 [</if>]
 [</foreach>]
 
-[<elseif isset($info.class)>]
+[<elseif is_array($info) and isset($info.class)>]
  [<foreach from=$info.students item=student>]
   <a href="[<$I2_ROOT>]studentdirectory/info/[<$student->uid>]">[<$student->name>]</a><br />
  [</foreach>]

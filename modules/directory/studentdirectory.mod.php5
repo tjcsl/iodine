@@ -28,6 +28,7 @@ class StudentDirectory implements Module {
 	function init_pane() {
 		global $I2_SQL,$I2_ARGS,$I2_USER;
 
+		$this->user = NULL;
 		if( ! isset($I2_ARGS[1]) ) {
 			$this->information = 'help';
 			return array('Student Directory Help', 'Searching Help');
@@ -36,11 +37,12 @@ class StudentDirectory implements Module {
 		switch($I2_ARGS[1]) {
 			//Get info about someone
 			case 'info':
-				$this->user = isset($I2_ARGS[2]) ? new User($I2_ARGS[2]) : $I2_USER;
-				if( ($this->information = $this->user->info()) === FALSE ) {
+				try {
+					$this->user = isset($I2_ARGS[2]) ? new User($I2_ARGS[2]) : $I2_USER;
+				} catch(I2Exception $e) {
 					return array('Error', 'Error: Student does not exist');
 				}
-				return array('Student Directory: '.$this->information['fname'].' '.$this->information['lname'], $this->information['fname'].' '.$this->information['lname']);
+				return array('Student Directory: '.$this->user->fname.' '.$this->user->lname, $this->user->fname.' '.$this->user->lname);
 
 			case 'search':
 				if( $_REQUEST['studentdirectory_query'] == "" ) {
@@ -86,7 +88,7 @@ class StudentDirectory implements Module {
 			} else {
 				$sched = NULL;
 			}
-			$display->disp('studentdirectory_pane.tpl',array('info'=>$this->information,'schedule'=>$sched));
+			$display->disp('studentdirectory_pane.tpl',array('info'=>$this->information,'schedule'=>$sched, 'user'=>$this->user));
 		}
 	}
 	

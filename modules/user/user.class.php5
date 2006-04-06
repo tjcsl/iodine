@@ -159,12 +159,13 @@ class User {
 			//returned cached info if we are caching
 			return $this->info[$name];
 		}
+		d("$name not set!",1);
 		
 		$row = $I2_LDAP->search_base("iodineUid={$this->username},ou=people",$name);
 		$res = $row->fetch_single_value();
 
 		if( $res === FALSE ) {
-			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information');
+			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information for '.$name);
 			return FALSE;
 		}
 		
