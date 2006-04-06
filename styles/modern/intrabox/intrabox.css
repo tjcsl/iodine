@@ -1,24 +1,36 @@
-@extend
-.boxes {
-	left: 0px;
-}
 .intrabox {
-	border: none;
-	background: url(../www/pics/modern_header.png) no-repeat;
+	background-color: #fff;
+	border-right: 0.18em solid #89AEC6;
+	border-bottom: 0.16em solid #89AEC6;
+	border-left: 0.10em solid #89AEC6;
+	margin-bottom: 10pt;
+	width: 305px;
 }
+
 .boxheader {
-	position: relative;
-	top: 7px;
-	left: 2px;
-	height: 30px;
-	font-size: 18px;
+	margin: 0em;
+	padding: 0.2em 0em 0.2em 1em;
+	font-size: 0.8em;
+	color: #fff;
+	border-top: 0.1em solid #89AEC6;   
+	background-color: #618CAF;
+	font-weight: bold;
+	font-family: Verdana, Arial, sans-serif;
 }
-.boxcontent {
-	margin-left: 2px;
-	background: url(../www/pics/modern_side.png) repeat-y top right;
-	border-bottom: url(../www/pics/modern_footer.png);
-}
+
 @extend
-.boxbuttons {
-	margin: 10px 12px;
+.boxcontent {
+	margin-left: 10px;
+	margin-top: 2px;
+	margin-bottom: 3px;
+}
+
+@extend
+.mainbox, .mainbox_noheader {
+	background-color: #fff;
+	border: none;
+        border-right: 0.18em solid #89AEC6;
+        border-bottom: 0.16em solid #89AEC6;
+        border-left: 0.10em solid #89AEC6;
+	margin-bottom: 10pt;
 }
