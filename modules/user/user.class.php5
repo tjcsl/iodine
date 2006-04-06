@@ -57,6 +57,7 @@ class User {
 				$this->username = $_SESSION['i2_uid'];
 				$uid = $this->username;
 				$this->info = $I2_LDAP->search('ou=people',"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
+				$this->myuid = $this->info['iodineUidNumber'];
 			}
 			else {
 				$I2_ERR->fatal_error('Your password and username were correct, but you don\'t appear to exist in our database. If this is a mistake, please contact the intranetmaster about it.');
@@ -65,12 +66,21 @@ class User {
 		//If the user created is the same as the logged in user, use the cache
 		elseif( $uid == $GLOBALS['I2_USER']->uid ) {
 			$this->info = &$GLOBALS['I2_USER']->info;
+			$this->myuid = $this->info['iodineUidNumber'];
+			$this->username = $this->info['iodineUid'];
 		}
 
-		/*
-		** Cover up legacy-SQL cheating
-		*/
-		$this->myuid = $this->info['iodineUidNumber'];
+		elseif( is_numeric($uid) ) {
+			$this->info = $I2_LDAP->search('ou=people',"iodineUidNumber=$uid")->fetch_array(RESULT::ASSOC);
+			$this->username = $this->info['iodineUid'];
+			$this->myuid = $uid;
+		}
+
+		else {
+			$this->info = $I2_LDAP->search('ou=people',"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
+			$this->username = $uid;
+			$this->myuid = $this->info['iodineUidNumber'];
+		}
 	}
 
 	public function is_valid() {
@@ -106,7 +116,7 @@ class User {
 		global $I2_SQL,$I2_ERR,$I2_LDAP;
 
 		if( $this->username === NULL ) {
-			throw new I2Exception('Tried to retrieve information for nonexistent user!');
+			throw new I2Exception('Tried to retrieve information for nonexistent user! UID: '.$this->myuid);
 		}
 
 		/* pseudo-fields
