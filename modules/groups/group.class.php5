@@ -72,7 +72,7 @@ class Group {
 	}
 
 	public function __construct($group) {
-		$this->wrap = new GroupLDAP($group);
+		$this->wrap = new GroupSQL($group);
 	}
 	
 	/**
