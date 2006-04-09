@@ -43,6 +43,8 @@ class LDAP {
 		$this->dnbase = i2config_get('base_dn','dc=tjhsst,dc=edu','ldap');
 		$this->sizelimit = i2config_get('max_rows',500,'ldap');
 		$this->timelimit = i2config_get('max_time',0,'ldap');
+		/*$dn = i2config_get('admin_dn', '', 'ldap');
+		$pass = i2config_get('admin_pw', '', 'ldap');*/
 		d("Connecting to LDAP server {$this->server}...",8);
 		$this->conn = $this->connect();
 		if ($dn !== NULL && $pass !== NULL) {

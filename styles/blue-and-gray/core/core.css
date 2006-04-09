@@ -4,12 +4,22 @@
 	left: 0px;
 	background: url(www/pics/newlogo.png) no-repeat;
 }
+
+@extend
+.header {
+	left: 300px;
+}
+
+
 @extend
 .title {
 	color: #006666;
 	border-bottom: 3px solid #006666;
 }
-@extend
+
 .date {
-	top: 25px;
+	position: absolute;
+	top: 45px;
+	float: right;
+	right: 25px;
 }

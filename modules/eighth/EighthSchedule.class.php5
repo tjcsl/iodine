@@ -141,7 +141,7 @@ class EighthSchedule {
 		if($starting_date == NULL) {
 			$starting_date = date("Y-m-d");
 		}
-		return $I2_SQL->query("SELECT aid,eighth_blocks.bid FROM eighth_activity_map LEFT JOIN eighth_blocks USING (bid) WHERE userid=%d AND date >= %t AND date <= ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block", $userid, $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::NUM);
+		return $I2_SQL->query("SELECT aid,eighth_blocks.bid FROM eighth_activity_map LEFT JOIN eighth_blocks USING (bid) WHERE userid=%d AND date >= %t AND date < ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block", $userid, $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::NUM);
 	}
 
 	/**

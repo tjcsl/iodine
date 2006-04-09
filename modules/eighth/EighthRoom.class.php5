@@ -38,7 +38,7 @@ class EighthRoom {
 	* @param bool $overbooked Whether to only show overbooked activities or not.
 	* @todo Make it actually use $columns.
 	*/
-	public static function get_utilization($blockid, $columns, $overbooked) {
+	public static function get_utilization($blockid, $columns = NULL, $overbooked = FALSE) {
 		global $I2_SQL;
 		$activities = EighthActivity::id_to_activity($I2_SQL->query('SELECT eighth_block_map.activityid,bid FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d', $blockid)->fetch_all_arrays(Result::NUM));
 		$utilizations = array();

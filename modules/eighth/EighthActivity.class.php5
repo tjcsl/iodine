@@ -377,28 +377,28 @@ class EighthActivity {
 					foreach($sponsors as $sponsor) {
 						$temp_sponsors[] = $sponsor->name;
 					}
-					return implode(",", $temp_sponsors);
+					return implode(", ", $temp_sponsors);
 				case "block_sponsors_comma":
 					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
 					$temp_sponsors = array();
 					foreach($sponsors as $sponsor) {
 						$temp_sponsors[] = $sponsor->name;
 					}
-					return implode(",", $temp_sponsors);
+					return implode(", ", $temp_sponsors);
 				case "block_sponsors_comma_short":
 					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
 					$temp_sponsors = array();
 					foreach($sponsors as $sponsor) {
 						$temp_sponsors[] = substr($sponsor->fname, 0, 1) . ". {$sponsor->lname}";
 					}
-					return implode(",", $temp_sponsors);
+					return implode(", ", $temp_sponsors);
 				case "rooms_comma":
 					$rooms = EighthRoom::id_to_room($this->data['rooms']);
 					$temp_rooms = array();
 					foreach($rooms as $room) {
 						$temp_rooms[] = $room->name;
 					}
-					return implode(",", $temp_rooms);
+					return implode(", ", $temp_rooms);
 				case "block_rooms_comma":
 					$rooms = EighthRoom::id_to_room($this->data['block_rooms']);
 					$temp_rooms = array();

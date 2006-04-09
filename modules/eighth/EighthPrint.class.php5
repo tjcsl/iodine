@@ -149,6 +149,31 @@ class EighthPrint {
 			self::do_display($output, $format, "Student Schedule for " . $user->name);
 		}
 	}
+	
+	/**
+	* Print the room utilizations.
+	*
+	* @access public
+	* @param int The user's ID
+	* @param string The print format.
+	*/
+	public static function print_room_utilization($bid, $format = "pdf") {
+		$block = new EighthBlock($bid);
+		$utilizations = EighthRoom::get_utilization($bid);
+		$output = self::latexify("room_utilization");
+		ob_start();
+		eval($output);
+		$output = ob_get_clean();
+		if($format == "print") {
+			self::do_print($output);
+		}
+		else {
+			if($format == "pdf") {
+				self::add_info($output, "Print Room Utilization", "{$activity->block->date} - {$activity->block->block} Block", TRUE);
+			}
+			self::do_display($output, $format, "Room Utilization for {$activity->block->date} - {$activity->block->block} Block", TRUE);
+		}
+	}
 
 	/**
 	* Prints the given LaTeX output.
@@ -156,11 +181,11 @@ class EighthPrint {
 	* @access private
 	* @param string The LaTeX output to print.
 	*/
-	private static function do_print($output) {
+	private static function do_print($output, $landscape = FALSE) {
 		$temp = tempnam("/tmp", "EighthPrinting");
 		file_put_contents($temp, $output);
 		exec("cd /tmp; latex {$temp}");
-		exec("cd /tmp; dvips {$temp}.dvi");
+		exec("cd /tmp; dvips {$temp}.dvi" . ($landscape ? ' -t landscape' : ''));
 		/* Do magic printing stuff here */
 	}
 	
@@ -170,7 +195,7 @@ class EighthPrint {
 	* @access private
 	* @param string The LaTeX output to print.
 	*/
-	private static function do_display($output, $format = "pdf", $filename) {
+	private static function do_display($output, $format, $filename, $landscape = FALSE) {
 		Display::stop_display();
 		$temp = tempnam("/tmp", "EighthPrinting");
 		file_put_contents("{$temp}", $output);
@@ -182,7 +207,7 @@ class EighthPrint {
 		}
 		else if($format == "ps") {
 			exec("cd /tmp; latex {$temp}");
-			exec("cd /tmp; dvips {$temp}.dvi");
+			exec("cd /tmp; dvips {$temp}.dvi" . ($landscape ? ' -t landscape' : ''));
 			header("Content-type: application/postscript");
 		}
 		else if($format == "dvi") {
@@ -196,6 +221,11 @@ class EighthPrint {
 		else if($format == "html") {
 			header("Content-type: text/html");
 			$disposition = "inline";
+		}
+		else if($format == "rtf") {
+			rename($temp, "{$temp}.tex");
+			exec("cd /tmp; latex2rtf {$temp}");
+			header("Content-type: application/rtf");
 		}
 		header("Content-Disposition: {$disposition}; filename=\"{$filename}.{$format}\"");
 		readfile("{$temp}.{$format}");

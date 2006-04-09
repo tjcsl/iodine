@@ -1,0 +1,52 @@
+@extend
+.boxes {
+	width: 305px;
+}
+.intrabox {
+	border: #009999 2px solid;
+	margin-bottom: 10pt;
+	background-color: #00EEEE;
+	width: 305px;
+	-moz-border-radius: 10px;
+}
+.boxheader {
+	color: #FFFFFF;
+	font-weight: bold;
+	background-color: #006699;
+	border: 3px outset #007777;
+	padding-left: 10px;
+	-moz-user-select: none;
+	cursor: default;
+	-moz-border-radius: 10px;
+	margin-left: -2px;
+	margin-right: -2px;
+	margin-top: -2px;
+	font-size: 11px;
+	height: 14px;
+	padding-top: 1px;
+}
+@extend
+.boxbuttons {
+	margin-top: 1px;
+	margin-right: 10px;
+}
+.boxcontent {
+	margin: 4px;
+	color: #006666;
+}
+@extend
+.boxform {
+	margin: 5px 4px;
+	color: #6666FF;
+}
+@extend
+.mainbox {
+	left: 337px;
+	border: #009999 2px solid;
+	background-color: #00EEEE;
+	-moz-border-radius: 10px;
+}
+@extend
+.activity_cancelled {
+	background-color: #006699;
+}
