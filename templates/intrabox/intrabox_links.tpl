@@ -7,3 +7,4 @@
 School Roster<br />
 <a href="http://postman.tjhsst.edu/">Postman (calendar)</a><br />
 <a href="[<$I2_ROOT>]groups/">Groups</a><br />
+<a href="[<$I2_ROOT>]polls/">Polls</a><br />
