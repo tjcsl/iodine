@@ -22,6 +22,7 @@
 	/*border-left: 4px solid #464678;
 	border-right: 4px solid #464678;*/
 	padding: 1px 4px;
+	cursor: move;
 }
 .boxbuttons {
 	float: right;
@@ -62,6 +63,9 @@
 	left: 327px;
 	right: 10px;
 	border: thin groove;
+}
+.mainbox .boxheader {
+	cursor: default;
 }
 .activity_cancelled {
 	background-color: #FF3333;

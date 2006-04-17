@@ -98,10 +98,8 @@ class IntraBox {
 			$display_title = flatten($I2_SQL->query('SELECT display_name FROM intrabox WHERE boxid=%d', $this->boxid)->fetch_array(Result::NUM));
 
 			try {
-				self::$display->disp('intrabox_openbox.tpl', array('name' => $this->module, 'title' => ucwords($display_title[0]), 'boxid' => $this->boxid));
-				if(!$this->closed) {
-					self::$display->disp($tpl);
-				}
+				self::$display->disp('intrabox_openbox.tpl', array('name' => $this->module, 'title' => ucwords($display_title[0]), 'boxid' => $this->boxid, 'closed' => $this->closed));
+				self::$display->disp($tpl);
 				self::$display->disp('intrabox_closebox.tpl');
 				self::$display->flush_buffer();
 			}
@@ -117,10 +115,8 @@ class IntraBox {
 			try {
 				if( ($title = $this->module->init_box()) ) {
 					try {
-						self::$display->disp('intrabox_openbox.tpl', array('name' => $this->module->get_name(), 'title' => $title, 'boxid' => $this->boxid));
-						if(!$this->closed) {
-							$this->module->display_box($this->mydisplay);
-						}
+						self::$display->disp('intrabox_openbox.tpl', array('name' => $this->module->get_name(), 'title' => $title, 'boxid' => $this->boxid, 'closed' => $this->closed));
+						$this->module->display_box($this->mydisplay);
 						self::$display->disp('intrabox_closebox.tpl');
 						self::$display->flush_buffer();
 					}

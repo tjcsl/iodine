@@ -88,7 +88,7 @@ class StudentDirectory implements Module {
 			} else {
 				$sched = NULL;
 			}
-			$display->disp('studentdirectory_pane.tpl',array('info'=>$this->information,'schedule'=>$sched, 'user'=>$this->user));
+			$display->disp('studentdirectory_pane.tpl',array('info' => $this->information, 'schedule' => $sched, 'user' => $this->user, 'eighth' => EighthActivity::id_to_activity(EighthSchedule::get_activities($this->user->uid))));
 		}
 	}
 	

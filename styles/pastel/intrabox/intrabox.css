@@ -2,6 +2,7 @@
 .boxes {
 	width: 305px;
 }
+@extend
 .intrabox {
 	border: #CCDDFF 2px solid;
 	margin-bottom: 10pt;
@@ -9,6 +10,7 @@
 	width: 305px;
 	-moz-border-radius: 10px;
 }
+@extend
 .boxheader {
 	color: #FFFFFF;
 	font-weight: bold;
@@ -18,10 +20,12 @@
 	-moz-user-select: none;
 	cursor: default;
 	-moz-border-radius: 10px;
+	font-size: 14px;
+	height: 17px;
 }
 @extend
 .boxbuttons {
-	margin-top: 3px;
+	margin-top: 2px;
 	margin-right: 10px;
 }
 .boxcontent {

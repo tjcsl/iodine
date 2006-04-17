@@ -8,7 +8,8 @@ input, select, textarea {
 @extend
 body {
 	background-color: #00EEDD;
-	color: #006666;
+	background-image: url(www/pics/styles/ocean/water.png);
+	color: #00FFFF;
 }
 
 a {
@@ -21,5 +22,5 @@ a:visited {
 }
 
 a:active {
-	color: #6666FF;
+	color: #9999FF;
 }
