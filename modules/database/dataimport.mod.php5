@@ -273,7 +273,9 @@ class dataimport implements Module {
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'userdata' && isSet($_REQUEST['userfile'])) {
 			$this->import_student_data($_REQUEST['userfile']);
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherdata' && isSet
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherdata' && isSet($_REQUEST['teacherfile']) && isSet($_REQUEST['stafffile'])) {
+			$this->import_teacher_data($_REQUEST['teacherfile'],$_REQUEST['staffile']);
+		}
 		return array(TRUE,'Import Legacy Data');
 	}
 

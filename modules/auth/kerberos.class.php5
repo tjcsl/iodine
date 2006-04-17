@@ -100,10 +100,11 @@ class Kerberos {
 			$status = proc_close($process);
 			
 			if($status == 0) {
+				d("Kerberos authorized $user@$realm",8);
 				return $cache;
 			}
-	        }
-                return FALSE;	
+	   }
+      return FALSE;	
 	}
 }
 

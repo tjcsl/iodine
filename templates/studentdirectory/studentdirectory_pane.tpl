@@ -7,24 +7,14 @@ The specified student does not exist. Either you mistyped a URL, or something in
 <tr><td valign="top">
 <img src="[<$I2_ROOT>]www/pics/bomb.png" vspace="2" width="172" height="228" /></td>
 <td valign="top">
-[<$user->fname>][<if $user->nickname>] ([<$user->nickname>])[</if>] [<$user->mname>] [<$user->lname>][<if $user->suffix>] [<$user->suffix>][</if>] (<a href="mailto:[<$user->username>]@tjhsst.edu">[<$user->username>]@tjhsst.edu</a>), Grade [<$user->grade>]<br />
+[<$user->fullname>] (<a href="mailto:[<$user->username>]@tjhsst.edu">[<$user->username>]@tjhsst.edu</a>)[<if $user->grade != -1>], Grade [<$user->grade>][</if>]<br />
 [<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]
-[<if $user->phone_home>]Phone (home): [<$user->phone_home>]
+[<if $user->homePhone>][<foreach from=$user->homePhone item=phone>]Phone (home): [<$phone>][</foreach>]
  [<else>]Home phone information not available.
 [</if>]</br />
-[<if $user->address1_street>]
- [<$user->address1_street>]<br />
- [<$user->address1_city>], [<$user->address1_state>] [<$user->address1_zip>]<br />
- [<if $user->address2_street>]
-  2nd address:<br />
-  [<$user->address2_street>]<br />
-  [<$user->address2_city>], [<$user->address2_state>] [<$user->address2_zip>]<br />
- [</if>]
- [<if $user->address3_street>]
-  3rd address:<br />
-  [<$user->address3_street>]<br />
-  [<$user->address3_city>], [<$user->address3_state>] [<$user->address3_zip>]<br />
- [</if>]
+[<if $user->street>]
+ [<$user->street>]<br />
+ [<$user->l>], [<$user->st>] [<$user->postalCode>]<br />
 [<else>]
  Address information not available.<br />
 [</if>]

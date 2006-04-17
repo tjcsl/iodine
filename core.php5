@@ -133,14 +133,6 @@ try {
 	 */
 	$I2_SQL = new MySQL();
 	/**
-	  The global LDAP mechanism.
-	 
-	  Use this {@link LDAP} object for accessing LDAP-based information.
-	 
-	  @global LDAP $I2_LDAP
-	 */
-	$I2_LDAP = new LDAP();
-	/**
 	 * The global authentication mechanism.
 	 *
 	 * Use this {@link Auth} object for authenticating users.
@@ -148,6 +140,14 @@ try {
 	 * @global Auth $I2_AUTH
 	 */
 	$I2_AUTH = new Auth();
+	/**
+	 * The global LDAP mechanism.
+	 *
+	 * Use this {@link LDAP} object for accessing LDAP-based information.
+	 *
+	 * @global LDAP $I2_LDAP
+	 */
+	$I2_LDAP = LDAP::get_user_bind();
 	/**
 	 * The global user info mechanism.
 	 *

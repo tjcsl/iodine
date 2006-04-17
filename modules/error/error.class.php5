@@ -54,7 +54,14 @@ class Error {
 			d('LDAP sizelimit exceeded',3);
 			return;
 		}
-
+		
+		/*
+		** Ditto LDAP object-not-found errors
+		*/
+		if (strpos($errstr,'Search: No such object')) {
+			d('LDAP search performed for invalid object',5);
+			return;
+		}
 		$fileurl = str_replace('%2F', '/', urlencode($errfile));
 		switch( $errno ) {
 			case E_WARNING:

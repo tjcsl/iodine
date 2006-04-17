@@ -53,6 +53,11 @@ class LDAPResult implements Result {
 	private $dns;
 
 	public function __construct($ldap,$result,$type) {
+		if ($ldap === NULL) {
+			$this->num_rows = 0;
+			$this->type = LDAP::LDAP_SEARCH;
+			return;
+		}
 		$this->ldap = $ldap;
 		$this->ldap_result = $result;
 		$this->query_type = $type;
@@ -70,6 +75,10 @@ class LDAPResult implements Result {
 		/*if ($this->ldap_result) {
 			ldap_free_result($this->ldap_result);
 		}*/
+	}
+
+	public static function get_null() {
+		return new LDAPResult(NULL,NULL,NULL);
 	}
 	
 	public function fetch_array($type=Result::BOTH) {
@@ -110,10 +119,16 @@ class LDAPResult implements Result {
 	}
 
 	private function get_current_dn() {
+		if ($this->num_rows == 0) {
+			return FALSE;
+		}
 		return ldap_get_dn($this->ldap,$this->current_row);
 	}
 
 	private function get_first_row() {
+		if ($this->num_rows == 0) {
+			return FALSE;
+		}
 		return ldap_first_entry($this->ldap,$this->ldap_result);
 	}
 

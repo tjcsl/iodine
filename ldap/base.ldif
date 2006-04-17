@@ -5,6 +5,16 @@ dc: tjhsst
 o: TJHSST
 description: Thomas Jefferson High School for Science and Technology
 
+# This entry provides support for SASL proxy-authing to any Iodine user.
+# Currently, it's not used due to PHP breakage.
+# And we actually have a better system anyhow.
+#dn: cn=iodine,dc=tjhsst,dc=edu
+#objectClass: person
+#cn: iodine
+#sn: iodine
+#saslAuthzTo: dn.regex:iodineUid=[^,]*,ou=people,dc=tjhsst,dc=edu
+#userPassword: mehhhhhh
+
 dn: ou=people,dc=tjhsst,dc=edu
 objectClass: organizationalUnit
 ou: people

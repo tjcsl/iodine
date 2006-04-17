@@ -229,6 +229,7 @@ class Display {
 	public static function style_changed() {
 		global $I2_USER;
 		if (isSet($I2_USER)) {
+			$I2_USER->recache('style');
 			self::$style = ($I2_USER->style);
 		}
 		else {
