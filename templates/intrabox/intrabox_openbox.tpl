@@ -5,5 +5,5 @@
 	<span class="mnbutton"><a href="[<$I2_ROOT>]manageibox/minimize/[<$boxid>]"><img src="[<$I2_ROOT>]www/pics/clear.gif"alt="Minimize" /></a></span>
 	<span class="rmbutton"><a href="[<$I2_ROOT>]manageibox/delete/[<$boxid>]"><img src="[<$I2_ROOT>]www/pics/clear.gif" alt="Remove" /></a></span>
 </div>
-<div class="boxheader" onDblClick="var content = document.getElementById('boxcontent_[<$boxid>]'); (content.style.display == 'none' ? content.style.display = 'block' : content.style.display = 'none');">[<$title>]</div>
-<div class="boxcontent" id="boxcontent_[<$boxid>]">
+<div class="boxheader" id="boxheader_[<$boxid>]" onDblClick="doIntraboxMinimize([<$boxid>])">[<$title>]</div>
+<div class="boxcontent" id="boxcontent_[<$boxid>]"[<if $closed>] style="display: none;"[</if>]>

@@ -8,6 +8,7 @@ input, select, textarea {
 @extend
 body {
 	background-color: #660033;
+	background-image: url(www/pics/styles/autumn/fall.jpg);
 }
 
 a {

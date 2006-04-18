@@ -304,6 +304,62 @@ attributetype ( i2Attr:36
 	SYNTAX boolSyntax
 	SINGLE-VALUE	
 	)
+
+attributetype ( i2Attr:37
+	NAME ('aim')
+	DESC 'AIM/AOL Screenname'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	)
+
+attributetype ( i2Attr:38
+	NAME ('yahoo')
+	DESC 'Yahoo! ID'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	)
+	
+attributetype ( i2Attr:39
+	NAME ('msn')
+	DESC 'MSN Username'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	)
+	
+attributetype ( i2Attr:40
+	NAME ('jabber')
+	DESC 'Jabber Username'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	)
+	
+attributetype ( i2Attr:41
+	NAME ('icq')
+	DESC 'ICQ Number'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	)
+	
+attributetype ( i2Attr:42
+	NAME ('googleTalk')
+	DESC 'Google Talk'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	)
+
+attributetype ( i2Attr:43
+	NAME ('webpage' 'website')
+	DESC 'The website of a user'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	)
+
+attributetype ( i2Attr:44
+	NAME ('locker' 'lockerNumber')
+	DESC 'The locker number or a person'
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
+	)
 	
 objectclass ( i2OC:3
 	NAME ('tjhsstSection' 'section')
@@ -472,7 +528,15 @@ objectclass ( i2OC:1
 		group $
 		iodineUidNumber $
 		birthday $
-		sex
+		sex $
+		aim $
+		yahoo $
+		msn $
+		jabber $
+		icq $
+		googleTalk $
+		webpage $
+		locker
 	)
 	)
 

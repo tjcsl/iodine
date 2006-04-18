@@ -6,10 +6,23 @@
 }
 @extend
 .title {
-	color: #006666;
-	border-bottom: 3px solid #006666;
+	color: #00FFFF;
+	border-bottom: 3px solid #00FFFF;
 }
 @extend
 .date {
 	top: 25px;
+	color: #00FFFF;
+}
+.header a {
+	color: #00FFFF;
+}
+.header a:visited {
+	color: #00FFFF;
+}
+.date a {
+	color: #00FFFF;
+}
+.date a:visited {
+	color: #00FFFF;
 }

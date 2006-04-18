@@ -4,9 +4,12 @@ var box_after = null;
 var interval = 0;
 var scroll = 0;
 var box_index = -1, to_box_index = -1;
-var boxes = document.getElementById('intraboxes').childNodes;
+var boxes = document.getElementById("intraboxes").childNodes;
 for(var i = 0; i < boxes.length - 1; i++) {
-	init(boxes[i]);
+	if(boxes[i].id) {
+		var boxid = boxes[i].id.replace(/intrabox_/, "");
+		init(document.getElementById("boxheader_" + boxid));
+	}
 }
 function doIntraboxDown(e) {
 	e = fixE(e);
@@ -65,12 +68,21 @@ function doIntraboxPlace() {
 	drag_box.onDragEnd();
 	drag_box = null;
 }
+function doIntraboxMinimize(boxid) {
+	var content = document.getElementById("boxcontent_" + boxid);
+	if(content.style.display == "none") {
+		content.style.display = "block";
+	}
+	else {
+		content.style.display = "none";
+	}
+	sendReq("minimize/" + boxid);
+}
 function make_intrabox() {
 	if(!m_ibox) {
 		m_ibox = document.createElement("div");
 		m_ibox.style.display = "none";
 		m_ibox.style.position = "absolute";
-		m_ibox.style.cursor = "move";
 		m_ibox.style.paddingBottom = "0px";
 		document.body.appendChild(m_ibox);
 	}
@@ -131,34 +143,34 @@ function init(box) {
 		clearInterval(interval);
 		var offset_height = 0;
 		for(var i = 0; i < boxes.length; i++) {
-			if(boxes[i] == this) {
+			if(boxes[i] == this.parentNode) {
 				offset_height = boxes[i].offsetHeight;
 			}
 			boxes[i].pagePosLeft = getLeft(boxes[i]);
 			boxes[i].pagePosTop = getTop(boxes[i]) - offset_height;
 		}
 		var m_i = make_intrabox();
-		m_i.style.left = getLeft(this) + "px";
-		m_i.style.top = getTop(this) + "px";
-		m_i.style.height = this.offsetHeight;
-		m_i.style.width = this.offsetWidth;
+		m_i.style.left = getLeft(this.parentNode) + "px";
+		m_i.style.top = getTop(this.parentNode) + "px";
+		m_i.style.height = this.parentNode.offsetHeight;
+		m_i.style.width = this.parentNode.offsetWidth;
 		m_i.style.opacity = 0.8;
 		m_i.style.filter = "alpha(opacity=80)";
-		m_i.innerHTML = this.innerHTML;
-		m_i.style.border = this.style.border;
-		m_i.style.borderWidth = this.style.borderWidth;
-		m_i.style.borderStyle = this.style.borderStyle;
-		m_i.style.borderColor = this.style.borderColor;
-		m_i.className = this.className;
+		m_i.innerHTML = this.parentNode.innerHTML;
+		m_i.style.border = this.parentNode.style.border;
+		m_i.style.borderWidth = this.parentNode.style.borderWidth;
+		m_i.style.borderStyle = this.parentNode.style.borderStyle;
+		m_i.style.borderColor = this.parentNode.style.borderColor;
+		m_i.className = this.parentNode.className;
 		m_i.style.display="block";
-		this.style.visibility="hidden";
-		this.dragged = false;
+		this.parentNode.style.visibility="hidden";
+		this.parentNode.dragged = false;
 	};
 	box.onDrag = function(new_left, new_top) {
 		var box = null;
 		var max = 100000000;
 		for(var i = 0; i < boxes.length; i++) {
-			if(boxes[i] == this) {
+			if(boxes[i] == this.parentNode) {
 				if(box_index == -1) {
 					box_index = i;
 				}
@@ -174,7 +186,7 @@ function init(box) {
 			}
 		}
 		if(box != null && this.nextSibling != box) {
-			box.parentNode.insertBefore(this, box);
+			box.parentNode.insertBefore(this.parentNode, box);
 			this.parentNode.style.display = "none";
 			this.parentNode.style.display = "";
 		}
@@ -182,19 +194,19 @@ function init(box) {
 	};
 	box.onDragEnd = function() {
 		if(this.dragged) {
-			sendReq(this.id.replace(/intrabox_/, "") + "/" + (to_box_index - box_index - 1));
+			sendReq("move" + this.parentNode.id.replace(/intrabox_/, "") + "/" + (to_box_index - box_index - 1));
 			var add = box_index < to_box_index-1 ? 1 : -1;
 			for (var i = box_index; i != to_box_index-1; i+=add) {
 				boxes[i] = boxes[i+add];
 			}
-			boxes[i] = this;
+			boxes[i] = this.parentNode;
 			box_index = -1;
 			var dist = 15;
 			var left = parseInt(make_intrabox().style.left);
 			var top = parseInt(make_intrabox().style.top);
-			var left_increment = (left - getLeft(this)) / dist;
-			var top_increment = (top - getTop(this)) / dist;
-			var box = this;
+			var left_increment = (left - getLeft(this.parentNode)) / dist;
+			var top_increment = (top - getTop(this.parentNode)) / dist;
+			var box = this.parentNode;
 			clearInterval(interval);
 			interval = setInterval(function() {
 				if(dist < 1) {
@@ -208,12 +220,12 @@ function init(box) {
 				make_intrabox().style.left = left + "px";
 				make_intrabox().style.top = top + "px";
 			}, 10);
-			this.style.visibility = "visible"
+			this.parentNode.style.visibility = "visible"
 		}
 		else {
 			if(this.href) {
 				make_intrabox().style.display = "none";
-				this.style.visibility = "visible";
+				this.parentNode.style.visibility = "visible";
 				if(this.target) {
 					window.open(this.href, this.target);
 				}

@@ -25,11 +25,6 @@
 }
 
 @extend
-.mainbox, .boxes {
-	top: 90px;
-}
-
-@extend
 .mainbox, .mainbox_noheader {
 	background-color: #fff;
 	border: none;
