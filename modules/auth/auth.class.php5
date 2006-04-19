@@ -251,9 +251,23 @@ class Auth {
 			$uname='';
 		}
 		
-		$images = self::getFiles(i2config_get('root_path', NULL, 'core') . 'www/pics/logins');
-		
-		$image = 'www/pics/logins/' . $images[rand(0,count($images)-1)];
+		// try to get a special image for a holiday, etc.
+		$image = self::getSpecialBG();
+
+		// if no special image, get a random normal one
+		if (! isset($image)) {
+
+			$images = array();
+			$dirpath = i2config_get('root_path', NULL, 'core') . 'www/pics/logins';
+			$dir = opendir($dirpath);
+			while ($file = readdir($dir)) {
+				if (! is_dir($dirpath . '/' . $file)) {
+					$images[] = $file;
+				}
+			}
+
+			$image = 'www/pics/logins/' . $images[rand(0,count($images)-1)];
+		}
 	
 		// Show the login box
 		$disp = new Display('login');
@@ -261,37 +275,6 @@ class Auth {
 
 		return FALSE;
 	}
-
-	/**
-	* Recursively grabs the contents of a directory
-	*
-	* getFiles() takes $directory, a directory to search for files. Pulled from http://us2.php.net/manual/en/function.opendir.php comments.
-	*
-	* @return Array An array containing the path to the various files in that directory
-	*
-	*
-	*/
-	
-	public static function getFiles($directory) {
-		if($dir = opendir($directory)) {
-		        $tmp = Array();
-			while($file = readdir($dir)) {
-				if($file != "." && $file != ".." && $file[0] != '.') {
-					if(is_dir($directory . "/" . $file)) {
-						$tmp2 = getFiles($directory . "/" . $file);
-						if(is_array($tmp2)) {
-							$tmp = array_merge($tmp, $tmp2);
-						}
-						} else {
-						        array_push($tmp, $file);
-						}
-	     		                 }
-	                 }
-	         closedir($dir);
-	         return $tmp;
-	 	}
-	}
-	
 	
 	/**
 	* Encrypts a string with the given key.
@@ -312,6 +295,7 @@ class Auth {
 		return array($ret,$key,$iv);
 	
 	}
+
 	/**
 	* Decrypts a string with the given key and initialization vector.
 	*
@@ -363,6 +347,27 @@ class Auth {
 		$_SESSION['i2_auth_passkey'] = substr(md5(rand(0,RAND_MAX)),0,16);
 		list($_SESSION['i2_password'], ,$iv) = self::encrypt($pass,$_SESSION['i2_auth_passkey'].substr(md5($_SERVER['REMOTE_ADDR']),0,16));
 		setcookie('IODINE_PASS_VECTOR',$iv,0,'/',i2config_get('domain','iodine.tjhsst.edu','core'));
+	}
+
+	/**
+	* Gets a themed login background for special occasions
+	*
+	* This uses a mysql database of "special" days and backgrounds, and if today is "special", returns the background.
+	*
+	* @return string The path, relative to the Iodine root, of the background tile image (or null if today is not "special")
+	*/
+	private static function getSpecialBG() {
+		global $I2_SQL;
+
+		$rows = $I2_SQL->query('SELECT startdt, enddt, background FROM special_backgrounds');
+
+		$timestamp = time();
+
+		foreach ($rows as $occasion) {
+			if (strtotime($occasion['startdt']) < $timestamp && $timestamp < strtotime($occasion['enddt'])) {
+				return 'www/pics/logins/special/'.$occasion['background'];
+			}
+		}
 	}
 }
 
