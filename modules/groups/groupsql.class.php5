@@ -106,7 +106,13 @@ class GroupSQL extends Group {
 				throw new I2Exception("Nonexistent group id $group given to the Group module");
 			}
 		}
-		else {
+		elseif (is_object($group)) {
+			if (!$group instanceof Group) {
+				throw new I2Exception("Group construction attempted with non-Group object!");
+			}
+			$this->mygid = $group->mygid;
+			$this->myname = $group->myname;
+		} else {
 		// Non-numeric $group passed; figure out GID
 			if(isSet(self::$gid_map[$group])) {
 				$this->mygid = self::$gid_map[$group];
@@ -114,7 +120,8 @@ class GroupSQL extends Group {
 			}
 			else {
 				try {
-					$this->mygid = Group::get_special_group($group);
+					$group = Group::get_special_group($group);
+					$this->mygid = $group->gid;
 					$this->myname = $group;
 				} catch (I2Exception $e) {
 					throw new I2Exception("Nonexistent group $group given to the Group module");
@@ -240,7 +247,12 @@ class GroupSQL extends Group {
 		// Check for 'special' groups
 		if( $this->special ) {
 			$specs = Group::get_special_groups($user);
-			return in_array($this->mygid, $specs);
+			foreach ($specs as $gp) {
+				if ($gp->gid = $this->mygid) {
+					return TRUE;
+				}
+			}
+			return FALSE;
 		}
 		
 		// Standard DB check
