@@ -125,7 +125,7 @@ class User {
 		*/
 		switch( $name ) {
 			case 'name':
-				return $this->__get('nickname');
+				$nick = $this->__get('nickname');
 				return $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . $this->__get('lname');
 			case 'name_comma':
 				$nick = $this->__get('nickname');

@@ -212,7 +212,7 @@ class dataimport implements Module {
 		}
 		$usernew = array();
 		$usernew['objectClass'] = 'tjhsstStudent';
-		$usernew['graduationYear'] = '2006';
+		$usernew['graduationYear'] = 2006 + 12 - $user['grade'];
 		$usernew['cn'] = $user['fname'].' '.$user['lname'];
 		$usernew['sn'] = $user['lname'];
 		$usernew['tjhsstStudentId'] = $user['studentid'];
@@ -230,6 +230,7 @@ class dataimport implements Module {
 		} else {
 			$usernew['displayName'] = $user['fname'].' '.$user['lname'];
 		}
+		//$usernew['nickname'] = $user['nickname'];
 		$usernew['gender'] = $user['sex'];
 		$usernew['title'] = ($user['sex']=='M')?'Mr.':'Ms.';
 		$usernew['middlename'] = $user['mname'];

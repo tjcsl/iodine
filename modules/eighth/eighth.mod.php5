@@ -489,19 +489,20 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	private function amr_room($op, $args) {
-		if($op == "") {
+		if($op == '') {
 			$this->setup_room_selection(true);
 		}
-		else if($op == "view") {
+		else if($op == 'view') {
 			$this->template = "amr_room.tpl";
 			$this->template_args['room'] = new EighthRoom($args['rid']);
-			$this->title = "View Rooms";
+			$this->title = 'View Rooms';
 		}
-		else if($op == "add") {
+		else if($op == 'add') {
 			$rid = EighthRoom::add_room($args['name'], $args['capacity']);
-			redirect("eighth/amr_room/view/rid/{$rid}");
+			//redirect("eighth/amr_room/view/rid/{$rid}");
+			redirect('eighth/amr_room');
 		}
-		else if($op == "modify") {
+		else if($op == 'modify') {
 			if ($args['modify_or_remove'] == 'modify') {
 				$room = new EighthRoom($args['rid']);
 				$room->name = $args['name'];
@@ -509,7 +510,7 @@ class Eighth implements Module {
 				redirect("eighth/amr_room/view/rid/{$args['rid']}");
 			} else if ($args['modify_or_remove'] == 'remove') {
 				EighthRoom::remove_room($args['rid']);
-				redirect("eighth/amr_room");
+				redirect('eighth/amr_room');
 			}
 		}
 	}
