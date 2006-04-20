@@ -1,5 +1,5 @@
 @extend
-.intrabox {
+.intrabox, .mainbox {
 	background: #275715;
 }
 @extend

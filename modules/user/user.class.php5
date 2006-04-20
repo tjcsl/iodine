@@ -146,7 +146,7 @@ class User {
 		*/
 		switch( $name ) {
 			case 'name':
-				return $this->__get('nickname');
+				$nick = $this->__get('nickname');
 				return $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . $this->__get('lname');
 			case 'name_comma':
 				$nick = $this->__get('nickname');
@@ -161,6 +161,8 @@ class User {
 				return $this->__get('lname') . ', ' . $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . ($mid ? "$mid " : '');
 			case 'grad_year':
 				return $this->__get('graduationYear');
+			case 'grade':
+				return (12 + i2config_get('senior_gradyear', date('Y'), 'user') - $this->__get('graduationYear'));
 			case 'lname':
 				return $this->__get('sn');
 			case 'fname':
@@ -171,10 +173,25 @@ class User {
 				return $this->__get('iodineUidNumber');
 			case 'username':
 				return $this->__get('iodineUid');
-			case 'phone_home':
-				return $this->__get('homePhone');
 			case 'grade':
 				return $this->get_grade($this->__get('graduationYear'));
+			case 'phone_home':
+				$phone = $this->__get('homePhone');
+				return '(' . substr($phone, 0, 3) . ') ' . substr($phone, 3, 3) . '-' . substr($phone, 6);
+			case 'phone_cell':
+				$phone = $this->__get('mobile');
+				if($phone) {
+					return '(' . substr($phone, 0, 3) . ') ' . substr($phone, 3, 3) . '-' . substr($phone, 6);
+				}
+				return NULL;
+			case 'phone_other':
+				$phone = $this->__get('telephoneNumber');
+				if($phone) {
+					return array('(' . substr($phone, 0, 3) . ') ' . substr($phone, 3, 3) . '-' . substr($phone, 6));
+				}
+				return array();
+			case 'bdate':
+				return date('M j, Y', strtotime($this->__get('birthday')));
 		}
 		
 		//Check which table the information is in
@@ -188,8 +205,8 @@ class User {
 		$res = $row->fetch_single_value();
 
 		if( $res === FALSE ) {
-			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information for '.$name);
-			return FALSE;
+			//$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information for '.$name);
+			return NULL;
 		}
 		
 		return $res;

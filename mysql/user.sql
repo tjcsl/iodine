@@ -21,11 +21,6 @@ CREATE TABLE user (
 	nickname VARCHAR(63) DEFAULT "",
 	/* like the ()'ed ones now in Intranet */
 
-	/* This field _is_ edited, but it seems like it will be accessed so
-	much, it may make sense to put it in this table, as this is a smaller
-	table than userinfo */
-	startpage VARCHAR(127) DEFAULT "news" NOT NULL, /* Default I2 module */
-
 	style VARCHAR(255) DEFAULT "default" NOT NULL, /* User style */
 
 	header BOOLEAN DEFAULT TRUE NOT NULL, /* Whether to display a full titlebar for the user */

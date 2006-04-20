@@ -12,30 +12,90 @@ The specified student does not exist. Either you mistyped a URL, or something in
 [<if $user->homePhone>][<foreach from=$user->homePhone item=phone>]Phone (home): [<$phone>][</foreach>]
  [<else>]Home phone information not available.
 [</if>]</br />
+[<if $user->phone_cell>]Cell phone: [<$user->phone_cell>]<br />[</if>]
+[<if count($user->phone_other)>]Alternate phone number(s):
+ <ul>
+ [<foreach from=$user->phone_other item=phone_other>]
+  <li>[<$phone_other>]</li>
+ [</foreach>]
+ </ul>
+[</if>]
+<br />
 [<if $user->street>]
  [<$user->street>]<br />
  [<$user->l>], [<$user->st>] [<$user->postalCode>]<br />
+ [<if $user->address2_street>]
+  2nd address:<br />
+  [<$user->address2_street>]<br />
+  [<$user->address2_city>], [<$user->address2_state>] [<$user->address2_zip>]<br />
+ [</if>]
+ [<if $user->address3_street>]
+  3rd address:<br />
+  [<$user->address3_street>]<br />
+  [<$user->address3_city>], [<$user->address3_state>] [<$user->address3_zip>]<br />
+ [</if>]
 [<else>]
  Address information not available.<br />
 [</if>]
-Map from home | Map from school<br />
+[<if $I2_UID != $user->uid>]<a href="http://maps.google.com/maps?f=d&hl=en&saddr=[<$I2_USER->street>], [<$I2_USER->l>], [<$I2_USER->st>] [<$I2_USER->postalCode>]&daddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]">Map from home</a> | [</if>]<a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexandria, VA 22312&daddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]">Map from school</a><br />
 Counselor: [<$user->counselor>]<br />
 <br />
-[<if $user->email0>]Personal e-mail: <a href="mailto:[<$user->email0>]">[<$user->email0>]</a><br />[</if>]
-[<if $user->email1>]2nd personal e-mail: <a href="mailto:[<$user->email1>]">[<$user->email1>]</a><br />[</if>]
-[<if $user->email2>]3rd personal e-mail: <a href="mailto:[<$user->email2>]">[<$user->email2>]</a><br />[</if>]
-[<if $user->email3>]4th personal e-mail: <a href="mailto:[<$user->email3>]">[<$user->email3>]</a><br />[</if>]
-[<if $user->phone_other>]Alternate phone: [<$user->phone_other>]<br />[</if>]
-[<if $user->phone_cell>]Cell phone: [<$user->phone_cell>]<br />[</if>]
-[<if $user->sn0>]AIM/AOL Screenname: <a href="aim:goim?screenname=[<$user->sn0>]">[<$user->sn0>]</a><br />[</if>]
-[<if $user->sn1>]Yahoo! ID: [<$user->sn1>]<br />[</if>]
-[<if $user->sn2>]MSN Username: [<$user->sn2>]<br />[</if>]
-[<if $user->sn3>]Jabber: [<$user->sn3>]<br />[</if>]
-[<if $user->sn4>]ICQ Number: [<$user->sn4>]<br />[</if>]
-[<if $user->sn5>]Google Talk: [<$user->sn5>]<br />[</if>]
-[<if $user->sn6>]sn6: [<$user->sn6>]<br />[</if>]
-[<if $user->sn7>]sn7: [<$user->sn7>]<br />[</if>]
-[<if $user->webpage>]Webpage: <a href="[<$user->webpage>]">[<$user->webpage>]</a><br />[</if>]
+[<if count($user->mail)>]Personal e-mail address(es):<br />
+ <ul>
+ [<foreach from=$user->mail item=email>]
+  <li><a href="mailto:[<$email>]">[<$email>]</a></li>
+ [</foreach>]
+ </ul>
+[</if>]
+[<if count($user->aim)>]AIM/AOL Screenname(s):
+ <ul>
+ [<foreach from=$user->aim item=aim>]
+  <li><a href="aim:goim?screenname=[<$aim>]">[<$aim>]</a></li>
+ [</foreach>]
+ </ul>
+[</if>]
+[<if count($user->yahoo)>]Yahoo! ID(s):
+ <ul>
+ [<foreach from=$user->yahoo item=yahoo>]
+  <li>[<$yahoo>]</li>
+ [</foreach>]
+ </ul>
+[</if>]
+[<if count($user->msn)>]MSN Username(s):
+ <ul>
+ [<foreach from=$user->msn item=msn>]
+  <li>[<$msn>]</li>
+ [</foreach>]
+ </ul>
+[</if>]
+[<if count($user->jabber)>]Jabber Username(s):
+ <ul>
+ [<foreach from=$user->jabber item=jabber>]
+  <li>[<$jabber>]</li>
+ [</foreach>]
+ </ul>
+[</if>]
+[<if count($user->icq)>]ICQ Number(s):
+ <ul>
+ [<foreach from=$user->icq item=icq>]
+  <li>[<$icq>]</li>
+ [</foreach>]
+ </ul>
+[</if>]
+[<if count($user->googleTalk)>]Google Talk Username(s):
+ <ul>
+ [<foreach from=$user->googleTalk item=googleTalk>]
+  <li>[<$googleTalk>]</li>
+ [</foreach>]
+ </ul>
+[</if>]
+[<if count($user->webpage)>]Webpage(s):
+ <ul>
+ [<foreach from=$user->webpage item=webpage>]
+  <li><a href="[<$webpage>]">[<$webpage>]</a></li>
+ [</foreach>]
+ </ul>
+[</if>]
 [<if $user->locker>]Locker Number: [<$user->locker>]<br />[</if>]
 </td></tr></table>
 
@@ -44,6 +104,24 @@ Counselor: [<$user->counselor>]<br />
  [<foreach from=$schedule item=class>]
   <a href="[<$I2_ROOT>]studentdirectory/class/[<$class->sectionid>]">Period: [<$class->period>], Name: [<$class->name>], Room: [<$class->room>]</a><br />
  [</foreach>]
+[</if>]
+
+[<if $eighth>]
+ <br />Eighth Periods:<br />
+ <table>
+  <tr>
+   <th>Date</th>
+   <th>Activity</th>
+   <th>Room(s)</th>
+  </tr>
+ [<foreach from=$eighth item=activity>]
+  <tr>
+   <td>[<$activity->block->date>]</td>
+   <td>[<$activity->name_r>]</td>
+   <td>[<$activity->block_rooms_comma>]</td>
+  </tr>
+ [</foreach>]
+ </table>
 [</if>]
 
 <br /><br />
@@ -64,9 +142,7 @@ Student: [<$user->fname>] [<if $user->nickname>] ([<$user->nickname>]) [</if>] [
 [<elseif is_array($info)>]
 
 	[<foreach from=$info item=user>]
-		<a href="[<$I2_ROOT>]studentdirectory/info/[<$user->uid>]">[<$user->fullname_comma>]
-			[<if $user->grade>]([<$user->grade>])[</if>]
-		</a><br />
+		<a href="[<$I2_ROOT>]studentdirectory/info/[<$user->uid>]">[<$user->fullname_comma>][<if $user->grade>] ([<$user->grade>])[</if>]</a><br />
 	[</foreach>]
 
 [<else>]
