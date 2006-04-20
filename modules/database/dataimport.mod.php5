@@ -194,6 +194,7 @@ class dataimport implements Module {
 		$newteach['sn'] = $teacher['lname'];
 		$newteach['givenName'] = $teacher['fname'];
 		$newteach['style'] = 'default';
+		$newteach['startpage'] = 'news';
 		$newteach['header'] = 'TRUE';
 		$newteach['chrome'] = 'TRUE';
 		$dn = "iodineUid={$newteach['iodineUid']},ou=people";
@@ -211,7 +212,7 @@ class dataimport implements Module {
 		}
 		$usernew = array();
 		$usernew['objectClass'] = 'tjhsstStudent';
-		$usernew['graduationYear'] = '2006';
+		$usernew['graduationYear'] = 2006 + 12 - $user['grade'];
 		$usernew['cn'] = $user['fname'].' '.$user['lname'];
 		$usernew['sn'] = $user['lname'];
 		$usernew['tjhsstStudentId'] = $user['studentid'];
@@ -229,10 +230,12 @@ class dataimport implements Module {
 		} else {
 			$usernew['displayName'] = $user['fname'].' '.$user['lname'];
 		}
+		//$usernew['nickname'] = $user['nickname'];
 		$usernew['gender'] = $user['sex'];
 		$usernew['title'] = ($user['sex']=='M')?'Mr.':'Ms.';
 		$usernew['middlename'] = $user['mname'];
 		$usernew['style'] = 'default';
+		$usernew['startpage'] = 'news';
 		$usernew['header'] = 'TRUE';
 		$usernew['iodineUidNumber'] = $this->num;
 		$usernew['chrome'] = 'TRUE';

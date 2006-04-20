@@ -175,9 +175,13 @@ try {
 
 	// Starts with whatever module the user specified, otherwise
 	// default to 'news'
-	$module = isset($I2_ARGS[0]) ?
+	$module = (isset($I2_ARGS[0]) ?
 		$I2_ARGS[0] :
-		i2config_get('startmodule','news','core');
+		(isset($I2_USER->startpage) ?
+			$I2_USER->startpage :
+			i2config_get('startmodule','news','core')
+		)
+	);
 	
 	if(strtolower($module) == "ajax") {
 		$I2_AJAX->returnResponse($I2_ARGS[1]);

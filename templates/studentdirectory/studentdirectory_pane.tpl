@@ -50,14 +50,14 @@ Counselor: [<$user->counselor>]<br />
 [<if count($user->aim)>]AIM/AOL Screenname(s):
  <ul>
  [<foreach from=$user->aim item=aim>]
-  <li><a href="aim:goim?screenname=[<$aim>]">[<$aim>]</a></li>
+  <li><a href="aim:goim?screenname=[<$aim>]">[<$aim>]</a> <img src="[<$I2_ROOT>]www/pics/osi/aim[<$im_status.aim.$aim>].gif" /></li>
  [</foreach>]
  </ul>
 [</if>]
 [<if count($user->yahoo)>]Yahoo! ID(s):
  <ul>
  [<foreach from=$user->yahoo item=yahoo>]
-  <li>[<$yahoo>]</li>
+  <li>[<$yahoo>] <img src="[<$I2_ROOT>]www/pics/osi/yahoo[<$im_status.yahoo.$yahoo>].gif" /></li>
  [</foreach>]
  </ul>
 [</if>]
@@ -71,14 +71,14 @@ Counselor: [<$user->counselor>]<br />
 [<if count($user->jabber)>]Jabber Username(s):
  <ul>
  [<foreach from=$user->jabber item=jabber>]
-  <li>[<$jabber>]</li>
+  <li>[<$jabber>] <img src="[<$I2_ROOT>]www/pics/osi/jabber[<$im_status.jabber.$jabber>].gif" /></li>
  [</foreach>]
  </ul>
 [</if>]
 [<if count($user->icq)>]ICQ Number(s):
  <ul>
  [<foreach from=$user->icq item=icq>]
-  <li>[<$icq>]</li>
+  <li>[<$icq>] <img src="[<$I2_ROOT>]www/pics/osi/icq[<$im_status.icq.$icq>].gif" /></li>
  [</foreach>]
  </ul>
 [</if>]
