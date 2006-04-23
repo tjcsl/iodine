@@ -30,12 +30,6 @@ IE7_PNG_SUFFIX = ".png";
  [<else>]
  	There aren't any currently scheduled 8th period activities
  [</if>].
- </div><br />
- <span id="top_news">
- News: [<foreach from=$news_posts item=story name=titles>]
- <a href="[<$I2_ROOT>]news#newspost[<$story->id>]">[<$story->title>]</a>
- [<if not $smarty.foreach.titles.last>]<span class="bold">&middot;</span>[</if>]
- [</foreach>]
- </span>
+ </div>
 </div>
 <div class="date">[<include file='core/menu.tpl'>]</div>

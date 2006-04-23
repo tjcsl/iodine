@@ -373,9 +373,6 @@ class Display {
 			array(
 					'title' => htmlspecialchars($title), 
 					'first_name' => $I2_USER->fname, 
-					'admin_mysql' => Group::admin_mysql()->has_member($I2_USER),
-					'admin_ldap' => Group::admin_ldap()->has_member($I2_USER),
-					'admin_groups' => Group::admin_groups()->has_member($I2_USER),
 					'chrome' => $chrome
 			)
 		);

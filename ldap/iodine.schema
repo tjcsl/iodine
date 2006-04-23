@@ -560,8 +560,14 @@ objectclass ( i2OC:18
 	)
 
 objectclass ( i2OC:19
-	NAME ('machineUser' 'fakeUser')
+	NAME ('machineUser' 'fakeUser' 'iodineUser')
 	MUST (
 		iodineUid
+	)
+	MAY (
+		iodineUidNumber $
+		style $
+		chrome $
+		header
 	)
 	)

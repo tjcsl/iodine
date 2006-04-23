@@ -29,3 +29,12 @@ dn: ou=rooms,dc=tjhsst,dc=edu
 objectClass: organizationalUnit
 ou: rooms
 description: Rooms in the building
+
+dn: iodineUid=admin,ou=people,dc=tjhsst,dc=edu
+objectClass: fakeUser
+iodineUid: admin
+iodineUidNumber: 99
+style: default
+startPage: eighth
+header: FALSE
+chrome: FALSE
