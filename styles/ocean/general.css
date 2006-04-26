@@ -8,8 +8,8 @@ input, select, textarea {
 @extend
 body {
 	background-color: #00EEDD;
-	background-image: url(www/pics/styles/ocean/water.png);
-	color: #00FFFF;
+	background-image: url(www/pics/styles/ocean/shell.jpg);
+	color: #006699;
 }
 
 a {

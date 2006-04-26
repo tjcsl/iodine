@@ -1,0 +1,24 @@
+@extend
+.intrabox {
+	background-color: #660000;
+	color: #FFCC00;
+	opacity: .75;
+}
+
+@extend
+.boxheader {
+	background-color: #330000;
+	color: #FF9933;
+}
+
+@extend
+.mainbox {
+	background-color: #660000;
+	color: #FFCC00;
+	opacity: .75;
+}
+
+@extend
+.boxcontent {
+	color: #FFFF33;
+}

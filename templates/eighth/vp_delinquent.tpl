@@ -9,7 +9,7 @@
 [<foreach from=$students item="student" key="key">]
 	<tr>
 		<td>[<$student->name_comma>]</td>
-		<td>[<$student->uid>]</td>
+		<td>[<$student->tjhsstStudentId>]</td>
 		<td>[<$absences.$key>]</td>
 		<td>[<$student->grade>]</td>
 	</tr>

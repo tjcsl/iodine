@@ -416,6 +416,17 @@ class User {
 		return strcasecmp($user1->name_comma, $user2->name_comma);
 	}
 
+	/**
+	*
+	*
+	* @param int A user's Student ID.
+	* @return int A user's Iodine UID.
+	*/
+	public static function studentid_to_uid($studentid) {
+		global $I2_LDAP;
+		return $I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', "(tjhsstStudentId={$studentid})", 'iodineUidNumber')->fetch_single_value();
+	}
+
 }
 
 ?>

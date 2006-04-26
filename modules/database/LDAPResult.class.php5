@@ -260,7 +260,7 @@ class LDAPResult implements Result {
 
 	public function fetch_col($colname) {
 		$ret = array();
-		while ($arr = $this->fetch_array()) {
+		while ($arr = $this->fetch_array(Result::NUM)) {
 			if (isSet($arr[$colname])) {
 				$ret[] = $arr[$colname];
 			}

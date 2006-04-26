@@ -250,6 +250,25 @@ function flatten($arr) {
 }
 
 /**
+* Flatten an array irrespective of keys. (Non-recursive, one level deep.)
+*
+* @param Array $arr The array to flatten.
+* @return Array The flattened array.
+*/
+function flatten_values($arr) {
+	$ret = array();
+	foreach($arr as $item) {
+		if( is_array($item) ) {
+			$ret = array_merge($ret, array_values($item));
+		}
+		else {
+			$ret[] = $item;
+		}
+	}
+	return $ret;
+}
+
+/**
 * Tests if the string starts with the specified prefix.
 *
 * @param string $str The string to test

@@ -6,23 +6,31 @@
 }
 @extend
 .title {
-	color: #00FFFF;
-	border-bottom: 3px solid #00FFFF;
+	font-size: 18pt;
+	color: #006699;
+	border-bottom: 3px solid #006699;
+	margin-bottom: 5px;
+	margin-left: -10px;
+	padding-left: 10px;
 }
 @extend
 .date {
+	margin-top: 5px;
 	top: 25px;
-	color: #00FFFF;
+	color: #006699;
+	font-weight: bold;
 }
 .header a {
-	color: #00FFFF;
+	color: #006699;
 }
 .header a:visited {
-	color: #00FFFF;
+	color: #006699;
 }
 .date a {
-	color: #00FFFF;
+	color: #006699;
+	font-weight: bold;
 }
 .date a:visited {
-	color: #00FFFF;
+	color: #006699;
+	font-weight: bold;
 }

@@ -27,7 +27,7 @@
 
 [<if $I2_USER->is_group_member('admin_eighth')>]
 	[<include file="eighth/header.tpl">]
-	<h2>[<$user->name_comma>] ([<$user->uid>], [<$user->grade>][<if $user->grade != 'staff' >]th[</if>])</h2>
+	<h2>[<$user->name_comma>] ([<$user->tjhsstStudentId>], [<$user->grade>][<if $user->grade != 'staff' >]th[</if>])</h2>
 	<b>Counselor: [<$user->counselor>], TA: </b><br />
 	<span style="color: #FF0000; font-weight: bold;">Comments: [<if $user->comments == "" >]none[<else>][<$user->comments>][</if>]</span><br />
 	<a href="[<$I2_ROOT>]eighth/vcp_schedule/absences/uid/[<$user->uid>]">[<$absence_count>] absence[<if $absence_count != 1>]s[</if>]</a><br />

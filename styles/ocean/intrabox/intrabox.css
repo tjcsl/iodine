@@ -6,28 +6,34 @@
 .intrabox {
 	border: #009999 2px solid;
 	margin-bottom: 10pt;
-	background-color: #00EEEE;
+	background-color: #00FFFF;
 	width: 305px;
 	-moz-border-radius: 10px;
-	opacity: .85;
+	opacity: .5;
+}
+.intrabox:hover {
+	opacity: .75;
 }
 @extend
 .boxheader {
 	color: #FFFFFF;
 	font-weight: bold;
 	background-color: #006699;
-	border: 3px outset #007777;
+	border: 1px transparent;
 	padding-left: 10px;
 	-moz-user-select: none;
 	-moz-border-radius: 10px;
-	font-size: 11px;
-	height: 14px;
+	font-size: 12px;
+	height: 16px;
 	padding-top: 1px;
+	margin-left: -2px;
+	margin-right: -2px;
+	margin-top: -2px;
 }
 @extend
 .boxbuttons {
-	margin-top: 2px;
-	margin-right: 10px;
+	margin-top: -2px;
+	margin-right: 8px;
 }
 @extend
 .boxcontent {
@@ -43,9 +49,12 @@
 .mainbox {
 	left: 337px;
 	border: #009999 2px solid;
-	background-color: #00EEEE;
+	background-color: #00FFFF;
 	-moz-border-radius: 10px;
-	opacity: .85;
+	opacity: .5;
+}
+.mainbox:hover {
+	opacity: .75;
 }
 @extend
 .activity_cancelled {

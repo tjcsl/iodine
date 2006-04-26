@@ -1,0 +1,35 @@
+@extend
+.header {
+	color: #FFFF00;
+}
+
+@extend
+.title {
+	color: #FFFF00;
+	border-bottom-color: #FFFF00;
+}
+
+@extend
+.date {
+	color: #FFFF00;
+}
+
+@extend
+.date a {
+	color: #FFFF00;
+}
+
+@extend
+.date a:visited {
+	color: #FFFF00;
+}
+
+@extend
+.date a:hover {
+	color: #FF6600;
+}
+
+@extend
+.date a:active {
+	color: #FF0000;
+}

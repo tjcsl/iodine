@@ -25,7 +25,7 @@ Sponsor%@(count($activity->block_sponsors) > 1 ? 's' : '')@%: & %@$activity->blo
 $absentees = $activity->absentees;
 foreach($activity->members_obj as $num=>$member) {
 @%
-%@(in_array($member->uid, $absentees) ? "Yes" : "No")@% & %@$member->name_comma@% (%@$member->uid@%) & %@$member->grade@% \\
+%@(in_array($member->uid, $absentees) ? "Yes" : "No")@% & %@$member->name_comma@% (%@$member->tjhsstStudentId@%) & %@$member->grade@% \\
 %@?
 	if($num % 35 == 0 && $num != 0) {
 @%

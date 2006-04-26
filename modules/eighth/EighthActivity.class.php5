@@ -360,7 +360,7 @@ class EighthActivity {
 			return $this->get_members();
 		}
 		else if($name == "members_obj" && $this->data['bid']) {
-			return User::id_to_user($this->get_members());
+			return User::sort_users($this->get_members());
 		}
 		else if($name == "absentees" && $this->data['bid']) {
 			return EighthSchedule::get_absentees($this->data['bid'], $this->data['aid']);

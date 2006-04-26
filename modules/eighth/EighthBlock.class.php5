@@ -37,7 +37,7 @@ class EighthBlock {
 	* @param string $block The block letter (A or B).
 	*/
 	public static function add_block($date, $block) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_LDAP;
 		if($I2_SQL->query("SELECT bid FROM eighth_blocks WHERE date=%t AND block=%s", $date, $block)->num_rows()) {
 			return -1;
 		}
@@ -48,7 +48,7 @@ class EighthBlock {
 		//schedule the default activity
 		EighthSchedule::schedule_activity($bid, $default_aid, $activity->sponsors, $activity->rooms);
 		//add all students to default activity
-		$uids = flatten($I2_SQL->query("SELECT uid FROM user")->fetch_all_arrays(Result::NUM));
+		$uids = flatten_values($I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', '(objectClass=tjhsstStudent)', 'iodineUidNumber')->fetch_all_arrays(Result::NUM));
 		$activity = new EighthActivity($default_aid, $bid);
 		$activity->add_members($uids);
 		return $bid;

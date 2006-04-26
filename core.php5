@@ -177,7 +177,7 @@ try {
 	// default to 'news'
 	$module = (isset($I2_ARGS[0]) ?
 		$I2_ARGS[0] :
-		(isset($I2_USER->startpage) ?
+		($I2_USER->startpage ?
 			$I2_USER->startpage :
 			i2config_get('startmodule','news','core')
 		)

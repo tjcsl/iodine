@@ -272,6 +272,14 @@ attributetype ( i2Attr:32
 	SINGLE-VALUE
 	)
 	
+attributetype ( i2Attr:33
+	NAME ('startpage' 'defaultmodule')
+	DESC 'The default Iodine module of a user'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	SINGLE-VALUE	
+	)
+	
 attributetype ( i2Attr:34
 	NAME ('style' 'css' 'theme')
 	DESC 'The default Iodine style of a user'
@@ -504,6 +512,7 @@ objectclass ( i2OC:1
 		cn $
 		sn $
 		tjhsstStudentId $
+		startpage $
 		style $
 		header $
 		chrome
@@ -548,6 +557,7 @@ objectclass ( i2OC:2
 		iodineUidNumber $
 		birthday $
 		sex $
+		startpage $
 		header $
 		style $
 		chrome
@@ -566,6 +576,7 @@ objectclass ( i2OC:19
 	)
 	MAY (
 		iodineUidNumber $
+		startpage $
 		style $
 		chrome $
 		header

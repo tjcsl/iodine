@@ -10,7 +10,7 @@ Restricted Members of [<$activity->name>]<br />
 [<foreach from=$activity->restricted_members_obj item="member">]
 	<tr style="background-color: [<cycle values="#CCCCCC,#FFFFFF">]">
 		<td style="padding: 0px 5px;">[<$member->name>]</td>
-		<td style="text-align: center; padding: 0px 5px;">[<$member->uid>]</td>
+		<td style="text-align: center; padding: 0px 5px;">[<$member->tjhsstStudentId>]</td>
 		<td style="text-align: center; padding: 0px 5px;">[<$member->grade>]</td>
 		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/alt_permissions/remove_member/aid/[<$activity->aid>]/uid/[<$member->uid>]">Remove</a></td>
 	</tr>

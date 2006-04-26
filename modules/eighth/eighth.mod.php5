@@ -758,8 +758,8 @@ class Eighth implements Module {
 			$this->template = "res_student.tpl";
 			$this->template_args['block'] = new EighthBlock($args['bid']);
 			$this->template_args['activity'] = new EighthActivity($args['aid']);
-			if(isset($args['uid'])) {
-				$this->template_args['user'] = new User($args['uid']);
+			if(isset($args['studentId'])) {
+				$this->template_args['user'] = new User(User::studentid_to_uid($args['studentId']));
 				if (!$this->template_args['user']->is_valid()) {
 					redirect('eighth/res_student/user/bid/'.$args['bid'].'/aid/'.$args['aid']);
 				}

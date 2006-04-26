@@ -1,0 +1,5 @@
+@extend
+body {
+	background-color: #660000;
+	background-image: url(www/pics/styles/fire/background.jpg);
+}
