@@ -37,7 +37,7 @@ class EighthBlock {
 	* @param string $block The block letter (A or B).
 	*/
 	public static function add_block($date, $block, $schedule_default = TRUE) {
-		global $I2_SQL;
+		global $I2_SQL,$I2_LDAP;
 		$res = $I2_SQL->query('SELECT bid FROM eighth_blocks WHERE date=%t AND block=%s', $date, $block);
 		if($res->num_rows()) {
 			return $res->fetch_single_value();

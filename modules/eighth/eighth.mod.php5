@@ -997,14 +997,15 @@ class Eighth implements Module {
 	public function rep_schedules($op, $args) {
 		global $I2_SQL;
 		if($op == '') {
-			$bids = flatten($I2_SQL->query('SELECT bid FROM blocks')->fetch_all_arrays(MYSQL_NUM));
+			$bids = flatten($I2_SQL->query('SELECT bid FROM eighth_blocks')->fetch_all_arrays(MYSQL_NUM));
 			foreach($bids as $bid) {
 				$activity = new EighthActivity(1);
 				EighthSchedule::schedule_activity($bid, $activity->aid, $activity->sponsors, $activity->rooms);
-				$uids = flatten($I2_SQL->query('SELECT uid FROM user WHERE uid NOT IN (SELECT userid FROM activity_map WHERE bid=%d)', $bid)->fetch_all_arrays(MYSQL_NUM));
+				$uids = flatten($I2_SQL->query('SELECT uid FROM user WHERE uid NOT IN (SELECT userid FROM eighth_activity_map WHERE bid=%d)',
+					$bid)->fetch_all_arrays(MYSQL_NUM));
 				$activity->add_members($uids, false, $bid);
 			}
-			redirect("eighth");
+			redirect('eighth');
 		}
 	}
 
@@ -1054,9 +1055,11 @@ class Eighth implements Module {
 		}
 		else if($op == 'choose') {
 			$this->template_args['activities'] = EighthActivity::get_all_activities($args['bid']);
-			$changing_bids = array_keys($args['change']);
-			foreach ($changing_bids as $bid) {
-				
+			if (isSet($args['change'])) {
+				$changing_bids = array_keys($args['change']);
+				foreach ($changing_bids as $bid) {
+					//FIXME: write this		
+				}
 			}
 			$this->template_args['bid'] = $args['bid'];
 			$this->template_args['uid'] = $args['uid'];

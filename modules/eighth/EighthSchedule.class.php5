@@ -33,6 +33,12 @@ class EighthSchedule {
 		if(!is_array($rooms)) {
 			$rooms = array($rooms);
 		}
+		if (!$attendancetaken) {
+			$attendancetaken = 0;
+		}
+		if (!$cancelled) {
+			$cancelled = 0;
+		}
 		$result = $I2_SQL->query("REPLACE INTO eighth_block_map 
 			(bid,activityid,sponsors,rooms,comment,attendancetaken,cancelled,advertisement) 
 			VALUES (%d,%d,'%D','%D',%s,%d,%d,%s)", 
