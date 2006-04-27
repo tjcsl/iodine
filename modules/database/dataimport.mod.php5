@@ -17,8 +17,9 @@ class dataimport implements Module {
 	public function __autoconstruct() {
 		//TODO: ?
 		//$this->oldsql = mysql_connect('intranet');
+
 		/*
-		** Set this high to avoid interfering with teachers' SASI numbers
+		** Set this high to avoid interfering with teachers' random assigned SASI numbers
 		*/
 		$this->num = 10000;
 	}
@@ -207,6 +208,9 @@ class dataimport implements Module {
 		$this->finish_teachers($validteachers);
 	}
 
+	/**
+	* Loops over the passed array and creates each teacher
+	*/
 	private function finish_teachers($teacherarr) {
 		$ldap = LDAP::get_admin_bind($this->admin_pass);
 
@@ -275,6 +279,9 @@ class dataimport implements Module {
 		}
 	}
 
+	/**
+	* Adds a new teacher from the given data
+	*/
 	private function create_teacher($teacher,$ldap=NULL) {
 		global $I2_LDAP;
 		if (!$ldap) {
@@ -299,6 +306,9 @@ class dataimport implements Module {
 		$ldap->add($dn,$newteach);
 	}
 
+	/**
+	* Adds a new user from the given data
+	*/
 	private function create_user($user,$ldap=NULL) {
 		global $I2_LDAP;
 		if (!$ldap) {
