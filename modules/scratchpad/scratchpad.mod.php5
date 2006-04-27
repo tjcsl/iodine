@@ -12,7 +12,7 @@ class Scratchpad implements Module {
 
 	function init_box() {
 		GLOBAL $I2_USER, $I2_SQL;
-		$this->template_args['text'] = ''; //$I2_SQL->query('SELECT padtext FROM scratchpad WHERE uid=%d',$I2_USER->uid)->fetch_single_value();
+		$this->template_args['text'] = 'Loading...'; //$I2_SQL->query('SELECT padtext FROM scratchpad WHERE uid=%d',$I2_USER->uid)->fetch_single_value();
 		return 'Scratchpad';
 	}
 
@@ -40,6 +40,8 @@ class Scratchpad implements Module {
 			case "load":
 				$this->text = $I2_SQL->query("SELECT padtext FROM scratchpad WHERE uid=%d", $I2_USER->uid)->fetch_single_value('padtext');
 				return TRUE;
+			case: "help":
+				return TRUE;
 			default :
 				return FALSE;
 		}
@@ -47,11 +49,16 @@ class Scratchpad implements Module {
 	}
 	
 	function display_pane($disp) { //returns text to AJAX
-		Display::stop_display();
-
-		echo $this->text;
-
-		exit;
+		global $I2_ARGS;
+		
+		if($I2_ARGS[1]=="load") {
+			Display::stop_display();
+			echo $this->text;
+			exit;
+		}
+		else {
+			$disp->disp('scratchpad_pane.tpl', $this->template_args);
+		}
 	}
 
 	function get_name() {
