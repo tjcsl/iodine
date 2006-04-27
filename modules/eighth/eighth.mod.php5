@@ -422,15 +422,15 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	private function amr_activity($op, $args) {
-		if($op == "") {
+		if($op == '') {
 			$this->setup_activity_selection(TRUE);
 		}
-		else if($op == "view") {
-			$this->template = "amr_activity.tpl";
-			$this->template_args = array("activity" => new EighthActivity($args['aid']));
-			$this->title = "View Activities";
+		else if($op == 'view') {
+			$this->template = 'amr_activity.tpl';
+			$this->template_args = array('activity' => new EighthActivity($args['aid']));
+			$this->title = 'View Activities';
 		}
-		else if($op == "add") {
+		else if($op == 'add') {
 			$aid = EighthActivity::add_activity($args['name']);
 			redirect("eighth/amr_activity/view/aid/{$aid}");
 		}
@@ -447,29 +447,29 @@ class Eighth implements Module {
 			$activity->sticky = ($args['sticky'] == "on");
 			redirect("eighth/amr_activity/view/aid/{$args['aid']}");
 		}
-		else if($op == "remove") {
+		else if($op == 'remove') {
 			EighthActivity::remove_activity($args['aid']);
-			redirect("eighth");
+			redirect('eighth');
 		}
-		else if($op == "select_sponsor") {
+		else if($op == 'select_sponsor') {
 			$this->setup_sponsor_selection();
 			$this->template_args['op'] = "add_sponsor/aid/{$args['aid']}";
 		}
-		else if($op == "add_sponsor") {
+		else if($op == 'add_sponsor') {
 			$activity = new EighthActivity($args['aid']);
 			$activity->add_sponsor($args['sid']);
 			redirect("eighth/amr_activity/view/aid/{$args['aid']}");
 		}
-		else if($op == "remove_sponsor") {
+		else if($op == 'remove_sponsor') {
 			$activity = new EighthActivity($args['aid']);
 			$activity->remove_sponsor($args['sid']);
 			redirect("eighth/amr_activity/view/aid/{$args['aid']}");
 		}
-		else if($op == "select_room") {
+		else if($op == 'select_room') {
 			$this->setup_room_selection();
 			$this->template_args['op'] = "add_room/aid/{$args['aid']}";
 		}
-		else if($op == "add_room") {
+		else if($op == 'add_room') {
 			$activity = new EighthActivity($args['aid']);
 			$activity->add_room($args['rid']);
 			redirect("eighth/amr_activity/view/aid/{$args['aid']}");

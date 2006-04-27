@@ -18,6 +18,11 @@
 class User {
 
 	/**
+	* Keeps track of all cached sets of user information so we don't have to do two lookups.
+	*/
+	private static $cache = array();
+	
+	/**
 	* Information about the user, only stored if this User object
 	* represents the current user logged in, since that information will
 	* probably be retrieved the most, so we cache it for speed.
@@ -56,35 +61,51 @@ class User {
 			if( isset($_SESSION['i2_uid']) ) {
 				$this->username = $_SESSION['i2_uid'];
 				$uid = $this->username;
-				$this->info = $I2_LDAP->search('ou=people',"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
+				if (isSet(self::$cache[$uid])) {
+					$this->info = &self::$cache[$uid];
+				} else {
+					$this->info = $I2_LDAP->search('ou=people',"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
+				}
 				$this->myuid = $this->info['iodineUidNumber'];
 			}
 			else {
 				$I2_ERR->fatal_error('Your password and username were correct, but you don\'t appear to exist in our database. If this is a mistake, please contact the intranetmaster about it.');
 			}
 		}
-		//If the user created is the same as the logged in user, use the cache
-		elseif( $uid == $GLOBALS['I2_USER']->uid ) {
-			$this->info = &$GLOBALS['I2_USER']->info;
-			$this->myuid = $this->info['iodineUidNumber'];
-			$this->username = $this->info['iodineUid'];
-		}
 
 		elseif( is_numeric($uid) ) {
-			$this->info = $I2_LDAP->search('ou=people',"iodineUidNumber=$uid")->fetch_array(RESULT::ASSOC);
+			if (isSet(self::$cache[$uid])) {
+				$this->info = &self::$cache[$uid];
+			} else {
+				$this->info = $I2_LDAP->search('ou=people',"iodineUidNumber=$uid")->fetch_array(RESULT::ASSOC);
+			}
 			$this->username = $this->info['iodineUid'];
 			$this->myuid = $uid;
 		}
 
 		else {
-			$this->info = $I2_LDAP->search('ou=people',"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
+			if (isSet(self::$cache[$uid])) {
+				$this->info = &self::$cache[$uid];
+			} else {
+				$this->info = $I2_LDAP->search('ou=people',"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
+			}
 			$this->username = $uid;
 			$this->myuid = $this->info['iodineUidNumber'];
 		}
+
+		/*
+		** Put info in cache
+		*/
+		self::$cache[$this->myuid] = $this->info;
 	}
 
 	public function is_valid() {
 		return $this->myuid !== NULL;
+	}
+
+	public function recache($field) {
+		global $I2_LDAP;
+		$this->info[$field] = $I2_LDAP->search_base("iodineUid={$this->iodineUid},ou=people",'style')->fetch_single_value();
 	}
 
 	/**
@@ -140,20 +161,18 @@ class User {
 				return $this->__get('lname') . ', ' . $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . ($mid ? "$mid " : '');
 			case 'grad_year':
 				return $this->__get('graduationYear');
-			case 'grade':
-				return (12 + i2config_get('senior_gradyear', date('Y'), 'user') - $this->__get('graduationYear'));
 			case 'lname':
 				return $this->__get('sn');
 			case 'fname':
 				return $this->__get('givenName');
 			case 'mname':
 				return $this->__get('middlename');
-			/*case 'nickname':
-				return $this->__get('displayName');*/
 			case 'uid':
 				return $this->__get('iodineUidNumber');
 			case 'username':
 				return $this->__get('iodineUid');
+			case 'grade':
+				return $this->get_grade($this->__get('graduationYear'));
 			case 'phone_home':
 				$phone = $this->__get('homePhone');
 				return '(' . substr($phone, 0, 3) . ') ' . substr($phone, 3, 3) . '-' . substr($phone, 6);
@@ -192,6 +211,23 @@ class User {
 	}
 
 	/**
+	* Gets the current grade of a student based on their graduation year.
+	*
+	* @param int $gradyear The year in which the student will graduate.
+	* @return int The student's grade, 9-12, or -1 if other.
+	*/
+	public function get_grade($gradyear) {
+		if (!$gradyear) {
+			return -1;
+		}
+		$grade = ((int)i2config_get('senior_gradyear','foobertybroken','user'))-((int)$gradyear)+12;
+		if ($grade >= 9 && $grade <= 12) {
+			return $grade;
+		}
+		return -1;
+	}
+
+	/**
 	* The magical php __set method.
 	*
 	* This is called implicitly by PHP if you try to do
@@ -223,6 +259,27 @@ class User {
 		if(!$uid) {
 			return FALSE;
 		}
+		return new User($uid);
+	}
+
+	/**
+	* Returns whether the user is automagically an admin by birthright.
+	*/
+	public function is_admin_user() {
+		return $this->username == 'admin';
+	}
+
+	/**
+	* Gets a student by their StudentID
+	*
+	* Returns a User object that has the StudentID $studentid.
+	*
+	* @param int $studentid The StudentID to get a User for.
+	* @return User The user with the passed StudentID.
+	*/
+	public static function get_by_studentid($studentid) {
+		global $I2_LDAP;
+		$uid = $I2_LDAP->search('',"tjhsstStudentID=$studentid",'iodineUidNumber')->fetch_single_value();
 		return new User($uid);
 	}
 
@@ -367,9 +424,31 @@ class User {
 	* @param string The search string.
 	* @return array An array of {@link User} objects of the results. An
 	* empty array is returned if no match is found.
+	* @todo Improve drastically
 	*/
 	public function search_info($str) {
-		throw new I2Exception('search_info not implemented!');
+		global $I2_LDAP;
+		d("search_info: $str",4);
+
+		//FIXME: improve, close hole?
+		$str = addslashes($str);
+
+		//FIXME: improve this
+		$res = $I2_LDAP->search('ou=people',
+		"(|(iodineUid=$str)(givenName=$str)(sn=$str)(mname=$str))"
+										,array('iodineUid'));
+		
+		if (!$res) {
+			return array();
+		}
+		
+		
+		$ret = array();
+		while ($uid = $res->fetch_single_value()) {
+			$ret[] = new User($uid);
+		}
+		
+		return $ret;
 	}
 
 	/**

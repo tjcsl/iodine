@@ -51,6 +51,7 @@ class StudentDirectory implements Module {
 				}
 				else {
 					$this->information = $I2_USER->search_info($_REQUEST['studentdirectory_query']);
+					
 					if( count($this->information) == 1 ) {
 						redirect('studentdirectory/info/'.$this->information[0]->uid);
 					}
@@ -76,6 +77,8 @@ class StudentDirectory implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
+		$eighth = NULL;
+		$im_status = NULL;
 		if( $this->information == 'help' ) {
 			$display->disp('studentdirectory_help.tpl');
 		} else {
@@ -88,84 +91,87 @@ class StudentDirectory implements Module {
 			} else {
 				$sched = NULL;
 			}
-			$im_status = array();
-			$aim_accts = $this->user->aim;
-			$icq_accts = $this->user->icq;
-			$jabber_accts = $this->user->jabber;
-			$yahoo_accts = $this->user->yahoo;
-			if(count($aim_accts)) {
-				if(!is_array($aim_accts) && !is_object($aim_accts)) {
-					settype($aim_accts, 'array');
-				}
-				foreach($aim_accts as $aim) {
-					switch($this->im_status('aim', $aim)) {
-						case IM_ONLINE:
-							$im_status['aim'][$aim] = 'online';
-							break;
-						case IM_OFFLINE:
-							$im_status['aim'][$aim] = 'offline';
-							break;
-						case IM_UNKNOWN:
-							$im_status['aim'][$aim] = 'unknown';
-							break;
+			if ($this->user !== NULL) {
+				$im_status = array();
+				$aim_accts = $this->user->aim;
+				$icq_accts = $this->user->icq;
+				$jabber_accts = $this->user->jabber;
+				$yahoo_accts = $this->user->yahoo;
+				if(count($aim_accts)) {
+					if(!is_array($aim_accts) && !is_object($aim_accts)) {
+						settype($aim_accts, 'array');
+					}
+					foreach($aim_accts as $aim) {
+						switch($this->im_status('aim', $aim)) {
+							case IM_ONLINE:
+								$im_status['aim'][$aim] = 'online';
+								break;
+							case IM_OFFLINE:
+								$im_status['aim'][$aim] = 'offline';
+								break;
+							case IM_UNKNOWN:
+								$im_status['aim'][$aim] = 'unknown';
+								break;
+						}
 					}
 				}
-			}
-			if(count($icq_accts)) {
-				if(!is_array($icq_accts) && !is_object($icq_accts)) {
-					settype($icq_accts, 'array');
-				}
-				foreach($icq_accts as $icq) {
-					switch($this->im_status('icq', $icq)) {
-						case IM_ONLINE:
-							$im_status['icq'][$icq] = 'online';
-							break;
-						case IM_OFFLINE:
-							$im_status['icq'][$icq] = 'offline';
-							break;
-						case IM_UNKNOWN:
-							$im_status['icq'][$icq] = 'unknown';
-							break;
+				if(count($icq_accts)) {
+					if(!is_array($icq_accts) && !is_object($icq_accts)) {
+						settype($icq_accts, 'array');
+					}
+					foreach($icq_accts as $icq) {
+						switch($this->im_status('icq', $icq)) {
+							case IM_ONLINE:
+								$im_status['icq'][$icq] = 'online';
+								break;
+							case IM_OFFLINE:
+								$im_status['icq'][$icq] = 'offline';
+								break;
+							case IM_UNKNOWN:
+								$im_status['icq'][$icq] = 'unknown';
+								break;
+						}
 					}
 				}
-			}
-			if(count($jabber_accts)) {
-				if(!is_array($jabber_accts) && !is_object($jabber_accts)) {
-					settype($jabber_accts, 'array');
-				}
-				foreach($jabber_accts as $jabber) {
-					switch($this->im_status('jabber', $jabber)) {
-						case IM_ONLINE:
-							$im_status['jabber'][$jabber] = 'online';
-							break;
-						case IM_OFFLINE:
-							$im_status['jabber'][$jabber] = 'offline';
-							break;
-						case IM_UNKNOWN:
-							$im_status['jabber'][$jabber] = 'unknown';
-							break;
+				if(count($jabber_accts)) {
+					if(!is_array($jabber_accts) && !is_object($jabber_accts)) {
+						settype($jabber_accts, 'array');
+					}
+					foreach($jabber_accts as $jabber) {
+						switch($this->im_status('jabber', $jabber)) {
+							case IM_ONLINE:
+								$im_status['jabber'][$jabber] = 'online';
+								break;
+							case IM_OFFLINE:
+								$im_status['jabber'][$jabber] = 'offline';
+								break;
+							case IM_UNKNOWN:
+								$im_status['jabber'][$jabber] = 'unknown';
+								break;
+						}
 					}
 				}
-			}
-			if(count($yahoo_accts)) {
-				if(!is_array($yahoo_accts) && !is_object($yahoo_accts)) {
-					settype($yahoo_accts, 'array');
-				}
-				foreach($yahoo_accts as $yahoo) {
-					switch($this->im_status('yahoo', $yahoo)) {
-						case IM_ONLINE:
-							$im_status['yahoo'][$yahoo] = 'online';
-							break;
-						case IM_OFFLINE:
-							$im_status['yahoo'][$yahoo] = 'offline';
-							break;
-						case IM_UNKNOWN:
-							$im_status['yahoo'][$yahoo] = 'unknown';
-							break;
+				if(count($yahoo_accts)) {
+					if(!is_array($yahoo_accts) && !is_object($yahoo_accts)) {
+						settype($yahoo_accts, 'array');
+					}
+					foreach($yahoo_accts as $yahoo) {
+						switch($this->im_status('yahoo', $yahoo)) {
+							case IM_ONLINE:
+								$im_status['yahoo'][$yahoo] = 'online';
+								break;
+							case IM_OFFLINE:
+								$im_status['yahoo'][$yahoo] = 'offline';
+								break;
+							case IM_UNKNOWN:
+								$im_status['yahoo'][$yahoo] = 'unknown';
+								break;
+						}
 					}
 				}
+				$eighth = EighthActivity::id_to_activity(EighthSchedule::get_activities($this->user->uid));
 			}
-			$display->disp('studentdirectory_pane.tpl',array('info' => $this->information, 'schedule' => $sched, 'user' => $this->user, 'eighth' => EighthActivity::id_to_activity(EighthSchedule::get_activities($this->user->uid)), 'im_status' => $im_status));
+			$display->disp('studentdirectory_pane.tpl',array('info' => $this->information, 'schedule' => $sched, 'user' => $this->user, 'eighth' => $eighth, 'im_status' => $im_status));
 		}
 	}
 	

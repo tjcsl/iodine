@@ -80,7 +80,7 @@ class EighthActivity {
 			$ret |= EighthActivity::PRESIGN;
 		}
 		if(!$ret || $force) {
-			$result = $I2_SQL->query("REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES (%d,%d,%d)", $this->data['aid'], $blockid, $userid);
+			$result = $I2_SQL->query('REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES (%d,%d,%d)', $this->data['aid'], $blockid, $userid);
 			if(mysql_error()) {
 				$ret = -1;
 			}
@@ -311,7 +311,8 @@ class EighthActivity {
 	* @param string $description The description of the activity.
 	* @param bool $restricted If this is a restricted activity.
 	*/
-	public static function add_activity($name, $sponsors = array(), $rooms = array(), $description = "", $restricted = FALSE) {
+	public static function add_activity($name, $sponsors = array(), $rooms = array(), $description = "", 
+			$restricted = FALSE, $sticky = FALSE, $bothblocks = FALSE, $presign = FALSE, $aid = NULL) {
 		global $I2_SQL;
 		if(!is_array($sponsors)) {
 			$sponsors = array($sponsors);
@@ -319,7 +320,17 @@ class EighthActivity {
 		if(!is_array($rooms)) {
 			$rooms = array($rooms);
 		}
-		$result = $I2_SQL->query("INSERT INTO eighth_activities (name,sponsors,rooms,description,restricted) VALUES (%s,'%D','%D',%s,%d)", $name, $sponsors, $rooms, $description, ($restricted ? 1 : 0));
+		$result = NULL;
+		if ($aid === NULL) {
+			$result = $I2_SQL->query("REPLACE INTO eighth_activities (name,sponsors,rooms,description,restricted,sticky,bothblocks,presign) 
+				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d)", 
+				$name, $sponsors, $rooms, $description, ($restricted?1:0),($sticky?1:0),($bothblocks?1:0),($presign?1:0));
+		} else {
+			$result = $I2_SQL->query("REPLACE INTO eighth_activities 
+				(name,sponsors,rooms,description,restricted,sticky,bothblocks,presign,aid) 
+				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d,%d)", 
+				$name, $sponsors, $rooms, $description, ($restricted?1:0),($sticky?1:0),($bothblocks?1:0),($presign?1:0),$aid);
+		}
 		return $result->get_insert_id();
 	}
 
@@ -331,7 +342,7 @@ class EighthActivity {
 	*/
 	public static function remove_activity($activityid) {
 		global $I2_SQL;
-		$result = $I2_SQL->query("DELETE FROM eighth_activities WHERE aid=%d", $activityid);
+		$result = $I2_SQL->query('DELETE FROM eighth_activities WHERE aid=%d', $activityid);
 		// TODO: Deal with the problems of deleting an activity
 	}
 
@@ -356,63 +367,64 @@ class EighthActivity {
 		if(array_key_exists($name, $this->data)) {
 			return $this->data[$name];
 		}
-		else if($name == "members" && $this->data['bid']) {
+		else if($name == 'members' && $this->data['bid']) {
 			return $this->get_members();
 		}
-		else if($name == "members_obj" && $this->data['bid']) {
-			return User::sort_users($this->get_members());
+		else if($name == 'members_obj' && $this->data['bid']) {
+			return User::id_to_user($this->get_members());
 		}
-		else if($name == "absentees" && $this->data['bid']) {
+		else if($name == 'absentees' && $this->data['bid']) {
 			return EighthSchedule::get_absentees($this->data['bid'], $this->data['aid']);
 		}
 		else {
 			switch($name) {
-				case "comment_short":
+				case 'comment_short':
 					return substr($this->data['comment'], 0, 15);
-				case "name_r":
+				case 'name_r':
 					return $this->data['name'] . ($this->data['restricted'] ? " (R)" : "");
-				case "sponsors_comma":
+				case 'sponsors_comma':
 					$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
 					$temp_sponsors = array();
 					foreach($sponsors as $sponsor) {
 						$temp_sponsors[] = $sponsor->name;
 					}
 					return implode(", ", $temp_sponsors);
-				case "block_sponsors_comma":
+				case 'block_sponsors_comma':
 					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
 					$temp_sponsors = array();
 					foreach($sponsors as $sponsor) {
 						$temp_sponsors[] = $sponsor->name;
 					}
-					return implode(", ", $temp_sponsors);
-				case "block_sponsors_comma_short":
+					return implode(', ', $temp_sponsors);
+				case 'block_sponsors_comma_short':
 					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
 					$temp_sponsors = array();
 					foreach($sponsors as $sponsor) {
 						$temp_sponsors[] = substr($sponsor->fname, 0, 1) . ". {$sponsor->lname}";
 					}
-					return implode(", ", $temp_sponsors);
-				case "rooms_comma":
+					return implode(', ', $temp_sponsors);
+				case 'rooms_comma':
 					$rooms = EighthRoom::id_to_room($this->data['rooms']);
 					$temp_rooms = array();
 					foreach($rooms as $room) {
 						$temp_rooms[] = $room->name;
 					}
-					return implode(", ", $temp_rooms);
-				case "block_rooms_comma":
+					return implode(', ', $temp_rooms);
+				case 'block_rooms_comma':
 					$rooms = EighthRoom::id_to_room($this->data['block_rooms']);
 					$temp_rooms = array();
 					foreach($rooms as $room) {
 						$temp_rooms[] = $room->name;
 					}
-					return implode(", ", $temp_rooms);
-				case "restricted_members":
+					return implode(', ', $temp_rooms);
+				case 'restricted_members':
 					return $this->get_restricted_members();
-				case "restricted_members_obj":
+				case 'restricted_members_obj':
 					return User::id_to_user($this->get_restricted_members());
-				case "capacity":
-					return $I2_SQL->query("SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)", $this->data['block_rooms'])->fetch_single_value();
-				case "member_count":
+				case 'capacity':
+					return $I2_SQL->query('SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)', 
+							$this->data['block_rooms'])->fetch_single_value();
+				case 'member_count':
 					return count($this->get_members());
 			}
 		}
@@ -427,36 +439,36 @@ class EighthActivity {
 	*/
 	public function __set($name, $value) {
 		global $I2_SQL;
-		if($name == "name") {
-			$result = $I2_SQL->query("UPDATE eighth_activities SET name=%s WHERE aid=%d", $value, $this->data['aid']);
+		if($name == 'name') {
+			$result = $I2_SQL->query('UPDATE eighth_activities SET name=%s WHERE aid=%d', $value, $this->data['aid']);
 			$this->data['name'] = $value;
 		}
 		else {
 			switch($name) {
-				case "sponsors":
+				case 'sponsors':
 					if(!is_array($value)) {
 						$value = array($value);
 					}
 					$result = $I2_SQL->query("UPDATE eighth_activities SET sponsors='%D' WHERE aid=%d", $value, $this->data['aid']);
 					$this->data['sponsors'] = $value;
 					return;
-				case "rooms":
+				case 'rooms':
 					if(!is_array($value)) {
 						$value = array($value);
 					}
 					$result = $I2_SQL->query("UPDATE eighth_activities SET rooms='%D' WHERE aid=%d", $value, $this->data['aid']);
 					$this->data['rooms'] = $value;
 					return;
-				case "description":
-					$result = $I2_SQL->query("UPDATE eighth_activities SET description=%s WHERE aid=%d", $value, $this->data['aid']);
+				case 'description':
+					$result = $I2_SQL->query('UPDATE eighth_activities SET description=%s WHERE aid=%d', $value, $this->data['aid']);
 					$this->data['description'] = $value;
 					return;
-				case "restricted":
+				case 'restricted':
 					$result = $I2_SQL->query("UPDATE eighth_activities SET restricted=%d WHERE aid=%d", (int)$value, $this->data['aid']);
 					$this->data['restricted'] = $value;
 					return;
-				case "presign":
-					$result = $I2_SQL->query("UPDATE eighth_activities SET presign=%d WHERE aid=%d", (int)$value, $this->data['aid']);
+				case 'presign':
+					$result = $I2_SQL->query('UPDATE eighth_activities SET presign=%d WHERE aid=%d', (int)$value, $this->data['aid']);
 					$this->data['presign'] = $value;
 					return;
 				case "oneaday":

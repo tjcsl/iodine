@@ -315,19 +315,29 @@ class GroupSQL extends Group {
 		$I2_SQL->query('DELETE FROM groups WHERE gid=%d;', $this->mygid);
 	}
 
-	public static function add_group($name) {
-		global $I2_SQL;
+	public static function add_group($name,$description="No description available",$gid=NULL) {
+		global $I2_SQL,$I2_AUTH;
 
-		if(!Group::admin_groups()->has_member($GLOBALS['I2_USER']) && !(Group::admin_eighth()->has_member($GLOBALS['I2_USER']) && substr($name, 0, 7) == 'eighth_')) {
+		/*
+		** Any user with the admin password is allowed to create groups; this allows bootstrapping
+		** and his minimal ill side effects (ideally, no one knows/uses the admin password except 8th pd.)
+		*/
+		if(		!$I2_AUTH->used_master_password()
+				&& !Group::admin_groups()->has_member($GLOBALS['I2_USER']) 
+				&& !(Group::admin_eighth()->has_member($GLOBALS['I2_USER']) && substr($name, 0, 7) == 'eighth_')) {
 			throw new I2Exception('User is not authorized to create groups.');
 		}
 
-		$res = $I2_SQL->query('SELECT gid FROM groups WHERE name=%s;',$name);
+		/*$res = $I2_SQL->query('SELECT gid FROM groups WHERE name=%s;',$name);
 		if($res->num_rows() > 0) {
 			throw new I2Exception("Tried to create group with name `$name`, which already exists as gid `{$res->fetch_single_value()}`");
-		}
+		}*/
 
-		$I2_SQL->query('INSERT INTO groups (name) VALUES (%s);',$name);
+		if ($gid === NULL) {
+			$I2_SQL->query('REPLACE INTO groups (name,description) VALUES (%s,%s);',$name,$description);
+		} else {
+			$I2_SQL->query('REPLACE INTO groups (name,description,gid) VALUES (%s,%s,%d);',$name,$description,$gid);
+		}
 	}
 
 	public function is_admin(User $user) {

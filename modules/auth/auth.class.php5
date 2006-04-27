@@ -27,6 +27,16 @@ class Auth {
 	* Whether encryption of the user's password in $_SESSION is enabled.
 	*/
 	private $encryption;
+	
+	/**
+	* Location of credentials cache
+	*/
+	private $cache;
+
+	/**
+	* The master password was used to log in
+	*/
+	private $is_master;
 
 	/**
 	* The Auth class constructor.
@@ -44,7 +54,6 @@ class Auth {
 			$this->encryption = 0;
 		}
 
-
 		if( isset($I2_ARGS[0]) && $I2_ARGS[0] == 'logout' ) {
 				if (isSet($_SESSION['i2_uid'])) {
 					self::log_out();
@@ -57,7 +66,7 @@ class Auth {
 				// Redirect to Iodine root. If we didn't do this, then
 				// 'logout' would still be in the query string if the user
 				// tried to log in again immediately, which would cause
-				// problems. So, we redirect instead. 
+				// problems. So, we redirect instead.
 				redirect();
 		}
 		
@@ -66,22 +75,20 @@ class Auth {
 		}
 	}
 
+	public function cache() {
+		return $this->cache;
+	}
+
 	/**
 	* Checks the user's authentication status.
 	*
 	* @return bool True if user is authenticated, False otherwise.
 	*/
 	public function is_authenticated() {
-		if (	isset($_SESSION['i2_uid']) 
-			&& isset($_SESSION['i2_login_time'])) {
-			if( $_SESSION['i2_login_time'] > time()+i2config_get('timeout',600,'login')) {
-				$this->log_out();
-				return FALSE;
-			}
-
-			$_SESSION['i2_login_time'] = time();
-			return TRUE;
-		}
+		$this->is_master = FALSE;
+		/*
+		** mod_auth_kerb/WebAuth authentication
+		*/
 		if (isSet($_SERVER['REMOTE_USER'])) {
 			$_SESSION['i2_login_time'] = time();
 			/*
@@ -94,8 +101,37 @@ class Auth {
 			}
 			$_SESSION['i2_uid'] = $user;
 			$_SESSION['i2_username'] = $user;
-			#$_SESSION['i2_uid'] = $_SERVER['WEBAUTH_LDAP_IODINEUIDNUMBER'];
-			d('Kerberos pre-auth succeeded for principal '.$_SERVER['REMOTE_USER']);
+			//$_SESSION['i2_uid'] = $_SERVER['WEBAUTH_LDAP_IODINEUIDNUMBER'];
+			d('Kerberos pre-auth succeeded for principal '.$_SERVER['REMOTE_USER'],8);
+			$this->cache = getenv('KRB5CCNAME');
+			$_SESSION['i2_credentials_cache'] = $this->cache;
+			return TRUE;
+		}
+		/*
+		** Iodine proprietary authentication
+		*/
+		if (	isset($_SESSION['i2_uid']) 
+			&& isset($_SESSION['i2_login_time'])) {
+			if( $_SESSION['i2_login_time'] > time()+i2config_get('timeout',600,'login')) {
+				$this->log_out();
+				return FALSE;
+			}
+
+			/*
+			** Make Kerberos credentials available for the duration of the request
+			*/
+			if (isSet($_SESSION['i2_credentials_cache'])) {
+				$cache = $_SESSION['i2_credentials_cache'];
+				$this->cache = $cache;
+				d("Setting KRB5CCNAME to $cache",8);
+				putenv("KRB5CCNAME=$cache");
+				$_ENV['KRB5CCNAME'] = $cache;
+			} else {
+				//We're iodine-authed without kerberos ... so we must be the master!
+				$this->is_master = TRUE;
+			}
+
+			$_SESSION['i2_login_time'] = time();
 			return TRUE;
 		}
 		return FALSE;
@@ -123,15 +159,18 @@ class Auth {
 		$auth_method = i2config_get('method','kerberos','auth');
 
 		if( get_i2module($auth_method) === FALSE ) {
-			throw new I2Exception('Internal error: Unimplemented authentication method '.$auth_method.' specified in the Iodine configuration.');
+			throw new I2Exception(
+				'Internal error: Unimplemented authentication method '.$auth_method.' specified in the Iodine configuration.');
 		}
 
 		try {
-			$_SESSION['i2_credentials'] = new $auth_method($user, $password);
+			$auth = new $auth_method($user, $password);
+			$_SESSION['i2_credentials'] = $auth;
+			$_SESSION['i2_credentials_cache'] = $auth->cache();
 		} catch( I2Exception $e ) {
 			return FALSE;
 		}
-		
+
 		return TRUE;
 	}
 
@@ -212,7 +251,7 @@ class Auth {
 	* @returns bool Whether or not the user has successfully logged in.
 	*/
 	public function login() {
-		global $I2_ARGS, $I2_LDAP;
+		global $I2_ARGS;
 
 		if(!isset($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
 			$_SESSION['logout_funcs'] = array();
@@ -233,6 +272,7 @@ class Auth {
 				}
 				else {
 					$_SESSION['i2_password'] = FALSE;
+					$this->is_master = TRUE;
 				}
 					
 				//$_REQUEST['login_password'] = '';
@@ -312,6 +352,13 @@ class Auth {
 		mcrypt_generic_deinit($td);
 		mcrypt_module_close($td);
 		return trim($ret);
+	}
+
+	/**
+	* Returs whether the user logged in with the master password
+	*/
+	public function used_master_password() {
+		return $this->is_master;
 	}
 
 	/**

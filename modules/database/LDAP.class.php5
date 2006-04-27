@@ -33,8 +33,8 @@ class LDAP {
 	
 	private $conns = array();
 	
-	function __construct($dn=NULL,$pass=NULL,$server=NULL) {
-		global $I2_USER;
+	function __construct($dn=NULL,$pass=NULL,$server=NULL,$simple=TRUE,$proxydn='') {
+		global $I2_USER, $I2_ERR, $I2_AUTH;
 		if ($server !== NULL) {
 			$this->server = $server;
 		} else {
@@ -43,22 +43,47 @@ class LDAP {
 		$this->dnbase = i2config_get('base_dn','dc=tjhsst,dc=edu','ldap');
 		$this->sizelimit = i2config_get('max_rows',500,'ldap');
 		$this->timelimit = i2config_get('max_time',0,'ldap');
+		
+		$this->rebase($dn);
+		
 		d("Connecting to LDAP server {$this->server}...",8);
 		$this->conn = $this->connect();
-		if ($dn !== NULL && $pass !== NULL) {
+		if (!$simple) {
+			/*
+			** GSSAPI bind - ignores $dn and $pass!
+			*/
+			//$_ENV['KRB5CCNAME'] = $I2_AUTH->cache();
+			//putenv("KRB5CCNAME={$_ENV['KRB5CCNAME']}");
+			d('KRB5CCNAME for LDAP bind is '.$_ENV['KRB5CCNAME'],8);
+			$this->bind = ldap_sasl_bind($this->conn,'','','GSSAPI',i2config_get('sasl_realm','CSL.TJHSST.EDU','ldap'));
+
+			/*
+			** This is what stuff would look like for a proxy bind (w/GSSAPI)... But PHP ldap_sasl_bind is badly broken...
+			*/
+			//$this->bind = ldap_sasl_bind($this->conn,'','','GSSAPI',i2config_get('sasl_realm','CSL.TJHSST.EDU','ldap'),$proxydn);
+			
+			d("Bound to LDAP via GSSAPI",8);
+		} elseif ($dn !== NULL && $pass !== NULL) {
+			/*
+			** Simple bind
+			*/
 			$this->bind = ldap_bind($this->conn,$dn,$pass);
-			d("Bound to LDAP as $dn",8);
+			d("Bound to LDAP simply as $dn",8);
 		} else {
+			/*
+			** Anonymous bind
+			*/
 			$this->bind = ldap_bind($this->conn);
 			d('Bound to LDAP anonymously',8);
 		}
-		//$this->bind = ldap_sasl_bind($this->conn,$dn,'','GSSAPI',i2config_get('default_realm','TJHSST.EDU','kerberos'));
-		//$this->bind = ldap_sasl_bind($this->conn,'','','GSSAPI');
-		/*if (ldap_error($this->conn)) {
-			throw new I2Exception(ldap_error($this->conn));
-		}*/
+		/*
+		** These errors are nonfatal so they don't bring down the whole application beyond any hope of a fix.
+		*/
+		if (!$this->conn) {
+			$I2_ERR->nonfatal_error('Unable to connect to LDAP server!');
+		}
 		if (!$this->bind) {
-			throw new I2Exception('Unable to bind to LDAP server!');
+			$I2_ERR->nonfatal_error('Unable to bind to LDAP server!');
 		}
 	}
 
@@ -84,24 +109,23 @@ class LDAP {
 	}
 
 	public static function get_user_bind() {
-		global $I2_AUTH;
-		// We could use the old krb5 ticket instead of re-authing, but what the hey.
-		//FIXME: use Kerberos ticket for GSSAPI SASL bind - no password or username should be needed.
-		$ldapuser = 'iodineUid='.$_SESSION['i2_username'].',ou=students,ou=people,'.$this->dnbase;
-		$pass = $I2_AUTH->get_user_password();
-		
-		return new LDAP($ldapuser,$pass);
+		$username = $_SESSION['i2_username'];
+		//This is for proxy binding, but current PHP breaks it (badly) so most of it's ignored
+		return new LDAP('cn=iodine','pwd',NULL,FALSE,"dn:iodineUid=$username,ou=people,dc=tjhsst,dc=edu");
 	}
 
 	/**
 	* Gets an administrative simple bind.
 	*/
-	public static function get_admin_bind($pass) {
+	public static function get_admin_bind($pass=NULL) {
+		if ($pass === NULL) {
+			$pass = i2config_get('admin_pw','ld4pp4ss','ldap');
+		}
 		return self::get_simple_bind(i2config_get('admin_dn','cn=Manager,dc=tjhsst,dc=edu','ldap'),$pass);
 	}
 
-	public static function get_simple_bind($userdn,$pass) {
-		return new LDAP($userdn,$pass);	
+	public static function get_simple_bind($userdn,$pass,$server=NULL) {
+		return new LDAP($userdn,$pass,$server);	
 	}
 
 	public function search_base($dn=NULL,$attributes='*',$bind=NULL) {
@@ -155,6 +179,10 @@ class LDAP {
 		
 		//ldap_free_result($res);
 		//return NULL;
+
+		if (!$res) {
+			return LDAPResult::get_null();
+		}
 		
 		return new LDAPResult($bind,$res,LDAP::LDAP_SEARCH);
 	}

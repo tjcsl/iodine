@@ -2,16 +2,16 @@
 
 The specified student does not exist. Either you mistyped a URL, or something in Intranet is broken.
 [</if>]
-[<if $user->fname>]
+[<if $user && $user->fname>]
 <table>
 <tr><td valign="top">
 <img src="[<$I2_ROOT>]www/pics/bomb.png" vspace="2" width="172" height="228" /></td>
 <td valign="top">
-[<$user->fname>][<if $user->nickname>] ([<$user->nickname>])[</if>] [<$user->mname>] [<$user->lname>][<if $user->suffix>] [<$user->suffix>][</if>] (<a href="mailto:[<$user->username>]@tjhsst.edu">[<$user->username>]@tjhsst.edu</a>), Grade [<$user->grade>]<br />
+[<$user->fullname>] (<a href="mailto:[<$user->username>]@tjhsst.edu">[<$user->username>]@tjhsst.edu</a>)[<if $user->grade != -1>], Grade [<$user->grade>][</if>]<br />
 [<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]
-[<if $user->phone_home>]Phone (home): [<$user->phone_home>]
+[<if $user->homePhone>][<foreach from=$user->homePhone item=phone>]Phone (home): [<$phone>][</foreach>]
  [<else>]Home phone information not available.
-[</if>]<br />
+[</if>]</br />
 [<if $user->phone_cell>]Cell phone: [<$user->phone_cell>]<br />[</if>]
 [<if count($user->phone_other)>]Alternate phone number(s):
  <ul>

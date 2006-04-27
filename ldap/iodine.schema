@@ -360,7 +360,54 @@ attributetype ( i2Attr:44
 	EQUALITY integerMatch
 	SYNTAX integerSyntax
 	)
+
+attributetype ( i2Attr:45
+	NAME ('startpage' 'defaultModule' 'defaultpage')
+	DESC 'A default Intranet 2 module'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	SINGLE-VALUE
+	)
+attributetype ( i2Attr:46
+	NAME ('perm-showbirthday' 'showbirthday' 'showbday' 'showbdate')
+	DESC 'Whether the birthday should be visible to others'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
 	
+attributetype ( i2Attr:47
+	NAME ('perm-showmap' 'showmap' 'showdirections')
+	DESC 'Whether a map to the house should be visible to others'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+	
+attributetype ( i2Attr:48
+	NAME ('perm-showschedule' 'showschedule' 'showsched')
+	DESC 'Whether the schedule information should be visible to others'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:49
+	NAME ('soundexlast' 'lastsoundex')
+	DESC 'The soundex of a last name'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	SINGLE-VALUE
+	)
+	
+attributetype ( i2Attr:49
+	NAME ('soundexfirst' 'firstsoundex')
+	DESC 'The soundex of a first name'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	SINGLE-VALUE
+	)
+
 objectclass ( i2OC:3
 	NAME ('tjhsstSection' 'section')
 	MUST (
@@ -521,6 +568,9 @@ objectclass ( i2OC:1
 		perm-showpictures $
 		perm-showaddress $
 		perm-showtelephone $
+		perm-showbirthday $
+		perm-showschedule $
+		perm-showmap $
 		displayName $
 		middlename $
 		nickname $
@@ -536,7 +586,10 @@ objectclass ( i2OC:1
 		icq $
 		googleTalk $
 		webpage $
-		locker
+		locker $
+		startpage $
+		soundexlast $
+		soundexfirst
 	)
 	)
 
@@ -560,7 +613,10 @@ objectclass ( i2OC:2
 		startpage $
 		header $
 		style $
-		chrome
+		chrome $
+		startpage $
+		soundexlast $
+		soundexfirst
 	)
 	)
 
@@ -579,6 +635,7 @@ objectclass ( i2OC:19
 		startpage $
 		style $
 		chrome $
-		header
+		header $
+		startpage
 	)
 	)
