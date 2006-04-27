@@ -26,7 +26,11 @@
 		<input type="submit" value="Load Teacher Data"/><br/>
 	</form>
 	<br /><br />
-	[<if $intranet_pass>]
+	<form action="[<$I2_ROOT>]dataimport/teachersponsors" method="post">
+		<input type="hidden" name="doit" value="1"/>
+		<input type="submit" value="Make all teachers into Eighth-Period sponsors"/><br/>
+	</form>
+[<if $intranet_pass>]
 	<form action="[<$I2_ROOT>]dataimport/eighthdata" method="post">
 		<input type="hidden" name="doit" value="1"/>
 		<input type="submit" value="Load 8th-period data"/><br/>
@@ -44,7 +48,7 @@
 		</form>
 		<br/>
 	[<else>]
-		LDAP Admin Password <a href="[<$I2_ROOT>]dataimport/unset_pass">SET</a>
+		LDAP Admin Password <a href="[<$I2_ROOT>]dataimport/unset_pass">SET</a><br/>
 	[</if>]
 	[<if !$intranet_pass>]
 		<form action="[<$I2_ROOT>]dataimport" method="post">

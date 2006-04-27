@@ -5,8 +5,8 @@ CREATE TABLE news(
 	title VARCHAR(255) NOT NULL,			/*Story title*/
 	text TEXT NOT NULL,			/*Story text*/
 	authorID MEDIUMINT UNSIGNED,			/*Student/teacher ID*/
-	revised TIMESTAMP NOT NULL DEFAULT 'CURRENT_TIMESTAMP',	/*Date revised*/
-	posted TIMESTAMP NOT NULL DEFAULT 'CURRENT_TIMESTAMP',	/*Date posted*/
+	/*revised TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,	*//*Date revised*/
+	posted TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,	/*Date posted*/
 	gid MEDIUMINT,
 	KEY(posted)
 );

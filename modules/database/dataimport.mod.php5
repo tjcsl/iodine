@@ -507,22 +507,71 @@ class dataimport implements Module {
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 			$user = User::get_by_studentid($row['StudentID']);
 			$otherres = $oldsql->query("SELECT * FROM StudentMiscInfo WHERE StudentID=%d",$row['StudentID']);
-			$user->icq = $otherres['ICQ'];
-			$user->aim = $otherres['AIM'];
-			$user->msn = $otherres['MSN'];
-			$user->jabber = $otherres['Jabber'];
-			$user->yahoo = $otherres['Yahoo'];
-			$user->showschedule = $otherres['AllowSchedule'];
-			$user->showbirthday = $otherres['AllowBirthday'];
-			$user->showmap = $otherres['AllowMap'];
-			$user->showaddress = $otherres['AllowAddress'];
-			$user->showphone = $otherres['AllowPhone'];
-			$user->showpicture = $otherres['AllowPicture'];
-			$user->locker = $row['Locker'];
+			$otherres = $otherres->fetch_array(Result::ASSOC);
+			if ($otherres['ICQ']) {
+				$user->icq = $otherres['ICQ'];
+			}
+			if ($otherres['AIM']) {
+				$user->aim = $otherres['AIM'];
+			}
+			if ($otherres['MSN']) {
+				$user->msn = $otherres['MSN'];
+			}
+			if ($otherres['Jabber']) {
+				$user->jabber = $otherres['Jabber'];
+			}
+			if ($otherres['Yahoo']) {
+				$user->yahoo = $otherres['Yahoo'];
+			}
+			if ($otherres['AllowSchedule']) {
+				$user->showschedule = 'TRUE';
+			} else {
+				$user->showschedule = 'FALSE';
+			}
+			if ($otherres['AllowBirthday']) {
+				$user->showbirthday = 'TRUE';
+			} else {
+				$user->showbirthday = 'FALSE';
+			}
+			if ($otherres['AllowMap']) {
+				$user->showmap = 'TRUE';
+			} else {
+				$user->showmap = 'FALSE';
+			}
+			if ($otherres['AllowAddress']) {
+				$user->showaddress = 'TRUE';
+			} else {
+				$user->showaddress = 'FALSE';
+			}
+			if ($otherres['AllowPhone']) {
+				$user->showphone = 'TRUE';
+			} else {
+				$user->showphone = 'FALSE';
+			}
+			if ($otherres['AllowPicture']) {
+				$user->showpicture = 'TRUE';
+			} else {
+				$user->showpicture = 'FALSE';
+			}
+			//$row doesn't have Locker (it's actually not in StudentInfo)
+			if ($otherres['Locker']) {
+				$user->locker = $otherres['Locker'];
+			}
 			$user->phoneNumber = $otherres['CellPhone'];
 			$user->mailAddress = $otherres['Email'];
 			$user->soundexlast = $row['Lastnamesound'];
 			$user->soundexfirst = $row['Firstnamesound'];
+		}
+	}
+
+	/**
+	* Turns all teachers into 8th-period-activity sponsors
+	*/
+	private function make_teachers_sponsors() {
+		global $I2_LDAP;
+		$res = $I2_LDAP->search('','objectClass=tjhsstTeacher',array('fname','lname'));
+		while ($row = $res->fetch_array(Result::ASSOC)) {
+			EighthSponsor::add_sponsor($row['fname'],$row['lname']);
 		}
 	}
 
@@ -571,13 +620,12 @@ class dataimport implements Module {
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'userdata' && isSet($_REQUEST['userfile'])) {
 			$this->import_student_data($_REQUEST['userfile']);
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherdata' && isSet($_REQUEST['teacherfile']) && isSet($_REQUEST['stafffile'])) {
-			$this->import_teacher_data_file($_REQUEST['teacherfile'],$_REQUEST['stafffile']);
-		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherdata' && isSet($_REQUEST['teacherfile']) && isSet($_REQUEST['teacherserver'])
-		&& isSet($_REQUEST['teacherdn']) && isSet($_REQUEST['teacherpass'])) {
+		&& isSet($_REQUEST['teacherdn']) && isSet($_REQUEST['teacherpass']) && $_REQUEST['teacherserver'] != '') {
 			$this->import_teacher_data_file_one($_REQUEST['teacherfile']);
 			$this->import_teacher_data_ldap($_REQUEST['teacherserver'],$_REQUEST['teacherdn'],$_REQUEST['teacherpass']);
+		} elseif (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherdata' && isSet($_REQUEST['teacherfile']) && isSet($_REQUEST['stafffile'])) {
+			$this->import_teacher_data_file($_REQUEST['teacherfile'],$_REQUEST['stafffile']);
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'eighthdata' && isSet($_REQUEST['doit'])) {
 			$this->import_eighth_data();
@@ -585,7 +633,10 @@ class dataimport implements Module {
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'studentinfo' && isSet($_REQUEST['doit'])) {
 			$this->expand_student_info();
 		}
-		return array(TRUE,'Import Legacy Data');
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teachersponsors' && isSet($_REQUEST['doit'])) {
+			$this->make_teachers_sponsors();
+		}
+		return 'Import Legacy Data';
 	}
 
 	public function display_pane($disp) {

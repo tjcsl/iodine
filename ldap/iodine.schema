@@ -636,6 +636,9 @@ objectclass ( i2OC:19
 		style $
 		chrome $
 		header $
-		startpage
+		startpage $
+		givenName $
+		sn $
+		cn
 	)
 	)

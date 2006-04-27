@@ -33,6 +33,8 @@ description: Rooms in the building
 dn: iodineUid=admin,ou=people,dc=tjhsst,dc=edu
 objectClass: fakeUser
 iodineUid: admin
+givenName: Admin
+cn: Admin
 iodineUidNumber: 99
 style: default
 startPage: eighth

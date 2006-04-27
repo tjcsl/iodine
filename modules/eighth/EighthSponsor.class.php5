@@ -36,7 +36,8 @@ class EighthSponsor {
 	*/
 	public static function get_all_sponsors() {
 		global $I2_SQL;
-		return $I2_SQL->query("SELECT sid,fname,lname,CONCAT(lname,', ',fname) AS name_comma FROM eighth_sponsors ORDER BY lname,fname")->fetch_all_arrays(Result::ASSOC);
+		return $I2_SQL->query("SELECT sid,fname,lname,CONCAT(lname,', ',fname) 
+			AS name_comma FROM eighth_sponsors ORDER BY lname,fname")->fetch_all_arrays(Result::ASSOC);
 	}
 	
 	/**
@@ -48,7 +49,7 @@ class EighthSponsor {
 	*/
 	public static function add_sponsor($fname, $lname) {
 		global $I2_SQL;
-		$result = $I2_SQL->query("INSERT INTO eighth_sponsors (fname,lname) VALUES (%s,%s)", $fname, $lname);
+		$result = $I2_SQL->query('REPLACE INTO eighth_sponsors (fname,lname) VALUES (%s,%s)', $fname, $lname);
 		return $result->get_insert_id();
 	}
 
@@ -60,7 +61,7 @@ class EighthSponsor {
 	*/
 	public static function remove_sponsor($sponsorid) {
 		global $I2_SQL;
-		$result = $I2_SQL->query("DELETE FROM eighth_sponsors WHERE sid=%d", $sponsorid);
+		$result = $I2_SQL->query('DELETE FROM eighth_sponsors WHERE sid=%d', $sponsorid);
 		// TODO: Delete from the sponsor map and everything else as well
 	}
 
