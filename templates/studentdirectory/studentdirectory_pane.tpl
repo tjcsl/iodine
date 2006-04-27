@@ -2,7 +2,7 @@
 
 The specified student does not exist. Either you mistyped a URL, or something in Intranet is broken.
 [</if>]
-[<if $user->fname>]
+[<if $user && $user->fname>]
 <table>
 <tr><td valign="top">
 <img src="[<$I2_ROOT>]www/pics/bomb.png" vspace="2" width="172" height="228" /></td>

@@ -119,9 +119,13 @@ class EighthRoom {
 	* @param string $name The name of the room.
 	* @param int $capacity The capacity of the room, -1 if unlimited.
 	*/
-	public static function add_room($name, $capacity) {
+	public static function add_room($name, $capacity, $rid=NULL) {
 		global $I2_SQL;
-		$result = $I2_SQL->query('INSERT INTO eighth_rooms (name, capacity) VALUES (%s,%d)', $name, $capacity);
+		if ($rid === NULL) {
+			$result = $I2_SQL->query('REPLACE INTO eighth_rooms (name, capacity) VALUES (%s,%d)', $name, $capacity);
+		} else {
+			$result = $I2_SQL->query('REPLACE INTO eighth_rooms (name, capacity,rid) VALUES (%s,%d,%d)', $name, $capacity, $rid);
+		}
 		return $result->get_insert_id();
 	}
 

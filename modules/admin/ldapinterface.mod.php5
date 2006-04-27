@@ -161,8 +161,16 @@ class LDAPInterface implements Module {
 					$res = $ldap->search_base($this->dn);
 					$this->query_data = $res->fetch_all_arrays(Result::ASSOC);
 				} else if ($this->searchtype == 'delete') {
-					$res = $ldap->delete($this->dn);
-					$this->query_data = $res;
+					if (isSet($this->query)) {
+						$res = $ldap->search($this->dn,$this->query,array('dn'));
+						while ($dn = $res->fetch_single_value()) {
+							$res = $ldap->delete($dn);
+							$this->query_data = $res;
+						}
+					} else {
+							$res = $ldap->delete($dn);
+							$this->query_data = $res;
+					}
 				} else if ($this->searchtype == 'delete_recursive') {
 					$res = $ldap->delete_recursive($this->dn);
 					$this->query_data = $res;

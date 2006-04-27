@@ -119,7 +119,7 @@ class LDAPResult implements Result {
 	}
 
 	private function get_current_dn() {
-		if ($this->num_rows == 0) {
+		if (!$this->current_row || $this->num_rows == 0) {
 			return FALSE;
 		}
 		return ldap_get_dn($this->ldap,$this->current_row);

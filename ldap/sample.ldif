@@ -17,8 +17,9 @@ st: Virginia
 birthday: 10-11-1988
 header: TRUE
 style: default
-iodineUidNumber: 99999
+iodineUidNumber: 5
 chrome: TRUE
+startpage: news
 
 # A teacher
 dn: iodineUid=storbert,ou=people,dc=tjhsst,dc=edu
@@ -28,6 +29,7 @@ cn: Shane Torbert
 sn: Torbert
 givenName: Shane
 displayName: Shane (The Man) Torbert
+startpage: news
 
 # And another
 dn: iodineUid=rlatimer,ou=people,dc=tjhsst,dc=edu
@@ -37,6 +39,7 @@ cn: Randolph Latimer
 sn: Latimer
 givenName: Randolph
 displayName: Randy Latimer
+startpage: news
 
 # A counselor
 dn: iodineUid=sconnelly,ou=people,dc=tjhsst,dc=edu
@@ -44,6 +47,7 @@ objectClass: tjhsstCounselor
 iodineUid: sconnelly
 cn: Sandra Connelly
 sn: Connelly
+startpage: news
 
 # A room or two
 dn: roomNumber=145,ou=rooms,dc=tjhsst,dc=edu

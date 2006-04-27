@@ -62,6 +62,14 @@ class Error {
 			d('LDAP search performed for invalid object',5);
 			return;
 		}
+
+		/*
+		** ...AND those annoying variable deprecation warnings, usually from Smarty.
+		*/
+		if (strpos($errstr,'Deprecated. Please use the public/private/protected modifiers')) {
+			return;
+		}
+		
 		$fileurl = str_replace('%2F', '/', urlencode($errfile));
 		switch( $errno ) {
 			case E_WARNING:

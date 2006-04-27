@@ -75,9 +75,21 @@ class MySQL {
 	* 
 	* @access public
 	*/
-	function __construct() {
-		$this->connect(i2config_get('server','','mysql'), i2config_get('user','','mysql'), i2config_get('pass','','mysql'));
-		$this->select_db('iodine');
+	function __construct($server=NULL,$db=NULL,$user=NULL,$pass=NULL) {
+		if ($server === NULL) {
+			$server = i2config_get('server','','mysql');
+		}
+		if ($db === NULL) {
+			$db = i2config_get('db','iodine','mysql');
+		}
+		if ($user === NULL) {
+			$user = i2config_get('user','','mysql');
+		}
+		if ($pass === NULL) {
+			$pass = i2config_get('pass','','mysql');
+		}
+		$this->connect($server,$user,$pass);
+		$this->select_db($db);
 	}
 
 	/**

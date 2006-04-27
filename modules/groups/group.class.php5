@@ -221,8 +221,8 @@ class Group {
 	*
 	* @param string $name The name for the new group.
 	*/
-	public static function add_group($name) {
-		return GroupSQL::add_group($name);
+	public static function add_group($name,$description="No description available",$gid=NULL) {
+		return GroupSQL::add_group($name,$description,$gid);
 	}
 
 	/**

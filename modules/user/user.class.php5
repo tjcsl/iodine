@@ -161,8 +161,6 @@ class User {
 				return $this->__get('lname') . ', ' . $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . ($mid ? "$mid " : '');
 			case 'grad_year':
 				return $this->__get('graduationYear');
-			case 'grade':
-				return (12 + i2config_get('senior_gradyear', date('Y'), 'user') - $this->__get('graduationYear'));
 			case 'lname':
 				return $this->__get('sn');
 			case 'fname':
@@ -261,6 +259,27 @@ class User {
 		if(!$uid) {
 			return FALSE;
 		}
+		return new User($uid);
+	}
+
+	/**
+	* Returns whether the user is automagically an admin by birthright.
+	*/
+	public function is_admin_user() {
+		return $this->username == 'admin';
+	}
+
+	/**
+	* Gets a student by their StudentID
+	*
+	* Returns a User object that has the StudentID $studentid.
+	*
+	* @param int $studentid The StudentID to get a User for.
+	* @return User The user with the passed StudentID.
+	*/
+	public static function get_by_studentid($studentid) {
+		global $I2_LDAP;
+		$uid = $I2_LDAP->search('',"tjhsstStudentID=$studentid",'iodineUidNumber')->fetch_single_value();
 		return new User($uid);
 	}
 
@@ -405,9 +424,31 @@ class User {
 	* @param string The search string.
 	* @return array An array of {@link User} objects of the results. An
 	* empty array is returned if no match is found.
+	* @todo Improve drastically
 	*/
 	public function search_info($str) {
-		throw new I2Exception('search_info not implemented!');
+		global $I2_LDAP;
+		d("search_info: $str",4);
+
+		//FIXME: improve, close hole?
+		$str = addslashes($str);
+
+		//FIXME: improve this
+		$res = $I2_LDAP->search('ou=people',
+		"(|(iodineUid=$str)(givenName=$str)(sn=$str)(mname=$str))"
+										,array('iodineUid'));
+		
+		if (!$res) {
+			return array();
+		}
+		
+		
+		$ret = array();
+		while ($uid = $res->fetch_single_value()) {
+			$ret[] = new User($uid);
+		}
+		
+		return $ret;
 	}
 
 	/**

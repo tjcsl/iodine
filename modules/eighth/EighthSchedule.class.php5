@@ -24,7 +24,8 @@ class EighthSchedule {
 	* @param array $sponsors The sponsors for that activity for that block.
 	* @param array $rooms The rooms for that activity for that block.
 	*/
-	public static function schedule_activity($blockid, $activityid, $sponsors = array(), $rooms = array(), $comment = "") {
+	public static function schedule_activity($blockid, $activityid, $sponsors = array(), $rooms = array(), $comment = "", 
+			$attendancetaken = FALSE, $cancelled = FALSE, $advertisement="") {
 		global $I2_SQL;
 		if(!is_array($sponsors)) {
 			$sponsors = array($sponsors);
@@ -32,7 +33,10 @@ class EighthSchedule {
 		if(!is_array($rooms)) {
 			$rooms = array($rooms);
 		}
-		$result = $I2_SQL->query("REPLACE INTO eighth_block_map (bid,activityid,sponsors,rooms,comment) VALUES (%d,%d,'%D','%D',%s)", $blockid, $activityid, $sponsors, $rooms, $comment);
+		$result = $I2_SQL->query("REPLACE INTO eighth_block_map 
+			(bid,activityid,sponsors,rooms,comment,attendancetaken,cancelled,advertisement) 
+			VALUES (%d,%d,'%D','%D',%s,%d,%d,%s)", 
+			$blockid, $activityid, $sponsors, $rooms, $comment,$attendancetaken,$cancelled,$advertisement);
 	}
 
 	/**

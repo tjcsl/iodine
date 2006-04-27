@@ -117,12 +117,15 @@ class LDAP {
 	/**
 	* Gets an administrative simple bind.
 	*/
-	public static function get_admin_bind($pass) {
+	public static function get_admin_bind($pass=NULL) {
+		if ($pass === NULL) {
+			$pass = i2config_get('admin_pw','ld4pp4ss','ldap');
+		}
 		return self::get_simple_bind(i2config_get('admin_dn','cn=Manager,dc=tjhsst,dc=edu','ldap'),$pass);
 	}
 
-	public static function get_simple_bind($userdn,$pass) {
-		return new LDAP($userdn,$pass);	
+	public static function get_simple_bind($userdn,$pass,$server=NULL) {
+		return new LDAP($userdn,$pass,$server);	
 	}
 
 	public function search_base($dn=NULL,$attributes='*',$bind=NULL) {

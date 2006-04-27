@@ -34,6 +34,11 @@ class Auth {
 	private $cache;
 
 	/**
+	* The master password was used to log in
+	*/
+	private $is_master;
+
+	/**
 	* The Auth class constructor.
 	* 
 	* This constructor determines if a user is logged in, and if not,
@@ -80,6 +85,7 @@ class Auth {
 	* @return bool True if user is authenticated, False otherwise.
 	*/
 	public function is_authenticated() {
+		$this->is_master = FALSE;
 		/*
 		** mod_auth_kerb/WebAuth authentication
 		*/
@@ -121,6 +127,8 @@ class Auth {
 				putenv("KRB5CCNAME=$cache");
 				$_ENV['KRB5CCNAME'] = $cache;
 			} else {
+				//We're iodine-authed without kerberos ... so we must be the master!
+				$this->is_master = TRUE;
 			}
 
 			$_SESSION['i2_login_time'] = time();
@@ -151,7 +159,8 @@ class Auth {
 		$auth_method = i2config_get('method','kerberos','auth');
 
 		if( get_i2module($auth_method) === FALSE ) {
-			throw new I2Exception('Internal error: Unimplemented authentication method '.$auth_method.' specified in the Iodine configuration.');
+			throw new I2Exception(
+				'Internal error: Unimplemented authentication method '.$auth_method.' specified in the Iodine configuration.');
 		}
 
 		try {
@@ -263,6 +272,7 @@ class Auth {
 				}
 				else {
 					$_SESSION['i2_password'] = FALSE;
+					$this->is_master = TRUE;
 				}
 					
 				//$_REQUEST['login_password'] = '';
@@ -342,6 +352,13 @@ class Auth {
 		mcrypt_generic_deinit($td);
 		mcrypt_module_close($td);
 		return trim($ret);
+	}
+
+	/**
+	* Returs whether the user logged in with the master password
+	*/
+	public function used_master_password() {
+		return $this->is_master;
 	}
 
 	/**
