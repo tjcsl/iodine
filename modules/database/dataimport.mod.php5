@@ -87,16 +87,22 @@ class dataimport implements Module {
 	* This must be called after import_teacher_file_one - it uses the SASI information.
 	*/
 	private function import_teacher_data_ldap($server,$user,$pass) {
-		$teacherldap = LDAP::get_simple_bind($server,$user,$pass);
+		$teacherldap = LDAP::get_simple_bind($user,$pass,$server);
 		$res = $teacherldap->search('ou=Staff,dc=local,dc=tjhsst,dc=edu','cn=*',array('cn','sn','givenName'));
 		$validteachers = array();
 		while ($teacher = $res->fetch_array()) {
+			if (!isSet($teacher['sn'])) {
+				continue;
+			}
 			$farr = array(
 				'lname' => ucFirst(strtolower($teacher['sn'])),
 				'fname' => ucFirst(strtolower($teacher['givenName'])),
 				'username' => $teacher['cn']
 			);
-			$lnamematches = $this->last_to_people[$res['sn']];
+			if (!isSet($this->last_to_people['sn'])) {
+				continue;
+			}
+			$lnamematches = $this->last_to_people[$teacher['sn']];
 			$found = FALSE;
 			foreach ($lnamematches as $match) {
 				if ($farr['fname'] == $match['fname']) {
@@ -352,14 +358,18 @@ class dataimport implements Module {
 	}
 
 	private function import_eighth_data($startdate=NULL,$enddate=NULL) {
-		global $I2_SQL,$I2_LDAP;
+		global $I2_SQL,$I2_LDAP,$I2_LOG;
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 
 		if ($startdate === NULL) {
-			$startdate = date('Y-m-d',time()-7*8*24*60*60);
+			// Go back 10 days by default
+			//$startdate = date('Y-m-d',time()-10*24*60*60);
+			$startdate = date('Y-m-d',time()+14*24*60*60);
 		}
 		if ($enddate === NULL) {
-			$enddate = date('Y-m-d');
+			// Go a week forward by default
+			//$enddate = date('Y-m-d',time()+7*24*60*60);
+			$enddate = date('Y-m-d',time()+28*24*60*60);
 		}
 
 		$numactivities = 0;
@@ -377,6 +387,7 @@ class dataimport implements Module {
 			$r = $res->fetch_array(Result::ASSOC);
 			list($id,$name,$capacity) = array($r['RoomID'],$r['RoomName'],$r['Capacity']);
 			EighthRoom::add_room($name,$capacity,$id);
+			$I2_LOG->log_file("Added room \"$name\"",8);
 			$numrooms++;
 		}
 
@@ -426,7 +437,8 @@ class dataimport implements Module {
 			$blockres = $oldsql->query('SELECT * FROM ActivityScheduleMap 
 												 WHERE ActivityID=%d 
 												 AND ActivityDate >= %s 
-												 AND ActivityDate <= %s',
+												 AND ActivityDate <= %s
+												 ORDER BY ActivityDate DESC',
 												 	$aid,$startdate,$enddate);
 			while ($b = $blockres->fetch_array(Result::ASSOC)) {
 				list($block,$brooms,$attendance,$cancelled,$bcomment,$advertisement,$date) =
@@ -437,6 +449,7 @@ class dataimport implements Module {
 				*/
 				
 				$bid = EighthBlock::add_block($date,$block,FALSE);
+				$I2_LOG->log_file("[Tried to] add block $block on $date",8);
 				
 				/*
 				** Fix old brokenness again
@@ -455,6 +468,7 @@ class dataimport implements Module {
 				** Schedule activity
 				*/
 				EighthSchedule::schedule_activity($bid,$aid,$sponsors,$brooms,$bcomment,$attendance,$cancelled,$advertisement);
+				$I2_LOG->log_file("Scheduled activity \"$name\" for $block on $date",7);
 				$validrooms[$brooms] = 1;
 				$numscheduled++;
 				
@@ -467,6 +481,7 @@ class dataimport implements Module {
 			** Actually create the activity
 			*/
 			EighthActivity::add_activity($name,$sponsors,array_keys($validrooms),$description,$restricted,$sticky,$bothblocks,$presign,$aid);
+			$I2_LOG->log_file("Added activity \"$name\"",5);
 			$numactivities++;
 		}
 
@@ -478,25 +493,54 @@ class dataimport implements Module {
 			$g = $res->fetch_array(Result::ASSOC);
 			list($id,$name) = array($g['GroupID'],$g['Name']);
 			Group::add_group('eighth_'.$name,'Eighth-period activity: '.$description,$id);
+			$I2_LOG->log_file("Added group for $name",6);
 			$numgroups++;
 		}
 
+		$I2_LOG->log_file('Precomputing uid=>studentid mappings');
+
+		$num = 0;
+
+		//Badly named - keys are studentids, vals are uids
+		$studentids = array();
+		$ldap = LDAP::get_admin_bind($this->admin_pass);
+		$res = $ldap->search('','objectClass=tjhsstStudent',array('tjhsstStudentId','iodineUidNumber'));
+		$total = $res->num_rows();
+		while ($num < $total) {
+			$row = $res->fetch_array(Result::ASSOC);
+			if (isSet($row['iodineUidNumber'])) {
+				$studentids[$row['tjhsstStudentId']] = $row['iodineUidNumber'];
+			}
+			$num++;
+			if ($num % 100 == 0) {
+				$I2_LOG->log_file($num.'/'.$total);
+			}
+		}
+
+		$I2_LOG->log_file('... Done!');
+		
 		/*
 		** Add students to activities
 		*/
-		$res = $oldsql->query('SELECT * FROM StudentScheduleMap WHERE ActivityDate >= %s AND ActivityDate <= %s',$startdate,$enddate);
+		$res = $oldsql->query('SELECT * FROM StudentScheduleMap WHERE ActivityDate >= %s AND ActivityDate <= %s ORDER BY ActivityDate,ActivityBlock DESC',$startdate,$enddate);
 		while ($res->more_rows()) {
 			$a = $res->fetch_array(Result::ASSOC);
 			list($studentid,$aid,$date,$block) = array($a['StudentID'],$a['ActivityID'],$a['ActivityDate'],$a['ActivityBlock']);
 			$activity = new EighthActivity($aid);
 			$bid = EighthBlock::add_block($date,$block,FALSE);
-			$uid = User::get_by_studentid($studentid)->uid;
-			if (!$uid) {
+			if (!isSet($studentids[$studentid])) {
 				//There's quite a bit of bogus data in the old DB
-				continue;
+				$uid = User::get_by_studentid($studentid)->uid;
+				if (!$uid) {
+					continue;
+				}
+				$studentids[$studentid] = $uid;
+			} else {
+				$uid = $studentids[$studentid];
 			}
 			d("Adding user $uid (StudentID $studentid) to block $bid",6);
 			$activity->add_member($uid,TRUE,$bid);
+			$I2_LOG->log_file("Switched student with StudentID $studentid into {$activity->name} on $date block $block",7);
 			$numactivitiesentered++;
 		}
 
@@ -644,9 +688,9 @@ class dataimport implements Module {
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'eighthdata' && isSet($_REQUEST['doit'])) {
 			if (isSet($_REQUEST['startdate']) && isSet($_REQUEST['enddate'])) {
-				$this->import_eighth_data($_REQUEST['startdate'],$_REQUEST['enddate']));
+				$this->import_eighth_data($_REQUEST['startdate'],$_REQUEST['enddate']);
 			} elseif (isSet($_REQUEST['startdate'])) {
-				$this->import_eighth_data($_REQUEST['startdate']));
+				$this->import_eighth_data($_REQUEST['startdate']);
 			} else {
 				$this->import_eighth_data();
 			}

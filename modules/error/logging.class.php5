@@ -28,6 +28,16 @@ class Logging {
 	* Whether to debug information to the screen or not.
 	*/
 	private $screen_debug = FALSE;
+
+	/**
+	* The name of the debug log file
+	*/
+	private $log_file_name;
+
+	/**
+	* The file to use for debug logging
+	*/
+	private $log_file;
 	
 	/**
 	* The Logging class constructor.
@@ -38,7 +48,13 @@ class Logging {
 		$this->log_access();
 		$this->screen_debug = true;
 		$this->my_email = i2config_get('email', 'iodine-errors@tjhsst.edu', 'logging');
+		$this->log_file_name = i2config_get('debug_log','/tmp/i2-log','logging');
+		$this->log_file = fopen($this->log_file_name,'w');
 		register_shutdown_function(array($this, 'flush_debug_output'));
+	}
+
+	public function __destruct() {
+		fclose($this->log_file);
 	}
 
 	/**
@@ -138,10 +154,25 @@ class Logging {
 		if ($level > i2config_get('debug_loglevel', 9, 'logging')) {
 			return;
 		}
-
 		if ($this->screen_debug) {
 			$this->log_screen('Level '.$level.' debug: '.$msg);
+		} else {
+			$this->log_file($msg,$level);
 		}
+	}
+
+	/**
+	* Logs directly to a file
+	*/
+	public function log_file($msg,$level=NULL) {
+		if ($level === NULL) { /* If not set, get default debug level */
+			$level = i2config_get('default_debug_level', 0, 'logging');
+		}
+		if ($level > i2config_get('debug_loglevel', 9, 'logging')) {
+			return;
+		}
+		fprintf($this->log_file,$msg."\n");
+		fflush($this->log_file);
 	}
 
 	/**
