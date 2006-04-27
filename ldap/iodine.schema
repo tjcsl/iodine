@@ -400,7 +400,7 @@ attributetype ( i2Attr:49
 	SINGLE-VALUE
 	)
 	
-attributetype ( i2Attr:49
+attributetype ( i2Attr:50
 	NAME ('soundexfirst' 'firstsoundex')
 	DESC 'The soundex of a first name'
 	EQUALITY caseIgnoreMatch
