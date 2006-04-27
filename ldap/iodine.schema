@@ -361,13 +361,6 @@ attributetype ( i2Attr:44
 	SYNTAX integerSyntax
 	)
 
-attributetype ( i2Attr:45
-	NAME ('startpage' 'defaultModule' 'defaultpage')
-	DESC 'A default Intranet 2 module'
-	EQUALITY caseIgnoreMatch
-	SYNTAX stringSyntax
-	SINGLE-VALUE
-	)
 attributetype ( i2Attr:46
 	NAME ('perm-showbirthday' 'showbirthday' 'showbday' 'showbdate')
 	DESC 'Whether the birthday should be visible to others'
