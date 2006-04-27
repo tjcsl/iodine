@@ -41,6 +41,19 @@ class Eighth implements Module {
 	private $template_args = array();
 
 	/**
+	* Starting date for activities
+	*/
+	private $start_date;
+
+	function __construct() {
+		if (isSet($_SESSION['eighth_start_date'])) {
+			$this->start_date = $_SESSION['eighth_start_date'];
+		} else {
+			$this->start_date = date('Y-m-d');
+		}
+	}
+
+	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
@@ -144,7 +157,7 @@ class Eighth implements Module {
 			if (isSet($args['startdate'])) {
 				$startdate = $args['startdate'];
 			} else {
-				$startdate = date('Y-m-d');
+				$startdate = $this->start_date;
 			}
 		}
 		if ($daysf === NULL && isSet($args['daysforward'])) {
@@ -555,11 +568,11 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	private function sch_activity($op, $args) {
-		if($op == "") {
+		if($op == '') {
 			$this->setup_activity_selection();
 		}
-		else if($op == "view") {
-			$this->template = "sch_activity.tpl";
+		else if($op == 'view') {
+			$this->template = 'sch_activity.tpl';
 			$this->template_args['rooms'] = EighthRoom::get_all_rooms();
 			$this->template_args['sponsors'] = EighthSponsor::get_all_sponsors();
 			$this->template_args['activities'] = EighthSchedule::get_activity_schedule($args['aid']);
@@ -570,10 +583,10 @@ class Eighth implements Module {
 		}
 		else if($op == 'modify') {
 			foreach($args['modify'] as $bid) {
-				if($args['activity_status'][$bid] == "CANCELLED") {
+				if($args['activity_status'][$bid] == 'CANCELLED') {
 					EighthActivity::cancel($bid, $args['aid']);
 				}
-				else if($args['activity_status'][$bid] == "UNSCHEDULED") {
+				else if($args['activity_status'][$bid] == 'UNSCHEDULED') {
 					EighthSchedule::unschedule_activity($bid, $args['aid']);
 				}
 				else {
@@ -672,20 +685,20 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	public function cancel_activity($op, $args) {
-		if($op == "") {
+		if($op == '') {
 			$this->setup_block_selection();
-			$this->template_args['op'] = "activity";
+			$this->template_args['op'] = 'activity';
 		}
-		else if($op == "activity") {
+		else if($op == 'activity') {
 			$this->setup_activity_selection(FALSE, $args['bid']);
 			$this->template_args['op'] = "view/bid/{$args['bid']}";
 		}
-		else if($op == "view") {
-			$this->template = "cancel_activity.tpl";
+		else if($op == 'view') {
+			$this->template = 'cancel_activity.tpl';
 			$this->template_args['activity'] = new EighthActivity($args['aid'], $args['bid']);
-			$this->title = "Cancel an Activity";
+			$this->title = 'Cancel an Activity';
 		}
-		else if($op == "update") {
+		else if($op == 'update') {
 			$activity = new EighthActivity($args['aid'], $args['bid']);
 			$activity->comment = $args['comment'];
 			$activity->advertisement = $args['advertisement'];
@@ -785,17 +798,17 @@ class Eighth implements Module {
 			$this->setup_block_selection();
 			$this->template_args['op'] = "activity";
 		}
-		else if($op == "activity") {
+		else if($op == 'activity') {
 			$this->setup_activity_selection(FALSE, $args['bid']);
 			$this->template_args['op'] = "view/bid/{$args['bid']}";
 		}
-		else if($op == "view") {
-			$this->template = "vcp_attendance.tpl";
+		else if($op == 'view') {
+			$this->template = 'vcp_attendance.tpl';
 			$this->template_args['activity'] = new EighthActivity($args['aid'], $args['bid']);
 			$this->template_args['absentees'] = EighthSchedule::get_absentees($args['bid'], $args['aid']);
 			$this->title = "View Attendance";
 		}
-		else if($op == "update") {
+		else if($op == 'update') {
 			$activity = new EighthActivity($args['aid'], $args['bid']);
 			$members = $activity->members;
 			foreach($members as $member) {
@@ -954,10 +967,13 @@ class Eighth implements Module {
 	public function chg_start($op, $args) {
 		if($op == '') {
 			$this->template = 'chg_start.tpl';
+			$this->template_args['backdate'] = date('Y-m-d',time()-7*8*24*60*60);;
 			$this->title = 'Change Start Date';
 		}
 		else if($op == 'change') {
-			//TODO: Change starting date
+			$this->start_date = $args['date'];
+			$_SESSION['eighth_start_date'] = $this->start_date;
+			redirect('eighth');
 		}
 	}
 

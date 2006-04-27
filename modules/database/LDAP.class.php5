@@ -250,6 +250,7 @@ class LDAP {
 		if (!$bind) {
 			$bind = $this->conn;
 		}
+		
 		d("LDAP modifying $dn: ".print_r($vals,TRUE),7);
 		return ldap_modify($bind,$dn,$vals);
 	}

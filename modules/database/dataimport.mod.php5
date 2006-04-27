@@ -351,15 +351,23 @@ class dataimport implements Module {
 		$ldap->add($dn,$usernew);
 	}
 
-	private function import_eighth_data() {
+	private function import_eighth_data($startdate=NULL,$enddate=NULL) {
 		global $I2_SQL,$I2_LDAP;
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
+
+		if ($startdate === NULL) {
+			$startdate = date('Y-m-d',time()-7*8*24*60*60);
+		}
+		if ($enddate === NULL) {
+			$enddate = date('Y-m-d');
+		}
 
 		$numactivities = 0;
 		$numblocks = 0;
 		$numscheduled = 0;
 		$numrooms = 0;
-		$numactivitiesentered;
+		$numactivitiesentered = 0;
+		$numgroups = 0;
 		
 		/*
 		** Create rooms
@@ -415,7 +423,11 @@ class dataimport implements Module {
 			** Fetch/process all this activity's blocks
 			*/
 									
-			$blockres = $oldsql->query('SELECT * FROM ActivityScheduleMap WHERE ActivityID=%d',$aid);
+			$blockres = $oldsql->query('SELECT * FROM ActivityScheduleMap 
+												 WHERE ActivityID=%d 
+												 AND ActivityDate >= %s 
+												 AND ActivityDate <= %s',
+												 	$aid,$startdate,$enddate);
 			while ($b = $blockres->fetch_array(Result::ASSOC)) {
 				list($block,$brooms,$attendance,$cancelled,$bcomment,$advertisement,$date) =
 					array($b['ActivityBlock'],$b['Room'],$b['AttendanceTaken'],$b['Cancelled'],$b['Comment'],$b['Advertisement'],$b['ActivityDate']);
@@ -472,7 +484,7 @@ class dataimport implements Module {
 		/*
 		** Add students to activities
 		*/
-		$res = $oldsql->query('SELECT * FROM StudentScheduleMap');
+		$res = $oldsql->query('SELECT * FROM StudentScheduleMap WHERE ActivityDate >= %s AND ActivityDate <= %s',$startdate,$enddate);
 		while ($res->more_rows()) {
 			$a = $res->fetch_array(Result::ASSOC);
 			list($studentid,$aid,$date,$block) = array($a['StudentID'],$a['ActivityID'],$a['ActivityDate'],$a['ActivityBlock']);
@@ -549,16 +561,16 @@ class dataimport implements Module {
 				$user->showphone = 'FALSE';
 			}
 			if ($otherres['AllowPicture']) {
-				$user->showpicture = 'TRUE';
+				$user->showpictures = 'TRUE';
 			} else {
-				$user->showpicture = 'FALSE';
+				$user->showpictures = 'FALSE';
 			}
 			//$row doesn't have Locker (it's actually not in StudentInfo)
 			if ($otherres['Locker']) {
 				$user->locker = $otherres['Locker'];
 			}
-			$user->phoneNumber = $otherres['CellPhone'];
-			$user->mailAddress = $otherres['Email'];
+			$user->telephoneNumber = $otherres['CellPhone'];
+			$user->mail = $otherres['Email'];
 			$user->soundexlast = $row['Lastnamesound'];
 			$user->soundexfirst = $row['Firstnamesound'];
 		}
@@ -569,9 +581,12 @@ class dataimport implements Module {
 	*/
 	private function make_teachers_sponsors() {
 		global $I2_LDAP;
-		$res = $I2_LDAP->search('','objectClass=tjhsstTeacher',array('fname','lname'));
-		while ($row = $res->fetch_array(Result::ASSOC)) {
-			EighthSponsor::add_sponsor($row['fname'],$row['lname']);
+		$res = $I2_LDAP->search('','objectClass=tjhsstTeacher',array('givenName','sn'));
+		while ($res->more_rows()) {
+			$row = $res->fetch_array(Result::ASSOC);
+			if (isSet($row['givenName']) && isSet($row['sn'])) {
+				EighthSponsor::add_sponsor($row['givenName'],$row['sn']);
+			}
 		}
 	}
 
@@ -628,7 +643,13 @@ class dataimport implements Module {
 			$this->import_teacher_data_file($_REQUEST['teacherfile'],$_REQUEST['stafffile']);
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'eighthdata' && isSet($_REQUEST['doit'])) {
-			$this->import_eighth_data();
+			if (isSet($_REQUEST['startdate']) && isSet($_REQUEST['enddate'])) {
+				$this->import_eighth_data($_REQUEST['startdate'],$_REQUEST['enddate']));
+			} elseif (isSet($_REQUEST['startdate'])) {
+				$this->import_eighth_data($_REQUEST['startdate']));
+			} else {
+				$this->import_eighth_data();
+			}
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'studentinfo' && isSet($_REQUEST['doit'])) {
 			$this->expand_student_info();

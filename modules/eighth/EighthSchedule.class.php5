@@ -39,6 +39,9 @@ class EighthSchedule {
 		if (!$cancelled) {
 			$cancelled = 0;
 		}
+		/*
+		** Warning: adding a check for $aid validity will break dataimport.
+		*/
 		$result = $I2_SQL->query("REPLACE INTO eighth_block_map 
 			(bid,activityid,sponsors,rooms,comment,attendancetaken,cancelled,advertisement) 
 			VALUES (%d,%d,'%D','%D',%s,%d,%d,%s)", 

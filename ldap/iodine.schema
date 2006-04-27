@@ -75,7 +75,7 @@ attributetype ( i2Attr:4
 	)
 
 attributetype ( i2Attr:5
-	NAME ('perm-showpictures' 'showpictures')
+	NAME ('perm-showpictures' 'showpictures' 'showpicture')
 	DESC 'Whether the pictures should be visible to others'
 	EQUALITY booleanMatch
 	SYNTAX boolSyntax
