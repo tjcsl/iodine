@@ -34,12 +34,13 @@
 	<a href="[<$I2_ROOT>]eighth/view/comments/uid/[<$user->uid>]">Edit Comments</a> - <a href="[<$I2_ROOT>]eighth/view/student/uid/[<$user->uid>]">Edit Student</a><br />
 [</if>]
 	<form name="activities" action="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>]" method="post">
-	<input type="submit" value="Change Selected" />
-	<div style="display: inline; margin-left: 100px;">
-		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]">&lt; Back Two Weeks</a>
-		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]">Forward Two Weeks &gt;</a>
-	</div>
-	<br /><br />
+	<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; border: 0px; width: 100%;">
+	<tr>
+	<td style="text-align: left;"><input type="button" value="&lt; Back Two Weeks" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]'" /></td>
+	<td style="text-align: center;"><input type="submit" value="Change Selected" /></td>
+	<td style="text-align: right;"><input type="button" value="Forward Two Weeks &gt;" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]'" /></td>
+	</tr>
+	</table>
 	<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; border: 0px; width: 100%;">
 		<tr>
 			<th>Select All<br /><input type="checkbox" name="selectall" onclick="CA();" /></th>
@@ -66,12 +67,13 @@
 		</tr>
 [</foreach>]
 	</table>
-	<br />
-	<input type="submit" value="Change Selected" />
-	<div style="display: inline; margin-left: 100px;">
-		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]">&lt; Back Two Weeks</a>
-		<a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]">Forward Two Weeks &gt;</a>
-	</div>
+	<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; border: 0px; width: 100%;">
+	<tr>
+	<td style="text-align: left;"><input type="button" value="&lt; Back Two Weeks" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]'" /></td>
+	<td style="text-align: center;"><input type="submit" value="Change Selected" /></td>
+	<td style="text-align: right;"><input type="button" value="Forward Two Weeks &gt;" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]'" /></td>
+	</tr>
+	</table>
 </form>
 <script language="javascript" type="text/javascript">
 	<!--
