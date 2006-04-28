@@ -63,7 +63,7 @@ class Calc implements Module {
 			else if ($_REQUEST['calc_form']=="delete")
 			{
 				$I2_SQL->query('DELETE FROM calculators WHERE calcsn=%s', $_REQUEST['sn']);
-				$this->message = "Calculator $val removed from database.";
+				$this->message = "Calculator $_REQUEST['sn'] removed from database.";
 			}
 		}
 		return array('Calculator Registration');
@@ -71,7 +71,7 @@ class Calc implements Module {
 
 	private function calc_exists($val) {
 		global $I2_SQL;
-		if ( flatten($I2_SQL->query('SELECT * FROM calculators WHERE calcsn=%d', $val)->fetch_array(Result::ASSOC)) != null )
+		if ( $I2_SQL->query('SELECT * FROM calculators WHERE calcsn=%d', $val)->fetch_array(Result::ASSOC) != null )
 		{
 			return true;
 		} else {
