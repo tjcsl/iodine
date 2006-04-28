@@ -2,7 +2,7 @@
 [<if count($conflicts) > 0 >]
 	<table cellspacing="0" style="border: 0px; padding: 0px; margin: 0px">
 	[<foreach from=$conflicts item="conflict" key="room">]
-		<tr style="background-color: #CCCCCC;">
+		<tr style="background-color: #EEEEFF;">
 			<th>Conflicts for room: [<$room>]</th>
 		</tr>
 		[<foreach from=$conflicts.$room item="activity">]

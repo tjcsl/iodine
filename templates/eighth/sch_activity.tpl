@@ -154,7 +154,7 @@
 		<td style="width: 120px;"></td>
 	</tr>
 [<foreach from=$activities item="activity">]
-	<tr style="background-color: [<cycle values="#CCCCCC,#FFFFFF">]">
+	<tr style="background-color: [<cycle values="#EEEEFF,#FFFFFF">]">
 		<td style="text-align: center;"><input type="checkbox" name="modify[]" value="[<$activity.block.bid>]" id="check_[<$activity.block.bid>]" onclick="CCA(this);" [<if $activity.scheduled>]checked="checked"[</if>]/></td>
 		<td style="padding: 5px 5px 5px 0px;[<if !$activity.scheduled>] font-weight: bold;[</if>]">
 			[<$activity.block.date|date_format:"%a">] [<$activity.block.block>], [<$activity.block.date|date_format:"%m/%d/%y">]

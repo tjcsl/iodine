@@ -16,7 +16,7 @@ Sponsor(s):&nbsp;[<$activity->block_sponsors_comma>]<br />
 	$this->_tpl_vars['users'] = User::sort_users($this->_tpl_vars['activity']->members);
 [</php>]
 [<foreach from=$users item="user">]
-		<tr style="background-color: [<cycle values="#CCCCCC,#FFFFFF">]">
+		<tr style="background-color: [<cycle values="#EEEEFF,#FFFFFF">]">
 			<td style="padding: 0px 5px;"><input type="checkbox" name="absentees[]" value="[<$user->uid>]"[<if in_array($user->uid, $absentees) >] checked="checked"[</if>] /></td>
 			<td style="padding: 0px 5px;">[<$user->name_comma>] ([<$user->tjhsstStudentId>])</td>
 			<td style="padding: 0px 5px;">[<$user->grade>]</td>

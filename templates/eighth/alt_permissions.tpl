@@ -8,7 +8,7 @@ Restricted Members of [<$activity->name>]<br />
 		<td></td>
 	</tr>
 [<foreach from=$activity->restricted_members_obj item="member">]
-	<tr style="background-color: [<cycle values="#CCCCCC,#FFFFFF">]">
+	<tr style="background-color: [<cycle values="#EEEEFF,#FFFFFF">]">
 		<td style="padding: 0px 5px;">[<$member->name>]</td>
 		<td style="text-align: center; padding: 0px 5px;">[<$member->tjhsstStudentId>]</td>
 		<td style="text-align: center; padding: 0px 5px;">[<$member->grade>]</td>

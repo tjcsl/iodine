@@ -8,7 +8,7 @@ Absence information for ([<$uid>]): [<$count>] absence[<if $count != 1 >]s[</if>
 		<th style="padding: 0px 10px;">Activity ID</th>
 	</tr>
 [<foreach from=$absences item="activity">]
-	<tr style="background-color: [<cycle values="#CCCCCC,#FFFFFF">]">
+	<tr style="background-color: [<cycle values="#EEEEFF,#FFFFFF">]">
 		<td style="padding: 0px 10px; text-align: center;">[<$activity->block->date|date_format>]</td>
 		<td style="padding: 0px 10px; text-align: center;">[<$activity->name_r>]</td>
 		<td style="padding: 0px 10px; text-align: center;">[<$activity->aid>]</td>
