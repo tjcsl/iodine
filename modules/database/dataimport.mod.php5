@@ -646,7 +646,10 @@ class dataimport implements Module {
 	}
 
 	public function init_pane() {
-		global $I2_ARGS;
+		global $I2_ARGS,$I2_USER;
+		if (!$I2_USER->is_group_member('admin_all')) {
+			return FALSE;
+		}
 		if (isSet($_REQUEST['admin_pass'])) {
 			$_SESSION['ldap_admin_pass'] = $_REQUEST['admin_pass'];
 		}

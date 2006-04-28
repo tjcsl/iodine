@@ -367,17 +367,12 @@ class GroupSQL extends Group {
 		if(is_array($gids)) {
 			$ret = array();
 			foreach($gids as $gid) {
-				if(Group::get_special_group($gid)) {
-					$ret[] = new Group($gid);
-				}
+				$ret[] = new Group($gid);
 			}
-			foreach($I2_SQL->query('SELECT * FROM groups WHERE gid IN (%D);',$gids) as $row) {
-				$ret[] = new Group($row);
-			}
-			return $ret;
 		} else {
 			return new Group($gids);
 		}
+		return $ret;
 	}
 }
 ?>
