@@ -117,34 +117,12 @@ Counselor: [<$user->counselor>]<br />
  [<foreach from=$eighth item=activity>]
   <tr>
    <td>[<$activity->block->date>]</td>
-   <td>[<$activity->name_r>]</td>
+   <td><a href="[<$I2_ROOT>]eighth/vcp_schedule/roster/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_r>]</a></td>
    <td>[<$activity->block_rooms_comma>]</td>
   </tr>
  [</foreach>]
  </table>
 [</if>]
-
-<br /><br />
-The DUMP:<br />
-Student: [<$user->fname>] [<if $user->nickname>] ([<$user->nickname>]) [</if>] [<$user->mname>] [<$user->lname>] [<$user->suffix>]
-<br />Info:<br /><br />
-[<foreach from=$info item=val key=key>]
-[<if ! ($key == "fname" || $key == "nickname" || $key == "mname" || $key == "lname" || $key == "suffix")>]
-[<$key>]: [<$val>]<br />
-[</if>]
-[</foreach>]
-
-[<elseif is_array($info) and isset($info.class)>]
- [<foreach from=$info.students item=student>]
-  <a href="[<$I2_ROOT>]studentdirectory/info/[<$student->uid>]">[<$student->name>]</a><br />
- [</foreach>]
-
-[<elseif is_array($info)>]
-
-	[<foreach from=$info item=user>]
-		<a href="[<$I2_ROOT>]studentdirectory/info/[<$user->uid>]">[<$user->fullname_comma>][<if $user->grade>] ([<$user->grade>])[</if>]</a><br />
-	[</foreach>]
-
 [<else>]
-Internal error, please contact the intranetmaster.
+Intranet has encountered an error.  Please contact the Intranetmaster.
 [</if>]

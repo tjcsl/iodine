@@ -33,7 +33,7 @@ class Eighth implements Module {
 	/**
 	* Template for the specified action
 	*/
-	private $template = "pane.tpl";
+	private $template = 'pane.tpl';
 
 	/**
 	* Template arguments for the specified action
@@ -81,7 +81,7 @@ class Eighth implements Module {
 				return array("Eighth Period Office Online: ERROR - SubModule Doesn't Exist");
 			}
 		}
-		return array("Error", "Error");
+		return array('Error', 'Error');
 	}
 
 	/**
@@ -167,11 +167,11 @@ class Eighth implements Module {
 		}
 		$blocks = EighthBlock::get_all_blocks($startdate,$daysf);
 		$this->template = "block_selection.tpl";
-		$this->template_args += array("blocks" => $blocks, "add" => $add);
+		$this->template_args += array('blocks' => $blocks, 'add' => $add);
 		$this->template_args['title'] = $title;
 		$this->template_args['field'] = $field;
-		$this->title = "Select a Block";
-		$this->help_text = "Select a Block";
+		$this->title = 'Select a Block';
+		$this->help_text = 'Select a Block';
 	}
 
 	/**
@@ -185,12 +185,12 @@ class Eighth implements Module {
 	*/
 	private function setup_activity_selection($add = FALSE, $blockid = NULL, $restricted = FALSE, $field = "aid", $title = "Select an activity:") {
 		$activities = EighthActivity::get_all_activities($blockid, $restricted);
-		$this->template = "activity_selection.tpl";
-		$this->template_args += array("activities" => $activities, "add" => $add);
+		$this->template = 'activity_selection.tpl';
+		$this->template_args += array('activities' => $activities, 'add' => $add);
 		$this->template_args['title'] = $title;
 		$this->template_args['field'] = $field;
-		$this->title = "Select an Activity";
-		$this->help_text = "Select an Activity";
+		$this->title = 'Select an Activity';
+		$this->help_text = 'Select an Activity';
 	}
 
 	/**
@@ -200,12 +200,12 @@ class Eighth implements Module {
 	* @param bool $add Whether to include the add field or not.
 	* @param string $title The title for the group list.
 	*/
-	private function setup_group_selection($add = FALSE, $title = "Select a group:") {
-		$groups = Group::get_all_groups("eighth");
-		$this->template = "group_selection.tpl";
-		$this->template_args += array("groups" => $groups, "add" => $add);
+	private function setup_group_selection($add = FALSE, $title = 'Select a group:') {
+		$groups = Group::get_all_groups('eighth');
+		$this->template = 'group_selection.tpl';
+		$this->template_args += array('groups' => $groups, 'add' => $add);
 		$this->template_args['title'] = $title;
-		$this->title = "Select a Group";
+		$this->title = 'Select a Group';
 		$this->help_text = "Select a Group";
 	}
 
@@ -216,10 +216,10 @@ class Eighth implements Module {
 	* @param bool $add Whether to include the add field or not.
 	* @param string $title The title for the room list.
 	*/
-	private function setup_room_selection($add = FALSE, $title = "Select a room:") {
+	private function setup_room_selection($add = FALSE, $title = 'Select a room:') {
 		$rooms = EighthRoom::get_all_rooms();
-		$this->template = "room_selection.tpl";
-		$this->template_args += array("rooms" => $rooms, "add" => $add);
+		$this->template = 'room_selection.tpl';
+		$this->template_args += array('rooms' => $rooms, 'add' => $add);
 		$this->template_args['title'] = $title;
 		$this->title = "Select a Room";
 		$this->help_text = "Select a Room";
@@ -232,10 +232,10 @@ class Eighth implements Module {
 	* @param bool $add Whether to include the add field or not.
 	* @param string $title The title for the sponsor list.
 	*/
-	private function setup_sponsor_selection($add = FALSE, $title = "Select a sponsor:") {
+	private function setup_sponsor_selection($add = FALSE, $title = 'Select a sponsor:') {
 		$sponsors = EighthSponsor::get_all_sponsors();
-		$this->template = "sponsor_selection.tpl";
-		$this->template_args += array("sponsors" => $sponsors, "add" => $add);
+		$this->template = 'sponsor_selection.tpl';
+		$this->template_args += array('sponsors' => $sponsors, 'add' => $add);
 		$this->template_args['title'] = $title;
 		$this->title = "Select a Sponsor";
 		$this->help_text = "Select a Sponsor";
@@ -247,12 +247,12 @@ class Eighth implements Module {
 	* @access private
 	* @param string $module The module that we are printing from.
 	*/
-	private function setup_format_selection($module, $title = "", $args = array(), $user = FALSE) {
-		$this->template = "format_selection.tpl";
+	private function setup_format_selection($module, $title = '', $args = array(), $user = FALSE) {
+		$this->template = 'format_selection.tpl';
 		$this->template_args['module'] = $module;
 		$this->template_args['title'] = $title;
 		$this->template_args['user'] = $user;
-		$this->template_args['args'] = "";
+		$this->template_args['args'] = '';
 		foreach($args as $key=>$value) {
 			$this->template_args['args'] .= "/{$key}/{$value}";
 		}
@@ -277,17 +277,17 @@ class Eighth implements Module {
 		else if($op == "activity") {
 			$this->setup_activity_selection(FALSE, $args['bid']);
 			$this->template_args['op'] = "group/bid/{$args['bid']}";
-			return "Select an activity";
+			return 'Select an activity';
 		}
-		else if($op == "group") {
+		else if($op == 'group') {
 			$this->setup_group_selection();
 			$this->template_args['op'] = "commit/bid/{$args['bid']}/aid/{$args['aid']}";
 		}
-		else if($op == "commit") {
+		else if($op == 'commit') {
 			$activity = new EighthActivity($args['aid'], $args['bid']);
 			$group = new Group($args['gid']);
 			$activity->add_members($group->members);
-			redirect("eighth");
+			redirect('eighth');
 		}
 	}
 
@@ -303,10 +303,10 @@ class Eighth implements Module {
 			$this->setup_group_selection(true);
 		}
 		else if($op == 'add') {
-			Group::add_group("" . $args['name']);
-			redirect("eighth/amr_group");
+			Group::add_group('' . $args['name']);
+			redirect('eighth/amr_group');
 		}
-		else if($op == "modify") {
+		else if($op == 'modify') {
 			Group::set_group_name($args['gid'],$args['name']);
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
 		}
@@ -349,10 +349,10 @@ class Eighth implements Module {
 	* @todo Work on restricted activities and permissions
 	*/
 	private function alt_permissions($op, $args) {
-		if($op == "") {
+		if($op == '') {
 			$this->setup_activity_selection(FALSE, NULL, TRUE);
 		}
-		else if($op == "view") {
+		else if($op == 'view') {
 			$this->template = "alt_permissions.tpl";
 			$this->template_args['activity'] = new EighthActivity($args['aid']);
 			$this->template_args['groups'] = Group::get_all_groups("eighth");
