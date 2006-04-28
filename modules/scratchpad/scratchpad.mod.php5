@@ -40,10 +40,11 @@ class Scratchpad implements Module {
 			case "load":
 				$this->text = $I2_SQL->query("SELECT padtext FROM scratchpad WHERE uid=%d", $I2_USER->uid)->fetch_single_value('padtext');
 				return TRUE;
-			case: "help":
+			case "help":
 				return TRUE;
 			default :
 				return FALSE;
+				
 		}
 
 	}
