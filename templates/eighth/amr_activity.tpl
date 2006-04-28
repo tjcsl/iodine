@@ -72,6 +72,6 @@
 			<td><input type="checkbox" name="sticky"[<if $activity->sticky >] checked="checked"[</if>] /></td>
 		</tr>
 	</table><br />
-	<input type="submit" value="Modify" /><br />
+	<input type="submit" value="Modify" />
 	<a href="[<$I2_ROOT>]eighth/amr_activity/remove/aid/[<$activity->aid>]"><input type="button" value="Remove" /></a>
 </form>
