@@ -4,10 +4,11 @@ INSERT INTO groups (name,description) VALUES('admin_mysql','The MySQL admin grou
 INSERT INTO groups (name,description) VALUES('admin_eighth','The eighth admin group');
 INSERT INTO groups (name,description) VALUES('admin_groups','The groups admin group');
 INSERT INTO groups (name,description) VALUES('admin_news','The news admin group');
-INSERT INTO intrabox (name,display_name) VALUES('birthdays','birthdays');
-INSERT INTO intrabox (name,display_name) VALUES('eighth','eighth');
-INSERT INTO intrabox (name,display_name) VALUES('news','news');
+INSERT INTO intrabox (name,display_name) VALUES('birthdays','Birthdays');
+INSERT INTO intrabox (name,display_name) VALUES('eighth','Eighth Period');
+INSERT INTO intrabox (name,display_name) VALUES('news','News');
 INSERT INTO intrabox (name,display_name) VALUES('studentdirectory','Student Directory');
 INSERT INTO intrabox (name,display_name) VALUES('filecenter','Access Your Files');
 INSERT INTO intrabox (name,display_name) VALUES('scratchpad','Scratchpad');
-INSERT INTO intrabox (name,display_name) VALUES('mail','mail');
+INSERT INTO intrabox (name,display_name) VALUES('mail','Mail');
+INSERT INTO intrabox (name,display_name) VALUES('devlinks','Developer Links');
