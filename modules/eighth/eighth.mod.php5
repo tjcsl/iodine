@@ -23,12 +23,12 @@ class Eighth implements Module {
 	/**
 	* The title for the page
 	*/
-	private $title = "";
+	private $title = '';
 
 	/**
 	* The help text for the page
 	*/
-	private $help_text = "";
+	private $help_text = '';
 
 	/**
 	* Template for the specified action
@@ -57,16 +57,21 @@ class Eighth implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_ARGS;
+		global $I2_ARGS,$I2_USER;
 		$args = array();
+		$admin = self::is_admin();
+		$this->template_args['eighth_admin'] = $admin;
 		if(count($I2_ARGS) <= 1) {
-			$this->template = "pane.tpl";
-			$this->template_args['help'] = "<h2>8th Period Office Online Menu</h2>From here you can choose a number of operations to administrate the eighth period system.";
-			return "Eighth Period Office Online: Home";
+			if (!$admin) {
+				return FALSE;
+			}
+			$this->template = 'pane.tpl';
+			$this->template_args['help'] = '<h2>8th Period Office Online Menu</h2>From here you can choose a number of operations to administrate the eighth period system.';
+			return 'Eighth Period Office Online: Home';
 		}
 		else if(count($I2_ARGS) == 2 || (count($I2_ARGS) % 2) != 0) {
 			$method = $I2_ARGS[1];
-			$op = (count($I2_ARGS) > 2 ? $I2_ARGS[2] : "");
+			$op = (count($I2_ARGS) > 2 ? $I2_ARGS[2] : '');
 			for($i = 3; $i < count($I2_ARGS); $i += 2) {
 				$args[$I2_ARGS[$i]] = $I2_ARGS[$i + 1];
 			}
@@ -75,7 +80,11 @@ class Eighth implements Module {
 				$this->$method($op, $args);
 				$this->template_args['method'] = $method;
 				$this->template_args['help'] = $this->help_text;
-				return "Eighth Period Office Online: {$this->title}";
+				if ($admin) {
+					return "Eighth Period Office Online: {$this->title}";
+				} else {
+					return "Eighth Period Online: {$this->title}";
+				}
 			}
 			else {
 				return array("Eighth Period Office Online: ERROR - SubModule Doesn't Exist");
@@ -102,13 +111,14 @@ class Eighth implements Module {
 		global $I2_USER;
 		$date = EighthSchedule::get_next_date();
 		$this->template_args['absent'] = count(EighthSchedule::get_absences($I2_USER->uid));
+		$this->template_args['eighth_admin'] = self::is_admin();
 		if($date) {
 			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($I2_USER->uid, $date, 1));
 		}
 		else {
 			$this->template_args['activities'] = array();
 		}
-		$dates = array($date => date("n/j/Y", @strtotime($date)), date("Y-m-d") => "Today", date("Y-m-d", time() + 3600 * 24) => "Tomorrow", "" => "None Scheduled");
+		$dates = array($date => date('n/j/Y', @strtotime($date)), date('Y-m-d') => 'Today', date('Y-m-d', time() + 3600 * 24) => 'Tomorrow', '' => 'None Scheduled');
 		return "8th Period: {$dates[$date]}";
 	}
 	
@@ -116,14 +126,14 @@ class Eighth implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_box($display) {
-		$display->disp("box.tpl", $this->template_args);
+		$display->disp('box.tpl', $this->template_args);
 	}
 	
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function get_name() {
-		return "Eighth";
+		return 'Eighth';
 	}
 
 	/**
@@ -135,6 +145,17 @@ class Eighth implements Module {
 	*/
 	private function name_cmp($user1, $user2) {
 		return strcasecmp($user1->fullname_comma, $user2->fullname_comma);
+	}
+
+	public static function is_admin() {
+		global $I2_USER;
+		return $I2_USER->is_group_member('admin_eighth');
+	}
+	
+	public static function check_admin() {
+		if (!self::is_admin()) {
+			throw new I2Exception('Attempted to perform an unauthorized 8th-period action!');
+		}
 	}
 
 	/**
@@ -166,7 +187,7 @@ class Eighth implements Module {
 			$daysf = 9999;
 		}
 		$blocks = EighthBlock::get_all_blocks($startdate,$daysf);
-		$this->template = "block_selection.tpl";
+		$this->template = 'block_selection.tpl';
 		$this->template_args += array('blocks' => $blocks, 'add' => $add);
 		$this->template_args['title'] = $title;
 		$this->template_args['field'] = $field;
@@ -183,7 +204,7 @@ class Eighth implements Module {
 	* if you want the full list.
 	* @param string $title The title for the activity list.
 	*/
-	private function setup_activity_selection($add = FALSE, $blockid = NULL, $restricted = FALSE, $field = "aid", $title = "Select an activity:") {
+	private function setup_activity_selection($add = FALSE, $blockid = NULL, $restricted = FALSE, $field = 'aid', $title = 'Select an activity:') {
 		$activities = EighthActivity::get_all_activities($blockid, $restricted);
 		$this->template = 'activity_selection.tpl';
 		$this->template_args += array('activities' => $activities, 'add' => $add);
@@ -274,7 +295,7 @@ class Eighth implements Module {
 			$this->setup_block_selection();
 			$this->template_args['op'] = 'activity';
 		}
-		else if($op == "activity") {
+		else if($op == 'activity') {
 			$this->setup_activity_selection(FALSE, $args['bid']);
 			$this->template_args['op'] = "group/bid/{$args['bid']}";
 			return 'Select an activity';
@@ -330,7 +351,7 @@ class Eighth implements Module {
 			$group->remove_user($args['uid']);
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
 		}
-		else if($op == "remove_all") {
+		else if($op == 'remove_all') {
 			$group = new Group($args['gid']);
 			$group->remove_all_members();
 			redirect("eighth/amr_group/view/gid/{$args['gid']}");
@@ -624,24 +645,24 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	private function vp_roster($op, $args) {
-		if($op == "") {
+		if($op == '') {
 			$this->setup_block_selection();
 			$this->template_args['op'] = "activity";
 		}
-		else if($op == "activity") {
+		else if($op == 'activity') {
 			$this->setup_activity_selection(FALSE, $args['bid']);
 			$this->template_args['op'] = "view/bid/{$args['bid']}";
 		}
-		else if($op == "view") {
+		else if($op == 'view') {
 			$activity = new EighthActivity($args['aid'], $args['bid']);
-			$this->template = "vp_roster.tpl";
+			$this->template = 'vp_roster.tpl';
 			$this->template_args['activity'] = $activity;
-			$this->title = "View Roster";
+			$this->title = 'View Roster';
 		}
 		else if($op == 'format') {
-			$this->setup_format_selection('vp_roster', 'Class Roster', array('aid' => $args['aid'], "bid" => $args['bid']));
+			$this->setup_format_selection('vp_roster', 'Class Roster', array('aid' => $args['aid'], 'bid' => $args['bid']));
 		}
-		else if($op == "print") {
+		else if($op == 'print') {
 			EighthPrint::print_class_roster($args['aid'], $args['bid'], $args['format']);
 		}
 	}
@@ -715,11 +736,11 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	public function room_sanity($op, $args) {
-		if($op == "") {
+		if($op == '') {
 			$this->setup_block_selection();
 		}
-		else if($op == "view") {
-			$this->template = "room_sanity.tpl";
+		else if($op == 'view') {
+			$this->template = 'room_sanity.tpl';
 			$this->template_args['conflicts'] = EighthRoom::get_conflicts($args['bid']);
 			$this->title = "Room Assignment Sanity Check";
 		}
@@ -794,7 +815,7 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	public function vcp_attendance($op, $args) {
-		if($op == "") {
+		if($op == '') {
 			$this->setup_block_selection();
 			$this->template_args['op'] = "activity";
 		}
@@ -916,20 +937,20 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	public function fin_schedules($op, $args) {
-		if($op == "") {
-			$this->template = "fin_schedules.tpl";
+		if($op == '') {
+			$this->template = 'fin_schedules.tpl';
 			$this->template_args['blocks'] = EighthBlock::get_all_blocks();
-			$this->title = "Finalize Schedules";
+			$this->title = 'Finalize Schedules';
 		}
-		else if($op == "lock") {
+		else if($op == 'lock') {
 			$block = new EighthBlock($args['bid']);
 			$block->locked = TRUE;
-			redirect("eighth/fin_schedules");
+			redirect('eighth/fin_schedules');
 		}
-	 	else if($op == "unlock") {
+	 	else if($op == 'unlock') {
 			$block = new EighthBlock($args['bid']);
 			$block->locked = FALSE;
-			redirect("eighth/fin_schedules");
+			redirect('eighth/fin_schedules');
 		}
 	}
 
@@ -941,18 +962,18 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	public function prn_attendance($op, $args) {
-		if($op == "") {
-			$this->template_args['op'] = "format";
+		if($op == '') {
+			$this->template_args['op'] = 'format';
 			$this->setup_block_selection();
 		}
-		else if($op == "confirm") {
+		else if($op == 'confirm') {
 
 		}
-		else if($op == "format") {
-			$this->setup_format_selection("prn_attendance", "Activity Rosters", array("bid" => $args['bid']));
+		else if($op == 'format') {
+			$this->setup_format_selection('prn_attendance', 'Activity Rosters', array('bid' => $args['bid']));
 		}
-		else if($op == "print") {
-			EighthPrint::print_activity_rosters(explode(",", $args['bid']), $args['format']);
+		else if($op == 'print') {
+			EighthPrint::print_activity_rosters(explode(',', $args['bid']), $args['format']);
 		}
 	}
 
@@ -1124,8 +1145,20 @@ class Eighth implements Module {
 			}
 		}
 		else if($op == 'roster') {
-			$this->template_args['activity'] = new EighthActivity($args['aid'], $args['bid']);
-			$this->template_args['num_members'] = count($this->template_args['activity']->members);
+			$activity = new EighthActivity($args['aid'], $args['bid']);
+			$this->template_args['activity'] = $activity;
+			$this->template_args['num_members'] = $activity->num_members();
+			$this->template_args['memberuids'] = $activity->members;
+			$members = array();
+			foreach ($this->template_args['memberuids'] as $uid) {
+				$user = new User($uid);
+				$members[] = array(
+					'name_comma'=>$user->name_comma,
+					'grade'=>$user->grade,
+					'uid'=>$uid
+					);
+			}
+			$this->template_args['members'] = $members;
 			$this->template = 'vcp_schedule_roster.tpl';
 			$this->title = 'Activity Roster';
 		}

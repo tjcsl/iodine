@@ -26,7 +26,7 @@ class EighthSponsor {
 	*/
 	public function __construct($sponsorid) {
 		global $I2_SQL;
-		$this->data = $I2_SQL->query("SELECT * FROM eighth_sponsors WHERE sid=%d", $sponsorid)->fetch_array(Result::ASSOC);
+		$this->data = $I2_SQL->query('SELECT * FROM eighth_sponsors WHERE sid=%d', $sponsorid)->fetch_array(Result::ASSOC);
 	}
 
 	/**
@@ -49,6 +49,7 @@ class EighthSponsor {
 	*/
 	public static function add_sponsor($fname, $lname) {
 		global $I2_SQL;
+		Eighth::check_admin();
 		$result = $I2_SQL->query('REPLACE INTO eighth_sponsors (fname,lname) VALUES (%s,%s)', $fname, $lname);
 		return $result->get_insert_id();
 	}
@@ -61,6 +62,7 @@ class EighthSponsor {
 	*/
 	public static function remove_sponsor($sponsorid) {
 		global $I2_SQL;
+		Eighth::check_admin();
 		$result = $I2_SQL->query('DELETE FROM eighth_sponsors WHERE sid=%d', $sponsorid);
 		// TODO: Delete from the sponsor map and everything else as well
 	}
@@ -86,17 +88,17 @@ class EighthSponsor {
 		if(array_key_exists($name, $this->data)) {
 			return $this->data[$name];
 		}
-		else if($name == "name") {
+		else if($name == 'name') {
 			return "{$this->data['fname']} {$this->data['lname']}";
 		}
-		else if($name == "name_comma") {
+		else if($name == 'name_comma') {
 			return "{$this->data['lname']}, {$this->data['fname']}";
 		}
-		else if($name == "schedule") {
-			$result = $I2_SQL->query("SELECT bid,activityid,sponsors FROM eighth_block_map ORDER BY bid");
+		else if($name == 'schedule') {
+			$result = $I2_SQL->query('SELECT bid,activityid,sponsors FROM eighth_block_map ORDER BY bid');
 			$activities = array();
 			foreach($result as $activity) {
-				$sponsors = explode(",", $activity['sponsors']);
+				$sponsors = explode(',', $activity['sponsors']);
 				foreach($sponsors as $sponsor) {
 					if($sponsor == $this->data['sid']) {
 						$activities[] = new EighthActivity($activity['activityid'], $activity['bid']);
@@ -116,16 +118,17 @@ class EighthSponsor {
 	*/
 	public function __set($name, $value) {
 		global $I2_SQL;
-		if($name == "fname") {
-			$result = $I2_SQL->query("UPDATE eighth_sponsors SET fname=%s WHERE sid=%d", $value, $this->data['sid']);
+		Eighth::check_admin();
+		if($name == 'fname') {
+			$result = $I2_SQL->query('UPDATE eighth_sponsors SET fname=%s WHERE sid=%d', $value, $this->data['sid']);
 			$this->data['fname'] = $value;
 		}
-		else if($name == "lname") {
-			$result = $I2_SQL->query("UPDATE eighth_sponsors SET lname=%s WHERE sid=%d", $value, $this->data['sid']);
+		else if($name == 'lname') {
+			$result = $I2_SQL->query('UPDATE eighth_sponsors SET lname=%s WHERE sid=%d', $value, $this->data['sid']);
 			$this->data['lname'] = $value;
 		}
-		else if($name = "name" && is_array($value) && count($value) == 2) {
-			$result = $I2_SQL->query("UPDATE eighth_sponsors SET fname=%s, lname=%s WHERE sid=%d", $value[0], $value[1], $this->data['sid']);
+		else if($name = 'name' && is_array($value) && count($value) == 2) {
+			$result = $I2_SQL->query('UPDATE eighth_sponsors SET fname=%s, lname=%s WHERE sid=%d', $value[0], $value[1], $this->data['sid']);
 			$this->data['fname'] = $value[0];
 			$this->data['lname'] = $value[1];
 		}

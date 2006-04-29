@@ -56,7 +56,16 @@ class EighthActivity {
 	* @param int $blockid The block ID to add them to.
 	*/
 	public function add_member($userid, $force = false, $blockid = NULL) {
-		global $I2_SQL;
+		global $I2_SQL,$I2_USER;
+		/*
+		** Users need to be able to add themselves to an activity
+		*/
+		if (!($I2_USER->uid == $userid || Eighth::is_admin())) {
+			/*
+			** Trigger an error: check_admin() WILL fail.
+			*/
+			Eighth::check_admin();
+		}
 		if($blockid == NULL) {
 			$blockid = $this->data['bid'];
 		}
@@ -90,6 +99,11 @@ class EighthActivity {
 		}
 		return $ret;
 	}
+
+	public function num_members() {
+		global $I2_SQL;
+		return $I2_SQL->query('SELECT COUNT(bid) FROM eighth_activity_map WHERE aid=%d',$this->data['aid']);
+	}
 	
 	/**
 	* Add multiple members to the activity.
@@ -113,10 +127,19 @@ class EighthActivity {
 	*/
 	public function remove_member($userid, $blockid = NULL) {
 		global $I2_SQL;
+		/*
+		** Users need to be able to remove themselves from an activity
+		*/
+		if (!($I2_USER->uid == $userid || Eighth::is_admin())) {
+			/*
+			** Trigger an error: check_admin() WILL fail.
+			*/
+			Eighth::check_admin();
+		}
 		if($blockid == NULL) {
 			$blockid = $this->data['bid'];
 		}
-		$result = $I2_SQL->query("DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d", $this->data['aid'], $blockid, $userid);
+		$result = $I2_SQL->query('DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d', $this->data['aid'], $blockid, $userid);
 	}
 
 	/**
@@ -149,7 +172,9 @@ class EighthActivity {
 			}
 		}
 		else {
-			return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $blockid, $this->data['aid'])->fetch_all_arrays(Result::NUM));
+			return flatten(
+				$I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d', $blockid, $this->data['aid'])
+					->fetch_all_arrays(Result::NUM));
 		}
 	}
 
@@ -161,10 +186,11 @@ class EighthActivity {
 	*/
 	public function remove_all($blockid = NULL) {
 		global $I2_SQL;
+		Eighth::check_admin();
 		if($blockid == NULL) {
 			$blockid = $this->data['bid'];
 		}
-		$result = $I2_SQL->query("DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d", $this->data['aid'], $blockid);
+		$result = $I2_SQL->query('DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d', $this->data['aid'], $blockid);
 	}
 
 	/**
@@ -175,7 +201,8 @@ class EighthActivity {
 	*/
 	public function add_restricted_member($userid) {
 		global $I2_SQL;
-		$result = $I2_SQL->query("REPLACE INTO eighth_activity_permissions (aid,userid) VALUES (%d,%d)", $this->data['aid'], $userid);
+		Eighth::check_admin();
+		$result = $I2_SQL->query('REPLACE INTO eighth_activity_permissions (aid,userid) VALUES (%d,%d)', $this->data['aid'], $userid);
 	}
 
 	/**
@@ -198,7 +225,8 @@ class EighthActivity {
 	*/
 	public function remove_restricted_member($userid) {
 		global $I2_SQL;
-		$result = $I2_SQL->query("DELETE FROM eighth_activity_permissions WHERE aid=%d AND userid=%d", $this->data['aid'], $userid);
+		Eighth::check_admin();
+		$result = $I2_SQL->query('DELETE FROM eighth_activity_permissions WHERE aid=%d AND userid=%d', $this->data['aid'], $userid);
 	}
 
 	/**
@@ -220,7 +248,8 @@ class EighthActivity {
 	*/
 	public function remove_restricted_all() {
 		global $I2_SQL;
-		$result = $I2_SQL->query("DELETE FROM eighth_activity_permissions WHERE aid=%d", $this->data['aid']);
+		Eighth::check_admin();
+		$result = $I2_SQL->query('DELETE FROM eighth_activity_permissions WHERE aid=%d', $this->data['aid']);
 	}
 
 	/**
@@ -230,7 +259,8 @@ class EighthActivity {
 	*/
 	public function get_restricted_members() {
 		global $I2_SQL;
-		return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_permissions WHERE aid=%d", $this->data['aid'])->fetch_all_arrays(Result::NUM));
+		return flatten($I2_SQL->query('SELECT userid FROM eighth_activity_permissions WHERE aid=%d'
+			, $this->data['aid'])->fetch_all_arrays(Result::NUM));
 	}
 
 	/**
@@ -240,9 +270,10 @@ class EighthActivity {
 	* @param int $sponsorid The ssponsor ID.
 	*/
 	public function add_sponsor($sponsorid) {
+		Eighth::check_admin();
 		if(!in_array($sponsorid, $this->data['sponsors'])) {
 			$this->data['sponsors'][] = $sponsorid;
-			$this->__set("sponsors", $this->data['sponsors']);
+			$this->__set('sponsors', $this->data['sponsors']);
 		}
 	}
 
@@ -253,9 +284,10 @@ class EighthActivity {
 	* @param int $sponsorid The sponsor ID.
 	*/
 	public function remove_sponsor($sponsorid) {
+		Eighth::check_admin();
 		if(in_array($sponsorid, $this->data['sponsors'])) {
 			unset($this->data['sponsors'][array_search($sponsorid, $this->data['sponsors'])]);
-			$this->__set("sponsors", $this->data['sponsors']);
+			$this->__set('sponsors', $this->data['sponsors']);
 		}
 	}
 	
@@ -266,9 +298,10 @@ class EighthActivity {
 	* @param int $roomid The room ID.
 	*/
 	public function add_room($roomid) {
+		Eighth::check_admin();
 		if(!in_array($roomid, $this->data['rooms'])) {
 			$this->data['rooms'][] = $roomid;
-			$this->__set("rooms", $this->data['rooms']);
+			$this->__set('rooms', $this->data['rooms']);
 		}
 	}
 
@@ -279,9 +312,10 @@ class EighthActivity {
 	* @param int $roomid The room ID.
 	*/
 	public function remove_room($roomid) {
+		Eighth::check_admin();
 		if(in_array($roomid, $this->data['rooms'])) {
 			unset($this->data['rooms'][array_search($roomid, $this->data['rooms'])]);
-			$this->__set("rooms", $this->data['rooms']);
+			$this->__set('rooms', $this->data['rooms']);
 		}
 	}
 	
@@ -297,7 +331,7 @@ class EighthActivity {
 			return self::id_to_activity(flatten($I2_SQL->query("SELECT aid FROM eighth_activities " . ($restricted ? "WHERE restricted=1 " : "") . "ORDER BY name")->fetch_all_arrays(Result::NUM)));
 		}
 		else {
-			return self::id_to_activity($I2_SQL->query("SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid=%d " . ($restricted ? "AND restricted=1 " : "") . "ORDER BY name", $blockid)->fetch_all_arrays(Result::NUM));
+			return self::id_to_activity($I2_SQL->query('SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid=%d ' . ($restricted ? 'AND restricted=1 ' : '') . 'ORDER BY name', $blockid)->fetch_all_arrays(Result::NUM));
 		}
 	}
 
@@ -311,8 +345,9 @@ class EighthActivity {
 	* @param string $description The description of the activity.
 	* @param bool $restricted If this is a restricted activity.
 	*/
-	public static function add_activity($name, $sponsors = array(), $rooms = array(), $description = "", 
+	public static function add_activity($name, $sponsors = array(), $rooms = array(), $description = '', 
 			$restricted = FALSE, $sticky = FALSE, $bothblocks = FALSE, $presign = FALSE, $aid = NULL) {
+		Eighth::check_admin();
 		global $I2_SQL;
 		if(!is_array($sponsors)) {
 			$sponsors = array($sponsors);
@@ -342,6 +377,7 @@ class EighthActivity {
 	*/
 	public static function remove_activity($activityid) {
 		global $I2_SQL;
+		Eighth::check_admin();
 		$result = $I2_SQL->query('DELETE FROM eighth_activities WHERE aid=%d', $activityid);
 		// TODO: Deal with the problems of deleting an activity
 	}
@@ -439,6 +475,7 @@ class EighthActivity {
 	*/
 	public function __set($name, $value) {
 		global $I2_SQL;
+		Eighth::check_admin();
 		if($name == 'name') {
 			$result = $I2_SQL->query('UPDATE eighth_activities SET name=%s WHERE aid=%d', $value, $this->data['aid']);
 			$this->data['name'] = $value;
@@ -524,6 +561,7 @@ class EighthActivity {
 
 	public static function cancel($blockid, $activityid) {
 		global $I2_SQL;
+		Eighth::check_admin();
 		$I2_SQL->query("UPDATE eighth_block_map SET cancelled=1 WHERE bid=%d AND activityid=%d", $blockid, $activityid);
 	}
 }

@@ -26,7 +26,7 @@ class EighthBlock {
 	*/
 	public function __construct($blockid) {
 		global $I2_SQL;
-		$this->data = $I2_SQL->query("SELECT * FROM eighth_blocks WHERE bid=%d", $blockid)->fetch_array(Result::ASSOC);
+		$this->data = $I2_SQL->query('SELECT * FROM eighth_blocks WHERE bid=%d', $blockid)->fetch_array(Result::ASSOC);
 	}
 
 	/**
@@ -38,10 +38,14 @@ class EighthBlock {
 	*/
 	public static function add_block($date, $block, $schedule_default = TRUE) {
 		global $I2_SQL,$I2_LDAP;
+		/*
+		** No harm in letting someone pretend they've created a block
+		*/
 		$res = $I2_SQL->query('SELECT bid FROM eighth_blocks WHERE date=%t AND block=%s', $date, $block);
 		if($res->num_rows()) {
 			return $res->fetch_single_value();
 		}
+		Eighth::check_admin();
 		$result = $I2_SQL->query('INSERT INTO eighth_blocks (date,block) VALUES (%t,%s)', $date, $block);
 		$bid = $result->get_insert_id();
 		$default_aid = i2config_get('default_aid', 3, 'eighth');
@@ -51,7 +55,7 @@ class EighthBlock {
 		if ($schedule_default) {
 			EighthSchedule::schedule_activity($bid, $default_aid, $activity->sponsors, $activity->rooms);
 			//add all students to default activity
-			$uids = flatten_values($I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', '(objectClass=tjhsstStudent)', 'iodineUidNumber')->fetch_all_arrays(Result::NUM));
+			$uids = flatten_values($I2_LDAP->search('ou=people', '(objectClass=tjhsstStudent)', 'iodineUidNumber')->fetch_all_arrays(Result::NUM));
 			$activity = new EighthActivity($default_aid, $bid);
 			$activity->add_members($uids);
 		}
@@ -64,11 +68,13 @@ class EighthBlock {
 	*
 	* @access public
 	* @param int $blockid The block ID.
+	* @todo Cope with the implications of removing a block
 	*/
 	public static function remove_block($blockid) {
 		global $I2_SQL;
-		$result = $I2_SQL->query("DELETE FROM eighth_blocks WHERE bid=%d", $blockid);
-		// TODO: Deal with removing a block
+		Eighth::check_admin();
+		$result = $I2_SQL->query('DELETE FROM eighth_blocks WHERE bid=%d', $blockid);
+		//FIXME: Deal with removing a block
 	}
 
 	/**
@@ -90,9 +96,9 @@ class EighthBlock {
 	public static function get_all_blocks($starting_date = NULL, $number_of_days = 9999) {
 		global $I2_SQL;
 		if($starting_date == NULL) {
-			$starting_date = i2config_get('start_date', date("Y-m-d"), 'eighth');
+			$starting_date = i2config_get('start_date', date('Y-m-d'), 'eighth');
 		}
-		return $I2_SQL->query("SELECT * FROM eighth_blocks WHERE date >= %t AND date <= ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block", $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::ASSOC);
+		return $I2_SQL->query('SELECT * FROM eighth_blocks WHERE date >= %t AND date <= ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block', $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::ASSOC);
 	}
 
 	/**
@@ -116,16 +122,17 @@ class EighthBlock {
 	*/
 	public function __set($name, $value) {
 		global $I2_SQL;
-		if($name == "date") {
-			$result = $I2_SQL->query("UPDATE eighth_blocks SET date=%t WHERE bid=%d", $value, $this->data['bid']);
+		Eighth::check_admin();
+		if($name == 'date') {
+			$result = $I2_SQL->query('UPDATE eighth_blocks SET date=%t WHERE bid=%d', $value, $this->data['bid']);
 			$this->data['date'] = $value;
 		}
-		else if($name == "block") {
-			$result = $I2_SQL->query("UPDATE eighth_blocks SET block=%s WHERE bid=%d", $value, $this->data['bid']);
+		else if($name == 'block') {
+			$result = $I2_SQL->query('UPDATE eighth_blocks SET block=%s WHERE bid=%d', $value, $this->data['bid']);
 			$this->data['block'] = $value;
 		}
-		else if($name == "locked") {
-			$result = $I2_SQL->query("UPDATE eighth_blocks SET locked=%d WHERE bid=%d", (int)$value, $this->data['bid']);
+		else if($name == 'locked') {
+			$result = $I2_SQL->query('UPDATE eighth_blocks SET locked=%d WHERE bid=%d', (int)$value, $this->data['bid']);
 			$this->data['locked'] = (bool)$value;
 		}
 	}

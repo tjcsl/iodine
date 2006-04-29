@@ -27,17 +27,17 @@ class EighthPrint {
 	* @param int The block ID
 	* @param string The output format
 	*/
-	public static function print_class_roster($aid, $bid, $format = "print") {
+	public static function print_class_roster($aid, $bid, $format = 'print') {
 		$activity = new EighthActivity($aid, $bid);
-		$output = self::latexify("class_roster");
+		$output = self::latexify('class_roster');
 		ob_start();
 		eval($output);
 		$output = ob_get_clean();
-		if($format == "print") {
+		if($format == 'print') {
 			self::do_print($output);
 		}
 		else {
-			if($format == "pdf") {
+			if($format == 'pdf') {
 				self::add_info($output, "Print Class Roster", "{$activity->name} ({$activity->block->date} - {$activity->block->block} Block)");
 			}
 			self::do_display($output, $format, "Class Roster for {$activity->name} ({$activity->block->date} - {$activity->block->block} Block)");
