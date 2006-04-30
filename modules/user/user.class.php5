@@ -279,8 +279,7 @@ class User {
 	*/
 	public static function get_by_studentid($studentid) {
 		global $I2_LDAP;
-		$uid = $I2_LDAP->search('',"tjhsstStudentID=$studentid",'iodineUidNumber')->fetch_single_value();
-		return new User($uid);
+		return new User(self::studentid_to_uid($studentid));
 	}
 
 	/**
@@ -496,7 +495,7 @@ class User {
 	}
 
 	/**
-	*
+	* Gets the Iodine UID of the student with the given StudentID.
 	*
 	* @param int A user's Student ID.
 	* @return int A user's Iodine UID.

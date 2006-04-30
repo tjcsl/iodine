@@ -412,39 +412,39 @@ class Eighth implements Module {
 	private function people_switch($op, $args) {
 		if($op == '') {
 			$this->setup_block_selection(FALSE, 'bid_from');
-			$this->template_args['op'] = "activity_from";
-			$this->title = "Select a Block to Move From";
+			$this->template_args['op'] = 'activity_from';
+			$this->title = 'Select a Block to Move Students From';
 		}
-		else if($op == "activity_from") {
+		else if($op == 'activity_from') {
 			$this->setup_activity_selection(FALSE, $args['bid_from'], FALSE, "aid_from", "From this activity:");
 			$this->template_args['op'] = "activity_to/bid_from/{$args['bid_from']}/bid_to/{$args['bid_from']}";
-			$this->title = "Select an Activity to Move From";
+			$this->title = 'Select an Activity to Move Students From';
 		}
-		else if($op == "block_to") {
-			$this->setup_block_selection(FALSE, "bid_to");
+		else if($op == 'block_to') {
+			$this->setup_block_selection(FALSE, 'bid_to');
 			$this->template_args['op'] = "activity_to/bid_from/{$args['bid_from']}/aid_from/{$args['aid_from']}";
-			$this->title = "Select a Block to Move to";
+			$this->title = 'Select a Block into which to move Students';
 		}
-		else if($op == "activity_to") {
+		else if($op == 'activity_to') {
 			$this->setup_activity_selection(FALSE, $args['bid_to'], FALSE, "aid_to", "To this activity:");
 			$this->template_args['op'] = "confirm/bid_from/{$args['bid_from']}/aid_from/{$args['aid_from']}/bid_to/{$args['bid_to']}";
-			$this->title = "Select an Activity to Move to";
+			$this->title = 'Select an Activity into which to move Students';
 		}
-		else if($op == "confirm") {
+		else if($op == 'confirm') {
 			if($args['aid_from'] == $args['aid_to']) {
 				redirect("eighth/people_switch/activity_to/bid_from/{$args['bid_from']}/aid_from/{$args['aid_from']}/bid_to/{$args['bid_to']}");
 			}
-			$this->template = "people_switch.tpl";
+			$this->template = 'people_switch.tpl';
 			$this->template_args['activity_from'] = new EighthActivity($args['aid_from'], $args['bid_from']);
 			$this->template_args['activity_to'] = new EighthActivity($args['aid_to'], $args['bid_to']);
-			$this->title = "Confirm Moving Students";
+			$this->title = 'Confirm Moving Students';
 		}
-		else if($op == "commit") {
+		else if($op == 'commit') {
 			$activity_from = new EighthActivity($args['aid_from'], $args['bid_from']);
 			$activity_to = new EighthActivity($args['aid_to'], $args['bid_to']);
 			$activity_to->add_members($activity_from->members);
 			$activity_from->remove_all();
-			redirect("eighth");
+			redirect('eighth');
 		}
 	}
 
@@ -780,16 +780,16 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	public function res_student($op, $args) {
-		if($op == "") {
+		if($op == '') {
 			$this->setup_block_selection();
-			$this->template_args['op'] = "activity";
+			$this->template_args['op'] = 'activity';
 		}
-		else if($op == "activity") {
+		else if($op == 'activity') {
 			$this->setup_activity_selection(FALSE, $args['bid']);
 			$this->template_args['op'] = "user/bid/{$args['bid']}";
 		}
 		else if($op == 'user') {
-			$this->template = "res_student.tpl";
+			$this->template = 'res_student.tpl';
 			$this->template_args['block'] = new EighthBlock($args['bid']);
 			$this->template_args['activity'] = new EighthActivity($args['aid']);
 			if(isset($args['studentId'])) {
@@ -798,7 +798,7 @@ class Eighth implements Module {
 					redirect('eighth/res_student/user/bid/'.$args['bid'].'/aid/'.$args['aid']);
 				}
 			}
-			$this->title = "Reschedule a Student";
+			$this->title = 'Reschedule a Student';
 		}
 		else if($op == 'reschedule') {
 			$activity = new EighthActivity($args['aid'], $args['bid']);
@@ -1205,7 +1205,7 @@ class Eighth implements Module {
 		else if($op == 'student') {
 			/* Editing student code */
 			$user = new User($args['uid']);
-			foreach($args['user_data'] as $key => $value) {
+			foreach($args['eighth_user_data'] as $key => $value) {
 				$user->$key = $value;
 			}
 		}
