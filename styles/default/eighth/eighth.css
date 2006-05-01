@@ -69,3 +69,49 @@
 	margin-right: 20px;
 	margin-bottom: 0px;
 }
+#eighth_include_list {
+	float: left;
+	margin-right: 10px;
+	margin-top: 2px;
+}
+.eighth_sch_activity_unschedule {
+	visibility: visible;
+}
+.eighth_sch_activity_cancel {
+	visibility: visible;
+}
+.eighth_sch_activity_list {
+	width: 100%;
+}
+.eighth_sch_activity_checkcell {
+	padding-top: 2px;
+	vertical-align: top;
+}
+.eighth_sch_activity_datecell {
+	padding: 5px 5px 5px 0px;
+	vertical-align: top;
+}
+.eighth_sch_activity_datecell_unscheduled {
+	padding: 5px 5px 5px 0px;
+	font-weight: bold;
+	vertical-align: top;
+}
+.eighth_sch_activity_listcell {
+	padding: 5px;
+}
+.eighth_sch_activity_comment {
+	cursor: pointer;
+	margin-bottom: 5px;
+}
+.eighth_sch_activity_propagate {
+	font-size: 10pt;
+	border: 1px dashed #999999;
+	padding: 2px;
+}
+.eighth_sch_activity_commentcell {
+	border: none;
+	overflow: auto;
+	background: none;
+	font-family: sans-serif;
+	width: 100%;
+}
