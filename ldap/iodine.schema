@@ -401,14 +401,6 @@ attributetype ( i2Attr:50
 	SINGLE-VALUE
 	)
 
-attributetype ( i2Attr:51
-	NAME ('comments', 'userComments', 'eighthComments')
-	DESC 'User comments used by the Eighth Period Office'
-	EQUALITY caseIgnoreMatch
-	SYNTAX stringSyntax
-	SINGLE-VALUE
-	)
-
 objectclass ( i2OC:3
 	NAME ('tjhsstSection' 'section')
 	MUST (
