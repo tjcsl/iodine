@@ -49,9 +49,6 @@ class Eighth implements Module {
 		$admin = self::is_admin();
 		$this->template_args['eighth_admin'] = $admin;
 		if(count($I2_ARGS) <= 1) {
-			if (!$admin) {
-				return FALSE;
-			}
 			$this->template = 'pane.tpl';
 			$this->template_args['help'] = '<h2>8th Period Office Online Menu</h2>From here you can choose a number of operations to administrate the eighth period system.';
 			return 'Eighth Period Office Online: Home';
