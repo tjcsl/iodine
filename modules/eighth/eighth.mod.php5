@@ -1055,7 +1055,7 @@ class Eighth implements Module {
 			}
 			$this->template_args['start_date'] = ($args['start_date'] ? strtotime($args['start_date']) : time());
 			$user = new User($args['uid']);
-			$this->template_args['user'] = $user
+			$this->template_args['user'] = $user;
 			$this->template_args['comments'] = $user->comments;
 			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($args['uid'], $args['start_date']));
 			$this->template_args['absences'] = EighthSchedule::get_absences($args['uid']);
