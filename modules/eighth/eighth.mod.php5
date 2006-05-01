@@ -1073,20 +1073,19 @@ class Eighth implements Module {
 			EighthPrint::print_student_schedule($args['uid'], $args['start_date'], $args['format']);
 		}
 		else if($op == 'choose') {
-			$this->template_args['activities'] = EighthActivity::get_all_activities($args['bid']);
-			$changing_bids = array_keys($args['change']);
-			foreach ($changing_bids as $bid) {
-				
-			}
-			$this->template_args['bid'] = $args['bid'];
+			$this->template_args['activities'] = EighthActivity::get_all_activities($args['bids']);
+			$this->template_args['bids'] = $args['bids'];
 			$this->template_args['uid'] = $args['uid'];
 			$this->template = 'vcp_schedule_choose.tpl';
 			$this->title = 'Choose an Activity';
 		}
 		else if($op == 'change') {
-			if ($args['bid'] && $args['aid']) {
-				$activity = new EighthActivity($args['aid'], $args['bid']);
+			if ($args['bids'] && $args['aid']) {
+				$activity = new EighthActivity($args['aid'], $args['bids']);
 				$ret = $activity->add_member($args['uid'], false);
+				if(!$ret) {
+					redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
+				}
 				$status = '';
 				if($ret & EighthActivity::CANCELLED) {
 					$status .= '[Cancelled]';
@@ -1106,15 +1105,11 @@ class Eighth implements Module {
 				if($ret & EighthActivity::PRESIGN) {
 					$status .= '[Pre-sign activity]';
 				}
-				if(!$ret) {
-					$status .= '[Successful]';
-				}
 				else if($ret >= 64 || $ret < 0) {
 					$status .= '[Unsuccessful]';
 				}
 				$this->template = "vcp_schedule_change.tpl";
 				$this->template_args['status'] = $status;
-				redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
 			}
 		}
 		else if($op == 'force_change') {
@@ -1127,18 +1122,6 @@ class Eighth implements Module {
 		else if($op == 'roster') {
 			$activity = new EighthActivity($args['aid'], $args['bid']);
 			$this->template_args['activity'] = $activity;
-			$this->template_args['num_members'] = $activity->num_members();
-			$this->template_args['memberuids'] = $activity->members;
-			$members = array();
-			foreach ($this->template_args['memberuids'] as $uid) {
-				$user = new User($uid);
-				$members[] = array(
-					'name_comma'=>$user->name_comma,
-					'grade'=>$user->grade,
-					'uid'=>$uid
-					);
-			}
-			$this->template_args['members'] = $members;
 			$this->template = 'vcp_schedule_roster.tpl';
 			$this->title = 'Activity Roster';
 		}
