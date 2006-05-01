@@ -1054,8 +1054,9 @@ class Eighth implements Module {
 				$args['start_date'] = NULL;
 			}
 			$this->template_args['start_date'] = ($args['start_date'] ? strtotime($args['start_date']) : time());
-			$this->template_args['user'] = new User($args['uid']);
-			$this->template_args['comments'] = self::get_user_comments($args['uid']);
+			$user = new User($args['uid']);
+			$this->template_args['user'] = $user
+			$this->template_args['comments'] = $user->comments;
 			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($args['uid'], $args['start_date']));
 			$this->template_args['absences'] = EighthSchedule::get_absences($args['uid']);
 			$this->template_args['absence_count'] = count($this->template_args['absences']);
@@ -1153,25 +1154,6 @@ class Eighth implements Module {
 			redirect('eighth');
 		}
 	}
-
-
-	/**
-	* Gets 8th-period comments about a user
-	*
-	*/
-	public static function get_user_comments($uid) {
-		global $I2_SQL;
-		return $I2_SQL->query('SELECT comments from eighth_comments WHERE uid=%d',$uid)->fetch_single_value();
-	}
-	
-	/**
-	* Sets 8th-period comments about a user
-	*
-	*/
-	public static function set_user_comments($uid,$comments) {
-		global $I2_SQL;
-		return $I2_SQL->query('REPLACE INTO eighth_comments (uid,comments) VALUES (%d,%s)',$uid,$comments);
-	}
 	
 	public function view($op, $args) {
 		global $I2_SQL;
@@ -1183,7 +1165,7 @@ class Eighth implements Module {
 			$user = new User($args['uid']);
 			$this->template_args['uid'] = $args['uid'];
 			$this->template_args['username'] = $user->name;
-			$comments = self::get_user_comments($args['uid']);
+			$comments = $user->comments;
 			$this->template_args['comments'] = $comments;
 			$this->title = 'Edit Comments';
 		}
@@ -1201,9 +1183,8 @@ class Eighth implements Module {
 		}
 		else if($op == 'comments') {
 			/* Editing comments code */
-			//$user = new User($args['uid']);
-			//$user->comments = $args['comments'];
-			self::set_user_comments($args['uid'],$args['comments']);
+			$user = new User($args['uid']);
+			$user->comments = $args['comments'];
 			redirect('eighth/vcp_schedule/view/uid/'.$args['uid']);
 		}
 		else if($op == 'student') {
