@@ -60,7 +60,7 @@ class MySQLResult implements Result {
 			*/
 			$this->mysql_result = $this;
 
-			return;
+			return FALSE;
 		}
 		$this->mysql_result = $mysql_result;
 		$this->query_type = $query_type;

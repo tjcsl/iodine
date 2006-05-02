@@ -1074,39 +1074,46 @@ class Eighth implements Module {
 		}
 		else if($op == 'choose') {
 			$this->template_args['activities'] = EighthActivity::get_all_activities($args['bids']);
-			$this->template_args['bids'] = $args['bids'];
+			$this->template_args['bids'] = (is_array($args['bids']) ? implode(',', $args['bids']) : $args['bids']);
 			$this->template_args['uid'] = $args['uid'];
 			$this->template = 'vcp_schedule_choose.tpl';
 			$this->title = 'Choose an Activity';
 		}
 		else if($op == 'change') {
 			if ($args['bids'] && $args['aid']) {
-				$activity = new EighthActivity($args['aid'], $args['bids']);
-				$ret = $activity->add_member($args['uid'], false);
-				if(!$ret) {
+				$status = array();
+				$bids = explode(',', $args['bids']);
+				foreach($bids as $bid) {
+					if(EighthSchedule::is_activity_valid($args['aid'], $bid)) {
+						$activity = new EighthActivity($args['aid'], $bid);
+						$ret = $activity->add_member($args['uid'], false);
+						$act_status = array();
+						if($ret & EighthActivity::CANCELLED) {
+							$act_status['cancelled'] = TRUE;
+						}
+						if($ret & EighthActivity::PERMISSIONS) {
+							$act_status['permissions'] = TRUE;
+						}
+						if($ret & EighthActivity::CAPACITY) {
+							$act_status['capacity'] = TRUE;
+						}
+						if($ret & EighthActivity::STICKY) {
+							$act_status['sticky'] = TRUE;
+						}
+						if($ret & EighthActivity::ONEADAY) {
+							$act_status['oneaday'] = TRUE;
+						}
+						if($ret & EighthActivity::PRESIGN) {
+							$act_status['presign'] = TRUE;
+						}
+						if(count($act_status) != 0) {
+							$act_status['activity'] = $activity;
+							$status[$bid] = $act_status;
+						}
+					}
+				}
+				if(count($status) == 0) {
 					redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
-				}
-				$status = '';
-				if($ret & EighthActivity::CANCELLED) {
-					$status .= '[Cancelled]';
-				}
-				if($ret & EighthActivity::PERMISSIONS) {
-					$status .= '[Insufficient permissions]';
-				}
-				if($ret & EighthActivity::CAPACITY) {
-					$status .= '[Over capacity]';
-				}
-				if($ret & EighthActivity::STICKY) {
-					$status .= '[Can\'t switch out]';
-				}
-				if($ret & EighthActivity::ONEADAY) {
-					$status .= '[Only one a day]';
-				}
-				if($ret & EighthActivity::PRESIGN) {
-					$status .= '[Pre-sign activity]';
-				}
-				else if($ret >= 64 || $ret < 0) {
-					$status .= '[Unsuccessful]';
 				}
 				$this->template = "vcp_schedule_change.tpl";
 				$this->template_args['status'] = $status;

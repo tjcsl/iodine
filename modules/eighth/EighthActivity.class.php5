@@ -326,13 +326,16 @@ class EighthActivity {
 	* @access public
 	* @param int $blockid The room ID.
 	*/
-	public static function get_all_activities($blockid = NULL, $restricted = FALSE) {
+	public static function get_all_activities($blockids = NULL, $restricted = FALSE) {
 		global $I2_SQL;
-		if($blockid == NULL) {
+		if($blockids == NULL) {
 			return self::id_to_activity(flatten($I2_SQL->query("SELECT aid FROM eighth_activities " . ($restricted ? "WHERE restricted=1 " : "") . "ORDER BY name")->fetch_all_arrays(Result::NUM)));
 		}
 		else {
-			return self::id_to_activity($I2_SQL->query('SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid=%d ' . ($restricted ? 'AND restricted=1 ' : '') . 'ORDER BY name', $blockid)->fetch_all_arrays(Result::NUM));
+			if(!is_array($blockids)) {
+				settype($blockids, 'array');
+			}
+			return self::id_to_activity($I2_SQL->query('SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid IN (%D) ' . ($restricted ? 'AND restricted=1 ' : '') . 'GROUP BY aid ORDER BY name', $blockids)->fetch_all_arrays(Result::NUM));
 		}
 	}
 

@@ -196,4 +196,13 @@ class EighthSchedule {
 		global $I2_SQL;
 		return $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d', $blockid, $activityid)->num_rows();
 	}
+
+	/**
+	*
+	*
+	*/
+	public static function is_activity_valid($activityid, $blockid) {
+		global $I2_SQL;
+		return $I2_SQL->query('SELECT NULL FROM eighth_block_map WHERE activityid=%d AND bid=%d', $activityid, $blockid)->more_rows();
+	}
 }
