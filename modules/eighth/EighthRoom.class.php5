@@ -78,14 +78,14 @@ class EighthRoom {
 		$result = $I2_SQL->query("SELECT aid,name,restricted,eighth_block_map.rooms FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d AND eighth_block_map.rooms != ''", $blockid)->fetch_all_arrays(Result::ASSOC);
 		$conflicts = array();
 		foreach($result as $activity) {
-			$rooms = explode(",", $activity['rooms']);
+			$rooms = explode(',', $activity['rooms']);
 			foreach($rooms as $room) {
 				$eighth_room = new EighthRoom($room);
 				if(!array_key_exists($eighth_room->name, $conflicts)) {
-					$conflicts[$eighth_room->name] = array(array("aid" => $activity['aid'], "name" => ($activity['name'] . ($activity['restricted'] ? " (R)" :""))));
+					$conflicts[$eighth_room->name] = array(array('aid' => $activity['aid'], 'name' => ($activity['name'] . ($activity['restricted'] ? ' (R)' :''))));
 				}
 				else {
-					$conflicts[$eighth_room->name][] = array("aid" => $activity['aid'], 'name' => ($activity['name'] . ($activity['restricted'] ? " (R)" :"")));
+					$conflicts[$eighth_room->name][] = array('aid' => $activity['aid'], 'name' => ($activity['name'] . ($activity['restricted'] ? ' (R)' :'')));
 				}
 			}
 		}
@@ -121,6 +121,7 @@ class EighthRoom {
 	*/
 	public static function add_room($name, $capacity, $rid=NULL) {
 		global $I2_SQL;
+		Eighth::check_admin();
 		if ($rid === NULL) {
 			$result = $I2_SQL->query('REPLACE INTO eighth_rooms (name, capacity) VALUES (%s,%d)', $name, $capacity);
 		} else {
@@ -137,6 +138,7 @@ class EighthRoom {
 	*/
 	public static function remove_room($roomid) {
 		global $I2_SQL;
+		Eighth::check_admin();
 		$result = $I2_SQL->query('DELETE FROM eighth_rooms WHERE rid=%d', $roomid);
 		// TODO: Fix all the problems caused by taking away a room
 	}
@@ -172,12 +174,13 @@ class EighthRoom {
 	*/
 	public function __set($name, $value) {
 		global $I2_SQL;
-		if($name == "name") {
-			$result = $I2_SQL->query("UPDATE eighth_rooms SET  name=%s WHERE rid=%d", $value, $this->data['rid']);
+		Eighth::check_admin();
+		if($name == 'name') {
+			$result = $I2_SQL->query('UPDATE eighth_rooms SET  name=%s WHERE rid=%d', $value, $this->data['rid']);
 			$this->data['name'] = $value;
 		}
-		else if($name == "capacity") {
-			$result = $I2_SQL->query("UPDATE eighth_rooms SET capacity=%d WHERE rid=%d", $value, $this->data['rid']);
+		else if($name == 'capacity') {
+			$result = $I2_SQL->query('UPDATE eighth_rooms SET capacity=%d WHERE rid=%d', $value, $this->data['rid']);
 			$this->data['capacity'] = $value;
 		}
 	}

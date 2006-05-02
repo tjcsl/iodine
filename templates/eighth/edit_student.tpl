@@ -23,7 +23,7 @@
 		</tr>
 		<tr>
 			<td>Suffix</td>
-			<td><input type="text" name="eighth_user_data[suffix]" value="[<$user->suffix>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
+			<td><input type="text" name="eighth_user_data[title]" value="[<$user->title>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
 		</tr>
 		<tr>
 			<td>Nickname</td>
@@ -43,26 +43,26 @@
 		</tr>
 		<tr>
 			<td>Home Phone</td>
-			<td><input type="text" name="eighth_user_data[phone_home]" value="[<$user->phone_home>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
+			<td><input type="text" name="eighth_user_data[homePhone]" value="[<$user->homePhone>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
 		</tr>
 		<tr>
 			<th colspan="2">Address #1</th>
 		</tr>
 		<tr>
 			<td>Street</td>
-			<td><input type="text" name="eighth_user_data[address1_street]" value="[<$user->address1_street>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
+			<td><input type="text" name="eighth_user_data[street]" value="[<$user->street>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
 		</tr>
 		<tr>
 			<td>City</td>
-			<td><input type="text" name="eighth_user_data[address1_city]" value="[<$user->address1_city>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
+			<td><input type="text" name="eighth_user_data[l]" value="[<$user->l>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
 		</tr>
 		<tr>
 			<td>State</td>
-			<td><input type="text" name="eighth_user_data[address1_state]" value="[<$user->address1_state>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
+			<td><input type="text" name="eighth_user_data[st]" value="[<$user->st>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
 		</tr>
 		<tr>
 			<td>Zip</td>
-			<td><input type="text" name="eighth_user_data[address1_zip]" value="[<$user->address1_zip>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
+			<td><input type="text" name="eighth_user_data[postalCode]" value="[<$user->postalCode>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
 		</tr>
 		<tr>
 			<td>Counselor</td>

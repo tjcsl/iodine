@@ -63,7 +63,7 @@ class Calc implements Module {
 			else if ($_REQUEST['calc_form']=="delete")
 			{
 				$I2_SQL->query('DELETE FROM calculators WHERE calcsn=%s', $_REQUEST['sn']);
-				$this->message = "Calculator $_REQUEST['sn'] removed from database.";
+				$this->message = "Calculator {$_REQUEST['sn']} removed from database.";
 			}
 		}
 		return array('Calculator Registration');
