@@ -29,7 +29,7 @@
 	[<include file="eighth/header.tpl">]
 	<h2>[<$user->name_comma>] ([<$user->tjhsstStudentId>], [<$user->grade>][<if $user->grade != 'staff' >]th[</if>])</h2>
 	<b>Counselor: [<$user->counselor>], TA: </b><br />
-	<span style="color: #FF0000; font-weight: bold;">Comments: [<if $comments == "" >]none[<else>][<$comments>][</if>]</span><br />
+	<span style="color: #FF0000; font-weight: bold;">Comments: [<if isSet($comments) && $comments != "">][<$comments>][<else>]none[</if>]</span><br />
 	<a href="[<$I2_ROOT>]eighth/vcp_schedule/absences/uid/[<$user->uid>]">[<$absence_count>] absence[<if $absence_count != 1>]s[</if>]</a><br />
 	<a href="[<$I2_ROOT>]eighth/view/comments/uid/[<$user->uid>]">Edit Comments</a> - <a href="[<$I2_ROOT>]eighth/view/student/uid/[<$user->uid>]">Edit Student</a><br />
 [</if>]

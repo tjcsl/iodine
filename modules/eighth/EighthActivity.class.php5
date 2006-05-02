@@ -66,6 +66,9 @@ class EighthActivity {
 			*/
 			Eighth::check_admin();
 		}
+		if ($force) {
+			Eighth::check_admin();
+		}
 		if($blockid == NULL) {
 			$blockid = $this->data['bid'];
 		}
