@@ -66,6 +66,9 @@ class EighthActivity {
 			*/
 			Eighth::check_admin();
 		}
+		if ($force) {
+			Eighth::check_admin();
+		}
 		if($blockid == NULL) {
 			$blockid = $this->data['bid'];
 		}
@@ -458,8 +461,15 @@ class EighthActivity {
 				case 'restricted_members_obj':
 					return User::id_to_user($this->get_restricted_members());
 				case 'capacity':
-					return $I2_SQL->query('SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)', 
-							$this->data['block_rooms'])->fetch_single_value();
+					$rooms = NULL;
+					if (isSet($this->data['block_rows'])) {
+						$rooms = $I2_SQL->query("SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN ( %D )", $this->data['block_rooms'])->fetch_single_value();
+					}
+					if ($rooms) {
+						return $rooms;
+					}
+					d('Invalid 8th roomlist used to find capacity',5);
+					return -1;
 				case 'member_count':
 					return count($this->get_members());
 			}
