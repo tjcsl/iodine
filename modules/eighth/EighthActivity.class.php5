@@ -70,7 +70,8 @@ class EighthActivity {
 			$blockid = $this->data['bid'];
 		}
 		$ret = 0;
-		if(count($this->get_members()) > $this->__get("capacity")) {
+		$capacity = $this->__get('capacity');
+		if($capacity != -1 && $this->__get('member_count') >= $capacity) {
 			$ret |= EighthActivity::CAPACITY;
 		}
 		if($this->cancelled) {
@@ -458,6 +459,9 @@ class EighthActivity {
 				case 'restricted_members_obj':
 					return User::id_to_user($this->get_restricted_members());
 				case 'capacity':
+					if (count($this->data['block_rooms']) == 0) {
+						return -1;
+					}
 					return $I2_SQL->query('SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)', 
 							$this->data['block_rooms'])->fetch_single_value();
 				case 'member_count':

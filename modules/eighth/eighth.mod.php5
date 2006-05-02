@@ -49,9 +49,6 @@ class Eighth implements Module {
 		$admin = self::is_admin();
 		$this->template_args['eighth_admin'] = $admin;
 		if(count($I2_ARGS) <= 1) {
-			if (!$admin) {
-				return FALSE;
-			}
 			$this->template = 'pane.tpl';
 			$this->template_args['help'] = '<h2>8th Period Office Online Menu</h2>From here you can choose a number of operations to administrate the eighth period system.';
 			return 'Eighth Period Office Online: Home';
@@ -878,7 +875,7 @@ class Eighth implements Module {
 	*/
 	public function vp_delinquent($op, $args) {
 		// TODO: Sorting and exporting for all
-		if($op == "") {
+		if($op == '') {
 			// TODO: Print a list of delinquents
 			$lower = 1;
 			$upper = 1000;
@@ -1057,8 +1054,9 @@ class Eighth implements Module {
 				$args['start_date'] = NULL;
 			}
 			$this->template_args['start_date'] = ($args['start_date'] ? strtotime($args['start_date']) : time());
-			$this->template_args['user'] = new User($args['uid']);
-			$this->template_args['comments'] = self::get_user_comments($args['uid']);
+			$user = new User($args['uid']);
+			$this->template_args['user'] = $user;
+			$this->template_args['comments'] = $user->comments;
 			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($args['uid'], $args['start_date']));
 			$this->template_args['absences'] = EighthSchedule::get_absences($args['uid']);
 			$this->template_args['absence_count'] = count($this->template_args['absences']);
@@ -1075,20 +1073,19 @@ class Eighth implements Module {
 			EighthPrint::print_student_schedule($args['uid'], $args['start_date'], $args['format']);
 		}
 		else if($op == 'choose') {
-			$this->template_args['activities'] = EighthActivity::get_all_activities($args['bid']);
-			$changing_bids = array_keys($args['change']);
-			foreach ($changing_bids as $bid) {
-				
-			}
-			$this->template_args['bid'] = $args['bid'];
+			$this->template_args['activities'] = EighthActivity::get_all_activities($args['bids']);
+			$this->template_args['bids'] = $args['bids'];
 			$this->template_args['uid'] = $args['uid'];
 			$this->template = 'vcp_schedule_choose.tpl';
 			$this->title = 'Choose an Activity';
 		}
 		else if($op == 'change') {
-			if ($args['bid'] && $args['aid']) {
-				$activity = new EighthActivity($args['aid'], $args['bid']);
+			if ($args['bids'] && $args['aid']) {
+				$activity = new EighthActivity($args['aid'], $args['bids']);
 				$ret = $activity->add_member($args['uid'], false);
+				if(!$ret) {
+					redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
+				}
 				$status = '';
 				if($ret & EighthActivity::CANCELLED) {
 					$status .= '[Cancelled]';
@@ -1108,15 +1105,11 @@ class Eighth implements Module {
 				if($ret & EighthActivity::PRESIGN) {
 					$status .= '[Pre-sign activity]';
 				}
-				if(!$ret) {
-					$status .= '[Successful]';
-				}
 				else if($ret >= 64 || $ret < 0) {
 					$status .= '[Unsuccessful]';
 				}
 				$this->template = "vcp_schedule_change.tpl";
 				$this->template_args['status'] = $status;
-				redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
 			}
 		}
 		else if($op == 'force_change') {
@@ -1129,18 +1122,6 @@ class Eighth implements Module {
 		else if($op == 'roster') {
 			$activity = new EighthActivity($args['aid'], $args['bid']);
 			$this->template_args['activity'] = $activity;
-			$this->template_args['num_members'] = $activity->num_members();
-			$this->template_args['memberuids'] = $activity->members;
-			$members = array();
-			foreach ($this->template_args['memberuids'] as $uid) {
-				$user = new User($uid);
-				$members[] = array(
-					'name_comma'=>$user->name_comma,
-					'grade'=>$user->grade,
-					'uid'=>$uid
-					);
-			}
-			$this->template_args['members'] = $members;
 			$this->template = 'vcp_schedule_roster.tpl';
 			$this->title = 'Activity Roster';
 		}
@@ -1156,25 +1137,6 @@ class Eighth implements Module {
 			redirect('eighth');
 		}
 	}
-
-
-	/**
-	* Gets 8th-period comments about a user
-	*
-	*/
-	public static function get_user_comments($uid) {
-		global $I2_SQL;
-		return $I2_SQL->query('SELECT comments from eighth_comments WHERE uid=%d',$uid)->fetch_single_value();
-	}
-	
-	/**
-	* Sets 8th-period comments about a user
-	*
-	*/
-	public static function set_user_comments($uid,$comments) {
-		global $I2_SQL;
-		return $I2_SQL->query('REPLACE INTO eighth_comments (uid,comments) VALUES (%d,%s)',$uid,$comments);
-	}
 	
 	public function view($op, $args) {
 		global $I2_SQL;
@@ -1186,7 +1148,7 @@ class Eighth implements Module {
 			$user = new User($args['uid']);
 			$this->template_args['uid'] = $args['uid'];
 			$this->template_args['username'] = $user->name;
-			$comments = self::get_user_comments($args['uid']);
+			$comments = $user->comments;
 			$this->template_args['comments'] = $comments;
 			$this->title = 'Edit Comments';
 		}
@@ -1204,9 +1166,8 @@ class Eighth implements Module {
 		}
 		else if($op == 'comments') {
 			/* Editing comments code */
-			//$user = new User($args['uid']);
-			//$user->comments = $args['comments'];
-			self::set_user_comments($args['uid'],$args['comments']);
+			$user = new User($args['uid']);
+			$user->comments = $args['comments'];
 			redirect('eighth/vcp_schedule/view/uid/'.$args['uid']);
 		}
 		else if($op == 'student') {

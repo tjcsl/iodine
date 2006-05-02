@@ -55,8 +55,8 @@
 		</tr>
 [<foreach from=$activities item="activity">]
 		<tr style="background-color: [<cycle values="#EEEEFF,#FFFFFF">];">
-			<td style="text-align: center;"><input type="checkbox" name="change[[<$activity->bid>]]" value="1" onclick="CCA(this);" /></td>
-			<td style="text-align: center;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>]/bid/[<$activity->bid>]">Change</a></td>
+			<td style="text-align: center;"><input type="checkbox" name="bids[]" value="[<$activity->bid>]" onclick="CCA(this);" /></td>
+			<td style="text-align: center;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>]/bids/[<$activity->bid>]">Change</a></td>
 			<td style="text-align: center;">[<$activity->block->date|date_format:"%a">]</td>
 			<td style="text-align: center;">[<$activity->block->date|date_format>]</td>
 			<td style="text-align: center;">[<$activity->block->block>]</td>

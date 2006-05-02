@@ -10,7 +10,7 @@
 		document.getElementById('aid_box').value = aid;
 	}
 </script>
-<form action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$uid>]/bid/[<$bid>]" method="post">
+<form action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$uid>]/bids/[<$bids>]" method="post">
 	<select name="aid" size="10" onchange="changeDescription(this.options[this.selectedIndex].value)">
 [<foreach from=$activities item="activity">]                                    
         <option value="[<$activity->aid>]"[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"[<elseif $activity->capacity != -1 && $activity->member_count >= $activity->capacity>] style="color: #0000FF; font-weight: bold;"[</if>]>[<$activity->aid>]: [<$activity->name_r>]</option>

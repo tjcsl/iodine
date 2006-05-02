@@ -8,7 +8,7 @@ You have been absent <a href="[<$I2_ROOT>]eighth/vcp_schedule/absences/uid/[<$I2
 		</tr>
 		[<foreach from=$activities item="activity">]
 			<tr[<if $activity->cancelled>] class="activity_cancelled"[</if>]>
-				<td style="text-align: left;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$I2_UID>]/bid/[<$activity->bid>]" title="[<$activity->comment>]">[<$activity->name_r>]</a></td>
+				<td style="text-align: left;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$I2_UID>]/bids/[<$activity->bid>]" title="[<$activity->comment>]">[<$activity->name_r>]</a></td>
 				<td style="text-align: center;">[<if $activity->cancelled>]CANCELLED[<else>][<$activity->block_rooms_comma>][</if>]</td>
 				<td style="text-align: center;">[<$activity->block->block>] block</td>
 			</tr>
