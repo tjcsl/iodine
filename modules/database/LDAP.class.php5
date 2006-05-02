@@ -55,7 +55,7 @@ class LDAP {
 			//$_ENV['KRB5CCNAME'] = $I2_AUTH->cache();
 			//putenv("KRB5CCNAME={$_ENV['KRB5CCNAME']}");
 			d('KRB5CCNAME for LDAP bind is '.$_ENV['KRB5CCNAME'],8);
-			$this->bind = ldap_sasl_bind($this->conn,'','','GSSAPI',i2config_get('sasl_realm','CSL.TJHSST.EDU','ldap'));
+			$this->bind = ldap_sasl_bind($this->conn);
 
 			/*
 			** This is what stuff would look like for a proxy bind (w/GSSAPI)... But PHP ldap_sasl_bind is badly broken...
@@ -109,9 +109,8 @@ class LDAP {
 	}
 
 	public static function get_user_bind() {
-		$username = $_SESSION['i2_username'];
-		//This is for proxy binding, but current PHP breaks it (badly) so most of it's ignored
-		return new LDAP('cn=iodine','pwd',NULL,FALSE,"dn:iodineUid=$username,ou=people,dc=tjhsst,dc=edu");
+		//All values ignored
+		return new LDAP('','pwd',NULL,FALSE);
 	}
 
 	/**
