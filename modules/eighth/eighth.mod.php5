@@ -376,14 +376,14 @@ class Eighth implements Module {
 	* @todo Work on restricted activities and permissions
 	*/
 	private function alt_permissions($op, $args) {
-		if($op == "") {
+		if($op == '') {
 			$this->setup_activity_selection(FALSE, NULL, TRUE);
 		}
-		else if($op == "view") {
-			$this->template = "alt_permissions.tpl";
+		else if($op == 'view') {
+			$this->template = 'alt_permissions.tpl';
 			$this->template_args['activity'] = new EighthActivity($args['aid']);
-			$this->template_args['groups'] = Group::get_all_groups("eighth");
-			$this->title = "Alter Permissions to Restricted Activities";
+			$this->template_args['groups'] = Group::get_all_groups('eighth');
+			$this->title = 'Alter Permissions to Restricted Activities';
 		}
 		else if($op == "add_group") {
 			$activity = new EighthActivity($args['aid']);
@@ -1095,8 +1095,22 @@ class Eighth implements Module {
 			EighthPrint::print_student_schedule($args['uid'], $args['start_date'], $args['format']);
 		}
 		else if($op == 'choose') {
-			$this->template_args['activities'] = EighthActivity::get_all_activities($args['bid'],$this->admin);
+			$valids = array();
 			$this->template_args['bids'] = (is_array($args['bids']) ? implode(',', $args['bids']) : $args['bids']);
+			/*
+			** Get only activities common to all blocks.
+			*/
+			if (is_array($args['bids'])) {
+				foreach ($args['bids'] as $bid) {
+					$thisblock = EighthActivity::get_all_activities($bid,FALSE);
+					foreach ($thisblock as $activity) {
+						$valids[$thisblock] = 1;
+					}
+				}
+				$this->template_args['activities'] = array_keys($valids);		
+			} else {
+				$this->template_args['activities'] = EighthActivity::get_all_activities($args['bids'],FALSE);
+			}
 			$this->template_args['uid'] = $args['uid'];
 			$this->template = 'vcp_schedule_choose.tpl';
 			$this->title = 'Choose an Activity';
