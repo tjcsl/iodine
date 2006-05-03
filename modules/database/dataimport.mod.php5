@@ -740,23 +740,31 @@ class dataimport implements Module {
 		}
 	}
 
-	/**
-	* Delete the whole shebang for a fresh import
-	*/
-	private function clean_up() {
+	private function clean_students($ldap=NULL) {
 		global $I2_SQL,$I2_LDAP;
+		if (!$ldap) {
+			$ldap = LDAP::get_admin_bind($this->admin_pass);
+		}
+		$ldap->delete_recursive('ou=people','objectClass=tjhsstStudent');
+	}
+
+	private function clean_teachers($ldap=NULL) {
+		global $I2_SQL,$I2_LDAP;
+		if (!$ldap) {
+			$ldap = LDAP::get_admin_bind($this->admin_pass);
+		}
+		$ldap->delete_recursive('ou=people','objectClass=tjhsstTeacher');
+	}
+
+	private function clean_other($ldap=NULL) {
+		global $I2_SQL,$I2_LDAP;
+		if (!$ldap) {
+			$ldap = LDAP::get_admin_bind($this->admin_pass);
+		}
 		$I2_SQL->query('DELETE FROM intrabox');
 		$I2_SQL->query('DELETE FROM intrabox_map');
 		$I2_SQL->query('DELETE FROM news_read_map');
 		$I2_SQL->query('DELETE FROM scratchpad');
-		$I2_SQL->query('DELETE FROM eighth_activities');
-		$I2_SQL->query('DELETE FROM eighth_activity_map');
-		$I2_SQL->query('DELETE FROM eighth_blocks');
-		$I2_SQL->query('DELETE FROM eighth_block_map');
-		$I2_SQL->query('DELETE FROM eighth_absentees');
-		$I2_SQL->query('DELETE FROM eighth_sponsors');
-		$I2_SQL->query('DELETE FROM eighth_activity_permissions');
-		$I2_SQL->query('DELETE FROM eighth_rooms');
 		$I2_SQL->query('DELETE FROM polls');
 		$I2_SQL->query('DELETE FROM poll_votes');
 		$I2_SQL->query('DELETE FROM group_poll_map');
@@ -765,10 +773,50 @@ class dataimport implements Module {
 		** This stuff needs to come last so we retain privs to the bitter end
 		** This still depends on a bit of caching being done...
 		*/
-		$I2_LDAP->delete_recursive('ou=people');
 		$I2_SQL->query('DELETE FROM group_user_map');
 		$I2_SQL->query('DELETE FROM groups');
-		//TODO: handle schedule stuff here, too
+	}
+
+	private function clean_eighth() {
+		global $I2_SQL;
+		$I2_SQL->query('DELETE FROM eighth_activities');
+		$I2_SQL->query('DELETE FROM eighth_activity_map');
+		$I2_SQL->query('DELETE FROM eighth_blocks');
+		$I2_SQL->query('DELETE FROM eighth_block_map');
+		$I2_SQL->query('DELETE FROM eighth_absentees');
+		$I2_SQL->query('DELETE FROM eighth_sponsors');
+		$I2_SQL->query('DELETE FROM eighth_activity_permissions');
+		$I2_SQL->query('DELETE FROM eighth_rooms');
+	}
+
+	/**
+	* Delete student schedules
+	*
+	* @todo Write this
+	*/
+	private function clean_schedules($ldap=NULL) {
+		global $I2_SQL,$I2_LDAP;
+		if (!$ldap) {
+			$ldap = LDAP::get_admin_bind($this->admin_pass);
+		}
+	}
+
+	/**
+	* Delete the whole shebang for a fresh import
+	*/
+	private function clean_up() {
+		global $I2_SQL,$I2_LDAP;
+		$ldap = NULL;
+		if ($this->admin_pass) {
+			$ldap = LDAP::get_admin_bind($this->admin_pass);
+		} else {
+			$ldap = $I2_LDAP;
+		}
+		$this->clean_students($ldap);
+		$this->clean_teachers($ldap);
+		$this->clean_schedules($ldap);
+		$this->clean_eighth();
+		$this->clean_other($ldap);
 	}
 
 	/**
@@ -990,6 +1038,18 @@ class dataimport implements Module {
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean' && isSet($_REQUEST['doit'])) {
 			$this->clean_up();
 			$this->init_db();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_students' && isSet($_REQUEST['doit'])) {
+			$this->clean_students();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_teachers' && isSet($_REQUEST['doit'])) {
+			$this->clean_teachers();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_eighth' && isSet($_REQUEST['doit'])) {
+			$this->clean_eighth();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_other' && isSet($_REQUEST['doit'])) {
+			$this->clean_other();
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'studentinfo' && isSet($_REQUEST['doit'])) {
 			$this->expand_student_info();

@@ -45,6 +45,21 @@
 			<input type="submit" value="Clean the entire database"/><br/>
 		</form>
 		<br /><br/>
+		<form action="[<$I2_ROOT>]dataimport/clean_students" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Delete all students"/><br/>
+		</form>
+		<br /><br/>
+		<form action="[<$I2_ROOT>]dataimport/clean_teachers" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Delete all teachers"/><br/>
+		</form>
+		<br /><br/>
+		<form action="[<$I2_ROOT>]dataimport/clean_other" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Delete assorted data"/><br/>
+		</form>
+		<br /><br/>
 	[</if>]
 	[<if $userfile && $admin_pass>]
 		<form action="[<$I2_ROOT>]dataimport/students" method="post">

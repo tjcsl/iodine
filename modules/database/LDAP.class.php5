@@ -109,7 +109,7 @@ class LDAP {
 	}
 
 	public static function get_user_bind($server = NULL) {
-		//All values ignored
+		//All values except server ignored
 		return new LDAP('','pwd',$server,FALSE);
 	}
 
@@ -223,7 +223,7 @@ class LDAP {
 	* @todo Fix listing of already-deleted objects - this method gets called twice
 	*       for each node b/c search_one returns the object itself.
 	*/
-	public function delete_recursive($dn,$bind=NULL) {
+	public function delete_recursive($dn,$filter,$bind=NULL) {
 		$this->rebase($dn);
 		if (!$bind) {
 			$bind = $this->conn;
@@ -231,12 +231,12 @@ class LDAP {
 		/*
 		** Find all objects below the given DN and delete each one
 		*/
-		$res = $this->search_one($dn,FALSE,array('*'),$bind)->fetch_all_arrays(RESULT::ASSOC);
+		$res = $this->search_one($dn,$filter,array('dn'),$bind)->fetch_all_arrays(RESULT::ASSOC);
 		foreach ($res as $itemdn=>$meh) {
 			//d("Deleting dn $itemdn from LDAP recursive delete",6);
 			$this->delete_recursive($itemdn,$bind);
 		}
-		$this->delete($dn,$bind);
+		//$this->delete($dn,$bind);
 	}
 
 	public function modify_val($dn,$attribute_name,$value,$bind=NULL) {
