@@ -96,12 +96,26 @@ class LDAP {
 		}
 	}
 
-	private function connect() {
-		$conn = ldap_connect($this->server);
+	private function conn_options($conn) {
 		ldap_set_option($conn,LDAP_OPT_PROTOCOL_VERSION,3);
 		ldap_set_option($conn,LDAP_OPT_DEREF,LDAP_DEREF_ALWAYS);
+	}
+
+	private function connect() {
+		$conn = ldap_connect($this->server);
+		$this->conn_options($conn);
+		//ldap_set_rebind_proc($conn,rebind);
 		$this->conns[] = $conn;
 		return $conn;
+	}
+
+	private function rebind($conn,$url) {
+		$this->conn_options($conn);
+		$bind = ldap_sasl_bind($conn);
+		$this->conns[] = $conn;
+		if (!$bind) {
+			$I2_ERR->nonfatal_error("Unable to bind to LDAP server chasing referral to \"$url\"!");
+		}
 	}
 
 	public static function get_anonymous_bind() {
