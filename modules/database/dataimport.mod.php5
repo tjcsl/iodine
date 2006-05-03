@@ -13,21 +13,44 @@ class dataimport implements Module {
 	private $intranet_pass;
 	private $intranet_server;
 	private $intranet_user;
+	private $boxes;
+	private $boxids;
+
+	/**
+	* SASI Student dump - intranet.##a
+	*/
+	private $userfile;
+
+	/**
+	* SASI Teacher dump - teacher.##a
+	*/
+	private $teacherfile;
+
+	/**
+	* Novell Teacher dump - staff.#
+	*/
+	private $stafffile;
+
+	private $school_ldap_server;
+	private $school_ldap_user;
+	private $school_ldap_pass;
 
 	public function __autoconstruct() {
-		//TODO: ?
-		//$this->oldsql = mysql_connect('intranet');
-
+		global $I2_SQL;
 		/*
-		** Set this high to avoid interfering with teachers' random assigned SASI numbers
+		** Set this high to avoid interfering with teachers' randomly assigned SASI numbers
+		** but not so high that StudentIDs and IodineUidNumbers aren't distinct.
+		** So, teacher IodineUidNumbers are < 1000, student IodineUidNumbers are 10000-99999, and StudentIDs are > 99999
 		*/
 		$this->num = 10000;
+
 	}
 	
 	/**
 	* Imports a SASI teacher dump file (teacher.##a)
 	*/
-	private function import_teacher_data_file_one($filename) {	
+	private function import_teacher_data_file_one() {	
+		$filename = $this->teacherfile;
 		/*
 		** First pass through teacher.##a file
 		*/
@@ -84,10 +107,19 @@ class dataimport implements Module {
 
 	/**
 	* Import teacher data from active directory (or any LDAP server).
-	* This must be called after import_teacher_file_one - it uses the SASI information.
+	* This must be called after import_teacher_data_file_one - it uses the SASI information.
 	*/
-	private function import_teacher_data_ldap($server,$user,$pass) {
-		$teacherldap = LDAP::get_simple_bind($user,$pass,$server);
+	private function import_teacher_data_ldap() {
+		global $I2_LOG;
+	
+		$server = $this->school_ldap_server;
+		$user = $this->school_ldap_user;
+		$pass = $this->school_ldap_pass;
+		
+		$count = 0;
+		
+		//$teacherldap = LDAP::get_simple_bind($user,$pass,$server);
+		$teacherldap = LDAP::get_user_bind($server);
 		$res = $teacherldap->search('ou=Staff,dc=local,dc=tjhsst,dc=edu','cn=*',array('cn','sn','givenName'));
 		$validteachers = array();
 		while ($teacher = $res->fetch_array()) {
@@ -99,31 +131,39 @@ class dataimport implements Module {
 				'fname' => ucFirst(strtolower($teacher['givenName'])),
 				'username' => $teacher['cn']
 			);
-			if (!isSet($this->last_to_people['sn'])) {
+			if (!isSet($this->last_to_people[$teacher['sn']])) {
 				continue;
 			}
 			$lnamematches = $this->last_to_people[$teacher['sn']];
 			$found = FALSE;
 			foreach ($lnamematches as $match) {
 				if ($farr['fname'] == $match['fname']) {
-					$farr['id'] = $match['id'];
+					$farr['uid'] = $match['id'];
 					$found = TRUE;
 					break;
 				}
 			}
 			if (!$found) {
-				throw new I2Exception("Unmatched teacher: \"{$farr['fname']} {$farr['lname']}\"");
+				d("Unmatched teacher: \"{$farr['fname']} {$farr['lname']}\"",3);
 			}
 			$validteachers[] = $farr;
+			$count++;
+			if ($count % 100 == 0) {
+				$I2_LOG->log_file("-$count-");
+			}
 		}
+		$this->init_desired_boxes();
 		$this->finish_teachers($validteachers);
 	}
 
 	/**
 	* DEPRECATED method of importing teachers from a Novell dump file (staff.#)
 	*/
-	private function import_teacher_data_file($filename,$teachersfiletwo) {
+	private function import_teacher_data_file() {
 
+		$filename = $this->teacherfile;
+		$teachersfiletwo = $this->staffile;
+		
 		$this->import_teacher_data_file_one($filename);
 
 		/*
@@ -228,8 +268,10 @@ class dataimport implements Module {
 	/** 
 	* Import student data from a SASI dump file (intranet.##a) into $datatable;
 	*/
-	private function import_student_data($filename) {
-
+	private function import_student_data() {
+		global $I2_LOG;
+	
+		$filename = $this->userfile;
 		$file = @fopen($filename, 'r');
 
 		d("Importing data from user data file $filename...",6);
@@ -254,11 +296,17 @@ class dataimport implements Module {
 					$City, 
 					$State, 
 					$Zip, 
-					$Couns) = explode('","',$line);
+					$Couns,
+					$Nickname
+					) = explode('","',$line);
 			/*
 			** We need to strip the first and last quotation marks
 			** and escape the ' symbols where appropriate
 			*/
+			$Nickname = substr($Nickname,0,strlen($Nickname)-1);
+			if (!$Nickname) {
+				$Nickname = '';
+			}
 			$this->usertable[] = array(
 					'username' => str_replace('\'','\\\'',substr($username,1)),
 					'studentid' => $StudentID, 
@@ -273,16 +321,51 @@ class dataimport implements Module {
 					'city' => str_replace('\'','\\\'',$City), 
 					'state' => str_replace('\'','\\\'',$State), 
 					'zip' => $Zip, 
-					'counselor' => substr($Couns,-1));
+					'counselor' => $Couns,
+					'nick' => $Nickname
+					);
 			$numlines++;
+			if ($numlines % 100 == 0) {
+				$I2_LOG->log_file("-$numlines-");
+			}
 		}
 		d("$numlines users imported.",6);
 
 		$ldap = LDAP::get_admin_bind($this->admin_pass);
-		
+	
+		/*
+		** This line is needed b/c the create_user method uses $this->boxes and friends
+		*/
+		$this->init_desired_boxes();
+	
 		foreach ($this->usertable as $user) {
 			$this->create_user($user,$ldap);
 		}
+	}
+
+	/**
+	* Get ready to add default intraboxes for users
+	*/
+	private function init_desired_boxes() {
+		global $I2_SQL;
+		/*
+		** Set up default intraboxes
+		*/
+		$this->boxes = array(
+			'news'=>'News',
+			'eighth'=>'Eighth Period',
+			'mail'=>'Your Mail',
+			'filecenter'=>'Your Files',
+			'birthdays'=>'Birthdays',
+			'studentdirectory'=>'Student Directory',
+			'links'=>'Useful Links'
+		);
+		$desiredboxes = array();
+		foreach ($this->boxes as $desiredbox=>$name) {
+			$boxnum = $I2_SQL->query('SELECT boxid FROM intrabox WHERE name=%s',$desiredbox)->fetch_single_value();
+			$desiredboxes[$boxnum] = $name;
+		}
+		$this->boxids = $desiredboxes;
 	}
 
 	/**
@@ -310,19 +393,26 @@ class dataimport implements Module {
 		
 		d("Creating teacher \"{$newteach['iodineUid']}\"...",5);
 		$ldap->add($dn,$newteach);
+
+		/*
+		** Teachers need intraboxes, too!
+		*/
+		foreach ($this->boxids as $boxid=>$name) {
+			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid) VALUES(%d,%d)',$teacher['uid'],$boxid);
+		}
 	}
 
 	/**
 	* Adds a new user from the given data
 	*/
 	private function create_user($user,$ldap=NULL) {
-		global $I2_LDAP;
+		global $I2_LDAP,$I2_SQL;
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}
 		$usernew = array();
 		$usernew['objectClass'] = 'tjhsstStudent';
-		$usernew['graduationYear'] = '2006';
+		$usernew['graduationYear'] = (-1*($user['grade']-12))+2006;
 		$usernew['cn'] = $user['fname'].' '.$user['lname'];
 		$usernew['sn'] = $user['lname'];
 		$usernew['tjhsstStudentId'] = $user['studentid'];
@@ -335,6 +425,7 @@ class dataimport implements Module {
 		$usernew['birthday'] = $user['bdate'];
 		$usernew['street'] = $user['address'];
 		$usernew['givenName'] = $user['fname'];
+		$usernew['nickName'] = $user['nick'];
 		if ($user['mname'] != '') {
 			$usernew['displayName'] = $user['fname'].' '.$user['mname'].' '.$user['lname'];
 		} else {
@@ -345,8 +436,9 @@ class dataimport implements Module {
 		$usernew['middlename'] = $user['mname'];
 		$usernew['style'] = 'default';
 		$usernew['header'] = 'TRUE';
-		$usernew['iodineUidNumber'] = $this->num;
+		$usernum = $this->num;
 		$this->num = $this->num + 1;
+		$usernew['iodineUidNumber'] = $usernum;
 		$usernew['startpage'] = 'news';
 		$usernew['chrome'] = 'TRUE';
 		$dn = "iodineUid={$usernew['iodineUid']},ou=people";
@@ -355,6 +447,9 @@ class dataimport implements Module {
 		
 		d("Creating user \"{$usernew['iodineUid']}\"...",5);
 		$ldap->add($dn,$usernew);
+		foreach ($this->boxids as $boxid=>$name) {
+			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid) VALUES(%d,%d)',$usernum,$boxid);
+		}
 	}
 
 	private function import_eighth_data($startdate=NULL,$enddate=NULL) {
@@ -421,10 +516,10 @@ class dataimport implements Module {
 				$sticky = 0;
 			}
 			if (!$sponsors) {
-				$sponsors = "";
+				$sponsors = '';
 			}
 			if (!$description) {
-				$description = "No description available";
+				$description = 'No description available';
 			}
 			
 			// Collect the rooms the activity occurs in
@@ -442,7 +537,8 @@ class dataimport implements Module {
 												 	$aid,$startdate,$enddate);
 			while ($b = $blockres->fetch_array(Result::ASSOC)) {
 				list($block,$brooms,$attendance,$cancelled,$bcomment,$advertisement,$date) =
-					array($b['ActivityBlock'],$b['Room'],$b['AttendanceTaken'],$b['Cancelled'],$b['Comment'],$b['Advertisement'],$b['ActivityDate']);
+					array($b['ActivityBlock'],$b['Room'],$b['AttendanceTaken'],$b['Cancelled'],
+						$b['Comment'],$b['Advertisement'],$b['ActivityDate']);
 
 				/*
 				** Create block if necessary
@@ -461,6 +557,9 @@ class dataimport implements Module {
 					$bcomment = "";
 				}
 				
+				foreach ($sponsors as $sponsor) {
+					//$I2_SQL->query('INSERT INTO ');
+				}
 				//FIXME: get the sponsor info properly!
 				$sponsors = array();
 				
@@ -556,10 +655,13 @@ class dataimport implements Module {
 	* Expands a student's Intranet 2 presence by adding their non-critical data from Intranet 1.
 	*/
 	private function expand_student_info() {
-		global $I2_LDAP;
+		global $I2_LDAP,$I2_LOG;
 		$ldap = LDAP::get_admin_bind($this->admin_pass);
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 		$res = $oldsql->query("SELECT StudentID,Locker,Lastnamesound,Firstnamesound FROM StudentInfo");
+		
+		$count = 0;
+		
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 			$user = User::get_by_studentid($row['StudentID']);
 			$otherres = $oldsql->query("SELECT * FROM StudentMiscInfo WHERE StudentID=%d",$row['StudentID']);
@@ -617,6 +719,10 @@ class dataimport implements Module {
 			$user->mail = $otherres['Email'];
 			$user->soundexlast = $row['Lastnamesound'];
 			$user->soundexfirst = $row['Firstnamesound'];
+			$count++;
+			if ($count % 100 == 0) {
+				$I2_LOG->log_file("-$count-");
+			}
 		}
 	}
 
@@ -632,6 +738,151 @@ class dataimport implements Module {
 				EighthSponsor::add_sponsor($row['givenName'],$row['sn']);
 			}
 		}
+	}
+
+	/**
+	* Delete the whole shebang for a fresh import
+	*/
+	private function clean_up() {
+		global $I2_SQL,$I2_LDAP;
+		$I2_SQL->query('DELETE FROM intrabox');
+		$I2_SQL->query('DELETE FROM intrabox_map');
+		$I2_SQL->query('DELETE FROM news_read_map');
+		$I2_SQL->query('DELETE FROM scratchpad');
+		$I2_SQL->query('DELETE FROM eighth_activities');
+		$I2_SQL->query('DELETE FROM eighth_activity_map');
+		$I2_SQL->query('DELETE FROM eighth_blocks');
+		$I2_SQL->query('DELETE FROM eighth_block_map');
+		$I2_SQL->query('DELETE FROM eighth_absentees');
+		$I2_SQL->query('DELETE FROM eighth_sponsors');
+		$I2_SQL->query('DELETE FROM eighth_activity_permissions');
+		$I2_SQL->query('DELETE FROM eighth_rooms');
+		$I2_SQL->query('DELETE FROM polls');
+		$I2_SQL->query('DELETE FROM poll_votes');
+		$I2_SQL->query('DELETE FROM group_poll_map');
+		$I2_SQL->query('DELETE FROM groups_perms');
+		/*
+		** This stuff needs to come last so we retain privs to the bitter end
+		** This still depends on a bit of caching being done...
+		*/
+		$I2_LDAP->delete_recursive('ou=people');
+		$I2_SQL->query('DELETE FROM group_user_map');
+		$I2_SQL->query('DELETE FROM groups');
+		//TODO: handle schedule stuff here, too
+	}
+
+	/**
+	* Do basic database setup
+	*/
+	private function init_db() {
+		global $I2_SQL,$I2_LDAP;
+
+		/*
+		** Make the SQL database presentable
+		*/
+		$essentialgroups = array('admin_all','admin_mysql','admin_ldap','admin_groups','admin_news','admin_eighth');
+		foreach ($essentialgroups as $groupname) {
+			$I2_SQL->query('INSERT INTO groups (name) VALUES (%s)',$groupname);
+		}
+		
+		/*
+		** Get the LDAP database into some sort of shape
+		*/
+		$people = array(
+			'objectClass' => 'organizationalUnit',
+			'ou' => 'people',
+			'description' => 'People at TJHSST'
+		);
+		$I2_LDAP->add('ou=people',$people);
+
+		/*
+		** Create the admin user account
+		*/
+		$admin_number = 9998;
+		$admin = array(
+			'objectClass' => 'fakeUser',
+			'cn'	=> 'Admin',
+			'givenName' => 'Admin',
+			'iodineUid' => 'admin',
+			'iodineUidNumber' => "$admin_number",
+			'header' => 'TRUE',
+			'chrome' => 'TRUE',
+			'style' => 'default',
+			'startpage' => 'dataimport'
+		);
+		$I2_LDAP->add('iodineUid=admin,ou=people',$admin);
+		$admingid = $I2_SQL->query('SELECT gid FROM groups WHERE name=%s','admin_all')->fetch_single_value();
+		$I2_SQL->query('INSERT INTO group_user_map (uid,gid,is_admin) VALUES (%d,%d,%d)',$admin_number,$admingid,1);
+		/*
+		** Create the 8th-period-office user account
+		*/
+		$admin_number = 9999;
+		$admin = array(
+			'objectClass' => 'fakeUser',
+			'cn'	=> 'Eighth Period Office',
+			'givenName' => 'Eighth Period Office',
+			'iodineUid' => 'eighthOffice',
+			'iodineUidNumber' => "$admin_number",
+			'header' => 'FALSE',
+			'chrome' => 'FALSE',
+			'style' => 'default',
+			'startpage' => 'eighth'
+		);
+		$I2_LDAP->add('iodineUid=eighthOffice,ou=people',$admin);
+		$admingid = $I2_SQL->query('SELECT gid FROM groups WHERE name=%s','admin_eighth')->fetch_single_value();
+		$I2_SQL->query('INSERT INTO group_user_map (uid,gid,is_admin) VALUES (%d,%d,%d)',$admin_number,$admingid,1);
+
+		$this->init_desired_boxes();
+		/*
+		** Create desired intraboxes
+		*/
+		foreach ($this->boxes as $box=>$name) {
+			$I2_SQL->query('INSERT INTO intrabox (name,display_name) VALUES (%s,%s)',$box,$name);
+		}
+		
+	}
+
+	/**
+	* Final post-import tasks which need to be run
+	*/
+	private function make_final() {
+		global $I2_SQL,$I2_LDAP;
+	}
+
+	/**
+	* Does all necessary importing as best it can
+	*/
+	private function do_imports() {
+		global $I2_LOG;
+		$I2_LOG->log_file('Beginning cleanup',3);
+		$this->clean_up();
+		$I2_LOG->log_file('Cleanup complete',3);
+		$I2_LOG->log_file('Initializing database(s)',3);
+		$this->init_db();
+		$I2_LOG->log_file('Database(s) initialized',3);
+
+		$I2_LOG->log_file('Importing students...',3);
+		$this->import_student_data();
+		$I2_LOG->log_file('Initial import complete, expanding student information...',3);
+		$this->expand_student_info();
+		$I2_LOG->log_file('Students imported',3);
+		
+		/*$I2_LOG->log_file('Importing teachers...',3);
+		$this->import_teacher_data_file_one();
+		$this->import_teacher_data_ldap();
+		$I2_LOG->log_file('Teachers imported',3);*/
+		
+		/*$I2_LOG->log_file('Importing eighth-period data...',3);
+		$I2_LOG->log_file('Eighth period imported',3);*/
+		
+		/*$I2_LOG->log_file('Importing scheduling information...',3);
+		$I2_LOG->log_file('Schedules imported',3);*/
+		
+		$I2_LOG->log_file('Beginning finalization...',3);
+		$this->make_final();
+		$I2_LOG->log_file('Finalization complete',3);
+		
+		$I2_LOG->log_file('All tasks completed!',3);
 	}
 
 	public function get_name() {
@@ -675,19 +926,57 @@ class dataimport implements Module {
 		if (isSet($_SESSION['intranet_user'])) {
 			$this->intranet_user = $_SESSION['intranet_user'];
 		}
+		if (isSet($_SESSION['userfile'])) {
+			$this->userfile = $_SESSION['userfile'];
+		}
+		if (isSet($_SESSION['teacherfile'])) {
+			$this->teacherfile = $_SESSION['teacherfile'];
+		}
+		if (isSet($_SESSION['school_ldap_server'])) {
+			$this->school_ldap_server = $_SESSION['school_ldap_server'];
+		}
+		if (isSet($_SESSION['school_ldap_user'])) {
+			$this->school_ldap_user = $_SESSION['school_ldap_user'];
+		}
+		if (isSet($_SESSION['school_ldap_pass'])) {
+			$this->school_ldap_pass = $_SESSION['school_ldap_pass'];
+		}
+		if (isSet($_SESSION['stafffile'])) {
+			$this->intranet_user = $_SESSION['stafffile'];
+		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_pass') {
 			unset($_SESSION['ldap_admin_pass']);
 			unset($this->admin_pass);
 		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_user') {
+			unset($_SESSION['userfile']);
+			unset($this->userfile);
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_teacher') {
+			unset($_SESSION['school_ldap_server']);
+			unset($this->school_ldap_server);
+		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'userdata' && isSet($_REQUEST['userfile'])) {
-			$this->import_student_data($_REQUEST['userfile']);
+			$this->userfile = $_REQUEST['userfile'];
+			$_SESSION['userfile'] = $_REQUEST['userfile'];
+			//$this->import_student_data($_REQUEST['userfile']);
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherdata' && isSet($_REQUEST['teacherfile']) && isSet($_REQUEST['teacherserver'])
 		&& isSet($_REQUEST['teacherdn']) && isSet($_REQUEST['teacherpass']) && $_REQUEST['teacherserver'] != '') {
-			$this->import_teacher_data_file_one($_REQUEST['teacherfile']);
-			$this->import_teacher_data_ldap($_REQUEST['teacherserver'],$_REQUEST['teacherdn'],$_REQUEST['teacherpass']);
+			//$this->import_teacher_data_file_one($_REQUEST['teacherfile']);
+			$this->teacherfile = $_REQUEST['teacherfile'];
+			$_SESSION['teacherfile'] = $_REQUEST['teacherfile'];
+			$this->school_ldap_server = $_REQUEST['teacherserver'];
+			$_SESSION['school_ldap_server'] = $_REQUEST['teacherserver'];
+			$this->school_ldap_user = $_REQUEST['teacherdn'];
+			$_SESSION['school_ldap_user'] = $_REQUEST['teacherdn'];
+			$this->school_ldap_pass = $_REQUEST['teacherpass'];
+			$_SESSION['school_ldap_pass'] = $_REQUEST['teacherpass'];
+			//$this->import_teacher_data_ldap($_REQUEST['teacherserver'],$_REQUEST['teacherdn'],$_REQUEST['teacherpass']);
 		} elseif (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherdata' && isSet($_REQUEST['teacherfile']) && isSet($_REQUEST['stafffile'])) {
-			$this->import_teacher_data_file($_REQUEST['teacherfile'],$_REQUEST['stafffile']);
+			$this->staffile = $_REQUEST['stafffile'];
+			$this->teacherfile = $_REQUEST['teacherfile'];
+			//$this->import_teacher_data_file($_REQUEST['teacherfile'],$_REQUEST['stafffile']);
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'eighthdata' && isSet($_REQUEST['doit'])) {
 			if (isSet($_REQUEST['startdate']) && isSet($_REQUEST['enddate'])) {
@@ -698,11 +987,25 @@ class dataimport implements Module {
 				$this->import_eighth_data();
 			}
 		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean' && isSet($_REQUEST['doit'])) {
+			$this->clean_up();
+			$this->init_db();
+		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'studentinfo' && isSet($_REQUEST['doit'])) {
 			$this->expand_student_info();
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teachersponsors' && isSet($_REQUEST['doit'])) {
 			$this->make_teachers_sponsors();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'doeverything' && isSet($_REQUEST['doit'])) {
+			$this->do_imports();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teachers' && isSet($_REQUEST['doit'])) {
+			$this->import_teacher_data_file_one();
+			$this->import_teacher_data_ldap();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'students' && isSet($_REQUEST['doit'])) {
+			$this->import_student_data();
 		}
 		return 'Import Legacy Data';
 	}
@@ -711,7 +1014,10 @@ class dataimport implements Module {
 		$disp->disp('dataimport_pane.tpl',array(
 				'userdata' => $this->usertable, 
 				'admin_pass' => isSet($this->admin_pass)?TRUE:FALSE,
-				'intranet_pass' => isSet($this->intranet_pass)?TRUE:FALSE
+				'intranet_pass' => isSet($this->intranet_pass)?TRUE:FALSE,
+				'userfile' => isSet($this->userfile)?TRUE:FALSE,
+				//FIXME: meh, not quite userproof.
+				'teacherfile' => (isSet($this->teacherfile)&&(isSet($this->staffile)||isSet($this->school_ldap_server)))?TRUE:FALSE
 				));
 	}
 }

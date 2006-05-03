@@ -108,9 +108,9 @@ class LDAP {
 		return new LDAP();
 	}
 
-	public static function get_user_bind() {
+	public static function get_user_bind($server = NULL) {
 		//All values ignored
-		return new LDAP('','pwd',NULL,FALSE);
+		return new LDAP('','pwd',$server,FALSE);
 	}
 
 	/**
@@ -217,6 +217,12 @@ class LDAP {
 		return new LDAPResult($bind,$res,LDAP::LDAP_DELETE);
 	}
 
+	/**
+	* Recursively delete a node and all its children
+	*
+	* @todo Fix listing of already-deleted objects - this method gets called twice
+	*       for each node b/c search_one returns the object itself.
+	*/
 	public function delete_recursive($dn,$bind=NULL) {
 		$this->rebase($dn);
 		if (!$bind) {
