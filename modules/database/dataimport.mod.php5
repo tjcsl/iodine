@@ -268,9 +268,17 @@ class dataimport implements Module {
 	/** 
 	* Import student data from a SASI dump file (intranet.##a) into $datatable;
 	*/
-	private function import_student_data() {
-		global $I2_LOG;
-	
+	private function import_student_data($do_old_intranet=TRUE) {
+		global $I2_LOG;	
+		
+		$ldap = LDAP::get_admin_bind($this->admin_pass);
+		
+		$oldsql = NULL;
+		
+		if ($do_old_intranet) {
+			$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);	
+		}
+
 		$filename = $this->userfile;
 		$file = @fopen($filename, 'r');
 
@@ -307,7 +315,7 @@ class dataimport implements Module {
 			if (!$Nickname) {
 				$Nickname = '';
 			}
-			$this->usertable[] = array(
+			$student = array(
 					'username' => str_replace('\'','\\\'',substr($username,1)),
 					'studentid' => $StudentID, 
 					'lname' => str_replace('\'','\\\'',$Lastname),
@@ -324,14 +332,71 @@ class dataimport implements Module {
 					'counselor' => $Couns,
 					'nick' => $Nickname
 					);
+			if ($do_old_intranet) {
+				$res = $oldsql->query('SELECT Lastnamesound,Firstnamesound FROM StudentInfo WHERE StudentID=%d',$StudentID)->fetch_array(Result::ASSOC);
+				$student['soundexlast'] = $res['Lastnamesound'];
+				$student['soundexfirst'] = $res['Firstnamesound'];
+				$otherres = $oldsql->query('SELECT * FROM StudentMiscInfo WHERE StudentID=%d',$StudentID);
+				$otherres = $otherres->fetch_array(Result::ASSOC);
+				if ($otherres['ICQ']) {
+					$student['icq'] = $otherres['ICQ'];
+				}
+				if ($otherres['AIM']) {
+					$student['aim'] = $otherres['AIM'];
+				}
+				if ($otherres['MSN']) {
+					$student['msn'] = $otherres['MSN'];
+				}
+				if ($otherres['Jabber']) {
+					$student['jabber'] = $otherres['Jabber'];
+				}
+				if ($otherres['Yahoo']) {
+					$student['yahoo'] = $otherres['Yahoo'];
+				}
+				if ($otherres['AllowSchedule']) {
+					$student['showschedule'] = 'TRUE';
+				} else {
+					$student['showschedule'] = 'FALSE';
+				}
+				if ($otherres['AllowBirthday']) {
+					$student['showbirthday'] = 'TRUE';
+				} else {
+					$student['showbirthday'] = 'FALSE';
+				}
+				if ($otherres['AllowMap']) {
+					$student['showmap'] = 'TRUE';
+				} else {
+					$student['showmap'] = 'FALSE';
+				}
+				if ($otherres['AllowAddress']) {
+					$student['showaddress'] = 'TRUE';
+				} else {
+					$student['showaddress'] = 'FALSE';
+				}
+				if ($otherres['AllowPhone']) {
+					$student['showphone'] = 'TRUE';
+				} else {
+					$student['showphone'] = 'FALSE';
+				}
+				if ($otherres['AllowPicture']) {
+					$student['showpictures'] = 'TRUE';
+				} else {
+					$student['showpictures'] = 'FALSE';
+				}
+				if ($otherres['Locker']) {
+					$student['locker'] = $otherres['Locker'];
+				}
+				$student['mobile'] = $otherres['CellPhone'];
+				$student['mail'] = $otherres['Email'];
+				
+			}
+			$this->usertable[] = $student;
 			$numlines++;
 			if ($numlines % 100 == 0) {
 				$I2_LOG->log_file("-$numlines-");
 			}
 		}
 		d("$numlines users imported.",6);
-
-		$ldap = LDAP::get_admin_bind($this->admin_pass);
 	
 		/*
 		** This line is needed b/c the create_user method uses $this->boxes and friends
@@ -432,6 +497,20 @@ class dataimport implements Module {
 			$usernew['displayName'] = $user['fname'].' '.$user['lname'];
 		}
 		$usernew['gender'] = $user['sex'];
+		$usernew['mobile'] = $user['mobile'];
+		$usernew['locker'] = $user['locker'];
+		$usernew['soundexfirst'] = $user['soundexfirst'];
+		$usernew['soundexlast'] = $user['soundexlast'];
+		$usernew['aim'] = $user['aim'];
+		$usernew['jabber'] = $user['jabber'];
+		$usernew['msn'] = $user['msn'];
+		$usernew['icq'] = $user['icq'];
+		$usernew['showpictures'] = $user['showpictures'];
+		$usernew['showaddress'] = $user['showaddress'];
+		$usernew['showmap'] = $user['showmap'];
+		$usernew['showschedule'] = $user['showschedule'];
+		$usernew['showphone'] = $user['showphone'];
+		$usernew['showbirthday'] = $user['showbirthday'];
 		$usernew['title'] = ($user['sex']=='M')?'Mr.':'Ms.';
 		$usernew['middlename'] = $user['mname'];
 		$usernew['style'] = 'default';
@@ -656,74 +735,25 @@ class dataimport implements Module {
 	*/
 	private function expand_student_info() {
 		global $I2_LDAP,$I2_LOG;
+		//$I2_LOG->debug_off();
 		$ldap = LDAP::get_admin_bind($this->admin_pass);
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
-		$res = $oldsql->query("SELECT StudentID,Locker,Lastnamesound,Firstnamesound FROM StudentInfo");
+		$res = $oldsql->query("SELECT StudentID,Lastnamesound,Firstnamesound FROM StudentInfo");
 		
 		$count = 0;
 		
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 			$user = User::get_by_studentid($row['StudentID']);
-			$otherres = $oldsql->query("SELECT * FROM StudentMiscInfo WHERE StudentID=%d",$row['StudentID']);
-			$otherres = $otherres->fetch_array(Result::ASSOC);
-			if ($otherres['ICQ']) {
-				$user->icq = $otherres['ICQ'];
+			if (!$user) {
+				d('Invalid StudentID '.$row['StudentID'],4);
+				continue;
 			}
-			if ($otherres['AIM']) {
-				$user->aim = $otherres['AIM'];
-			}
-			if ($otherres['MSN']) {
-				$user->msn = $otherres['MSN'];
-			}
-			if ($otherres['Jabber']) {
-				$user->jabber = $otherres['Jabber'];
-			}
-			if ($otherres['Yahoo']) {
-				$user->yahoo = $otherres['Yahoo'];
-			}
-			if ($otherres['AllowSchedule']) {
-				$user->showschedule = 'TRUE';
-			} else {
-				$user->showschedule = 'FALSE';
-			}
-			if ($otherres['AllowBirthday']) {
-				$user->showbirthday = 'TRUE';
-			} else {
-				$user->showbirthday = 'FALSE';
-			}
-			if ($otherres['AllowMap']) {
-				$user->showmap = 'TRUE';
-			} else {
-				$user->showmap = 'FALSE';
-			}
-			if ($otherres['AllowAddress']) {
-				$user->showaddress = 'TRUE';
-			} else {
-				$user->showaddress = 'FALSE';
-			}
-			if ($otherres['AllowPhone']) {
-				$user->showphone = 'TRUE';
-			} else {
-				$user->showphone = 'FALSE';
-			}
-			if ($otherres['AllowPicture']) {
-				$user->showpictures = 'TRUE';
-			} else {
-				$user->showpictures = 'FALSE';
-			}
-			//$row doesn't have Locker (it's actually not in StudentInfo)
-			if ($otherres['Locker']) {
-				$user->locker = $otherres['Locker'];
-			}
-			$user->telephoneNumber = $otherres['CellPhone'];
-			$user->mail = $otherres['Email'];
-			$user->soundexlast = $row['Lastnamesound'];
-			$user->soundexfirst = $row['Firstnamesound'];
 			$count++;
 			if ($count % 100 == 0) {
 				$I2_LOG->log_file("-$count-");
 			}
 		}
+		//$I2_LOG->debug_on();
 	}
 
 	/**
@@ -745,7 +775,9 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = LDAP::get_admin_bind($this->admin_pass);
 		}
-		$ldap->delete_recursive('ou=people','objectClass=tjhsstStudent');
+		$ldap->delete_recursive('ou=people','(objectClass=tjhsstStudent)');
+		//$ldap->delete_recursive('ou=people');
+		//$this->init_db();
 	}
 
 	private function clean_teachers($ldap=NULL) {
@@ -753,7 +785,9 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = LDAP::get_admin_bind($this->admin_pass);
 		}
-		$ldap->delete_recursive('ou=people','objectClass=tjhsstTeacher');
+		$ldap->delete_recursive('ou=people','(objectClass=tjhsstTeacher)');
+		//$ldap->delete_recursive('ou=people');
+		
 	}
 
 	private function clean_other($ldap=NULL) {

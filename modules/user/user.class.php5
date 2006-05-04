@@ -96,7 +96,7 @@ class User {
 		/*
 		** Put info in cache
 		*/
-		self::$cache[$this->myuid] = $this->info;
+		self::$cache[$this->myuid] = &$this->info;
 	}
 
 	public function is_valid() {
@@ -136,7 +136,7 @@ class User {
 	public function __get( $name ) {
 		global $I2_SQL,$I2_ERR,$I2_LDAP;
 
-		if( $this->username === NULL ) {
+		if(!$this->username) {
 			throw new I2Exception('Tried to retrieve information for nonexistent user! UID: '.$this->myuid);
 		}
 
@@ -171,6 +171,8 @@ class User {
 				return $this->__get('iodineUidNumber');
 			case 'username':
 				return $this->__get('iodineUid');
+			/*case 'iodineUid':
+				return $this->username;*/
 			case 'grade':
 				return $this->get_grade($this->__get('graduationYear'));
 			case 'phone_home':
@@ -239,9 +241,20 @@ class User {
 	* @param mixed $val The data to set the field to.
 	*/
 	public function __set( $name, $val ) {
+		$this->set($name,$val);
+	}
+
+	public function set($name,$val,$ldap=NULL) {
 		global $I2_LDAP;
-		//throw new I2Exception("Changing user info is not yet supported!");
-		$ldap = LDAP::get_admin_bind(i2config_get('admin_pw','ld4pp4ss','ldap'));
+		if (!$ldap) {
+			$ldap = $I2_LDAP;
+		}
+		if ($name == 'username' || $name == 'iodineUid') {
+			$this->username = $val;
+		}
+		/*if (!$this->username) {
+			throw new I2Exception('User entries without usernames cannot be modified!');
+		}*/
 		$ldap->modify_val("iodineUid={$this->username},ou=people",$name,$val);
 	}
 
@@ -502,7 +515,7 @@ class User {
 	*/
 	public static function studentid_to_uid($studentid) {
 		global $I2_LDAP;
-		return $I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', "(tjhsstStudentId={$studentid})", 'iodineUidNumber')->fetch_single_value();
+		return $I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', "(&(objectClass=tjhsstStudent)(tjhsstStudentId={$studentid}))", 'iodineUidNumber')->fetch_single_value();
 	}
 
 }

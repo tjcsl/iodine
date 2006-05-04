@@ -35,8 +35,8 @@ objectClass: fakeUser
 iodineUid: admin
 givenName: Admin
 cn: Admin
-iodineUidNumber: 99
+iodineUidNumber: 9998
 style: default
-startPage: eighth
+startPage: dataimport
 header: FALSE
 chrome: FALSE

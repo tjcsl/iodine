@@ -147,7 +147,7 @@ try {
 	 *
 	 * @global LDAP $I2_LDAP
 	 */
-	$I2_LDAP = LDAP::get_user_bind();
+	$I2_LDAP = LDAP::get_admin_bind();
 	/**
 	 * The global user info mechanism.
 	 *

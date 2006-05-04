@@ -149,7 +149,7 @@ class LDAP {
 		return $this->search($dn,$query,$attributes,LDAP::SCOPE_SUB,$bind);
 	}
 
-	public function search($dn=NULL,$query='objectClass=*',$attributes='*',$depth=LDAP::SCOPE_SUB,$bind=NULL) {
+	public function search($dn=NULL,$query='objectClass=*',$attributes='*',$depth=LDAP::SCOPE_SUB,$bind=NULL,$attrsonly=FALSE) {
 		if (!is_array($attributes)) {
 			$attributes = array($attributes);
 		}
@@ -173,13 +173,13 @@ class LDAP {
 		//TODO: consider how searching is done
 			if ($depth == LDAP::SCOPE_SUB) {
 				d("LDAP Searching $dn for ".print_r($attributes,1)." where $query...",7);
-				$res = ldap_search($bind,$dn,$query,$attributes,0,$this->sizelimit,$this->timelimit);
+				$res = ldap_search($bind,$dn,$query,$attributes,0,$this->sizelimit,$this->timelimit,$attrsonly);
 			} elseif ($depth == LDAP::SCOPE_ONE) {
 				d("LDAP Listing $dn for ".print_r($attributes,1)." where $query...",7);
-				$res = ldap_list($bind,$dn,$query,$attributes,0,$this->sizelimit,$this->timelimit);
+				$res = ldap_list($bind,$dn,$query,$attributes,0,$this->sizelimit,$this->timelimit,$attrsonly);
 			} elseif ($depth == LDAP::SCOPE_BASE) {
 				d("LDAP Reading $dn's values for ".print_r($attributes,1)." where $query...",7);
-				$res = ldap_read($bind,$dn,$query,$attributes,0,$this->sizelimit,$this->timelimit);
+				$res = ldap_read($bind,$dn,$query,$attributes,0,$this->sizelimit,$this->timelimit,$attrsonly);
 			} else {
 				throw new I2Exception("Unknown scope number $depth passed to ldap_search!");
 			}
@@ -200,8 +200,8 @@ class LDAP {
 		return new LDAPResult($bind,$res,LDAP::LDAP_SEARCH);
 	}
 
-	public function search_one($dn='',$query='objectClass=*',$attributes='*') {
-		return $this->search($dn,$query,$attributes,LDAP::SCOPE_ONE);
+	public function search_one($dn='',$query='objectClass=*',$attributes='*',$bind=NULL,$attrsonly=FALSE) {
+		return $this->search($dn,$query,$attributes,LDAP::SCOPE_ONE,$bind,$attrsonly);
 	}
 
 	/**
@@ -245,7 +245,7 @@ class LDAP {
 		/*
 		** Find all objects below the given DN and delete each one
 		*/
-		$res = $this->search_one($dn,$filter,array('dn'),$bind)->fetch_all_arrays(RESULT::ASSOC);
+		$res = $this->search_one($dn,$filter,array('dn'),$bind,TRUE)->fetch_all_arrays(RESULT::ASSOC);
 		foreach ($res as $itemdn=>$meh) {
 			//d("Deleting dn $itemdn from LDAP recursive delete",6);
 			$this->delete_recursive($itemdn,$bind);
