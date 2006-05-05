@@ -332,7 +332,7 @@ class EighthActivity {
 	public static function get_all_activities($blockids = NULL, $restricted = FALSE) {
 		global $I2_SQL;
 		if($blockids == NULL) {
-			return self::id_to_activity(flatten($I2_SQL->query("SELECT aid FROM eighth_activities " . ($restricted ? "WHERE restricted=1 " : "") . "ORDER BY name")->fetch_all_arrays(Result::NUM)));
+			return self::id_to_activity(flatten($I2_SQL->query('SELECT aid FROM eighth_activities ' . ($restricted ? 'WHERE restricted=1 ' : '') . 'ORDER BY name')->fetch_all_arrays(Result::NUM)));
 		}
 		else {
 			if(!is_array($blockids)) {

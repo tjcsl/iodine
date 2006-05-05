@@ -107,6 +107,7 @@ class User {
 	*/
 	public static function to_uidnumber($thing) {
 		global $I2_LDAP;
+		d('Attempting to resolve '.print_r($thing,1).' to a uidNumber',6);
 		if (is_numeric($thing)) {
 			if ($thing > 99999) {
 				/*
@@ -129,6 +130,7 @@ class User {
 			$res = $I2_LDAP->search_base("iodineUid=$thing,ou=people",array('iodineUidNumber'));
 			$uid = $res->fetch_single_value();
 			self::$cache[$thing] = array('iodineUidNumber' => $uid);
+			return $uid;
 		}
 	}
 
@@ -223,16 +225,21 @@ class User {
 			//returned cached info if we are caching
 			return $this->info[$name];
 		}
-		d("$name not set!",1);
 		
 		$row = $I2_LDAP->search_base("iodineUid={$this->username},ou=people",$name);
-		$res = $row->fetch_single_value();
-
-		if( $res === FALSE ) {
+		
+		if (!$row) {
 			//$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information for '.$name);
 			return NULL;
 		}
 		
+		$res = $row->fetch_single_value();
+		
+		if (!$res) {
+			d("$name not set!",1);
+			return;
+		}
+
 		$this->info[$name] = $res;
 		
 		return $res;

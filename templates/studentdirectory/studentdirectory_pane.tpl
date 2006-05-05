@@ -123,6 +123,10 @@ Counselor: [<$user->counselor>]<br />
  [</foreach>]
  </table>
 [</if>]
+[<elseif $info>]
+[<foreach from=$info item=user>]
+<a href="[<$I2_ROOT>]StudentDirectory/info/[<$user->uid>]">[<$user->fullname_comma>] ([<$user->grade>])</a><br />
+[</foreach>]
 [<else>]
 Intranet has encountered an error.  Please contact the Intranetmaster.
 [</if>]

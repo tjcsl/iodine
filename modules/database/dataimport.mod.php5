@@ -538,14 +538,12 @@ class dataimport implements Module {
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 
 		if ($startdate === NULL) {
-			// Go back 10 days by default
-			//$startdate = date('Y-m-d',time()-10*24*60*60);
-			$startdate = date('Y-m-d',time()+14*24*60*60);
+			// Go back 1 week by default
+			$startdate = date('Y-m-d',time()-7*24*60*60);
 		}
 		if ($enddate === NULL) {
-			// Go a week forward by default
-			//$enddate = date('Y-m-d',time()+7*24*60*60);
-			$enddate = date('Y-m-d',time()+28*24*60*60);
+			// Go 8 weeks forward by default
+			$enddate = date('Y-m-d',time()+8*7*24*60*60);
 		}
 
 		$numactivities = 0;
@@ -584,6 +582,15 @@ class dataimport implements Module {
 			list($aid,$name,$sponsors,$description,$oneaday,$bothblocks,$sticky,$restricted,$presign) =
 				array($a['ActivityID'],$a['ActivityName'],$a['Sponsor'],$a['Description'],$a['IsOneADay'],$a['IsBothBlocks'],$a['IsSticky'],
 					$a['IsRestricted'],$a['IsPresign']);
+
+			/*
+			** Eliminate old system of (R) and so forth in the activity name
+			*/
+			$name = str_replace('(R)','',$name);
+			$name = str_replace('(BB)','',$name);
+			$name = str_replace('(S)','',$name);
+			$name = rtrim($name);
+					
 			/*
 			** Repair bad Intranet data - turn NULL into FALSE
 			*/
