@@ -595,11 +595,11 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	private function sch_activity($op, $args) {
-		if($op == "") {
+		if($op == '') {
 			$this->setup_activity_selection();
 			$this->template = 'sch_activity_choose.tpl';
 		}
-		else if($op == "view") {
+		else if($op == 'view') {
 			$this->template = 'sch_activity.tpl';
 			$this->template_args['rooms'] = EighthRoom::get_all_rooms();
 			$this->template_args['sponsors'] = EighthSponsor::get_all_sponsors();
