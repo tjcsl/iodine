@@ -40,6 +40,11 @@ class User {
 	private $username;
 
 	/**
+	* The admin_all group, cached for convenience
+	*/
+	private static $admin_all_group;
+
+	/**
 	* The User class constructor.
 	*
 	* This takes the UID of the user as an argument. If the uid is not
@@ -107,7 +112,7 @@ class User {
 	*/
 	public static function to_uidnumber($thing) {
 		global $I2_LDAP;
-		d('Attempting to resolve '.print_r($thing,1).' to a uidNumber',6);
+		//d('Attempting to resolve '.print_r($thing,1).' to a uidNumber',6);
 		if (is_numeric($thing)) {
 			if ($thing > 99999) {
 				/*
@@ -398,6 +403,17 @@ class User {
 	*	@return boolean Whether this User is a member of the passed group.
 	*/
 	public function is_group_member($groupname) {
+
+		/*
+		** admin_all is admin_*
+		*/
+	
+		if (!self::$admin_all_group) {
+			self::$admin_all_group = new Group('admin_all');
+		}
+		if (substr($groupname,0,7) == 'admin_' && self::$admin_all_group->has_member($this)) {
+			return TRUE;
+		}
 		$group = new Group($groupname);
 		return $group->has_member($this);
 	}	

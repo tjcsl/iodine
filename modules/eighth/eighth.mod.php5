@@ -1096,6 +1096,7 @@ class Eighth implements Module {
 		}
 		else if($op == 'choose') {
 			$valids = array();
+			$validdata = array();
 			$this->template_args['bids'] = (is_array($args['bids']) ? implode(',', $args['bids']) : $args['bids']);
 			/*
 			** Get only activities common to all blocks.
@@ -1104,10 +1105,13 @@ class Eighth implements Module {
 				foreach ($args['bids'] as $bid) {
 					$thisblock = EighthActivity::get_all_activities($bid,FALSE);
 					foreach ($thisblock as $activity) {
-						$valids[$thisblock] = 1;
+						if (!isSet($valids[$activity->aid])) {
+							$valids[$activity->aid] = 1;
+							$validdata[] = $activity;
+						}
 					}
 				}
-				$this->template_args['activities'] = array_keys($valids);		
+				$this->template_args['activities'] = $validdata;		
 			} else {
 				$this->template_args['activities'] = EighthActivity::get_all_activities($args['bids'],FALSE);
 			}

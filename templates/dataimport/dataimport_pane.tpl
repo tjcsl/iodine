@@ -55,11 +55,22 @@
 			<input type="submit" value="Delete all teachers"/><br/>
 		</form>
 		<br /><br/>
+		<form action="[<$I2_ROOT>]dataimport/clean_eighth" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Delete all Eighth-period data"/><br/>
+		</form>
+		<br /><br/>
 		<form action="[<$I2_ROOT>]dataimport/clean_other" method="post">
 			<input type="hidden" name="doit" value="1"/>
 			<input type="submit" value="Delete assorted data"/><br/>
 		</form>
 		<br /><br/>
+		[<* This is dangerous, so it's disabled
+		<form action="[<$I2_ROOT>]dataimport/fixit" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Ensure the database is useable"/><br/>
+		</form>
+		<br /><br/>*>]
 	[</if>]
 	[<if $userfile && $admin_pass>]
 		<form action="[<$I2_ROOT>]dataimport/students" method="post">

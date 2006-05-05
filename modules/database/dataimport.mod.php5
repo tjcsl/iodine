@@ -15,6 +15,7 @@ class dataimport implements Module {
 	private $intranet_user;
 	private $boxes;
 	private $boxids;
+	private $numsponsors;
 
 	/**
 	* SASI Student dump - intranet.##a
@@ -565,7 +566,17 @@ class dataimport implements Module {
 			$numrooms++;
 		}
 			
-		// Collect used sponsors
+		/*
+		** Create sponsors
+		*/
+		$res = $oldsql->query('Select * FROM SponsorInfo');
+		while ($row = $res->fetch_array(Result::ASSOC)) {
+			$I2_SQL->query('INSERT INTO eighth_sponsors (sid,fname,lname) VALUES(%d,%s,%s)',
+						   	$row['SponsorID'],$row['Firstname'],$row['Lastname']);
+			$this->numsponsors++;
+		}
+			
+		// Collect other used sponsors
 		$validsponsors = array();
 
 		/*
@@ -616,18 +627,22 @@ class dataimport implements Module {
 			// Collect the rooms the activity occurs in
 			$validrooms = array();
 
-			$validsponsors[$sponsors] = 1;
+			$sponsors = $this->create_sponsor($sponsors);
 			
 			/*
 			** Fetch/process all this activity's blocks
 			*/
 							
-			$blockres = $oldsql->query('SELECT * FROM ActivityScheduleMap 
+			/*$blockres = $oldsql->query('SELECT * FROM ActivityScheduleMap 
 												 WHERE ActivityID=%d 
 												 AND ActivityDate >= %s 
 												 AND ActivityDate <= %s
 												 ORDER BY ActivityDate DESC',
-												 	$aid,$startdate,$enddate);
+												 	$aid,$startdate,$enddate);*/
+			$blockres = $oldsql->query('SELECT * FROM ActivityScheduleMap 
+												 WHERE ActivityID=%d 
+												 ORDER BY ActivityDate DESC',
+												 	$aid);
 			while ($b = $blockres->fetch_array(Result::ASSOC)) {
 				list($block,$brooms,$attendance,$cancelled,$bcomment,$advertisement,$date) =
 					array($b['ActivityBlock'],$b['Room'],$b['AttendanceTaken'],$b['Cancelled'],
@@ -638,7 +653,7 @@ class dataimport implements Module {
 				*/
 				
 				$bid = EighthBlock::add_block($date,$block,FALSE);
-				$I2_LOG->log_file("[Tried to] add block $block on $date",8);
+				$I2_LOG->log_file("[Tried to] add block $block on $date",6);
 				
 				/*
 				** Fix old brokenness again
@@ -654,13 +669,13 @@ class dataimport implements Module {
 					//$I2_SQL->query('INSERT INTO ');
 				}*/
 				//FIXME: get the sponsor info properly!
-				//$sponsors = array();
+				$sponsors = $this->create_sponsor($sponsors);
 				
 				/*
 				** Schedule activity
 				*/
 				EighthSchedule::schedule_activity($bid,$aid,$sponsors,$brooms,$bcomment,$attendance,$cancelled,$advertisement);
-				$I2_LOG->log_file("Scheduled activity \"$name\" for $block on $date",7);
+				$I2_LOG->log_file("Scheduled activity \"$name\" for $block on $date",6);
 				$validrooms[$brooms] = 1;
 				$numscheduled++;
 				
@@ -693,7 +708,7 @@ class dataimport implements Module {
 		//Badly named - keys are studentids, vals are uids
 		$studentids = array();
 		$ldap = LDAP::get_admin_bind($this->admin_pass);
-		$res = $ldap->search('','objectClass=tjhsstStudent',array('tjhsstStudentId','iodineUidNumber'));
+		$res = $ldap->search('ou=people','objectClass=tjhsstStudent',array('tjhsstStudentId','iodineUidNumber'));
 		$total = $res->num_rows();
 		while ($num < $total) {
 			$row = $res->fetch_array(Result::ASSOC);
@@ -711,7 +726,8 @@ class dataimport implements Module {
 		/*
 		** Add students to activities
 		*/
-		$res = $oldsql->query('SELECT * FROM StudentScheduleMap WHERE ActivityDate >= %s AND ActivityDate <= %s ORDER BY ActivityDate,ActivityBlock DESC',$startdate,$enddate);
+		//$res = $oldsql->query('SELECT * FROM StudentScheduleMap WHERE ActivityDate >= %s AND ActivityDate <= %s ORDER BY ActivityDate,ActivityBlock DESC',$startdate,$enddate);
+		$res = $oldsql->query('SELECT * FROM StudentScheduleMap ORDER BY ActivityDate,ActivityBlock DESC');
 		while ($res->more_rows()) {
 			$a = $res->fetch_array(Result::ASSOC);
 			list($studentid,$aid,$date,$block) = array($a['StudentID'],$a['ActivityID'],$a['ActivityDate'],$a['ActivityBlock']);
@@ -719,7 +735,7 @@ class dataimport implements Module {
 			$bid = EighthBlock::add_block($date,$block,FALSE);
 			if (!isSet($studentids[$studentid])) {
 				//There's quite a bit of bogus data in the old DB
-				$uid = User::get_by_studentid($studentid)->uid;
+				$uid = User::studentid_to_uid($studentid);
 				if (!$uid) {
 					continue;
 				}
@@ -727,32 +743,39 @@ class dataimport implements Module {
 			} else {
 				$uid = $studentids[$studentid];
 			}
-			d("Adding user $uid (StudentID $studentid) to block $bid",6);
+			//d("Adding user $uid (StudentID $studentid) to block $bid",6);
 			$activity->add_member($uid,TRUE,$bid);
 			$I2_LOG->log_file("Switched student with StudentID $studentid into {$activity->name} on $date block $block",7);
 			$numactivitiesentered++;
-		}
-
-		/*
-		** Create sponsors
-		*/
-		$numsponsors = 0;
-		foreach ($validsponsors as $sponsor) {
-			$this->create_sponsor($sponsor);
 		}
 
 		d("$numactivities activities created",5);
 		d("$numblocks different new blocks created",5);
 		d("$numscheduled activity blocks scheduled",5);
 		d("$numrooms rooms created",5);
-		d("$numsponsors sponsors added",5);
+		d("{$this->numsponsors} sponsors added",5);
 		d("$numgroups 8th-period groups created",5);
 		d("$numactivitiesentered student sign-ups processed",5);
 	}
 
 	private function create_sponsor($sponsor) {
 		global $I2_SQL;
-		$I2_SQL->query('REPLACE INTO eighth_sponsors (lname) VALUES(%s)',$sponsor);
+		$res = $I2_SQL->query('SELECT sid FROM eighth_sponsors WHERE lname=%s',$sponsor)->fetch_single_value();
+		if ($res) {
+			/*
+			** Sponsor already exists
+			*/
+			return $res;
+		}
+		if (is_numeric($sponsor)) {
+			$res = $I2_SQL->query('SELECT sid FROM eighth_sponsors WHERE sid=%d',$sponsor)->fetch_single_value();
+			if ($res) {
+				return $res;
+			}
+		}
+		$this->numsponsors += 1;
+		$res = $I2_SQL->query('INSERT INTO eighth_sponsors (lname) VALUES(%s)',$sponsor);
+		return $res->get_insert_id();
 	}
 
 	/**
@@ -1109,6 +1132,7 @@ class dataimport implements Module {
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_other' && isSet($_REQUEST['doit'])) {
 			$this->clean_other();
+			$this->init_db();
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'studentinfo' && isSet($_REQUEST['doit'])) {
 			$this->expand_student_info();
@@ -1118,6 +1142,9 @@ class dataimport implements Module {
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'doeverything' && isSet($_REQUEST['doit'])) {
 			$this->do_imports();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'fixit' && isSet($_REQUEST['doit'])) {
+			$this->init_db();
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teachers' && isSet($_REQUEST['doit'])) {
 			$this->import_teacher_data_file_one();

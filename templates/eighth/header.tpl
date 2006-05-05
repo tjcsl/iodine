@@ -5,7 +5,7 @@
 	<span class="bold">Help:</span><br /><br />
 	[<if isset($help)>][<$help>][</if>]
 </div>
-[<if $eighth_admin>]
+[<if isSet($eighth_admin) && $eighth_admin>]
 <form action="[<$I2_ROOT>]eighth/vcp_schedule" method="post" name="scheduleform">
 	<input type="hidden" name="op" value="search" />
 	<table id="eighth_header_table">

@@ -424,7 +424,9 @@ class EighthActivity {
 				case 'comment_short':
 					return substr($this->data['comment'], 0, 15);
 				case 'name_r':
-					return $this->data['name'] . ($this->data['restricted'] ? " (R)" : "");
+					return $this->data['name'] . ($this->data['restricted'] ? ' (R)' : '')
+														. ($this->data['bothblocks'] ? ' (BB)' : '')
+														. ($this->data['sticky'] ? ' (S)' : '');
 				case 'sponsors_comma':
 					$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
 					$temp_sponsors = array();
@@ -465,7 +467,7 @@ class EighthActivity {
 				case 'restricted_members_obj':
 					return User::id_to_user($this->get_restricted_members());
 				case 'capacity':
-					if (count($this->data['block_rooms']) == 0) {
+					if (!isSet($this->data['block_rooms']) || count($this->data['block_rooms']) == 0) {
 						return -1;
 					}
 					return $I2_SQL->query('SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)', 
