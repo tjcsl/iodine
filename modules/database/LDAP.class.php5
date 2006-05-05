@@ -149,6 +149,11 @@ class LDAP {
 		return $this->search($dn,$query,$attributes,LDAP::SCOPE_SUB,$bind);
 	}
 
+	/**
+	* Performs a search of the LDAP tree using the given parameters.
+	*
+	* @todo Properly escape the query string.
+	*/
 	public function search($dn=NULL,$query='objectClass=*',$attributes='*',$depth=LDAP::SCOPE_SUB,$bind=NULL,$attrsonly=FALSE) {
 		if (!is_array($attributes)) {
 			$attributes = array($attributes);
@@ -156,13 +161,12 @@ class LDAP {
 		
 		$this->rebase($dn);
 
+
 		if (!$bind) {
 			$bind = $this->conn;
 		}
 			
-		if ($query) {
-			$query = addslashes($query);
-		} else {
+		if (!$query) {
 			$query = 'objectClass=*';
 		}
 
@@ -173,13 +177,13 @@ class LDAP {
 		//TODO: consider how searching is done
 			if ($depth == LDAP::SCOPE_SUB) {
 				d("LDAP Searching $dn for ".print_r($attributes,1)." where $query...",7);
-				$res = ldap_search($bind,$dn,$query,$attributes,0,$this->sizelimit,$this->timelimit,$attrsonly);
+				$res = ldap_search($bind,$dn,$query,$attributes,$attrsonly,$this->sizelimit,$this->timelimit);
 			} elseif ($depth == LDAP::SCOPE_ONE) {
 				d("LDAP Listing $dn for ".print_r($attributes,1)." where $query...",7);
-				$res = ldap_list($bind,$dn,$query,$attributes,0,$this->sizelimit,$this->timelimit,$attrsonly);
+				$res = ldap_list($bind,$dn,$query,$attributes,$attrsonly,$this->sizelimit,$this->timelimit);
 			} elseif ($depth == LDAP::SCOPE_BASE) {
 				d("LDAP Reading $dn's values for ".print_r($attributes,1)." where $query...",7);
-				$res = ldap_read($bind,$dn,$query,$attributes,0,$this->sizelimit,$this->timelimit,$attrsonly);
+				$res = ldap_read($bind,$dn,$query,$attributes,$attrsonly,$this->sizelimit,$this->timelimit);
 			} else {
 				throw new I2Exception("Unknown scope number $depth passed to ldap_search!");
 			}
@@ -234,8 +238,6 @@ class LDAP {
 	/**
 	* Recursively delete a node and all its children
 	*
-	* @todo Fix listing of already-deleted objects - this method gets called twice
-	*       for each node b/c search_one returns the object itself.
 	*/
 	public function delete_recursive($dn,$filter,$bind=NULL) {
 		$this->rebase($dn);
@@ -247,10 +249,16 @@ class LDAP {
 		*/
 		$res = $this->search_one($dn,$filter,array('dn'),$bind,TRUE)->fetch_all_arrays(RESULT::ASSOC);
 		foreach ($res as $itemdn=>$meh) {
-			//d("Deleting dn $itemdn from LDAP recursive delete",6);
-			$this->delete_recursive($itemdn,$bind);
+			/*
+			** Avoid weird results of recursing into self
+			*/
+			if ($itemdn == $dn) {
+				continue;
+			}
+			//d("Deleting dn $itemdn with filter $filter from LDAP recursive delete",6);
+			$this->delete_recursive($itemdn,$filter,$bind);
 		}
-		//$this->delete($dn,$bind);
+		$this->delete($dn,$bind);
 	}
 
 	public function modify_val($dn,$attribute_name,$value,$bind=NULL) {

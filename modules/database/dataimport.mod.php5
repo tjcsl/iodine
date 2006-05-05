@@ -310,8 +310,9 @@ class dataimport implements Module {
 			/*
 			** We need to strip the first and last quotation marks
 			** and escape the ' symbols where appropriate
+			** and get rid of the newlines/junk after the last field
 			*/
-			$Nickname = substr($Nickname,0,strlen($Nickname)-1);
+			$Nickname = rtrim($Nickname," \t\r\n\0\x0B'\"");
 			if (!$Nickname) {
 				$Nickname = '';
 			}
@@ -330,7 +331,7 @@ class dataimport implements Module {
 					'state' => str_replace('\'','\\\'',$State), 
 					'zip' => $Zip, 
 					'counselor' => $Couns,
-					'nick' => $Nickname
+					'nick' => str_replace('\'','\\\'',$Nickname)
 					);
 			if ($do_old_intranet) {
 				$res = $oldsql->query('SELECT Lastnamesound,Firstnamesound FROM StudentInfo WHERE StudentID=%d',$StudentID)->fetch_array(Result::ASSOC);
@@ -499,6 +500,7 @@ class dataimport implements Module {
 		$usernew['gender'] = $user['sex'];
 		$usernew['mobile'] = $user['mobile'];
 		$usernew['locker'] = $user['locker'];
+		$usernew['mail'] = $user['mail'];
 		$usernew['soundexfirst'] = $user['soundexfirst'];
 		$usernew['soundexlast'] = $user['soundexlast'];
 		$usernew['aim'] = $user['aim'];
@@ -564,6 +566,9 @@ class dataimport implements Module {
 			$I2_LOG->log_file("Added room \"$name\"",8);
 			$numrooms++;
 		}
+			
+		// Collect used sponsors
+		$validsponsors = array();
 
 		/*
 		** Create activities
@@ -603,11 +608,13 @@ class dataimport implements Module {
 			
 			// Collect the rooms the activity occurs in
 			$validrooms = array();
+
+			$validsponsors[$sponsors] = 1;
 			
 			/*
 			** Fetch/process all this activity's blocks
 			*/
-									
+							
 			$blockres = $oldsql->query('SELECT * FROM ActivityScheduleMap 
 												 WHERE ActivityID=%d 
 												 AND ActivityDate >= %s 
@@ -636,11 +643,11 @@ class dataimport implements Module {
 					$bcomment = "";
 				}
 				
-				foreach ($sponsors as $sponsor) {
+				/*foreach ($sponsors as $sponsor) {
 					//$I2_SQL->query('INSERT INTO ');
-				}
+				}*/
 				//FIXME: get the sponsor info properly!
-				$sponsors = array();
+				//$sponsors = array();
 				
 				/*
 				** Schedule activity
@@ -651,9 +658,6 @@ class dataimport implements Module {
 				$numscheduled++;
 				
 			}
-
-			//FIXME: get the sponsor info properly!
-			$sponsors = array();
 
 			/*
 			** Actually create the activity
@@ -722,12 +726,26 @@ class dataimport implements Module {
 			$numactivitiesentered++;
 		}
 
+		/*
+		** Create sponsors
+		*/
+		$numsponsors = 0;
+		foreach ($validsponsors as $sponsor) {
+			$this->create_sponsor($sponsor);
+		}
+
 		d("$numactivities activities created",5);
 		d("$numblocks different new blocks created",5);
 		d("$numscheduled activity blocks scheduled",5);
 		d("$numrooms rooms created",5);
+		d("$numsponsors sponsors added",5);
 		d("$numgroups 8th-period groups created",5);
 		d("$numactivitiesentered student sign-ups processed",5);
+	}
+
+	private function create_sponsor($sponsor) {
+		global $I2_SQL;
+		$I2_SQL->query('REPLACE INTO eighth_sponsors (lname) VALUES(%s)',$sponsor);
 	}
 
 	/**

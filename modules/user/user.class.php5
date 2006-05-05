@@ -64,7 +64,7 @@ class User {
 				if (isSet(self::$cache[$uid])) {
 					$this->info = &self::$cache[$uid];
 				} else {
-					$this->info = $I2_LDAP->search('ou=people',"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
+					$this->info = $I2_LDAP->search('ou=people',"iodineUid=$uid",array('iodineUidNumber'))->fetch_array(RESULT::ASSOC);
 				}
 				$this->myuid = $this->info['iodineUidNumber'];
 			}
@@ -73,24 +73,15 @@ class User {
 			}
 		}
 
-		elseif( is_numeric($uid) ) {
+		else {
+			$uid = self::to_uidnumber($uid);
 			if (isSet(self::$cache[$uid])) {
 				$this->info = &self::$cache[$uid];
 			} else {
-				$this->info = $I2_LDAP->search('ou=people',"iodineUidNumber=$uid")->fetch_array(RESULT::ASSOC);
+				$this->info = $I2_LDAP->search('ou=people',"iodineUidNumber=$uid",array('iodineUid'))->fetch_array(RESULT::ASSOC);
 			}
 			$this->username = $this->info['iodineUid'];
 			$this->myuid = $uid;
-		}
-
-		else {
-			if (isSet(self::$cache[$uid])) {
-				$this->info = &self::$cache[$uid];
-			} else {
-				$this->info = $I2_LDAP->search('ou=people',"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
-			}
-			$this->username = $uid;
-			$this->myuid = $this->info['iodineUidNumber'];
 		}
 
 		/*
@@ -106,6 +97,39 @@ class User {
 	public function recache($field) {
 		global $I2_LDAP;
 		$this->info[$field] = $I2_LDAP->search_base("iodineUid={$this->iodineUid},ou=people",'style')->fetch_single_value();
+	}
+
+	/**
+	* Returns the uidnumber represented by the passed value.
+	* You may pass in a StudentID or a username.
+	*
+	* @return int The IodineUidNumber
+	*/
+	public static function to_uidnumber($thing) {
+		global $I2_LDAP;
+		if (is_numeric($thing)) {
+			if ($thing > 99999) {
+				/*
+				** Number is a StudentID
+				*/
+				$res = $I2_LDAP->search('ou=people',"(&(objectClass=tjhsstStudent)(tjhsstStudentId=$thing))",array('iodineUidNumber'));
+				$uid = $res->fetch_single_value();
+				//self::$cache[$uid] = array('tjhsstStudentId' => $thing);
+				return $uid;
+			} else {
+				/*
+				** Number is already a UidNumber
+				*/
+				return $thing;
+			}
+		} else {
+			/*
+			** Passed value is a username
+			*/
+			$res = $I2_LDAP->search_base("iodineUid=$thing,ou=people",array('iodineUidNumber'));
+			$uid = $res->fetch_single_value();
+			self::$cache[$thing] = array('iodineUidNumber' => $uid);
+		}
 	}
 
 	/**
@@ -209,8 +233,10 @@ class User {
 			return NULL;
 		}
 		
+		$this->info[$name] = $res;
+		
 		return $res;
-	}
+	}	
 
 	/**
 	* Gets the current grade of a student based on their graduation year.
