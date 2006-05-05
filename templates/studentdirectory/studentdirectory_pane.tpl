@@ -9,7 +9,7 @@ The specified student does not exist. Either you mistyped a URL, or something in
 <td valign="top">
 [<$user->fullname>] (<a href="mailto:[<$user->username>]@tjhsst.edu">[<$user->username>]@tjhsst.edu</a>)[<if $user->grade != -1>], Grade [<$user->grade>][</if>]<br />
 [<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]
-[<if $user->homePhone>][<foreach from=$user->homePhone item=phone>]Phone (home): [<$phone>]<br />[</foreach>]
+[<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]Phone (home): [<$phone>]<br />[</foreach>]
  [<else>]Home phone information not available.
 [</if>]</br />
 [<if $user->phone_cell>]Cell phone: [<$user->phone_cell>]<br />[</if>]
