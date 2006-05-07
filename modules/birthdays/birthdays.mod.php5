@@ -17,6 +17,8 @@
 
 class Birthdays implements Module {
 
+	const DAY = 86400;
+
 	private $birthdays;
 
 	private $template_args = array();
@@ -48,26 +50,23 @@ class Birthdays implements Module {
 
 		if (count($I2_ARGS) == 4) {
 			list($month, $day, $year) = array_slice($I2_ARGS, 1);
+			$time = mktime(0, 0, 0, $month, $day, $year);
 		} else {
-			$today = getdate();
-			$month = $today['mon'];
-			$day = $today['mday'];
-			$year = $today['year'];
+			$time = time();
 		}
 
 		$birthdays = array();
 		for($i = -3; $i <= 3; $i+=1) {
-			$time = mktime(0, 0, 0, $month, $day+$i, $year);
+			$timestamp = $time + ($i * Birthdays::DAY);
 			$birthday = array();
-			$birthday['date'] = $time;
-			$birthday['people'] = $this->get_birthdays($time);
+			$birthday['date'] = $timestamp;
+			$birthday['people'] = $this->get_birthdays($timestamp);
 			$birthdays[] = $birthday;
 		}
 		
-		$this->template_args['date'] = mktime(0, 0, 0, $month, $day, $year);
-		$this->template_args['today'] = mktime(0, 0, 0);
+		$this->template_args['date'] = $time;
+		$this->template_args['today'] = time();
 		$this->template_args['birthdays'] = $birthdays;
-
 		return "Birthdays";
 	}
 	
@@ -76,20 +75,24 @@ class Birthdays implements Module {
 	}
 
 	private function get_birthdays($timestamp) {
-		global $I2_SQL;
+		global $I2_LDAP;
 		
-		$date = getdate($timestamp);
-		$month = $date['mon'];
-		$day = $date['mday'];
-		$year = $date['year'];
-		
-		$birthdays = $I2_SQL->query("SELECT CONCAT(`fname`, ' ', `lname`) as `name`, `grade`, `bdate`, user.uid FROM userinfo JOIN user USING (uid) WHERE `bdate` LIKE %s ORDER BY bdate, grade DESC, lname, fname", '%-'.str_pad($month,2,'0',STR_PAD_LEFT).'-'.str_pad($day,2,'0',STR_PAD_LEFT))->fetch_all_arrays(Result::ASSOC);
-		
-		foreach($birthdays as &$birthday) {
-			$birthday['age'] = $year - ((int)substr($birthday['bdate'], 0, 4));
+		$date = '1988' . date('md', $timestamp);
+		$year = (int)date('Y', $timestamp);
+
+		$people = array();
+		$result = $I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', "(birthday=$date)", 'iodineUidNumber');
+		while ($uid = $result->fetch_single_value()) {
+			$user = new User((int)$uid);
+			$people[] = array(
+				'uid' => $user->uid,
+				'name' => $user->name,
+				'grade' => $user->grade,
+				'age' => $year - ((int)substr($user->birthday, 0, 4))
+			);
 		}
 		
-		return $birthdays;
+		return $people;
 	}
 
 	private function get_cache($mytime) {

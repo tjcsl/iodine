@@ -38,6 +38,7 @@ objectIdentifier telephoneSyntax		1.3.6.1.4.1.1466.115.121.1.50
 objectIdentifier timeSyntax			1.3.6.1.4.1.1466.115.121.1.24
 objectIdentifier addressSyntax		1.3.6.1.4.1.1466.115.121.1.41
 #objectIdentifier dateSyntax		####
+objectIdentifier numericStringSyntax	1.3.6.1.4.1.1466.115.121.1.36
 
 # Define syntaxes
 
@@ -251,8 +252,9 @@ attributetype ( i2Attr:29
 attributetype ( i2Attr:30
 	NAME ('birthday' 'bday')
 	DESC 'The birthday of a person'
-	EQUALITY caseIgnoreMatch
-	SYNTAX stringSyntax
+	EQUALITY numericStringMatch
+	SUBSTR numericStringSubstringsMatch
+	SYNTAX numericStringSyntax
 	SINGLE-VALUE
 	)
 
