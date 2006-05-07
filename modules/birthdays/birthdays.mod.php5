@@ -34,7 +34,7 @@ class Birthdays implements Module {
 			$this->store_cache($this->birthdays,$mytime);
 		}
 		
-		return "Today's Birthdays";
+		return 'Today\'s Birthdays';
 	}
 	
 	function display_box($disp) {
@@ -67,7 +67,7 @@ class Birthdays implements Module {
 		$this->template_args['date'] = $time;
 		$this->template_args['today'] = time();
 		$this->template_args['birthdays'] = $birthdays;
-		return "Birthdays";
+		return 'Birthdays';
 	}
 	
 	function display_pane($disp) {
@@ -77,7 +77,7 @@ class Birthdays implements Module {
 	private function get_birthdays($timestamp) {
 		global $I2_LDAP;
 		
-		$date = '1988' . date('md', $timestamp);
+		$date = '*' . date('md', $timestamp);
 		$year = (int)date('Y', $timestamp);
 
 		$people = array();
@@ -123,7 +123,7 @@ class Birthdays implements Module {
 	}
 
 	function get_name() {
-		return "Birthdays";
+		return 'Birthdays';
 	}
 }
 ?>
