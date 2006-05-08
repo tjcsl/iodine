@@ -91,8 +91,17 @@ class Birthdays implements Module {
 				'age' => $year - ((int)substr($user->birthday, 0, 4))
 			);
 		}
+
+		usort($people, array($this, 'person_compare'));
 		
 		return $people;
+	}
+
+	private function person_compare($person1, $person2) {
+		if ($person1['age'] == $person2['age']) {
+			return strcmp($person1['name'], $person2['name']);
+		}
+		return $person2['age'] - $person1['age'];
 	}
 
 	private function get_cache($mytime) {
