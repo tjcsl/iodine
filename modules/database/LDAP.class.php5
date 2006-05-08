@@ -150,6 +150,19 @@ class LDAP {
 	}
 
 	/**
+	* Sorts LDAPResult objects.  Note that no rows may have been fetched from the Result.
+	*
+	* @param LDAPResult $result The LDAP Resultset object to sort.
+	* @param array $sortattrs An array of attributes, in order, to sort by.
+	*/
+	public static function sort(LDAPResult $result,$sortattrs) {
+		if (!is_array($sortattrs)) {
+			$sortattrs = array($sortattrs);
+		}
+		$result->sort($sortattrs);
+	}
+
+	/**
 	* Performs a search of the LDAP tree using the given parameters.
 	*
 	* @todo Properly escape the query string.

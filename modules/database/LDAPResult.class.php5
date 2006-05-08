@@ -80,6 +80,15 @@ class LDAPResult implements Result {
 	public static function get_null() {
 		return new LDAPResult(NULL,NULL,NULL);
 	}
+
+	public function sort($sortattrs) {
+		if ($this->last_row_fetched > -1) {
+			throw new I2Exception('An LDAPResult with fetched rows cannot be sorted!');
+		}
+		foreach ($attrs as $attr) {
+			ldap_sort($this->ldap,$this->ldap_result,$attr);
+		}
+	}
 	
 	public function fetch_array($type=Result::BOTH) {
 	
