@@ -39,6 +39,62 @@ class EighthSponsor {
 		return $I2_SQL->query("SELECT sid,fname,lname,CONCAT(lname,', ',fname) 
 			AS name_comma FROM eighth_sponsors ORDER BY lname,fname")->fetch_all_arrays(Result::ASSOC);
 	}
+
+	/**
+	* Gets conflicts/impossibilities for sponsors in the given block
+	*/
+	public static function get_conflicts($blockid) {
+		global $I2_SQL;
+		$conflicts = array();
+		$sponsorstorooms = array();
+		$res = $I2_SQL->query('SELECT rooms,sponsors FROM eighth_block_map');
+		while ($row = $res->fetch_array(Result::ASSOC)) {
+			$sponsors = explode(',',$row['sponsors']);
+			$rooms = explode(',',$row['rooms']);
+			foreach ($sponsors as $sponsorid) {
+				if (!isSet($sponsorstorooms[$sponsor])) {
+					$sponsorstorooms[$sponsor] = array();
+				}
+				foreach ($rooms as $room) {
+					$sponsorstorooms[$sponsor][] = $room;
+				}
+			}
+		}
+		$ret = array();
+		/*
+		** Return an array like this:
+		** 	$ret[$sponsor] =
+		**			array(
+		**				$room =>
+		**					array(
+		**						array($sponsorwithconflicts => $otherrooms),
+		**						array($othersponsorwithconflicts => $otherrooms)
+		**						)
+		**			);
+		*/
+		foreach ($sponsorstorooms as $sponsorid=>$rooms) {
+			if (count($rooms) == 0) {
+				continue;
+			}
+			foreach ($rooms as $room) {
+				if (!isSet($ret[$room])) {
+					$ret[$room] = array();
+				}
+				$sponsorotherrooms = array();
+				/*
+				** Make a list of the rooms OTHER THAN THIS ONE that the sponsor is in
+				*/
+				foreach ($rooms as $checkroom) {
+					if ($checkroom != $room) {
+						$sponsorotherrooms[] = $checkroom;
+					}
+				}
+				$sponsor = new EighthSponsor($sponsorid);
+				$ret[$room][] = array($sponsor => $sponsorotherrooms);
+			}
+		}
+		return $ret;
+	}
 	
 	/**
 	* Adds a sponsor to the list.

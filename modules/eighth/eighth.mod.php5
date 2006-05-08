@@ -393,12 +393,12 @@ class Eighth implements Module {
 		}
 		else if($op == 'add_member') {
 			$activity = new EighthActivity($args['aid']);
-			$activity->add_restricted_member(User::to_$args['uid']);
+			$activity->add_restricted_member(new User($args['uid']);
 			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
 		}
 		else if($op == "remove_member") {
 			$activity = new EighthActivity($args['aid']);
-			$activity->remove_restricted_member($args['uid']);
+			$activity->remove_restricted_member(new User($args['uid']));
 			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
 		}
 		else if($op == "remove_all") {
@@ -748,7 +748,8 @@ class Eighth implements Module {
 		else if($op == 'view') {
 			$this->template = 'room_sanity.tpl';
 			$this->template_args['conflicts'] = EighthRoom::get_conflicts($args['bid']);
-			$this->title = "Room Assignment Sanity Check";
+			$this->template_args['sponsorconflicts'] = EighthSponsor::get_conflicts($args['bid']);
+			$this->title = 'Room Assignment Sanity Check';
 		}
 	}
 
@@ -760,20 +761,20 @@ class Eighth implements Module {
 	* @param array $args The arguments for the operation.
 	*/
 	public function vp_sponsor($op, $args) {
-		if($op == "") {
+		if($op == '') {
 			$this->setup_sponsor_selection();
 		}
-		else if($op == "view") {
+		else if($op == 'view') {
 			$sponsor = new EighthSponsor($args['sid']);
-			$this->template = "vp_sponsor.tpl";
+			$this->template = 'vp_sponsor.tpl';
 			$this->template_args['sponsor'] = $sponsor;
 			$this->template_args['activities'] = $sponsor->schedule;
-			$this->title = "View Sponsor Schedule";
+			$this->title = 'View Sponsor Schedule';
 		}
-		else if($op == "format") {
-			$this->setup_format_selection("vp_sponsor", "Sponsor Schedule", array("sid" => $args['sid']));
+		else if($op == 'format') {
+			$this->setup_format_selection('vp_sponsor', 'Sponsor Schedule', array('sid' => $args['sid']));
 		}
-		else if($op == "print") {
+		else if($op == 'print') {
 			EighthPrint::print_sponsor_schedule($args['sid'], $args['format']);
 		}
 	}

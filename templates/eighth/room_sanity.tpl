@@ -10,6 +10,14 @@
 				<td style="padding-left: 5px;"><a href="[<$I2_ROOT>]eighth/sch_activity/view/aid/[<$activity.aid>]">[<$activity.name>] - [<$activity.aid>]</a></td>
 			</tr>
 		[</foreach>]
+		<tr>
+		[<foreach from=$sponsorconflicts.$room item="otherroomarray" key="sponsor">]
+			<th>[<$sponsor.name>] must also be in the following rooms:</th>
+				[<foreach from=$otherroomarray item="otherroom">]
+					<td>[<$otherroom>]</td>
+				[</foreach>]
+		[</foreach>]
+		</tr>
 	[</foreach>]
 	</table>
 [<else>]
