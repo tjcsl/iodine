@@ -309,14 +309,14 @@ class Polls implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function get_name() {
-		return "Voting Booth";
+		return 'Voting Booth';
 	}
 
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function is_intrabox() {
-		return false;
+		return FALSE;
 	}
 }
 

@@ -385,15 +385,15 @@ class Eighth implements Module {
 			$this->template_args['groups'] = Group::get_all_groups('eighth');
 			$this->title = 'Alter Permissions to Restricted Activities';
 		}
-		else if($op == "add_group") {
+		else if($op == 'add_group') {
 			$activity = new EighthActivity($args['aid']);
 			$group = new Group($args['gid']);
 			$activity->add_restricted_members($group->members);
 			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
 		}
-		else if($op == "add_member") {
+		else if($op == 'add_member') {
 			$activity = new EighthActivity($args['aid']);
-			$activity->add_restricted_member($args['uid']);
+			$activity->add_restricted_member(User::to_$args['uid']);
 			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
 		}
 		else if($op == "remove_member") {
