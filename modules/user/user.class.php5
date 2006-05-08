@@ -487,7 +487,7 @@ class User {
 	* empty array is returned if no match is found.
 	* @todo Improve drastically
 	*/
-	public function search_info($str) {
+	public static function search_info($str) {
 		global $I2_LDAP;
 		d("search_info: $str",4);
 
