@@ -8,7 +8,7 @@
 	</tr>
 [<foreach from=$students item="student" key="key">]
 	<tr>
-		<td>[<$student->name_comma>]</td>
+		<td><a href="[<$I2_ROOT>]studentdirectory/info/[<$student->uid>]">[<$student->name_comma>]</a></td>
 		<td>[<$student->tjhsstStudentId>]</td>
 		<td>[<$absences.$key>]</td>
 		<td>[<$student->grade>]</td>
