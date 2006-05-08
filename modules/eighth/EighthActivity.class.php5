@@ -33,10 +33,10 @@ class EighthActivity {
 	*/
 	public function __construct($activityid, $blockid = NULL) {
 		global $I2_SQL;
-		if ($activityid != NULL && $activityid != "") {
-			$this->data = $I2_SQL->query("SELECT * FROM eighth_activities WHERE aid=%d", $activityid)->fetch_array(Result::ASSOC);
-			$this->data['sponsors'] = (!empty($this->data['sponsors']) ? explode(",", $this->data['sponsors']) : array());
-			$this->data['rooms'] = (!empty($this->data['rooms']) ? explode(",", $this->data['rooms']) : array());
+		if ($activityid != NULL && $activityid != '') {
+			$this->data = $I2_SQL->query('SELECT * FROM eighth_activities WHERE aid=%d', $activityid)->fetch_array(Result::ASSOC);
+			$this->data['sponsors'] = (!empty($this->data['sponsors']) ? explode(',', $this->data['sponsors']) : array());
+			$this->data['rooms'] = (!empty($this->data['rooms']) ? explode(',', $this->data['rooms']) : array());
 			if($blockid) {
 				$additional = $I2_SQL->query("SELECT bid,sponsors AS block_sponsors,rooms AS block_rooms,cancelled,comment,advertisement,attendancetaken FROM eighth_block_map WHERE bid=%d AND activityid=%d", $blockid, $activityid)->fetch_array(MYSQL_ASSOC);
 				$this->data = array_merge($this->data, $additional);
@@ -55,7 +55,7 @@ class EighthActivity {
 	* @param boolean $force Force the change.
 	* @param int $blockid The block ID to add them to.
 	*/
-	public function add_member($user, $force = false, $blockid = NULL) {
+	public function add_member(User $user, $force = false, $blockid = NULL) {
 		global $I2_SQL,$I2_USER;
 		$userid = $user->uid;
 		/*
@@ -121,7 +121,7 @@ class EighthActivity {
 	*/
 	public function add_members($userids, $force = FALSE, $blockid = NULL) {
 		foreach($userids as $userid) {
-			$this->add_member($userid, $force, $blockid);
+			$this->add_member(new User($userid), $force, $blockid);
 		}
 	}
 
@@ -129,11 +129,12 @@ class EighthActivity {
 	* Removes a member from the activity.
 	*
 	* @access public
-	* @param int $userid The student's user ID.
+	* @param int $userid The student's user object.
 	* @param int $blockid The block ID to remove them from.
 	*/
-	public function remove_member($userid, $blockid = NULL) {
+	public function remove_member(User $user, $blockid = NULL) {
 		global $I2_SQL;
+		$userid = $user->uid;
 		/*
 		** Users need to be able to remove themselves from an activity
 		*/
@@ -158,7 +159,7 @@ class EighthActivity {
 	*/
 	public function remove_members($userids, $blockid = NULL) {
 		foreach($userids as $userid) {
-			$this->remove_member($userid, $blockid);
+			$this->remove_member(new User($userid), $blockid);
 		}
 	}
 
@@ -216,11 +217,11 @@ class EighthActivity {
 	* Adds multiple members to the restricted activity.
 	*
 	* @access public
-	* @param array $userids The students' user objects.
+	* @param array $userids The students' user objects or IDs.
 	*/
 	public function add_restricted_members($users) {
 		foreach($users as $user) {
-			$this->add_restricted_member($user);
+			$this->add_restricted_member(new User($user));
 		}
 	}
 
@@ -244,7 +245,7 @@ class EighthActivity {
 	*/
 	public function remove_restricted_members($users) {
 		foreach($users as $user) {
-			$this->remove_restricted_member($user);
+			$this->remove_restricted_member(new User($user));
 		}
 	}
 

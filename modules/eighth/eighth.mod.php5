@@ -396,12 +396,12 @@ class Eighth implements Module {
 			$activity->add_restricted_member(new User($args['uid']));
 			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
 		}
-		else if($op == "remove_member") {
+		else if($op == 'remove_member') {
 			$activity = new EighthActivity($args['aid']);
 			$activity->remove_restricted_member(new User($args['uid']));
 			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
 		}
-		else if($op == "remove_all") {
+		else if($op == 'remove_all') {
 			$activity = new EighthActivity($args['aid']);
 			$activity->remove_restricted_all();
 			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
