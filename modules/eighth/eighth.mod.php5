@@ -304,17 +304,17 @@ class Eighth implements Module {
 		else if($op == 'activity') {
 			$this->setup_activity_selection(FALSE, $args['bid']);
 			$this->template_args['op'] = "group/bid/{$args['bid']}";
-			return "Select an activity";
+			return 'Select an activity';
 		}
-		else if($op == "group") {
+		else if($op == 'group') {
 			$this->setup_group_selection();
 			$this->template_args['op'] = "commit/bid/{$args['bid']}/aid/{$args['aid']}";
 		}
-		else if($op == "commit") {
+		else if($op == 'commit') {
 			$activity = new EighthActivity($args['aid'], $args['bid']);
 			$group = new Group($args['gid']);
 			$activity->add_members($group->members);
-			redirect("eighth");
+			redirect('eighth');
 		}
 	}
 
@@ -1175,7 +1175,9 @@ class Eighth implements Module {
 		else if($op == 'absences') {
 			$absences = EighthActivity::id_to_Activity(EighthSchedule::get_absences($args['uid']));
 			$this->template_args['absences'] = $absences;
+			$user = new User($args['uid']);
 			$this->template_args['uid'] = $args['uid'];
+			$this->template_args['name'] = $user->fullname_comma;
 			$this->template_args['admin'] = $this->admin;
 			$this->template = 'vcp_schedule_absences.tpl';
 		}

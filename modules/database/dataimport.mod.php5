@@ -674,6 +674,11 @@ class dataimport implements Module {
 				}*/
 				//FIXME: get the sponsor info properly!
 				$sponsors = $this->create_sponsor($sponsors);
+	
+				/*
+				** Eliminate the room-change fake entries...
+				*/
+				$brooms = str_replace(' (ROOM CHANGE)','',$brooms);
 				
 				/*
 				** Schedule activity
