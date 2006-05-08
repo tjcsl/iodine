@@ -538,6 +538,10 @@ class dataimport implements Module {
 		global $I2_SQL,$I2_LDAP,$I2_LOG;
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 
+		/*
+		** NOTE: starting and ending dates are currently ignored!  Any and all data is imported.
+		*/
+
 		if ($startdate === NULL) {
 			// Go back 1 week by default
 			$startdate = date('Y-m-d',time()-7*24*60*60);
@@ -749,6 +753,19 @@ class dataimport implements Module {
 			$numactivitiesentered++;
 		}
 
+		/*
+		** Import absence information
+		*/
+		$numabsences = 0;
+		$res = $oldsql->query("SELECT * FROM StudentAbsences");
+		while ($row = $res->fetch_array(Result::ASSOC)) {
+			$user = new User($row['StudentID']);
+			$uid = $user->uid;
+			$blockid = new EightBlock($row['ActivityDate'],$row['ActivityBlock']);
+			EighthSchedule::add_absentee($blockid,$uid);
+			$numabsences++;
+		}
+
 		d("$numactivities activities created",5);
 		d("$numblocks different new blocks created",5);
 		d("$numscheduled activity blocks scheduled",5);
@@ -756,6 +773,7 @@ class dataimport implements Module {
 		d("{$this->numsponsors} sponsors added",5);
 		d("$numgroups 8th-period groups created",5);
 		d("$numactivitiesentered student sign-ups processed",5);
+		d("$numabsences absences recorded",5);
 	}
 
 	private function create_sponsor($sponsor) {

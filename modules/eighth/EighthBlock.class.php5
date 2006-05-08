@@ -30,11 +30,13 @@ class EighthBlock {
 	}
 
 	/**
-	* Adds a block to the list.
+	* Adds a block to the list.  If a block with the given name already exists, its blockid is returned.
 	*
 	* @access public
 	* @param string $date The date of the block.
-	* @param string $block The block letter (A or B).
+	* @param string $block The block name (may be an arbitrary string, but equality is case-sensitive.
+	*	block 'foo' is different from block 'FOO', and both may be on the same day.
+	* @return int The BlockID of the created block, or the BlockID of the already-extant one if present.
 	*/
 	public static function add_block($date, $block, $schedule_default = TRUE) {
 		global $I2_SQL,$I2_LDAP;
