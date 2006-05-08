@@ -393,7 +393,7 @@ class Eighth implements Module {
 		}
 		else if($op == 'add_member') {
 			$activity = new EighthActivity($args['aid']);
-			$activity->add_restricted_member(new User($args['uid']);
+			$activity->add_restricted_member(new User($args['uid']));
 			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
 		}
 		else if($op == "remove_member") {
