@@ -1,7 +1,7 @@
 [<include file="eighth/header.tpl">]
-This is block <em>[<$bid>]</em><br />
+This is block [<$block>] on [<$date>]<br />
 [<if isSet($lastuid)>]
-You have marked user [<$lastuid>] absent.<br />
+You have marked [<$lastname>] ([<$studentid>]) absent.<br />
 <a href="[<$I2_ROOT>]eighth/ent_attendance/unmark_absent/bid/[<$bid>]/uid/[<$lastuid>]">Click here to undo</a>
 [</if>]
 <form action="[<$I2_ROOT>]eighth/ent_attendance/mark_absent/bid/[<$bid>]" method="post">

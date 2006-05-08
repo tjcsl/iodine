@@ -871,15 +871,19 @@ class Eighth implements Module {
 		}
 		else if($op == 'user') {
 			$this->template = 'ent_attendance.tpl';
+			$block = new EighthBlock($args['bid']);
+			$this->template_args['date'] = $block->date;
+			$this->template_args['block'] = $block->block;
 			$this->template_args['bid'] = $args['bid'];
 			if (isSet($args['lastuid'])) {
 				$this->template_args['lastuid'] = $args['lastuid'];
 				$user = new User($args['lastuid']);
 				$this->template_args['lastname'] = $user->name;
+				$this->template_args['studentid'] = $user->studentid;
 			}
 			$this->title = 'Enter TA Attendance';
 		}
-		else if($op == "mark_absent") {
+		else if($op == 'mark_absent') {
 			EighthSchedule::add_absentee($args['bid'], $args['uid']);
 			redirect('eighth/ent_attendance/user/bid/'.$args['bid'].'/lastuid/'.$args['uid']);
 		} else if ($op == 'unmark_absent') {
