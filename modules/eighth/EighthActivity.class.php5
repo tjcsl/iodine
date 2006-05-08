@@ -51,12 +51,13 @@ class EighthActivity {
 	* Adds a member to the activity.
 	*
 	* @access public
-	* @param int $userid The student's user ID.
+	* @param int $user The student's user object.
 	* @param boolean $force Force the change.
 	* @param int $blockid The block ID to add them to.
 	*/
-	public function add_member($userid, $force = false, $blockid = NULL) {
+	public function add_member($user, $force = false, $blockid = NULL) {
 		global $I2_SQL,$I2_USER;
+		$userid = $user->uid;
 		/*
 		** Users need to be able to add themselves to an activity
 		*/
@@ -83,13 +84,15 @@ class EighthActivity {
 		if($this->data['restricted'] && !in_array($userid, $this->get_restricted_members())) {
 			$ret |= EighthActivity::PERMISSIONS;
 		}
-		if(0/* check sticky */) {
-			$ret |= EighthActivity::STICKY;
+		$otheractivityid = EighthSchedule::get_activities($userid, $this->data['bid']);
+		$otheractivity = new EighthActivity($otheractivityid);
+		if ($otheractivity && $otheractivity->sticky) {
+				$ret |= EighthActivity::STICKY;
 		}
-		if(0/* check for one-a-day */) {
+		if ($otheractivitiy && $otheractivityid == $this->data['aid'] && $this->oneaday) {
 			$ret |= EighthActivity::ONEADAY;
 		}
-		if($this->presign && 0/* check days till */) {
+		if($this->presign && time() > strtotime($this->block->date)-60*60*24*2) {
 			$ret |= EighthActivity::PRESIGN;
 		}
 		if(!$ret || $force) {
@@ -201,23 +204,23 @@ class EighthActivity {
 	* Adds a member to the restricted activity.
 	*
 	* @access public
-	* @param int $userid The students's user ID.
+	* @param User $user The students's user object.
 	*/
-	public function add_restricted_member($userid) {
+	public function add_restricted_member(User $user) {
 		global $I2_SQL;
 		Eighth::check_admin();
-		$result = $I2_SQL->query('REPLACE INTO eighth_activity_permissions (aid,userid) VALUES (%d,%d)', $this->data['aid'], $userid);
+		$result = $I2_SQL->query('REPLACE INTO eighth_activity_permissions (aid,userid) VALUES (%d,%d)', $this->data['aid'], $user->uid);
 	}
 
 	/**
 	* Adds multiple members to the restricted activity.
 	*
 	* @access public
-	* @param array $userids The students' user IDs.
+	* @param array $userids The students' user objects.
 	*/
-	public function add_restricted_members($userids) {
-		foreach($userids as $userid) {
-			$this->add_restricted_member($userid);
+	public function add_restricted_members($users) {
+		foreach($users as $user) {
+			$this->add_restricted_member($user);
 		}
 	}
 
@@ -225,23 +228,23 @@ class EighthActivity {
 	* Removes a member from the restricted activity.
 	*
 	* @access public
-	* @param int $userid The students's user ID.
+	* @param int $user The students's user object.
 	*/
-	public function remove_restricted_member($userid) {
+	public function remove_restricted_member(User $user) {
 		global $I2_SQL;
 		Eighth::check_admin();
-		$result = $I2_SQL->query('DELETE FROM eighth_activity_permissions WHERE aid=%d AND userid=%d', $this->data['aid'], $userid);
+		$result = $I2_SQL->query('DELETE FROM eighth_activity_permissions WHERE aid=%d AND userid=%d', $this->data['aid'], $user->uid);
 	}
 
 	/**
 	* Removes multiple members from the restricted activity.
 	*
 	* @access public
-	* @param array $userids The students' user IDs.
+	* @param array $users The students' user objects.
 	*/
-	public function remove_restricted_members($userids) {
-		foreach($userids as $userid) {
-			$this->remove_restricted_member($userid);
+	public function remove_restricted_members($users) {
+		foreach($users as $user) {
+			$this->remove_restricted_member($user);
 		}
 	}
 

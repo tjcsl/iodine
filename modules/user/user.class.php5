@@ -78,7 +78,12 @@ class User {
 			}
 		}
 
-		else {
+		else if ($uid instanceof User) {
+			/*
+			** Someone tried new User(user object), so we'll just let them be stupid.
+			*/
+			return $uid;
+		} else {
 			$uid = self::to_uidnumber($uid);
 			if (isSet(self::$cache[$uid])) {
 				$this->info = &self::$cache[$uid];
