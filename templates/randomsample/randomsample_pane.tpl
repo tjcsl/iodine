@@ -1,11 +1,16 @@
 [<if isSet($sample)>]
 	<table>
+		<tr>
+			[<foreach from=$cols item="col">]
+				<th>[<$col>]</th>
+			[</foreach>]
+		</tr>
 		[<foreach from=$sample item="res">]
 			<tr>
 				[<foreach from=$res key="name" item="value">]
-					<td>[<$name>]: [<$value>]</td>
+					<td>[<$value>]</td>
 				[</foreach>]
-			</tr>
+			</tr><tr><td>&nbsp;</td></tr>
 		[</foreach>]
 	</table>
 [<else>]

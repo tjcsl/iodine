@@ -1,7 +1,8 @@
 <?php
 class Randomsample implements Module {
 
-	private $sample;
+		  private $sample;
+		  private $attrs;
 
 	private function take_sample($filter,$size,$attrs) {
 		global $I2_LDAP,$I2_LOG;
@@ -59,8 +60,9 @@ class Randomsample implements Module {
 		if (!isSet($I2_ARGS[1]) || $I2_ARGS[1] != 'results') {
 			return 'Take a Random Sample';
 		} else {
+			$this->attrs = explode(',',$_REQUEST['attrs']);
 			$this->sample = $this->take_sample($_REQUEST['filter'],
-					  $_REQUEST['size'],explode(',',$_REQUEST['attrs']));
+					  $_REQUEST['size'],$this->attrs);
 			$_SESSION['random_sample'] = $this->sample;
 			return 'Sample Results';
 		}
@@ -69,7 +71,8 @@ class Randomsample implements Module {
 	public function display_pane($disp) {
 		$args = array();
 		if (isSet($this->sample)) {
-			$args['sample'] = $this->sample;
+				  $args['sample'] = $this->sample;
+				  $args['cols'] = $this->attrs;
 		}
 		$disp->disp('randomsample_pane.tpl',$args);
 	}
