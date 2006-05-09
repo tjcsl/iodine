@@ -6,18 +6,50 @@ class Randomsample implements Module {
 	private function take_sample($filter,$size,$attrs) {
 		global $I2_LDAP,$I2_LOG;
 		$samp = array();
+		$mail = FALSE;
+		$username = FALSE;
+		if (in_array('iodineUid',$attrs)) {
+				  $username = TRUE;
+		}
+		if (in_array('mail',$attrs)) {
+				  $mail = TRUE;
+				  if (!$username) {
+							 $attrs[] = 'iodineUid';
+				  }
+		}
 		$res = $I2_LDAP->search('ou=people',$filter,$attrs);
-		$pop = $res->fetch_all_arrays();
+		$pop = array();
+		$ct = 0;
+		$rows = $res->num_rows();
+		while ($ct < $rows) {
+				  /*
+				  ** Mail gets special treatment
+				  */
+				  $row = $res->fetch_array(Result::ASSOC);
+				  if ($mail && !isSet($row['mail'])) {
+						 $row['mail'] = $row['iodineUid'].'@tjhsst.edu';
+				  }
+				  if ($mail && !$username) {
+							 unSet($row['iodineUid']);
+				  }
+				  $pop[] = $row;
+				  $ct++;
+		}
 		$popsize = count($pop);
 		$numselected = 0;
 		if ($size > $popsize) {
 			return -1;
 		}
+		$selected = array();
 		while ($numselected < $size) {
-			$choice = rand(0,$popsize-$numselected);
-			$samp[] = $pop[$choice];
-			array_splice($pop,$choice,1);
-			$numselected++;
+				  $choice = rand(0,$popsize-$numselected-1);
+				  if (isSet($selected[$choice])) {
+							 continue;
+				  }
+				 
+				  $samp[] = $pop[$choice];
+				  $selected[$choice] = 1;
+				  $numselected++;
 		}
 		return $samp;
 	}
@@ -28,7 +60,8 @@ class Randomsample implements Module {
 			return 'Take a Random Sample';
 		} else {
 			$this->sample = $this->take_sample($_REQUEST['filter'],
-							   $_REQUEST['size'],explode(',',$_REQUEST['attrs']));
+					  $_REQUEST['size'],explode(',',$_REQUEST['attrs']));
+			$_SESSION['random_sample'] = $this->sample;
 			return 'Sample Results';
 		}
 	}
