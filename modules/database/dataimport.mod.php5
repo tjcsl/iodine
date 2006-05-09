@@ -243,7 +243,7 @@ class dataimport implements Module {
 					}
 					$newteach = array();
 					$newteach['username'] = $username;
-					$newteach['id'] = $valid[0]['id'];
+					$newteach['uid'] = $valid[0]['id'];
 					$newteach['lname'] = $lastname;
 					$newteach['fname'] = $valid[0]['fname'];
 					$validteachers[] = $newteach;
@@ -439,7 +439,7 @@ class dataimport implements Module {
 	* Adds a new teacher from the given data
 	*/
 	private function create_teacher($teacher,$ldap=NULL) {
-		global $I2_LDAP;
+		global $I2_LDAP,$I2_SQL;
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}
