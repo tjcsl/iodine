@@ -353,11 +353,16 @@ class EighthActivity {
 		global $I2_SQL;
 		Eighth::check_admin();
 		Eighth::start_undo_transaction();
-		$old = $I2_SQL->select('SELECT userid FROM eighth_activity_permissions WHERE aid=%d',$this->data['aid']);
+		$old = $I2_SQL->query('SELECT userid FROM eighth_activity_permissions WHERE aid=%d',$this->data['aid']);
 		$query = 'DELETE FROM eighth_activity_permissions WHERE aid=%d';
 		$queryarg = array($this->data['aid']);
-		$result = $I2_SQL->query($query, $queryarg);
-		Eighth::push_undoable();
+		$result = $I2_SQL->query_arr($query, $queryarg);
+		$userq = 'DELETE FROM eighth_activity_permissions WHERE aid=%d AND userid=%d';
+		$invuserq = 'REPLACE INTO eighth_activity_permissions (aid,userid) VALUES(%d,%d)';
+		while ($userid = $old->fetch_single_value()) {
+			$invargs = array($this->data['aid'],$userid);
+			Eighth::push_undoable($userq,$invargs,$invuserq,$invargs,'Remove All From Restricted Activity');
+		}
 		Eighth::end_undo_transaction();
 	}
 

@@ -63,8 +63,7 @@ class Eighth implements Module {
 	/**
 	* The redo stack for internal use
 	*/
-
-private static $redo;
+	private static $redo;
 
 	/**
 	* Whether to force an action
@@ -198,20 +197,30 @@ private static $redo;
 			//array_push($_SESSION['eighth_undo'],$undo);
 	}
 
-	public static function get_undo_name() {
+	public static function get_undo_name($descend = FALSE) {
 		$ct = count(self::$undo);
 		if ($ct < 1) {
 			return FALSE;
 		}
-		return self::$undo[$ct-1][4];
+		$name = self::$undo[$ct-1][4];
+		while ($descend && $name == 'TRANSACTION_END') {
+			$ct--;
+			$name = self::$undo[$ct-1][4];
+		}
+		return $name;
 	}
 
-	public static function get_redo_name() {
+	public static function get_redo_name($descend = FALSE) {
 		$ct = count(self::$redo);
 		if ($ct < 1) {
 			return FALSE;
 		}
-		return self::$redo[$ct-1][4];
+		$name = self::$redo[$ct-1][4];
+		while ($descend && $name == 'TRANSACTION_END') {
+			$ct--;
+			$name = self::$redo[$ct-1][4];
+		}
+		return $name;
 	}
 
 	/**
@@ -262,8 +271,8 @@ private static $redo;
 		global $I2_ARGS;
 		$argstr = implode('/', array_slice($I2_ARGS,1));
 		$this->template_args['argstr'] = $argstr;
-		$this->template_args['last_undo'] = self::get_undo_name();
-		$this->template_args['last_redo'] = self::get_redo_name();
+		$this->template_args['last_undo'] = self::get_undo_name(TRUE);
+		$this->template_args['last_redo'] = self::get_redo_name(TRUE);
 		$display->disp($this->template, $this->template_args);
 	}
 
