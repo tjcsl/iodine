@@ -425,7 +425,7 @@ class dataimport implements Module {
 			'filecenter'=>'Your Files',
 			'birthdays'=>'Birthdays',
 			'studentdirectory'=>'Student Directory',
-			'links'=>'Useful Links'
+			'links'=>'Useful Links',
 			'scratchpad'=>'ScratchPad'
 		);
 		$desiredboxes = array();
