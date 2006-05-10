@@ -253,7 +253,7 @@ class EighthActivity {
 		$queryarg = array($this->data['aid'], $blockid);
 		$invquery = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
 		while ($userid = $result->fetch_single_value()) {
-			Eighth::push_undoable($undoquery,$queryarg+$userid,$invquery,$queryarg+$userid,'Remove All');
+			Eighth::push_undoable($undoquery,$queryarg+$userid,$invquery,$queryarg+$userid,'Remove All [student]');
 		}
 		$I2_SQL->query_arr($query, $queryarg);
 		Eighth::end_undo_transaction();
@@ -352,7 +352,13 @@ class EighthActivity {
 	public function remove_restricted_all() {
 		global $I2_SQL;
 		Eighth::check_admin();
-		$result = $I2_SQL->query('DELETE FROM eighth_activity_permissions WHERE aid=%d', $this->data['aid']);
+		Eighth::start_undo_transaction();
+		$old = $I2_SQL->select('SELECT userid FROM eighth_activity_permissions WHERE aid=%d',$this->data['aid']);
+		$query = 'DELETE FROM eighth_activity_permissions WHERE aid=%d';
+		$queryarg = array($this->data['aid']);
+		$result = $I2_SQL->query($query, $queryarg);
+		Eighth::push_undoable();
+		Eighth::end_undo_transaction();
 	}
 
 	/**

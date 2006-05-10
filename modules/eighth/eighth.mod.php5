@@ -506,20 +506,24 @@ private static $redo;
 		self::$redo = array();
 	}
 
-	private function undoit($op,$args) {
+	private function undoit() {
 			  global $I2_ARGS;
-			  if ($op == 'undo') {
-						 self::undo_transaction();
-			  } else if ($op == 'redo') {
-						 self::redo_transaction();
-			  } else if ($op == 'clear') {
-			  			self::clear_stack();
-			  } else {
-						 redirect('eighth');
+			  switch ($this->op) {
+			  	case 'undo':
+					self::undo_transaction();
+					break;
+			  	case 'redo':
+					self::redo_transaction();
+					break;
+			  	case 'clear':
+			  		self::clear_stack();
+					break;
+				default:
+					redirect('eighth');
 			  }
 			  // Circumvent $args because it turns the path into an associative array
 			  $str = implode('/',array_slice($I2_ARGS,3));
-			  redirect('eighth/'.$str);
+			 redirect('eighth/'.$str);
 	}
 
 	/**
@@ -589,23 +593,23 @@ private static $redo;
 			$this->template_args['groups'] = Group::get_all_groups('eighth');
 			$this->title = 'Alter Permissions to Restricted Activities';
 		}
-		else if($this->op == "add_group") {
+		else if($this->op == 'add_group') {
 			$activity = new EighthActivity($this->args['aid']);
 			$group = new Group($this->args['gid']);
 			$activity->add_restricted_members($group->members);
 			redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
 		}
-		else if($this->op == "add_member") {
+		else if($this->op == 'add_member') {
 			$activity = new EighthActivity($this->args['aid']);
-			$activity->add_restricted_member($this->args['uid']);
+			$activity->add_restricted_member(new User($this->args['uid']));
 			redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
 		}
-		else if($this->op == "remove_member") {
+		else if($this->op == 'remove_member') {
 			$activity = new EighthActivity($this->args['aid']);
-			$activity->remove_restricted_member($this->args['uid']);
+			$activity->remove_restricted_member(new User($this->args['uid']));
 			redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
 		}
-		else if($this->op == "remove_all") {
+		else if($this->op == 'remove_all') {
 			$activity = new EighthActivity($this->args['aid']);
 			$activity->remove_restricted_all();
 			redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
