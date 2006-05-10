@@ -180,7 +180,7 @@ class EighthSchedule {
 	* @param string $starting_date The starting date for the list, usually NULL.
 	* @param int $number_of_days The number of days to return.
 	*/
-	public static function get_activity_schedule($activityid, $starting_date = NULL, $number_of_days = 14) {
+	public static function get_activity_schedule($activityid, $starting_date = NULL, $number_of_days = 999) {
 		global $I2_SQL;
 		$blocks = EighthBlock::get_all_blocks($starting_date, $number_of_days);
 		$activities = array();
@@ -191,7 +191,12 @@ class EighthSchedule {
 				$result = $I2_SQL->query('SELECT rooms,sponsors FROM eighth_activities WHERE aid=%d', $activityid);
 				$scheduled = FALSE;
 			}
-			$activities[] = array('block' => $block, 'scheduled' => $scheduled) + $result->fetch_array(Result::ASSOC);
+			$data = $result->fetch_array(Result::ASSOC);
+			$data['rooms_array'] = "'" . strtr($data['rooms'], array("," => "','")) . "'";
+			$data['sponsors_array'] = "'" . strtr($data['sponsors'], array("," => "','")) . "'";
+			$data['rooms_obj'] = EighthRoom::id_to_room(explode(',', $data['rooms']));
+			$data['sponsors_obj'] = EighthSponsor::id_to_sponsor(explode(',', $data['sponsors']));
+			$activities[] = array('block' => $block, 'scheduled' => $scheduled) + $data;
 		}
 		return $activities;
 	}

@@ -41,14 +41,19 @@ class Eighth implements Module {
 	private $template_args = array();
 
 	/**
-	* Starting date for activities
-	*/
-	private $start_date;
-
-	/**
 	* The user is an 8th-period admin
 	*/
 	private $admin = FALSE;
+
+	/**
+	* The operation a method is to perform
+	*/
+	private $op = '';
+
+	/**
+	* The arguments to a method;
+	*/
+	private $args = array();
 
 	/**
 	* The undo stack for internal use
@@ -67,11 +72,6 @@ private static $redo;
 	private $force = FALSE;
 
 	function __construct() {
-		if (isSet($_SESSION['eighth_start_date'])) {
-			$this->start_date = $_SESSION['eighth_start_date'];
-		} else {
-			$this->start_date = date('Y-m-d');
-		}
 		if (isSet($_SESSION['eighth_undo'])) {
 				  self::$undo = &$_SESSION['eighth_undo'];
 		} elseif (!self::$undo) {
@@ -218,8 +218,8 @@ private static $redo;
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_ARGS,$I2_USER;
-		$args = array();
+		global $I2_ARGS, $I2_USER;
+		$this->args = array();
 		$this->admin = self::is_admin();
 		$this->template_args['eighth_admin'] = $this->admin;
 		if(count($I2_ARGS) <= 1) {
@@ -230,31 +230,26 @@ private static $redo;
 			$this->template_args['help'] = '<h2>8th Period Office Online Menu</h2>From here you can choose a number of operations to administrate the eighth period system.';
 			return 'Eighth Period Office Online: Home';
 		} else {
-			if ($I2_ARGS[1] == 'force') {
-				$this->force = TRUE;
-				// Remove 'force' from the arg string and get on with life
-				array_splice($I2_ARGS,1,1);
+			$method = $I2_ARGS[1];
+			$this->op = (count($I2_ARGS) % 2 == 1 ? $I2_ARGS[2] : '');
+			for($i = count($I2_ARGS) - 1; $i > 2; $i -= 2) {
+				$this->args[$I2_ARGS[$i - 1]] = $I2_ARGS[$i];
 			}
-			if(count($I2_ARGS) == 2 || (count($I2_ARGS) % 2) != 0) {
-				$method = $I2_ARGS[1];
-				$op = (count($I2_ARGS) > 2 ? $I2_ARGS[2] : '');
-				for($i = 3; $i < count($I2_ARGS); $i += 2) {
-					$args[$I2_ARGS[$i]] = $I2_ARGS[$i + 1];
+			$this->args += $_POST;
+			if(isset($_SESSION['eighth'])) {
+				$this->args += $_SESSION['eighth'];
+			}
+			if(method_exists($this, $method)) {
+				$this->$method();
+				$this->template_args['method'] = $method;
+				$this->template_args['help'] = $this->help_text;
+				if ($this->admin) {
+					return "Eighth Period Office Online: {$this->title}";
+				} else {
+					return "Eighth Period Online: {$this->title}";
 				}
-				$args += $_POST;
-				if(method_exists($this, $method)) {
-					$this->$method($op, $args);
-					$this->template_args['method'] = $method;
-					$this->template_args['help'] = $this->help_text;
-					if ($this->admin) {
-						return "Eighth Period Office Online: {$this->title}";
-					} else {
-						return "Eighth Period Online: {$this->title}";
-					}
-				}
-				else {
-					return array("Eighth Period Online: ERROR - SubModule Doesn't Exist");
-				}
+			} else {
+				return array("Eighth Period Online: ERROR - SubModule Doesn't Exist");
 			}
 		}
 		return array('Error', 'Error');
@@ -264,11 +259,11 @@ private static $redo;
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
-			  global $I2_ARGS;
-			  $argstr = implode('/',array_slice($I2_ARGS,1));
-			  $this->template_args['argstr'] = $argstr;
-			  $this->template_args['last_undo'] = self::get_undo_name();
-			  $this->template_args['last_redo'] = self::get_redo_name();
+		global $I2_ARGS;
+		$argstr = implode('/', array_slice($I2_ARGS,1));
+		$this->template_args['argstr'] = $argstr;
+		$this->template_args['last_undo'] = self::get_undo_name();
+		$this->template_args['last_redo'] = self::get_redo_name();
 		$display->disp($this->template, $this->template_args);
 	}
 
@@ -348,24 +343,27 @@ private static $redo;
 			$title = 'Select a block:';
 		}
 		if ($startdate === NULL) {
-			if (isSet($args['startdate'])) {
-				$startdate = $args['startdate'];
+			if (isSet($this->args['startdate'])) {
+				$startdate = $this->args['startdate'];
 			} else {
 				$startdate = date('Y-m-d');
 			}
 		}
-		if ($daysf === NULL && isSet($args['daysforward'])) {
-			$daysf = $args['daysforward'];
+		if ($daysf === NULL && isSet($this->args['daysforward'])) {
+			$daysf = $this->args['daysforward'];
 		} else {
 			$daysf = 9999;
 		}
-		$blocks = EighthBlock::get_all_blocks($startdate,$daysf);
+		$blocks = EighthBlock::get_all_blocks($startdate, $daysf);
 		$this->template = 'block_selection.tpl';
-		$this->template_args += array('blocks' => $blocks, 'add' => $add);
+		$this->template_args['blocks'] = $blocks;
+		if($add) {
+			$this->template_args['add'] = TRUE;
+		}
 		$this->template_args['title'] = $title;
 		$this->template_args['field'] = $field;
-		$this->title = "Select a Block";
-		$this->help_text = "Select a Block";
+		$this->title = 'Select a Block';
+		$this->help_text = 'Select a Block';
 	}
 
 	/**
@@ -379,12 +377,15 @@ private static $redo;
 	*/
 	private function setup_activity_selection($add = FALSE, $blockid = NULL, $restricted = FALSE, $field = 'aid', $title = 'Select an activity:') {
 		$activities = EighthActivity::get_all_activities($blockid, $restricted);
-		$this->template = "activity_selection.tpl";
-		$this->template_args += array("activities" => $activities, "add" => $add);
+		$this->template = 'activity_selection.tpl';
+		$this->template_args['activities'] = $activities;
+		if($add) {
+			$this->template_args['add'] = TRUE;
+		}
 		$this->template_args['title'] = $title;
 		$this->template_args['field'] = $field;
-		$this->title = "Select an Activity";
-		$this->help_text = "Select an Activity";
+		$this->title = 'Select an Activity';
+		$this->help_text = 'Select an Activity';
 	}
 
 	/**
@@ -394,13 +395,16 @@ private static $redo;
 	* @param bool $add Whether to include the add field or not.
 	* @param string $title The title for the group list.
 	*/
-	private function setup_group_selection($add = FALSE, $title = "Select a group:") {
-		$groups = Group::get_all_groups("eighth");
-		$this->template = "group_selection.tpl";
-		$this->template_args += array("groups" => $groups, "add" => $add);
+	private function setup_group_selection($add = FALSE, $title = 'Select a group:') {
+		$groups = Group::get_all_groups('eighth');
+		$this->template = 'group_selection.tpl';
+		$this->template_args['groups'] = $groups;
+		if($add) {
+			$this->template_args['add'] = TRUE;
+		}
 		$this->template_args['title'] = $title;
-		$this->title = "Select a Group";
-		$this->help_text = "Select a Group";
+		$this->title = 'Select a Group';
+		$this->help_text = 'Select a Group';
 	}
 
 	/**
@@ -410,10 +414,13 @@ private static $redo;
 	* @param bool $add Whether to include the add field or not.
 	* @param string $title The title for the room list.
 	*/
-	private function setup_room_selection($add = FALSE, $title = "Select a room:") {
+	private function setup_room_selection($add = FALSE, $title = 'Select a room:') {
 		$rooms = EighthRoom::get_all_rooms();
-		$this->template = "room_selection.tpl";
-		$this->template_args += array("rooms" => $rooms, "add" => $add);
+		$this->template = 'room_selection.tpl';
+		$this->template_args['rooms'] = $rooms;
+		if($add) {
+			$this->template_args['add'] = TRUE;
+		}
 		$this->template_args['title'] = $title;
 		$this->title = "Select a Room";
 		$this->help_text = "Select a Room";
@@ -429,7 +436,10 @@ private static $redo;
 	private function setup_sponsor_selection($add = FALSE, $title = "Select a sponsor:") {
 		$sponsors = EighthSponsor::get_all_sponsors();
 		$this->template = "sponsor_selection.tpl";
-		$this->template_args += array("sponsors" => $sponsors, "add" => $add);
+		$this->template_args['sponsors'] = $sponsors;
+		if($add) {
+			$this->template_args['add'] = TRUE;
+		}
 		$this->template_args['title'] = $title;
 		$this->title = "Select a Sponsor";
 		$this->help_text = "Select a Sponsor";
@@ -460,26 +470,26 @@ private static $redo;
 	* Register a group of students for an activity
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	private function reg_group($op, $args) {
-		if($op == '') {	
+	private function reg_group() {
+		if($this->op == '') {	
 			$this->setup_block_selection();
 			$this->template_args['op'] = 'activity';
 		}
-		else if($op == 'activity') {
-			$this->setup_activity_selection(FALSE, $args['bid']);
-			$this->template_args['op'] = "group/bid/{$args['bid']}";
-			return 'Select an activity';
+		else if($this->op == 'activity') {
+			$this->setup_activity_selection(FALSE, $this->args['bid']);
+			$this->template_args['op'] = "group/bid/{$this->args['bid']}";
+			return "Select an activity";
 		}
-		else if($op == 'group') {
+		else if($this->op == "group") {
 			$this->setup_group_selection();
-			$this->template_args['op'] = "commit/bid/{$args['bid']}/aid/{$args['aid']}";
+			$this->template_args['op'] = "commit/bid/{$this->args['bid']}/aid/{$this->args['aid']}";
 		}
-		else if($op == 'commit') {
-			$activity = new EighthActivity($args['aid'], $args['bid']);
-			$group = new Group($args['gid']);
+		else if($this->op == "commit") {
+			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
+			$group = new Group($this->args['gid']);
 			$activity->add_members($group->members);
 			redirect('eighth');
 		}
@@ -516,47 +526,47 @@ private static $redo;
 	* Add, modify, or remove a special group of students
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	private function amr_group($op, $args) {
-		if($op == '') {
+	private function amr_group() {
+		if($this->op == '') {
 			$this->setup_group_selection(true);
 		}
-		else if($op == 'add') {
-			Group::add_group('eighth_' . $args['name']);
-			redirect('eighth/amr_group');
+		else if($this->op == 'add') {
+			Group::add_group("" . $this->args['name']);
+			redirect("eighth/amr_group");
 		}
-		else if($op == 'modify') {
-			Group::set_group_name($args['gid'],$args['name']);
-			redirect("eighth/amr_group/view/gid/{$args['gid']}");
+		else if($this->op == "modify") {
+			Group::set_group_name($this->args['gid'],$this->args['name']);
+			redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
 		}
-		else if($op == 'remove') {
-			Group::delete_group($args['gid']);
+		else if($this->op == 'remove') {
+			Group::delete_group($this->args['gid']);
 			redirect('eighth');
 		}
-		else if($op == 'view') {
-			$group = new Group($args['gid']);
-			$this->template = 'amr_group.tpl';
+		else if($this->op == 'view') {
+			$group = new Group($this->args['gid']);
+			$this->template = "amr_group.tpl";
 			$this->template_args['group'] = $group;
 			$this->title = 'View Group (' . substr($group->name,7) . ')';
 		}
-		else if($op == 'add_member') {
-			$group = new Group($args['gid']);
-			$group->add_user(new User($args['uid']));
-			redirect("eighth/amr_group/view/gid/{$args['gid']}");
+		else if($this->op == 'add_member') {
+			$group = new Group($this->args['gid']);
+			$group->add_user($this->args['uid']);
+			redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
 		}
-		else if($op == 'remove_member') {
-			$group = new Group($args['gid']);
-			$group->remove_user(new User($args['uid']));
-			redirect("eighth/amr_group/view/gid/{$args['gid']}");
+		else if($this->op == 'remove_member') {
+			$group = new Group($this->args['gid']);
+			$group->remove_user($this->args['uid']);
+			redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
 		}
-		else if($op == 'remove_all') {
-			$group = new Group($args['gid']);
+		else if($this->op == 'remove_all') {
+			$group = new Group($this->args['gid']);
 			$group->remove_all_members();
-			redirect("eighth/amr_group/view/gid/{$args['gid']}");
+			redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
 		}
-		else if($op == 'add_members') {
+		else if($this->op == "add_members") {
 			// TODO: Work on adding multiple members
 		}
 	}
@@ -565,40 +575,40 @@ private static $redo;
 	* Add students to a restricted activity
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	* @todo Work on restricted activities and permissions
 	*/
-	private function alt_permissions($op, $args) {
-		if($op == '') {
+	private function alt_permissions() {
+		if($this->op == '') {
 			$this->setup_activity_selection(FALSE, NULL, TRUE);
 		}
-		else if($op == 'view') {
+		else if($this->op == 'view') {
 			$this->template = 'alt_permissions.tpl';
-			$this->template_args['activity'] = new EighthActivity($args['aid']);
+			$this->template_args['activity'] = new EighthActivity($this->args['aid']);
 			$this->template_args['groups'] = Group::get_all_groups('eighth');
 			$this->title = 'Alter Permissions to Restricted Activities';
 		}
-		else if($op == 'add_group') {
-			$activity = new EighthActivity($args['aid']);
-			$group = new Group($args['gid']);
+		else if($this->op == "add_group") {
+			$activity = new EighthActivity($this->args['aid']);
+			$group = new Group($this->args['gid']);
 			$activity->add_restricted_members($group->members);
-			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
+			redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
 		}
-		else if($op == 'add_member') {
-			$activity = new EighthActivity($args['aid']);
-			$activity->add_restricted_member(new User($args['uid']));
-			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
+		else if($this->op == "add_member") {
+			$activity = new EighthActivity($this->args['aid']);
+			$activity->add_restricted_member($this->args['uid']);
+			redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
 		}
-		else if($op == 'remove_member') {
-			$activity = new EighthActivity($args['aid']);
-			$activity->remove_restricted_member(new User($args['uid']));
-			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
+		else if($this->op == "remove_member") {
+			$activity = new EighthActivity($this->args['aid']);
+			$activity->remove_restricted_member($this->args['uid']);
+			redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
 		}
-		else if($op == 'remove_all') {
-			$activity = new EighthActivity($args['aid']);
+		else if($this->op == "remove_all") {
+			$activity = new EighthActivity($this->args['aid']);
 			$activity->remove_restricted_all();
-			redirect("eighth/alt_permissions/view/aid/{$args['aid']}");
+			redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
 		}
 	}
 
@@ -606,42 +616,42 @@ private static $redo;
 	* Switch all the students in one activity into another
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	private function people_switch($op, $args) {
-		if($op == '') {
+	private function people_switch() {
+		if($this->op == '') {
 			$this->setup_block_selection(FALSE, 'bid_from');
 			$this->template_args['op'] = 'activity_from';
 			$this->title = 'Select a Block to Move Students From';
 		}
-		else if($op == 'activity_from') {
-			$this->setup_activity_selection(FALSE, $args['bid_from'], FALSE, "aid_from", "From this activity:");
-			$this->template_args['op'] = "activity_to/bid_from/{$args['bid_from']}/bid_to/{$args['bid_from']}";
+		else if($this->op == 'activity_from') {
+			$this->setup_activity_selection(FALSE, $this->args['bid_from'], FALSE, "aid_from", "From this activity:");
+			$this->template_args['op'] = "activity_to/bid_from/{$this->args['bid_from']}/bid_to/{$this->args['bid_from']}";
 			$this->title = 'Select an Activity to Move Students From';
 		}
-		else if($op == 'block_to') {
+		else if($this->op == 'block_to') {
 			$this->setup_block_selection(FALSE, 'bid_to');
-			$this->template_args['op'] = "activity_to/bid_from/{$args['bid_from']}/aid_from/{$args['aid_from']}";
+			$this->template_args['op'] = "activity_to/bid_from/{$this->args['bid_from']}/aid_from/{$this->args['aid_from']}";
 			$this->title = 'Select a Block into which to move Students';
 		}
-		else if($op == 'activity_to') {
-			$this->setup_activity_selection(FALSE, $args['bid_to'], FALSE, "aid_to", "To this activity:");
-			$this->template_args['op'] = "confirm/bid_from/{$args['bid_from']}/aid_from/{$args['aid_from']}/bid_to/{$args['bid_to']}";
+		else if($this->op == 'activity_to') {
+			$this->setup_activity_selection(FALSE, $this->args['bid_to'], FALSE, "aid_to", "To this activity:");
+			$this->template_args['op'] = "confirm/bid_from/{$this->args['bid_from']}/aid_from/{$this->args['aid_from']}/bid_to/{$this->args['bid_to']}";
 			$this->title = 'Select an Activity into which to move Students';
 		}
-		else if($op == 'confirm') {
-			if($args['aid_from'] == $args['aid_to']) {
-				redirect("eighth/people_switch/activity_to/bid_from/{$args['bid_from']}/aid_from/{$args['aid_from']}/bid_to/{$args['bid_to']}");
+		else if($this->op == 'confirm') {
+			if($this->args['aid_from'] == $this->args['aid_to']) {
+				redirect("eighth/people_switch/activity_to/bid_from/{$this->args['bid_from']}/aid_from/{$this->args['aid_from']}/bid_to/{$this->args['bid_to']}");
 			}
 			$this->template = 'people_switch.tpl';
-			$this->template_args['activity_from'] = new EighthActivity($args['aid_from'], $args['bid_from']);
-			$this->template_args['activity_to'] = new EighthActivity($args['aid_to'], $args['bid_to']);
+			$this->template_args['activity_from'] = new EighthActivity($this->args['aid_from'], $this->args['bid_from']);
+			$this->template_args['activity_to'] = new EighthActivity($this->args['aid_to'], $this->args['bid_to']);
 			$this->title = 'Confirm Moving Students';
 		}
-		else if($op == 'commit') {
-			$activity_from = new EighthActivity($args['aid_from'], $args['bid_from']);
-			$activity_to = new EighthActivity($args['aid_to'], $args['bid_to']);
+		else if($this->op == 'commit') {
+			$activity_from = new EighthActivity($this->args['aid_from'], $this->args['bid_from']);
+			$activity_to = new EighthActivity($this->args['aid_to'], $this->args['bid_to']);
 			$activity_to->add_members($activity_from->members);
 			$activity_from->remove_all();
 			redirect('eighth');
@@ -652,66 +662,66 @@ private static $redo;
 	* Add, modify, or remove an activity
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	private function amr_activity($op, $args) {
-		if($op == "") {
+	private function amr_activity() {
+		if($this->op == "") {
 			$this->setup_activity_selection(TRUE);
 		}
-		else if($op == "view") {
+		else if($this->op == "view") {
 			$this->template = "amr_activity.tpl";
-			$this->template_args = array("activity" => new EighthActivity($args['aid']));
+			$this->template_args = array("activity" => new EighthActivity($this->args['aid']));
 			$this->title = "View Activities";
 		}
-		else if($op == "add") {
-			$aid = EighthActivity::add_activity($args['name']);
+		else if($this->op == "add") {
+			$aid = EighthActivity::add_activity($this->args['name']);
 			redirect("eighth/amr_activity/view/aid/{$aid}");
 		}
-		else if($op == 'modify') {
-			$activity = new EighthActivity($args['aid']);
-			$activity->name = $args['name'];
-			$activity->sponsors = $args['sponsors'];
-			$activity->rooms = $args['rooms'];
-			$activity->description = $args['description'];
-			$activity->restricted = ($args['restricted'] == "on");
-			$activity->presign = ($args['presign'] == "on");
-			$activity->oneaday = ($args['oneaday'] == "on");
-			$activity->bothblocks = ($args['bothblocks'] == "on");
-			$activity->sticky = ($args['sticky'] == "on");
-			redirect("eighth/amr_activity/view/aid/{$args['aid']}");
+		else if($this->op == 'modify') {
+			$activity = new EighthActivity($this->args['aid']);
+			$activity->name = $this->args['name'];
+			$activity->sponsors = $this->args['sponsors'];
+			$activity->rooms = $this->args['rooms'];
+			$activity->description = $this->args['description'];
+			$activity->restricted = ($this->args['restricted'] == "on");
+			$activity->presign = ($this->args['presign'] == "on");
+			$activity->oneaday = ($this->args['oneaday'] == "on");
+			$activity->bothblocks = ($this->args['bothblocks'] == "on");
+			$activity->sticky = ($this->args['sticky'] == "on");
+			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
-		else if($op == "remove") {
-			EighthActivity::remove_activity($args['aid']);
+		else if($this->op == "remove") {
+			EighthActivity::remove_activity($this->args['aid']);
 			redirect("eighth");
 		}
-		else if($op == "select_sponsor") {
+		else if($this->op == "select_sponsor") {
 			$this->setup_sponsor_selection();
-			$this->template_args['op'] = "add_sponsor/aid/{$args['aid']}";
+			$this->template_args['op'] = "add_sponsor/aid/{$this->args['aid']}";
 		}
-		else if($op == "add_sponsor") {
-			$activity = new EighthActivity($args['aid']);
-			$activity->add_sponsor($args['sid']);
-			redirect("eighth/amr_activity/view/aid/{$args['aid']}");
+		else if($this->op == "add_sponsor") {
+			$activity = new EighthActivity($this->args['aid']);
+			$activity->add_sponsor($this->args['sid']);
+			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
-		else if($op == "remove_sponsor") {
-			$activity = new EighthActivity($args['aid']);
-			$activity->remove_sponsor($args['sid']);
-			redirect("eighth/amr_activity/view/aid/{$args['aid']}");
+		else if($this->op == "remove_sponsor") {
+			$activity = new EighthActivity($this->args['aid']);
+			$activity->remove_sponsor($this->args['sid']);
+			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
-		else if($op == "select_room") {
+		else if($this->op == "select_room") {
 			$this->setup_room_selection();
-			$this->template_args['op'] = "add_room/aid/{$args['aid']}";
+			$this->template_args['op'] = "add_room/aid/{$this->args['aid']}";
 		}
-		else if($op == "add_room") {
-			$activity = new EighthActivity($args['aid']);
-			$activity->add_room($args['rid']);
-			redirect("eighth/amr_activity/view/aid/{$args['aid']}");
+		else if($this->op == "add_room") {
+			$activity = new EighthActivity($this->args['aid']);
+			$activity->add_room($this->args['rid']);
+			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
-		else if($op == "remove_room") {
-			$activity = new EighthActivity($args['aid']);
-			$activity->remove_room($args['rid']);
-			redirect("eighth/amr_activity/view/aid/{$args['aid']}");
+		else if($this->op == "remove_room") {
+			$activity = new EighthActivity($this->args['aid']);
+			$activity->remove_room($this->args['rid']);
+			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
 	}
 
@@ -719,31 +729,31 @@ private static $redo;
 	* Add, modify, or remove a room
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	private function amr_room($op, $args) {
-		if($op == '') {
+	private function amr_room() {
+		if($this->op == '') {
 			$this->setup_room_selection(true);
 		}
-		else if($op == 'view') {
+		else if($this->op == 'view') {
 			$this->template = "amr_room.tpl";
-			$this->template_args['room'] = new EighthRoom($args['rid']);
+			$this->template_args['room'] = new EighthRoom($this->args['rid']);
 			$this->title = 'View Rooms';
 		}
-		else if($op == 'add') {
-			$rid = EighthRoom::add_room($args['name'], $args['capacity']);
+		else if($this->op == 'add') {
+			$rid = EighthRoom::add_room($this->args['name'], $this->args['capacity']);
 			//redirect("eighth/amr_room/view/rid/{$rid}");
 			redirect('eighth/amr_room');
 		}
-		else if($op == 'modify') {
-			if ($args['modify_or_remove'] == 'modify') {
-				$room = new EighthRoom($args['rid']);
-				$room->name = $args['name'];
-				$room->capacity = $args['capacity'];
-				redirect("eighth/amr_room/view/rid/{$args['rid']}");
-			} else if ($args['modify_or_remove'] == 'remove') {
-				EighthRoom::remove_room($args['rid']);
+		else if($this->op == 'modify') {
+			if ($this->args['modify_or_remove'] == 'modify') {
+				$room = new EighthRoom($this->args['rid']);
+				$room->name = $this->args['name'];
+				$room->capacity = $this->args['capacity'];
+				redirect("eighth/amr_room/view/rid/{$this->args['rid']}");
+			} else if ($this->args['modify_or_remove'] == 'remove') {
+				EighthRoom::remove_room($this->args['rid']);
 				redirect('eighth/amr_room');
 			}
 		}
@@ -753,30 +763,30 @@ private static $redo;
 	* Add, modify, or remove an activity sponsor
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	private function amr_sponsor($op, $args) {
-		if($op == "") {
+	private function amr_sponsor() {
+		if($this->op == "") {
 			$this->setup_sponsor_selection(true);
 		}
-		else if($op == "view") {
+		else if($this->op == "view") {
 			$this->template = "amr_sponsor.tpl";
-			$this->template_args['sponsor'] = new EighthSponsor($args['sid']);
+			$this->template_args['sponsor'] = new EighthSponsor($this->args['sid']);
 			$this->title = "View Sponsors";
 		}
-		else if($op == "add") {
-			$sid = EighthSponsor::add_sponsor($args['fname'], $args['lname']);
+		else if($this->op == "add") {
+			$sid = EighthSponsor::add_sponsor($this->args['fname'], $this->args['lname']);
 			redirect("eighth/amr_sponsor");
 		}
-		else if($op == "modify") {
-			$sponsor = new EighthSponsor($args['sid']);
-			$sponsor->fname = $args['fname'];
-			$sponsor->lname = $args['lname'];
+		else if($this->op == "modify") {
+			$sponsor = new EighthSponsor($this->args['sid']);
+			$sponsor->fname = $this->args['fname'];
+			$sponsor->lname = $this->args['lname'];
 			redirect("eighth/amr_sponsor");
 		}
-		else if($op == "remove") {
-			EighthSponsor::remove_sponsor($args['sid']);
+		else if($this->op == "remove") {
+			EighthSponsor::remove_sponsor($this->args['sid']);
 			redirect("eighth");
 		}
 	}
@@ -785,55 +795,52 @@ private static $redo;
 	* Schedule an activity for eighth period
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	private function sch_activity($op, $args) {
-		if($op == '') {
+	private function sch_activity() {
+		if($this->op == "") {
 			$this->setup_activity_selection();
 			$this->template = 'sch_activity_choose.tpl';
 		}
-		else if($op == 'view') {
+		else if($this->op == "view") {
 			$this->template = 'sch_activity.tpl';
 			$this->template_args['rooms'] = EighthRoom::get_all_rooms();
 			$this->template_args['sponsors'] = EighthSponsor::get_all_sponsors();
-			$this->template_args['block_activities'] = EighthSchedule::get_activity_schedule($args['aid']);
+			$this->template_args['block_activities'] = EighthSchedule::get_activity_schedule($this->args['aid']);
 			$this->template_args['activities'] = EighthActivity::get_all_activities();
-			$this->template_args['act'] = new EighthActivity($args['aid']);
+			$this->template_args['act'] = new EighthActivity($this->args['aid']);
 			$this->title = 'Schedule an Activity (' . $this->template_args['act']->name_r  . ')';
 		}
-		else if($op == 'modify') {
-			foreach($args['modify'] as $bid) {
-				if($args['activity_status'][$bid] == 'CANCELLED') {
-					EighthActivity::cancel($bid, $args['aid']);
+		else if($this->op == 'modify') {
+			foreach($this->args['modify'] as $bid) {
+				if($this->args['activity_status'][$bid] == 'CANCELLED') {
+					EighthActivity::cancel($bid, $this->args['aid']);
 				}
-				else if($args['activity_status'][$bid] == 'UNSCHEDULED') {
-					EighthSchedule::unschedule_activity($bid, $args['aid']);
+				else if($this->args['activity_status'][$bid] == 'UNSCHEDULED') {
+					EighthSchedule::unschedule_activity($bid, $this->args['aid']);
 				}
 				else {
-					$sponsorlist = NULL;
-					$roomlist = NULL;
+					$sponsorlist = array();
+					$roomlist = array();
 					$commentslist = NULL;
 					$aid = NULL;
-					if (isSet($args['aid'])) {
-						$aid = $args['aid'];
+					if (isset($this->args['aid'])) {
+						$aid = $this->args['aid'];
 					}
-					if (isSet($args['sponsor_list']) && isSet($args['sponsor_list'][$bid])) {
-						$sponsorlist = $args['sponsor_list'][$bid];
+					if (isset($this->args['sponsor_list']) && isset($this->args['sponsor_list'][$bid])) {
+						$sponsorlist = array_filter(explode(',', $this->args['sponsor_list'][$bid]));
 					}
-					if (isSet($args['room_list'])) {
-						$roomlist = $args['room_list'][$bid];
+					if (isset($this->args['room_list']) && isset($this->args['room_list'][$bid])) {
+						$roomlist = array_filter(explode(',', $this->args['room_list'][$bid]));
 					}
-					if (isSet($args['comments']) && isSet($args['comments'][$bid])) {
-						$commentslist = $args['comments'][$bid];
-					}
-					if (isSet($args['aid'])) {
-						$aid = $args['aid'];
+					if (isset($this->args['comments']) && isset($this->args['comments'][$bid])) {
+						$commentslist = $this->args['comments'][$bid];
 					}
 					EighthSchedule::schedule_activity($bid, $aid, $sponsorlist, $roomlist, $commentslist);
 				}
 			}
-			redirect("eighth/sch_activity/view/aid/{$args['aid']}");
+			redirect("eighth/sch_activity/view/aid/{$this->args['aid']}");
 		}
 	}
 
@@ -841,29 +848,29 @@ private static $redo;
 	* View or print a class roster
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	private function vp_roster($op, $args) {
-		if($op == '') {
+	private function vp_roster() {
+		if($this->op == '') {
 			$this->setup_block_selection();
 			$this->template_args['op'] = "activity";
 		}
-		else if($op == 'activity') {
-			$this->setup_activity_selection(FALSE, $args['bid']);
-			$this->template_args['op'] = "view/bid/{$args['bid']}";
+		else if($this->op == 'activity') {
+			$this->setup_activity_selection(FALSE, $this->args['bid']);
+			$this->template_args['op'] = "view/bid/{$this->args['bid']}";
 		}
-		else if($op == 'view') {
-			$activity = new EighthActivity($args['aid'], $args['bid']);
+		else if($this->op == 'view') {
+			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->template = 'vp_roster.tpl';
 			$this->template_args['activity'] = $activity;
 			$this->title = 'View Roster';
 		}
-		else if($op == 'format') {
-			$this->setup_format_selection('vp_roster', 'Class Roster', array('aid' => $args['aid'], 'bid' => $args['bid']));
+		else if($this->op == 'format') {
+			$this->setup_format_selection('vp_roster', 'Class Roster', array('aid' => $this->args['aid'], 'bid' => $this->args['bid']));
 		}
-		else if($op == 'print') {
-			EighthPrint::print_class_roster($args['aid'], $args['bid'], $args['format']);
+		else if($this->op == 'print') {
+			EighthPrint::print_class_roster($this->args['aid'], $this->args['bid'], $this->args['format']);
 		}
 	}
 
@@ -871,30 +878,30 @@ private static $redo;
 	* View or print the utilization of a room
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	private function vp_room($op, $args) {
-		if($op == '') {
+	private function vp_room() {
+		if($this->op == '') {
 			$this->setup_block_selection();
 			$this->template_args['op'] = 'search';
 		}
-		else if($op == 'search') {
+		else if($this->op == 'search') {
 			$this->template = 'vp_room_search.tpl';
-			$this->template_args['bid'] = $args['bid'];
+			$this->template_args['bid'] = $this->args['bid'];
 			$this->title = 'Search Room Utilization';
 		}
-		else if($op == 'view') {
+		else if($this->op == 'view') {
 			$this->template = 'vp_room_view.tpl';
-			$this->template_args['block'] = new EighthBlock($args['bid']);
-			$this->template_args['utilizations'] = EighthRoom::get_utilization($args['bid'], $args['include'], !empty($args['overbooked']));
+			$this->template_args['block'] = new EighthBlock($this->args['bid']);
+			$this->template_args['utilizations'] = EighthRoom::get_utilization($this->args['bid'], $this->args['include'], !empty($this->args['overbooked']));
 			$this->title = "View Room Utilization";
 		}
-		else if($op == 'format') {
-			$this->setup_format_selection('vp_room', 'Room Utilization', array("bid" => $args['bid']));
+		else if($this->op == 'format') {
+			$this->setup_format_selection('vp_room', 'Room Utilization', array("bid" => $this->args['bid']));
 		}
-		else if($op == 'print') {
-			EighthPrint::print_room_utilization($args['bid'], $args['format']);
+		else if($this->op == 'print') {
+			EighthPrint::print_room_utilization($this->args['bid'], $this->args['format']);
 		}
 	}
 
@@ -902,29 +909,29 @@ private static $redo;
 	* Cancel/set comments/advertize for an activity
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	public function cancel_activity($op, $args) {
-		if($op == "") {
+	public function cancel_activity() {
+		if($this->op == "") {
 			$this->setup_block_selection();
 			$this->template_args['op'] = "activity";
 		}
-		else if($op == "activity") {
-			$this->setup_activity_selection(FALSE, $args['bid']);
-			$this->template_args['op'] = "view/bid/{$args['bid']}";
+		else if($this->op == "activity") {
+			$this->setup_activity_selection(FALSE, $this->args['bid']);
+			$this->template_args['op'] = "view/bid/{$this->args['bid']}";
 		}
-		else if($op == "view") {
+		else if($this->op == "view") {
 			$this->template = "cancel_activity.tpl";
-			$this->template_args['activity'] = new EighthActivity($args['aid'], $args['bid']);
+			$this->template_args['activity'] = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->title = "Cancel an Activity";
 		}
-		else if($op == "update") {
-			$activity = new EighthActivity($args['aid'], $args['bid']);
-			$activity->comment = $args['comment'];
-			$activity->advertisement = $args['advertisement'];
-			$activity->cancelled = ($args['cancelled'] == "on");
-			redirect("eighth/cancel_activity/view/bid/{$args['bid']}/aid/{$args['aid']}");
+		else if($this->op == "update") {
+			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
+			$activity->comment = $this->args['comment'];
+			$activity->advertisement = $this->args['advertisement'];
+			$activity->cancelled = ($this->args['cancelled'] == "on");
+			redirect("eighth/cancel_activity/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
 		}
 	}
 
@@ -932,17 +939,17 @@ private static $redo;
 	* Room assignment sanity check
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	public function room_sanity($op, $args) {
-		if($op == '') {
+	public function room_sanity() {
+		if($this->op == '') {
 			$this->setup_block_selection();
 		}
-		else if($op == 'view') {
+		else if($this->op == 'view') {
 			$this->template = 'room_sanity.tpl';
-			$this->template_args['conflicts'] = EighthRoom::get_conflicts($args['bid']);
-			$this->template_args['sponsorconflicts'] = EighthSponsor::get_conflicts($args['bid']);
+			$this->template_args['conflicts'] = EighthRoom::get_conflicts($this->args['bid']);
+			$this->template_args['sponsorconflicts'] = EighthSponsor::get_conflicts($this->args['bid']);
 			$this->title = 'Room Assignment Sanity Check';
 		}
 	}
@@ -951,25 +958,25 @@ private static $redo;
 	* View or print sponsor schedule
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	public function vp_sponsor($op, $args) {
-		if($op == '') {
+	public function vp_sponsor() {
+		if($this->op == "") {
 			$this->setup_sponsor_selection();
 		}
-		else if($op == 'view') {
-			$sponsor = new EighthSponsor($args['sid']);
+		else if($this->op == "view") {
+			$sponsor = new EighthSponsor($this->args['sid']);
 			$this->template = 'vp_sponsor.tpl';
 			$this->template_args['sponsor'] = $sponsor;
 			$this->template_args['activities'] = $sponsor->schedule;
 			$this->title = 'View Sponsor Schedule';
 		}
-		else if($op == 'format') {
-			$this->setup_format_selection('vp_sponsor', 'Sponsor Schedule', array('sid' => $args['sid']));
+		else if($this->op == "format") {
+			$this->setup_format_selection("vp_sponsor", "Sponsor Schedule", array("sid" => $this->args['sid']));
 		}
-		else if($op == 'print') {
-			EighthPrint::print_sponsor_schedule($args['sid'], $args['format']);
+		else if($this->op == "print") {
+			EighthPrint::print_sponsor_schedule($this->args['sid'], $this->args['format']);
 		}
 	}
 
@@ -977,34 +984,36 @@ private static $redo;
 	* Reschedule students by student ID for a single activity
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	public function res_student($op, $args) {
-		if($op == '') {
+	public function res_student() {
+		if($this->op == '') {
 			$this->setup_block_selection();
 			$this->template_args['op'] = 'activity';
 		}
-		else if($op == 'activity') {
-			$this->setup_activity_selection(FALSE, $args['bid']);
-			$this->template_args['op'] = "user/bid/{$args['bid']}";
+		else if($this->op == 'activity') {
+			$this->setup_activity_selection(FALSE, $this->args['bid']);
+			$this->template_args['op'] = "user/bid/{$this->args['bid']}";
 		}
-		else if($op == 'user') {
+		else if($this->op == 'user') {
 			$this->template = 'res_student.tpl';
-			$this->template_args['block'] = new EighthBlock($args['bid']);
-			$this->template_args['activity'] = new EighthActivity($args['aid']);
-			if(isset($args['studentId'])) {
-				$this->template_args['user'] = new User(User::studentid_to_uid($args['studentId']));
+			$this->template_args['block'] = new EighthBlock($this->args['bid']);
+			$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bid']);
+			$this->template_args['op'] = "user/bid/{$this->args['bid']}";
+			$this->template_args['act'] = new EighthActivity($this->args['aid']);
+			if(isset($this->args['studentId'])) {
+				$this->template_args['user'] = new User(User::studentid_to_uid($this->args['studentId']));
 				if (!$this->template_args['user']->is_valid()) {
-					redirect('eighth/res_student/user/bid/'.$args['bid'].'/aid/'.$args['aid']);
+					redirect('eighth/res_student/user/bid/'.$this->args['bid'].'/aid/'.$this->args['aid']);
 				}
 			}
 			$this->title = 'Reschedule a Student';
 		}
-		else if($op == 'reschedule') {
-			$activity = new EighthActivity($args['aid'], $args['bid']);
-			$activity->add_member(new User($args['uid']));
-			redirect("eighth/res_student/user/bid/{$args['bid']}/aid/{$args['aid']}");
+		else if($this->op == 'reschedule') {
+			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
+			$activity->add_member($this->args['uid']);
+			redirect("eighth/res_student/user/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
 		}
 	}
 
@@ -1012,43 +1021,43 @@ private static $redo;
 	* View, change, or print attendance data
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	public function vcp_attendance($op, $args) {
-		if($op == '') {
+	public function vcp_attendance() {
+		if($this->op == '') {
 			$this->setup_block_selection();
 			$this->template_args['op'] = "activity";
 		}
-		else if($op == "activity") {
-			$this->setup_activity_selection(FALSE, $args['bid']);
-			$this->template_args['op'] = "view/bid/{$args['bid']}";
+		else if($this->op == "activity") {
+			$this->setup_activity_selection(FALSE, $this->args['bid']);
+			$this->template_args['op'] = "view/bid/{$this->args['bid']}";
 		}
-		else if($op == "view") {
+		else if($this->op == "view") {
 			$this->template = "vcp_attendance.tpl";
-			$this->template_args['activity'] = new EighthActivity($args['aid'], $args['bid']);
-			$this->template_args['absentees'] = EighthSchedule::get_absentees($args['bid'], $args['aid']);
+			$this->template_args['activity'] = new EighthActivity($this->args['aid'], $this->args['bid']);
+			$this->template_args['absentees'] = EighthSchedule::get_absentees($this->args['bid'], $this->args['aid']);
 			$this->title = "View Attendance";
 		}
-		else if($op == "update") {
-			$activity = new EighthActivity($args['aid'], $args['bid']);
+		else if($this->op == "update") {
+			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$members = $activity->members;
 			foreach($members as $member) {
-				if(in_array($member, $args['absentees'])) {
-					EighthSchedule::add_absentee($args['bid'], $member);
+				if(in_array($member, $this->args['absentees'])) {
+					EighthSchedule::add_absentee($this->args['bid'], $member);
 				}
 				else {
-					EighthSchedule::remove_absentee($args['bid'], $member);
+					EighthSchedule::remove_absentee($this->args['bid'], $member);
 				}
 			}
 			$activity->attendancetaken = TRUE;
-			redirect("eighth/vcp_attendance/view/bid/{$args['bid']}/aid/{$args['aid']}");
+			redirect("eighth/vcp_attendance/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
 		}
-		else if($op == "format") {
-			$this->setup_format_selection("vcp_attendance", "Attendance Data", array("aid" => $args['aid'], "bid" => $args['bid']));
+		else if($this->op == "format") {
+			$this->setup_format_selection("vcp_attendance", "Attendance Data", array("aid" => $this->args['aid'], "bid" => $this->args['bid']));
 		}
-		else if($op == "print") {
-			EighthPrint::print_attendance_data($args['aid'], $args['bid'], $args['format']);
+		else if($this->op == "print") {
+			EighthPrint::print_attendance_data($this->args['aid'], $this->args['bid'], $this->args['format']);
 		}
 	}
 
@@ -1056,34 +1065,34 @@ private static $redo;
 	* Enter TA absences by student ID
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	public function ent_attendance($op, $args) {
-		if($op == '') {
+	public function ent_attendance() {
+		if($this->op == '') {
 			$this->setup_block_selection();
 			$this->template_args['op'] = "user";
 		}
-		else if($op == 'user') {
+		else if($this->op == 'user') {
 			$this->template = 'ent_attendance.tpl';
 			$block = new EighthBlock($args['bid']);
 			$this->template_args['date'] = $block->date;
 			$this->template_args['block'] = $block->block;
-			$this->template_args['bid'] = $args['bid'];
-			if (isSet($args['lastuid'])) {
-				$this->template_args['lastuid'] = $args['lastuid'];
-				$user = new User($args['lastuid']);
+			$this->template_args['bid'] = $this->args['bid'];
+			if (isSet($this->args['lastuid'])) {
+				$this->template_args['lastuid'] = $this->args['lastuid'];
+				$user = new User($this->args['lastuid']);
 				$this->template_args['lastname'] = $user->name;
 				$this->template_args['studentid'] = $user->studentid;
 			}
 			$this->title = 'Enter TA Attendance';
 		}
-		else if($op == 'mark_absent') {
-			EighthSchedule::add_absentee($args['bid'], $args['uid']);
-			redirect('eighth/ent_attendance/user/bid/'.$args['bid'].'/lastuid/'.$args['uid']);
-		} else if ($op == 'unmark_absent') {
-			EighthSchedule::remove_absentee($args['bid'], $args['uid']);
-			redirect('eighth/ent_attendance/user/bid/'.$args['bid']);
+		else if($this->op == "mark_absent") {
+			EighthSchedule::add_absentee($this->args['bid'], $this->args['uid']);
+			redirect('eighth/ent_attendance/user/bid/'.$this->args['bid'].'/lastuid/'.$this->args['uid']);
+		} else if ($this->op == 'unmark_absent') {
+			EighthSchedule::remove_absentee($this->args['bid'], $this->args['uid']);
+			redirect('eighth/ent_attendance/user/bid/'.$this->args['bid']);
 		}
 	}
 
@@ -1091,28 +1100,28 @@ private static $redo;
 	* View or print a list of delinquent students
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	public function vp_delinquent($op, $args) {
+	public function vp_delinquent() {
 		// TODO: Sorting and exporting for all
-		if($op == '') {
+		if($this->op == '') {
 			// TODO: Print a list of delinquents
 			$lower = 1;
 			$upper = 1000;
 			$start = null;
 			$end = null;
-			if(!empty($args['lower']) && ctype_digit($args['lower'])) {
-				$lower = $args['lower'];
+			if(!empty($this->args['lower']) && ctype_digit($this->args['lower'])) {
+				$lower = $this->args['lower'];
 			}
-			if(!empty($args['upper']) && ctype_digit($args['upper'])) {
-				$upper = $args['upper'];
+			if(!empty($this->args['upper']) && ctype_digit($this->args['upper'])) {
+				$upper = $this->args['upper'];
 			}
-			if(!empty($args['start'])) {
-				$start = $args['start'];
+			if(!empty($this->args['start'])) {
+				$start = $this->args['start'];
 			}
-			if(!empty($args['end'])) {
-				$end = $args['end'];
+			if(!empty($this->args['end'])) {
+				$end = $this->args['end'];
 			}
 			$delinquents = EighthSchedule::get_delinquents($lower, $upper, $start, $end);
 			$this->template_args['students'] = array();
@@ -1125,12 +1134,12 @@ private static $redo;
 			$this->template = "vp_delinquent.tpl";
 			$this->title = "View Delinquent Students";
 		}
-		else if($op == "query") {
+		else if($this->op == "query") {
 			// TODO: Query the delinquents
 			$this->template = "vp_delinquent.tpl";
 			$this->title = "Query Delinquent Students";
 		}
-		else if($op == "sort") {
+		else if($this->op == "sort") {
 		}
 	}
 
@@ -1138,22 +1147,22 @@ private static $redo;
 	* Finalize student schedules
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	public function fin_schedules($op, $args) {
-		if($op == '') {
+	public function fin_schedules() {
+		if($this->op == '') {
 			$this->template = 'fin_schedules.tpl';
 			$this->template_args['blocks'] = EighthBlock::get_all_blocks();
 			$this->title = 'Finalize Schedules';
 		}
-		else if($op == 'lock') {
-			$block = new EighthBlock($args['bid']);
+		else if($this->op == 'lock') {
+			$block = new EighthBlock($this->args['bid']);
 			$block->locked = TRUE;
 			redirect('eighth/fin_schedules');
 		}
-	 	else if($op == 'unlock') {
-			$block = new EighthBlock($args['bid']);
+	 	else if($this->op == 'unlock') {
+			$block = new EighthBlock($this->args['bid']);
 			$block->locked = FALSE;
 			redirect('eighth/fin_schedules');
 		}
@@ -1163,22 +1172,22 @@ private static $redo;
 	* Print activity rosters
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	public function prn_attendance($op, $args) {
-		if($op == '') {
+	public function prn_attendance() {
+		if($this->op == '') {
 			$this->template_args['op'] = 'format';
 			$this->setup_block_selection();
 		}
-		else if($op == 'confirm') {
+		else if($this->op == 'confirm') {
 
 		}
-		else if($op == 'format') {
-			$this->setup_format_selection('prn_attendance', 'Activity Rosters', array('bid' => $args['bid']));
+		else if($this->op == 'format') {
+			$this->setup_format_selection('prn_attendance', 'Activity Rosters', array('bid' => $this->args['bid']));
 		}
-		else if($op == 'print') {
-			EighthPrint::print_activity_rosters(explode(',', $args['bid']), $args['format']);
+		else if($this->op == 'print') {
+			EighthPrint::print_activity_rosters(explode(',', $this->args['bid']), $this->args['format']);
 		}
 	}
 
@@ -1186,17 +1195,23 @@ private static $redo;
 	* Change starting date
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	* @todo Figure out where to store the starting date, in config.ini for now.
 	*/
-	public function chg_start($op, $args) {
-		if($op == '') {
+	public function chg_start() {
+		if($this->op == '') {
+			$date = '';
+			if(isset($_SESSION['eighth']['start_date'])) {
+				$date = $_SESSION['eighth']['start_date'];
+			}
+			$this->template_args['date'] = $date;
 			$this->template = 'chg_start.tpl';
 			$this->title = 'Change Start Date';
 		}
-		else if($op == 'change') {
-			//TODO: Change starting date
+		else if($this->op == 'change') {
+			$_SESSION['eighth']['start_date'] = $this->args['date'];
+			redirect('eighth');
 		}
 	}
 
@@ -1204,23 +1219,23 @@ private static $redo;
 	* Add or remove 8th period block from system
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	public function ar_block($op, $args) {
-		if($op == '') {
+	public function ar_block() {
+		if($this->op == '') {
 			$this->template = 'ar_block.tpl';
 			$this->template_args['blocks'] = EighthBlock::get_all_blocks(i2config_get('start_date', date('Y-m-d'), 'eighth'));
 			$this->title = 'Add/Remove Block';
 		}
-		else if($op == 'add') {
-			foreach($args['blocks'] as $block) {
-				EighthBlock::add_block("{$args['Year']}-{$args['Month']}-{$args['Day']}", $block);
+		else if($this->op == 'add') {
+			foreach($this->args['blocks'] as $block) {
+				EighthBlock::add_block("{$this->args['Year']}-{$this->args['Month']}-{$this->args['Day']}", $block);
 			}
 			redirect('eighth/ar_block');
 		}
-		else if($op == 'remove') {
-			EighthBlock::remove_block($args['bid']);
+		else if($this->op == 'remove') {
+			EighthBlock::remove_block($this->args['bid']);
 			redirect('eighth/ar_block');
 		}
 	}
@@ -1229,13 +1244,13 @@ private static $redo;
 	* Repair broken schedules
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	* @todo Figure out what voodoo this does
 	*/
-	public function rep_schedules($op, $args) {
+	public function rep_schedules() {
 		global $I2_SQL;
-		if($op == '') {
+		if($this->op == '') {
 			$bids = flatten($I2_SQL->query('SELECT bid FROM blocks')->fetch_all_arrays(MYSQL_NUM));
 			foreach($bids as $bid) {
 				$activity = new EighthActivity(1);
@@ -1251,18 +1266,18 @@ private static $redo;
 	* View, change, or print student schedule
 	*
 	* @access private
-	* @param string $op The operation to do.
-	* @param array $args The arguments for the operation.
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
 	*/
-	public function vcp_schedule($op, $args) {
+	public function vcp_schedule() {
 		global $I2_SQL;
-		if($op == '') {
+		if($this->op == '') {
 			$this->template = 'vcp_schedule.tpl';
-			if(!empty($args['uid'])) {
-				$this->template_args['users'] = User::id_to_user(flatten($I2_SQL->query('SELECT uid FROM user WHERE uid LIKE %d', $args['uid'])->fetch_all_arrays(Result::NUM)));
+			if(!empty($this->args['uid'])) {
+				$this->template_args['users'] = User::id_to_user(flatten($I2_SQL->query('SELECT uid FROM user WHERE uid LIKE %d', $this->args['uid'])->fetch_all_arrays(Result::NUM)));
 			}
 			else {
-				$this->template_args['users'] = User::search_info("{$args['fname']} {$args['lname']}");
+				$this->template_args['users'] = User::search_info("{$this->args['fname']} {$this->args['lname']}");
 			}
 			if(count($this->template_args['users']) == 1) {
 				redirect("eighth/vcp_schedule/view/uid/{$this->template_args['users'][0]->uid}");
@@ -1270,41 +1285,41 @@ private static $redo;
 			usort($this->template_args['users'], array('User', 'name_cmp'));
 			$this->title = 'Search Students';
 		}
-		else if($op == 'view') {
-			if(!isset($args['start_date'])) {
-				$args['start_date'] = NULL;
+		else if($this->op == 'view') {
+			if(!isset($this->args['start_date'])) {
+				$this->args['start_date'] = NULL;
 			}
-			$this->template_args['start_date'] = ($args['start_date'] ? strtotime($args['start_date']) : time());
-			$user = new User($args['uid']);
+			$this->template_args['start_date'] = ($this->args['start_date'] ? strtotime($this->args['start_date']) : time());
+			$user = new User($this->args['uid']);
 			$this->template_args['user'] = $user;
 			$this->template_args['comments'] = $user->comments;
-			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($args['uid'], $args['start_date']));
-			$this->template_args['absences'] = EighthSchedule::get_absences($args['uid']);
+			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($this->args['uid'], $this->args['start_date']));
+			$this->template_args['absences'] = EighthSchedule::get_absences($this->args['uid']);
 			$this->template_args['absence_count'] = count($this->template_args['absences']);
 			$this->template = 'vcp_schedule_view.tpl';
 			$this->title = 'View Schedule';
 		}
-		else if($op == 'format') {
-			if(!isset($args['start_date'])) {
-				$args['start_date'] = NULL;
+		else if($this->op == 'format') {
+			if(!isset($this->args['start_date'])) {
+				$this->args['start_date'] = NULL;
 			}
-			$this->setup_format_selection('vcp_schedule', 'Student Schedule', array('uid' => $args['uid']) + ($args['start_date'] ? array('start_date' => $args['start_date']) : array()), TRUE);
+			$this->setup_format_selection('vcp_schedule', 'Student Schedule', array('uid' => $this->args['uid']) + ($this->args['start_date'] ? array('start_date' => $this->args['start_date']) : array()), TRUE);
 		}
-		else if($op == 'print') {
-			EighthPrint::print_student_schedule($args['uid'], $args['start_date'], $args['format']);
+		else if($this->op == 'print') {
+			EighthPrint::print_student_schedule($this->args['uid'], $this->args['start_date'], $this->args['format']);
 		}
-		else if($op == 'choose') {
+		else if($this->op == 'choose') {
 			$valids = array();
 			$validdata = array();
-			$this->template_args['bids'] = (is_array($args['bids']) ? implode(',', $args['bids']) : $args['bids']);
+			$this->template_args['bids'] = (is_array($this->args['bids']) ? implode(',', $this->args['bids']) : $this->args['bids']);
 			/*
 			** Get only activities common to all blocks.
 			*/
-			if (is_array($args['bids'])) {
-				foreach ($args['bids'] as $bid) {
+			if (is_array($this->args['bids'])) {
+				foreach ($this->args['bids'] as $bid) {
 					$thisblock = EighthActivity::get_all_activities($bid,FALSE);
 					foreach ($thisblock as $activity) {
-						if (!isSet($valids[$activity->aid])) {
+						if (!isset($valids[$activity->aid])) {
 							$valids[$activity->aid] = 1;
 							$validdata[] = $activity;
 						}
@@ -1312,20 +1327,20 @@ private static $redo;
 				}
 				$this->template_args['activities'] = $validdata;		
 			} else {
-				$this->template_args['activities'] = EighthActivity::get_all_activities($args['bids'],FALSE);
+				$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bids'],FALSE);
 			}
-			$this->template_args['uid'] = $args['uid'];
+			$this->template_args['uid'] = $this->args['uid'];
 			$this->template = 'vcp_schedule_choose.tpl';
 			$this->title = 'Choose an Activity';
 		}
-		else if($op == 'change') {
-			if ($args['bids'] && $args['aid']) {
+		else if($this->op == 'change') {
+			if ($this->args['bids'] && $this->args['aid']) {
 				$status = array();
-				$bids = explode(',', $args['bids']);
+				$bids = explode(',', $this->args['bids']);
 				foreach($bids as $bid) {
-					if(EighthSchedule::is_activity_valid($args['aid'], $bid)) {
-						$activity = new EighthActivity($args['aid'], $bid);
-						$ret = $activity->add_member(new User($args['uid']), false);
+					if(EighthSchedule::is_activity_valid($this->args['aid'], $bid)) {
+						$activity = new EighthActivity($this->args['aid'], $bid);
+						$ret = $activity->add_member(new User($this->args['uid']), isset($args['force']));
 						$act_status = array();
 						if($ret & EighthActivity::CANCELLED) {
 							$act_status['cancelled'] = TRUE;
@@ -1352,7 +1367,7 @@ private static $redo;
 					}
 				}
 				if(count($status) == 0) {
-					redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
+					redirect("eighth/vcp_schedule/view/uid/{$this->args['uid']}");
 				}
 				$this->template = 'vcp_schedule_change.tpl';
 				$this->template_args['status'] = $status;
@@ -1361,33 +1376,23 @@ private static $redo;
 				$this->template_args['aid'] = $args['aid'];
 			}
 		}
-		else if($op == 'force_change') {
-			if ($args['bids'] && $args['aid']) {
-				//FIXME: ???
-				foreach (explode(',',$args['bids']) as $bid) {
-					$activity = new EighthActivity($args['aid'], $bid);
-					$activity->add_member(new User($args['uid']), TRUE);
-				}
-				redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
-			}
-		}
-		else if($op == 'roster') {
-			$activity = new EighthActivity($args['aid'], $args['bid']);
+		else if($this->op == 'roster') {
+			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->template_args['activity'] = $activity;
 			$this->template = 'vcp_schedule_roster.tpl';
 			$this->title = 'Activity Roster';
 		}
-		else if($op == 'absences') {
-			$absences = EighthActivity::id_to_Activity(EighthSchedule::get_absences($args['uid']));
+		else if($this->op == 'absences') {
+			$absences = EighthActivity::id_to_Activity(EighthSchedule::get_absences($this->args['uid']));
 			$this->template_args['absences'] = $absences;
 			$user = new User($args['uid']);
-			$this->template_args['uid'] = $args['uid'];
+			$this->template_args['uid'] = $this->args['uid'];
 			$this->template_args['name'] = $user->fullname_comma;
 			$this->template_args['admin'] = $this->admin;
 			$this->template = 'vcp_schedule_absences.tpl';
 		}
-		else if($op == 'remove_absence') {
-			EighthSchedule::remove_absentee($args['bid'], $args['uid']);
+		else if($this->op == 'remove_absence') {
+			EighthSchedule::remove_absentee($this->args['bid'], $this->args['uid']);
 			redirect('eighth');
 		}
 	}
@@ -1409,48 +1414,48 @@ private static $redo;
 	* Sets 8th-period comments about a user
 	*
 	*/
-	public static function set_user_comments($uid,$comments) {
+	public static function set_user_comments($uid, $comments) {
 		global $I2_SQL;
 		return $I2_SQL->query('REPLACE INTO eighth_comments (uid,comments) VALUES (%d,%s)',$uid,$comments);
 	}
 	
-	public function view($op, $args) {
+	public function view() {
 		global $I2_SQL;
-		if($op == '') {
+		if($this->op == '') {
 		}
-		else if($op == 'comments') {
+		else if($this->op == 'comments') {
 			/* Editing comments code */
 			$this->template = 'edit_comments.tpl';
-			$user = new User($args['uid']);
-			$this->template_args['uid'] = $args['uid'];
+			$user = new User($this->args['uid']);
+			$this->template_args['uid'] = $this->args['uid'];
 			$this->template_args['username'] = $user->name;
 			$comments = $user->comments;
 			$this->template_args['comments'] = $comments;
 			$this->title = 'Edit Comments';
 		}
-		else if($op == 'student') {
+		else if($this->op == 'student') {
 			/* Editing student code */
 			$this->template = 'edit_student.tpl';
-			$user = new User($args['uid']);
+			$user = new User($this->args['uid']);
 			$this->template_args['user'] = $user;
 			$this->title = 'Edit Student Data';
 		}
 	}
 
-	public function edit($op, $args) {
+	public function edit() {
 		global $I2_SQL;
-		if($op == '') {
+		if($this->op == '') {
 		}
-		else if($op == 'comments') {
+		else if($this->op == 'comments') {
 			/* Editing comments code */
-			$user = new User($args['uid']);
-			$user->comments = $args['comments'];
-			redirect('eighth/vcp_schedule/view/uid/'.$args['uid']);
+			$user = new User($this->args['uid']);
+			$user->comments = $this->args['comments'];
+			redirect('eighth/vcp_schedule/view/uid/'.$this->args['uid']);
 		}
-		else if($op == 'student') {
+		else if($this->op == 'student') {
 			/* Editing student code */
-			$user = new User($args['uid']);
-			foreach($args['eighth_user_data'] as $key => $value) {
+			$user = new User($this->args['uid']);
+			foreach($this->args['eighth_user_data'] as $key => $value) {
 				$user->$key = $value;
 			}
 		}

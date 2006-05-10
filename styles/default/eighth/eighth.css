@@ -80,28 +80,25 @@
 .eighth_sch_activity_cancel {
 	visibility: visible;
 }
-.eighth_sch_activity_list {
-	width: 100%;
-}
 .eighth_sch_activity_checkcell {
 	padding-top: 2px;
 	vertical-align: top;
 }
 .eighth_sch_activity_datecell {
-	padding: 5px 5px 5px 0px;
+	/*padding: 5px 5px 5px 0px;*/
 	vertical-align: top;
 }
 .eighth_sch_activity_datecell_unscheduled {
-	padding: 5px 5px 5px 0px;
+	/*padding: 5px 5px 5px 0px;*/
 	font-weight: bold;
 	vertical-align: top;
 }
 .eighth_sch_activity_listcell {
-	padding: 5px;
 }
 .eighth_sch_activity_comment {
 	cursor: pointer;
-	margin-bottom: 5px;
+	margin-right: 5px;
+	vertical-align: middle;
 }
 .eighth_sch_activity_propagate {
 	font-size: 10pt;
@@ -113,5 +110,31 @@
 	overflow: auto;
 	background: none;
 	font-family: sans-serif;
+	width: 100%;
+}
+#eighth_room_pane {
+	position: absolute;
+	width: 200px;
+	height: 172px;
+	border: 3px outset #000000;
+	background-color: #FFFF99;
+	text-align: center;
+	display: none;
+}
+#eighth_room_list {
+	border: none;
+	width: 100%;
+}
+#eighth_sponsor_pane {
+	position: absolute;
+	width: 200px;
+	height: 172px;
+	border: 3px outset #000000;
+	background-color: #FFFF99;
+	text-align: center;
+	display: none;
+}
+#eighth_sponsor_list {
+	border: none;
 	width: 100%;
 }

@@ -51,6 +51,9 @@ Thank you!
 %@end footer
 %@?
 foreach($activities as $activity) {
+	if($activity->aid == i2config_get('default_aid', '999', 'eighth')) {
+		continue;
+	}
 @%
 %@include header
 %@?

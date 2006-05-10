@@ -1,11 +1,11 @@
-[<include file="eighth/header.tpl">]
+[<if !isset($act)>][<include file="eighth/header.tpl">][</if>]
 <span style="font-weight: bold; font-size: 125%;">[<$title|default:"">]</span><br />
 <select name="activity_list" size="10" onChange="location.href='[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/[<$field|default:"aid">]/' + this.options[this.selectedIndex].value">
-	[<foreach from=$activities item='activity'>]
-	<option value="[<$activity->aid>]">[<$activity->aid>]: [<$activity->name_r>]</option>
-	[</foreach>]
+[<foreach from=$activities item='activity'>]
+	<option value="[<$activity->aid>]"[<if isset($act) && ($act->aid == $activity->aid)>] SELECTED[</if>]>[<$activity->aid>]: [<$activity->name_r>]</option>
+[</foreach>]
 </select>
-[<if $add >]
+[<if isset($add) >]
 <br />
 <br />
 <form action="[<$I2_ROOT>]eighth/[<$method>]/add" method="post">

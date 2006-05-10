@@ -117,7 +117,7 @@ attributetype ( i2Attr:9
 
 attributetype ( i2Attr:10
 	NAME ('eighthoffice-comments' 'comments')
-	DESC 'Comments the 8th-period office has about an activity'
+	DESC 'Comments the 8th-period office has about something'
 	EQUALITY caseIgnoreMatch
 	SYNTAX stringSyntax
 	)
@@ -584,7 +584,8 @@ objectclass ( i2OC:1
 		locker $
 		startpage $
 		soundexlast $
-		soundexfirst
+		soundexfirst $
+		comments
 	)
 	)
 

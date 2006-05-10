@@ -52,7 +52,7 @@
 			<ol>
 				<li><a href="[<$I2_ROOT>]eighth/fin_schedules"><b>Finalize student schedules</b></a></li>
 				<li><b>P+</b> <a href="[<$I2_ROOT>]eighth/prn_attendance"><b>Print activity rosters</b></a></li>
-				<li><b>*</b><a href="[<$I2_ROOT>]eighth/chg_start"><b>Change starting date</b></a></li>
+				<li><a href="[<$I2_ROOT>]eighth/chg_start"><b>Change starting date</b></a></li>
 				<li><a href="[<$I2_ROOT>]eighth/ar_block">Add or remove 8th period block from system</a></li>
 
 				<li><a href="[<$I2_ROOT>]eighth/rep_schedules">Repair broken schedules</a></li>

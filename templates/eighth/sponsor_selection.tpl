@@ -4,7 +4,7 @@
 [<foreach from=$sponsors item='sponsor'>]
 <option value="[<$sponsor.sid>]">[<$sponsor.name_comma>]</option>[</foreach>]
 </select>
-[<if $add >]
+[<if isset($add)>]
 <br />
 <br />
 <form action="[<$I2_ROOT>]eighth/[<$method>]/add" method="post">

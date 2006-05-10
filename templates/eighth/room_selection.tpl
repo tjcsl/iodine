@@ -5,7 +5,7 @@
 	<option value="[<$room.rid>]">[<$room.name>]</option>
 [</foreach>]
 </select>
-[<if $add >]
+[<if isset($add)>]
 <br />
 <br />
 <form action="[<$I2_ROOT>]eighth/[<$method>]/add" method="post">

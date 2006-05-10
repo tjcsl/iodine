@@ -1,10 +1,11 @@
 var comment_bid = -1;
+var action_bid = -1;
 function show_comment_dialog(e, bid) {
 	comment_bid = bid;
 	var dialog = document.createElement("div");
 	dialog.style.position = "absolute";
-	dialog.style.left = (e.clientX - 314) + "px";
-	dialog.style.top = e.clientY + "px";
+	dialog.style.left = (e.pageX - 314) + "px";
+	dialog.style.top = e.pageY + "px";
 	dialog.style.width = "300px";
 	dialog.style.height = "150px";
 	dialog.style.zIndex = 100;
@@ -81,14 +82,16 @@ function add_comment() {
 		comment_bid = -1;
 	}
 }
-function do_action(action, bid) {
-	var unschedule_id = document.getElementById("unschedule_" + bid);
-	var cancel_id = document.getElementById("cancel_" + bid);
-	var room_id = document.getElementById("room_" + bid);
-	var sponsor_id = document.getElementById("sponsor_" + bid);
-	var check_id = document.getElementById("check_" + bid);
-	var status_id = document.getElementById("status_" + bid);
-	var activity_status_id = document.getElementById("activity_status_" + bid);
+function do_action(action, bid, data, e) {
+	if(bid && !data) {
+		var unschedule_id = document.getElementById("unschedule_" + bid);
+		var cancel_id = document.getElementById("cancel_" + bid);
+		var room_id = document.getElementById("room_" + bid);
+		var sponsor_id = document.getElementById("sponsor_" + bid);
+		var check_id = document.getElementById("check_" + bid);
+		var status_id = document.getElementById("status_" + bid);
+		var activity_status_id = document.getElementById("activity_status_" + bid);
+	}
 	if(action == "unschedule") {
 		if(unschedule_id.innerHTML == "Unschedule") {
 			cancel_id.style.visibility = "hidden";
@@ -103,7 +106,7 @@ function do_action(action, bid) {
 		    unschedule_id.innerHTML = "Unschedule";
 		}
     }
-    else {
+    else if(action == "cancel") {
 		if(cancel_id.innerHTML == "Cancel") {
 			cancel_id.innerHTML = "Uncancel";
 			check_id.checked = !check_id.checked;
@@ -115,6 +118,40 @@ function do_action(action, bid) {
 			activity_status_id.value = "SCHEDULED";
 		}
     }
+	else if(action == "view_rooms") {
+		var room_pane = document.getElementById("eighth_room_pane");
+		room_pane.style.display = "block";
+		room_pane.style.left = (e.pageX - room_pane.offsetParent.offsetLeft) + "px";
+		room_pane.style.top = (e.pageY - room_pane.offsetParent.offsetTop) + "px";
+		action_bid = bid;
+	}
+	else if(action == "view_sponsors") {
+		var sponsor_pane = document.getElementById("eighth_sponsor_pane");
+		sponsor_pane.style.display = "block";
+		sponsor_pane.style.left = (e.pageX - sponsor_pane.offsetParent.offsetLeft) + "px";
+		sponsor_pane.style.top = (e.pageY - sponsor_pane.offsetParent.offsetTop) + "px";
+		action_bid = bid;
+	}
+	else if(action == "add_room") {
+		var rooms = document.getElementById("room_list_" + action_bid);
+		var room_list = document.getElementById("div_room_list_" + action_bid);
+		var list_of_rooms = rooms.value.split(",");
+		list_of_rooms.push(data.value);
+		rooms.value = list_of_rooms.join(",");
+		room_list.innerHTML += data.innerHTML + " <a href=\"#\" onClick=\"do_action('remove_room', 0, " + action_bid + ")\">Remove</a><br />";
+		var room_pane = document.getElementById("eighth_room_pane");
+		room_pane.style.display = "none";
+	}
+	else if(action == "add_sponsor") {
+		var sponsors = document.getElementById("sponsor_list_" + action_bid);
+		var sponsor_list = document.getElementById("div_sponsor_list_" + action_bid);
+		var list_of_sponsors = sponsors.value.split(",");
+		list_of_sponsors.push(data.value);
+		sponsors.value = list_of_sponsors.join(",");
+		sponsor_list.innerHTML += data.innerHTML + " <a href=\"#\" onClick=\"do_action('remove_sponsor', 0, " + action_bid + ")\">Remove</a><br />";
+		var sponsor_pane = document.getElementById("eighth_sponsor_pane");
+		sponsor_pane.style.display = "none";
+	}
 }
 function CA() {
     var trk = 0;

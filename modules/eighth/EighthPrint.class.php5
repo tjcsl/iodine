@@ -79,6 +79,7 @@ class EighthPrint {
 	public static function print_attendance_data($aid, $bid, $format = "print") {
 		$activity = new EighthActivity($aid, $bid);
 		$output = self::latexify("attendance_data");
+		return;
 		ob_start();
 		eval($output);
 		$output = ob_get_clean();
@@ -293,7 +294,7 @@ class EighthPrint {
 				$incode = false;
 			}
 			else {
-				$line = preg_replace('/%@(.*?)@%/', '\' . $1 . \'', $line);
+				$line = preg_replace('/%@(.*?)@%/', '\' . strtr($1, array(\'&\' => \'\&\', \'%\' => \'\%\', \'{\' => \'\{\', \'}\' => \'\}\', \'_\' => \'\_\', \'#\' => \'\#\')) . \'', $line);
 				$line = strtr($line, array('\\' => '\\\\'));
 				if(count($currsections) == 0) {
 					if($incode) {
