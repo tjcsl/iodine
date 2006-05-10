@@ -205,6 +205,8 @@ class User {
 				return $this->__get('middlename');
 			case 'uid':
 				return $this->__get('iodineUidNumber');
+			case 'comments':
+				return $this->__get('description');
 			case 'username':
 				return $this->__get('iodineUid');
 			/*case 'iodineUid':
@@ -305,6 +307,22 @@ class User {
 		/*if (!$this->username) {
 			throw new I2Exception('User entries without usernames cannot be modified!');
 		}*/
+
+		switch ($name) {
+			case 'comments':
+				$this->__set('description',$val,$ldap);
+				return;
+			case 'phone_cell':
+				$this->__set('mobile',$val,$ldap);
+				return;
+			case 'phone_home':
+				$this->__set('homePhone',$val,$ldap);
+				return;
+			case 'phone_other':
+				$this->__set('phoneNumber',$val,$ldap);
+				return;
+		}
+		
 		$ldap->modify_val("iodineUid={$this->username},ou=people",$name,$val);
 	}
 
