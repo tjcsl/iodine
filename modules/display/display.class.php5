@@ -396,7 +396,7 @@ class Display {
 	public function open_content_pane($args) {
 		global $I2_USER;
 		$numboxes = count(Intrabox::get_user_boxes($I2_USER->uid));
-		if ($I2_USER->header) {
+		if ($I2_USER->header=='TRUE') {
 			if ($numboxes > 0) {
 				$args['mainbox_class'] = 'mainbox';
 			} else {

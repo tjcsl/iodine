@@ -16,7 +16,7 @@
 class TopBar {
 	public static function display($disp, $chrome) {
 		global $I2_USER;
-		if($I2_USER->header && $chrome) {
+		if($I2_USER->header=='TRUE' && $chrome) {
 			$date = EighthSchedule::get_next_date();
 			$activites = array();
 			if($date) {
