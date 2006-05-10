@@ -72,7 +72,16 @@ class EighthSchedule {
 	public static function add_absentee($blockid, $userid) {
 		global $I2_SQL;
 		Eighth::check_admin();
-		$result = $I2_SQL->query('REPLACE INTO eighth_absentees (bid,userid) VALUES (%d,%d)', $blockid, $userid);
+		$old = $I2_SQL->query('SELECT userid FROM eighth_absentees WHERE bid=%d AND userid=%d',$blockid,$userid)->fetch_single_value();
+		if ($old) {
+			//nothing to do
+			return;
+		}
+		$query = 'REPLACE INTO eighth_absentees (bid,userid) VALUES (%d,%d)';
+		$queryarg = array($blockid,$userid);
+		$I2_SQL->query($query, $queryarg);
+		$invquery = 'DELETE FROM eighth_absentees WHERE bid=%d AND userid=%d';
+		Eighth::push_undoable($query,$queryarg,$invquery,$queryarg,'Add Absentee');
 	}
 
 	/**
@@ -85,7 +94,16 @@ class EighthSchedule {
 	public static function remove_absentee($blockid, $userid) {
 		global $I2_SQL;
 		Eighth::check_admin();
-		$result = $I2_SQL->query('DELETE FROM eighth_absentees WHERE bid=%d AND userid=%d', $blockid, $userid);
+		$old = $I2_SQL->query('SELECT userid FROM eighth_absentees WHERE bid=%d AND userid=%d', $blockid, $userid)->fetch_single_value();
+		if (!$old) {
+			// Absentee not present
+			return;
+		}
+		$query = 'DELETE FROM eighth_absentees WHERE bid=%d AND userid=%d';
+		$queryarg = array($blockid, $userid);
+		$result = $I2_SQL->query($query,$queryarg);
+		$invquery = 'INSERT INTO eighth_absentees (bid,userid) VALUES(%d,%d)';
+		Eighth::push_undoable($query,$queryarg,$invquery,$queryarg,'Remove Absentee');
 	}
 
 	/**
