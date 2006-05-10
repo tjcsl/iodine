@@ -60,6 +60,11 @@ class Eighth implements Module {
 	*/
 	private static $redo;
 
+	/**
+	* Whether to force an action
+	*/
+	private $force = FALSE;
+
 	function __construct() {
 		if (isSet($_SESSION['eighth_start_date'])) {
 			$this->start_date = $_SESSION['eighth_start_date'];
@@ -78,12 +83,7 @@ class Eighth implements Module {
 		}
 	}
 
-	/**
-	* Undo a change (catastrophe?) within the eighth-period system.
-	* 
-	* @return bool TRUE if a change was undone, FALSE otherwise. 
-	*/
-	public static function undo() {
+	private static function undo() {
 			  if (count(self::$undo) == 0) {
 						 /*
 						 ** Nothing to undo
@@ -105,40 +105,60 @@ class Eighth implements Module {
 		$I2_SQL->query_arr($query,$args);
 	}
 
-	public static function undo_transaction() {
-		while (self::get_undo_name()) {
-			self::undo();
-		}
-		if (count(self::$undo) > 0) {
-			array_pop(self::$undo);
-			//array_pop($_SESSION['eighth_undo']);
-		}
-	}
-
 	public static function redo_transaction() {
-		while (self::get_redo_name()) {
+		$name = self::get_redo_name();
+		if ($name != 'TRANSACTION_END') {
+			// Last action was a single-action transaction
 			self::redo();
+			return;
+		}
+		self::start_undo_transaction();
+		array_pop(self::$redo);
+		while ($name && $name != 'TRANSACTION_START') {
+			self::redo();
+			$name = self::get_redo_name();
 		}
 		if (count(self::$redo) > 0) {
 			array_pop(self::$redo);
-			//array_pop($_SESSION['eighth_redo']);
+		}
+		self::end_undo_transaction();
+	}
+	
+	public static function undo_transaction() {
+		$name = self::get_undo_name();
+		if ($name != 'TRANSACTION_END') {
+			// Last action was a single-action transaction
+			self::undo();
+			return;
+		}
+		self::start_redo_transaction();
+		array_pop(self::$undo);
+		while ($name && $name != 'TRANSACTION_START') {
+			self::undo();
+			$name = self::get_undo_name();
+		}
+		if (count(self::$undo) > 0) {
+			array_pop(self::$undo);
 		}
 	}
 
+	public static function start_undo_transaction() {
+		array_push(self::$undo,array(NULL,NULL,NULL,NULL,'TRANSACTION_START'));
+	}
+	
+	private static function start_redo_transaction() {
+		array_push(self::$redo,array(NULL,NULL,NULL,NULL,'TRANSACTION_START'));
+	}
+	
 	public static function end_undo_transaction() {
-		array_push(self::$undo,array(NULL,NULL,NULL,NULL,FALSE));
+		array_push(self::$undo,array(NULL,NULL,NULL,NULL,'TRANSACTION_END'));
 	}
 
-	public static function end_redo_transaction() {
-		array_push(self::$redo,array(NULL,NULL,NULL,NULL,FALSE));
+	private static function end_redo_transaction() {
+		array_push(self::$redo,array(NULL,NULL,NULL,NULL,'TRANSACTION_END'));
 	}
 
-	/**
-	* Redo something within the eighth-period system which was undone.
-	* 
-	* @return bool TRUE if a change was redone, FALSE otherwise. 
-	*/
-	public static function redo() {
+	private static function redo() {
 			  if (count(self::$redo) == 0) {
 						 /*
 						 ** Nothing to redo
@@ -193,26 +213,32 @@ class Eighth implements Module {
 			$this->template = 'pane.tpl';
 			$this->template_args['help'] = '<h2>8th Period Office Online Menu</h2>From here you can choose a number of operations to administrate the eighth period system.';
 			return 'Eighth Period Office Online: Home';
-		}
-		else if(count($I2_ARGS) == 2 || (count($I2_ARGS) % 2) != 0) {
-			$method = $I2_ARGS[1];
-			$op = (count($I2_ARGS) > 2 ? $I2_ARGS[2] : '');
-			for($i = 3; $i < count($I2_ARGS); $i += 2) {
-				$args[$I2_ARGS[$i]] = $I2_ARGS[$i + 1];
+		} else {
+			if ($I2_ARGS[1] == 'force') {
+				$this->force = TRUE;
+				// Remove 'force' from the arg string and get on with life
+				array_splice($I2_ARGS,1,1);
 			}
-			$args += $_POST;
-			if(method_exists($this, $method)) {
-				$this->$method($op, $args);
-				$this->template_args['method'] = $method;
-				$this->template_args['help'] = $this->help_text;
-				if ($this->admin) {
-					return "Eighth Period Office Online: {$this->title}";
-				} else {
-					return "Eighth Period Online: {$this->title}";
+			if(count($I2_ARGS) == 2 || (count($I2_ARGS) % 2) != 0) {
+				$method = $I2_ARGS[1];
+				$op = (count($I2_ARGS) > 2 ? $I2_ARGS[2] : '');
+				for($i = 3; $i < count($I2_ARGS); $i += 2) {
+					$args[$I2_ARGS[$i]] = $I2_ARGS[$i + 1];
 				}
-			}
-			else {
-				return array("Eighth Period Online: ERROR - SubModule Doesn't Exist");
+				$args += $_POST;
+				if(method_exists($this, $method)) {
+					$this->$method($op, $args);
+					$this->template_args['method'] = $method;
+					$this->template_args['help'] = $this->help_text;
+					if ($this->admin) {
+						return "Eighth Period Office Online: {$this->title}";
+					} else {
+						return "Eighth Period Online: {$this->title}";
+					}
+				}
+				else {
+					return array("Eighth Period Online: ERROR - SubModule Doesn't Exist");
+				}
 			}
 		}
 		return array('Error', 'Error');
@@ -457,9 +483,9 @@ class Eighth implements Module {
 	private function undoit($op,$args) {
 			  global $I2_ARGS;
 			  if ($op == 'undo') {
-						 self::undo();
+						 self::undo_transaction();
 			  } else if ($op == 'redo') {
-						 self::redo();
+						 self::redo_transaction();
 			  } else if ($op == 'clear') {
 			  			self::clear_stack();
 			  } else {
@@ -1312,14 +1338,20 @@ class Eighth implements Module {
 				if(count($status) == 0) {
 					redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
 				}
-				$this->template = "vcp_schedule_change.tpl";
+				$this->template = 'vcp_schedule_change.tpl';
 				$this->template_args['status'] = $status;
+				$this->template_args['uid'] = $args['uid'];
+				$this->template_args['bids'] = $args['bids'];
+				$this->template_args['aid'] = $args['aid'];
 			}
 		}
 		else if($op == 'force_change') {
-			if ($args['bid'] && $args['aid']) {
-				$activity = new EighthActivity($args['aid'], $args['bid']);
-				$activity->add_member(new User($args['uid']), true);
+			if ($args['bids'] && $args['aid']) {
+				//FIXME: ???
+				foreach (explode(',',$args['bids']) as $bid) {
+					$activity = new EighthActivity($args['aid'], $bid);
+					$activity->add_member(new User($args['uid']), TRUE);
+				}
 				redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
 			}
 		}
