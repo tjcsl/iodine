@@ -62,6 +62,14 @@ class Error {
 			d('LDAP search performed for invalid object',5);
 			return;
 		}
+		
+		/*
+		** ... AND invalid DN syntax errors, generally caused by having a null in the IodineUID
+		*/
+		if (strpos($errstr,'Search: Invalid DN syntax')) {
+			d('LDAP search performed with invalid DN syntax',4);
+			return;
+		}
 
 		/*
 		** ...AND those annoying variable deprecation warnings, usually from Smarty.
