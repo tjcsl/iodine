@@ -154,7 +154,7 @@ class IntraBox {
 
 		$openclass = null;
 
-		if ($I2_USER->header) {
+		if ($I2_USER->header=='TRUE') {
 			$openclass = 'boxes';
 		} else {
 			$openclass = 'boxes_noheader';
