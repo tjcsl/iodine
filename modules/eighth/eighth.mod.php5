@@ -422,8 +422,8 @@ private static $redo;
 			$this->template_args['add'] = TRUE;
 		}
 		$this->template_args['title'] = $title;
-		$this->title = "Select a Room";
-		$this->help_text = "Select a Room";
+		$this->title = 'Select a Room';
+		$this->help_text = 'Select a Room';
 	}
 
 	/**
@@ -433,16 +433,16 @@ private static $redo;
 	* @param bool $add Whether to include the add field or not.
 	* @param string $title The title for the sponsor list.
 	*/
-	private function setup_sponsor_selection($add = FALSE, $title = "Select a sponsor:") {
+	private function setup_sponsor_selection($add = FALSE, $title = 'Select a sponsor:') {
 		$sponsors = EighthSponsor::get_all_sponsors();
-		$this->template = "sponsor_selection.tpl";
+		$this->template = 'sponsor_selection.tpl';
 		$this->template_args['sponsors'] = $sponsors;
 		if($add) {
 			$this->template_args['add'] = TRUE;
 		}
 		$this->template_args['title'] = $title;
-		$this->title = "Select a Sponsor";
-		$this->help_text = "Select a Sponsor";
+		$this->title = 'Select a Sponsor';
+		$this->help_text = 'Select a Sponsor';
 	}
 	
 	/**
@@ -451,8 +451,8 @@ private static $redo;
 	* @access private
 	* @param string $module The module that we are printing from.
 	*/
-	private function setup_format_selection($module, $title = "", $args = array(), $user = FALSE) {
-		$this->template = "format_selection.tpl";
+	private function setup_format_selection($module, $title = '', $args = array(), $user = FALSE) {
+		$this->template = 'format_selection.tpl';
 		$this->template_args['module'] = $module;
 		$this->template_args['title'] = $title;
 		$this->template_args['user'] = $user;
@@ -483,11 +483,11 @@ private static $redo;
 			$this->template_args['op'] = "group/bid/{$this->args['bid']}";
 			return "Select an activity";
 		}
-		else if($this->op == "group") {
+		else if($this->op == 'group') {
 			$this->setup_group_selection();
 			$this->template_args['op'] = "commit/bid/{$this->args['bid']}/aid/{$this->args['aid']}";
 		}
-		else if($this->op == "commit") {
+		else if($this->op == 'commit') {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$group = new Group($this->args['gid']);
 			$activity->add_members($group->members);

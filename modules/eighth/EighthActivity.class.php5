@@ -633,7 +633,7 @@ class EighthActivity {
 					if(!is_array($value)) {
 						$value = array($value);
 					}
-					$oldval = $I2_SQL->query("SELECT $name FROM eighth_activities WHERE aid=%d",$this->data['aid'],$this->data[)->fetch_single_value();
+					$oldval = $I2_SQL->query("SELECT $name FROM eighth_activities WHERE aid=%d",$this->data['aid'])->fetch_single_value();
 					$query = "UPDATE eighth_activities SET $name='%D' WHERE aid=%d";
 					$queryarg = array($value, $this->data['aid']);
 					$result = $I2_SQL->query_arr($query,$queryarg);
@@ -643,7 +643,7 @@ class EighthActivity {
 					Eighth::push_undoable($query,$queryarg,$query,$invarg,"Change Activity $name");
 					return;
 				case 'description':
-					$oldval = $I2_SQL->query("SELECT $name FROM eighth_activities WHERE aid=%d",$this->data['aid'],$this->data[)->fetch_single_value();
+					$oldval = $I2_SQL->query("SELECT $name FROM eighth_activities WHERE aid=%d",$this->data['aid'])->fetch_single_value();
 					$query = 'UPDATE eighth_activities SET description=%s WHERE aid=%d';
 					$queryarg = array($value, $this->data['aid']);
 					$result = $I2_SQL->query_arr($query,$queryarg);
