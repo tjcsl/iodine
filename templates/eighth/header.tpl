@@ -40,7 +40,11 @@
 		</tr>
 	</table>
 </form>
-<div style="text-align: right; font: 14pt bold;"><a href="[<$I2_ROOT>]eighth/undoit/undo/[<$argstr>]">Undo</a> <a href="[<$I2_ROOT>]eighth/undoit/redo/[<$argstr>]">Redo</a></div>
+<div style="text-align: right; font: 12pt bold;">
+	[<if $last_undo>]<a href="[<$I2_ROOT>]eighth/undoit/undo/[<$argstr>]">Undo [<$last_undo>]</a><br/>[</if>]
+	[<if $last_redo>]<a href="[<$I2_ROOT>]eighth/undoit/redo/[<$argstr>]">Redo [<$last_redo>]</a><br/>[</if>]
+	[<if $last_redo || $last_undo>]<a href="[<$I2_ROOT>]eighth/undoit/clear/[<$argstr>]">Clear undo stack</a>[</if>]
+</div>
 <script language="javascript" type="text/javascript">
 	document.scheduleform.uid.focus();
 </script>

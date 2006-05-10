@@ -67,12 +67,12 @@ class Eighth implements Module {
 			$this->start_date = date('Y-m-d');
 		}
 		if (isSet($_SESSION['eighth_undo'])) {
-				  self::$undo = $_SESSION['eighth_undo'];
+				  self::$undo = &$_SESSION['eighth_undo'];
 		} elseif (!self::$undo) {
 				  self::$undo = array();
 		}
 		if (isSet($_SESSION['eighth_redo'])) {
-				  self::$redo = $_SESSION['eighth_redo'];
+				  self::$redo = &$_SESSION['eighth_redo'];
 		} elseif (!self::$redo) {
 				  self::$redo = array();
 		}
@@ -90,33 +90,47 @@ class Eighth implements Module {
 						 */
 						 return FALSE;
 			  }
-			  $undoandredo = array_shift($this->undo);
-			  $undolist = $undoandredo[0];
-			  $redo = $undoandredo[1];
-			  self::undo_exec($undolist);
-			  self::$redo[] = array($undolist,$redo);
+			  $undoandredo = array_pop(self::$undo);
+			  //array_pop($_SESSION['eighth_redo']);
+			  self::undo_exec($undoandredo[0],$undoandredo[1]);
+			  array_push(self::$redo,$undoandredo);
+			  //array_push($_SESSION['eighth_redo'],$undoandredo);
 	}
 
 	/**
 	* Helper for undo() and redo(), which are rather similiar.
 	*/
-	private static function undo_exec($list) {
-			  $func = array_shift($list);
-			  $evstr = $func;
-			  $argstr = '';
-			  if (count($list) > 0) {
-				  $firstarg = array_shift($list);
-				  $args = array();
-				  $ct = 0;
-				  foreach ($list as $arg) {
-						$args[] = $arg;
-						$argstr .= ',$args['.$ct.']';
-				  }
-			  }
-			  $cmd = $func.'('.$argstr.');';
-			  d('Undo/redo params: '.print_r($args,1),6);
-			  d("Undo/redo executing: $cmd",6);
-			  eval($cmd);
+	private static function undo_exec($query,$args) {
+		global $I2_SQL;
+		$I2_SQL->query_arr($query,$args);
+	}
+
+	public static function undo_transaction() {
+		while (self::get_undo_name()) {
+			self::undo();
+		}
+		if (count(self::$undo) > 0) {
+			array_pop(self::$undo);
+			//array_pop($_SESSION['eighth_undo']);
+		}
+	}
+
+	public static function redo_transaction() {
+		while (self::get_redo_name()) {
+			self::redo();
+		}
+		if (count(self::$redo) > 0) {
+			array_pop(self::$redo);
+			//array_pop($_SESSION['eighth_redo']);
+		}
+	}
+
+	public static function end_undo_transaction() {
+		array_push(self::$undo,array(NULL,NULL,NULL,NULL,FALSE));
+	}
+
+	public static function end_redo_transaction() {
+		array_push(self::$redo,array(NULL,NULL,NULL,NULL,FALSE));
 	}
 
 	/**
@@ -131,57 +145,37 @@ class Eighth implements Module {
 						 */
 						 return FALSE;
 			  }
-			  $undoandredo = array_shift(self::$undo);
-			  $undolist = $undoandredo[0];
-			  $redo = $undoandredo[1];
-			  $this->undo_exec($redo);
-			  self::$undo[] = array($undolist,$redo);
+			  $undoandredo = array_pop(self::$redo);
+			  //array_pop($_SESSION['eighth_redo']);
+			  self::undo_exec($undoandredo[2],$undoandredo[3]);
+			  array_push(self::$undo,$undoandredo);
+			  //array_push($_SESSION['eighth_undo'],$undoandredo);
 	}
 
 	/**
 	* Register an undoable action with the eighth-period undo system.
 	*
-	* @param array $undolist An array with first element equal to the
-	* 					name of the undo function (with any appropriate prefixes)
-	* 					and remaining parameters set to the call arguments
-	* @param array $redolist As $undolist, but equal and opposite.
 	*/
-	public static function push_undoable($undolist, $redolist) {
-			  self::$undo[] = array($undolist,$redolist);
+	public static function push_undoable($undoquery, $undoarr, $redoquery, $redoarr, $name='Unknown Action') {
+			$undo = array($redoquery,$redoarr,$undoquery,$undoarr,$name);
+			array_push(self::$undo,$undo);
+			//array_push($_SESSION['eighth_undo'],$undo);
 	}
 
-	private static function query_inverse(MySQLResult $res) {
-			  global $I2_SQL;
-			  $type = $res->get_query_type();
-			  $table = $res->get_query_table();
-			  if ($type == MySQL::SELECT) {
-						 //Undelete or unupdate
-						 $row = $res->fetch_array(Result::ASSOC);
-						 $keys = array_keys($row);
-						 $query = 'REPLACE INTO '.$table.'(';
-						 $key = array_shift($keys);
-						 $query .= $key;
-						 foreach ($keys as $key) {
-									$query .= ','.$key;
-						 }
-						 $query .= ') VALUES(';
-						 $vals = array_values($row);
-						 $val = array_shift($vals);
-						 $query .= '%?';
-						 foreach ($vals as $val) {
-								$query .= ','.$val;
-						 }
-						 $query .= ')';
-						 while ($row) {
-									$vals = array_values($row);
-						 			$I2_SQL->query_arr($query,$vals);
-									$row = $res->fetch_array(Result::ASSOC);
-						 }
-			  } else if ($type == MySQL::INSERT || $type == MySQL::REPLACE) {
-						 //Uninsert
-			  } else {
-						 throw new I2Exception('Unknown query type inversion attempted!');
-			  }
+	public static function get_undo_name() {
+		$ct = count(self::$undo);
+		if ($ct < 1) {
+			return FALSE;
+		}
+		return self::$undo[$ct-1][4];
+	}
+
+	public static function get_redo_name() {
+		$ct = count(self::$redo);
+		if ($ct < 1) {
+			return FALSE;
+		}
+		return self::$redo[$ct-1][4];
 	}
 
 	/**
@@ -231,6 +225,8 @@ class Eighth implements Module {
 			  global $I2_ARGS;
 			  $argstr = implode('/',array_slice($I2_ARGS,1));
 			  $this->template_args['argstr'] = $argstr;
+			  $this->template_args['last_undo'] = self::get_undo_name();
+			  $this->template_args['last_redo'] = self::get_redo_name();
 		$display->disp($this->template, $this->template_args);
 	}
 
@@ -447,12 +443,25 @@ class Eighth implements Module {
 		}
 	}
 
+	/**
+	* Clears the undo and redo stacks
+	*
+	*/
+	public static function clear_stack() {
+		$_SESSION['eighth_undo'] = array();
+		self::$undo = array();
+		$_SESSION['eighth_redo'] = array();
+		self::$redo = array();
+	}
+
 	private function undoit($op,$args) {
 			  global $I2_ARGS;
 			  if ($op == 'undo') {
 						 self::undo();
 			  } else if ($op == 'redo') {
 						 self::redo();
+			  } else if ($op == 'clear') {
+			  			self::clear_stack();
 			  } else {
 						 redirect('eighth');
 			  }

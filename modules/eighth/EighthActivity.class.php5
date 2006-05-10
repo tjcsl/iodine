@@ -101,8 +101,19 @@ class EighthActivity {
 			$ret |= EighthActivity::PRESIGN;
 		}
 		if(!$ret || $force) {
-			$result = $I2_SQL->query('REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES (%d,%d,%d)', $this->data['aid'], $blockid, $userid);
-			//Eighth::push_undo($result);
+			$bid = $this->data['bid'];
+			$prevaid = $I2_SQL->query('SELECT aid FROM eighth_activity_map WHERE bid=%d and userid=%d',$bid,$userid)->fetch_single_value();
+			$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES (%d,%d,%d)';
+			$args = array($this->data['aid'],$blockid,$userid);
+			$result = $I2_SQL->query_arr($query, $args);
+			if (!$prevaid) {
+				$inverse = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d';
+				$invargs = $args;
+			} else {
+				$inverse = 'UPDATE eighth_activity_map SET aid=%d WHERE bid=%d AND userid=%d';
+				$invargs = array($prevaid,$bid,$userid);
+			}
+			Eighth::push_undoable($query,$args,$inverse,$invargs,'User Schedule Change');
 			if(mysql_error()) {
 				$ret = -1;
 			}
