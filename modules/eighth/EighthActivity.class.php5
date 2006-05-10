@@ -463,14 +463,23 @@ class EighthActivity {
 		}
 		$result = NULL;
 		if ($aid === NULL) {
-			$result = $I2_SQL->query("REPLACE INTO eighth_activities (name,sponsors,rooms,description,restricted,sticky,bothblocks,presign) 
-				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d)", 
-				$name, $sponsors, $rooms, $description, ($restricted?1:0),($sticky?1:0),($bothblocks?1:0),($presign?1:0));
+			$query = "REPLACE INTO eighth_activities (name,sponsors,rooms,description,restricted,sticky,bothblocks,presign) 
+				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d)";
+			$queryarg = array($name, $sponsors, $rooms, $description, ($restricted?1:0),($sticky?1:0),($bothblocks?1:0),($presign?1:0));
+			$result = $I2_SQL->query_arr($query,$queryarg);
+			$invquery = 'DELETE FROM eighth_activities WHERE aid=%d';
+			$newid = $result->get_insert_id();
+			$invarg = array($newid);
+			Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Create Activity');
 		} else {
-			$result = $I2_SQL->query("REPLACE INTO eighth_activities 
+			$old = $I2_SQL->query('SELECT * FROM eighth_activities WHERE aid=%d',$aid)->fetch_array(MySQL::ASSOC);
+			$query = "REPLACE INTO eighth_activities 
 				(name,sponsors,rooms,description,restricted,sticky,bothblocks,presign,aid) 
-				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d,%d)", 
-				$name, $sponsors, $rooms, $description, ($restricted?1:0),($sticky?1:0),($bothblocks?1:0),($presign?1:0),$aid);
+				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d,%d)";
+			$queryarg = array($name, $sponsors, $rooms, $description, ($restricted?1:0),($sticky?1:0),($bothblocks?1:0),($presign?1:0),$aid);
+			$result = $I2_SQL->query_arr($query,$queryarg);
+			$invarg = array($old['name'],$old['sponsors'],$old['rooms'],$old['description'],$old['restricted'],$old['sticky'],$old['bothblocks'],$old['presign'],$old['aid']);
+			Eighth::push_undoable($query,$queryarg,$query,$invarg);
 		}
 		return $result->get_insert_id();
 	}
@@ -484,8 +493,29 @@ class EighthActivity {
 	public static function remove_activity($activityid) {
 		global $I2_SQL;
 		Eighth::check_admin();
-		$result = $I2_SQL->query('DELETE FROM eighth_activities WHERE aid=%d', $activityid);
-		// TODO: Deal with the problems of deleting an activity
+		Eighth::start_undo_transaction();
+		$old = $I2_SQL->query('SELECT * FROM eighth_activities WHERE aid=%d', $activityid)->fetch_array(Result::ASSOC);
+		$query = 'DELETE FROM eighth_activities WHERE aid=%d';
+		$queryarg = array($activityid);
+		$I2_SQL->query_arr($query,$queryarg);
+		$invquery = "REPLACE INTO eighth_activities 
+				(name,sponsors,rooms,description,restricted,sticky,bothblocks,presign,aid) 
+				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d,%d)";
+		$invarg = array($old['name'],$old['sponsors'],$old['rooms'],$old['description'],$old['restricted'],$old['sticky'],$old['bothblocks'],$old['presign'],$old['aid']);
+		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Delete Activity');
+		$people = $I2_SQL->query('SELECT bid,userid FROM eighth_activity_map WHERE aid=%d',$activityid);
+		$defaid = i2config_get('default_aid',999,'eighth');
+		/*
+		** Move all affected students into the default activity
+		*/
+		while ($row = $people->fetch_array(Result::ASSOC)) {
+			$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
+			$queryarg = array($defaid,$row['bid'],$row['userid']);
+			$I2_SQL->query_arr($query,$queryarg);
+			$invarg = array($activityid,$row['bid'],$row['userid']);
+			Eighth::push_undoable($query,$queryarg,$query,$invarg,'Delete Activity [displace student]');
+		}
+		Eighth::end_undo_transaction();
 	}
 
 	/**
@@ -532,7 +562,7 @@ class EighthActivity {
 					foreach($sponsors as $sponsor) {
 						$temp_sponsors[] = $sponsor->name;
 					}
-					return implode(", ", $temp_sponsors);
+					return implode(', ', $temp_sponsors);
 				case 'block_sponsors_comma':
 					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
 					$temp_sponsors = array();
@@ -588,62 +618,88 @@ class EighthActivity {
 		global $I2_SQL;
 		Eighth::check_admin();
 		if($name == 'name') {
-			$result = $I2_SQL->query('UPDATE eighth_activities SET name=%s WHERE aid=%d', $value, $this->data['aid']);
+			$oldname = $I2_SQL->query('SELECT name FROM eighth_activities WHERE aid=%d',$this->data['aid'])->fetch_single_value();
+			$query = 'UPDATE eighth_activities SET name=%s WHERE aid=%d';
+			$queryarg = array($value, $this->data['aid']);
+			$result = $I2_SQL->query_arr($query,$queryarg);
+			$invarg = array($oldname, $this->data['aid']);
+			Eighth::push_undoable($query,$queryarg,$query,$invarg,'Change Activity Name');
 			$this->data['name'] = $value;
 		}
 		else {
+			if ($name == 'sponsors' || $name == 'rooms' || $name == 'description') {
+				$oldval = $I2_SQL->query("SELECT $name FROM eighth_activities WHERE aid=%d",$this->data['aid'],$this->data[)->fetch_single_value();
+				$invarg = array($oldval,$this->data['aid']);
+			}
 			switch($name) {
 				case 'sponsors':
 					if(!is_array($value)) {
 						$value = array($value);
 					}
-					$result = $I2_SQL->query("UPDATE eighth_activities SET sponsors='%D' WHERE aid=%d", $value, $this->data['aid']);
+					$query = "UPDATE eighth_activities SET sponsors='%D' WHERE aid=%d";
+					$queryarg = array($value, $this->data['aid']);
+					$result = $I2_SQL->query_arr($query,$queryarg);
 					$this->data['sponsors'] = $value;
+					Eighth::push_undoable($query,$queryarg,$query,$invarg,'Change Activity Sponsors');
 					return;
 				case 'rooms':
 					if(!is_array($value)) {
 						$value = array($value);
 					}
-					$result = $I2_SQL->query("UPDATE eighth_activities SET rooms='%D' WHERE aid=%d", $value, $this->data['aid']);
+					$query = "UPDATE eighth_activities SET rooms='%D' WHERE aid=%d";
+					$queryarg = array($value, $this->data['aid']);
+					$result = $I2_SQL->query_arr($query,$queryarg); 
 					$this->data['rooms'] = $value;
+					Eighth::push_undoable($query,$queryarg,$query,$invarg,'Change Activity Rooms');
 					return;
 				case 'description':
-					$result = $I2_SQL->query('UPDATE eighth_activities SET description=%s WHERE aid=%d', $value, $this->data['aid']);
+					$query = 'UPDATE eighth_activities SET description=%s WHERE aid=%d';
+					$queryarg = array($value, $this->data['aid']);
+					$result = $I2_SQL->query_arr($query,$queryarg);
 					$this->data['description'] = $value;
+					Eighth::push_undoable($query,$queryarg,$query,$invarg,'Change Activity Description');
 					return;
 				case 'restricted':
-					$result = $I2_SQL->query("UPDATE eighth_activities SET restricted=%d WHERE aid=%d", (int)$value, $this->data['aid']);
-					$this->data['restricted'] = $value;
-					return;
+				case 'oneaday':
+				case 'bothblocks':
+				case 'sticky':
 				case 'presign':
-					$result = $I2_SQL->query('UPDATE eighth_activities SET presign=%d WHERE aid=%d', (int)$value, $this->data['aid']);
-					$this->data['presign'] = $value;
+					if ($this->data[$name] == $value) {
+						return;
+					}
+					$query = "UPDATE eighth_activities SET $name=%d WHERE aid=%d";
+					$queryarg = array((int)$value, $this->data['aid']);
+					$result = $I2_SQL->query_arr($query,$queryarg);
+					$this->data[$name] = $value;
+					$name = ucFirst($name);
+					$invarg = array($value?0:1,$this->data['aid']);
+					Eighth::push_undoable($query,$queryarg,$query,$invarg,"Change $name Status");
 					return;
-				case "oneaday":
-					$result = $I2_SQL->query("UPDATE eighth_activities SET oneaday=%d WHERE aid=%d", (int)$value, $this->data['aid']);
-					$this->data['oneaday'] = $value;
-					return;
-				case "bothblocks":
-					$result = $I2_SQL->query("UPDATE eighth_activities SET bothblocks=%d WHERE aid=%d", (int)$value, $this->data['aid']);
-					$this->data['bothblocks'] = $value;
-					return;
-				case "sticky":
-					$result = $I2_SQL->query("UPDATE eighth_activities SET sticky=%d WHERE aid=%d", (int)$value, $this->data['aid']);
-					$this->data['sticky'] = $value;
-					return;
-				case "cancelled":
-					$result = $I2_SQL->query("UPDATE eighth_block_map SET cancelled=%d WHERE bid=%d AND activityid=%d", (int)$value, $this->data['bid'], $this->data['aid']);
+				case 'cancelled':
+					if ($this->data['cancelled'] == $value) {
+						//Nothing to do
+						return;
+					}
+					$query = 'UPDATE eighth_block_map SET cancelled=%d WHERE bid=%d AND activityid=%d';
+					$queryarg = array((int)$value, $this->data['bid'], $this->data['aid']);
+					$result = $I2_SQL->query_arr($query,$queryarg); 					
 					$this->data['cancelled'] = $value;
+					// Invert value - we checked for equality earlier
+					$invarg = array($value ? 0 : 1, $this->data['bid'], $this->data['aid']);
+					Eighth::push_undoable($query,$queryarg,$query,$invarg,'Cancel Activity');
 					return;
-				case "comment":
-					$result = $I2_SQL->query("UPDATE eighth_block_map SET comment=%s WHERE bid=%d AND activityid=%d", $value, $this->data['bid'], $this->data['aid']);
-					$this->data['comment'] = $value;
+				case 'comment':
+				case 'advertisement':
+					$oldval = $I2_SQL->query("SELECT $name FROM eighth_block_map WHERE bid=%d AND activityid=%d",$this->data['bid'],$this->data['aid'])->fetch_single_value();
+					$query = "UPDATE eighth_block_map SET $name=%s WHERE bid=%d AND activityid=%d";
+					$queryarg = array($value, $this->data['bid'], $this->data['aid']);
+					$result = $I2_SQL->query_arr($query, $queryarg);
+					$this->data[$name] = $value;
+					$invarg = array($oldval, $this->data['bid'], $this->data['aid']);
+					$name = ucFirst($name);
+					Eighth::push_undoable($query,$queryarg,$query,$invarg,"Change Activity $name");
 					return;
-				case "advertisement":
-					$result = $I2_SQL->query("UPDATE eighth_block_map SET advertisement=%s WHERE bid=%d AND activityid=%d", $value, $this->data['bid'], $this->data['aid']);
-					$this->data['advertisement'] = $value;
-					return;
-				case "attendancetaken":
+				case 'attendancetaken':
 					$result = $I2_SQL->query("UPDATE eighth_block_map SET attendancetaken=%d WHERE bid=%d AND activityid=%d", (int)$value, $this->data['bid'], $this->data['aid']);
 					$this->data['attendancetaken'] = $value;
 					return;
