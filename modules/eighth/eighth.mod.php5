@@ -91,10 +91,10 @@ class Eighth implements Module {
 						 return FALSE;
 			  }
 			  $undoandredo = array_pop(self::$undo);
-			  //array_pop($_SESSION['eighth_redo']);
+			  array_pop($_SESSION['eighth_redo']);
 			  self::undo_exec($undoandredo[0],$undoandredo[1]);
 			  array_push(self::$redo,$undoandredo);
-			  //array_push($_SESSION['eighth_redo'],$undoandredo);
+			  array_push($_SESSION['eighth_redo'],$undoandredo);
 	}
 
 	/**
@@ -120,6 +120,7 @@ class Eighth implements Module {
 		}
 		if (count(self::$redo) > 0) {
 			array_pop(self::$redo);
+			array_pop($_SESSION['eighth_redo']);
 		}
 		self::end_undo_transaction();
 	}
@@ -139,23 +140,28 @@ class Eighth implements Module {
 		}
 		if (count(self::$undo) > 0) {
 			array_pop(self::$undo);
+			array_pop($_SESSION['eighth_undo']);
 		}
 	}
 
 	public static function start_undo_transaction() {
 		array_push(self::$undo,array(NULL,NULL,NULL,NULL,'TRANSACTION_START'));
+		array_push($_SESSION['eighth_undo'],array(NULL,NULL,NULL,NULL,'TRANSACTION_START'));
 	}
 	
 	private static function start_redo_transaction() {
 		array_push(self::$redo,array(NULL,NULL,NULL,NULL,'TRANSACTION_START'));
+		array_push($_SESSION['eighth_redo'],array(NULL,NULL,NULL,NULL,'TRANSACTION_START'));
 	}
 	
 	public static function end_undo_transaction() {
 		array_push(self::$undo,array(NULL,NULL,NULL,NULL,'TRANSACTION_END'));
+		array_push($_SESSION['eighth_undo'],array(NULL,NULL,NULL,NULL,'TRANSACTION_END'));
 	}
 
 	private static function end_redo_transaction() {
 		array_push(self::$redo,array(NULL,NULL,NULL,NULL,'TRANSACTION_END'));
+		array_push($_SESSION['eighth_redo'],array(NULL,NULL,NULL,NULL,'TRANSACTION_END'));
 	}
 
 	private static function redo() {
@@ -166,10 +172,10 @@ class Eighth implements Module {
 						 return FALSE;
 			  }
 			  $undoandredo = array_pop(self::$redo);
-			  //array_pop($_SESSION['eighth_redo']);
+			  array_pop($_SESSION['eighth_redo']);
 			  self::undo_exec($undoandredo[2],$undoandredo[3]);
 			  array_push(self::$undo,$undoandredo);
-			  //array_push($_SESSION['eighth_undo'],$undoandredo);
+			  array_push($_SESSION['eighth_undo'],$undoandredo);
 	}
 
 	/**
@@ -179,7 +185,7 @@ class Eighth implements Module {
 	public static function push_undoable($undoquery, $undoarr, $redoquery, $redoarr, $name='Unknown Action') {
 			$undo = array($redoquery,$redoarr,$undoquery,$undoarr,$name);
 			array_push(self::$undo,$undo);
-			//array_push($_SESSION['eighth_undo'],$undo);
+			array_push($_SESSION['eighth_undo'],$undo);
 	}
 
 	public static function get_undo_name() {

@@ -318,21 +318,21 @@ class dataimport implements Module {
 				$Nickname = '';
 			}
 			$student = array(
-					'username' => str_replace('\'','\\\'',substr($username,1)),
+					'username' => substr($username,1),
 					'studentid' => $StudentID, 
-					'lname' => str_replace('\'','\\\'',$Lastname),
-					'fname' => str_replace('\'','\\\'',$Firstname), 
-					'mname' => str_replace('\'','\\\'',$Middlename), 
+					'lname' => $Lastname,
+					'fname' => $Firstname, 
+					'mname' => $Middlename, 
 					'grade' => $Grade, 
 					'sex' => $Sex, 
 					'bdate' => $Birthdate, 
 					'phone_home' => $Homephone, 
-					'address' => str_replace('\'','\\\'',$Address), 
-					'city' => str_replace('\'','\\\'',$City), 
-					'state' => str_replace('\'','\\\'',$State), 
+					'address' => $Address, 
+					'city' => $City, 
+					'state' => $State, 
 					'zip' => $Zip, 
 					'counselor' => $Couns,
-					'nick' => str_replace('\'','\\\'',$Nickname)
+					'nick' => $Nickname
 					);
 			if ($do_old_intranet) {
 				$res = $oldsql->query('SELECT Lastnamesound,Firstnamesound FROM StudentInfo WHERE StudentID=%d',$StudentID)->fetch_array(Result::ASSOC);
@@ -604,6 +604,11 @@ class dataimport implements Module {
 			$name = str_replace('(R)','',$name);
 			$name = str_replace('(BB)','',$name);
 			$name = str_replace('(S)','',$name);
+			$special = FALSE;
+			if (strpos($name,'SPECIAL:')) {
+				$special = TRUE;
+			}
+			$name = str_replace('SPECIAL:',$name);
 			$name = rtrim($name);
 					
 			/*
@@ -663,10 +668,10 @@ class dataimport implements Module {
 				** Fix old brokenness again
 				*/
 				if (!$advertisement) {
-					$advertisement = "";
+					$advertisement = '';
 				}
 				if (!$bcomment) {
-					$bcomment = "";
+					$bcomment = '';
 				}
 				
 				/*foreach ($sponsors as $sponsor) {
