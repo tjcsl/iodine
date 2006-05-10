@@ -426,6 +426,7 @@ class dataimport implements Module {
 			'birthdays'=>'Birthdays',
 			'studentdirectory'=>'Student Directory',
 			'links'=>'Useful Links'
+			'scratchpad'=>'ScratchPad'
 		);
 		$desiredboxes = array();
 		foreach ($this->boxes as $desiredbox=>$name) {
