@@ -171,7 +171,7 @@ class Display {
 						$title = array( NULL, '&nbsp;' );
 					}
 				
-					$display_chrome = $I2_USER->chrome;
+					$display_chrome = $I2_USER->chrome=='TRUE'?TRUE:FALSE;
 					
 					$this->global_header($title[0],$display_chrome);
 					

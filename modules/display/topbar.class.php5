@@ -25,7 +25,7 @@ class TopBar {
 			else {
 			        $activities = array();
 			}
-			$dates = array($date => date("n/j/Y", @strtotime($date)), date("Y-m-d") => "today", date("Y-m-d", time() + 3600 * 24) => "tomorrow", "" => "none");
+			$dates = array($date => date("n/j/Y", @strtotime($date)), date('Y-m-d') => 'today', date('Y-m-d', time() + 3600 * 24) => 'tomorrow', '' => 'none');
 			$arr = array();
 			if (isSet($activities)) {
 				$arr['activities'] = $activities;
