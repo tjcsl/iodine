@@ -164,6 +164,7 @@ class MySQL {
 	* <li>%t - A date of the form YYYY-MM-DD</li>
 	* <li>%V - Outputs the current Iodine version</li>
 	* <li>%% - Outputs a literal '%'</li>
+	* <li>%? - An item of indeterminate type</li>
 	* </ul>
 	*
 	* @access public
@@ -247,11 +248,17 @@ class MySQL {
 					  $query_t = MYSQL::SELECT;
 					  $frompos = stripos($query,' FROM ')+6;
 					  $endtable = strpos($query,' ',$frompos);
+					  if ($endtable === FALSE) {
+								 $endtable = strlen($query);
+					  }
 					  $table = substr($query,$frompos,$endtable);
 				break;
 			case 'UPDATE':
 					  $frompos = strpos(trim(substr($query,7),' '));
 					  $endtable = strpos($query,' ',$frompos);
+					  if (!$endtable) {
+								 $endtable = strlen($query);
+					  }
 				     $table = substr($query,$frompos,$endtable);
 				$query_t = MYSQL::UPDATE;
 				break;
@@ -259,18 +266,27 @@ class MySQL {
 				$query_t = MYSQL::DELETE;
 					  $frompos = stripos($query,' FROM ')+6;
 					  $endtable = strpos($query,' ',$frompos);
+					  if (!$endtable) {
+								 $endtable = strlen($query);
+					  }
 					  $table = substr($query,$frompos,$endtable);
 				break;
 			case 'INSERT':
 				$query_t = MYSQL::INSERT;
 					  $frompos = stripos($query,' INTO ')+6;
 					  $endtable = strpos($query,' ',$frompos);
+					  if (!$endtable) {
+								 $endtable = strlen($query);
+					  }
 					  $table = substr($query,$frompos,$endtable);
 				break;
 			case 'REPLACE':
 				$query_t = MYSQL::REPLACE;
 					  $frompos = stripos($query,' INTO ')+6;
 					  $endtable = strpos($query,' ',$frompos);
+					  if (!$endtable) {
+								 $endtable = strlen($query);
+					  }
 					  $table = substr($query,$frompos,$endtable);
 				break;
 			case 'DESCRIBE':
@@ -388,7 +404,8 @@ class MySQL {
 				return 'TJHSST Intranet2 Iodine version '.I2_VERSION;
 			case '%':
 				return '%';
-			
+			case '?':
+				return "`$arg`";
 			/* sanity check */
 			default:
 				$I2_ERR->fatal_error('Internal error, undefined mysql printf tag `%'.$tag[0][1].'`', TRUE);

@@ -73,6 +73,7 @@ class MySQLResult implements Result {
 			$this->insert_id = $arr[0];
 			//mysql_insert_id($mysql_result);//mysql_query(
 		}
+		d('MySQL Result: type '.$this->query_type.' on table '.$this->table.' with '.$this->insert_id.' as insert_id',8);
 	}
 
 	public static function nil() {

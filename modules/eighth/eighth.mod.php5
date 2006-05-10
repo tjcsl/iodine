@@ -158,8 +158,23 @@ class Eighth implements Module {
 						 //Undelete or unupdate
 						 $row = $res->fetch_array(Result::ASSOC);
 						 $keys = array_keys($row);
+						 $query = 'REPLACE INTO '.$table.'(';
+						 $key = array_shift($keys);
+						 $query .= $key;
+						 foreach ($keys as $key) {
+									$query .= ','.$key;
+						 }
+						 $query .= ') VALUES(';
+						 $vals = array_values($row);
+						 $val = array_shift($vals);
+						 $query .= '%?';
+						 foreach ($vals as $val) {
+								$query .= ','.$val;
+						 }
+						 $query .= ')';
 						 while ($row) {
-						 			$I2_SQL->query('REPLACE INTO ');
+									$vals = array_values($row);
+						 			$I2_SQL->query_arr($query,$vals);
 									$row = $res->fetch_array(Result::ASSOC);
 						 }
 			  } else if ($type == MySQL::INSERT || $type == MySQL::REPLACE) {
@@ -203,16 +218,19 @@ class Eighth implements Module {
 				}
 			}
 			else {
-				return array("Eighth Period Office Online: ERROR - SubModule Doesn't Exist");
+				return array("Eighth Period Online: ERROR - SubModule Doesn't Exist");
 			}
 		}
-		return array("Error", "Error");
+		return array('Error', 'Error');
 	}
 
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
+			  global $I2_ARGS;
+			  $argstr = implode('/',array_slice($I2_ARGS,1));
+			  $this->template_args['argstr'] = $argstr;
 		$display->disp($this->template, $this->template_args);
 	}
 
@@ -427,6 +445,20 @@ class Eighth implements Module {
 			$activity->add_members($group->members);
 			redirect('eighth');
 		}
+	}
+
+	private function undoit($op,$args) {
+			  global $I2_ARGS;
+			  if ($op == 'undo') {
+						 self::undo();
+			  } else if ($op == 'redo') {
+						 self::redo();
+			  } else {
+						 redirect('eighth');
+			  }
+			  // Circumvent $args because it turns the path into an associative array
+			  $str = implode('/',array_slice($I2_ARGS,3));
+			  redirect('eighth/'.$str);
 	}
 
 	/**
