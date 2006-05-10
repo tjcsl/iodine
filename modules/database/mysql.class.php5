@@ -243,25 +243,45 @@ class MySQL {
 		/* Get query type by examining the query string up to the first
 		space */
 		switch( strtoupper(substr($query, 0, strpos($query, ' '))) ) {
-			case 'DESCRIBE':
-			case 'SHOW':
 			case 'SELECT':
-				$query_t = MYSQL::SELECT;
+					  $query_t = MYSQL::SELECT;
+					  $frompos = stripos($query,' FROM ')+6;
+					  $endtable = strpos($query,' ',$frompos);
+					  $table = substr($query,$frompos,$endtable);
 				break;
 			case 'UPDATE':
+					  $frompos = strpos(trim(substr($query,7),' '));
+					  $endtable = strpos($query,' ',$frompos);
+				     $table = substr($query,$frompos,$endtable);
 				$query_t = MYSQL::UPDATE;
 				break;
 			case 'DELETE':
 				$query_t = MYSQL::DELETE;
+					  $frompos = stripos($query,' FROM ')+6;
+					  $endtable = strpos($query,' ',$frompos);
+					  $table = substr($query,$frompos,$endtable);
 				break;
 			case 'INSERT':
 				$query_t = MYSQL::INSERT;
+					  $frompos = stripos($query,' INTO ')+6;
+					  $endtable = strpos($query,' ',$frompos);
+					  $table = substr($query,$frompos,$endtable);
 				break;
 			case 'REPLACE':
 				$query_t = MYSQL::REPLACE;
+					  $frompos = stripos($query,' INTO ')+6;
+					  $endtable = strpos($query,' ',$frompos);
+					  $table = substr($query,$frompos,$endtable);
 				break;
+			case 'DESCRIBE':
+			case 'SHOW':
+					  $query_t = MYSQL::SELECT;
+					  break;
 			default:
 				throw new I2Exception('Attempted MySQL query of unauthorized command `'.substr($query, 0, strpos($query, ' ')).'`');
+		}
+		if (isSet($table)) {
+			return new MySQLResult($this->raw_query($query),$query_t,$table);
 		}
 		return new MySQLResult($this->raw_query($query),$query_t);
 	}

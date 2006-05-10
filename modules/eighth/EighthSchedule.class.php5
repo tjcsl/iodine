@@ -169,7 +169,7 @@ class EighthSchedule {
 	*/
 	public static function get_activities_by_block($userid, $blockid) {
 		global $I2_SQL;
-		return $I2_SQL->query('SELECT aid FROM eighth_activity_map LEFT JOIN eighth_blocks ON (bid=%d) WHERE userid=%d',$blockid,$userid)->fetch_single_value();
+		return $I2_SQL->query('SELECT aid FROM eighth_activity_map LEFT JOIN eighth_blocks ON (eighth_activity_map.bid=%d) WHERE userid=%d',$blockid,$userid)->fetch_single_value();
 	}
 
 	/**

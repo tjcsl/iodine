@@ -50,12 +50,123 @@ class Eighth implements Module {
 	*/
 	private $admin = FALSE;
 
+	/**
+	* The undo stack for internal use
+	*/
+	private static $undo;
+
+	/**
+	* The redo stack for internal use
+	*/
+	private static $redo;
+
 	function __construct() {
 		if (isSet($_SESSION['eighth_start_date'])) {
 			$this->start_date = $_SESSION['eighth_start_date'];
 		} else {
 			$this->start_date = date('Y-m-d');
 		}
+		if (isSet($_SESSION['eighth_undo'])) {
+				  self::$undo = $_SESSION['eighth_undo'];
+		} elseif (!self::$undo) {
+				  self::$undo = array();
+		}
+		if (isSet($_SESSION['eighth_redo'])) {
+				  self::$redo = $_SESSION['eighth_redo'];
+		} elseif (!self::$redo) {
+				  self::$redo = array();
+		}
+	}
+
+	/**
+	* Undo a change (catastrophe?) within the eighth-period system.
+	* 
+	* @return bool TRUE if a change was undone, FALSE otherwise. 
+	*/
+	public static function undo() {
+			  if (count(self::$undo) == 0) {
+						 /*
+						 ** Nothing to undo
+						 */
+						 return FALSE;
+			  }
+			  $undoandredo = array_shift($this->undo);
+			  $undolist = $undoandredo[0];
+			  $redo = $undoandredo[1];
+			  self::undo_exec($undolist);
+			  self::$redo[] = array($undolist,$redo);
+	}
+
+	/**
+	* Helper for undo() and redo(), which are rather similiar.
+	*/
+	private static function undo_exec($list) {
+			  $func = array_shift($list);
+			  $evstr = $func;
+			  $argstr = '';
+			  if (count($list) > 0) {
+				  $firstarg = array_shift($list);
+				  $args = array();
+				  $ct = 0;
+				  foreach ($list as $arg) {
+						$args[] = $arg;
+						$argstr .= ',$args['.$ct.']';
+				  }
+			  }
+			  $cmd = $func.'('.$argstr.');';
+			  d('Undo/redo params: '.print_r($args,1),6);
+			  d("Undo/redo executing: $cmd",6);
+			  eval($cmd);
+	}
+
+	/**
+	* Redo something within the eighth-period system which was undone.
+	* 
+	* @return bool TRUE if a change was redone, FALSE otherwise. 
+	*/
+	public static function redo() {
+			  if (count(self::$redo) == 0) {
+						 /*
+						 ** Nothing to redo
+						 */
+						 return FALSE;
+			  }
+			  $undoandredo = array_shift(self::$undo);
+			  $undolist = $undoandredo[0];
+			  $redo = $undoandredo[1];
+			  $this->undo_exec($redo);
+			  self::$undo[] = array($undolist,$redo);
+	}
+
+	/**
+	* Register an undoable action with the eighth-period undo system.
+	*
+	* @param array $undolist An array with first element equal to the
+	* 					name of the undo function (with any appropriate prefixes)
+	* 					and remaining parameters set to the call arguments
+	* @param array $redolist As $undolist, but equal and opposite.
+	*/
+	public static function push_undoable($undolist, $redolist) {
+			  self::$undo[] = array($undolist,$redolist);
+	}
+
+	private static function query_inverse(MySQLResult $res) {
+			  global $I2_SQL;
+			  $type = $res->get_query_type();
+			  $table = $res->get_query_table();
+			  if ($type == MySQL::SELECT) {
+						 //Undelete or unupdate
+						 $row = $res->fetch_array(Result::ASSOC);
+						 $keys = array_keys($row);
+						 while ($row) {
+						 			$I2_SQL->query('REPLACE INTO ');
+									$row = $res->fetch_array(Result::ASSOC);
+						 }
+			  } else if ($type == MySQL::INSERT || $type == MySQL::REPLACE) {
+						 //Uninsert
+			  } else {
+						 throw new I2Exception('Unknown query type inversion attempted!');
+			  }
 	}
 
 	/**
@@ -809,7 +920,7 @@ class Eighth implements Module {
 		}
 		else if($op == 'reschedule') {
 			$activity = new EighthActivity($args['aid'], $args['bid']);
-			$activity->add_member($args['uid']);
+			$activity->add_member(new User($args['uid']));
 			redirect("eighth/res_student/user/bid/{$args['bid']}/aid/{$args['aid']}");
 		}
 	}
@@ -1131,7 +1242,7 @@ class Eighth implements Module {
 				foreach($bids as $bid) {
 					if(EighthSchedule::is_activity_valid($args['aid'], $bid)) {
 						$activity = new EighthActivity($args['aid'], $bid);
-						$ret = $activity->add_member($args['uid'], false);
+						$ret = $activity->add_member(new User($args['uid']), false);
 						$act_status = array();
 						if($ret & EighthActivity::CANCELLED) {
 							$act_status['cancelled'] = TRUE;
@@ -1167,7 +1278,7 @@ class Eighth implements Module {
 		else if($op == 'force_change') {
 			if ($args['bid'] && $args['aid']) {
 				$activity = new EighthActivity($args['aid'], $args['bid']);
-				$activity->add_member($args['uid'], true);
+				$activity->add_member(new User($args['uid']), true);
 				redirect("eighth/vcp_schedule/view/uid/{$args['uid']}");
 			}
 		}

@@ -42,6 +42,8 @@ class MySQLResult implements Result {
 	private $current_row_number = 0;
 
 	private $insert_id = -1;
+
+	private $table;
 	
 	/**
 	* The constructor for a Result object.
@@ -50,7 +52,7 @@ class MySQLResult implements Result {
 	* for this to associate with.
 	* @param mixed $query_type See join_right.
 	*/
-	function __construct($mysql_result,$query_type) {
+	function __construct($mysql_result,$query_type,$table = NULL) {
 		global $I2_LOG, $I2_SQL;
 		if (!$mysql_result) {
 			d('Null SQL result constructed.',6);
@@ -64,6 +66,7 @@ class MySQLResult implements Result {
 		}
 		$this->mysql_result = $mysql_result;
 		$this->query_type = $query_type;
+		$this->table = $table;
 		//FIXME: DANGER - HACKS AHEAD!
 		if ($query_type == MySQL::INSERT || $query_type == MySQL::REPLACE) {
 			$arr = mysql_fetch_row($I2_SQL->raw_query('SELECT LAST_INSERT_ID()'));
@@ -120,6 +123,14 @@ class MySQLResult implements Result {
 			mysql_data_seek($this->mysql_result, $this->current_row_number);
 		}
 		return FALSE;
+	}
+
+	function get_query_type() {
+			  return $this->query_type;
+	}
+
+	function get_table() {
+			  return $this->table;
 	}
 	
 	

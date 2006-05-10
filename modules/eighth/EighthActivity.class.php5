@@ -47,6 +47,11 @@ class EighthActivity {
 		}
 	}
 
+	public static function add_member_to_activity($aid, User $user, $force = FALSE, $blockid = NULL) {
+			  $act = new EighthActivity($aid);
+			  return $act->add_member($user,$force,$blockid);
+	}
+
 	/**
 	* Adds a member to the activity.
 	*
@@ -55,7 +60,7 @@ class EighthActivity {
 	* @param boolean $force Force the change.
 	* @param int $blockid The block ID to add them to.
 	*/
-	public function add_member(User $user, $force = false, $blockid = NULL) {
+	public function add_member(User $user, $force = FALSE, $blockid = NULL) {
 		global $I2_SQL,$I2_USER;
 		$userid = $user->uid;
 		/*
@@ -84,12 +89,12 @@ class EighthActivity {
 		if($this->data['restricted'] && !in_array($userid, $this->get_restricted_members())) {
 			$ret |= EighthActivity::PERMISSIONS;
 		}
-		$otheractivityid = EighthSchedule::get_activities($userid, $this->data['bid']);
+		$otheractivityid = EighthSchedule::get_activities_by_block($userid, $this->data['bid']);
 		$otheractivity = new EighthActivity($otheractivityid);
 		if ($otheractivity && $otheractivity->sticky) {
 				$ret |= EighthActivity::STICKY;
 		}
-		if ($otheractivitiy && $otheractivityid == $this->data['aid'] && $this->oneaday) {
+		if ($otheractivity && $otheractivityid == $this->data['aid'] && $this->oneaday) {
 			$ret |= EighthActivity::ONEADAY;
 		}
 		if($this->presign && time() > strtotime($this->block->date)-60*60*24*2) {
@@ -97,6 +102,7 @@ class EighthActivity {
 		}
 		if(!$ret || $force) {
 			$result = $I2_SQL->query('REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES (%d,%d,%d)', $this->data['aid'], $blockid, $userid);
+			//Eighth::push_undo($result);
 			if(mysql_error()) {
 				$ret = -1;
 			}
@@ -111,7 +117,12 @@ class EighthActivity {
 		global $I2_SQL;
 		return $I2_SQL->query('SELECT COUNT(bid) FROM eighth_activity_map WHERE aid=%d',$this->data['aid']);
 	}
-	
+
+	public static function add_members_to_activity($aid,$userids,$force = FALSE, $blockid = NULL) {
+			  $act = new EighthActivity($aid);
+			  return $act->add_members($userids,$force,$blockid);
+	}
+
 	/**
 	* Add multiple members to the activity.
 	*
@@ -123,6 +134,11 @@ class EighthActivity {
 		foreach($userids as $userid) {
 			$this->add_member(new User($userid), $force, $blockid);
 		}
+	}
+
+	public static function remove_member_from_activity($aid, User $user, $blockid = NULL) {
+			  $act = new EighthActivity($aid);
+			  return $act->remove_member($user,$blockid);
 	}
 
 	/**
@@ -147,7 +163,19 @@ class EighthActivity {
 		if($blockid == NULL) {
 			$blockid = $this->data['bid'];
 		}
-		$result = $I2_SQL->query('DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d', $this->data['aid'], $blockid, $userid);
+		$result = $I2_SQL->query('SELECT * FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d', $this->data['aid'], $blockid, $userid);
+		$I2_SQL->query('DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d', $this->data['aid'], $blockid, $userid);
+		return $result;
+	}
+
+	
+	public static function remove_members_from_activity($aid, $userids, $blockid = NULL) {
+			  $act = new EighthActivity($aid);
+			  $ret = array();
+			  foreach ($userids as $userid) {
+			  		$ret[] = $act->remove_members(new User($userid),$blockid);
+			  }
+			  return $ret;
 	}
 
 	/**
@@ -186,6 +214,11 @@ class EighthActivity {
 		}
 	}
 
+	public static function remove_all_from_activity($aid, $blockid = NULL) {
+			  $act = new EighthActivity($aid);
+			  return $act->remove_all($blockid);
+	}
+
 	/**
 	* Removes all members from the activity.
 	*
@@ -198,7 +231,14 @@ class EighthActivity {
 		if($blockid == NULL) {
 			$blockid = $this->data['bid'];
 		}
-		$result = $I2_SQL->query('DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d', $this->data['aid'], $blockid);
+		$result = $I2_SQL->query('SELECT * FROM eighth_activity_map WHERE aid=%d AND bid=%d', $this->data['aid'], $blockid);
+		$I2_SQL->query('DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d', $this->data['aid'], $blockid);
+		return $result->fetch_all_arrays(Result::ASSOC);
+	}
+
+	public static function add_restricted_member_to_activity($aid, User $user) {
+			  $act = new EighthActivity($aid);
+			  $act->add_restricted_member($user);
 	}
 
 	/**
@@ -213,6 +253,11 @@ class EighthActivity {
 		$result = $I2_SQL->query('REPLACE INTO eighth_activity_permissions (aid,userid) VALUES (%d,%d)', $this->data['aid'], $user->uid);
 	}
 
+	public static function add_restricted_members_to_activity($aid, $users) {
+			  $act = new EighthActivity($aid);
+			  $act->add_restricted_members($users);
+	}
+
 	/**
 	* Adds multiple members to the restricted activity.
 	*
@@ -225,6 +270,11 @@ class EighthActivity {
 		}
 	}
 
+	public static function remove_restricted_member_from_activity($aid, User $user) {
+			  $act = new EighthActivity($aid);
+			  return $act->remove_restricted_member($user);
+	}
+
 	/**
 	* Removes a member from the restricted activity.
 	*
@@ -234,7 +284,18 @@ class EighthActivity {
 	public function remove_restricted_member(User $user) {
 		global $I2_SQL;
 		Eighth::check_admin();
-		$result = $I2_SQL->query('DELETE FROM eighth_activity_permissions WHERE aid=%d AND userid=%d', $this->data['aid'], $user->uid);
+		$result = $I2_SQL->query('SELECT * FROM eighth_activity_permissions WHERE aid=%d AND userid=%d', $this->data['aid'], $user->uid);
+		$I2_SQL->query('DELETE FROM eighth_activity_permissions WHERE aid=%d AND userid=%d', $this->data['aid'], $user->uid);
+		return $result;
+	}
+
+	public static function remove_restricted_members_from_activity($aid, $users) {
+			  $act = new EighthActivity($aid);
+			  $ret = array();
+			  foreach ($users as $user) {
+				  $ret[] = $act->remove_restricted_members($users);
+			  }
+			  return $ret;
 	}
 
 	/**
@@ -247,6 +308,9 @@ class EighthActivity {
 		foreach($users as $user) {
 			$this->remove_restricted_member(new User($user));
 		}
+	}
+
+	public static function remove_restricted_all_from_activity() {
 	}
 
 	/**
