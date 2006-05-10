@@ -35,7 +35,7 @@ class Info implements Module {
 	function display_pane($disp) {
 		global $I2_ARGS;
 		
-		$section = implode("/", array_slice($I2_ARGS, 1));
+		$section = implode('/', array_slice($I2_ARGS, 1));
 		try {
 			$disp->disp($section . '.tpl');
 		}
