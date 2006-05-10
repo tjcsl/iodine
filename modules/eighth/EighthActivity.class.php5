@@ -627,36 +627,28 @@ class EighthActivity {
 			$this->data['name'] = $value;
 		}
 		else {
-			if ($name == 'sponsors' || $name == 'rooms' || $name == 'description') {
-				$oldval = $I2_SQL->query("SELECT $name FROM eighth_activities WHERE aid=%d",$this->data['aid'],$this->data[)->fetch_single_value();
-				$invarg = array($oldval,$this->data['aid']);
-			}
 			switch($name) {
 				case 'sponsors':
-					if(!is_array($value)) {
-						$value = array($value);
-					}
-					$query = "UPDATE eighth_activities SET sponsors='%D' WHERE aid=%d";
-					$queryarg = array($value, $this->data['aid']);
-					$result = $I2_SQL->query_arr($query,$queryarg);
-					$this->data['sponsors'] = $value;
-					Eighth::push_undoable($query,$queryarg,$query,$invarg,'Change Activity Sponsors');
-					return;
 				case 'rooms':
 					if(!is_array($value)) {
 						$value = array($value);
 					}
-					$query = "UPDATE eighth_activities SET rooms='%D' WHERE aid=%d";
+					$oldval = $I2_SQL->query("SELECT $name FROM eighth_activities WHERE aid=%d",$this->data['aid'],$this->data[)->fetch_single_value();
+					$query = "UPDATE eighth_activities SET $name='%D' WHERE aid=%d";
 					$queryarg = array($value, $this->data['aid']);
-					$result = $I2_SQL->query_arr($query,$queryarg); 
-					$this->data['rooms'] = $value;
-					Eighth::push_undoable($query,$queryarg,$query,$invarg,'Change Activity Rooms');
+					$result = $I2_SQL->query_arr($query,$queryarg);
+					$this->data[$name] = $value;
+					$invarg = array($oldval,$this->data['aid']);
+					$name = ucFirst($name);
+					Eighth::push_undoable($query,$queryarg,$query,$invarg,"Change Activity $name");
 					return;
 				case 'description':
+					$oldval = $I2_SQL->query("SELECT $name FROM eighth_activities WHERE aid=%d",$this->data['aid'],$this->data[)->fetch_single_value();
 					$query = 'UPDATE eighth_activities SET description=%s WHERE aid=%d';
 					$queryarg = array($value, $this->data['aid']);
 					$result = $I2_SQL->query_arr($query,$queryarg);
 					$this->data['description'] = $value;
+					$invarg = array($oldval,$this->data['aid']);
 					Eighth::push_undoable($query,$queryarg,$query,$invarg,'Change Activity Description');
 					return;
 				case 'restricted':
@@ -665,26 +657,26 @@ class EighthActivity {
 				case 'sticky':
 				case 'presign':
 					if ($this->data[$name] == $value) {
+						//Nothing to do
 						return;
 					}
 					$query = "UPDATE eighth_activities SET $name=%d WHERE aid=%d";
 					$queryarg = array((int)$value, $this->data['aid']);
 					$result = $I2_SQL->query_arr($query,$queryarg);
 					$this->data[$name] = $value;
-					$name = ucFirst($name);
+					// Invert value - we checked for equality earlier
 					$invarg = array($value?0:1,$this->data['aid']);
+					$name = ucFirst($name);
 					Eighth::push_undoable($query,$queryarg,$query,$invarg,"Change $name Status");
 					return;
 				case 'cancelled':
 					if ($this->data['cancelled'] == $value) {
-						//Nothing to do
 						return;
 					}
 					$query = 'UPDATE eighth_block_map SET cancelled=%d WHERE bid=%d AND activityid=%d';
 					$queryarg = array((int)$value, $this->data['bid'], $this->data['aid']);
 					$result = $I2_SQL->query_arr($query,$queryarg); 					
 					$this->data['cancelled'] = $value;
-					// Invert value - we checked for equality earlier
 					$invarg = array($value ? 0 : 1, $this->data['bid'], $this->data['aid']);
 					Eighth::push_undoable($query,$queryarg,$query,$invarg,'Cancel Activity');
 					return;
@@ -700,8 +692,15 @@ class EighthActivity {
 					Eighth::push_undoable($query,$queryarg,$query,$invarg,"Change Activity $name");
 					return;
 				case 'attendancetaken':
-					$result = $I2_SQL->query("UPDATE eighth_block_map SET attendancetaken=%d WHERE bid=%d AND activityid=%d", (int)$value, $this->data['bid'], $this->data['aid']);
+					if ($this->data['attendancetaken'] == $value) {
+						return;
+					}
+					$query = 'UPDATE eighth_block_map SET attendancetaken=%d WHERE bid=%d AND activityid=%d';
+					$queryarg = array((int)$value, $this->data['bid'], $this->data['aid']);
+					$result = $I2_SQL->query_arr($query,$queryarg);
 					$this->data['attendancetaken'] = $value;
+					$invarg = array($value?0:1,$this->data['bid'],$this->data['aid']);
+					Eighth::push_undoable($query,$queryarg,$query,$invarg,'Set Attendance-Taken Bit');
 					return;
 			}
 		}
