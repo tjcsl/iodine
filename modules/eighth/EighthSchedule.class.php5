@@ -163,13 +163,13 @@ class EighthSchedule {
 	}
 
 	/**
-	* Gets the activities a student is signed up for during the given block.
+	* Gets the activity a student is signed up for during the given block.
 	*
 	* @return array An ActivityID.
 	*/
 	public static function get_activities_by_block($userid, $blockid) {
 		global $I2_SQL;
-		return $I2_SQL->query('SELECT aid FROM eighth_activity_map LEFT JOIN eighth_blocks ON (eighth_activity_map.bid=%d) WHERE userid=%d',$blockid,$userid)->fetch_single_value();
+		return $I2_SQL->query('SELECT aid FROM eighth_activity_map WHERE userid=%d AND bid=%d',$userid,$blockid)->fetch_single_value();
 	}
 
 	/**

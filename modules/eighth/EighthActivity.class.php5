@@ -61,7 +61,7 @@ class EighthActivity {
 	* @param int $blockid The block ID to add them to.
 	*/
 	public function add_member(User $user, $force = FALSE, $blockid = NULL) {
-		global $I2_SQL,$I2_USER;
+		global $I2_SQL,$I2_USER,$I2_LOG;
 		$userid = $user->uid;
 		/*
 		** Users need to be able to add themselves to an activity
@@ -112,6 +112,7 @@ class EighthActivity {
 				$inverse = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
 				$invargs = array($otheractivityid,$bid,$userid);
 			}
+			$I2_LOG->log_file('Changing activity');
 			Eighth::push_undoable($query,$args,$inverse,$invargs,'User Schedule Change');
 			if(mysql_error()) {
 				$ret = -1;
