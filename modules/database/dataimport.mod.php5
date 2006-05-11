@@ -576,7 +576,7 @@ class dataimport implements Module {
 		/*
 		** Create sponsors
 		*/
-		$res = $oldsql->query('Select * FROM SponsorInfo');
+		$res = $oldsql->query('Select sid,fname,lname FROM SponsorInfo');
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 			$I2_SQL->query('INSERT INTO eighth_sponsors (sid,fname,lname) VALUES(%d,%s,%s)',
 						   	$row['SponsorID'],$row['Firstname'],$row['Lastname']);

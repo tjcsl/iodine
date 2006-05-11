@@ -112,7 +112,18 @@ class Eighth implements Module {
 		self::start_undo_transaction();
 		array_pop(self::$redo);
 		//array_pop($_SESSION['eighth_redo']);
-		while ($name && $name != 'TRANSACTION_START') {
+		$openct = 1;
+		while ($name) {
+			if ($name == 'TRANSACTION_START') {
+							 $openct--;
+			}
+			if ($name == 'TRANSACTION_END') {
+							 $openct++;
+			}
+			if ($openct = 0) {
+					  // We found a matched pair of transaction markers, break
+					  break;
+			}
 			self::redo();
 			$name = self::get_redo_name();
 		}
@@ -133,7 +144,18 @@ class Eighth implements Module {
 		self::start_redo_transaction();
 		array_pop(self::$undo);
 		//array_pop($_SESSION['eighth_undo']);
-		while ($name && $name != 'TRANSACTION_START') {
+		$openct = 0;
+		while ($name) {
+			if ($name == 'TRANSACTION_START') {
+							 $openct--;
+			}
+			if ($name == 'TRANSACTION_END') {
+							 $openct++;
+			}
+			if ($openct = 0) {
+					  // We found a matched pair of transaction markers, break
+					  break;
+			}
 			self::undo();
 			$name = self::get_undo_name();
 		}
@@ -700,62 +722,66 @@ class Eighth implements Module {
 	* @param array $this->args The arguments for the operation.
 	*/
 	private function amr_activity() {
-		if($this->op == "") {
+		if($this->op == '') {
 			$this->setup_activity_selection(TRUE);
 		}
-		else if($this->op == "view") {
-			$this->template = "amr_activity.tpl";
-			$this->template_args = array("activity" => new EighthActivity($this->args['aid']));
-			$this->title = "View Activities";
+		else if($this->op == 'view') {
+			$this->template = 'amr_activity.tpl';
+			$this->template_args['activity'] = new EighthActivity($this->args['aid']);
+			$this->title = 'View Activities';
 		}
-		else if($this->op == "add") {
+		else if($this->op == 'add') {
 			$aid = EighthActivity::add_activity($this->args['name']);
 			redirect("eighth/amr_activity/view/aid/{$aid}");
 		}
 		else if($this->op == 'modify') {
 			$activity = new EighthActivity($this->args['aid']);
+			Eighth::start_undo_transaction();
 			$activity->name = $this->args['name'];
 			$activity->sponsors = $this->args['sponsors'];
 			$activity->rooms = $this->args['rooms'];
 			$activity->description = $this->args['description'];
-			$activity->restricted = ($this->args['restricted'] == "on");
-			$activity->presign = ($this->args['presign'] == "on");
-			$activity->oneaday = ($this->args['oneaday'] == "on");
-			$activity->bothblocks = ($this->args['bothblocks'] == "on");
-			$activity->sticky = ($this->args['sticky'] == "on");
+			$activity->restricted = ($this->args['restricted'] == 'on');
+			$activity->presign = ($this->args['presign'] == 'on');
+			$activity->oneaday = ($this->args['oneaday'] == 'on');
+			$activity->bothblocks = ($this->args['bothblocks'] == 'on');
+			$activity->sticky = ($this->args['sticky'] == 'on');
+			Eighth::end_undo_transaction();
 			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
-		else if($this->op == "remove") {
+		else if($this->op == 'remove') {
 			EighthActivity::remove_activity($this->args['aid']);
-			redirect("eighth");
+			redirect('eighth');
 		}
-		else if($this->op == "select_sponsor") {
+		else if($this->op == 'select_sponsor') {
 			$this->setup_sponsor_selection();
 			$this->template_args['op'] = "add_sponsor/aid/{$this->args['aid']}";
 		}
-		else if($this->op == "add_sponsor") {
+		else if($this->op == 'add_sponsor') {
 			$activity = new EighthActivity($this->args['aid']);
 			$activity->add_sponsor($this->args['sid']);
 			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
-		else if($this->op == "remove_sponsor") {
+		else if($this->op == 'remove_sponsor') {
 			$activity = new EighthActivity($this->args['aid']);
 			$activity->remove_sponsor($this->args['sid']);
 			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
-		else if($this->op == "select_room") {
+		else if($this->op == 'select_room') {
 			$this->setup_room_selection();
 			$this->template_args['op'] = "add_room/aid/{$this->args['aid']}";
 		}
-		else if($this->op == "add_room") {
+		else if($this->op == 'add_room') {
 			$activity = new EighthActivity($this->args['aid']);
 			$activity->add_room($this->args['rid']);
 			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
-		else if($this->op == "remove_room") {
+		else if($this->op == 'remove_room') {
 			$activity = new EighthActivity($this->args['aid']);
 			$activity->remove_room($this->args['rid']);
 			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
+		} else {
+				  redirect('eighth');
 		}
 	}
 
@@ -807,13 +833,13 @@ class Eighth implements Module {
 		else if($this->op == 'view') {
 			$this->template = 'amr_sponsor.tpl';
 			$this->template_args['sponsor'] = new EighthSponsor($this->args['sid']);
-			$this->title = "View Sponsors";
+			$this->title = 'View Sponsors';
 		}
 		else if($this->op == 'add') {
 			$sid = EighthSponsor::add_sponsor($this->args['fname'], $this->args['lname']);
 			redirect('eighth/amr_sponsor');
 		}
-		else if($this->op == "modify") {
+		else if($this->op == 'modify') {
 			$sponsor = new EighthSponsor($this->args['sid']);
 			$sponsor->fname = $this->args['fname'];
 			$sponsor->lname = $this->args['lname'];
@@ -1003,20 +1029,20 @@ class Eighth implements Module {
 	* @param array $this->args The arguments for the operation.
 	*/
 	public function vp_sponsor() {
-		if($this->op == "") {
+		if($this->op == '') {
 			$this->setup_sponsor_selection();
 		}
-		else if($this->op == "view") {
+		else if($this->op == 'view') {
 			$sponsor = new EighthSponsor($this->args['sid']);
 			$this->template = 'vp_sponsor.tpl';
 			$this->template_args['sponsor'] = $sponsor;
 			$this->template_args['activities'] = $sponsor->schedule;
 			$this->title = 'View Sponsor Schedule';
 		}
-		else if($this->op == "format") {
-			$this->setup_format_selection("vp_sponsor", "Sponsor Schedule", array("sid" => $this->args['sid']));
+		else if($this->op == 'format') {
+			$this->setup_format_selection('vp_sponsor', 'Sponsor Schedule', array('sid' => $this->args['sid']));
 		}
-		else if($this->op == "print") {
+		else if($this->op == 'print') {
 			EighthPrint::print_sponsor_schedule($this->args['sid'], $this->args['format']);
 		}
 	}

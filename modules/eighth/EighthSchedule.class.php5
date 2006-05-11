@@ -25,7 +25,7 @@ class EighthSchedule {
 	* @param array $rooms The rooms for that activity for that block.
 	*/
 	public static function schedule_activity($blockid, $activityid, $sponsors = array(), $rooms = array(), $comment = '', 
-			$attendancetaken = FALSE, $cancelled = FALSE, $advertisement='',$capacity = -1) {
+		$attendancetaken = FALSE, $cancelled = FALSE, $advertisement='',$capacity = -1) {
 		global $I2_SQL;
 		Eighth::check_admin();
 		if(!is_array($sponsors)) {
