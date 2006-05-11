@@ -690,17 +690,6 @@ class EighthActivity {
 					$name = ucFirst($name);
 					Eighth::push_undoable($query,$queryarg,$query,$invarg,"Change $name Status");
 					return;
-				case 'cancelled':
-					if ($this->data['cancelled'] == $value) {
-						return;
-					}
-					$query = 'UPDATE eighth_block_map SET cancelled=%d WHERE bid=%d AND activityid=%d';
-					$queryarg = array((int)$value, $this->data['bid'], $this->data['aid']);
-					$result = $I2_SQL->query_arr($query,$queryarg); 					
-					$this->data['cancelled'] = $value;
-					$invarg = array($value ? 0 : 1, $this->data['bid'], $this->data['aid']);
-					Eighth::push_undoable($query,$queryarg,$query,$invarg,'Cancel Activity');
-					return;
 				case 'comment':
 				case 'advertisement':
 					$oldval = $I2_SQL->query("SELECT $name FROM eighth_block_map WHERE bid=%d AND activityid=%d",$this->data['bid'],$this->data['aid'])->fetch_single_value();
@@ -712,16 +701,29 @@ class EighthActivity {
 					$name = ucFirst($name);
 					Eighth::push_undoable($query,$queryarg,$query,$invarg,"Change Activity $name");
 					return;
-				case 'attendancetaken':
-					if ($this->data['attendancetaken'] == $value) {
+		 		case 'attendancetaken':
+				case 'roomchanged':
+				case 'cancelled':
+					if ($this->data[$name] == $value) {
 						return;
 					}
-					$query = 'UPDATE eighth_block_map SET attendancetaken=%d WHERE bid=%d AND activityid=%d';
+					$query = "UPDATE eighth_block_map SET $name=%d WHERE bid=%d AND activityid=%d";
 					$queryarg = array((int)$value, $this->data['bid'], $this->data['aid']);
 					$result = $I2_SQL->query_arr($query,$queryarg);
-					$this->data['attendancetaken'] = $value;
+					$this->data[$name] = $value;
 					$invarg = array($value?0:1,$this->data['bid'],$this->data['aid']);
-					Eighth::push_undoable($query,$queryarg,$query,$invarg,'Set Attendance-Taken Bit');
+					Eighth::push_undoable($query,$queryarg,$query,$invarg,"Change $name Bit");
+					return;
+				case 'capacity':
+					if ($this->data[$name] == $value) {
+						return;
+					}
+					$query = "UPDATE eighth_block_map SET $name=%d WHERE bid=%d AND activityid=%d";
+					$queryarg = array($value, $this->data['bid'], $this->data['aid']);
+					$result = $I2_SQL->query_arr($query,$queryarg);
+					$this->data[$name] = $value;
+					$invarg = array($value,$this->data['bid'],$this->data['aid']);
+					Eighth::push_undoable($query,$queryarg,$query,$invarg,"Change Activity $name");
 					return;
 			}
 		}
