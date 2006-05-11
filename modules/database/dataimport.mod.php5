@@ -558,16 +558,8 @@ class dataimport implements Module {
 		** NOTE: starting and ending dates are currently ignored!  Any and all data is imported.
 		*/
 
-		/*
-		** Create sponsors
-		*/
-		$res = $oldsql->query('Select SponsorID,Firstname,Lastname FROM SponsorInfo');
-		while ($row = $res->fetch_array(Result::ASSOC)) {
-			$I2_SQL->query('INSERT INTO eighth_sponsors (sid,fname,lname) VALUES(%d,%s,%s)',
-						   	$row['SponsorID'],$row['Firstname'],$row['Lastname']);
-			$this->numsponsors++;
-		}
-			
+		$numsponsors = $this->import_eighth_sponsors();
+					
 		list($numactivities,$numrooms) = $this->import_eighth_activities();
 		
 		$numgroups = $this->import_eighth_groups();
@@ -581,12 +573,26 @@ class dataimport implements Module {
 
 		d("$numactivities activities created",5);
 		d("$numrooms rooms created",5);
-		d("{$this->numsponsors} sponsors added",5);
+		d("$numsponsors sponsors added",5);
 		d("$numgroups 8th-period groups created",5);
 		d("$numactivitiesentered student sign-ups processed",5);
 		d("$numabsences absences recorded",5);
 		d("$numgroupmembers group memberships handled",5);
 		$I2_LOG->log_file('Eighth-period import complete!',5);
+	}
+
+	private function import_eighth_sponsors() {
+		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
+		/*
+		** Create sponsors
+		*/
+		$numsponsors = 0;
+		$res = $oldsql->query('Select SponsorID,Firstname,Lastname FROM SponsorInfo');
+		while ($row = $res->fetch_array(Result::ASSOC)) {
+			EighthSponsor::add_sponsor($row['Firstname'],$row['Lastname'],$row['SponsorID']);
+			$numsponsors++;
+		}
+		return $numsponsors;
 	}
 
 	private function import_eighth_activities() {
@@ -698,11 +704,14 @@ class dataimport implements Module {
 				** Eliminate the room-change fake entries...
 				*/
 				$brooms = str_replace(' (ROOM CHANGE)','',$brooms);
-				
+
+				$bsponsors = $I2_SQL->query('SELECT TeacherID FROM SponsorScheduleMap WHERE ActivityID=%d AND ActivityDate=%t AND ActivityBlock=%s',
+						  							 $aid,$date,$block);
+
 				/*
 				** Schedule activity
 				*/
-				EighthSchedule::schedule_activity($bid,$aid,$sponsors,$brooms,$bcomment,$attendance,$cancelled,$advertisement);
+				EighthSchedule::schedule_activity($bid,$aid,$bsponsors,$brooms,$bcomment,$attendance,$cancelled,$advertisement);
 				$I2_LOG->log_file("Scheduled activity \"$name\" for $block on $date",6);
 				$validrooms[$brooms] = 1;
 				
