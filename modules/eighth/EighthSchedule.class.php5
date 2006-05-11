@@ -25,7 +25,7 @@ class EighthSchedule {
 	* @param array $rooms The rooms for that activity for that block.
 	*/
 	public static function schedule_activity($blockid, $activityid, $sponsors = array(), $rooms = array(), $comment = '', 
-			$attendancetaken = FALSE, $cancelled = FALSE, $advertisement='') {
+			$attendancetaken = FALSE, $cancelled = FALSE, $advertisement='',$capacity = -1) {
 		global $I2_SQL;
 		Eighth::check_admin();
 		if(!is_array($sponsors)) {
@@ -43,16 +43,16 @@ class EighthSchedule {
 		/*
 		** Warning: adding a check for $aid validity will break dataimport.
 		*/
-		$old = $I2_SQL->query('SELECT * FROM eighth_block_map WHERE aid=%d and bid=%d')->fetch_array(Result::ASSOC);
+		$old = $I2_SQL->query('SELECT * FROM eighth_block_map WHERE activityid=%d and bid=%d',$activityid,$blockid)->fetch_array(Result::ASSOC);
 		
-		$query = "REPLACE INTO eighth_block_map (bid,activityid,sponsors,rooms,comment,attendancetaken,cancelled,advertisement) VALUES (%d,%d,'%D','%D',%s,%d,%d,%s)";
-		$queryarg = array($blockid, $activityid, $sponsors, $rooms, $comment,$attendancetaken,$cancelled,$advertisement);
+		$query = "REPLACE INTO eighth_block_map (bid,activityid,sponsors,rooms,comment,attendancetaken,cancelled,advertisement,capacity) VALUES (%d,%d,'%D','%D',%s,%d,%d,%s,%d)";
+		$queryarg = array($blockid, $activityid, $sponsors, $rooms, $comment,$attendancetaken,$cancelled,$advertisement,$capacity);
 		$result = $I2_SQL->query_arr($query,$queryarg);
 		if ($old) {
 			$invquery = $query;
-			$invarg = array($old['bid'],$old['activityid'],$old['sponsors'],$old['rooms'],$old['comment'],$old['attendancetaken'],$old['cancelled'],$old['advertisement']);
+			$invarg = array($old['bid'],$old['activityid'],$old['sponsors'],$old['rooms'],$old['comment'],$old['attendancetaken'],$old['cancelled'],$old['advertisement'],$old['capacity']);
 		} else {
-			$invquery = 'DELETE FROM eighth_block_map WHERE aid=%d and bid=%d';
+			$invquery = 'DELETE FROM eighth_block_map WHERE activityid=%d and bid=%d';
 			$invarg = array($activityid, $blockid);
 		}
 		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Schedule Activity');

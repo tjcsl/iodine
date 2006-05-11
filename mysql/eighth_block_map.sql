@@ -16,5 +16,7 @@ CREATE TABLE eighth_block_map (
 
 	advertisement TEXT NOT NULL,
 
+	capacity INTEGER NOT NULL DEFAULT '-1',
+
 	PRIMARY KEY(bid,activityid)
 );

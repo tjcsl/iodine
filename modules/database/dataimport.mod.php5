@@ -85,7 +85,7 @@ class dataimport implements Module {
 				continue;
 			}
 		
-			//d("Teacher: $id = $lastname,$firstname",3);
+			d("Teacher: $id = $lastname,$firstname",3);
 
 			if (!isset($last_to_people[$lastname])) {
 				$this->last_to_people[$lastname] = array(array('fname'=>$firstname,'id'=>$id));
@@ -119,8 +119,8 @@ class dataimport implements Module {
 		
 		$count = 0;
 		
-		//$teacherldap = LDAP::get_simple_bind($user,$pass,$server);
-		$teacherldap = LDAP::get_user_bind($server);
+		$teacherldap = LDAP::get_simple_bind($user,$pass,$server);
+		//$teacherldap = LDAP::get_user_bind($server);
 		$res = $teacherldap->search('ou=Staff,dc=local,dc=tjhsst,dc=edu','cn=*',array('cn','sn','givenName'));
 		$validteachers = array();
 		while ($teacher = $res->fetch_array()) {
@@ -132,10 +132,11 @@ class dataimport implements Module {
 				'fname' => ucFirst(strtolower($teacher['givenName'])),
 				'username' => $teacher['cn']
 			);
-			if (!isSet($this->last_to_people[$teacher['sn']])) {
+			d("Working on teacher {$farr['fname']} {$farr['lname']}",6);
+			if (!isSet($this->last_to_people[$farr['lname']])) {
 				continue;
 			}
-			$lnamematches = $this->last_to_people[$teacher['sn']];
+			$lnamematches = $this->last_to_people[$farr['lname']];
 			$found = FALSE;
 			foreach ($lnamematches as $match) {
 				if ($farr['fname'] == $match['fname']) {
@@ -145,7 +146,8 @@ class dataimport implements Module {
 				}
 			}
 			if (!$found) {
-				d("Unmatched teacher: \"{$farr['fname']} {$farr['lname']}\"",3);
+				  d("Unmatched teacher: \"{$farr['fname']} {$farr['lname']}\"",3);
+				  continue;
 			}
 			$validteachers[] = $farr;
 			$count++;
@@ -501,14 +503,24 @@ class dataimport implements Module {
 		}
 		$usernew['gender'] = $user['sex'];
 		$usernew['mobile'] = $user['mobile'];
-		$usernew['locker'] = $user['locker'];
+		if (isSet($user['locker'])) {
+			$usernew['locker'] = $user['locker'];
+		}
 		$usernew['mail'] = $user['mail'];
 		$usernew['soundexfirst'] = $user['soundexfirst'];
 		$usernew['soundexlast'] = $user['soundexlast'];
-		$usernew['aim'] = $user['aim'];
-		$usernew['jabber'] = $user['jabber'];
-		$usernew['msn'] = $user['msn'];
-		$usernew['icq'] = $user['icq'];
+		if (isSet($user['aim'])) {
+			$usernew['aim'] = $user['aim'];
+		}
+		if (isSet($user['jabber'])) {
+			$usernew['jabber'] = $user['jabber'];
+		}
+		if (isSet($user['msn'])) {
+			$usernew['msn'] = $user['msn'];
+		}
+		if (isSet($user['icq'])) {
+			$usernew['icq'] = $user['icq'];
+		}
 		$usernew['showpictures'] = $user['showpictures'];
 		$usernew['showaddress'] = $user['showaddress'];
 		$usernew['showmap'] = $user['showmap'];
@@ -537,6 +549,10 @@ class dataimport implements Module {
 
 	private function import_eighth_data($startdate=NULL,$enddate=NULL) {
 		global $I2_SQL,$I2_LDAP,$I2_LOG;
+
+		// We don't need this overhead, it's slow enough as things stand
+		Eighth::undo_off();
+
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 
 		/*
@@ -606,10 +622,10 @@ class dataimport implements Module {
 			$name = str_replace('(BB)','',$name);
 			$name = str_replace('(S)','',$name);
 			$special = FALSE;
-			if (strpos($name,'SPECIAL:')) {
+			if (strpos($name,'SPECIAL: ')) {
 				$special = TRUE;
 			}
-			$name = str_replace('SPECIAL:',$name);
+			$name = str_replace('SPECIAL: ','',$name);
 			$name = rtrim($name);
 					
 			/*
@@ -749,7 +765,7 @@ class dataimport implements Module {
 			$activity = new EighthActivity($aid);
 			$bid = EighthBlock::add_block($date,$block,FALSE);
 			if (!isSet($studentids[$studentid])) {
-				//There's quite a bit of bogus data in the old DB
+				//There's quite a bit of bogus data in the old DB - this filters it
 				$uid = User::studentid_to_uid($studentid);
 				if (!$uid) {
 					continue;
@@ -759,7 +775,7 @@ class dataimport implements Module {
 				$uid = $studentids[$studentid];
 			}
 			//d("Adding user $uid (StudentID $studentid) to block $bid",6);
-			$activity->add_member($uid,TRUE,$bid);
+			$activity->add_member(new User($uid),TRUE,$bid);
 			$I2_LOG->log_file("Switched student with StudentID $studentid into {$activity->name} on $date block $block",7);
 			$numactivitiesentered++;
 		}
@@ -772,9 +788,20 @@ class dataimport implements Module {
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 			$user = new User($row['StudentID']);
 			$uid = $user->uid;
-			$blockid = new EightBlock($row['ActivityDate'],$row['ActivityBlock']);
+			$blockid = new EighthBlock($row['ActivityDate'],$row['ActivityBlock']);
 			EighthSchedule::add_absentee($blockid,$uid);
 			$numabsences++;
+		}
+
+		/*
+		** Add students to groups
+		*/
+		$numgroupmembers = 0;
+		$res = $oldsql->query('SELECT StudentID,GroupID FROM StudentGroupMap');
+		while ($row = $res->fetch_array(Result::ASSOC)) {
+				  $group = new Group($row['GroupID']);
+				  $group->add_user(new User($row['StudentID']));
+				  $numgroupmembers++;
 		}
 
 		d("$numactivities activities created",5);
@@ -785,6 +812,7 @@ class dataimport implements Module {
 		d("$numgroups 8th-period groups created",5);
 		d("$numactivitiesentered student sign-ups processed",5);
 		d("$numabsences absences recorded",5);
+		d("$numgroupmembers group memberships handled",5);
 	}
 
 	private function create_sponsor($sponsor) {
@@ -809,6 +837,7 @@ class dataimport implements Module {
 
 	/**
 	* Expands a student's Intranet 2 presence by adding their non-critical data from Intranet 1.
+	* DEPRECATED - dessicated, moved into import_ methods
 	*/
 	private function expand_student_info() {
 		global $I2_LDAP,$I2_LOG;
@@ -936,6 +965,12 @@ class dataimport implements Module {
 	private function init_db() {
 		global $I2_SQL,$I2_LDAP;
 
+		if ($this->admin_pass) {
+			$ldap = LDAP::get_admin_bind($this->admin_pass);
+		} else {
+				  $ldap = $I2_LDAP;
+		}
+
 		/*
 		** Make the SQL database presentable
 		*/
@@ -952,11 +987,11 @@ class dataimport implements Module {
 			'ou' => 'people',
 			'description' => 'People at TJHSST'
 		);
-		$I2_LDAP->add('ou=people',$people);
+		$ldap->add('ou=people',$people);
 
 		/*
 		** Create the admin user account
-		*/
+		 */
 		$admin_number = 9998;
 		$admin = array(
 			'objectClass' => 'fakeUser',
@@ -968,8 +1003,9 @@ class dataimport implements Module {
 			'chrome' => 'TRUE',
 			'style' => 'default',
 			'startpage' => 'dataimport'
-		);
-		$I2_LDAP->add('iodineUid=admin,ou=people',$admin);
+ 		);
+		$ldap->delete('iodineUid=admin,ou=people');
+		$ldap->add('iodineUid=admin,ou=people',$admin);
 		$admingid = $I2_SQL->query('SELECT gid FROM groups WHERE name=%s','admin_all')->fetch_single_value();
 		$I2_SQL->query('INSERT INTO group_user_map (uid,gid,is_admin) VALUES (%d,%d,%d)',$admin_number,$admingid,1);
 		/*
@@ -986,8 +1022,9 @@ class dataimport implements Module {
 			'chrome' => 'FALSE',
 			'style' => 'default',
 			'startpage' => 'eighth'
-		);
-		$I2_LDAP->add('iodineUid=eighthOffice,ou=people',$admin);
+		 );
+		$ldap->delete('iodineUid=eighthOffice,ou=people');
+		$ldap->add('iodineUid=eighthOffice,ou=people',$admin);
 		$admingid = $I2_SQL->query('SELECT gid FROM groups WHERE name=%s','admin_eighth')->fetch_single_value();
 		$I2_SQL->query('INSERT INTO group_user_map (uid,gid,is_admin) VALUES (%d,%d,%d)',$admin_number,$admingid,1);
 
@@ -1026,13 +1063,14 @@ class dataimport implements Module {
 		$this->expand_student_info();
 		$I2_LOG->log_file('Students imported',3);
 		
-		/*$I2_LOG->log_file('Importing teachers...',3);
+		$I2_LOG->log_file('Importing teachers...',3);
 		$this->import_teacher_data_file_one();
 		$this->import_teacher_data_ldap();
-		$I2_LOG->log_file('Teachers imported',3);*/
+		$I2_LOG->log_file('Teachers imported',3);
 		
-		/*$I2_LOG->log_file('Importing eighth-period data...',3);
-		$I2_LOG->log_file('Eighth period imported',3);*/
+		$I2_LOG->log_file('Importing eighth-period data...',3);
+		$this->import_eighth_data();
+		$I2_LOG->log_file('Eighth period imported',3);
 		
 		/*$I2_LOG->log_file('Importing scheduling information...',3);
 		$I2_LOG->log_file('Schedules imported',3);*/
@@ -1114,6 +1152,16 @@ class dataimport implements Module {
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_teacher') {
 			unset($_SESSION['school_ldap_server']);
 			unset($this->school_ldap_server);
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_intranet') {
+			unset($_SESSION['intranet_server']);
+			unset($this->intranet_server);
+			unset($_SESSION['intranet_pass']);
+			unset($this->intranet_pass);
+			unset($_SESSION['intranet_db']);
+			unset($this->intranet_db);
+			unset($_SESSION['intranet_user']);
+			unset($this->intranet_user);
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'userdata' && isSet($_REQUEST['userfile'])) {
 			$this->userfile = $_REQUEST['userfile'];

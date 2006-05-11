@@ -41,8 +41,11 @@ class Error {
 		** Also ignore if error_reporting() is zero, i.e. error
 		** suppression is on.
 		*/
-		if(	$errfile == '/usr/share/php/smarty/libs/Smarty.class.php' ||
-			$errfile == '/usr/share/php/smarty/libs/Smarty_Compiler.class.php' ||
+
+		//Note from BRJ: this is commented because it's done more elegantly below
+
+		if(	/*$errfile == '/usr/share/php/smarty/libs/Smarty.class.php' ||
+				  $errfile == '/usr/share/php/smarty/libs/Smarty_Compiler.class.php' ||*/
 			error_reporting() == 0 ) {
 			return;
 		}
@@ -64,10 +67,26 @@ class Error {
 		}
 		
 		/*
+		** Ditto LDAP delete-non-leaf errors
+		*/
+		if (strpos($errstr,'Delete: Operation not allowed on non-leaf')) {
+			d('LDAP object deletion attempted on non-leaf!',3);
+			return;
+		}
+
+		/*
 		** ... AND invalid DN syntax errors, generally caused by having a null in the IodineUID
 		*/
 		if (strpos($errstr,'Search: Invalid DN syntax')) {
 			d('LDAP search performed with invalid DN syntax',4);
+			return;
+		}
+		
+		/*
+		** ... AND add-failed-already-exists errors
+		*/
+		if (strpos($errstr,'Add: Already exists')) {
+			d('LDAP add operation failed because node already exists',4);
 			return;
 		}
 

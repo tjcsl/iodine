@@ -8,4 +8,5 @@ CREATE TABLE eighth_blocks (
 	block ENUM('A','B') NOT NULL,
 
 	locked TINYINT(1) NOT NULL DEFAULT '0'
+
 );

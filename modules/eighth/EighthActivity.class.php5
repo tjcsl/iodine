@@ -89,7 +89,7 @@ class EighthActivity {
 		if($this->data['restricted'] && !in_array($userid, $this->get_restricted_members())) {
 			$ret |= EighthActivity::PERMISSIONS;
 		}
-		$otheractivityid = EighthSchedule::get_activities_by_block($userid, $this->data['bid']);
+		$otheractivityid = EighthSchedule::get_activities_by_block($userid, $blockid);
 		$otheractivity = new EighthActivity($otheractivityid);
 		if ($otheractivity && $otheractivity->sticky) {
 				$ret |= EighthActivity::STICKY;
@@ -97,11 +97,10 @@ class EighthActivity {
 		if ($otheractivity && $otheractivityid == $this->data['aid'] && $this->oneaday) {
 			$ret |= EighthActivity::ONEADAY;
 		}
-		if($this->presign && time() > strtotime($this->block->date)-60*60*24*2) {
+		if($this->presign && $this->block && time() > strtotime($this->block->date)-60*60*24*2) {
 			$ret |= EighthActivity::PRESIGN;
 		}
 		if(!$ret || $force) {
-			$bid = $this->data['bid'];
 			$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES (%d,%d,%d)';
 			$args = array($this->data['aid'],$blockid,$userid);
 			$result = $I2_SQL->query_arr($query, $args);
@@ -110,7 +109,7 @@ class EighthActivity {
 				$invargs = $args;
 			} else {
 				$inverse = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
-				$invargs = array($otheractivityid,$bid,$userid);
+				$invargs = array($otheractivityid,$blockid,$userid);
 			}
 			$I2_LOG->log_file('Changing activity');
 			Eighth::push_undoable($query,$args,$inverse,$invargs,'User Schedule Change');
@@ -463,7 +462,7 @@ class EighthActivity {
 	* @param bool $restricted If this is a restricted activity.
 	*/
 	public static function add_activity($name, $sponsors = array(), $rooms = array(), $description = '', 
-			$restricted = FALSE, $sticky = FALSE, $bothblocks = FALSE, $presign = FALSE, $aid = NULL) {
+			$restricted = FALSE, $sticky = FALSE, $bothblocks = FALSE, $presign = FALSE, $aid = NULL, $special = FALSE) {
 		Eighth::check_admin();
 		global $I2_SQL;
 		if(!is_array($sponsors)) {
@@ -474,22 +473,22 @@ class EighthActivity {
 		}
 		$result = NULL;
 		if ($aid === NULL) {
-			$query = "REPLACE INTO eighth_activities (name,sponsors,rooms,description,restricted,sticky,bothblocks,presign) 
-				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d)";
-			$queryarg = array($name, $sponsors, $rooms, $description, ($restricted?1:0),($sticky?1:0),($bothblocks?1:0),($presign?1:0));
+			$query = "REPLACE INTO eighth_activities (name,sponsors,rooms,description,restricted,sticky,bothblocks,presign,special) 
+				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d,%d)";
+			$queryarg = array($name, $sponsors, $rooms, $description, ($restricted?1:0),($sticky?1:0),($bothblocks?1:0),($presign?1:0),($special?1:0));
 			$result = $I2_SQL->query_arr($query,$queryarg);
 			$invquery = 'DELETE FROM eighth_activities WHERE aid=%d';
 			$newid = $result->get_insert_id();
 			$invarg = array($newid);
 			Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Create Activity');
 		} else {
-			$old = $I2_SQL->query('SELECT * FROM eighth_activities WHERE aid=%d',$aid)->fetch_array(MySQL::ASSOC);
+			$old = $I2_SQL->query('SELECT * FROM eighth_activities WHERE aid=%d',$aid)->fetch_array(Result::ASSOC);
 			$query = "REPLACE INTO eighth_activities 
-				(name,sponsors,rooms,description,restricted,sticky,bothblocks,presign,aid) 
-				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d,%d)";
-			$queryarg = array($name, $sponsors, $rooms, $description, ($restricted?1:0),($sticky?1:0),($bothblocks?1:0),($presign?1:0),$aid);
+				(name,sponsors,rooms,description,restricted,sticky,bothblocks,presign,aid,special) 
+				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d,%d,%d)";
+			$queryarg = array($name, $sponsors, $rooms, $description, ($restricted?1:0),($sticky?1:0),($bothblocks?1:0),($presign?1:0),$aid,($special?1:0));
 			$result = $I2_SQL->query_arr($query,$queryarg);
-			$invarg = array($old['name'],$old['sponsors'],$old['rooms'],$old['description'],$old['restricted'],$old['sticky'],$old['bothblocks'],$old['presign'],$old['aid']);
+			$invarg = array($old['name'],$old['sponsors'],$old['rooms'],$old['description'],$old['restricted'],$old['sticky'],$old['bothblocks'],$old['presign'],$old['aid'],$old['special']);
 			Eighth::push_undoable($query,$queryarg,$query,$invarg);
 		}
 		return $result->get_insert_id();

@@ -52,7 +52,7 @@ class MySQLResult implements Result {
 	* for this to associate with.
 	* @param mixed $query_type See join_right.
 	*/
-	function __construct($mysql_result,$query_type,$table = NULL) {
+	function __construct($mysql_result,$query_type) {
 		global $I2_LOG, $I2_SQL;
 		if (!$mysql_result) {
 			d('Null SQL result constructed.',6);
@@ -66,14 +66,13 @@ class MySQLResult implements Result {
 		}
 		$this->mysql_result = $mysql_result;
 		$this->query_type = $query_type;
-		$this->table = $table;
 		//FIXME: DANGER - HACKS AHEAD!
 		if ($query_type == MySQL::INSERT || $query_type == MySQL::REPLACE) {
 			$arr = mysql_fetch_row($I2_SQL->raw_query('SELECT LAST_INSERT_ID()'));
 			$this->insert_id = $arr[0];
 			//mysql_insert_id($mysql_result);//mysql_query(
 		}
-		d('MySQL Result: type '.$this->query_type.' on table '.$this->table.' with '.$this->insert_id.' as insert_id',8);
+		//d('MySQL Result: type '.$this->query_type.' on table '.$this->table.' with '.$this->insert_id.' as insert_id',8);
 	}
 
 	public static function nil() {

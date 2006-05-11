@@ -66,25 +66,17 @@ class Eighth implements Module {
 	private static $redo;
 
 	/**
+	* Whether to track undo information at all
+	*/
+	private static $doundo = TRUE;
+
+	/**
 	* Whether to force an action
 	*/
 	private $force = FALSE;
 
 	function __construct() {
-		if (isSet($_SESSION['eighth_undo'])) {
-				  self::$undo = &$_SESSION['eighth_undo'];
-		} elseif (!self::$undo) {
-				  self::$undo = array();
-				  $_SESSION['eighth_undo'] = array();
-		}
-		if (isSet($_SESSION['eighth_redo'])) {
-				  self::$redo = &$_SESSION['eighth_redo'];
-		} elseif (!self::$redo) {
-				  self::$redo = array();
-				  $_SESSION['eighth_redo'] = array();
-		}
-		d('8th-period undo stack: '.count(self::$undo).' element(s), topped by '.self::get_undo_name(),7);
-		d('8th-period redo stack: '.count(self::$redo).' element(s), topped by '.self::get_redo_name(),7);
+		self::init_undo();
 	}
 
 	private static function undo() {
@@ -185,11 +177,35 @@ class Eighth implements Module {
 			  //array_push($_SESSION['eighth_undo'],$undoandredo);
 	}
 
+	public static function init_undo() {
+		if (isSet($_SESSION['eighth_undo'])) {
+				  self::$undo = &$_SESSION['eighth_undo'];
+		} elseif (!self::$undo) {
+				  self::$undo = array();
+				  $_SESSION['eighth_undo'] = array();
+		}
+		if (isSet($_SESSION['eighth_redo'])) {
+				  self::$redo = &$_SESSION['eighth_redo'];
+		} elseif (!self::$redo) {
+				  self::$redo = array();
+				  $_SESSION['eighth_redo'] = array();
+		}
+		d('8th-period undo stack: '.count(self::$undo).' element(s), topped by '.self::get_undo_name(),7);
+		d('8th-period redo stack: '.count(self::$redo).' element(s), topped by '.self::get_redo_name(),7);
+	}
+
+	public static function undo_off() {
+			  self::$doundo = FALSE;
+	}
+
 	/**
 	* Register an undoable action with the eighth-period undo system.
 	*
 	*/
 	public static function push_undoable($undoquery, $undoarr, $redoquery, $redoarr, $name='Unknown Action') {
+			  if (!self::$doundo) {
+						 return;
+			  }
 			global $I2_LOG;
 			$undo = array($redoquery,$redoarr,$undoquery,$undoarr,$name);
 			//$I2_LOG->log_file('PUSH UNDO: '.print_r($undo,1));

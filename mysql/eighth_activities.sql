@@ -19,5 +19,7 @@ CREATE TABLE eighth_activities (
 
 	bothblocks TINYINT(1) NOT NULL DEFAULT '0',
 
-	sticky TINYINT(1) NOT NULL DEFAULT '0'
+	sticky TINYINT(1) NOT NULL DEFAULT '0',
+
+	special TINYINT(1) NOT NULL DEFAULT '0'
 );

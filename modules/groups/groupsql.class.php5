@@ -157,9 +157,8 @@ class GroupSQL extends Group {
 	public function add_user($user) {
 		global $I2_SQL;
 
-		if(is_numeric($user)) {
-			$user = new User($user);
-		}
+		$user = new User($user);
+		
 		if($this->special) {
 			throw I2Exception("Attempted to add user {$user->uid} to invalid group {$this->mygid}");
 		}
