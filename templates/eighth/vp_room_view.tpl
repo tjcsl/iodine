@@ -16,7 +16,7 @@
 		<td style="padding: 0px 5px;">[<$utilization.activity->name>]</td>
 		<td style="padding: 0px 5px;">[<$utilization.activity->block_sponsors_comma>]</td>
 		<td style="padding: 0px 5px;">[<$utilization.students>]</td>
-		<td style="padding: 0px 5px;">[<$utilization.room->capacity>]</td>
+		<td style="padding: 0px 5px;">[<if $utilization.room->capacity == -1>]UNLIMITED[<else>][<$utilization.room->capacity>][</if>]</td>
 	</tr>
 [</foreach>]
 </table>
