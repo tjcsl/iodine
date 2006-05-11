@@ -436,7 +436,7 @@ class EighthActivity {
 	* Gets all the available activities.
 	*
 	* @access public
-	* @param int $blockid The room ID.
+	* @param int $blockid The block ID.
 	*/
 	public static function get_all_activities($blockids = NULL, $restricted = FALSE) {
 		global $I2_SQL;
@@ -449,6 +449,17 @@ class EighthActivity {
 			}
 			return self::id_to_activity($I2_SQL->query('SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid IN (%D) ' . ($restricted ? 'AND restricted=1 ' : '') . 'GROUP BY aid ORDER BY name', $blockids)->fetch_all_arrays(Result::NUM));
 		}
+	}
+
+	/**
+	* Gets all activities on or after a given date
+	*
+	* @param string $startdate A date before which no activities will be returned
+	* @return array An array of EighthActivity objects representing activities
+	*/
+	public static function get_all_activities_starting($startdate = NULL) {
+			  global $I2_SQL;
+			  return self::id_to_activity($I2_SQL->query('SELECT activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) LEFT JOIN eighth_activities ON (eighth_activities.aid=eighth_block_map.activityid) WHERE date > %t GROUP BY activityid ORDER BY name',$startdate)->fetch_all_arrays(Result::NUM));
 	}
 
 	/**

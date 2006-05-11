@@ -830,16 +830,23 @@ class Eighth implements Module {
 	* @param array $this->args The arguments for the operation.
 	*/
 	private function sch_activity() {
-		if($this->op == "") {
+		if($this->op == '') {
 			$this->setup_activity_selection();
 			$this->template = 'sch_activity_choose.tpl';
 		}
-		else if($this->op == "view") {
+		else if($this->op == 'view') {
 			$this->template = 'sch_activity.tpl';
 			$this->template_args['rooms'] = EighthRoom::get_all_rooms();
 			$this->template_args['sponsors'] = EighthSponsor::get_all_sponsors();
-			$this->template_args['block_activities'] = EighthSchedule::get_activity_schedule($this->args['aid']);
-			$this->template_args['activities'] = EighthActivity::get_all_activities();
+			if (isSet($this->args['startdate'])) {
+				$startdate = $this->args['startdate'];
+			} elseif (isSet($_SESSION['eighth']['start_date'])) {
+					  $startdate = $_SESSION['eighth']['start_date'];
+			} else {
+					  $startdate = date('Y-m-d');
+			}
+			$this->template_args['block_activities'] = EighthSchedule::get_activity_schedule($this->args['aid'],$startdate);
+			$this->template_args['activities'] = EighthActivity::get_all_activities_starting($startdate);
 			$this->template_args['act'] = new EighthActivity($this->args['aid']);
 			$this->title = 'Schedule an Activity (' . $this->template_args['act']->name_r  . ')';
 		}
