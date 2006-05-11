@@ -705,8 +705,8 @@ class dataimport implements Module {
 				*/
 				$brooms = str_replace(' (ROOM CHANGE)','',$brooms);
 
-				$bsponsors = $I2_SQL->query('SELECT TeacherID FROM SponsorScheduleMap WHERE ActivityID=%d AND ActivityDate=%t AND ActivityBlock=%s',
-						  							 $aid,$date,$block);
+				$bsponsors = $oldsql->query('SELECT TeacherID FROM SponsorScheduleMap WHERE ActivityID=%d AND ActivityDate=%t AND ActivityBlock=%s',
+						  							 $aid,$date,$block)->fetch_array(Result::NUM);
 
 				/*
 				** Schedule activity

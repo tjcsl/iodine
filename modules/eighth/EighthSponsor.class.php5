@@ -118,7 +118,7 @@ class EighthSponsor {
 			Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Add Sponsor');
 			return $id;
 		} else {
-			$old = $I2_SQL->query('SELECT fname,lname FROM eighth_sponsor WHERE sid=%d',$sid)->fetch_array(Result::ASSOC);
+			$old = $I2_SQL->query('SELECT fname,lname FROM eighth_sponsors WHERE sid=%d',$sid)->fetch_array(Result::ASSOC);
 			$query = 'REPLACE INTO eighth_sponsors (fname,lname,sid) VALUES (%s,%s,%d)';
 			$queryarg = array($fname, $lname, $sid);
 			$I2_SQL->query_arr($query, $queryarg);
