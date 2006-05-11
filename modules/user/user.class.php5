@@ -126,6 +126,10 @@ class User {
 				$res = $I2_LDAP->search('ou=people',"(&(objectClass=tjhsstStudent)(tjhsstStudentId=$thing))",array('iodineUidNumber'));
 				$uid = $res->fetch_single_value();
 				//self::$cache[$uid] = array('tjhsstStudentId' => $thing);
+				if (!$uid) {
+					d('StudentID lookup failed for StudentID '.$thing,6);
+					return FALSE;
+				}
 				return $uid;
 			} else {
 				/*
@@ -137,8 +141,11 @@ class User {
 			/*
 			** Passed value is a username
 			*/
-			$res = $I2_LDAP->search_base("iodineUid=$thing,ou=people",array('iodineUidNumber'));
-			$uid = $res->fetch_single_value();
+			$uid = $I2_LDAP->search_base("iodineUid=$thing,ou=people",array('iodineUidNumber'))->fetch_single_value();
+			if (!$uid) {
+				d('Username lookup failed for username '.$thing,6);
+				return FALSE;
+			}
 			self::$cache[$thing] = array('iodineUidNumber' => $uid);
 			return $uid;
 		}

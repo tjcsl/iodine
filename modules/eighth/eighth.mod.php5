@@ -203,7 +203,7 @@ class Eighth implements Module {
 	*
 	*/
 	public static function push_undoable($undoquery, $undoarr, $redoquery, $redoarr, $name='Unknown Action') {
-			  if (!self::$doundo) {
+			  if (!self::$doundo || !is_array(self::$undo)) {
 						 return;
 			  }
 			global $I2_LOG;
@@ -1414,7 +1414,7 @@ class Eighth implements Module {
 		else if($this->op == 'absences') {
 			$absences = EighthActivity::id_to_Activity(EighthSchedule::get_absences($this->args['uid']));
 			$this->template_args['absences'] = $absences;
-			$user = new User($args['uid']);
+			$user = new User($this->args['uid']);
 			$this->template_args['uid'] = $this->args['uid'];
 			$this->template_args['name'] = $user->fullname_comma;
 			$this->template_args['admin'] = $this->admin;
