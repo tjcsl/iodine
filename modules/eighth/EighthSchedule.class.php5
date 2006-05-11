@@ -69,7 +69,7 @@ class EighthSchedule {
 		global $I2_SQL;
 		Eighth::check_admin();
 		
-		$old = $I2_SQL->query('SELECT * FROM eighth_block_map WHERE aid=%d and bid=%d',$activityid,$blockid)->fetch_array(Result::ASSOC);
+		$old = $I2_SQL->query('SELECT * FROM eighth_block_map WHERE activityid=%d and bid=%d',$activityid,$blockid)->fetch_array(Result::ASSOC);
 		$query = 'DELETE FROM eighth_block_map WHERE bid=%d AND activityid=%d';
 		$queryarg = array($blockid,$activityid);
 		$result = $I2_SQL->query_arr($query,$queryarg);
