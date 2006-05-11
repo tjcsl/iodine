@@ -218,8 +218,8 @@ class EighthSchedule {
 		global $I2_SQL;
 		$blocks = EighthBlock::get_all_blocks($starting_date, $number_of_days);
 		$activities = array();
-		$scheduled = TRUE;
 		foreach($blocks as $block) {
+			$scheduled = TRUE;
 			$result = $I2_SQL->query('SELECT rooms,sponsors,cancelled,comment from eighth_block_map WHERE bid=%d AND activityid=%d', $block['bid'], $activityid);
 			if($result->num_rows() == 0) {
 				$result = $I2_SQL->query('SELECT rooms,sponsors FROM eighth_activities WHERE aid=%d', $activityid);
