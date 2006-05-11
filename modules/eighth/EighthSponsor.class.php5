@@ -109,11 +109,30 @@ class EighthSponsor {
 		global $I2_SQL;
 		Eighth::check_admin();
 		if (!$sid) {
-			$result = $I2_SQL->query('REPLACE INTO eighth_sponsors (fname,lname) VALUES (%s,%s)', $fname, $lname);
+			$query = 'REPLACE INTO eighth_sponsors (fname,lname) VALUES (%s,%s)';
+			$queryarg = array($fname,$lname);
+			$result = $I2_SQL->query_arr($query, $queryarg);
+			$id = $result->get_insert_id();
+			$invquery = 'DELETE FROM eighth_sponsors WHERE sid=%d';
+			$invarg = array($id);
+			Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Add Sponsor');
+			return $id;
 		} else {
-			$result = $I2_SQL->query('REPLACE INTO eighth_sponsors (fname,lname,sid) VALUES (%s,%s,%d)', $fname, $lname, $sid);
+			$old = $I2_SQL->query('SELECT fname,lname FROM eighth_sponsor WHERE sid=%d',$sid)->fetch_array(Result::ASSOC);
+			$query = 'REPLACE INTO eighth_sponsors (fname,lname,sid) VALUES (%s,%s,%d)';
+			$queryarg = array($fname, $lname, $sid);
+			$I2_SQL->query_arr($query, $queryarg);
+			$id = $sid;
+			if (!$old) {
+					  $invquery = 'DELETE FROM eighth_sponsors WHERE sid=%d';
+					  $invarg = array($sid);
+			} else {
+					  $invquery = $query;
+					  $invarg = array($old['fname'],$old['lname'],$sid);
+			}
+			Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Create Sponsor');
+			return $sid;
 		}
-		return $result->get_insert_id();
 	}
 
 	/**
@@ -125,8 +144,26 @@ class EighthSponsor {
 	public static function remove_sponsor($sponsorid) {
 		global $I2_SQL;
 		Eighth::check_admin();
-		$result = $I2_SQL->query('DELETE FROM eighth_sponsors WHERE sid=%d', $sponsorid);
+		$old = $I2_SQL->query('SELECT fname,lname FROM eighth_sponsors WHERE sid=%d',$sponsorid)->fetch_array(Result::ASSOC);
+		if (!$old) {
+				  //This sponsor already doesn't exist
+				  d('Tried to delete nonexistant sponsor '.$sponsorid,5);
+				  return;
+		}
+		Eighth::start_undo_transaction();
 		// TODO: Delete from the sponsor map and everything else as well
+		// Get all activities which are sponsored by this person
+		$actswithsponsor = $I2_SQL->query('SELECT aid,sponsors FROM eighth_activities WHERE sponsors LIKE '%%%?%%'',$sponsorid);
+		while ($row = $actswithsponsor->fetch_array(Result::ASSOC)) {
+				  Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Remove Sponsor [from activity]');
+		}
+		$query = 'DELETE FROM eighth_sponsors WHERE sid=%d';
+		$queryarg = array($sponsorid);
+		$I2_SQL->query_arr($query, $queryarg);
+		$invquery = 'REPLACE INTO eighth_sponsors (fname,lname,sid) VALUES(%s,%s,%d)';
+		$invarg = array($old['fname'],$old['lname'],$sponsorid);
+		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Remove Sponsor');
+		Eighth::end_undo_transaction();
 	}
 
 	/**
