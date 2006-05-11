@@ -182,7 +182,7 @@ class EighthRoom {
 		// Get rid of all activity references to the room
 		
 		$res = $I2_SQL->query("SELECT aid,rooms FROM eighth_activities WHERE rooms LIKE '%%?%'");
-		$query = 'UPDATE eighth_activities SET rooms=%s WHERE aid=%d';
+		$aquery = 'UPDATE eighth_activities SET rooms=%s WHERE aid=%d';
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 				  $newrooms = array();
 				  foreach (explode(',',$row['rooms']) as $room) {
@@ -192,17 +192,17 @@ class EighthRoom {
 				  }
 				  $queryarg = array(implode(',',$newrooms),$row['aid']);
 				  $invarg = array($row['rooms'],$row['aid']);
-				  $I2_SQL->query_arr($query,$queryarg);
-				  Eighth::push_undoable($query,$queryarg,$query,$invarg,'Delete Room [from activity]');
+				  $I2_SQL->query_arr($aquery,$queryarg);
+				  Eighth::push_undoable($aquery,$queryarg,$query,$invarg,'Delete Room [from activity]');
 		}
 
 		
-		$query = 'DELETE FROM eighth_rooms WHERE rid=%d';
+		$rquery = 'DELETE FROM eighth_rooms WHERE rid=%d';
 		$queryarg = array($rid);
-		$I2_SQL->query_arr($query, $queryarg);
+		$I2_SQL->query_arr($rquery, $queryarg);
 		$invquery = 'REPLACE INTO eighth_rooms (rid,name,capacity) VALUES (%d,%s,%d)';
 		$invarg = array($old['rid'],$old['name'],$old['capacity']);
-		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Remove Room');
+		Eighth::push_undoable($rquery,$queryarg,$invquery,$invarg,'Remove Room');
 		Eighth::end_undo_transaction();
 	}
 

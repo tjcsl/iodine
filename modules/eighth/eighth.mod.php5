@@ -142,9 +142,10 @@ class Eighth implements Module {
 			return;
 		}
 		self::start_redo_transaction();
-		array_pop(self::$undo);
+		array_pop(self::$undo); // drop the transaction_end
 		//array_pop($_SESSION['eighth_undo']);
-		$openct = 0;
+
+		$openct = 1;
 		while ($name) {
 			if ($name == 'TRANSACTION_START') {
 							 $openct--;
@@ -160,6 +161,7 @@ class Eighth implements Module {
 			$name = self::get_undo_name();
 		}
 		if (count(self::$undo) > 0) {
+			//pop off the TRANSACTION_START
 			array_pop(self::$undo);
 			//array_pop($_SESSION['eighth_undo']);
 		}
@@ -167,22 +169,22 @@ class Eighth implements Module {
 	}
 
 	public static function start_undo_transaction() {
-		array_push(self::$undo,array(NULL,NULL,NULL,NULL,'TRANSACTION_START'));
+		array_push(self::$undo,array('TRANSACTIONSTART -',NULL,'TRANSACTIONSTART -',NULL,'TRANSACTION_START'));
 		//array_push($_SESSION['eighth_undo'],array(NULL,NULL,NULL,NULL,'TRANSACTION_START'));
 	}
 	
 	private static function start_redo_transaction() {
-		array_push(self::$redo,array(NULL,NULL,NULL,NULL,'TRANSACTION_START'));
+		array_push(self::$redo,array('TRANSACTIONSTART -',NULL,'TRANSACTIONSTART -',NULL,'TRANSACTION_START'));
 		//array_push($_SESSION['eighth_redo'],array(NULL,NULL,NULL,NULL,'TRANSACTION_START'));
 	}
 	
 	public static function end_undo_transaction() {
-		array_push(self::$undo,array(NULL,NULL,NULL,NULL,'TRANSACTION_END'));
+		array_push(self::$undo,array('TRANSACTIONEND -',NULL,'TRANSACTIONEND -',NULL,'TRANSACTION_END'));
 		//array_push($_SESSION['eighth_undo'],array(NULL,NULL,NULL,NULL,'TRANSACTION_END'));
 	}
 
 	private static function end_redo_transaction() {
-		array_push(self::$redo,array(NULL,NULL,NULL,NULL,'TRANSACTION_END'));
+		array_push(self::$redo,array('TRANSACTIONEND -',NULL,'TRANSACTIONEND -',NULL,'TRANSACTION_END'));
 		//array_push($_SESSION['eighth_redo'],array(NULL,NULL,NULL,NULL,'TRANSACTION_END'));
 	}
 
