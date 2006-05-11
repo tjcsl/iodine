@@ -141,6 +141,7 @@ class Eighth implements Module {
 			array_pop(self::$undo);
 			//array_pop($_SESSION['eighth_undo']);
 		}
+		self::end_redo_transaction();
 	}
 
 	public static function start_undo_transaction() {
@@ -191,7 +192,13 @@ class Eighth implements Module {
 				  $_SESSION['eighth_redo'] = array();
 		}
 		d('8th-period undo stack: '.count(self::$undo).' element(s), topped by '.self::get_undo_name(),7);
+		foreach ((self::$undo) as $undo) {
+				  d('-- Undo Item: --'.print_r($undo,1),8);
+		}
 		d('8th-period redo stack: '.count(self::$redo).' element(s), topped by '.self::get_redo_name(),7);
+		foreach ((self::$redo) as $redo) {
+				  d('-- Redo Item: --'.print_r($redo,1),8);
+		}
 	}
 
 	public static function undo_off() {
@@ -535,21 +542,17 @@ class Eighth implements Module {
 
 	private function undoit() {
 			  global $I2_ARGS;
-			  switch ($this->op) {
-			  	case 'undo':
-					self::undo_transaction();
-					break;
-			  	case 'redo':
-					self::redo_transaction();
-					break;
-			  	case 'clear':
-			  		self::clear_stack();
-					break;
-				default:
-					redirect('eighth');
+			  if ($this->op == 'undo') {
+						 self::undo_transaction();
+			  } elseif ($this->op == 'redo') {
+						 self::redo_transaction();
+			  } elseif ($this->op == 'clear') {
+						 self::clear_stack();
+			  } else {
+						 redirect('eighth');
 			  }
-			  // Circumvent $args because it turns the path into an associative array
-			  $str = implode('/',array_slice($I2_ARGS,3));
+			 // Circumvent $args because it turns the path into an associative array
+			 $str = implode('/',array_slice($I2_ARGS,3));
 			 redirect('eighth/'.$str);
 	}
 
