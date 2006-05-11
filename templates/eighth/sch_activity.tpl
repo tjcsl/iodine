@@ -1,9 +1,9 @@
 [<include file="eighth/header.tpl">]
 <script language="javascript" type="text/javascript" src="[<$I2_ROOT>]www/js/eighth_sch_activity.js"></script>
 <div style="width: 100%; text-align: center; font-weight: bold; font-size: 18pt; margin-top: 10px;">
-<select name="activity_list" size="1" onChange="location.href='[<$I2_ROOT>]eighth/sch_activity/view/aid/' + this.options[this.selectedIndex].value">
+<select name="activity_list" size="1" style="font-size: 14pt; text-align: center;" onChange="location.href='[<$I2_ROOT>]eighth/sch_activity/view/aid/' + this.options[this.selectedIndex].value">
 [<foreach from=$activities item="activity">]
-	<option value="[<$activity->aid>]"[<if $activity->cancelled>] style="font-weight: bold; color: #FF0000;"[<elseif $activity->scheduled>] style="font-weight: bold; color: #FF6600;"[</if>][<if isset($act) && ($act->aid == $activity->aid)>] SELECTED[</if>]>[<$activity->aid>]: [<$activity->name_r>]</option>
+	<option value="[<$activity->aid>]"  [<if $act->aid == $activity->aid>] style="font-size: 18pt;" SELECTED[<else>] style="font-size: 10pt; "[</if>]>[<$activity->aid>]: [<$activity->name_r>]</option>
 [</foreach>]
 </select>
 </div>
