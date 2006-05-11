@@ -370,6 +370,8 @@ class Eighth implements Module {
 		if ($startdate === NULL) {
 			if (isSet($this->args['startdate'])) {
 				$startdate = $this->args['startdate'];
+			} else if (isSet($_SESSION['eighth']['start_date'])){
+				$startdate = $_SESSION['eighth']['start_date'];
 			} else {
 				$startdate = date('Y-m-d');
 			}
@@ -377,7 +379,7 @@ class Eighth implements Module {
 		if ($daysf === NULL && isSet($this->args['daysforward'])) {
 			$daysf = $this->args['daysforward'];
 		} else {
-			$daysf = 9999;
+			$daysf = 99999;
 		}
 		$blocks = EighthBlock::get_all_blocks($startdate, $daysf);
 		$this->template = 'block_selection.tpl';
@@ -1056,19 +1058,19 @@ class Eighth implements Module {
 	public function vcp_attendance() {
 		if($this->op == '') {
 			$this->setup_block_selection();
-			$this->template_args['op'] = "activity";
+			$this->template_args['op'] = 'activity';
 		}
-		else if($this->op == "activity") {
+		else if($this->op == 'activity') {
 			$this->setup_activity_selection(FALSE, $this->args['bid']);
 			$this->template_args['op'] = "view/bid/{$this->args['bid']}";
 		}
-		else if($this->op == "view") {
-			$this->template = "vcp_attendance.tpl";
+		else if($this->op == 'view') {
+			$this->template = 'vcp_attendance.tpl';
 			$this->template_args['activity'] = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->template_args['absentees'] = EighthSchedule::get_absentees($this->args['bid'], $this->args['aid']);
-			$this->title = "View Attendance";
+			$this->title = 'View Attendance';
 		}
-		else if($this->op == "update") {
+		else if($this->op == 'update') {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$members = $activity->members;
 			foreach($members as $member) {
@@ -1082,10 +1084,10 @@ class Eighth implements Module {
 			$activity->attendancetaken = TRUE;
 			redirect("eighth/vcp_attendance/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
 		}
-		else if($this->op == "format") {
-			$this->setup_format_selection("vcp_attendance", "Attendance Data", array("aid" => $this->args['aid'], "bid" => $this->args['bid']));
+		else if($this->op == 'format') {
+			$this->setup_format_selection('vcp_attendance', 'Attendance Data', array('aid' => $this->args['aid'], 'bid' => $this->args['bid']));
 		}
-		else if($this->op == "print") {
+		else if($this->op == 'print') {
 			EighthPrint::print_attendance_data($this->args['aid'], $this->args['bid'], $this->args['format']);
 		}
 	}
