@@ -549,9 +549,8 @@ class dataimport implements Module {
 		}
 	}
 
-	private function import_eighth_data($startdate=NULL,$enddate=NULL) {
+	private function import_eighth_data() {
 		global $I2_SQL,$I2_LDAP,$I2_LOG;
-
 
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 
@@ -559,24 +558,10 @@ class dataimport implements Module {
 		** NOTE: starting and ending dates are currently ignored!  Any and all data is imported.
 		*/
 
-		if ($startdate === NULL) {
-			// Go back 1 week by default
-			$startdate = date('Y-m-d',time()-7*24*60*60);
-		}
-		if ($enddate === NULL) {
-			// Go 8 weeks forward by default
-			$enddate = date('Y-m-d',time()+8*7*24*60*60);
-		}
-
-		$numblocks = 0;
-		$numscheduled = 0;
-		$numgroups = 0;
-		
-			
 		/*
 		** Create sponsors
 		*/
-		$res = $oldsql->query('Select sid,fname,lname FROM SponsorInfo');
+		$res = $oldsql->query('Select SponsorID,Firstname,Lastname FROM SponsorInfo');
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 			$I2_SQL->query('INSERT INTO eighth_sponsors (sid,fname,lname) VALUES(%d,%s,%s)',
 						   	$row['SponsorID'],$row['Firstname'],$row['Lastname']);
@@ -595,8 +580,6 @@ class dataimport implements Module {
 
 
 		d("$numactivities activities created",5);
-		d("$numblocks different new blocks created",5);
-		d("$numscheduled activity blocks scheduled",5);
 		d("$numrooms rooms created",5);
 		d("{$this->numsponsors} sponsors added",5);
 		d("$numgroups 8th-period groups created",5);
@@ -717,7 +700,6 @@ class dataimport implements Module {
 				EighthSchedule::schedule_activity($bid,$aid,$sponsors,$brooms,$bcomment,$attendance,$cancelled,$advertisement);
 				$I2_LOG->log_file("Scheduled activity \"$name\" for $block on $date",6);
 				$validrooms[$brooms] = 1;
-				$numscheduled++;
 				
 			}
 

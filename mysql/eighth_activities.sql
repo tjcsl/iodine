@@ -9,7 +9,7 @@ CREATE TABLE eighth_activities (
 
 	rooms VARCHAR(127) NOT NULL,
 
-	description VARCHAR(255) NOT NULL DEFAULT '',
+	description TEXT NOT NULL DEFAULT '',
 
 	restricted TINYINT(1) NOT NULL DEFAULT '0',
 
