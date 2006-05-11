@@ -230,7 +230,7 @@ class MySQL {
 				needs one, and $replacement is the string to
 				replace the tag with*/
 
-				if ($arg === NULL) {
+				if (!isSet($arg) || $arg === NULL) {
 					$replacement = 'NULL';
 				} else {
 					$replacement = $this->replace_tag($arg, $tag[0][1]);

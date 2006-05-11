@@ -797,7 +797,7 @@ class Eighth implements Module {
 			$this->setup_room_selection(true);
 		}
 		else if($this->op == 'view') {
-			$this->template = "amr_room.tpl";
+			$this->template = 'amr_room.tpl';
 			$this->template_args['room'] = new EighthRoom($this->args['rid']);
 			$this->title = 'View Rooms';
 		}
