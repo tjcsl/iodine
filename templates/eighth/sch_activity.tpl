@@ -1,7 +1,12 @@
 [<include file="eighth/header.tpl">]
 <script language="javascript" type="text/javascript" src="[<$I2_ROOT>]www/js/eighth_sch_activity.js"></script>
-[<include file="eighth/sch_activity_choose.tpl">]
-<div style="width: 100%; text-align: center; font-weight: bold; font-size: 18pt; margin-top: 10px;">[<$act->name_r>]</div>
+<div style="width: 100%; text-align: center; font-weight: bold; font-size: 18pt; margin-top: 10px;">
+<select name="activity_list" size="1" onChange="location.href='[<$I2_ROOT>]eighth/sch_activity/view/aid/' + this.options[this.selectedIndex].value">
+[<foreach from=$activities item="activity">]
+	<option value="[<$activity->aid>]"[<if $activity->cancelled>] style="font-weight: bold; color: #FF0000;"[<elseif $activity->scheduled>] style="font-weight: bold; color: #FF6600;"[</if>][<if isset($act) && ($act->aid == $activity->aid)>] SELECTED[</if>]>[<$activity->aid>]: [<$activity->name_r>]</option>
+[</foreach>]
+</select>
+</div>
 <form name="activities" action="[<$I2_ROOT>]eighth/sch_activity/modify/aid/[<$act->aid>]" method="post">
 <div id="eighth_room_pane">
 	<select id="eighth_room_list" name="rooms" size="10" multiple="multiple" onChange="do_action('add_room', 0, this.options[this.selectedIndex]);">
