@@ -122,12 +122,27 @@ class EighthRoom {
 	public static function add_room($name, $capacity, $rid=NULL) {
 		global $I2_SQL;
 		Eighth::check_admin();
-		if ($rid === NULL) {
-			$result = $I2_SQL->query('REPLACE INTO eighth_rooms (name, capacity) VALUES (%s,%d)', $name, $capacity);
+		if (!$rid) {
+				  $query = 'REPLACE INTO eighth_rooms (name, capacity) VALUES (%s,%d)';
+				  $queryarg = array($name, $capacity);
+				  $rid = $I2_SQL->query_arr($query,$queryarg)->get_insert_id();
+				  $invquery = 'DELETE FROM eighth_rooms WHERE rid=%d';
+				  $invarg = array($id);
 		} else {
-			$result = $I2_SQL->query('REPLACE INTO eighth_rooms (name, capacity,rid) VALUES (%s,%d,%d)', $name, $capacity, $rid);
+				  $old = $I2_SQL->query('SELECT * FROM eighth_rooms WHERE rid=%d',$rid)->fetch_array(Result::ASSOC);
+				  $I2_SQL->query('REPLACE INTO eighth_rooms (name, capacity,rid) VALUES (%s,%d,%d)', $name, $capacity, $rid);
+				  if (!$old) {
+							 $invquery = 'DELETE FROM eighth_rooms WHERE rid=%d';
+							 $invarg = array($rid);
+				  } else {
+							 $invquery = $query;
+							 $invarg = array($old['name'],$old['capacity'],$old['rid']);
+				  }
 		}
-		return $result->get_insert_id();
+		$query = 'REPLACE INTO eighth_rooms (rid,name,capacity) VALUES (%d,%s,%d)';
+		$queryarg = array($name,$capacity,$rid);
+		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Add Room');
+		return $rid;
 	}
 
 	/**
@@ -139,8 +154,56 @@ class EighthRoom {
 	public static function remove_room($roomid) {
 		global $I2_SQL;
 		Eighth::check_admin();
-		$result = $I2_SQL->query('DELETE FROM eighth_rooms WHERE rid=%d', $roomid);
-		// TODO: Fix all the problems caused by taking away a room
+		Eighth::start_undo_transaction();
+		$old = $I2_SQL->query('SELECT * FROM eighth_rooms WHERE rid=%d',$rid)->fetch_array(Result::ASSOC);
+		if (!$old) {
+				  d('Attempt made to delete nonexistant room '.$roomid,5);
+				  return;
+		}
+
+		// Get rid of all block references to the room
+		
+		$res = $I2_SQL->query("SELECT bid,activityid,rooms FROM eighth_activity_map WHERE rooms LIKE '%%?%'");
+		$query = 'UPDATE eighth_activity_map SET rooms=%s WHERE bid=%d AND activityid=%d';
+		while ($row = $res->fetch_array(Result::ASSOC)) {
+				  $newrooms = array();
+				  foreach (explode(',',$row['rooms']) as $room) {
+							 if ($room != $rid) {
+										$newrooms[] = $rid;
+							 }
+				  }
+				  $queryarg = array(implode(',',$newrooms),$row['bid'],$row['aid']);
+				  $invarg = array($row['rooms'],$row['bid'],$row['aid']);
+				  $I2_SQL->query_arr($query,$queryarg);
+				  Eighth::push_undoable($query,$queryarg,$query,$invarg,'Delete Room [from block]');
+		}
+	
+		
+		// Get rid of all activity references to the room
+		
+		$res = $I2_SQL->query("SELECT aid,rooms FROM eighth_activities WHERE rooms LIKE '%%?%'");
+		$query = 'UPDATE eighth_activities SET rooms=%s WHERE aid=%d';
+		while ($row = $res->fetch_array(Result::ASSOC)) {
+				  $newrooms = array();
+				  foreach (explode(',',$row['rooms']) as $room) {
+							 if ($room != $rid) {
+										$newrooms[] = $rid;
+							 }
+				  }
+				  $queryarg = array(implode(',',$newrooms),$row['aid']);
+				  $invarg = array($row['rooms'],$row['aid']);
+				  $I2_SQL->query_arr($query,$queryarg);
+				  Eighth::push_undoable($query,$queryarg,$query,$invarg,'Delete Room [from activity]');
+		}
+
+		
+		$query = 'DELETE FROM eighth_rooms WHERE rid=%d';
+		$queryarg = array($roomid);
+		$I2_SQL->query_arr($query, $queryarg);
+		$invquery = 'REPLACE INTO eighth_rooms (rid,name,capacity) VALUES (%d,%s,%d)';
+		$invarg = array($old['rid'],$old['name'],$old['capacity']);
+		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Remove Room');
+		Eighth::end_undo_transaction();
 	}
 
 	/**
@@ -175,14 +238,18 @@ class EighthRoom {
 	public function __set($name, $value) {
 		global $I2_SQL;
 		Eighth::check_admin();
+		$old = $I2_SQL->query('SELECT name FROM eighth_rooms WHERE rid=%d',$this->data['rid'])->fetch_single_value();
 		if($name == 'name') {
-			$result = $I2_SQL->query('UPDATE eighth_rooms SET  name=%s WHERE rid=%d', $value, $this->data['rid']);
-			$this->data['name'] = $value;
+			$query = 'UPDATE eighth_rooms SET  name=%s WHERE rid=%d';
 		}
 		else if($name == 'capacity') {
-			$result = $I2_SQL->query('UPDATE eighth_rooms SET capacity=%d WHERE rid=%d', $value, $this->data['rid']);
-			$this->data['capacity'] = $value;
+			$query = 'UPDATE eighth_rooms SET capacity=%d WHERE rid=%d';
 		}
+		$queryarg = array($value, $this->data['rid']);
+		$I2_SQL->query_arr($query,$queryarg);
+		$this->data[$name] = $value;
+		$invarg = array($old, $this->data['rid']);
+		Eighth::push_undoable($query,$queryarg,$query,$invarg,"Set Room $name");
 	}
 
 	/**
