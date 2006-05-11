@@ -876,6 +876,20 @@ class Eighth implements Module {
 			}
 			$this->template_args['block_activities'] = EighthSchedule::get_activity_schedule($this->args['aid'],$startdate);
 			$this->template_args['activities'] = EighthActivity::get_all_activities_starting($startdate);
+			$blocksponsors = array();
+			$blockrooms = array();
+			$blockscheduled = array();
+			foreach ($this->template_args['activities'] as $activity) {
+					  //d(print_r($activity,1),1);
+					  $blockrooms[$activity->bid] = EighthRoom::id_to_room($activity->block_rooms);
+					  if (isSet($activity->blocksponsors)) {
+					  		$blocksponsors[$activity->bid] = EighthSponsor::id_to_sponsor($activity->blocksponsors);
+					  }
+					  $blockscheduled[$activity->bid] = $activity->scheduled;
+			}
+			$this->template_args['block_sponsors'] = $blocksponsors;
+			$this->template_args['block_rooms'] = $blockrooms;
+			$this->template_args['block_scheduled'] = $blockscheduled;
 			$this->template_args['act'] = new EighthActivity($this->args['aid']);
 			$this->title = 'Schedule an Activity (' . $this->template_args['act']->name_r  . ')';
 		}
@@ -980,20 +994,20 @@ class Eighth implements Module {
 	* @param array $this->args The arguments for the operation.
 	*/
 	public function cancel_activity() {
-		if($this->op == "") {
+		if($this->op == '') {
 			$this->setup_block_selection();
-			$this->template_args['op'] = "activity";
+			$this->template_args['op'] = 'activity';
 		}
-		else if($this->op == "activity") {
+		else if($this->op == 'activity') {
 			$this->setup_activity_selection(FALSE, $this->args['bid']);
 			$this->template_args['op'] = "view/bid/{$this->args['bid']}";
 		}
-		else if($this->op == "view") {
-			$this->template = "cancel_activity.tpl";
+		else if($this->op == 'view') {
+			$this->template = 'cancel_activity.tpl';
 			$this->template_args['activity'] = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->title = "Cancel an Activity";
 		}
-		else if($this->op == "update") {
+		else if($this->op == 'update') {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$activity->comment = $this->args['comment'];
 			$activity->advertisement = $this->args['advertisement'];

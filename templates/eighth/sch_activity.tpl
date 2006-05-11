@@ -46,9 +46,15 @@
 		</td>
 		<td class="eighth_sch_activity_listcell">
 			<div id="div_room_list_[<$activity.block.bid>]" class="eighth_room_list">
-[<foreach from=$activity.block_rooms item=room>]
+		[<if isSet($block_rooms[$activity.block.bid])>]
+[<foreach from=$block_rooms[$activity.block.bid] item=room>]
 				[<$room->name>] <a href="#" onClick="do_action('remove_room', 0, '[<$activity.block.bid>]')">Remove</a><br />
 [</foreach>]
+		[<else>]
+[<foreach from=$activity.rooms_obj item=room>]
+				[<$room->name>] <a href="#" onClick="do_action('remove_room', 0, '[<$activity.block.bid>]')">Remove</a><br />
+[</foreach>]
+		[</if>]
 			</div>
 			<input type="hidden" name="room_list[[<$activity.block.bid>]]" value="[<$activity.rooms>]" id="room_list_[<$activity.block.bid>]" />
 		</td>
@@ -57,9 +63,15 @@
 		</td>
 		<td class="eighth_sch_activity_listcell">
 			<div id="div_sponsor_list_[<$activity.block.bid>]" class="eighth_sponsor_list">
+			[<if isSet($block_sponsors[$activity.block.bid])>]
+[<foreach from=$block_sponsors[$activity.block.bid] item=sponsor>]
+				[<$sponsor->name_comma>] <a href="#" onClick="do_action('remove_sponsor', 0, '[<$activity.block.bid>]')">Remove</a><br />
+[</foreach>]
+			[<else>]
 [<foreach from=$activity.sponsors_obj item=sponsor>]
 				[<$sponsor->name_comma>] <a href="#" onClick="do_action('remove_sponsor', 0, '[<$activity.block.bid>]')">Remove</a><br />
 [</foreach>]
+			[</if>]
 			</div>
 			<input type="hidden" name="sponsor_list[[<$activity.block.bid>]]" value="[<$activity.sponsors>]" id="sponsor_list_[<$activity.block.bid>]" />
 			<input type="hidden" id="activity_status_[<$activity.block.bid>]" name="activity_status[[<$activity.block.bid>]]" value="SCHEDULED" />

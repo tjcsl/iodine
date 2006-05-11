@@ -459,7 +459,7 @@ class EighthActivity {
 	*/
 	public static function get_all_activities_starting($startdate = NULL) {
 			  global $I2_SQL;
-			  return self::id_to_activity($I2_SQL->query('SELECT activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) LEFT JOIN eighth_activities ON (eighth_activities.aid=eighth_block_map.activityid) WHERE date > %t GROUP BY activityid ORDER BY name',$startdate)->fetch_all_arrays(Result::NUM));
+			  return self::id_to_activity($I2_SQL->query('SELECT activityid,eighth_blocks.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) LEFT JOIN eighth_activities ON (eighth_activities.aid=eighth_block_map.activityid) WHERE date > %t GROUP BY activityid ORDER BY name',$startdate)->fetch_all_arrays(Result::NUM));
 	}
 
 	/**
