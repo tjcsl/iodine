@@ -598,6 +598,38 @@ class dataimport implements Module {
 	private function import_eighth_activities() {
 		global $I2_LOG;
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
+
+		// We're going to dispose of all the bad rooms - this means consolidation.
+		// So, we'll reroute all the bad room IDs into the (fewer) good ones.
+		$room_mappings = array();
+
+		/*
+		** Create rooms
+		*/
+		$numrooms = 0;
+		$res = $oldsql->query('SELECT * FROM RoomInfo');
+		while ($res->more_rows()) {
+			$r = $res->fetch_array(Result::ASSOC);
+			list($id,$name,$capacity) = array($r['RoomID'],$r['RoomName'],$r['Capacity']);
+			// Eliminate silly (ROOM CHANGE) rooms
+			$ct = 0;
+			$name = str_replace('(ROOM CHANGE)','',$name,$ct);
+			$name = trim($name);
+			if ($ct > 0) {
+					  // This WAS a bad room name
+					  // Try to find an equivalent good one
+					  // This has to use $oldsql because the new database (potentially) isn't fully populated yet
+					  $newid = $oldsql->query('SELECT RoomID FROM RoomInfo WHERE RoomName=%s',$name)->fetch_single_value();
+					  if ($newid) {
+								 $room_mappings[$id] = $newid;
+								 $id = $newid;
+					  }
+			}
+			EighthRoom::add_room($name,$capacity,$id);
+			$I2_LOG->log_file("Added room \"$name\"",8);
+			$numrooms++;
+		}
+
 		/*
 		** Create activities
 		*/
@@ -652,7 +684,9 @@ class dataimport implements Module {
 			if (!$description) {
 				$description = 'No description available';
 			}
-			
+
+
+
 			// Collect the rooms the activity occurs in
 			$validrooms = array();
 
@@ -693,17 +727,11 @@ class dataimport implements Module {
 				if (!$bcomment) {
 					$bcomment = '';
 				}
-				
-				/*foreach ($sponsors as $sponsor) {
-					//$I2_SQL->query('INSERT INTO ');
-				}*/
-				//FIXME: get the sponsor info properly!
-				//$bsponsors = $this->create_sponsor($bsponsors);
-	
-				/*
-				** Eliminate the room-change fake entries...
-				*/
-				$brooms = str_replace(' (ROOM CHANGE)','',$brooms);
+
+				// If we have a bad (to-be-eliminated) RoomID, use the good one instead
+				if (isSet($room_mappings[$brooms])) {
+						  $brooms = $room_mappings[$brooms];
+				}
 
 				$bsponsors = $oldsql->query('SELECT TeacherID FROM SponsorScheduleMap WHERE ActivityID=%d AND ActivityDate=%t AND ActivityBlock=%s',
 						  							 $aid,$date,$block)->fetch_array(Result::NUM);
@@ -724,18 +752,7 @@ class dataimport implements Module {
 			$I2_LOG->log_file("Added activity \"$name\"",5);
 			$numactivities++;
 		}
-		/*
-		** Create rooms
-		*/
-		$numrooms = 0;
-		$res = $oldsql->query('SELECT * FROM RoomInfo');
-		while ($res->more_rows()) {
-			$r = $res->fetch_array(Result::ASSOC);
-			list($id,$name,$capacity) = array($r['RoomID'],$r['RoomName'],$r['Capacity']);
-			EighthRoom::add_room($name,$capacity,$id);
-			$I2_LOG->log_file("Added room \"$name\"",8);
-			$numrooms++;
-		}
+		
 		return array($numactivities,$numrooms);
 	}
 
