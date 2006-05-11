@@ -226,8 +226,8 @@ class EighthSchedule {
 				$scheduled = FALSE;
 			}
 			$data = $result->fetch_array(Result::ASSOC);
-			$data['rooms_array'] = "'" . strtr($data['rooms'], array("," => "','")) . "'";
-			$data['sponsors_array'] = "'" . strtr($data['sponsors'], array("," => "','")) . "'";
+			$data['rooms_array'] = "'" . strtr($data['rooms'], array(',' => "','")) . "'";
+			$data['sponsors_array'] = "'" . strtr($data['sponsors'], array(',' => "','")) . "'";
 			$data['rooms_obj'] = EighthRoom::id_to_room(explode(',', $data['rooms']));
 			$data['sponsors_obj'] = EighthSponsor::id_to_sponsor(explode(',', $data['sponsors']));
 			$activities[] = array('block' => $block, 'scheduled' => $scheduled) + $data;

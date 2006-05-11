@@ -46,7 +46,7 @@
 		</td>
 		<td class="eighth_sch_activity_listcell">
 			<div id="div_room_list_[<$activity.block.bid>]" class="eighth_room_list">
-[<foreach from=$activity.rooms_obj item=room>]
+[<foreach from=$activity.block_rooms item=room>]
 				[<$room->name>] <a href="#" onClick="do_action('remove_room', 0, '[<$activity.block.bid>]')">Remove</a><br />
 [</foreach>]
 			</div>
