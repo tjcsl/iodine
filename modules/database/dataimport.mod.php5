@@ -690,7 +690,9 @@ class dataimport implements Module {
 			// Collect the rooms the activity occurs in
 			$validrooms = array();
 
-			$sponsors = $this->create_sponsor($sponsors);
+			if ($sponsors && $sponsors != '')
+				$sponsors = $this->create_sponsor($sponsors);
+			}
 			
 			/*
 			** Fetch/process all this activity's blocks
@@ -734,7 +736,11 @@ class dataimport implements Module {
 				}
 
 				$bsponsors = $oldsql->query('SELECT TeacherID FROM SponsorScheduleMap WHERE ActivityID=%d AND ActivityDate=%t AND ActivityBlock=%s',
-						  							 $aid,$date,$block)->fetch_array(Result::NUM);
+						  $aid,$date,$block)->fetch_array(Result::NUM);
+
+				if ($bsponsors && !$sponsors) {
+						  $sponsors = $bsponsors;
+				}
 
 				/*
 				** Schedule activity
