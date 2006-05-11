@@ -619,6 +619,10 @@ class dataimport implements Module {
 				$special = TRUE;
 			}
 			$name = str_replace('SPECIAL: ','',$name);
+			if (strpos($name,'SPECIAL : ')) {
+				$special = TRUE;
+			}
+			$name = str_replace('SPECIAL : ','',$name);
 			$name = rtrim($name);
 					
 			/*
