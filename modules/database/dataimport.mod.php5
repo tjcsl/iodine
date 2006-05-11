@@ -586,6 +586,7 @@ class dataimport implements Module {
 		d("$numactivitiesentered student sign-ups processed",5);
 		d("$numabsences absences recorded",5);
 		d("$numgroupmembers group memberships handled",5);
+		$I2_LOG->log_file('Eighth-period import complete!',5);
 	}
 
 	private function import_eighth_activities() {
@@ -781,6 +782,7 @@ class dataimport implements Module {
 	}
 
 	private function import_eighth_absences() {
+		global $I2_LOG;
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 		/*
 		** Import absence information
@@ -794,6 +796,7 @@ class dataimport implements Module {
 				//Student doesn't go to TJ anymore - their StudentID just dangles here, so we'll discard them
 				continue;
 			}
+			$I2_LOG->log_file("Marking user $uid absent from block {$row['ActivityBlock']} on {$row['ActivityDate']}",5);
 			$blockid = EighthBlock::add_block($row['ActivityDate'],$row['ActivityBlock']);
 			EighthSchedule::add_absentee($blockid,$uid);
 			$numabsences++;
@@ -820,6 +823,7 @@ class dataimport implements Module {
 
 
 	private function import_eighth_group_memberships() {
+		global $I2_LOG;
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 		/*
 		** Add students to groups
@@ -829,6 +833,7 @@ class dataimport implements Module {
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 				  $group = new Group($row['GroupID']);
 				  $group->add_user(new User($row['StudentID']));
+				  $I2_LOG->log_file('Student with StudentID '.$row['StudentID'].' is a member of group number '.$row['GroupID'],5);
 				  $numgroupmembers++;
 		}
 		return $numgroupmembers;
