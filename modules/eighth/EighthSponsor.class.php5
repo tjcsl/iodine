@@ -153,9 +153,21 @@ class EighthSponsor {
 		Eighth::start_undo_transaction();
 		// TODO: Delete from the sponsor map and everything else as well
 		// Get all activities which are sponsored by this person
-		$actswithsponsor = $I2_SQL->query("SELECT aid,sponsors FROM eighth_activities WHERE sponsors LIKE %%%?%%",$sponsorid);
+		// And remove them from the sponsor list
+		$actswithsponsor = $I2_SQL->query("SELECT aid,sponsors FROM eighth_activities WHERE sponsors LIKE '%%?%'",$sponsorid);
+		$query = 'UPDATE eighth_activities SET sponsors=%s WHERE aid=%d';
 		while ($row = $actswithsponsor->fetch_array(Result::ASSOC)) {
-				  Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Remove Sponsor [from activity]');
+				  $heresponsors = explode(',',$row['sponsors']);
+				  $ct = 0;
+				  while ($ct < count($heresponsors)) {
+							 if ($heresponsors[$ct] == $sponsorid) {
+										array_splice($heresponsors,$ct,1);
+							 }
+							 $ct++;
+				  }
+				  $queryarg = array(implode(',',$heresponsors),$row['aid']);
+				  $invarg = array($row['sponsors'],$row['aid']);
+				  Eighth::push_undoable($query,$queryarg,$query,$invarg,'Remove Sponsor [from activity]');
 		}
 		$query = 'DELETE FROM eighth_sponsors WHERE sid=%d';
 		$queryarg = array($sponsorid);

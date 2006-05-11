@@ -798,27 +798,27 @@ class Eighth implements Module {
 	* @param array $this->args The arguments for the operation.
 	*/
 	private function amr_sponsor() {
-		if($this->op == "") {
+		if($this->op == '') {
 			$this->setup_sponsor_selection(true);
 		}
-		else if($this->op == "view") {
-			$this->template = "amr_sponsor.tpl";
+		else if($this->op == 'view') {
+			$this->template = 'amr_sponsor.tpl';
 			$this->template_args['sponsor'] = new EighthSponsor($this->args['sid']);
 			$this->title = "View Sponsors";
 		}
-		else if($this->op == "add") {
+		else if($this->op == 'add') {
 			$sid = EighthSponsor::add_sponsor($this->args['fname'], $this->args['lname']);
-			redirect("eighth/amr_sponsor");
+			redirect('eighth/amr_sponsor');
 		}
 		else if($this->op == "modify") {
 			$sponsor = new EighthSponsor($this->args['sid']);
 			$sponsor->fname = $this->args['fname'];
 			$sponsor->lname = $this->args['lname'];
-			redirect("eighth/amr_sponsor");
+			redirect('eighth/amr_sponsor');
 		}
-		else if($this->op == "remove") {
+		else if($this->op == 'remove') {
 			EighthSponsor::remove_sponsor($this->args['sid']);
-			redirect("eighth");
+			redirect('eighth/amr_sponsor');
 		}
 	}
 
