@@ -97,7 +97,11 @@
 [<if $intranet_pass>]
 	<form action="[<$I2_ROOT>]dataimport/eighthdata" method="post">
 		<input type="hidden" name="doit" value="1"/>
-		<input type="submit" value="Load 8th-period data"/><br/>
+		<input type="submit" value="Load All 8th-period data"/><br/>
+	</form>
+	<form action="[<$I2_ROOT>]dataimport/eighth_absences" method="post">
+		<input type="hidden" name="doit" value="1"/>
+		<input type="submit" value="Load 8th-period absence data"/><br/>
 	</form>
 	<form action="[<$I2_ROOT>]dataimport/studentinfo" method="post">
 		<input type="hidden" name="doit" value="1"/>

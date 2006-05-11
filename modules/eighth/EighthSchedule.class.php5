@@ -95,7 +95,7 @@ class EighthSchedule {
 		}
 		$query = 'REPLACE INTO eighth_absentees (bid,userid) VALUES (%d,%d)';
 		$queryarg = array($blockid,$userid);
-		$I2_SQL->query($query, $queryarg);
+		$I2_SQL->query_arr($query, $queryarg);
 		$invquery = 'DELETE FROM eighth_absentees WHERE bid=%d AND userid=%d';
 		Eighth::push_undoable($query,$queryarg,$invquery,$queryarg,'Add Absentee');
 	}

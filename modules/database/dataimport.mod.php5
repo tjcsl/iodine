@@ -44,7 +44,9 @@ class dataimport implements Module {
 		** So, teacher IodineUidNumbers are < 1000, student IodineUidNumbers are 10000-99999, and StudentIDs are > 99999
 		*/
 		$this->num = 10000;
-
+		
+		// We don't need this overhead, it's slow enough as things stand
+		Eighth::undo_off();
 	}
 	
 	/**
@@ -550,8 +552,6 @@ class dataimport implements Module {
 	private function import_eighth_data($startdate=NULL,$enddate=NULL) {
 		global $I2_SQL,$I2_LDAP,$I2_LOG;
 
-		// We don't need this overhead, it's slow enough as things stand
-		Eighth::undo_off();
 
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 
@@ -568,24 +568,10 @@ class dataimport implements Module {
 			$enddate = date('Y-m-d',time()+8*7*24*60*60);
 		}
 
-		$numactivities = 0;
 		$numblocks = 0;
 		$numscheduled = 0;
-		$numrooms = 0;
-		$numactivitiesentered = 0;
 		$numgroups = 0;
 		
-		/*
-		** Create rooms
-		*/
-		$res = $oldsql->query('SELECT * FROM RoomInfo');
-		while ($res->more_rows()) {
-			$r = $res->fetch_array(Result::ASSOC);
-			list($id,$name,$capacity) = array($r['RoomID'],$r['RoomName'],$r['Capacity']);
-			EighthRoom::add_room($name,$capacity,$id);
-			$I2_LOG->log_file("Added room \"$name\"",8);
-			$numrooms++;
-		}
 			
 		/*
 		** Create sponsors
@@ -597,12 +583,35 @@ class dataimport implements Module {
 			$this->numsponsors++;
 		}
 			
-		// Collect other used sponsors
-		$validsponsors = array();
+		list($numactivities,$numrooms) = $this->import_eighth_activities();
+		
+		$numgroups = $this->import_eighth_groups();
+		
+		$numactivitiesentered = $this->process_student_signups();		
 
+		$numabsences = $this->import_eighth_absences();
+
+		$numgroupmembers = $this->import_eighth_group_memberships();
+
+
+		d("$numactivities activities created",5);
+		d("$numblocks different new blocks created",5);
+		d("$numscheduled activity blocks scheduled",5);
+		d("$numrooms rooms created",5);
+		d("{$this->numsponsors} sponsors added",5);
+		d("$numgroups 8th-period groups created",5);
+		d("$numactivitiesentered student sign-ups processed",5);
+		d("$numabsences absences recorded",5);
+		d("$numgroupmembers group memberships handled",5);
+	}
+
+	private function import_eighth_activities() {
+		global $I2_LOG;
+		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 		/*
 		** Create activities
 		*/
+		$numactivities = 0;
 		$res = $oldsql->query('SELECT * FROM ActivityInfo');
 		while ($res->more_rows()) {
 			$a = $res->fetch_array(Result::ASSOC);
@@ -695,7 +704,7 @@ class dataimport implements Module {
 					//$I2_SQL->query('INSERT INTO ');
 				}*/
 				//FIXME: get the sponsor info properly!
-				$sponsors = $this->create_sponsor($sponsors);
+				//$bsponsors = $this->create_sponsor($bsponsors);
 	
 				/*
 				** Eliminate the room-change fake entries...
@@ -719,19 +728,25 @@ class dataimport implements Module {
 			$I2_LOG->log_file("Added activity \"$name\"",5);
 			$numactivities++;
 		}
-
 		/*
-		** Create groups
+		** Create rooms
 		*/
-		$res = $oldsql->query('SELECT * FROM GroupInfo');
+		$numrooms = 0;
+		$res = $oldsql->query('SELECT * FROM RoomInfo');
 		while ($res->more_rows()) {
-			$g = $res->fetch_array(Result::ASSOC);
-			list($id,$name) = array($g['GroupID'],$g['Name']);
-			Group::add_group('eighth_'.$name,'Eighth-period activity: '.$description,$id);
-			$I2_LOG->log_file("Added group for $name",6);
-			$numgroups++;
+			$r = $res->fetch_array(Result::ASSOC);
+			list($id,$name,$capacity) = array($r['RoomID'],$r['RoomName'],$r['Capacity']);
+			EighthRoom::add_room($name,$capacity,$id);
+			$I2_LOG->log_file("Added room \"$name\"",8);
+			$numrooms++;
 		}
+		return array($numactivities,$numrooms);
+	}
 
+	private function process_student_signups() {
+	   global $I2_LOG;
+		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
+		
 		$I2_LOG->log_file('Precomputing uid=>studentid mappings');
 
 		$num = 0;
@@ -753,11 +768,11 @@ class dataimport implements Module {
 		}
 
 		$I2_LOG->log_file('... Done!');
-		
+
 		/*
 		** Add students to activities
-		*/
-		//$res = $oldsql->query('SELECT * FROM StudentScheduleMap WHERE ActivityDate >= %s AND ActivityDate <= %s ORDER BY ActivityDate,ActivityBlock DESC',$startdate,$enddate);
+		 */
+		$numactivitiesentered = 0;
 		$res = $oldsql->query('SELECT * FROM StudentScheduleMap ORDER BY ActivityDate,ActivityBlock DESC');
 		while ($res->more_rows()) {
 			$a = $res->fetch_array(Result::ASSOC);
@@ -768,6 +783,7 @@ class dataimport implements Module {
 				//There's quite a bit of bogus data in the old DB - this filters it
 				$uid = User::studentid_to_uid($studentid);
 				if (!$uid) {
+					// Student isn't at TJ anymore - fin
 					continue;
 				}
 				$studentids[$studentid] = $uid;
@@ -779,20 +795,50 @@ class dataimport implements Module {
 			$I2_LOG->log_file("Switched student with StudentID $studentid into {$activity->name} on $date block $block",7);
 			$numactivitiesentered++;
 		}
+		return $numactivitiesentered;
+	}
 
+	private function import_eighth_absences() {
+		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 		/*
 		** Import absence information
 		*/
 		$numabsences = 0;
 		$res = $oldsql->query("SELECT * FROM StudentAbsences");
 		while ($row = $res->fetch_array(Result::ASSOC)) {
-			$user = new User($row['StudentID']);
-			$uid = $user->uid;
-			$blockid = new EighthBlock($row['ActivityDate'],$row['ActivityBlock']);
+			$uid = User::to_uidnumber($row['StudentID']);
+			//d(print_r($row,1).':'.$uid,6);
+			if (!$uid) {
+				//Student doesn't go to TJ anymore - their StudentID just dangles here, so we'll discard them
+				continue;
+			}
+			$blockid = EighthBlock::add_block($row['ActivityDate'],$row['ActivityBlock']);
 			EighthSchedule::add_absentee($blockid,$uid);
 			$numabsences++;
 		}
+		return $numabsences;
+	}
 
+	private function import_eighth_groups() {
+		global $I2_LOG;
+		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
+		/*
+		** Create groups
+		*/
+		$res = $oldsql->query('SELECT * FROM GroupInfo');
+		while ($res->more_rows()) {
+			$g = $res->fetch_array(Result::ASSOC);
+			list($id,$name) = array($g['GroupID'],$g['Name']);
+			Group::add_group('eighth_'.$name,'Eighth-period activity: '.$description,$id);
+			$I2_LOG->log_file("Added group for $name",6);
+			$numgroups++;
+		}
+		return $numgroups;
+	}
+
+
+	private function import_eighth_group_memberships() {
+		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 		/*
 		** Add students to groups
 		*/
@@ -803,16 +849,7 @@ class dataimport implements Module {
 				  $group->add_user(new User($row['StudentID']));
 				  $numgroupmembers++;
 		}
-
-		d("$numactivities activities created",5);
-		d("$numblocks different new blocks created",5);
-		d("$numscheduled activity blocks scheduled",5);
-		d("$numrooms rooms created",5);
-		d("{$this->numsponsors} sponsors added",5);
-		d("$numgroups 8th-period groups created",5);
-		d("$numactivitiesentered student sign-ups processed",5);
-		d("$numabsences absences recorded",5);
-		d("$numgroupmembers group memberships handled",5);
+		return $numgroupmembers;
 	}
 
 	private function create_sponsor($sponsor) {
@@ -917,13 +954,18 @@ class dataimport implements Module {
 		$I2_SQL->query('DELETE FROM groups');
 	}
 
+	private function clean_eighth_absences() {
+		global $I2_SQL;
+		$I2_SQL->query('DELETE FROM eighth_absentees');
+	}
+
 	private function clean_eighth() {
 		global $I2_SQL;
 		$I2_SQL->query('DELETE FROM eighth_activities');
 		$I2_SQL->query('DELETE FROM eighth_activity_map');
 		$I2_SQL->query('DELETE FROM eighth_blocks');
+		$this->clean_eighth_absences();
 		$I2_SQL->query('DELETE FROM eighth_block_map');
-		$I2_SQL->query('DELETE FROM eighth_absentees');
 		$I2_SQL->query('DELETE FROM eighth_sponsors');
 		$I2_SQL->query('DELETE FROM eighth_activity_permissions');
 		$I2_SQL->query('DELETE FROM eighth_rooms');
@@ -1203,6 +1245,10 @@ class dataimport implements Module {
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_teachers' && isSet($_REQUEST['doit'])) {
 			$this->clean_teachers();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'eighth_absences' && isSet($_REQUEST['doit'])) {
+			$this->clean_eighth_absences();
+			$this->import_eighth_absences();
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_eighth' && isSet($_REQUEST['doit'])) {
 			$this->clean_eighth();

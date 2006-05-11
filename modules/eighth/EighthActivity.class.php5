@@ -111,7 +111,7 @@ class EighthActivity {
 				$inverse = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
 				$invargs = array($otheractivityid,$blockid,$userid);
 			}
-			$I2_LOG->log_file('Changing activity');
+			//$I2_LOG->log_file('Changing activity');
 			Eighth::push_undoable($query,$args,$inverse,$invargs,'User Schedule Change');
 			if(mysql_error()) {
 				$ret = -1;

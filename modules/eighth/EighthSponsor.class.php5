@@ -102,11 +102,17 @@ class EighthSponsor {
 	* @access public
 	* @param string $fname The sponsor's first name.
 	* @param string $lname The sponsor's last name.
+	* @param int $sid The SponsorID number.
+	* @return int The ID of the (potentially new) sponsor.
 	*/
-	public static function add_sponsor($fname, $lname) {
+	public static function add_sponsor($fname, $lname, $sid = NULL) {
 		global $I2_SQL;
 		Eighth::check_admin();
-		$result = $I2_SQL->query('REPLACE INTO eighth_sponsors (fname,lname) VALUES (%s,%s)', $fname, $lname);
+		if (!$sid) {
+			$result = $I2_SQL->query('REPLACE INTO eighth_sponsors (fname,lname) VALUES (%s,%s)', $fname, $lname);
+		} else {
+			$result = $I2_SQL->query('REPLACE INTO eighth_sponsors (fname,lname,sid) VALUES (%s,%s,%d)', $fname, $lname, $sid);
+		}
 		return $result->get_insert_id();
 	}
 
@@ -148,7 +154,11 @@ class EighthSponsor {
 			return "{$this->data['fname']} {$this->data['lname']}";
 		}
 		else if($name == 'name_comma') {
-			return "{$this->data['lname']}, {$this->data['fname']}";
+			//Allow hacky last-name-only sponsors from old Intranet
+			if ($this->data['fname']) {
+				return "{$this->data['lname']}, {$this->data['fname']}";
+			}
+			return $this->data['lname'];
 		}
 		else if($name == 'schedule') {
 			$result = $I2_SQL->query('SELECT bid,activityid,sponsors FROM eighth_block_map ORDER BY bid');
