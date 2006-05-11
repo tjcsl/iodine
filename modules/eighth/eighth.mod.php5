@@ -263,7 +263,7 @@ class Eighth implements Module {
 			return 'Eighth Period Office Online: Home';
 		} else {
 			$method = $I2_ARGS[1];
-			$this->op = (count($I2_ARGS) % 2 == 1 ? $I2_ARGS[2] : '');
+			$this->op = (count($I2_ARGS) >= 3 ? $I2_ARGS[2] : '');
 			for($i = count($I2_ARGS) - 1; $i > 2; $i -= 2) {
 				$this->args[$I2_ARGS[$i - 1]] = $I2_ARGS[$i];
 			}
