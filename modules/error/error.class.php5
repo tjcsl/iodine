@@ -42,10 +42,8 @@ class Error {
 		** suppression is on.
 		*/
 
-		//Note from BRJ: this is commented because it's done more elegantly below
-
-		if(	/*$errfile == '/usr/share/php/smarty/libs/Smarty.class.php' ||
-				  $errfile == '/usr/share/php/smarty/libs/Smarty_Compiler.class.php' ||*/
+		if($errfile == '/usr/share/php/smarty/libs/Smarty.class.php' ||
+			$errfile == '/usr/share/php/smarty/libs/Smarty_Compiler.class.php' ||
 			error_reporting() == 0 ) {
 			return;
 		}
