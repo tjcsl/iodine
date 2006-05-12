@@ -9,5 +9,5 @@ You were unsuccessful in registering for the following activities:
 [</foreach>]
 </ul>
 [<if $eighth_admin>]
-<br/><a href="[<$I2_ROOT>]eighth/vcp_schedule/force_change/aid/[<$aid>]/uid/[<$uid>]/bids/[<$bids>]">FORCE</a>
+<br/><a href="[<$I2_ROOT>]eighth/vcp_schedule/change/aid/[<$aid>]/uid/[<$uid>]/bids/[<$bids>]/force/1">FORCE</a>
 [</if>]

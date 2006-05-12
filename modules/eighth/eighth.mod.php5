@@ -1420,7 +1420,7 @@ class Eighth implements Module {
 				foreach($bids as $bid) {
 					if(EighthSchedule::is_activity_valid($this->args['aid'], $bid)) {
 						$activity = new EighthActivity($this->args['aid'], $bid);
-						$ret = $activity->add_member(new User($this->args['uid']), isset($args['force']));
+						$ret = $activity->add_member(new User($this->args['uid']), isset($this->args['force']));
 						$act_status = array();
 						if($ret & EighthActivity::CANCELLED) {
 							$act_status['cancelled'] = TRUE;
@@ -1451,9 +1451,9 @@ class Eighth implements Module {
 				}
 				$this->template = 'vcp_schedule_change.tpl';
 				$this->template_args['status'] = $status;
-				$this->template_args['uid'] = $args['uid'];
-				$this->template_args['bids'] = $args['bids'];
-				$this->template_args['aid'] = $args['aid'];
+				$this->template_args['uid'] = $this->args['uid'];
+				$this->template_args['bids'] = $this->args['bids'];
+				$this->template_args['aid'] = $this->args['aid'];
 			}
 		}
 		else if($this->op == 'roster') {

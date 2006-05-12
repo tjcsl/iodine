@@ -22,23 +22,34 @@
 
 
 # Define macros so wo don't have to type out a thousand OIDs
-objectIdentifier tjOID				1.3.6.1.4.1.20601
-objectIdentifier i2OID				tjOID:1
-objectIdentifier i2Attr				i2OID:1
-objectIdentifier i2OC				i2OID:2
+objectIdentifier tjOID					1.3.6.1.4.1.20601
+objectIdentifier i2OID					tjOID:1
+objectIdentifier i2Attr					i2OID:1
+objectIdentifier i2OC					i2OID:2
 
 # And a few handy shortcuts for syntaxes, etc.
-objectIdentifier boolSyntax			1.3.6.1.4.1.1466.115.121.1.7
-objectIdentifier integerSyntax		1.3.6.1.4.1.1466.115.121.1.27
-objectIdentifier stringSyntax			1.3.6.1.4.1.1466.115.121.1.15
+objectIdentifier audioSyntax			1.3.6.1.4.1.1466.115.121.1.4
+objectIdentifier binarySyntax			1.3.6.1.4.1.1466.115.121.1.5
+objectIdentifier bitStringSyntax		1.3.6.1.4.1.1466.115.121.1.6
+objectIdentifier boolSyntax				1.3.6.1.4.1.1466.115.121.1.7
+objectIdentifier certificateSyntax		1.3.6.1.4.1.1466.115.121.1.8
+objectIdentifier certificateListSyntax	1.3.6.1.4.1.1466.115.121.1.9
+objectIdentifier certificatePairSyntax	1.3.6.1.4.1.1466.115.121.1.10
+objectIdentifier countrySyntax			1.3.6.1.4.1.1466.115.121.1.11
 objectIdentifier dnSyntax				1.3.6.1.4.1.1466.115.121.1.12
-#objectIdentifier classPeriodSyntax	####
+objectIdentifier stringSyntax			1.3.6.1.4.1.1466.115.121.1.15
+objectIdentifier faxSyntax				1.3.6.1.4.1.1466.115.121.1.22
+objectIdentifier timeSyntax				1.3.6.1.4.1.1466.115.121.1.24
 objectIdentifier ia5Syntax				1.3.6.1.4.1.1466.115.121.1.26
-objectIdentifier telephoneSyntax		1.3.6.1.4.1.1466.115.121.1.50
-objectIdentifier timeSyntax			1.3.6.1.4.1.1466.115.121.1.24
-objectIdentifier addressSyntax		1.3.6.1.4.1.1466.115.121.1.41
-#objectIdentifier dateSyntax		####
+objectIdentifier integerSyntax			1.3.6.1.4.1.1466.115.121.1.27
+objectIdentifier jpegSyntax				1.3.6.1.4.1.1466.115.121.1.28
+objectIdentifier nameSyntax				1.3.6.1.4.1.1466.115.121.1.34
 objectIdentifier numericStringSyntax	1.3.6.1.4.1.1466.115.121.1.36
+objectIdentifier octetStringSyntax		1.3.6.1.4.1.1466.115.121.1.36
+objectIdentifier addressSyntax			1.3.6.1.4.1.1466.115.121.1.41
+objectIdentifier telephoneSyntax		1.3.6.1.4.1.1466.115.121.1.50
+#objectIdentifier classPeriodSyntax		####
+#objectIdentifier dateSyntax			####
 
 # Define syntaxes
 
@@ -403,6 +414,109 @@ attributetype ( i2Attr:50
 	SINGLE-VALUE
 	)
 
+attributetype ( i2Attr:51
+	NAME ('freshmanPicture')
+	DESC 'The freshman picture of a user'
+	SYNTAX jpegSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:52
+	NAME ('sophomorePicture')
+	DESC 'The sohpomore picture of a user'
+	SYNTAX jpegSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:53
+	NAME ('juniorPicture')
+	DESC 'The junior picture of a user'
+	SYNTAX jpegSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:54
+	NAME ('seniorPicture')
+	DESC 'The senior picture of a user'
+	SYNTAX jpegSyntax
+	SINGLE-VALUE
+	)
+
+objectclass ( i2OC:1
+	NAME ('tjhsstStudent' 'iodineStudent')
+	SUP inetOrgPerson STRUCTURAL
+	MUST (
+		graduationYear $
+		iodineUid $
+		cn $
+		sn $
+		tjhsstStudentId $
+		startpage $
+		style $
+		header $
+		chrome
+	)
+	MAY (
+		perm-showpictures $
+		perm-showaddress $
+		perm-showtelephone $
+		perm-showbirthday $
+		perm-showschedule $
+		perm-showmap $
+		displayName $
+		middlename $
+		nickname $
+		counselor $
+		group $
+		iodineUidNumber $
+		birthday $
+		sex $
+		aim $
+		yahoo $
+		msn $
+		jabber $
+		icq $
+		googleTalk $
+		webpage $
+		locker $
+		startpage $
+		soundexlast $
+		soundexfirst $
+		comments $
+		freshmanPicture $
+		sophomorePicture $
+		juniorPicture $
+		seniorPicture
+	)
+	)
+
+objectclass ( i2OC:2
+	NAME ('tjhsstTeacher' 'iodineTeacher' 'tjhsstStaff' 'tjhsstFaculty')
+	SUP inetOrgPerson STRUCTURAL
+	MUST (
+		cn $
+		iodineUid $
+		sn
+	)
+	MAY (
+		employeeNumber $
+		displayName $
+		middlename $
+		group $
+		nickname $
+		iodineUidNumber $
+		birthday $
+		sex $
+		startpage $
+		header $
+		style $
+		chrome $
+		startpage $
+		soundexlast $
+		soundexfirst
+	)
+	)
+
 objectclass ( i2OC:3
 	NAME ('tjhsstSection' 'section')
 	MUST (
@@ -542,77 +656,6 @@ objectclass ( i2OC:17
 		classId $
 		roomNumber $
 		uid
-	)
-	)
-
-objectclass ( i2OC:1
-	NAME ('tjhsstStudent' 'iodineStudent')
-	SUP inetOrgPerson STRUCTURAL
-	MUST (
-		graduationYear $
-		iodineUid $
-		cn $
-		sn $
-		tjhsstStudentId $
-		startpage $
-		style $
-		header $
-		chrome
-	)
-	MAY (
-		perm-showpictures $
-		perm-showaddress $
-		perm-showtelephone $
-		perm-showbirthday $
-		perm-showschedule $
-		perm-showmap $
-		displayName $
-		middlename $
-		nickname $
-		counselor $
-		group $
-		iodineUidNumber $
-		birthday $
-		sex $
-		aim $
-		yahoo $
-		msn $
-		jabber $
-		icq $
-		googleTalk $
-		webpage $
-		locker $
-		startpage $
-		soundexlast $
-		soundexfirst $
-		comments
-	)
-	)
-
-objectclass ( i2OC:2
-	NAME ('tjhsstTeacher' 'iodineTeacher' 'tjhsstStaff' 'tjhsstFaculty')
-	SUP inetOrgPerson STRUCTURAL
-	MUST (
-		cn $
-		iodineUid $
-		sn
-	)
-	MAY (
-		employeeNumber $
-		displayName $
-		middlename $
-		group $
-		nickname $
-		iodineUidNumber $
-		birthday $
-		sex $
-		startpage $
-		header $
-		style $
-		chrome $
-		startpage $
-		soundexlast $
-		soundexfirst
 	)
 	)
 

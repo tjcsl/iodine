@@ -33,7 +33,7 @@ class LDAP {
 	
 	private $conns = array();
 	
-	function __construct($dn=NULL,$pass=NULL,$server=NULL,$simple=TRUE,$proxydn='') {
+	function __construct($dn=NULL,$pass=NULL,$server=NULL,$simple=FALSE,$proxydn='') {
 		global $I2_USER, $I2_ERR, $I2_AUTH;
 		if ($server !== NULL) {
 			$this->server = $server;
@@ -138,7 +138,7 @@ class LDAP {
 	}
 
 	public static function get_simple_bind($userdn,$pass,$server=NULL) {
-		return new LDAP($userdn,$pass,$server);	
+		return new LDAP($userdn,$pass,$server,TRUE);	
 	}
 
 	public function search_base($dn=NULL,$attributes='*',$bind=NULL) {

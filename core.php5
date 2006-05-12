@@ -147,7 +147,12 @@ try {
 	 *
 	 * @global LDAP $I2_LDAP
 	 */
-	$I2_LDAP = LDAP::get_admin_bind();
+	if($I2_AUTH->used_master_password()) {
+		$I2_LDAP = LDAP::get_admin_bind();
+	}
+	else {
+		$I2_LDAP = LDAP::get_user_bind();
+	}
 	/**
 	 * The global user info mechanism.
 	 *

@@ -1,8 +1,6 @@
 <form method="post" action="[<$I2_ROOT>]prefs" class="boxform">
 <input type="hidden" name="prefs_form" value="" />
 <table>
-  <td>Homepage module:</td>
-  <td><input type="text" name="pref_startpage" value="[<$prefs.startpage>]" /></td></tr>
 <tr>
  <td>Style:</td>
  <td><select name="pref_style">

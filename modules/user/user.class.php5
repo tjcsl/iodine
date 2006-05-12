@@ -212,8 +212,6 @@ class User {
 				return $this->__get('middlename');
 			case 'uid':
 				return $this->__get('iodineUidNumber');
-			case 'comments':
-				return $this->__get('description');
 			case 'username':
 				return $this->__get('iodineUid');
 			/*case 'iodineUid':
@@ -236,7 +234,7 @@ class User {
 				}
 				return array();
 			case 'bdate':
-					  return date('M j, Y', strtotime($this->__get('birthday')));
+				return date('M j, Y', strtotime($this->__get('birthday')));
 		}
 		
 		//Check which table the information is in
@@ -316,9 +314,6 @@ class User {
 		}*/
 
 		switch ($name) {
-			case 'comments':
-				$this->__set('description',$val,$ldap);
-				return;
 			case 'phone_cell':
 				$this->__set('mobile',$val,$ldap);
 				return;
