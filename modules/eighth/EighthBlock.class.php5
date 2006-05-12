@@ -43,13 +43,20 @@ class EighthBlock {
 		/*
 		** No harm in letting someone pretend they've created a block
 		*/
-		$res = $I2_SQL->query('SELECT bid FROM eighth_blocks WHERE date=%t AND block=%s', $date, $block);
-		if($res->num_rows()) {
-			return $res->fetch_single_value();
+		$res = $I2_SQL->query('SELECT bid FROM eighth_blocks WHERE date=%t AND block=%s', $date, $block)->fetch_single_value();
+		if($res) {
+			return $res;
 		}
 		Eighth::check_admin();
-		$result = $I2_SQL->query('INSERT INTO eighth_blocks (date,block) VALUES (%t,%s)', $date, $block);
+		Eighth::start_undo_transaction();
+		$query = 'INSERT INTO eighth_blocks (date,block) VALUES (%t,%s)';
+		$queryarg = array($date,$block);
+		$result = $I2_SQL->query_arr($query, $queryarg);
+		$invquery = 'DELETE FROM eighth_blocks WHERE date=%t AND block=%s';
+		$query = 'INSERT INTO eighth_blocks (date,block,bid) VALUES (%t,%s,%d)';
 		$bid = $result->get_insert_id();
+		$newarg = array($date,$block,$bid);
+		Eighth::push_undoable($query,$newarg,$invquery,$queryarg,'Add Block');
 		$default_aid = i2config_get('default_aid', 3, 'eighth');
 		$activity = new EighthActivity($default_aid);
 		//schedule the default activity
@@ -62,6 +69,7 @@ class EighthBlock {
 			$activity->add_members($uids);
 		}
 
+		Eighth::end_undo_transaction();
 		return $bid;
 	}
 
