@@ -528,7 +528,7 @@ class User {
 
 		//FIXME: improve this
 		$res = $I2_LDAP->search('ou=people',
-		"(|(iodineUid=$str)(givenName=$str)(sn=$str)(mname=$str))"
+		"(&(objectClass=tjhsstStudent)(|(iodineUid=$str)(givenName=$str)(sn=$str)(mname=$str)))"
 										,array('iodineUid'));
 		
 		if (!$res) {
