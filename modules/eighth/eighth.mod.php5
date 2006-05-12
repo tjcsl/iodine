@@ -1356,7 +1356,7 @@ class Eighth implements Module {
 		if($this->op == '') {
 			$this->template = 'vcp_schedule.tpl';
 			if(!empty($this->args['uid'])) {
-				$this->template_args['users'] = User::id_to_user(flatten($I2_SQL->query('SELECT uid FROM user WHERE uid LIKE %d', $this->args['uid'])->fetch_all_arrays(Result::NUM)));
+				$this->template_args['users'] = array(new User($this->args['uid']));
 			}
 			else {
 				$this->template_args['users'] = User::search_info("{$this->args['fname']} {$this->args['lname']}");

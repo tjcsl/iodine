@@ -524,17 +524,35 @@ class User {
 		d("search_info: $str",4);
 
 		//FIXME: improve, close hole?
-		$str = addslashes($str);
+		//$str = addslashes($str);
 
-		//FIXME: improve this
-		$res = $I2_LDAP->search('ou=people',
-		"(&(objectClass=tjhsstStudent)(|(iodineUid=$str)(givenName=$str)(sn=$str)(mname=$str)))"
-										,array('iodineUid'));
-		
+		$str = trim($str);
+
+		if (is_numeric($str)) {
+				  $res = $I2_LDAP->search('ou=people',"(&(objectClass=tjhsstStudent)(|(tjhsstStudentId=$str)(iodineUidNumber=$str)))",array('iodineUid'));
+		} else {
+
+			$separator = " \t";
+
+			$tok = strtok($str,$separator);
+
+			while ($tok) {
+				$soundex = soundex($tok);
+
+				$res = $I2_LDAP->search('ou=people',
+				"(&(objectClass=tjhsstStudent)(|(soundexFirst=$soundex)(soundexLast=$soundex)(givenName=*$str*)(sn=*$str*)(mname=*$str*)))"
+				,array('iodineUid'));
+
+				if ($res) {
+					  break;
+				}
+
+				$tok = strtok($separator);
+			}
+		}
 		if (!$res) {
 			return array();
 		}
-		
 		
 		$ret = array();
 		while ($uid = $res->fetch_single_value()) {
