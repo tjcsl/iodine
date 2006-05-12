@@ -90,6 +90,10 @@ class EighthActivity {
 			$ret |= EighthActivity::PERMISSIONS;
 		}
 		$otheractivityid = EighthSchedule::get_activities_by_block($userid, $blockid);
+		if ($otheractivityid == $this->data['aid']) {
+				  // The user is already in this activity
+				  return;
+		}
 		$otheractivity = new EighthActivity($otheractivityid);
 		if ($otheractivity && $otheractivity->sticky) {
 				$ret |= EighthActivity::STICKY;
@@ -116,6 +120,9 @@ class EighthActivity {
 			if(mysql_error()) {
 				$ret = -1;
 			}
+		}
+		if (isSet($this->data['member_count'])) {
+			$this->data['member_count']++;
 		}
 		if($force && $ret != -1) {
 			return 0;
@@ -176,12 +183,20 @@ class EighthActivity {
 		if($blockid == NULL) {
 			$blockid = $this->data['bid'];
 		}
+		$was = $I2_SQL->query('SELECT NULL FROM eighth_activity_map WHERE userid=%d AND bid=%d AND aid=%d',$user->uid,$blockid,$this->data['aid']);
+		if (!$was) {
+				  // User isn't part of this activity
+				  return;
+		}
 		$queryarg = array($this->data['aid'], $blockid, $userid);
 		$query = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d';
 		$invquery = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
 		$invarg = $queryarg;
 		$I2_SQL->query_arr($query, $queryarg);
 		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Remove Student From Activity');
+		if (isSet($this->data['member_count'])) {
+				  $this->data['member_count']--;
+		}
 	}
 
 	
@@ -427,7 +442,7 @@ class EighthActivity {
 	public function remove_room($roomid) {
 		Eighth::check_admin();
 		if(in_array($roomid, $this->data['rooms'])) {
-			unset($this->data['rooms'][array_search($roomid, $this->data['rooms'])]);
+				  unset($this->data['rooms'][array_search($roomid, $this->data['rooms'])]);
 			$this->__set('rooms', $this->data['rooms']);
 		}
 	}
@@ -620,11 +635,13 @@ class EighthActivity {
 					if (!isSet($this->data['block_rooms']) || count($this->data['block_rooms']) == 0) {
 						return -1;
 					}
-					return $I2_SQL->query('SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)', 
-							$this->data['block_rooms'])->fetch_single_value();
-				case 'member_count':
-						  return $I2_SQL->query('SELECT COUNT(userid) FROM eighth_activity_map WHERE bid=%d AND aid=%d'
-									 ,$this->data['bid'],$this->data['aid'])->fetch_single_value();
+					$this->data['capacity'] = $I2_SQL->query('SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)', 
+							  $this->data['block_rooms'])->fetch_single_value();
+					return $this->data['capacity'];
+		 case 'member_count':
+					$this->data['member_count'] = $I2_SQL->query('SELECT COUNT(userid) FROM eighth_activity_map WHERE bid=%d AND aid=%d'
+							  ,$this->data['bid'],$this->data['aid'])->fetch_single_value();
+					return $this->data['member_count'];
 			}
 		}
 	}
@@ -650,8 +667,10 @@ class EighthActivity {
 		}
 		else {
 			switch($name) {
-				case 'sponsors':
 				case 'rooms':
+					unset($this->data['capacity']);
+					// No break here on purpose
+				case 'sponsors':
 					if(!is_array($value)) {
 						$value = array($value);
 					}
