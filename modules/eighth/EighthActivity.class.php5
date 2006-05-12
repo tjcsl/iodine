@@ -623,7 +623,8 @@ class EighthActivity {
 					return $I2_SQL->query('SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)', 
 							$this->data['block_rooms'])->fetch_single_value();
 				case 'member_count':
-					return count($this->get_members());
+						  return $I2_SQL->query('SELECT COUNT(userid) FROM eighth_activity_map WHERE bid=%d AND aid=%d'
+									 ,$this->data['bid'],$this->data['aid'])->fetch_single_value();
 			}
 		}
 	}
