@@ -893,6 +893,7 @@ class Eighth implements Module {
 			$this->title = 'Schedule an Activity (' . $this->template_args['act']->name_r  . ')';
 		}
 		else if($this->op == 'modify') {
+			Eighth::start_undo_transaction();
 			foreach($this->args['modify'] as $bid) {
 				if($this->args['activity_status'][$bid] == 'CANCELLED') {
 					EighthActivity::cancel($bid, $this->args['aid']);
@@ -920,6 +921,7 @@ class Eighth implements Module {
 					EighthSchedule::schedule_activity($bid, $aid, $sponsorlist, $roomlist, $commentslist);
 				}
 			}
+			Eighth::end_undo_transaction();
 			redirect("eighth/sch_activity/view/aid/{$this->args['aid']}");
 		}
 	}
