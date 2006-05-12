@@ -62,7 +62,7 @@ function show_comment_dialog(e, bid) {
 	cancel_button.innerHTML = "Cancel";
 	cancel_button.style.textAlign = "center";
 	cancel_button.style.fontWeight = "bold"
-	cancel_button.style.fontSize = "16px";                                                                                                                                                                             cancel_button.style.MozUserSelect = "none";
+	cancel_button.style.fontSize = "16px";                                                                                                   	cancel_button.style.MozUserSelect = "none";
 	cancel_button.style.cursor = "default";
 	cancel_button.onmousedown = function() {
 		dialog.style.display = "none";
@@ -141,6 +141,7 @@ function do_action(action, bid, data, e) {
 		room_list.innerHTML += data.innerHTML + " <a href=\"#\" onClick=\"do_action('remove_room', 0, " + action_bid + ")\">Remove</a><br />";
 		var room_pane = document.getElementById("eighth_room_pane");
 		room_pane.style.display = "none";
+		action_bid = -1;
 	}
 	else if(action == "add_sponsor") {
 		var sponsors = document.getElementById("sponsor_list_" + action_bid);
@@ -151,6 +152,23 @@ function do_action(action, bid, data, e) {
 		sponsor_list.innerHTML += data.innerHTML + " <a href=\"#\" onClick=\"do_action('remove_sponsor', 0, " + action_bid + ")\">Remove</a><br />";
 		var sponsor_pane = document.getElementById("eighth_sponsor_pane");
 		sponsor_pane.style.display = "none";
+		action_bid = -1;
+	}
+	else if(action == "set_default_rooms") {
+		var rooms = document.getElementById("room_list_" + bid);
+		var room_list = document.getElementById("div_room_list_" + bid);
+		rooms.value = data[0].join(",");
+		for(room in data[1]) {
+			room_list.innerHTML += data[1][room] + " <a href=\"#\" onClick=\"do_action('remove_room', 0, " + action_bid + ")\">Remove</a><br />";
+		}
+	}
+	else if(action == "set_default_sponsors") {
+		var sponsors = document.getElementById("sponsor_list_" + bid);
+		var sponsor_list = document.getElementById("div_sponsor_list_" + bid);
+		sponsors.value = data[0].join(",");
+		for(sponsor in data[1]) {
+			sponsor_list.innerHTML += data[1][sponsor] + " <a href=\"#\" onClick=\"do_action('remove_sponsor', 0, " + action_bid + ")\">Remove</a><br />";
+		}
 	}
 }
 function CA() {

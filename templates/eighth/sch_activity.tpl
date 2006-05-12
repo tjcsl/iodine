@@ -51,38 +51,32 @@
 		</td>
 		<td class="eighth_sch_activity_listcell">
 			<div id="div_room_list_[<$activity.block.bid>]" class="eighth_room_list">
-		[<if isSet($block_rooms[$activity.block.bid])>]
-[<foreach from=$block_rooms[$activity.block.bid] item=room>]
+[<if $activity.scheduled>]
+	[<foreach from=$activity.rooms_obj item=room>]
 				[<$room->name>] <a href="#" onClick="do_action('remove_room', 0, '[<$activity.block.bid>]')">Remove</a><br />
-[</foreach>]
-		[<else>]
-[<foreach from=$activity.rooms_obj item=room>]
-				[<$room->name>] <a href="#" onClick="do_action('remove_room', 0, '[<$activity.block.bid>]')">Remove</a><br />
-[</foreach>]
-		[</if>]
+	[</foreach>]
+[</if>]
 			</div>
 			<input type="hidden" name="room_list[[<$activity.block.bid>]]" value="[<$activity.rooms>]" id="room_list_[<$activity.block.bid>]" />
 		</td>
 		<td style="text-align: left;">
-			<a href="#" onClick="do_action('view_rooms', '[<$activity.block.bid>]', new Array([<$activity.rooms_array>]), event);">Add Room</a>
+			<a href="#" onClick="do_action('view_rooms', '[<$activity.block.bid>]', new Array([<$activity.rooms_array>]), event);">Add Room</a><br />
+			<a href="#" onClick="do_action('set_default_rooms', '[<$activity.block.bid>]', new Array(new Array([<$activity.rooms_array>]), new Array([<$activity.rooms_name_array>])));">Set to Default Rooms</a>
 		</td>
 		<td class="eighth_sch_activity_listcell">
 			<div id="div_sponsor_list_[<$activity.block.bid>]" class="eighth_sponsor_list">
-			[<if isSet($block_sponsors[$activity.block.bid])>]
-[<foreach from=$block_sponsors[$activity.block.bid] item=sponsor>]
+[<if $activity.scheduled>]
+	[<foreach from=$activity.sponsors_obj item=sponsor>]
 				[<$sponsor->name_comma>] <a href="#" onClick="do_action('remove_sponsor', 0, '[<$activity.block.bid>]')">Remove</a><br />
-[</foreach>]
-			[<else>]
-[<foreach from=$activity.sponsors_obj item=sponsor>]
-				[<$sponsor->name_comma>] <a href="#" onClick="do_action('remove_sponsor', 0, '[<$activity.block.bid>]')">Remove</a><br />
-[</foreach>]
-			[</if>]
+	[</foreach>]
+[</if>]
 			</div>
 			<input type="hidden" name="sponsor_list[[<$activity.block.bid>]]" value="[<$activity.sponsors>]" id="sponsor_list_[<$activity.block.bid>]" />
 			<input type="hidden" id="activity_status_[<$activity.block.bid>]" name="activity_status[[<$activity.block.bid>]]" value="SCHEDULED" />
 		</td>
 		<td style="text-align: left;">
-			<a href="#" onClick="do_action('view_sponsors', '[<$activity.block.bid>]', new Array([<$activity.sponsors_array>]), event);">Add Sponsor</a>
+			<a href="#" onClick="do_action('view_sponsors', '[<$activity.block.bid>]', new Array([<$activity.sponsors_array>]), event);">Add Sponsor</a><br />
+			<a href="#" onClick="do_action('set_default_sponsors', '[<$activity.block.bid>]', new Array(new Array([<$activity.sponsors_array>]), new Array([<$activity.sponsors_name_array>])));">Set to Default Sponsors</a>
 		</td>
 		<td style="padding: 5px;">
 			<textarea name="comments[[<$activity.block.bid>]]" id="comment_[<$activity.block.bid>]" readonly="readonly" class="eighth_sch_activity_commentcell" rows="1">[<if isset($activity.comment) >][<$activity.comment>][</if>]</textarea>

@@ -877,18 +877,7 @@ class Eighth implements Module {
 					  $startdate = date('Y-m-d');
 			}
 			$this->template_args['block_activities'] = EighthSchedule::get_activity_schedule($this->args['aid'],$startdate);
-			$this->template_args['activities'] = EighthActivity::get_all_activities_starting($startdate);
-			$blocksponsors = array();
-			$blockrooms = array();
-			foreach ($this->template_args['activities'] as $activity) {
-					  //d(print_r($activity,1),1);
-					  $blockrooms[$activity->bid] = EighthRoom::id_to_room($activity->block_rooms);
-					  if (isSet($activity->blocksponsors)) {
-					  		$blocksponsors[$activity->bid] = EighthSponsor::id_to_sponsor($activity->blocksponsors);
-					  }
-			}
-			$this->template_args['block_sponsors'] = $blocksponsors;
-			$this->template_args['block_rooms'] = $blockrooms;
+			$this->template_args['activities'] = EighthActivity::get_all_activities();
 			$this->template_args['act'] = new EighthActivity($this->args['aid']);
 			$this->title = 'Schedule an Activity (' . $this->template_args['act']->name_r  . ')';
 		}
