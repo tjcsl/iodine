@@ -29,10 +29,11 @@ class EighthSponsor {
 	public function __construct($sponsorid) {
 		global $I2_SQL;
 		if (isSet(self::$cache[$sponsorid])) {
-				  return self::$cache[$sponsorid];
+				  $this->data = &self::$cache[$sponsorid]->data;
+		} else {
+			$this->data = $I2_SQL->query('SELECT * FROM eighth_sponsors WHERE sid=%d', $sponsorid)->fetch_array(Result::ASSOC);
+			self::$cache[$sponsorid] = $this;
 		}
-		$this->data = $I2_SQL->query('SELECT * FROM eighth_sponsors WHERE sid=%d', $sponsorid)->fetch_array(Result::ASSOC);
-		self::$cache[$sponsorid] = &$this;
 	}
 
 	/**
@@ -210,7 +211,7 @@ class EighthSponsor {
 		}
 		else if($name == 'name_comma') {
 			//Allow hacky last-name-only sponsors from old Intranet
-			if ($this->data['fname'] && trim($this->data['fname']) != '') {
+			if (isSet($this->data['fname']) && trim($this->data['fname']) != '') {
 				return "{$this->data['lname']}, {$this->data['fname']}";
 			}
 			return $this->data['lname'];

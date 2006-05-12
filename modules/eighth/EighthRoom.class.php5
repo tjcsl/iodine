@@ -29,10 +29,11 @@ class EighthRoom {
 	public function __construct($roomid) {
 		global $I2_SQL;
 		if (isSet($cache[$roomid])) {
-				  return self::$cache[$roomid];
+				  $this->data = &self::$cache[$roomid]->data;
+		} else {
+			$this->data = $I2_SQL->query('SELECT * FROM eighth_rooms WHERE rid=%d', $roomid)->fetch_array(Result::ASSOC);
+			self::$cache[$roomid] = $this;
 		}
-		$this->data = $I2_SQL->query('SELECT * FROM eighth_rooms WHERE rid=%d', $roomid)->fetch_array(Result::ASSOC);
-		self::$cache[$roomid] = &$this;
 	}
 
 	/**
