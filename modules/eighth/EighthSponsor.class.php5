@@ -16,6 +16,8 @@
 
 class EighthSponsor {
 
+	private static $cache = array();
+
 	private $data = array();
 
 	/**
@@ -26,7 +28,11 @@ class EighthSponsor {
 	*/
 	public function __construct($sponsorid) {
 		global $I2_SQL;
+		if (isSet(self::$cache[$sponsorid])) {
+				  return self::$cache[$sponsorid];
+		}
 		$this->data = $I2_SQL->query('SELECT * FROM eighth_sponsors WHERE sid=%d', $sponsorid)->fetch_array(Result::ASSOC);
+		self::$cache[$sponsorid] = &$this;
 	}
 
 	/**

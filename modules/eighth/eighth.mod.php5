@@ -966,7 +966,7 @@ class Eighth implements Module {
 			$this->template = 'vp_room_view.tpl';
 			$this->template_args['block'] = new EighthBlock($this->args['bid']);
 			$this->template_args['utilizations'] = EighthRoom::get_utilization($this->args['bid'], $this->args['include'], !empty($this->args['overbooked']));
-			$this->title = "View Room Utilization";
+			$this->title = 'View Room Utilization';
 		}
 		else if($this->op == 'format') {
 			$this->setup_format_selection('vp_room', 'Room Utilization', array("bid" => $this->args['bid']));
