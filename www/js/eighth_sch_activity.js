@@ -62,7 +62,8 @@ function show_comment_dialog(e, bid) {
 	cancel_button.innerHTML = "Cancel";
 	cancel_button.style.textAlign = "center";
 	cancel_button.style.fontWeight = "bold"
-	cancel_button.style.fontSize = "16px";                                                                                                   	cancel_button.style.MozUserSelect = "none";
+	cancel_button.style.fontSize = "6px";
+	cancel_button.style.MozUserSelect = "none";
 	cancel_button.style.cursor = "default";
 	cancel_button.onmousedown = function() {
 		dialog.style.display = "none";
@@ -169,6 +170,9 @@ function do_action(action, bid, data, e) {
 		for(sponsor in data[1]) {
 			sponsor_list.innerHTML += data[1][sponsor] + " <a href=\"#\" onClick=\"do_action('remove_sponsor', 0, " + action_bid + ")\">Remove</a><br />";
 		}
+	}
+	else if(action == "propagate") {
+		alert(unscheduled_blocks);
 	}
 }
 function CA() {

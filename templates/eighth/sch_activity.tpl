@@ -57,11 +57,11 @@
 	[</foreach>]
 [</if>]
 			</div>
-			<input type="hidden" name="room_list[[<$activity.block.bid>]]" value="[<$activity.rooms>]" id="room_list_[<$activity.block.bid>]" />
+			<input type="hidden" name="room_list[[<$activity.block.bid>]]" value="[<if $activity.scheduled>][<$activity.rooms>][</if>]" id="room_list_[<$activity.block.bid>]" />
 		</td>
 		<td style="text-align: left;">
 			<a href="#" onClick="do_action('view_rooms', '[<$activity.block.bid>]', new Array([<$activity.rooms_array>]), event);">Add Room</a><br />
-			<a href="#" onClick="do_action('set_default_rooms', '[<$activity.block.bid>]', new Array(new Array([<$activity.rooms_array>]), new Array([<$activity.rooms_name_array>])));">Set to Default Rooms</a>
+			<a href="#" onClick="do_action('set_default_rooms', '[<$activity.block.bid>]', new Array(new Array([<$activity.rooms_array>]), new Array([<$activity.rooms_name_array>])));">Set to Default Room(s)</a>
 		</td>
 		<td class="eighth_sch_activity_listcell">
 			<div id="div_sponsor_list_[<$activity.block.bid>]" class="eighth_sponsor_list">
@@ -71,17 +71,17 @@
 	[</foreach>]
 [</if>]
 			</div>
-			<input type="hidden" name="sponsor_list[[<$activity.block.bid>]]" value="[<$activity.sponsors>]" id="sponsor_list_[<$activity.block.bid>]" />
+			<input type="hidden" name="sponsor_list[[<$activity.block.bid>]]" value="[<if $activity.scheduled>][<$activity.sponsors>][</if>]" id="sponsor_list_[<$activity.block.bid>]" />
 			<input type="hidden" id="activity_status_[<$activity.block.bid>]" name="activity_status[[<$activity.block.bid>]]" value="SCHEDULED" />
 		</td>
 		<td style="text-align: left;">
 			<a href="#" onClick="do_action('view_sponsors', '[<$activity.block.bid>]', new Array([<$activity.sponsors_array>]), event);">Add Sponsor</a><br />
-			<a href="#" onClick="do_action('set_default_sponsors', '[<$activity.block.bid>]', new Array(new Array([<$activity.sponsors_array>]), new Array([<$activity.sponsors_name_array>])));">Set to Default Sponsors</a>
+			<a href="#" onClick="do_action('set_default_sponsors', '[<$activity.block.bid>]', new Array(new Array([<$activity.sponsors_array>]), new Array([<$activity.sponsors_name_array>])));">Set to Default Sponsor(s)</a>
 		</td>
 		<td style="padding: 5px;">
 			<textarea name="comments[[<$activity.block.bid>]]" id="comment_[<$activity.block.bid>]" readonly="readonly" class="eighth_sch_activity_commentcell" rows="1">[<if isset($activity.comment) >][<$activity.comment>][</if>]</textarea>
 		</td>
-		<td style="text-align: center;"><img src="[<$I2_ROOT>]www/pics/eighth/notepad.gif" alt="Add Comment" title="Add Comment" onMouseDown="show_comment_dialog(event, [<$activity.block.bid>])" class="eighth_sch_activity_comment"><a href="#" class="eighth_sch_activity_propagate">&uarr;&nbsp;Propagate&nbsp;&darr;</a>
+		<td style="text-align: center;"><img src="[<$I2_ROOT>]www/pics/eighth/notepad.gif" alt="Add Comment" title="Add Comment" onMouseDown="show_comment_dialog(event, [<$activity.block.bid>])" class="eighth_sch_activity_comment"><a href="#" class="eighth_sch_activity_propagate" onClick="do_action('propagate', [<$activity.block.bid>]);">&uarr;&nbsp;Propagate&nbsp;&darr;</a>
 		</td>
 	</tr>
 [</foreach>]
@@ -96,4 +96,5 @@
 </form>
 <script language="javascript" type="text/javascript">
 	var frm = document.activities;
+	var unscheduled_blocks = new Array([<$unscheduled_blocks>]);
 </script>

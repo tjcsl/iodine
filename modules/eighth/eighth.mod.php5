@@ -876,7 +876,8 @@ class Eighth implements Module {
 			} else {
 					  $startdate = date('Y-m-d');
 			}
-			$this->template_args['block_activities'] = EighthSchedule::get_activity_schedule($this->args['aid'],$startdate);
+			list($this->template_args['unscheduled_blocks'], $this->template_args['block_activities']) = EighthSchedule::get_activity_schedule($this->args['aid'], $startdate);
+			$this->template_args['unscheduled_blocks'] = "'" . implode("','", $this->template_args['unscheduled_blocks']) . "'";
 			$this->template_args['activities'] = EighthActivity::get_all_activities();
 			$this->template_args['act'] = new EighthActivity($this->args['aid']);
 			$this->title = 'Schedule an Activity (' . $this->template_args['act']->name_r  . ')';

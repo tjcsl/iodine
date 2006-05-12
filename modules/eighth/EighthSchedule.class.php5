@@ -217,6 +217,7 @@ class EighthSchedule {
 	public static function get_activity_schedule($activityid, $starting_date = NULL, $number_of_days = 999) {
 		global $I2_SQL;
 		$blocks = EighthBlock::get_all_blocks($starting_date, $number_of_days);
+		$unscheduled_blocks = array();
 		$activities = array();
 		foreach($blocks as $block) {
 			$scheduled = TRUE;
@@ -240,9 +241,12 @@ class EighthSchedule {
 				$data['sponsors_name_array'][] = $sponsor->name_comma;
 			}
 			$data['sponsors_name_array'] = "'" . implode("','", $data['sponsors_name_array']) . "'";
+			if(!$scheduled) {
+				$unscheduled_blocks[] = $block['bid'];
+			}
 			$activities[] = array('block' => $block, 'scheduled' => $scheduled) + $data;
 		}
-		return $activities;
+		return array($unscheduled_blocks, $activities);
 	}
 
 	/**
