@@ -228,14 +228,14 @@ class EighthSchedule {
 			}
 			$data = $result->fetch_array(Result::ASSOC);
 			$data['rooms_array'] = "'" . strtr($data['rooms'], array(',' => "','")) . "'";
-			$data['rooms_obj'] = EighthRoom::id_to_room(explode(',', $data['rooms']));
+			$data['rooms_obj'] = EighthRoom::id_to_room(array_filter(explode(',', $data['rooms'])));
 			$data['rooms_name_array'] = array();
 			foreach($data['rooms_obj'] as $room) {
 				$data['rooms_name_array'][] = $room->name;
 			}
 			$data['rooms_name_array'] = "'" . implode("','", $data['rooms_name_array']) . "'";
 			$data['sponsors_array'] = "'" . strtr($data['sponsors'], array(',' => "','")) . "'";
-			$data['sponsors_obj'] = EighthSponsor::id_to_sponsor(explode(',', $data['sponsors']));
+			$data['sponsors_obj'] = EighthSponsor::id_to_sponsor(array_filter(explode(',', $data['sponsors'])));
 			$data['sponsors_name_array'] = array();
 			foreach($data['sponsors_obj'] as $sponsor) {
 				$data['sponsors_name_array'][] = $sponsor->name_comma;
