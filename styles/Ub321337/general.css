@@ -1,12 +1,14 @@
 @extend
 body {
 	font-family: courier, helvetica, verdana, sans-serif;
+	color: #008800;
 	background-color: #000000;
 	/*cursor: url(www/pics/l33tcursor.cur);*/
 }
 @extend
 form, div, p, span, td, th, i {
 	font-family:  courier, helvetica, verdana, sans-serif;
+	color: #008800;
 }
 
 input {

@@ -18,19 +18,19 @@
 }
 @extend
 .upbutton {
-	background: url(/www/pics/l33tup.gif) center no-repeat;
+	background: url(/www/pics/styles/Ub321337/l33tup.gif) center no-repeat;
 }
 @extend
 .dnbutton {
-	background: url(/www/pics/l33tdn.gif) center no-repeat;
+	background: url(/www/pics/styles/Ub321337/l33tdn.gif) center no-repeat;
 }
 @extend
 .mnbutton {
-	background: url(/www/pics/l33tmin.gif) center no-repeat;
+	background: url(/www/pics/styles/Ub321337/l33tmin.gif) center no-repeat;
 }
 @extend
 .rmbutton {
-	background: url(/www/pics/l33tclose.gif) center no-repeat;
+	background: url(/www/pics/styles/Ub321337/l33tclose.gif) center no-repeat;
 }
 @extend
 .boxcontent {
