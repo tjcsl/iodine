@@ -8,8 +8,8 @@
 class Scratchpad implements Module {
 
 	private $template_args = array();
-	private $text;
-
+	private $text = '';
+	private $title = '';
 	function init_box() {
 		GLOBAL $I2_USER, $I2_SQL;
 		$this->template_args['text'] = 'Loading...'; //$I2_SQL->query('SELECT padtext FROM scratchpad WHERE uid=%d',$I2_USER->uid)->fetch_single_value();
@@ -41,7 +41,7 @@ class Scratchpad implements Module {
 				$this->text = $I2_SQL->query("SELECT padtext FROM scratchpad WHERE uid=%d", $I2_USER->uid)->fetch_single_value('padtext');
 				return TRUE;
 			case "help":
-				return TRUE;
+				return 'ScratchPad Info';
 			default :
 				return FALSE;
 				
