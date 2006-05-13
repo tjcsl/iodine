@@ -1403,13 +1403,13 @@ class Eighth implements Module {
 			}
 			$this->template_args['uid'] = $this->args['uid'];
 			$this->template = 'vcp_schedule_choose.tpl';
-			if(is_array($this->args['bids'])) {
-				$blockdate = ' for Mulitple Blocks';
+			if(count($this->args['bids']) > 1) {
+				$blockdate = ' for Multiple Blocks';
 			}
 			else {
 				$blockdate = ' for ';
-				$blockdate = $blockdate.$I2_SQL->query('SELECT DATE_FORMAT((SELECT date FROM eighth_blocks WHERE bid=%d), %s)', $this->args['bids'], '%W, %M %d, %Y')->fetch_single_value();
-				$blockdate = $blockdate.', '.$I2_SQL->query('SELECT block FROM eighth_blocks WHERE bid=%d', $this->args['bids'])->fetch_single_value().' Block';
+				$blockdate = $blockdate.$I2_SQL->query('SELECT DATE_FORMAT((SELECT date FROM eighth_blocks WHERE bid=%d), %s)', implode($this->args['bids']), '%W, %M %d, %Y')->fetch_single_value();
+				$blockdate = $blockdate.', '.$I2_SQL->query('SELECT block FROM eighth_blocks WHERE bid=%d', implode($this->args['bids']))->fetch_single_value().' Block';
 			}
 			$this->title = 'Choose an Activity'.$blockdate;
 		}
