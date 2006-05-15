@@ -278,6 +278,9 @@ class Eighth implements Module {
 		$this->args = array();
 		$this->admin = self::is_admin();
 		$this->template_args['eighth_admin'] = $this->admin;
+		/*if (!isSet(self::$undo)) {
+				  self::init_undo();
+		}*/
 		if(count($I2_ARGS) <= 1) {
 			if (!$this->admin) {
 				return FALSE;
