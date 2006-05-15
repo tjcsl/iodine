@@ -15,18 +15,15 @@ function doIntraboxDown(e) {
 	e = fixE(e);
 	var target = (e.target) ? e.target : e.srcElement;
 	//ignore links and inputs
-	if(!target.href && !target.type) {
-		drag_box = this;
-		this.lastMouseX = e.clientX;
-		this.lastMouseY = e.clientY;
-		document.onmousemove = function(){
-					drag_box.onDragStart();
-					document.onmousemove = doIntraboxMove;
-					}
-		document.onmouseup = doIntraboxPlace;
-	} else {
-		return true;
-	}
+	if(target.href || target.type) return true;
+	drag_box = this;
+	this.lastMouseX = e.clientX;
+	this.lastMouseY = e.clientY;
+	document.onmousemove = function(){
+				drag_box.onDragStart();
+				document.onmousemove = doIntraboxMove;
+				}
+	document.onmouseup = doIntraboxPlace;
 	return false;
 }
 function doIntraboxMove(e) {
@@ -195,12 +192,12 @@ function init(box) {
 	box.onDragEnd = function() {
 		if(this.dragged) {
 			sendReq("move" + this.parentNode.id.replace(/intrabox_/, "") + "/" + (to_box_index - box_index - 1));
-			var add = box_index < to_box_index-1 ? 1 : -1;
+/*			var add = box_index < to_box_index-1 ? 1 : -1;
 			for (var i = box_index; i != to_box_index-1; i+=add) {
 				boxes[i] = boxes[i+add];
 			}
 			boxes[i] = this.parentNode;
-			box_index = -1;
+			box_index = -1;*/
 			var dist = 15;
 			var left = parseInt(make_intrabox().style.left);
 			var top = parseInt(make_intrabox().style.top);
