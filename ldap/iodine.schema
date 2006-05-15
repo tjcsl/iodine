@@ -415,28 +415,28 @@ attributetype ( i2Attr:50
 	)
 
 attributetype ( i2Attr:51
-	NAME ('freshmanPicture')
+	NAME ('freshmanPicture' 'freshmanPhoto' 'pictureGrade9' 'photoGrade9')
 	DESC 'The freshman picture of a user'
 	SYNTAX jpegSyntax
 	SINGLE-VALUE
 	)
 
 attributetype ( i2Attr:52
-	NAME ('sophomorePicture')
+	NAME ('sophomorePicture' 'sophomorePhoto' 'pictureGrade10' 'photoGrade10')
 	DESC 'The sohpomore picture of a user'
 	SYNTAX jpegSyntax
 	SINGLE-VALUE
 	)
 
 attributetype ( i2Attr:53
-	NAME ('juniorPicture')
+	NAME ('juniorPicture' 'juniorPhoto' 'pictureGrade11' 'photoGrade11')
 	DESC 'The junior picture of a user'
 	SYNTAX jpegSyntax
 	SINGLE-VALUE
 	)
 
 attributetype ( i2Attr:54
-	NAME ('seniorPicture')
+	NAME ('seniorPicture' 'seniorPhoto' 'pictureGrade12' 'photoGrade12')
 	DESC 'The senior picture of a user'
 	SYNTAX jpegSyntax
 	SINGLE-VALUE

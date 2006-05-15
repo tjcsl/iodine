@@ -1323,11 +1323,11 @@ class Eighth implements Module {
 	public function rep_schedules() {
 		global $I2_SQL;
 		if($this->op == '') {
-			$bids = flatten($I2_SQL->query('SELECT bid FROM blocks')->fetch_all_arrays(MYSQL_NUM));
+			$bids = flatten($I2_SQL->query('SELECT bid FROM eighth_blocks')->fetch_all_arrays(MYSQL_NUM));
 			foreach($bids as $bid) {
 				$activity = new EighthActivity(1);
 				EighthSchedule::schedule_activity($bid, $activity->aid, $activity->sponsors, $activity->rooms);
-				$uids = flatten($I2_SQL->query('SELECT uid FROM user WHERE uid NOT IN (SELECT userid FROM activity_map WHERE bid=%d)', $bid)->fetch_all_arrays(MYSQL_NUM));
+				$uids = flatten($I2_SQL->query('SELECT uid FROM user WHERE uid NOT IN (SELECT userid FROM eighth_activity_map WHERE bid=%d)', $bid)->fetch_all_arrays(MYSQL_NUM));
 				$activity->add_members($uids, false, $bid);
 			}
 			redirect("eighth");
@@ -1384,23 +1384,7 @@ class Eighth implements Module {
 			$valids = array();
 			$validdata = array();
 			$this->template_args['bids'] = (is_array($this->args['bids']) ? implode(',', $this->args['bids']) : $this->args['bids']);
-			/*
-			** Get only activities common to all blocks.
-			*/
-			if (is_array($this->args['bids'])) {
-				foreach ($this->args['bids'] as $bid) {
-					$thisblock = EighthActivity::get_all_activities($bid,FALSE);
-					foreach ($thisblock as $activity) {
-						if (!isset($valids[$activity->aid])) {
-							$valids[$activity->aid] = 1;
-							$validdata[] = $activity;
-						}
-					}
-				}
-				$this->template_args['activities'] = $validdata;		
-			} else {
-				$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bids'],FALSE);
-			}
+			$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bids'],FALSE);
 			$this->template_args['uid'] = $this->args['uid'];
 			$this->template = 'vcp_schedule_choose.tpl';
 			if(!is_array($this->args['bids'])) {

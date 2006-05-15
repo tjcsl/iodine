@@ -160,7 +160,7 @@ class GroupSQL extends Group {
 		$user = new User($user);
 		
 		if($this->special) {
-			throw I2Exception("Attempted to add user {$user->uid} to invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to add user {$user->uid} to invalid group {$this->mygid}");
 		}
 		return $I2_SQL->query('INSERT INTO group_user_map (gid,uid) VALUES (%d,%d)',$this->mygid,$user->uid);
 	}
@@ -169,7 +169,7 @@ class GroupSQL extends Group {
 		global $I2_SQL;
 
 		if($this->special) {
-			throw I2Exception("Attempted to remove user {$user->uid} from invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to remove user {$user->uid} from invalid group {$this->mygid}");
 		}
 		
 		return $I2_SQL->query('DELETE FROM group_user_map WHERE uid=%d AND gid=%d',$user->uid,$this->mygid);
@@ -247,7 +247,7 @@ class GroupSQL extends Group {
 		if( $this->special ) {
 			$specs = Group::get_special_groups($user);
 			foreach ($specs as $gp) {
-				if ($gp->gid = $this->mygid) {
+				if ($gp->gid == $this->mygid) {
 					return TRUE;
 				}
 			}
@@ -306,7 +306,7 @@ class GroupSQL extends Group {
 	public function delete_group() {
 		global $I2_SQL;
 		
-		if(!Group::admin_groups()->has_member($GLOBALS['I2_USER']) && !(Group::admin_eighth()->has_member($GLOBAL['I2_USER']) && substr($this->name, 0, 7) == "eighth_")) {
+		if(!Group::admin_groups()->has_member($GLOBALS['I2_USER']) && !(Group::admin_eighth()->has_member($GLOBAL['I2_USER']) && substr($this->name, 0, 7) == 'eighth_')) {
 			throw new I2Exception('User is not authorized to delete groups.');
 		}
 

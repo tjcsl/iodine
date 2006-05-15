@@ -5,7 +5,7 @@ The specified student does not exist. Either you mistyped a URL, or something in
 [<if $user && $user->fname>]
 <table>
 <tr><td valign="top">
-<img src="[<$I2_ROOT>]www/pics/bomb.png" vspace="2" width="172" height="228" /></td>
+<img src="[<$I2_ROOT>]pictures/photo/uid/[<$user->uid>]" vspace="2" width="172" height="228" /></td>
 <td valign="top">
 [<$user->fullname>] (<a href="mailto:[<$user->username>]@tjhsst.edu">[<$user->username>]@tjhsst.edu</a>)[<if $user->grade != -1>], Grade [<$user->grade>][</if>]<br />
 [<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]

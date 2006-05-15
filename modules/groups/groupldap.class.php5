@@ -39,24 +39,103 @@ class GroupLDAP {
 	}
 
 	public function __construct($group) {
+		global $I2_LDAP;
+		if(self::$gid_map === NULL) {
+			self::$gid_map = array();
+			$res = $I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', '(objectClass=posixGroup)', array('cn', 'gidNumber'));
+			while($row = $res->fetch_array(Result::ASSOC)) {
+				self::$gid_map[$row['cn']] = $row['gidNumber'];
+			}
+		}
+
+		if(is_array($group) {
+			$this->mygid = $group['gid'];
+			$this->myname = $group['name'];
+			$this->mydescription = $group['description'];
+		} else if(is_numeric($group)) {
+			@list($name, $description) = $I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', '(objectClass=posixGroup)', array('cn', 'description'))->fetch_array(Result::NUM);
+			try {
+				if($name) {
+					$this->mygid = $group;
+					$this->myname = $name;
+					$this->mydescription = $description;
+				} else if($name = Group::get_special_group($group)) {
+					$this->mygid = $group;
+					$this->myname = $name;
+				} else {
+					throw new I2Exception("Nonexistent group {$group} given to the Group module");
+				}
+			} catch(I2Exception $e) {
+				throw new I2Exception("Nonexistent group {$group} given to the Group module");
+			}
+		} else if(is_object($group)) {
+			if(!$group instanceof Group) {
+				throw new I2Exception('Group construction attempted with non-Group object!');
+			}
+			$this->mygid = $group->mygid;
+			$this->myname = $group-myname;
+		} else {
+			if(isset(self::$gid_map[$group])) {
+				$this->mygid = self::$gid_map[$group];
+				$this->myname = $group;
+			} else {
+				try {
+					$group = Group::get_special_group($group);
+					$this->mygid = $group->gid;
+					$this->myname = $group;
+				} catch(I2Exception $e) {
+					throw new I2Exception("Nonexistent group {$group} given to the Group module");
+				}
+			}
+		}
 	}
 
 	public function get_members() {
+		global $I2_LDAP;
+		return flatten($I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', '(objectClass=posixGroup)', array('memberUid'))->fetch_all_arrays(Result::NUM));
 	}
 	
 	public static function get_all_groups($module = NULL) {
+		global $I2_LDAP;
+		$prefix = '*';
+		if($module) {
+			$prefix = strtolower($module) . '_*';
+		}
+		$ret = array();
+		foreach($I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', '(objectClass=posixGroup)', array('gidNumber')) as $row) {
+			$ret[] = new Group($row[0]);
+		}
+		return $ret;
 	}
 
 	public static function get_all_group_names() {
+		global $I2_LDAP;
+		return $I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', '(objectClass=posixGroup)', array('cn'));
 	}
 
 	public function add_user($user) {
+		global $I2_LDAP;
+		$user = new User($user);
+		if($this->special) {
+			throw new I2Exception("Attempted to add user {$user->uid} to invalid group {$this->mygid}");
+		}
+		return $I2_LDAP->add();
 	}
 
 	public function remove_user(User $user) {
+		global $I2_LDAP;
+		if($this->special) {
+			throw new I2Exception("Attempted to remove user {$user->uid} from invalid group {$this->mygid}");
+		}
+		return $I2_LDAP->delete();
 	}
 
 	public function remove_all_members() {
+		global $I2_LDAP;
+		if($this->special) {
+			throw new I2Exception("Attempted to remove all users from invalid group {$this->mygid}");
+		}
+		return $I2_LDAP->delete();
 	}
 
 	public function grant_admin(User $user) {
@@ -66,21 +145,84 @@ class GroupLDAP {
 	}
 
 	public function has_member($user=NULL) {
+		global $I2_LDAP;
+		if($user === NULL) {
+			$user= $GLOBALS['I2_USER'];
+		}
+		if(substr($this->name, 0, 6) == 'admin_' && $this->name != 'admin_all' && Group::admin_all()->has_member($user)) {
+			return TRUE;
+		}
+		if($this->special) {
+			$specs = Group::get_special_groups($user);
+			foreach($specs as $gp) {
+				if($gp->gid == $this->mygid) {
+					return TRUE;
+				}
+			}
+			return FALSE;
+		}
+		$res = $I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', "(&(gidNumber={$this->mygid})(memberUid={$user->uid}))", array('gidNumber'));
+		if($res->num_rows() > 0) {
+			return TRUE;
+		}
+		return FALSE;
 	}
 
 	public function set_group_name($name) {
 	}
 
-	public static function get_user_groups(User $user, $include_special = TRUE) {
+	public static function get_user_groups(User $user, $include_special = TRUE, $perms = NULL) {
+		global $I2_LDAP;
+		$ret = array();
+		if($perms && !is_array($perms)) {
+			$perms = array($perms);
+		}
+		if(is_array($perms)) {
+			/* TODO: Make this actually support permissions...whatever that means. */
+			$res = $I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', "(memberUid={$user->uid})", array('gidNumber'));
+		} else {
+			$res = $I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', "(memberUid={$user->uid})", array('gidNumber'));
+		}
+
+		foreach($res as $row) {
+			$ret[] = new Group($row['gidNumber']);
+		}
+		if($include_special && $user->grade) {
+			$ret[] = new Group("grade_{$user->grade}");
+		}
+		return $ret;
 	}
 
 	public static function get_admin_groups(User $user) {
+		$groups = Group::get_user_groups($user, FALSE);
+		$ret = array();
+		foreach($groups as $group) {
+			if($group->is_admin($user)) {
+				$ret[] = $group;
+			}
+		}
+		return $ret;
 	}
 	
 	public function delete_group() {
+		global $I2_LDAP;
+		if(!Group::admin_groups()->has_member($GLOBALS['I2_USER']) && !(Group::admin_eighth()->has_member($GLOBALS['I2_USER']) && substr($this->name, 0, 7) == 'eighth_')) {
+			throw new I2Exception('User is not authorized to delete groups.');
+		}
+
+		$I2_LDAP->delete();
 	}
 
 	public static function add_group($name) {
+		global $I2_LDAP, $I2_AUTH;
+		if(!$I2_AUTH->user_master_password() && !Group::admin_groups()->has_member($GLOBALS['I2_USER']) && !(Group::admin_eighth()->has_member($GLOBALS['I2_USER']) && substr($name, 0, 7) == 'eighth_')) {
+			throw new I2Exception('User is not authorized to create groups.');
+		}
+		if($gid === NULL) {
+			$I2_LDAP->add();
+		} else {
+			$I2_LDAP->add();
+		}
 	}
 
 	public function is_admin(User $user) {

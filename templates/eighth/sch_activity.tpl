@@ -1,7 +1,7 @@
 [<include file="eighth/header.tpl">]
 <script language="javascript" type="text/javascript" src="[<$I2_ROOT>]www/js/eighth_sch_activity.js"></script>
 <div style="width: 100%; text-align: center; font-weight: bold; font-size: 18pt; margin-top: 10px;">
-<select name="activity_list" style="font-size: 18pt; text-align: center;" onChange="location.href='[<$I2_ROOT>]eighth/sch_activity/view/aid/' + this.options[this.selectedIndex].value">
+<select name="activity_list" style="font-size: 18pt; text-align: left;" onChange="location.href='[<$I2_ROOT>]eighth/sch_activity/view/aid/' + this.options[this.selectedIndex].value">
 [<foreach from=$activities item="activity">]
 	<option value="[<$activity->aid>]" [<if $act->aid == $activity->aid>]style="font-size: 18pt; font-weight: bold;" SELECTED[<else>]style="font-size: 10pt; "[</if>]>[<$activity->aid>]: [<$activity->name_r>]</option>
 [</foreach>]
