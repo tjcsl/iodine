@@ -233,8 +233,12 @@ class User {
 					return array('(' . substr($phone, 0, 3) . ') ' . substr($phone, 3, 3) . '-' . substr($phone, 6));
 				}
 				return array();
-			case 'bdate':
-				return date('M j, Y', strtotime($this->__get('birthday')));
+		 case 'bdate':
+					$born = $this->__get('birthday');
+					if (!$born) { // heh
+							  return FALSE;
+					}
+				return date('M j, Y', strtotime($born));
 			case 'show_map':
 				return ($this->__get('perm-showmap')!='FALSE')&&($this->__get('perm-showmap-self')!='FALSE');
 		}

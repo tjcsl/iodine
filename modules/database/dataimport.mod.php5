@@ -360,41 +360,52 @@ class dataimport implements Module {
 					$student['yahoo'] = $otherres['Yahoo'];
 				}
 				if ($otherres['AllowSchedule']) {
-					$student['showschedule'] = 'TRUE';
+					$student['showscheduleself'] = 'TRUE';
 				} else {
-					$student['showschedule'] = 'FALSE';
+					$student['showscheduleself'] = 'FALSE';
 				}
 				if ($otherres['AllowBirthday']) {
-					$student['showbirthday'] = 'TRUE';
+					$student['showbdayself'] = 'TRUE';
 				} else {
-					$student['showbirthday'] = 'FALSE';
+					$student['showbdayself'] = 'FALSE';
 				}
 				if ($otherres['AllowMap']) {
-					$student['showmap'] = 'TRUE';
+					$student['showmapself'] = 'TRUE';
 				} else {
-					$student['showmap'] = 'FALSE';
+					$student['showmapself'] = 'FALSE';
 				}
 				if ($otherres['AllowAddress']) {
-					$student['showaddress'] = 'TRUE';
+					$student['showaddressself'] = 'TRUE';
 				} else {
-					$student['showaddress'] = 'FALSE';
+					$student['showaddressself'] = 'FALSE';
 				}
 				if ($otherres['AllowPhone']) {
-					$student['showphone'] = 'TRUE';
+					$student['showphoneself'] = 'TRUE';
 				} else {
-					$student['showphone'] = 'FALSE';
+					$student['showphoneself'] = 'FALSE';
 				}
 				if ($otherres['AllowPicture']) {
-					$student['showpictures'] = 'TRUE';
+					$student['showpictureself'] = 'TRUE';
 				} else {
-					$student['showpictures'] = 'FALSE';
+					$student['showpictureself'] = 'FALSE';
 				}
 				if ($otherres['Locker']) {
 					$student['locker'] = $otherres['Locker'];
 				}
 				$student['mobile'] = $otherres['CellPhone'];
 				$student['mail'] = $otherres['Email'];
-				
+
+				/*
+				** Get and add privacy info
+				*/
+				$res = $oldsql->query('SELECT * FROM StudentPrivacyInfo WHERE StudentID=%d',$StudentID)->fetch_array(Result::ASSOC);
+				$student['showpictures'] = $res['Picture']==1?'TRUE':'FALSE';
+				$student['showschedule'] = $res['Schedule']==1?'TRUE':'FALSE';
+				$student['showbirthday'] = $res['Birthday']==1?'TRUE':'FALSE';
+				$student['showphone'] = $res['Phone']==1?'TRUE':'FALSE';
+				$student['showaddress'] = $res['Address']==1?'TRUE':'FALSE';
+				$student['showmap'] = $res['Map']==1?'TRUE':'FALSE';
+
 			}
 			$this->usertable[] = $student;
 			$numlines++;
@@ -529,6 +540,12 @@ class dataimport implements Module {
 		$usernew['showschedule'] = $user['showschedule'];
 		$usernew['showphone'] = $user['showphone'];
 		$usernew['showbirthday'] = $user['showbirthday'];
+		$usernew['showphoneself'] = $user['showphoneself'];
+		$usernew['showmapself'] = $user['showmapself'];
+		$usernew['showscheduleself'] = $user['showscheduleself'];
+		$usernew['showaddressself'] = $user['showaddressself'];
+		$usernew['showpictureself'] = $user['showpictureself'];
+		$usernew['showbdayself'] = $user['showbdayself'];
 		$usernew['title'] = ($user['sex']=='M')?'Mr.':'Ms.';
 		$usernew['middlename'] = $user['mname'];
 		$usernew['style'] = 'default';
@@ -757,9 +774,9 @@ class dataimport implements Module {
 			EighthActivity::add_activity($name,$sponsors,array_keys($validrooms),$description,$restricted,$sticky,$bothblocks,$presign,$aid);
 			$I2_LOG->log_file("Added activity \"$name\"",5);
 			$numactivities++;
-		}
 		
-		return array($numactivities,$numrooms);
+		
+			return array($numactivities,$numrooms);
 	}
 
 	private function process_student_signups() {
