@@ -37,7 +37,9 @@ The specified student does not exist. Either you mistyped a URL, or something in
 [<else>]
  Address information not available.<br />
 [</if>]
+[<if $user->street && $user->show_map>]
 [<if $I2_UID != $user->uid>]<a href="http://maps.google.com/maps?f=d&hl=en&saddr=[<$I2_USER->street>], [<$I2_USER->l>], [<$I2_USER->st>] [<$I2_USER->postalCode>]&daddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]">Map from home</a> | [</if>]<a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexandria, VA 22312&daddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]">Map from school</a><br />
+[</if>]
 Counselor: [<$user->counselor>]<br />
 <br />
 [<if count($user->mail)>]Personal e-mail address(es):<br />

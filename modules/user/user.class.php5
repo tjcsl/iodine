@@ -235,6 +235,8 @@ class User {
 				return array();
 			case 'bdate':
 				return date('M j, Y', strtotime($this->__get('birthday')));
+			case 'show_map':
+				return ($this->__get('perm-showmap')!='FALSE')&&($this->__get('perm-showmap-self')!='FALSE');
 		}
 		
 		//Check which table the information is in

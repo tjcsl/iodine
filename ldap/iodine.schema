@@ -442,6 +442,55 @@ attributetype ( i2Attr:54
 	SINGLE-VALUE
 	)
 
+attributetype ( i2Attr:55
+	NAME ('perm-showbirthday-self' 'showbirthday-self' 'self-showbday' 'self-showbdate')
+	DESC 'Whether the birthday should be visible to others (user set)'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+	
+attributetype ( i2Attr:56
+	NAME ('perm-showmap-self' 'showmap-self' 'student-showmap')
+	DESC 'Whether a map to the house should be visible to others (user set)'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+	
+attributetype ( i2Attr:57
+	NAME ('perm-showschedule-self' 'showschedule-self' 'student-showsched')
+	DESC 'Whether the schedule information should be visible to others (user set)'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:58
+	NAME ('perm-showpictures-self' 'showpictures-self' 'self-showpicture')
+	DESC 'Whether the pictures should be visible to others (user set)'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+
+
+attributetype ( i2Attr:59
+	NAME ('perm-showaddress-self' 'showaddress-self')
+	DESC 'Whether the address should be visible to others (user set)'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:60
+	NAME ('perm-showtelephone-self' 'showtelephone-self' 'self-showphone' 'showphonenumber-self')
+	DESC 'Whether the telephone number(s) should be visible to others (user set)'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+
 objectclass ( i2OC:1
 	NAME ('tjhsstStudent' 'iodineStudent')
 	SUP inetOrgPerson STRUCTURAL
@@ -463,6 +512,12 @@ objectclass ( i2OC:1
 		perm-showbirthday $
 		perm-showschedule $
 		perm-showmap $
+		perm-showpictures-self $
+		perm-showaddress-self $
+		perm-showtelephone-self $
+		perm-showbirthday-self $
+		perm-showschedule-self $
+		perm-showmap-self $
 		displayName $
 		middlename $
 		nickname $
