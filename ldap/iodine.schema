@@ -443,7 +443,7 @@ attributetype ( i2Attr:54
 	)
 
 attributetype ( i2Attr:55
-	NAME ('perm-showbirthday-self' 'showbirthday-self' 'self-showbday' 'self-showbdate')
+	NAME ('perm-showbirthday-self' 'showbirthday-self' 'self-showbday' 'self-showbdate' 'showbdateself')
 	DESC 'Whether the birthday should be visible to others (user set)'
 	EQUALITY booleanMatch
 	SYNTAX boolSyntax
@@ -451,7 +451,7 @@ attributetype ( i2Attr:55
 	)
 	
 attributetype ( i2Attr:56
-	NAME ('perm-showmap-self' 'showmap-self' 'student-showmap')
+	NAME ('perm-showmap-self' 'showmap-self' 'student-showmap' 'showmapself')
 	DESC 'Whether a map to the house should be visible to others (user set)'
 	EQUALITY booleanMatch
 	SYNTAX boolSyntax
@@ -459,7 +459,7 @@ attributetype ( i2Attr:56
 	)
 	
 attributetype ( i2Attr:57
-	NAME ('perm-showschedule-self' 'showschedule-self' 'student-showsched')
+	NAME ('perm-showschedule-self' 'showschedule-self' 'student-showsched' 'showschedself')
 	DESC 'Whether the schedule information should be visible to others (user set)'
 	EQUALITY booleanMatch
 	SYNTAX boolSyntax
@@ -467,7 +467,7 @@ attributetype ( i2Attr:57
 	)
 
 attributetype ( i2Attr:58
-	NAME ('perm-showpictures-self' 'showpictures-self' 'self-showpicture')
+	NAME ('perm-showpictures-self' 'showpictures-self' 'self-showpicture' 'showpictureself')
 	DESC 'Whether the pictures should be visible to others (user set)'
 	EQUALITY booleanMatch
 	SYNTAX boolSyntax
@@ -476,7 +476,7 @@ attributetype ( i2Attr:58
 
 
 attributetype ( i2Attr:59
-	NAME ('perm-showaddress-self' 'showaddress-self')
+	NAME ('perm-showaddress-self' 'showaddress-self' 'showaddressself')
 	DESC 'Whether the address should be visible to others (user set)'
 	EQUALITY booleanMatch
 	SYNTAX boolSyntax
@@ -484,7 +484,7 @@ attributetype ( i2Attr:59
 	)
 
 attributetype ( i2Attr:60
-	NAME ('perm-showtelephone-self' 'showtelephone-self' 'self-showphone' 'showphonenumber-self')
+	NAME ('perm-showtelephone-self' 'showtelephone-self' 'self-showphone' 'showphonenumber-self' 'showphoneself')
 	DESC 'Whether the telephone number(s) should be visible to others (user set)'
 	EQUALITY booleanMatch
 	SYNTAX boolSyntax
