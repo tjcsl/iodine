@@ -12,13 +12,13 @@ access to attr=tjhsstStudentId
 	by * none
 
 # Allow users to set their own permissions bits
-access to attr=perm-showtelephone-self,perm-showbirthday-self,perm-showaddress-self,perm-showmap-self,perm-perm-showpictures-self,perm-showschedule-self
+access to attr=perm-showtelephone-self,perm-showbirthday-self,perm-showaddress-self,perm-showmap-self,perm-showpictures-self,perm-showschedule-self
 	by self write
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
 	by * read
 
 # ... but not the parental ones
-access to attr=perm-showtelephone,perm-showbirthday,perm-showaddress,perm-showmap,perm-perm-showpictures,perm-showschedule
+access to attr=perm-showtelephone,perm-showbirthday,perm-showaddress,perm-showmap,perm-showpictures,perm-showschedule
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
 	by * read
 
@@ -42,7 +42,7 @@ access to filter="(|(perm-showaddress-self=FALSE)(perm-showaddress=FALSE))"
 	by * none
 
 # Ensure all sensitive info is kept to authorized users, no matter what
-access to attr=telephoneNumber,mail,mailHost,l,postalcode,postaladdress,homePhone,homePostalAddress,street,st,mobile,aim,msn,icq,googletalk,yahoo,locker,counselor
+access to attr=telephoneNumber,mail,l,postalcode,postaladdress,homePhone,homePostalAddress,street,st,mobile,aim,msn,icq,googletalk,yahoo,locker,counselor
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
 	by users read
 	by * none
