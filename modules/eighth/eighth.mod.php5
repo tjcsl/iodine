@@ -1154,7 +1154,7 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'user') {
 			$this->template = 'ent_attendance.tpl';
-			$block = new EighthBlock($args['bid']);
+			$block = new EighthBlock($this->args['bid']);
 			$this->template_args['date'] = $block->date;
 			$this->template_args['block'] = $block->block;
 			$this->template_args['bid'] = $this->args['bid'];

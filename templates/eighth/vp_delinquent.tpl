@@ -1,4 +1,5 @@
 [<include file="eighth/header.tpl">]
+<div style="font-weight: bold; font-size: 24pt;">Absences [<if isSet($dstart)>]from $dstart to $dend[</if>]</div>
 <table>
 	<tr>
 		<th>Student</th>
