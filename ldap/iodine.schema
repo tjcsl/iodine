@@ -459,7 +459,7 @@ attributetype ( i2Attr:56
 	)
 	
 attributetype ( i2Attr:57
-	NAME ('perm-showschedule-self' 'showschedule-self' 'student-showsched' 'showschedself')
+	NAME ('perm-showschedule-self' 'showschedule-self' 'student-showsched' 'showscheduleself' 'showschedself')
 	DESC 'Whether the schedule information should be visible to others (user set)'
 	EQUALITY booleanMatch
 	SYNTAX boolSyntax
