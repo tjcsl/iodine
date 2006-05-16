@@ -443,7 +443,7 @@ attributetype ( i2Attr:54
 	)
 
 attributetype ( i2Attr:55
-	NAME ('perm-showbirthday-self' 'showbirthday-self' 'self-showbday' 'self-showbdate' 'showbdateself')
+	NAME ('perm-showbirthday-self' 'showbirthday-self' 'self-showbday' 'self-showbdate' 'showbdateself' 'showbdayself')
 	DESC 'Whether the birthday should be visible to others (user set)'
 	EQUALITY booleanMatch
 	SYNTAX boolSyntax
