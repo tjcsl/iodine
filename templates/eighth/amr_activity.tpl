@@ -71,6 +71,10 @@
 			<td>Sticky:</td>
 			<td><input type="checkbox" name="sticky"[<if $activity->sticky >] checked="checked"[</if>] /></td>
 		</tr>
+		<tr>
+			<td>Special:</td>
+			<td><input type="checkbox" name="special"[<if $activity->special >] checked="checked"[</if>] /></td>
+		</tr>
 	</table><br />
 	<input type="submit" value="Modify" />
 	<a href="[<$I2_ROOT>]eighth/amr_activity/remove/aid/[<$activity->aid>]"><input type="button" value="Remove" /></a>

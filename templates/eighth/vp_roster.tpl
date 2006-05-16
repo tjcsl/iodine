@@ -5,9 +5,7 @@ Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<$activity->block->date|date_for
 Room(s):&nbsp;&nbsp;&nbsp;&nbsp;[<$activity->block_rooms_comma>]<br />
 Sponsor(s):&nbsp;[<$activity->block_sponsors_comma>]<br />
 <br />
-Special Info: [<$activity->advertisement>]
-<br />
-
+[<if $activity->advertisement>]Special Info: [<$activity->advertisement>]<br />[</if>]
 
 [<foreach from=$activity->members_obj item=member>]
 ________ [<$member->name_comma>] ([<$member->tjhsstStudentId>]) - [<$member->grade>]<br />

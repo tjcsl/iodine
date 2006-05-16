@@ -62,7 +62,7 @@ class Prefs implements Module {
 		$this->prefs['showpictureself'] = $I2_USER->showpicturesself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showbdayself'] = $I2_USER->showbdayself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showmapself'] = $I2_USER->showmapself=='TRUE'?TRUE:FALSE;
-		$this->prefs['showphoneself'] = $I2_USER->showphonesself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showphoneself'] = $I2_USER->showphoneself=='TRUE'?TRUE:FALSE;
 
 		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED)->fetch_all_arrays(Result::ASSOC);
 		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED)->fetch_all_arrays(Result::ASSOC);

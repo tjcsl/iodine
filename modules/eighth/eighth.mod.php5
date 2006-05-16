@@ -751,6 +751,7 @@ class Eighth implements Module {
 			$activity->oneaday = ($this->args['oneaday'] == 'on');
 			$activity->bothblocks = ($this->args['bothblocks'] == 'on');
 			$activity->sticky = ($this->args['sticky'] == 'on');
+			$activity->special = ($this->args['special'] == 'on');
 			Eighth::end_undo_transaction();
 			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
@@ -936,6 +937,9 @@ class Eighth implements Module {
 			$this->template_args['op'] = "view/bid/{$this->args['bid']}";
 		}
 		else if($this->op == 'view') {
+			if (isSet($_REQUEST['aid'])) {
+				$this->args['aid'] = $_REQUEST['aid'];
+			}
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->template = 'vp_roster.tpl';
 			$this->template_args['activity'] = $activity;

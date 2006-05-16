@@ -696,6 +696,7 @@ class EighthActivity {
 				case 'oneaday':
 				case 'bothblocks':
 				case 'sticky':
+				case 'special':
 				case 'presign':
 					if ($this->data[$name] == $value) {
 						//Nothing to do
