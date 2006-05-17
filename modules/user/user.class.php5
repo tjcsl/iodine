@@ -520,14 +520,29 @@ class User {
 	/**
 	* Search for users based on their information.
 	*
-	* @param string The search string.
+	* @param string $str The search string.
+	* @param array $grades An array of graduation years to find results for
 	* @return array An array of {@link User} objects of the results. An
 	* empty array is returned if no match is found.
 	* @todo Improve drastically
 	*/
-	public static function search_info($str) {
+	public static function search_info($str,$grades=NULL) {
 		global $I2_LDAP;
 		d("search_info: $str",4);
+
+		if ($grades && !is_array($grades)) {
+				  $grades = explode(',',$grades);
+		}
+
+		$newgrades = '(graduationYear=*)';
+
+		if ($grades) {
+				  $newgrades = '(|';
+				  foreach ($grades as $grade) {
+							 $newgrades .= "(graduationYear=$grade)";
+				  }
+				  $newgrades .= ')';
+		}
 
 		//FIXME: improve, close hole?
 		//$str = addslashes($str);
@@ -535,7 +550,7 @@ class User {
 		$str = trim($str);
 
 		if (is_numeric($str)) {
-				  $res = $I2_LDAP->search('ou=people',"(&(objectClass=tjhsstStudent)(|(tjhsstStudentId=$str)(iodineUidNumber=$str)))",array('iodineUid'));
+				  $res = $I2_LDAP->search('ou=people',"(&(objectClass=tjhsstStudent)(|(tjhsstStudentId=$str)(iodineUidNumber=$str))$newgrades)",array('iodineUid'));
 		} else {
 
 			$separator = " \t";
@@ -546,7 +561,7 @@ class User {
 				$soundex = soundex($tok);
 
 				$res = $I2_LDAP->search('ou=people',
-				"(&(objectClass=tjhsstStudent)(|(soundexFirst=$soundex)(soundexLast=$soundex)(givenName=*$str*)(sn=*$str*)(mname=*$str*)))"
+				"(&(&(objectClass=tjhsstStudent)(|(soundexFirst=$soundex)(soundexLast=$soundex)(givenName=*$str*)(sn=*$str*)(mname=*$str*)))$newgrades)"
 				,array('iodineUid'));
 
 				if ($res) {
@@ -562,9 +577,11 @@ class User {
 		
 		$ret = array();
 		while ($uid = $res->fetch_single_value()) {
-			$ret[] = new User($uid);
+			$ret[] = $uid;
 		}
-		
+
+		$ret = self::sort_users($ret);
+
 		return $ret;
 	}
 

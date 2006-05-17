@@ -15,4 +15,5 @@
 </td>
 </tr>
 </table>
+<div style="text-align: right"><a href="[<$I2_ROOT>]search">Advanced Search</a></div>
 </form>

@@ -126,9 +126,7 @@ Counselor: [<$user->counselor>]<br />
  </table>
 [</if>]
 [<elseif $info>]
-[<foreach from=$info item=user>]
-<a href="[<$I2_ROOT>]StudentDirectory/info/[<$user->uid>]">[<$user->fullname_comma>] ([<$user->grade>])</a><br />
-[</foreach>]
+[<include file="search/search_results_pane.tpl">]
 [<else>]
-Intranet has encountered an error.  Please contact the Intranetmaster.
+There were no results matching your query.
 [</if>]
