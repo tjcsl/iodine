@@ -38,7 +38,7 @@ class EighthPrint {
 		}
 		else {
 			if($format == 'pdf') {
-				self::add_info($output, "Print Class Roster", "{$activity->name} ({$activity->block->date} - {$activity->block->block} Block)");
+				self::add_info($output, 'Print Class Roster', "{$activity->name} ({$activity->block->date} - {$activity->block->block} Block)");
 			}
 			self::do_display($output, $format, "Class Roster for {$activity->name} ({$activity->block->date} - {$activity->block->block} Block)");
 		}
