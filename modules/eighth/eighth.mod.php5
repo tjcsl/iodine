@@ -1091,7 +1091,7 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'reschedule') {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
-			$activity->add_member($this->args['uid']);
+			$activity->add_member(new User($this->args['uid']));
 			redirect("eighth/res_student/user/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
 		}
 	}
