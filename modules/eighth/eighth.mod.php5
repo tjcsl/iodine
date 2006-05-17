@@ -114,18 +114,25 @@ class Eighth implements Module {
 		//array_pop($_SESSION['eighth_redo']);
 		$openct = 1;
 		while ($name) {
+			  $name = self::get_redo_name();
+			  if (!$name) {
+						 break;
+			  }
 			if ($name == 'TRANSACTION_START') {
-							 $openct--;
+					  $openct--;
+					  array_pop(self::$redo);
+					  continue;
 			}
 			if ($name == 'TRANSACTION_END') {
-							 $openct++;
+					  $openct++;
+					  array_pop(self::$redo);
+					  continue;
 			}
-			if ($openct = 0) {
+			if ($openct == 0) {
 					  // We found a matched pair of transaction markers, break
 					  break;
 			}
 			self::redo();
-			$name = self::get_redo_name();
 		}
 		if (count(self::$redo) > 0) {
 			array_pop(self::$redo);
@@ -136,10 +143,18 @@ class Eighth implements Module {
 	
 	public static function undo_transaction() {
 		$name = self::get_undo_name();
+		while ($name == 'TRANSACTION_START') {
+				  //The stack is messed up
+				  array_pop(self::$undo);
+				  $name = self::get_undo_name();
+		}
 		if ($name != 'TRANSACTION_END') {
 			// Last action was a single-action transaction
 			self::undo();
 			return;
+		}
+		if (!$name) {
+				  return;
 		}
 		self::start_redo_transaction();
 		array_pop(self::$undo); // drop the transaction_end
@@ -147,18 +162,25 @@ class Eighth implements Module {
 
 		$openct = 1;
 		while ($name) {
+			  $name = self::get_undo_name();
+			  if (!$name) {
+						 break;
+			  }
 			if ($name == 'TRANSACTION_START') {
-							 $openct--;
+					  $openct--;
+					  array_pop(self::$undo);
+					  continue;
 			}
 			if ($name == 'TRANSACTION_END') {
-							 $openct++;
+					  $openct++;
+					  array_pop(self::$undo);
+					  continue;
 			}
-			if ($openct = 0) {
+			if ($openct == 0) {
 					  // We found a matched pair of transaction markers, break
 					  break;
 			}
 			self::undo();
-			$name = self::get_undo_name();
 		}
 		if (count(self::$undo) > 0) {
 			//pop off the TRANSACTION_START
