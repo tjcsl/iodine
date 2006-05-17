@@ -863,10 +863,12 @@ class dataimport implements Module {
 		/*
 		** Create groups
 		*/
+		$numgroups = 0;
 		$res = $oldsql->query('SELECT * FROM GroupInfo');
 		while ($res->more_rows()) {
 			$g = $res->fetch_array(Result::ASSOC);
 			list($id,$name) = array($g['GroupID'],$g['Name']);
+			$description = 'Automatically created by dataimport';
 			Group::add_group('eighth_'.$name,'Eighth-period activity: '.$description,$id);
 			$I2_LOG->log_file("Added group for $name",6);
 			$numgroups++;
@@ -885,7 +887,16 @@ class dataimport implements Module {
 		$res = $oldsql->query('SELECT StudentID,GroupID FROM StudentGroupMap');
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 				  $group = new Group($row['GroupID']);
-				  $group->add_user(new User($row['StudentID']));
+				  // Must be cautious about students no longer at the school, junk data, etc.
+				  if (!$row['StudentID']) {
+							 continue;
+				  }
+				  $uid = User::to_uidnumber($row['StudentID']);
+				  d($uid,1);
+				  if (!$uid) {
+							 continue;
+				  }
+				  $group->add_user($uid);
 				  $I2_LOG->log_file('Student with StudentID '.$row['StudentID'].' is a member of group number '.$row['GroupID'],5);
 				  $numgroupmembers++;
 		}
@@ -997,6 +1008,13 @@ class dataimport implements Module {
 	private function clean_eighth_absences() {
 		global $I2_SQL;
 		$I2_SQL->query('DELETE FROM eighth_absentees');
+	}
+
+	private function clean_eighth_groups() {
+			  $groups = Group::get_all_groups('eighth');
+			  foreach ($groups as $group) {
+						 $group->delete_group();
+			  }
 	}
 
 	private function clean_eighth() {
@@ -1280,8 +1298,8 @@ class dataimport implements Module {
 			$this->clean_up();
 			$this->init_db();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_students' && isSet($_REQUEST['doit'])) {
-			$this->clean_students();
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_eighth_groups' && isSet($_REQUEST['doit'])) {
+			$this->clean_eighth_groups();
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_teachers' && isSet($_REQUEST['doit'])) {
 			$this->clean_teachers();
@@ -1289,6 +1307,11 @@ class dataimport implements Module {
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'eighth_absences' && isSet($_REQUEST['doit'])) {
 			$this->clean_eighth_absences();
 			$this->import_eighth_absences();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'eighth_groups' && isSet($_REQUEST['doit'])) {
+				  $this->clean_eighth_groups();
+				  $this->import_eighth_groups();
+				  $this->import_eighth_group_memberships();
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_eighth' && isSet($_REQUEST['doit'])) {
 			$this->clean_eighth();

@@ -82,7 +82,9 @@ class User {
 			/*
 			** Someone tried new User(user object), so we'll just let them be stupid.
 			*/
-			return $uid;
+				  $this->myuid = $uid->iodineUidNumber;
+				  $this->username = $uid->uid;
+				  return $uid;
 		} else {
 			$uid = self::to_uidnumber($uid);
 			if (isSet(self::$cache[$uid])) {

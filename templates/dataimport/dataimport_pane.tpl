@@ -95,20 +95,27 @@
 	<br /><br />
 	[</if>]
 [<if $intranet_pass>]
-	<form action="[<$I2_ROOT>]dataimport/eighthdata" method="post">
-		<input type="hidden" name="doit" value="1"/>
-		<input type="submit" value="Load All 8th-period data"/><br/>
-	</form>
-	<form action="[<$I2_ROOT>]dataimport/eighth_absences" method="post">
-		<input type="hidden" name="doit" value="1"/>
-		<input type="submit" value="Load 8th-period absence data"/><br/>
-	</form>
-	<form action="[<$I2_ROOT>]dataimport/studentinfo" method="post">
-		<input type="hidden" name="doit" value="1"/>
-		<input type="submit" value="Expand student information using old Intranet data"/><br/>
-	</form>
-	<br /><br />
+	[<if $admin_pass>]
+		<form action="[<$I2_ROOT>]dataimport/eighthdata" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Load All 8th-period data"/><br/>
+		</form>
+		<form action="[<$I2_ROOT>]dataimport/eighth_absences" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Load 8th-period absence data"/><br/>
+		</form>
+		<form action="[<$I2_ROOT>]dataimport/eighth_groups" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Load 8th-period group data"/><br/>
+		</form>
+		<br /><br />
+		<form action="[<$I2_ROOT>]dataimport/studentinfo" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Expand student information using old Intranet data"/><br/>
+		</form>
+		<br /><br />
 	[</if>]
+[</if>]
 	[<if !$admin_pass>]
 		<form action="[<$I2_ROOT>]dataimport" method="post">
 			LDAP Admin Password: <input type="password" name="admin_pass"/><br/>
