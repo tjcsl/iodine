@@ -71,7 +71,7 @@ class Auth {
 		}
 		
 		if( !$this->is_authenticated() && !$this->login() ) {
-			die('AUTH FAILURE');
+			die();
 		}
 	}
 
@@ -256,7 +256,6 @@ class Auth {
 		if(!isset($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
 			$_SESSION['logout_funcs'] = array();
 		}
-
 		//$this->cache_password($_REQUEST['login_password']);
 			
 		if (isset($_REQUEST['login_username']) && isset($_REQUEST['login_password'])) {
