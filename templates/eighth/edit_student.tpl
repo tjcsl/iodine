@@ -1,4 +1,5 @@
 [<include file="eighth/header.tpl">]
+<br /><a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]">Return to Student</a><br />
 <form action="[<$I2_ROOT>]eighth/edit/student/uid/[<$user->uid>]" method="post">
 	<table>
 		<tr>
