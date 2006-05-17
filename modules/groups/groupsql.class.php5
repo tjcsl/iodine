@@ -162,7 +162,7 @@ class GroupSQL extends Group {
 		if($this->special) {
 			throw new I2Exception("Attempted to add user {$user->uid} to invalid group {$this->mygid}");
 		}
-		return $I2_SQL->query('INSERT INTO group_user_map (gid,uid) VALUES (%d,%d)',$this->mygid,$user->uid);
+		return $I2_SQL->query('REPLACE INTO group_user_map (gid,uid) VALUES (%d,%d)',$this->mygid,$user->uid);
 	}
 
 	public function remove_user(User $user) {

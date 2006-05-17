@@ -590,6 +590,10 @@ class Eighth implements Module {
 			 redirect('eighth/'.$str);
 	}
 
+	private static function sort_by_name($one,$two) {
+			  return strcasecmp($one->name_comma,$two->name_comma);
+	}
+
 	/**
 	* Add, modify, or remove a special group of students
 	*
@@ -620,16 +624,25 @@ class Eighth implements Module {
 			$group = new Group($this->args['gid']);
 			$this->template = 'amr_group.tpl';
 			$this->template_args['group'] = $group;
+			$membersorted = array();
+			$membersorted = $group->members_obj;
+			usort($membersorted,array('Eighth','sort_by_name'));
+			$this->template_args['membersorted'] = $membersorted;
 			$this->template_args['search_destination'] = 'eighth/amr_group/add_member/gid/'.$this->args['gid'];
 			$this->template_args['action_name'] = 'Add';
 			$this->title = 'View Group (' . substr($group->name,7) . ')';
 		}
 		else if($this->op == 'add_member') {
 				  $group = new Group($this->args['gid']);
+				  //TODO: this should be up in 'view', so as to avoid duplicate code
 				  if (!isSet($this->args['uid']) && Search::get_results()) {
 							 $this->template_args['info'] = Search::get_results();
 							 $this->template_args['results_destination'] = 'eighth/amr_group/add_member/gid/'.$this->args['gid'].'/uid/';
 							 $this->template_args['return_destination'] = 'eighth/amr_group/view/gid/'.$this->args['gid'];
+							 $membersorted = array();
+				  			 $membersorted = $group->members_obj;
+							 usort($membersorted,array('Eighth','sort_by_name'));
+							 $this->template_args['membersorted'] = $membersorted;
 							 $this->template_args['group'] = $group;
 							 $this->template = 'amr_group.tpl';
 				  } else {

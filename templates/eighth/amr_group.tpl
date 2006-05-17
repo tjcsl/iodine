@@ -7,7 +7,7 @@
 		<th style="padding: 0px 5px; text-align: left;">Grade</th>
 		<td>&nbsp;</td>
 	</tr>
-[<foreach from=$group->members_obj item='member'>]
+[<foreach from=$membersorted item='member'>]
 	<tr>
 		<td style="padding: 0px 5px;">[<$member->name_comma>]</td>
 		<td style="padding: 0px 5px; text-align: center;">[<$member->uid>]</td>
