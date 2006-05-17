@@ -611,7 +611,7 @@ class EighthActivity {
 					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
 					$temp_sponsors = array();
 					foreach($sponsors as $sponsor) {
-						$temp_sponsors[] = $sponsor->name;
+						$temp_sponsors[] = $sponsor->name_comma;
 					}
 					return implode(', ', $temp_sponsors);
 				case 'block_sponsors_comma_short':
