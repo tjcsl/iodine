@@ -333,10 +333,11 @@ class GroupSQL extends Group {
 		}*/
 
 		if ($gid === NULL) {
-			$I2_SQL->query('REPLACE INTO groups (name,description) VALUES (%s,%s);',$name,$description);
+			$res = $I2_SQL->query('REPLACE INTO groups (name,description) VALUES (%s,%s);',$name,$description);
 		} else {
-			$I2_SQL->query('REPLACE INTO groups (name,description,gid) VALUES (%s,%s,%d);',$name,$description,$gid);
+			$res = $I2_SQL->query('REPLACE INTO groups (name,description,gid) VALUES (%s,%s,%d);',$name,$description,$gid);
 		}
+		return $res->get_insert_id();
 	}
 
 	public function is_admin(User $user) {

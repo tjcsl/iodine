@@ -459,10 +459,11 @@ class Eighth implements Module {
 	* @param bool $add Whether to include the add field or not.
 	* @param string $title The title for the group list.
 	*/
-	private function setup_group_selection($add = FALSE, $title = 'Select a group:') {
+	private function setup_group_selection($add = FALSE, $title = 'Select a group:', $lastgid = FALSE) {
 		$groups = Group::get_all_groups('eighth');
 		$this->template = 'group_selection.tpl';
 		$this->template_args['groups'] = $groups;
+		$this->template_args['lastgid'] = $lastgid;
 		if($add) {
 			$this->template_args['add'] = TRUE;
 		}
@@ -597,12 +598,15 @@ class Eighth implements Module {
 	* @param array $this->args The arguments for the operation.
 	*/
 	private function amr_group() {
-		if($this->op == '') {
-			$this->setup_group_selection(true);
+			if($this->op == '' | $this->op == 'added') {
+				if (!isSet($this->args['gid'])) {
+						  $this->args['gid'] = FALSE;
+				}
+			$this->setup_group_selection(true,'Select a group',$this->args['gid']);
 		}
 		else if($this->op == 'add') {
-			Group::add_group('' . $this->args['name']);
-			redirect('eighth/amr_group');
+			$gid = Group::add_group('eighth_' . $this->args['name']);
+			redirect("eighth/amr_group/added/gid/$gid");
 		}
 		else if($this->op == 'modify') {
 			Group::set_group_name($this->args['gid'],$this->args['name']);
