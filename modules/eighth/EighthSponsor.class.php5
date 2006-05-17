@@ -104,7 +104,11 @@ class EighthSponsor {
 	}
 
 	/**
-	* Gets a sponsor's schedule
+	* Gets a sponsor's schedule starting from the given date
+	*
+	* @param int $sponsor The sponsorID
+	* @param string $startdate The date to start from, in Y-m-d format
+	* @return array An array of EighthActivity objects.
 	*/
 	public static function get_schedule($sponsor,$startdate=NULL) {
 			  global $I2_SQL;

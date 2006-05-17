@@ -5,7 +5,7 @@ CREATE TABLE eighth_blocks (
 
 	date DATE NOT NULL,
 
-	block ENUM('A','B') NOT NULL,
+	block VARCHAR(64) NOT NULL,
 
 	locked TINYINT(1) NOT NULL DEFAULT '0'
 
