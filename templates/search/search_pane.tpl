@@ -6,5 +6,5 @@ Grade:<br />
 <input type="checkbox" name="graduationYear[]" value="[<$first_year>]"/>Senior<br />
 <br />
 Name: <input type="text" name="name"/><br /><br />
-<input type="submit" value="[<$action_name>]"/>
+<input type="submit" value="[<$action_name|default:'Search'>]"/>
 </form>

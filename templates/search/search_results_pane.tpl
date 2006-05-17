@@ -3,4 +3,4 @@
 <a href="[<$I2_ROOT>][<$results_destination>][<$user->uid>]">[<$user->fullname_comma>] ([<$user->grade>])</a><br />
 [</foreach>]
 <br />
-<a href="[<$I2_ROOT>]search/clear/[<$return_destination>]">New Search</a>
+<a href="[<$I2_ROOT>]search/clear/[<$return_destination|default:''>]">New Search</a>

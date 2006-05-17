@@ -551,38 +551,66 @@ class User {
 
 		$str = trim($str);
 
+		$results = array();
+		$firstres = TRUE;
+
 		if (is_numeric($str)) {
-				  $res = $I2_LDAP->search('ou=people',"(&(objectClass=tjhsstStudent)(|(tjhsstStudentId=$str)(iodineUidNumber=$str))$newgrades)",array('iodineUid'));
+				  $res = $I2_LDAP->search('ou=people',"(&(|(tjhsstStudentId=$str)(iodineUidNumber=$str))$newgrades)",array('iodineUid'));
+				  while ($uid = $res->fetch_single_value()) {
+							 $results[] = $uid;
+				  }
 		} else {
 
-			$separator = " \t";
+			/*
+			** Complicated code: finds results which match ALL space-delimited terms in the search string
+			*/
 
+			$numtokens = 0;
+			$separator = " \t";
 			$tok = strtok($str,$separator);
+			$preres = array();
+
 
 			while ($tok) {
 				$soundex = soundex($tok);
 
 				$res = $I2_LDAP->search('ou=people',
-				"(&(&(objectClass=tjhsstStudent)(|(soundexFirst=$soundex)(soundexLast=$soundex)(givenName=*$str*)(sn=*$str*)(mname=*$str*)))$newgrades)"
+				"(&(|(soundexFirst=$soundex)(soundexLast=$soundex)(givenName=$tok)(sn=$tok)(mname=$tok))$newgrades)"
 				,array('iodineUid'));
 
-				if ($res) {
-					  break;
+				while ($uid = $res->fetch_single_value()) {
+					if (!$firstres && !isSet($preres[$uid])) {
+							  // Results which weren't previously found should be discarded
+							  continue;
+					} elseif (!$firstres) {
+							  //Increment the value so we know which results were only in the first query (they'll have a value of 1)
+							  $preres[$uid]++;
+					} else {
+							  $preres[$uid] = 1;
+					}
 				}
 
+				$firstres = FALSE;
+
 				$tok = strtok($separator);
+				$numtokens++;
+			}
+
+			if ($numtokens == 0) {
+					  $results = array();
+			} elseif ($numtokens == 1) {
+					  $results = array_keys($preres);
+			} else {
+				foreach ($preres as $key=>$value) {
+						  if ($value == 1) {
+									 // The query matched our first token but not later ones - break
+									 continue;
+						  }
+						  $results[] = $key;
+				}
 			}
 		}
-		if (!$res) {
-			return array();
-		}
-		
-		$ret = array();
-		while ($uid = $res->fetch_single_value()) {
-			$ret[] = $uid;
-		}
-
-		$ret = self::sort_users($ret);
+		$ret = self::sort_users($results);
 
 		return $ret;
 	}

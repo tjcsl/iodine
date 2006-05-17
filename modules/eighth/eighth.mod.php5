@@ -571,7 +571,7 @@ class Eighth implements Module {
 		else if($this->op == 'activity') {
 			$this->setup_activity_selection(FALSE, $this->args['bid']);
 			$this->template_args['op'] = "group/bid/{$this->args['bid']}";
-			return "Select an activity";
+			return 'Select an activity';
 		}
 		else if($this->op == 'group') {
 			$this->setup_group_selection();
@@ -628,7 +628,8 @@ class Eighth implements Module {
 				if (!isSet($this->args['gid'])) {
 						  $this->args['gid'] = FALSE;
 				}
-			$this->setup_group_selection(true,'Select a group',$this->args['gid']);
+				$this->setup_group_selection(true,'Select a group',$this->args['gid']);
+				$this->template_args['display_modify'] = TRUE;
 		}
 		else if($this->op == 'add') {
 			$gid = Group::add_group('eighth_' . $this->args['name']);

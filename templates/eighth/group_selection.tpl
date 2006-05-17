@@ -5,7 +5,7 @@
 	<option value="[<$group->gid>]" [<if ($lastgid == $group->gid)>]selected="selected"[</if>]>[<$group->name|replace:'eighth_':''>]</option>
 [</foreach>]
 </select>
-<br /><a href="#" onclick="location.href='[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/gid/' + group_list.options[group_list.selectedIndex].value">Modify</a><br />
+[<if isSet($display_modify)>]<br /><a href="#" onclick="location.href='[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/gid/' + group_list.options[group_list.selectedIndex].value">Modify</a><br />[</if>]
 [<if isset($add)>]
 <br />
 <br />
