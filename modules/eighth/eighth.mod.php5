@@ -614,7 +614,7 @@ class Eighth implements Module {
 			 redirect('eighth/'.$str);
 	}
 
-	private static function sort_by_name($one,$two) {
+	public static function sort_by_name($one,$two) {
 		return strcasecmp($one->name_comma,$two->name_comma);
 	}
 
@@ -651,7 +651,7 @@ class Eighth implements Module {
 			$this->template_args['group'] = $group;
 			$membersorted = array();
 			$membersorted = $group->members_obj;
-			usort($membersorted,array('Eighth','sort_by_name'));
+			usort($membersorted,array('User','name_cmp'));
 			$this->template_args['membersorted'] = $membersorted;
 			$this->template_args['search_destination'] = 'eighth/amr_group/add_member/gid/'.$this->args['gid'];
 			$this->template_args['action_name'] = 'Add';
@@ -666,7 +666,7 @@ class Eighth implements Module {
 				$this->template_args['return_destination'] = 'eighth/amr_group/view/gid/'.$this->args['gid'];
 				$membersorted = array();
 				$membersorted = $group->members_obj;
-				usort($membersorted,array('Eighth','sort_by_name'));
+				usort($membersorted,array('User','name_cmp'));
 				$this->template_args['membersorted'] = $membersorted;
 				$this->template_args['group'] = $group;
 				$this->template = 'amr_group.tpl';
