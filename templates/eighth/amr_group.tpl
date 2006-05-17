@@ -18,15 +18,13 @@
 	<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/amr_group/remove_all/gid/[<$group->gid>]">Remove all</a></td></tr>
 </table>
 [</if>]
-<form name="theform" action="[<$I2_ROOT>]eighth/amr_group/add_member/gid/[<$group->gid>]" method="post">
 	<fieldset style="width: 220px;">
-		<legend>Member to add:</legend>
-		First Name: <input type="text" name="fname" /><br />
-		Last Name: <input type="text" name="lname" /><br />
-		Student ID: <input type="text" name="uid" /><br />
-		<input type="submit" value="Add" />
+	[<if isSet($info)>]
+		[<include file="search/search_results_pane.tpl">]
+	[<else>]
+		[<include file="search/search_pane.tpl">]
+	[</if>]
 	</fieldset>
-</form>
 <script language="javascript" type="text/javascript">
 	<!--
 		document.theform.uid.focus();

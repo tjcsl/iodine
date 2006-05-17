@@ -90,8 +90,9 @@ class EighthRoom {
 	private static function sort_rooms($utilization1, $utilization2) {
 		return strcasecmp($utilization1['room']->name, $utilization2['room']->name);
 	}
-	
-	private static function sort_by_teacher($utilization1, $utilization2) {
+
+	// This is borrowed in EighthPrint
+	public static function sort_by_teacher($utilization1, $utilization2) {
 		return strcasecmp($utilization1['activity']->block_sponsors_comma, $utilization2['activity']->block_sponsors_comma);
 	}
 	

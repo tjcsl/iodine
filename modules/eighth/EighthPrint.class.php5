@@ -103,7 +103,8 @@ class EighthPrint {
 	*/
 	public static function print_activity_rosters($bids, $format = "print") {
 		global $I2_SQL;
-		$activities = EighthActivity::id_to_activity($I2_SQL->query("SELECT activityid,bid FROM eighth_block_map WHERE bid IN (%D) ORDER BY sponsors ASC, activityid ASC, bid ASC", $bids)->fetch_all_arrays(MYSQL_NUM));
+		$activities = EighthActivity::id_to_activity($I2_SQL->query("SELECT activityid,bid FROM eighth_block_map WHERE bid IN (%D) ORDER BY activityid ASC, bid ASC", $bids)->fetch_all_arrays(MYSQL_NUM));
+		usort($activities,array('EighthRoom','sort_by_teacher'));
 		$block = NULL;
 		$blocks = array();
 		foreach($bids as $bid) {
@@ -161,7 +162,7 @@ class EighthPrint {
 	public static function print_room_utilization($bid, $format = "pdf") {
 		$block = new EighthBlock($bid);
 		$utilizations = EighthRoom::get_utilization($bid);
-		$output = self::latexify("room_utilization");
+		$output = self::latexify('room_utilization');
 		ob_start();
 		eval($output);
 		$output = ob_get_clean();
@@ -245,8 +246,8 @@ class EighthPrint {
 		$lines = file(self::$printing_path . "{$filename}.tex.in");
 		self::$sections = array();
 		$currsections = array();
-		$code = "";
-		$output = "";
+		$code = '';
+		$output = '';
 		$echoed = false;
 		$incode = false;
 		foreach($lines as $line) {
@@ -272,18 +273,18 @@ class EighthPrint {
 					}
 				}
 			}
-			else if(substr($line, 0, 3) == "%@?") {
+			else if(substr($line, 0, 3) == '%@?') {
 				$output .= "';\n";
 				$echoed = false;
 				$incode = true;
-				if(substr($line, 3) != "") {
-					if(substr($line, -2) != "@%") {
+				if(substr($line, 3) != '') {
+					if(substr($line, -2) != '@%') {
 						$code .= substr($line, 3) . "\n";
 					}
 					else {
 						$code .= substr($line, 3, -2);
 						$output .= "{$code}\n";
-						$code = "";
+						$code = '';
 						$incode = false;
 					}
 				}

@@ -48,4 +48,5 @@
 <script language="javascript" type="text/javascript">
 	document.scheduleform.uid.focus();
 </script>
+[<if isSet($startdate)>]<b>Start date: [<$startdate|date_format>]</b>[</if>]
 [</if>]

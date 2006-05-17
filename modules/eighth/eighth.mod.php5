@@ -323,6 +323,9 @@ class Eighth implements Module {
 		$this->template_args['argstr'] = $argstr;
 		$this->template_args['last_undo'] = self::get_undo_name(TRUE);
 		$this->template_args['last_redo'] = self::get_redo_name(TRUE);
+		if (isSet($_SESSION['eighth']['start_date'])) {
+			$this->template_args['startdate'] = $_SESSION['eighth']['start_date'];
+		}
 		$display->disp($this->template, $this->template_args);
 	}
 
@@ -598,10 +601,10 @@ class Eighth implements Module {
 			$this->setup_group_selection(true);
 		}
 		else if($this->op == 'add') {
-			Group::add_group("" . $this->args['name']);
-			redirect("eighth/amr_group");
+			Group::add_group('' . $this->args['name']);
+			redirect('eighth/amr_group');
 		}
-		else if($this->op == "modify") {
+		else if($this->op == 'modify') {
 			Group::set_group_name($this->args['gid'],$this->args['name']);
 			redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
 		}
@@ -611,14 +614,24 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'view') {
 			$group = new Group($this->args['gid']);
-			$this->template = "amr_group.tpl";
+			$this->template = 'amr_group.tpl';
 			$this->template_args['group'] = $group;
+			$this->template_args['search_destination'] = 'eighth/amr_group/add_member/gid/'.$this->args['gid'];
+			$this->template_args['action_name'] = 'Add';
 			$this->title = 'View Group (' . substr($group->name,7) . ')';
 		}
 		else if($this->op == 'add_member') {
-			$group = new Group($this->args['gid']);
-			$group->add_user($this->args['uid']);
-			redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
+				  $group = new Group($this->args['gid']);
+				  if (!isSet($this->args['uid']) && Search::get_results()) {
+							 $this->template_args['info'] = Search::get_results();
+							 $this->template_args['results_destination'] = 'eighth/amr_group/add_member/gid/'.$this->args['gid'].'/uid/';
+							 $this->template_args['return_destination'] = 'eighth/amr_group/view/gid/'.$this->args['gid'];
+							 $this->template_args['group'] = $group;
+							 $this->template = 'amr_group.tpl';
+				  } else {
+						$group->add_user($this->args['uid']);
+						redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
+				  }
 		}
 		else if($this->op == 'remove_member') {
 			$group = new Group($this->args['gid']);
@@ -1105,10 +1118,19 @@ class Eighth implements Module {
 			$this->template_args['op'] = "user/bid/{$this->args['bid']}";
 			$this->template_args['act'] = new EighthActivity($this->args['aid']);
 			if(isset($this->args['studentId'])) {
-				$this->template_args['user'] = new User(User::studentid_to_uid($this->args['studentId']));
+				$this->template_args['user'] = new User($this->args['studentId']);
 				if (!$this->template_args['user']->is_valid()) {
 					redirect('eighth/res_student/user/bid/'.$this->args['bid'].'/aid/'.$this->args['aid']);
 				}
+			}
+			if (isSet($this->args['searchdone']) && Search::get_results()) {
+					  $this->template_args['info'] = Search::get_results();
+					  $this->template_args['results_destination'] = 'eighth/res_student/reschedule/bid/'.$this->args['bid'].'/aid/'
+								 .$this->args['aid'].'/uid/';
+					  $this->template_args['return_destination'] = 'eighth/res_student/user/bid/'.$this->args['bid'].'/aid/'.$this->args['aid'];
+			} else {
+				$this->template_args['action_name'] = 'Search';
+				$this->template_args['search_destination'] = 'eighth/res_student/user/searchdone/1/bid/'.$this->args['bid'].'/aid/'.$this->args['aid'];
 			}
 			$this->title = 'Reschedule a Student';
 		}
