@@ -71,7 +71,7 @@ class Auth {
 		}
 		
 		if( !$this->is_authenticated() && !$this->login() ) {
-			die();
+			die('AUTH FAILURE');
 		}
 	}
 

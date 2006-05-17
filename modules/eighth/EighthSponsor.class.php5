@@ -102,6 +102,28 @@ class EighthSponsor {
 		}
 		return $ret;
 	}
+
+	/**
+	* Gets a sponsor's schedule
+	*/
+	public static function get_schedule($sponsor,$startdate=NULL) {
+			  global $I2_SQL;
+			  if (!$startdate) {
+						 $startdate = date('Y-m-d');
+			  }
+			$result = $I2_SQL->query('SELECT bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid == eighth_blocks.bid) WHERE date>%t ORDER BY bid',$startdate);
+			$activities = array();
+			foreach($result as $activity) {
+				$sponsors = explode(',', $activity['sponsors']);
+				foreach($sponsors as $sponsor) {
+					if($sponsor == $this->data['sid']) {
+						$activities[] = new EighthActivity($activity['activityid'], $activity['bid']);
+					}
+				}
+			}
+			return $activities;
+
+	}
 	
 	/**
 	* Adds a sponsor to the list.
