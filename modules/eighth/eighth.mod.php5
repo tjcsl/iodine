@@ -675,7 +675,7 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'remove_member') {
 			$group = new Group($this->args['gid']);
-			$group->remove_user($this->args['uid']);
+			$group->remove_user(new User($this->args['uid']));
 			redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
 		}
 		else if($this->op == 'remove_all') {
@@ -683,7 +683,7 @@ class Eighth implements Module {
 			$group->remove_all_members();
 			redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
 		}
-		else if($this->op == "add_members") {
+		else if($this->op == 'add_members') {
 			// TODO: Work on adding multiple members
 		}
 	}
