@@ -110,17 +110,17 @@ class EighthSponsor {
 	* @param string $startdate The date to start from, in Y-m-d format
 	* @return array An array of EighthActivity objects.
 	*/
-	public static function get_schedule($sponsor,$startdate=NULL) {
+	public static function get_schedule($thissponsor,$startdate=NULL) {
 			  global $I2_SQL;
 			  if (!$startdate) {
 						 $startdate = date('Y-m-d');
 			  }
-			$result = $I2_SQL->query('SELECT bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid == eighth_blocks.bid) WHERE date>%t ORDER BY bid',$startdate);
+			$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date>%t ORDER BY eighth_blocks.date,eighth_blocks.block',$startdate);
 			$activities = array();
 			foreach($result as $activity) {
 				$sponsors = explode(',', $activity['sponsors']);
 				foreach($sponsors as $sponsor) {
-					if($sponsor == $this->data['sid']) {
+					if($sponsor == $thissponsor) {
 						$activities[] = new EighthActivity($activity['activityid'], $activity['bid']);
 					}
 				}

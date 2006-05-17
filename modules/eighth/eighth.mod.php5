@@ -1048,7 +1048,15 @@ class Eighth implements Module {
 			$sponsor = new EighthSponsor($this->args['sid']);
 			$this->template = 'vp_sponsor.tpl';
 			$this->template_args['sponsor'] = $sponsor;
-			$this->template_args['activities'] = $sponsor->schedule;
+			//$this->template_args['activities'] = $sponsor->schedule;
+			if (isSet($this->args['startdate'])) {
+				$startdate = $this->args['startdate'];
+			} else if (isSet($_SESSION['eighth']['start_date'])){
+				$startdate = $_SESSION['eighth']['start_date'];
+			} else {
+				$startdate = date('Y-m-d');
+			}
+			$this->template_args['activities'] = EighthSponsor::get_schedule($sponsor->sid,$startdate);
 			$this->title = 'View Sponsor Schedule';
 		}
 		else if($this->op == 'format') {
