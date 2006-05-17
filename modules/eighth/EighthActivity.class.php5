@@ -24,6 +24,7 @@ class EighthActivity {
 	const ONEADAY = 16;
 	const PRESIGN = 32;
 	const LOCKED = 64;
+	const PAST = 128;
 
 	/**
 	* The constructor for the {@link EighthActivity} class
@@ -107,6 +108,9 @@ class EighthActivity {
 		}
 		if($this->presign && $this->block && time() > strtotime($this->block->date)-60*60*24*2) {
 			$ret |= EighthActivity::PRESIGN;
+		}
+		if (time() > strtotime($this->block->date)+60*60*24) {
+			$ret |= EighthActivity::PAST;
 		}
 		if(!$ret || $force) {
 			$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES (%d,%d,%d)';

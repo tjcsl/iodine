@@ -1545,9 +1545,17 @@ class Eighth implements Module {
 						if($ret & EighthActivity::PRESIGN) {
 							$act_status['presign'] = TRUE;
 						}
+						if($ret & EighthActivity::LOCKED) {
+							$act_status['locked'] = TRUE;
+						}
+						if($ret & EighthActivity::PAST) {
+							$act_status['past'] = TRUE;
+						}
 						if(count($act_status) != 0) {
 							$act_status['activity'] = $activity;
 							$status[$bid] = $act_status;
+							$stat = array_keys($act_status);
+							$this->template_args['forcereason'] = $stat[0];
 						}
 					}
 				}
