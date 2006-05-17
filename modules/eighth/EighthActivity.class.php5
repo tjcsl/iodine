@@ -23,6 +23,7 @@ class EighthActivity {
 	const STICKY = 8;
 	const ONEADAY = 16;
 	const PRESIGN = 32;
+	const LOCKED = 64;
 
 	/**
 	* The constructor for the {@link EighthActivity} class
@@ -88,6 +89,9 @@ class EighthActivity {
 		}
 		if($this->data['restricted'] && !in_array($userid, $this->get_restricted_members())) {
 			$ret |= EighthActivity::PERMISSIONS;
+		}
+		if ($this->block->locked) {
+				  $ret |= EighthActivity::LOCKED;
 		}
 		$otheractivityid = EighthSchedule::get_activities_by_block($userid, $blockid);
 		if ($otheractivityid == $this->data['aid']) {
