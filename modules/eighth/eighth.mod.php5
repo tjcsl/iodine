@@ -348,6 +348,7 @@ class Eighth implements Module {
 		if (isSet($_SESSION['eighth']['start_date'])) {
 			$this->template_args['startdate'] = $_SESSION['eighth']['start_date'];
 		}
+		$this->template_args['defaultaid'] = i2config_get('default_aid','999','eighth');
 		$display->disp($this->template, $this->template_args);
 	}
 

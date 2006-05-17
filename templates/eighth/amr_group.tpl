@@ -9,7 +9,7 @@
 	</tr>
 [<foreach from=$membersorted item='member'>]
 	<tr>
-		<td style="padding: 0px 5px;">[<$member->name_comma>]</td>
+		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$member->uid>]">[<$member->name_comma>]</a></td>
 		<td style="padding: 0px 5px; text-align: center;">[<$member->uid>]</td>
 		<td style="padding: 0px 5px; text-align: center;">[<$member->grade>]</td>
 		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/amr_group/remove_member/gid/[<$group->gid>]/uid/[<$member->uid>]">Remove</a></td>

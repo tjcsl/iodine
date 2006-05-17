@@ -61,9 +61,9 @@
 			<td style="text-align: center;">[<$activity->block->date|date_format>]</td>
 			<td style="text-align: center;">[<$activity->block->block>]</td>
 			<td style="text-align: center;">[<if in_array(array($activity->aid, $activity->bid), $absences)>]No[<elseif $activity->attendancetaken>]Yes[<else>]---[</if>]</td>
-			<td style="text-align: center;">[<if $activity->aid == 999>]HAS NOT SELECTED AN ACTIVITY[<else>]<a href="[<$I2_ROOT>]eighth/vcp_schedule/roster/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_r>] ([<$activity->aid>])</a>[</if>]</td>
+			<td style="text-align: center;">[<if $activity->aid == $defaultaid>]HAS NOT SELECTED AN ACTIVITY[<else>]<a href="[<$I2_ROOT>]eighth/vcp_schedule/roster/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_r>] ([<$activity->aid>])</a>[</if>]</td>
 			<td style="text-align: center;">[<$activity->block_sponsors_comma_short>]</td>
-			<td style="text-align: center;">[<$activity->block_rooms_comma>]</td>
+			<td style="text-align: center;">[<if $activity->aid != $defaultaid>][<$activity->block_rooms_comma>][<else>]236WK[</if>]</td>
 		</tr>
 [</foreach>]
 	</table>
