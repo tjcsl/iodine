@@ -151,7 +151,7 @@ class GroupSQL extends Group {
 			$prefix = strtolower($module) . '_%';
 		}
 		$ret = array();
-		foreach($I2_SQL->query('SELECT gid FROM groups WHERE name LIKE %s', $prefix) as $row) {
+		foreach($I2_SQL->query('SELECT gid FROM groups WHERE name LIKE %s ORDER BY name', $prefix) as $row) {
 			$ret[] = new Group($row[0]);
 		}
 		return $ret;

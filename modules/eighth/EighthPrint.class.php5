@@ -51,9 +51,9 @@ class EighthPrint {
 	* @param int The sponsor ID
 	* @param string The output format
 	*/
-	public static function print_sponsor_schedule($sid, $format = "print") {
+	public static function print_sponsor_schedule($sid, $format = 'print') {
 		$sponsor = new EighthSponsor($sid);
-		$output = self::latexify("sponsor_schedule");
+		$output = self::latexify('sponsor_schedule');
 		ob_start();
 		eval($output);
 		$output = ob_get_clean();
