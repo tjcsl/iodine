@@ -984,7 +984,6 @@ class Eighth implements Module {
 			$this->template_args['block'] = new EighthBlock($this->args['bid']);
 			$this->template_args['utilizations'] = EighthRoom::get_utilization($this->args['bid'], $this->args['include'], 
 					  !empty($this->args['overbooked']),$this->args['sort']);
-			d(print_r($this->args['include'],1),1);
 			$inc = array();
 			foreach ($this->args['include'] as $include) {
 					  $inc[$include] = 1;
