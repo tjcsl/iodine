@@ -664,6 +664,14 @@ class Eighth implements Module {
 			$this->template = 'alt_permissions.tpl';
 			$this->template_args['activity'] = new EighthActivity($this->args['aid']);
 			$this->template_args['groups'] = Group::get_all_groups('eighth');
+			if (isSet($this->args['searchdone']) && Search::get_results()) {
+					  $this->template_args['results_destination'] = 'eighth/alt_permissions/add_member/aid/'.$this->args['aid'].'/uid/';
+					  $this->template_args['return_destination'] = 'eighth/alt_permissions/view/aid/'.$this->args['aid'];
+					  $this->template_args['info'] = Search::get_results();
+			} else {
+				$this->template_args['search_destination'] = 'eighth/alt_permissions/view/searchdone/1/aid/'.$this->args['aid'];
+				$this->template_args['action_name'] = 'Add';
+			}
 			$this->title = 'Alter Permissions to Restricted Activities';
 		}
 		else if($this->op == 'add_group') {

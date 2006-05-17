@@ -21,15 +21,13 @@ Restricted Members of [<$activity->name>]<br />
 		<td></td>
 		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/alt_permissions/remove_all/aid/[<$activity->aid>]">Remove All</a></td>
 </table>
-<form action="[<$I2_ROOT>]eighth/alt_permissions/add_member/aid/[<$activity->aid>]" method="post">
-	<fieldset style="width: 150px;">
-	<legend>Member to add</legend>
-		First Name: <input type="text" name="fname" /><br />
-		Last Name: <input type="text" name="lname" /><br />
-		Student ID: <input type="text" name="uid" /><br />
-		<input type="submit" value="Add Member" style="margin-top: 10px;" />
+	<fieldset style="width: 250px;">
+	[<if isSet($search_destination)>]
+		[<include file="search/search_pane.tpl">]
+	[<else>]
+		[<include file="search/search_results_pane.tpl">]
+	[</if>]
 	</fieldset>
-</form>
 <form action="[<$I2_ROOT>]eighth/alt_permissions/add_group/aid/[<$activity->aid>]" method="post">
 	Group to add: <select name="gid">
 [<foreach from=$groups item="group">]
