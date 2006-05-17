@@ -736,3 +736,16 @@ objectclass ( i2OC:19
 		cn
 	)
 	)
+
+objectclass ( i2OC:20
+	NAME ('iodineGroup')
+	MUST (
+		cn
+	)
+	MAY (
+		gidNumber $
+		description $
+		uniqueMember $
+		owner
+	)
+	)

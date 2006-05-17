@@ -42,7 +42,7 @@ class GroupLDAP {
 		global $I2_LDAP;
 		if(self::$gid_map === NULL) {
 			self::$gid_map = array();
-			$res = $I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', '(objectClass=posixGroup)', array('cn', 'gidNumber'));
+			$res = $I2_LDAP->search(LDAP::get_group_dn(), '(objectClass=iodineGroup)', array('cn', 'gidNumber'));
 			while($row = $res->fetch_array(Result::ASSOC)) {
 				self::$gid_map[$row['cn']] = $row['gidNumber'];
 			}
@@ -53,7 +53,7 @@ class GroupLDAP {
 			$this->myname = $group['name'];
 			$this->mydescription = $group['description'];
 		} else if(is_numeric($group)) {
-			@list($name, $description) = $I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', '(objectClass=posixGroup)', array('cn', 'description'))->fetch_array(Result::NUM);
+			@list($name, $description) = $I2_LDAP->search(LDAP::get_group_dn(), '(objectClass=iodineGroup)', array('cn', 'description'))->fetch_array(Result::NUM);
 			try {
 				if($name) {
 					$this->mygid = $group;
@@ -92,7 +92,7 @@ class GroupLDAP {
 
 	public function get_members() {
 		global $I2_LDAP;
-		return flatten($I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', '(objectClass=posixGroup)', array('memberUid'))->fetch_all_arrays(Result::NUM));
+		return flatten($I2_LDAP->search(LDAP::get_group_dn(), '(objectClass=iodineGroup)', array('uniqueMember'))->fetch_all_arrays(Result::NUM));
 	}
 	
 	public static function get_all_groups($module = NULL) {
@@ -102,7 +102,7 @@ class GroupLDAP {
 			$prefix = strtolower($module) . '_*';
 		}
 		$ret = array();
-		foreach($I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', '(objectClass=posixGroup)', array('gidNumber')) as $row) {
+		foreach($I2_LDAP->search(LDAP::get_group_dn(), '(objectClass=iodineGroup)', array('gidNumber')) as $row) {
 			$ret[] = new Group($row[0]);
 		}
 		return $ret;
@@ -110,38 +110,49 @@ class GroupLDAP {
 
 	public static function get_all_group_names() {
 		global $I2_LDAP;
-		return $I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', '(objectClass=posixGroup)', array('cn'));
+		return $I2_LDAP->search(LDAP::get_group_dn(), '(objectClass=iodineGroup)', array('cn'));
 	}
 
 	public function add_user($user) {
 		global $I2_LDAP;
 		$user = new User($user);
 		if($this->special) {
-			throw new I2Exception("Attempted to add user {$user->uid} to invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to add user {$user->uid} to invalid group {$this->name}");
 		}
-		return $I2_LDAP->add();
+		return $I2_LDAP->attribute_add(LDAP::get_group_dn($this->name), array('uniqueMember' => LDAP::get_user_dn($user->uid)));
 	}
 
 	public function remove_user(User $user) {
 		global $I2_LDAP;
 		if($this->special) {
-			throw new I2Exception("Attempted to remove user {$user->uid} from invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to remove user {$user->uid} from invalid group {$this->name}");
 		}
-		return $I2_LDAP->delete();
+		return $I2_LDAP->attribute_delete(LDAP::get_group_dn($this->name), array('uniqueMember' => LDAP::get_user_dn($user->uid)));
 	}
 
 	public function remove_all_members() {
 		global $I2_LDAP;
 		if($this->special) {
-			throw new I2Exception("Attempted to remove all users from invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to remove all users from invalid group {$this->name}");
 		}
 		return $I2_LDAP->delete();
 	}
 
 	public function grant_admin(User $user) {
+		global $I2_LDAP;
+		$user = new User($user);
+		if($this->special) {
+			throw new I2Exception("Attempted to grant admin to user {$user->uid} in invalid group {$this->name}");
+		}
+		return $I2_LDAP->attribute_add(LDAP::get_group_dn($this->name), array('owner' => LDAP::get_user_dn($user->uid)));
 	}
 	
 	public function revoke_admin(User $user) {
+		global $I2_LDAP;
+		if($this->special) {
+			throw new I2Exception("Attempted to revoke admin from user {$user->uid} in invalid group {$this->name}");
+		}
+		return $I2_LDAP->attribute_delete(LDAP::get_group_dn($this->name), array('owner' => LDAP::get_user_dn($user->uid)));
 	}
 
 	public function has_member($user=NULL) {
@@ -161,11 +172,8 @@ class GroupLDAP {
 			}
 			return FALSE;
 		}
-		$res = $I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', "(&(gidNumber={$this->mygid})(memberUid={$user->uid}))", array('gidNumber'));
-		if($res->num_rows() > 0) {
-			return TRUE;
-		}
-		return FALSE;
+		$res = $I2_LDAP->search(LDAP::get_group_dn(), "(&(cn={$this->name})(uniqueMember=" . LDAP::get_user_dn($user->uid) . "))", array('cn'));
+		return ($res->num_rows() > 0);
 	}
 
 	public function set_group_name($name) {
@@ -179,13 +187,13 @@ class GroupLDAP {
 		}
 		if(is_array($perms)) {
 			/* TODO: Make this actually support permissions...whatever that means. */
-			$res = $I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', "(memberUid={$user->uid})", array('gidNumber'));
+			$res = $I2_LDAP->search(LDAP::get_group_dn(), '(uniqueMember=' . LDAP::get_user_dn($user->uid) . ')', array('cn'));
 		} else {
-			$res = $I2_LDAP->search('ou=groups,dc=iodine,dc=tjhsst,dc=edu', "(memberUid={$user->uid})", array('gidNumber'));
+			$res = $I2_LDAP->search(LDAP::get_group_dn(), '(uniqueMember=' . LDAP::get_user_dn($user->uid) . ')', array('cn'));
 		}
 
 		foreach($res as $row) {
-			$ret[] = new Group($row['gidNumber']);
+			$ret[] = new Group($row['cn']);
 		}
 		if($include_special && $user->grade) {
 			$ret[] = new Group("grade_{$user->grade}");
@@ -210,7 +218,7 @@ class GroupLDAP {
 			throw new I2Exception('User is not authorized to delete groups.');
 		}
 
-		$I2_LDAP->delete();
+		$I2_LDAP->delete(LDAP::get_group_dn($this->name));
 	}
 
 	public static function add_group($name) {
@@ -219,13 +227,16 @@ class GroupLDAP {
 			throw new I2Exception('User is not authorized to create groups.');
 		}
 		if($gid === NULL) {
-			$I2_LDAP->add();
+			$I2_LDAP->add(LDAP::get_group_dn($name), array('cn' => $name));
 		} else {
-			$I2_LDAP->add();
+			$I2_LDAP->add(LDAP::get_group_dn($name), array('cn' => $name));
 		}
 	}
 
 	public function is_admin(User $user) {
+		global $I2_LDAP;
+		$res = $I2_LDAP->search(LDAP::get_group_dn(), "(&(cn={$this->name})(owner=" . LDAP::get_user_dn($user->uid) . "))", array('owner'));
+		return ($res->num_rows() > 0);
 	}
 
 }

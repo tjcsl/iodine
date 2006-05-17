@@ -155,6 +155,16 @@ function do_action(action, bid, data, e) {
 		sponsor_pane.style.display = "none";
 		action_bid = -1;
 	}
+	else if(action == "remove_room") {
+		var rooms = document.getElementById("room_list_" + action_bid);
+		var room_list = document.getElementById("div_room_list_" + action_bid);
+		var list_of_rooms = rooms.value.split(",");
+	}
+	else if(action == "remove_sponsor") {
+		var sponsors = document.getElementById("sponsor_list_" + action_bid);
+		var sponsor_list = document.getElementById("div_sponsor_list_" + action_bid);
+		var list_of_sponsors = sponsors.value.split(",");
+	}
 	else if(action == "set_default_rooms") {
 		var rooms = document.getElementById("room_list_" + bid);
 		var room_list = document.getElementById("div_room_list_" + bid);

@@ -561,8 +561,9 @@ class dataimport implements Module {
 		
 		d("Creating user \"{$usernew['iodineUid']}\"...",5);
 		$ldap->add($dn,$usernew);
+		$box_order = 1;
 		foreach ($this->boxids as $boxid=>$name) {
-			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid) VALUES(%d,%d)',$usernum,$boxid);
+			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid,box_order) VALUES(%d,%d,%d)',$usernum,$boxid,$box_order++);
 		}
 	}
 

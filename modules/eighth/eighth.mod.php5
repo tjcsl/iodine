@@ -119,18 +119,18 @@ class Eighth implements Module {
 						 break;
 			  }
 			if ($name == 'TRANSACTION_START') {
-					  $openct--;
-					  array_pop(self::$redo);
-					  continue;
+				$openct--;
+				array_pop(self::$redo);
+				continue;
 			}
 			if ($name == 'TRANSACTION_END') {
-					  $openct++;
-					  array_pop(self::$redo);
-					  continue;
+				$openct++;
+				array_pop(self::$redo);
+				continue;
 			}
 			if ($openct == 0) {
-					  // We found a matched pair of transaction markers, break
-					  break;
+				// We found a matched pair of transaction markers, break
+				break;
 			}
 			self::redo();
 		}
@@ -144,9 +144,9 @@ class Eighth implements Module {
 	public static function undo_transaction() {
 		$name = self::get_undo_name();
 		while ($name == 'TRANSACTION_START') {
-				  //The stack is messed up
-				  array_pop(self::$undo);
-				  $name = self::get_undo_name();
+			//The stack is messed up
+			array_pop(self::$undo);
+			$name = self::get_undo_name();
 		}
 		if ($name != 'TRANSACTION_END') {
 			// Last action was a single-action transaction
@@ -154,7 +154,7 @@ class Eighth implements Module {
 			return;
 		}
 		if (!$name) {
-				  return;
+			return;
 		}
 		self::start_redo_transaction();
 		array_pop(self::$undo); // drop the transaction_end
@@ -162,10 +162,10 @@ class Eighth implements Module {
 
 		$openct = 1;
 		while ($name) {
-			  $name = self::get_undo_name();
-			  if (!$name) {
-						 break;
-			  }
+			$name = self::get_undo_name();
+			if (!$name) {
+				break;
+			}
 			if ($name == 'TRANSACTION_START') {
 					  $openct--;
 					  array_pop(self::$undo);
@@ -615,7 +615,7 @@ class Eighth implements Module {
 	}
 
 	private static function sort_by_name($one,$two) {
-			  return strcasecmp($one->name_comma,$two->name_comma);
+		return strcasecmp($one->name_comma,$two->name_comma);
 	}
 
 	/**
@@ -626,12 +626,12 @@ class Eighth implements Module {
 	* @param array $this->args The arguments for the operation.
 	*/
 	private function amr_group() {
-			if($this->op == '' | $this->op == 'added') {
-				if (!isSet($this->args['gid'])) {
-						  $this->args['gid'] = FALSE;
-				}
-				$this->setup_group_selection(true,'Select a group',$this->args['gid']);
-				$this->template_args['display_modify'] = TRUE;
+		if($this->op == '' || $this->op == 'added') {
+			if (!isSet($this->args['gid'])) {
+				$this->args['gid'] = FALSE;
+			}
+			$this->setup_group_selection(true,'Select a group',$this->args['gid']);
+			$this->template_args['display_modify'] = TRUE;
 		}
 		else if($this->op == 'add') {
 			$gid = Group::add_group('eighth_' . $this->args['name']);
@@ -658,22 +658,22 @@ class Eighth implements Module {
 			$this->title = 'View Group (' . substr($group->name,7) . ')';
 		}
 		else if($this->op == 'add_member') {
-				  $group = new Group($this->args['gid']);
-				  //TODO: this should be up in 'view', so as to avoid duplicate code
-				  if (!isSet($this->args['uid']) && Search::get_results()) {
-							 $this->template_args['info'] = Search::get_results();
-							 $this->template_args['results_destination'] = 'eighth/amr_group/add_member/gid/'.$this->args['gid'].'/uid/';
-							 $this->template_args['return_destination'] = 'eighth/amr_group/view/gid/'.$this->args['gid'];
-							 $membersorted = array();
-				  			 $membersorted = $group->members_obj;
-							 usort($membersorted,array('Eighth','sort_by_name'));
-							 $this->template_args['membersorted'] = $membersorted;
-							 $this->template_args['group'] = $group;
-							 $this->template = 'amr_group.tpl';
-				  } else {
-						$group->add_user($this->args['uid']);
-						redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
-				  }
+			$group = new Group($this->args['gid']);
+			//TODO: this should be up in 'view', so as to avoid duplicate code
+			if (!isSet($this->args['uid']) && Search::get_results()) {
+				$this->template_args['info'] = Search::get_results();
+				$this->template_args['results_destination'] = 'eighth/amr_group/add_member/gid/'.$this->args['gid'].'/uid/';
+				$this->template_args['return_destination'] = 'eighth/amr_group/view/gid/'.$this->args['gid'];
+				$membersorted = array();
+				$membersorted = $group->members_obj;
+				usort($membersorted,array('Eighth','sort_by_name'));
+				$this->template_args['membersorted'] = $membersorted;
+				$this->template_args['group'] = $group;
+				$this->template = 'amr_group.tpl';
+			} else {
+				$group->add_user($this->args['uid']);
+				redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
+			}
 		}
 		else if($this->op == 'remove_member') {
 			$group = new Group($this->args['gid']);
@@ -1169,7 +1169,7 @@ class Eighth implements Module {
 			$this->template_args['op'] = "user/bid/{$this->args['bid']}";
 			$this->template_args['act'] = new EighthActivity($this->args['aid']);
 			if (isSet($this->args['rescheduled'])) {
-					  $this->template_args['lastuser'] = new User($this->args['rescheduled']);
+				$this->template_args['lastuser'] = new User($this->args['rescheduled']);
 			}
 			if(isSet($this->args['studentId'])) {
 				$this->template_args['user'] = new User($this->args['studentId']);
