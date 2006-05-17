@@ -642,7 +642,8 @@ class Eighth implements Module {
 			redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
 		}
 		else if($this->op == 'remove') {
-			Group::delete_group($this->args['gid']);
+				  $group = new Group($this->args['gid']);
+				  $group->delete_group();
 			redirect('eighth');
 		}
 		else if($this->op == 'view') {
