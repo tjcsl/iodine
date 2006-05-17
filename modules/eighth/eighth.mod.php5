@@ -1091,7 +1091,10 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'reschedule') {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
+			Eighth::start_undo_transaction();
+			EighthSchedule::remove_absentee($this->args['bid'],$this->args['uid']);
 			$activity->add_member(new User($this->args['uid']));
+			Eighth::end_undo_transaction();
 			redirect("eighth/res_student/user/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
 		}
 	}
