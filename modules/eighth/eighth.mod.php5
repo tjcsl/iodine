@@ -1046,7 +1046,8 @@ class Eighth implements Module {
 			$activity->comment = $this->args['comment'];
 			$activity->advertisement = $this->args['advertisement'];
 			$activity->cancelled = ($this->args['cancelled'] == "on");
-			redirect("eighth/cancel_activity/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
+			//redirect("eighth/cancel_activity/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
+			redirect("eighth/cancel_activity/activity/bid/{$this->args['bid']}");
 		}
 	}
 
