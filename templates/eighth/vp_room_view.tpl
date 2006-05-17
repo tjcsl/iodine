@@ -2,21 +2,23 @@
 <span style="font-weight: bold; font-size: 125%;">[<$block->date|date_format>] - [<$block->block>] block</span><br /><br />
 <table style="border: 0px; margin: 0px; padding: 0px; width: 100%;">
 	<tr>
-		<th style="padding: 0px 5px; text-align: left;">Location</th>
-		<th style="padding: 0px 5px; text-align: left;">Activity ID</th>
-		<th style="padding: 0px 5px; text-align: left;">Activity Name</th>
-		<th style="padding: 0px 5px; text-align: left;">Teacher</th>
-		<th style="padding: 0px 5px; text-align: left;">Students</th>
-		<th style="padding: 0px 5px; text-align: left;">Capacity</th>
+		[<if isSet($inc.room)>]<th style="padding: 0px 5px; text-align: left;">Location</th>[</if>]
+		[<if isSet($inc.aid)>]<th style="padding: 0px 5px; text-align: left;">Activity ID</th>[</if>]
+		[<if isSet($inc.name)>]<th style="padding: 0px 5px; text-align: left;">Activity Name</th>[</if>]
+		[<if isSet($inc.teacher)>]<th style="padding: 0px 5px; text-align: left;">Teacher</th>[</if>]
+		[<if isSet($inc.comments)>]<th style="padding: 0px 5px; text-align: left;">Comments</th>[</if>]
+		[<if isSet($inc.students)>]<th style="padding: 0px 5px; text-align: left;">Students</th>[</if>]
+		[<if isSet($inc.capacity)>]<th style="padding: 0px 5px; text-align: left;">Capacity</th>[</if>]
 	</tr>
 [<foreach from=$utilizations item="utilization">]
 	<tr>
-		<td style="padding: 0px 5px;">[<$utilization.room->name>]</td>
-		<td style="padding: 0px 5px;">[<$utilization.activity->aid>]</td>
-		<td style="padding: 0px 5px;">[<$utilization.activity->name>]</td>
-		<td style="padding: 0px 5px;">[<$utilization.activity->block_sponsors_comma>]</td>
-		<td style="padding: 0px 5px;">[<$utilization.students>]</td>
-		<td style="padding: 0px 5px;">[<if $utilization.room->capacity == -1>]UNLIMITED[<else>][<$utilization.room->capacity>][</if>]</td>
+		[<if isSet($inc.room)>]<td style="padding: 0px 5px;">[<$utilization.room->name>]</td>[</if>]
+		[<if isSet($inc.aid)>]<td style="padding: 0px 5px;">[<$utilization.activity->aid>]</td>[</if>]
+		[<if isSet($inc.name)>]<td style="padding: 0px 5px;">[<$utilization.activity->name>]</td>[</if>]
+		[<if isSet($inc.teacher)>]<td style="padding: 0px 5px;">[<$utilization.activity->block_sponsors_comma>]</td>[</if>]
+		[<if isSet($inc.comments)>]<td style="padding: 0px 5px;">[<$utilization.activity->block_comments>]</td>[</if>]
+		[<if isSet($inc.students)>]<td style="padding: 0px 5px;">[<$utilization.students>]</td>[</if>]
+		[<if isSet($inc.capacity)>]<td style="padding: 0px 5px;">[<if $utilization.room->capacity == -1>]UNLIMITED[<else>][<$utilization.room->capacity>][</if>]</td>[</if>]
 	</tr>
 [</foreach>]
 </table>

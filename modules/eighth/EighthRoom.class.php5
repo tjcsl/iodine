@@ -45,7 +45,7 @@ class EighthRoom {
 	* @param bool $overbooked Whether to only show overbooked activities or not.
 	* @todo Make it actually use $columns.
 	*/
-	public static function get_utilization($blockid, $columns = NULL, $overbooked = FALSE) {
+	public static function get_utilization($blockid, $columns = NULL, $overbooked = FALSE, $sort = NULL) {
 		global $I2_SQL;
 		$activities = EighthActivity::id_to_activity($I2_SQL->query('SELECT eighth_block_map.activityid,bid FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d', $blockid)->fetch_all_arrays(Result::NUM));
 		$utilizations = array();
@@ -59,7 +59,24 @@ class EighthRoom {
 				}
 			}
 		}
-		usort($utilizations, array('EighthRoom', 'sort_rooms'));
+		if (!$sort) {
+				  return $utilizations;
+		}
+		if ($sort == 'room') {
+			usort($utilizations, array('EighthRoom', 'sort_rooms'));
+		} elseif ($sort == 'aid') {
+			usort($utilizations, array('EighthRoom', 'sort_by_aid'));
+		} elseif ($sort == 'name') {
+			usort($utilizations, array('EighthRoom', 'sort_by_name'));
+		} elseif ($sort == 'teacher') {
+			usort($utilizations, array('EighthRoom', 'sort_by_teacher'));
+		} elseif ($sort == 'students') {
+			usort($utilizations, array('EighthRoom', 'sort_by_students'));
+		} elseif ($sort == 'comments') {
+			usort($utilizations, array('EighthRoom', 'sort_by_comments'));
+		} else {
+				  throw new I2Exception("Unknown sort type \"$sort\"");
+		}
 		return $utilizations;
 	}
 
@@ -72,6 +89,26 @@ class EighthRoom {
 	*/
 	private static function sort_rooms($utilization1, $utilization2) {
 		return strcasecmp($utilization1['room']->name, $utilization2['room']->name);
+	}
+	
+	private static function sort_by_teacher($utilization1, $utilization2) {
+		return strcasecmp($utilization1['activity']->block_sponsors_comma, $utilization2['activity']->block_sponsors_comma);
+	}
+	
+	private static function sort_by_name($utilization1, $utilization2) {
+		return strcasecmp($utilization1['activity']->name, $utilization2['activity']->name);
+	}
+	
+	private static function sort_by_comments($utilization1, $utilization2) {
+		return strcasecmp($utilization1['activity']->block_comments, $utilization2['activity']->block_comments);
+	}
+
+	private static function sort_by_aid($utilization1, $utilization2) {
+		return $utilization1['activity']->aid-$utilization2['activity']->aid;
+	}
+	
+	private static function sort_by_students($utilization1, $utilization2) {
+		return $utilization1['students']-$utilization2['students'];
 	}
 
 	/**

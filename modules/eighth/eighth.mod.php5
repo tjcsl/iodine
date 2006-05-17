@@ -475,10 +475,13 @@ class Eighth implements Module {
 	* @param bool $add Whether to include the add field or not.
 	* @param string $title The title for the room list.
 	*/
-	private function setup_room_selection($add = FALSE, $title = 'Select a room:') {
+	private function setup_room_selection($add = FALSE, $title = 'Select a room:', $rid = FALSE) {
 		$rooms = EighthRoom::get_all_rooms();
 		$this->template = 'room_selection.tpl';
 		$this->template_args['rooms'] = $rooms;
+		if ($rid) {
+			$this->template_args['rid'] = $rid;
+		}
 		if($add) {
 			$this->template_args['add'] = TRUE;
 		}
@@ -799,8 +802,11 @@ class Eighth implements Module {
 	* @param array $this->args The arguments for the operation.
 	*/
 	private function amr_room() {
-		if($this->op == '') {
-			$this->setup_room_selection(true);
+		if($this->op == '' || $this->op == 'select') {
+			if (!isSet($this->args['rid'])) {
+				$this->args['rid'] = FALSE;
+			}
+			$this->setup_room_selection(true,'Select a room:',$this->args['rid']);
 		}
 		else if($this->op == 'view') {
 			$this->template = 'amr_room.tpl';
@@ -808,9 +814,12 @@ class Eighth implements Module {
 			$this->title = 'View Rooms';
 		}
 		else if($this->op == 'add') {
+			if (!isSet($this->args['capacity']) || !$this->args['capacity'] || !is_numeric($this->args['capacity'])) {
+				$this->args['capacity'] = -1;
+			}
 			$rid = EighthRoom::add_room($this->args['name'], $this->args['capacity']);
 			//redirect("eighth/amr_room/view/rid/{$rid}");
-			redirect('eighth/amr_room');
+			redirect("eighth/amr_room/select/rid/$rid");
 		}
 		else if($this->op == 'modify') {
 			if ($this->args['modify_or_remove'] == 'modify') {
@@ -930,7 +939,7 @@ class Eighth implements Module {
 	private function vp_roster() {
 		if($this->op == '') {
 			$this->setup_block_selection();
-			$this->template_args['op'] = "activity";
+			$this->template_args['op'] = 'activity';
 		}
 		else if($this->op == 'activity') {
 			$this->setup_activity_selection(FALSE, $this->args['bid']);
@@ -973,11 +982,18 @@ class Eighth implements Module {
 		else if($this->op == 'view') {
 			$this->template = 'vp_room_view.tpl';
 			$this->template_args['block'] = new EighthBlock($this->args['bid']);
-			$this->template_args['utilizations'] = EighthRoom::get_utilization($this->args['bid'], $this->args['include'], !empty($this->args['overbooked']));
+			$this->template_args['utilizations'] = EighthRoom::get_utilization($this->args['bid'], $this->args['include'], 
+					  !empty($this->args['overbooked']),$this->args['sort']);
+			d(print_r($this->args['include'],1),1);
+			$inc = array();
+			foreach ($this->args['include'] as $include) {
+					  $inc[$include] = 1;
+			}
+			$this->template_args['inc'] = $inc;
 			$this->title = 'View Room Utilization';
 		}
 		else if($this->op == 'format') {
-			$this->setup_format_selection('vp_room', 'Room Utilization', array("bid" => $this->args['bid']));
+			$this->setup_format_selection('vp_room', 'Room Utilization', array('bid' => $this->args['bid']));
 		}
 		else if($this->op == 'print') {
 			EighthPrint::print_room_utilization($this->args['bid'], $this->args['format']);
