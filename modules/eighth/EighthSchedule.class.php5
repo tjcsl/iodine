@@ -128,6 +128,8 @@ class EighthSchedule {
 	public static function remove_absentee($blockid, $userid) {
 		global $I2_SQL;
 		Eighth::check_admin();
+		$user = new User($userid);
+		$userid = $user->iodineuidnumber;
 		$old = $I2_SQL->query('SELECT userid FROM eighth_absentees WHERE bid=%d AND userid=%d', $blockid, $userid)->fetch_single_value();
 		if (!$old) {
 			// Absentee not present

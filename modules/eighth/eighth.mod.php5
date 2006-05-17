@@ -182,7 +182,8 @@ class Eighth implements Module {
 			}
 			self::undo();
 		}
-		if (count(self::$undo) > 0) {
+		$name = self::get_undo_name();
+		if ($name == 'TRANSACTION_START') {
 			//pop off the TRANSACTION_START
 			array_pop(self::$undo);
 			//array_pop($_SESSION['eighth_undo']);
@@ -1167,7 +1168,10 @@ class Eighth implements Module {
 			$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bid']);
 			$this->template_args['op'] = "user/bid/{$this->args['bid']}";
 			$this->template_args['act'] = new EighthActivity($this->args['aid']);
-			if(isset($this->args['studentId'])) {
+			if (isSet($this->args['rescheduled'])) {
+					  $this->template_args['lastuser'] = new User($this->args['rescheduled']);
+			}
+			if(isSet($this->args['studentId'])) {
 				$this->template_args['user'] = new User($this->args['studentId']);
 				if (!$this->template_args['user']->is_valid()) {
 					redirect('eighth/res_student/user/bid/'.$this->args['bid'].'/aid/'.$this->args['aid']);
@@ -1175,6 +1179,11 @@ class Eighth implements Module {
 			}
 			if (isSet($this->args['searchdone']) && Search::get_results()) {
 					  $this->template_args['info'] = Search::get_results();
+					  if (count($this->template_args['info']) == 1) {
+								 // 1 Result - do it!
+								 redirect('eighth/res_student/reschedule/bid/'.$this->args['bid'].'/aid/'.$this->args['aid'].'/uid/'
+											.$this->template_args['info'][0]->uid);
+					  }
 					  $this->template_args['results_destination'] = 'eighth/res_student/reschedule/bid/'.$this->args['bid'].'/aid/'
 								 .$this->args['aid'].'/uid/';
 					  $this->template_args['return_destination'] = 'eighth/res_student/user/bid/'.$this->args['bid'].'/aid/'.$this->args['aid'];
@@ -1190,7 +1199,7 @@ class Eighth implements Module {
 			EighthSchedule::remove_absentee($this->args['bid'],$this->args['uid']);
 			$activity->add_member(new User($this->args['uid']));
 			Eighth::end_undo_transaction();
-			redirect("eighth/res_student/user/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
+			redirect("eighth/res_student/user/rescheduled/{$this->args['uid']}/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
 		}
 	}
 

@@ -2,6 +2,8 @@
 [<include file="eighth/include_list_open.tpl">]
 [<include file="eighth/activity_selection.tpl">]
 [<include file="eighth/include_list_close.tpl">]
+
+[<if isSet($lastuser)>]<b>Rescheduled [<$lastuser->fullname>]</b>[</if>]
 [<if isSet($search_destination)>]
 [<include file="search/search_pane.tpl">]
 [<elseif isSet($results_destination)>]
