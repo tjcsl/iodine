@@ -59,7 +59,15 @@ class GroupSQL extends Group {
 				return $this->get_members();
 			case 'members_obj':
 				return User::id_to_user($this->get_members());
+		   case 'members_obj_sorted':
+				$members = $this->__get('members_obj');
+				usort($members,array('GroupSQL','sort_by_name'));
+				return $members;
 		}
+	}
+
+	private static function sort_by_name($one,$two) {
+			  return strcasecmp($one->name_comma,$two->name_comma);
 	}
 
 	/**

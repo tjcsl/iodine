@@ -631,6 +631,10 @@ class EighthActivity {
 					return $this->get_restricted_members();
 				case 'restricted_members_obj':
 					return User::id_to_user($this->get_restricted_members());
+			   case 'restricted_members_obj_sorted':
+					$members = $this->__get('restricted_members_obj');
+					usort($members,array('EighthActivity','sort_by_name'));
+					return $members;
 				case 'capacity':
 					if (!isSet($this->data['block_rooms']) || count($this->data['block_rooms']) == 0) {
 						return -1;
@@ -644,6 +648,10 @@ class EighthActivity {
 					return $this->data['member_count'];
 			}
 		}
+	}
+
+	private static function sort_by_name($one,$two) {
+			  return strcasecmp($one->name_comma,$two->name_comma);
 	}
 
 	/**
