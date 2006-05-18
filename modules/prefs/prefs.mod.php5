@@ -37,6 +37,14 @@ class Prefs implements Module {
 				}
 			}
 
+			foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showmapself','showpictureself') as $pref) {
+				if (isSet($_REQUEST[$pref])) {
+					$I2_USER->$pref = 'TRUE';
+				} else {
+						  $I2_USER->$pref = 'FALSE';
+				}
+			}
+
 			if (isSet($_REQUEST['pref_style'])) {
 				Display::style_changed();
 			}
