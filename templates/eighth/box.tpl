@@ -18,5 +18,5 @@ You have been absent <a href="[<$I2_ROOT>]eighth/vcp_schedule/absences/uid/[<$I2
 	<br />There are currently no activities.<br />
 [</if>]
 <span style="font-style: italic;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$I2_UID>]">Full Schedule</a> | 
-<a href="[<$I2_ROOT>]eighth">Special Activities</a> |
+[<*<a href="[<$I2_ROOT>]eighth">Special Activities</a> |*>]
 <a href="[<$I2_ROOT>]eighth/vcp_schedule/format/uid/[<$I2_UID>]">Printer Friendly</a></span>

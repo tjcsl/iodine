@@ -39,19 +39,18 @@ class Mail implements Module {
 
 		$this->cache_file = $cache_dir . session_id();
 
-		$timeout = i2config_get('imap_timeout','','mail');
+		/*$timeout = i2config_get('imap_timeout','','mail');
 		if($timeout) {
 			d('Setting IMAP timeout to '.$timeout,8);
 			/*foreach(array(1,2,3,4) as $i) {
 				imap_timeout($i, $timeout);
-			}*/
-			d('meh');
-		}
+			}
+		}*/
 	}
 	
 	function init_pane() {
 		global $I2_ARGS;
-		
+		return FALSE;
 		if(!is_array($this->messages)) {
 			if(!self::download_msgs()) {
 				$this->pane_args['err'] = TRUE;
@@ -75,6 +74,7 @@ class Mail implements Module {
 	}
 	
 	function init_box() {
+		return FALSE;
 		if (!is_array($this->messages)) {
 			if(!self::download_msgs()) {
 				$this->box_args['err'] = TRUE;
