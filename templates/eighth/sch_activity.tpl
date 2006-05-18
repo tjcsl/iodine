@@ -6,6 +6,9 @@
 	<option value="[<$activity->aid>]" [<if $act->aid == $activity->aid>]style="font-size: 18pt; font-weight: bold;" SELECTED[<else>]style="font-size: 10pt; "[</if>]>[<$activity->aid>]: [<$activity->name_r>]</option>
 [</foreach>]
 </select>
+<form action="[<$I2_ROOT>]eighth/sch_activity/view/" method="POST">
+AID: <input type="text" name="aid"/>
+</form>
 </div>
 <form name="activities" action="[<$I2_ROOT>]eighth/sch_activity/modify/aid/[<$act->aid>]" method="post">
 <div id="eighth_room_pane">
