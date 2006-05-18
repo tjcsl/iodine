@@ -1587,7 +1587,7 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'remove_absence') {
 			EighthSchedule::remove_absentee($this->args['bid'], $this->args['uid']);
-			redirect('eighth');
+			redirect('eighth/vcp_schedule/absences/uid/'.$this->args['uid']);
 		}
 	}
 
