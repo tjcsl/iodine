@@ -188,6 +188,7 @@ class IntraBox {
 		while ($boxen->more_rows()) {
 			$ret[] = new Intrabox($boxen->fetch_array(Result::ASSOC));
 		}
+
 		return $ret;
 	}
 

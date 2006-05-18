@@ -390,7 +390,7 @@ class Auth {
 			$_SESSION['i2_password'] = $pass;
 			return;
 		}
-		$_SESSION['i2_auth_passkey'] = substr(md5(rand(0,RAND_MAX)),0,16);
+		$_SESSION['i2_auth_passkey'] = substr(md5(rand(0,999999)),0,16);
 		list($_SESSION['i2_password'], ,$iv) = self::encrypt($pass,$_SESSION['i2_auth_passkey'].substr(md5($_SERVER['REMOTE_ADDR']),0,16));
 		setcookie('IODINE_PASS_VECTOR',$iv,0,'/',i2config_get('domain','iodine.tjhsst.edu','core'));
 	}
