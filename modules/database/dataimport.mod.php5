@@ -480,8 +480,10 @@ class dataimport implements Module {
 		/*
 		** Teachers need intraboxes, too!
 		*/
+		$count = 0;
 		foreach ($this->boxids as $boxid=>$name) {
-			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid) VALUES(%d,%d)',$teacher['uid'],$boxid);
+			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid,box_order,closed) VALUES(%d,%d,%d,%d)',$teacher['uid'],$boxid,$count,0);
+			$count++;
 		}
 	}
 
