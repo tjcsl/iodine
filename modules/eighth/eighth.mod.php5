@@ -1230,7 +1230,7 @@ class Eighth implements Module {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$members = $activity->members;
 			foreach($members as $member) {
-				if(in_array($member, $this->args['absentees'])) {
+				if(isSet($this->args['absentees']) && is_array($this->args['absentees']) && in_array($member, $this->args['absentees'])) {
 					EighthSchedule::add_absentee($this->args['bid'], $member);
 				}
 				else {
