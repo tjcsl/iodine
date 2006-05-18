@@ -71,6 +71,7 @@ foreach($activities as $activity) {
 			else {
 @%
 %@include footer
+%@include header
 %@?
 			}
 		}
