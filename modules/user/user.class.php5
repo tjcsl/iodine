@@ -335,7 +335,7 @@ class User {
 			case 'showscheduleself':
 			case 'showaddressself':
 			case 'showphoneself':
-			case 'showpicturesself':
+			case 'showpictureself':
 				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';
 		}
 		
