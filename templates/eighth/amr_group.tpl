@@ -17,8 +17,8 @@
 [</foreach>]
 	<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/amr_group/remove_all/gid/[<$group->gid>]">Remove all</a></td></tr>
 </table><br />
-<a href="[<$I2_ROOT>]eighth/amr_group/remove/gid/[<$group->gid>]">Remove Group</a><br />
 [</if>]
+<a href="[<$I2_ROOT>]eighth/amr_group/remove/gid/[<$group->gid>]">Remove Group</a><br />
 	<fieldset style="width: 220px;">
 	[<if isSet($info)>]
 		[<include file="search/search_results_pane.tpl">]
