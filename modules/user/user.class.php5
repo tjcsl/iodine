@@ -310,7 +310,7 @@ class User {
 
 	public function set($name,$val,$ldap=NULL) {
 		global $I2_LDAP;
-		if (!$ldap) {
+		if ($ldap === NULL) {
 			$ldap = $I2_LDAP;
 		}
 		if ($name == 'username' || $name == 'iodineUid') {
@@ -333,7 +333,7 @@ class User {
 			case 'showmapself':
 			case 'showbdayself':
 			case 'showscheduleself':
-			case 'showadressself':
+			case 'showaddressself':
 			case 'showphoneself':
 			case 'showpicturesself':
 				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';

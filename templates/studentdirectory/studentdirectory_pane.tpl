@@ -119,7 +119,7 @@ Counselor: [<$user->counselor>]<br />
  [<foreach from=$eighth item=activity>]
   <tr>
    <td>[<$activity->block->date>]</td>
-   <td><a href="[<$I2_ROOT>]eighth/vcp_schedule/roster/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_r>]</a></td>
+   <td>[<if $activity->aid != 999>]<a href="[<$I2_ROOT>]eighth/vcp_schedule/roster/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_r>]</a>[<else>]HAS NOT SELECTED AN ACTIVITY[</if>]</td>
    <td>[<$activity->block_rooms_comma>]</td>
   </tr>
  [</foreach>]
