@@ -582,7 +582,7 @@ class Eighth implements Module {
 		else if($this->op == 'commit') {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$group = new Group($this->args['gid']);
-			$activity->add_members($group->members);
+			$activity->add_members($group->members, TRUE);
 			redirect('eighth');
 		}
 	}
