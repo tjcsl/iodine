@@ -241,7 +241,18 @@ class User {
 					}
 				return date('M j, Y', strtotime($born));
 			case 'show_map':
-				return ($this->__get('perm-showmap')!='FALSE')&&($this->__get('perm-showmap-self')!='FALSE');
+					  return ($this->__get('perm-showmap')!='FALSE')&&($this->__get('perm-showmap-self')!='FALSE');
+			case 'showpictureself':
+			case 'showaddressself':
+			case 'showphoneself':
+			case 'showmapself':
+			case 'showscheduleself':
+			case 'showbdayself':
+					  $row = $I2_LDAP->search_base("iodineUid={$this->username},ou=people",$name);
+					  if (!$row) {
+								 return NULL;
+					  }
+				return $row->fetch_single_value()=='TRUE'?TRUE:FALSE;
 		}
 		
 		//Check which table the information is in
