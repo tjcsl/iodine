@@ -60,8 +60,7 @@ class User {
 	* @access public
 	*/
 	public function __construct($uid = NULL) {
-		global $I2_ERR, $I2_LDAP;
-
+		global $I2_ERR, $I2_LDAP, $I2_LOG;
 		if( $uid === NULL ) {
 			if( isset($_SESSION['i2_uid']) ) {
 				$this->username = $_SESSION['i2_uid'];
@@ -331,6 +330,14 @@ class User {
 			case 'phone_other':
 				$this->__set('phoneNumber',$val,$ldap);
 				return;
+			case 'showmapself':
+			case 'showbdayself':
+			case 'showscheduleself':
+			case 'showadressself':
+			case 'showphoneself':
+			case 'showpictureself':
+				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE');
+					
 		}
 		
 		$ldap->modify_val("iodineUid={$this->username},ou=people",$name,$val);

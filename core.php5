@@ -187,8 +187,7 @@ try {
 			i2config_get('startmodule','news','core')
 		)
 	);
-	
-	if(strtolower($module) == "ajax") {
+	if(strtolower($module) == 'ajax') {
 		$I2_AJAX->returnResponse($I2_ARGS[1]);
 	}
 	else {

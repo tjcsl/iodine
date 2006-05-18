@@ -118,6 +118,7 @@ class Display {
 	public function display_loop($module) {
 		global $I2_ERR,$I2_USER;
 
+
 		if (self::$display_stopped) {
 			return;
 		}
