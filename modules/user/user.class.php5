@@ -60,7 +60,7 @@ class User {
 	* @access public
 	*/
 	public function __construct($uid = NULL) {
-		global $I2_ERR, $I2_LDAP, $I2_LOG;
+		global $I2_ERR, $I2_LDAP;
 		if( $uid === NULL ) {
 			if( isset($_SESSION['i2_uid']) ) {
 				$this->username = $_SESSION['i2_uid'];
@@ -310,7 +310,7 @@ class User {
 
 	public function set($name,$val,$ldap=NULL) {
 		global $I2_LDAP;
-		if (!$ldap) {
+		if ($ldap === NULL) {
 			$ldap = $I2_LDAP;
 		}
 		if ($name == 'username' || $name == 'iodineUid') {
@@ -333,11 +333,10 @@ class User {
 			case 'showmapself':
 			case 'showbdayself':
 			case 'showscheduleself':
-			case 'showadressself':
+			case 'showaddressself':
 			case 'showphoneself':
 			case 'showpictureself':
 				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';
-					
 		}
 		
 		$ldap->modify_val("iodineUid={$this->username},ou=people",$name,$val);
@@ -582,7 +581,7 @@ class User {
 				$soundex = soundex($tok);
 
 				$res = $I2_LDAP->search('ou=people',
-				"(&(|(soundexFirst=$soundex)(soundexLast=$soundex)(givenName=$tok)(sn=$tok)(mname=$tok))$newgrades)"
+				"(&(|(soundexFirst=$soundex)(soundexLast=$soundex)(givenName=$tok)(sn=$tok)(iodineUid=$tok)(mname=$tok))$newgrades)"
 				,array('iodineUid'));
 
 				while ($uid = $res->fetch_single_value()) {

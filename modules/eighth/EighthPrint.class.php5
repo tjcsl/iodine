@@ -104,7 +104,7 @@ class EighthPrint {
 	public static function print_activity_rosters($bids, $format = "print") {
 		global $I2_SQL;
 		$activities = EighthActivity::id_to_activity($I2_SQL->query("SELECT activityid,bid FROM eighth_block_map WHERE bid IN (%D) ORDER BY activityid ASC, bid ASC", $bids)->fetch_all_arrays(MYSQL_NUM));
-		usort($activities,array('EighthRoom','sort_by_teacher'));
+		usort($activities, array('EighthPrint', 'sort_by_sponsor'));
 		$block = NULL;
 		$blocks = array();
 		foreach($bids as $bid) {
@@ -175,6 +175,10 @@ class EighthPrint {
 			}
 			self::do_display($output, $format, "Room Utilization for {$activity->block->date} - {$activity->block->block} Block", TRUE);
 		}
+	}
+
+	public static function sort_by_sponsor($act1, $act2) {
+		return strcasecmp($act1->block_sponsors_comma, $act2->block_sponsors_comma);
 	}
 
 	/**

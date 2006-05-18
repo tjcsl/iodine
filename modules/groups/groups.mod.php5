@@ -177,17 +177,12 @@ class Groups implements Module {
 				$this->template_args['admin'] = true;
 
 				if( isset($_REQUEST['group_form']) ) {
-					if(is_numeric($_REQUEST['uid'])) {
-						$user = new User($_REQUEST['uid']);
-					}
-					else {
-						$user = User::get_by_uname($_REQUEST['uid']);
-					}
+					$user = new User($_REQUEST['uid']);
 					if(!$user) {
 						throw new I2Exception('Invalid user specified');
 					}
 					switch($_REQUEST['group_form']) {
-						case 'add':	$group->add_user($user);
+						case 'add':	$group->add_user($user->uid);
 								break;
 						case 'remove':	$group->remove_user($user);
 								break;
@@ -226,13 +221,6 @@ class Groups implements Module {
 			$this->template = 'groups_error.tpl';
 		}
 		return 'Groups: Admin';
-	}
-
-	/**
-	* Private helper function
-	*/
-	private static function get_memberinfo(Group $group) {
-		$group_members = array();
 
 		$uids = $group->get_members();
 		foreach($uids as $uid) {

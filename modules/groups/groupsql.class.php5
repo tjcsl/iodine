@@ -129,6 +129,9 @@ class GroupSQL extends Group {
 			else {
 				try {
 					$group = Group::get_special_group($group);
+					if (!$group) {
+						return;
+					}
 					$this->mygid = $group->gid;
 					$this->myname = $group;
 				} catch (I2Exception $e) {

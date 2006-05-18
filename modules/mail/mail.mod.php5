@@ -42,7 +42,7 @@ class Mail implements Module {
 		/*$timeout = i2config_get('imap_timeout','','mail');
 		if($timeout) {
 			d('Setting IMAP timeout to '.$timeout,8);
-			/*foreach(array(1,2,3,4) as $i) {
+			foreach(array(1,2,3,4) as $i) {
 				imap_timeout($i, $timeout);
 			}
 		}*/

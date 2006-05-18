@@ -33,4 +33,4 @@ window.onunload = function(){
 }
 </script>
 <textarea id="scratchtext" style="width:98%">[<$text>]</textarea><br>
-<a href="[<$I2_ROOT>]scratchpad/help/">What Is This Box For?</a>
+[<*<a href="[<$I2_ROOT>]scratchpad/help/">What Is This Box For?</a>*>]

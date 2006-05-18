@@ -48,6 +48,8 @@ class Search implements Module {
 			  if (isSet($_SESSION['search_results'])) {
 						 $disp->smarty_assign('info',$_SESSION['search_results']);
 						 $disp->smarty_assign('numresults',count($_SESSION['search_results']));
+						 $disp->smarty_assign('results_destination','studentdirectory/info/');
+						 $disp->smarty_assign('return_destination','search');
 						 $disp->disp('search_results_pane.tpl');
 			  } else {
 				  $disp->smarty_assign('action_name','Search');
