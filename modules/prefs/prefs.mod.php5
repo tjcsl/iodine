@@ -59,7 +59,7 @@ class Prefs implements Module {
 
 		$this->prefs['showaddressself'] = $I2_USER->showaddressself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showscheduleself'] = $I2_USER->showscheduleself=='TRUE'?TRUE:FALSE;
-		$this->prefs['showpictureself'] = $I2_USER->showpicturesself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showpictureself'] = $I2_USER->showpictureself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showbdayself'] = $I2_USER->showbdayself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showmapself'] = $I2_USER->showmapself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showphoneself'] = $I2_USER->showphoneself=='TRUE'?TRUE:FALSE;

@@ -5,6 +5,7 @@ CREATE TABLE intrabox_map (
 	INDEX(uid),
 	
 	boxid INT NOT NULL,
+	PRIMARY KEY(uid,boxid),
 
 	box_order SMALLINT,
 	closed TINYINT
