@@ -570,7 +570,7 @@ class dataimport implements Module {
 	private function import_eighth_data() {
 		global $I2_SQL,$I2_LDAP,$I2_LOG;
 
-		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
+		//$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 
 		/*
 		** NOTE: starting and ending dates are currently ignored!  Any and all data is imported.
@@ -708,7 +708,7 @@ class dataimport implements Module {
 			// Collect the rooms the activity occurs in
 			$validrooms = array();
 
-			if ($sponsors && $sponsors != '')
+			if ($sponsors && $sponsors != '') {
 				$sponsors = $this->create_sponsor($sponsors);
 			}
 			
@@ -721,7 +721,7 @@ class dataimport implements Module {
 												 AND ActivityDate >= %s 
 												 AND ActivityDate <= %s
 												 ORDER BY ActivityDate DESC',
-												 	$aid,$startdate,$enddate);*/
+												 $aid,$startdate,$enddate);*/
 			$blockres = $oldsql->query('SELECT * FROM ActivityScheduleMap 
 												 WHERE ActivityID=%d 
 												 ORDER BY ActivityDate DESC',
@@ -767,6 +767,7 @@ class dataimport implements Module {
 				$I2_LOG->log_file("Scheduled activity \"$name\" for $block on $date",6);
 				$validrooms[$brooms] = 1;
 				
+				
 			}
 
 			/*
@@ -775,10 +776,10 @@ class dataimport implements Module {
 			EighthActivity::add_activity($name,$sponsors,array_keys($validrooms),$description,$restricted,$sticky,$bothblocks,$presign,$aid);
 			$I2_LOG->log_file("Added activity \"$name\"",5);
 			$numactivities++;
-		
-		
-			return array($numactivities,$numrooms);
-	}
+			
+		}
+		return array($numactivities,$numrooms);
+	}	
 
 	private function process_student_signups() {
 	   global $I2_LOG;
@@ -851,7 +852,7 @@ class dataimport implements Module {
 				continue;
 			}
 			$I2_LOG->log_file("Marking user $uid absent from block {$row['ActivityBlock']} on {$row['ActivityDate']}",5);
-			$blockid = EighthBlock::add_block($row['ActivityDate'],$row['ActivityBlock']);
+			$blockid = EighthBlock::add_block($row['ActivityDate'],$row['ActivityBlock'],FALSE);
 			EighthSchedule::add_absentee($blockid,$uid);
 			$numabsences++;
 		}
