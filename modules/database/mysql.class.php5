@@ -279,8 +279,8 @@ class MySQL {
 					throw new I2Exception('String `'.$arg.'` contains non-alphanumeric characters, and was passed as an %a string in a mysql query');
 				}
 			case 's':
-				//return '\''.mysql_real_escape_string($arg).'\'';
-				return '\''.mysql_escape($arg).'\'';
+				return '\''.mysql_real_escape_string($arg).'\'';
+				//return '\''.mysql_escape($arg).'\'';
 
 			/* array of strings */
 			case 'S':
