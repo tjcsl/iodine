@@ -581,7 +581,7 @@ class User {
 				$soundex = soundex($tok);
 
 				$res = $I2_LDAP->search('ou=people',
-				"(&(|(soundexFirst=$soundex)(soundexLast=$soundex)(givenName=$tok)(sn=$tok)(mname=$tok))$newgrades)"
+				"(&(|(soundexFirst=$soundex)(soundexLast=$soundex)(givenName=$tok)(sn=$tok)(iodineUid=$tok)(mname=$tok))$newgrades)"
 				,array('iodineUid'));
 
 				while ($uid = $res->fetch_single_value()) {
