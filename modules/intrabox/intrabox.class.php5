@@ -82,7 +82,6 @@ class IntraBox {
 				$this->module = $module_name;
 			}
 		}
-
 		$this->mydisplay = new Display($module_name);
 	}
 
@@ -185,8 +184,9 @@ class IntraBox {
 					 ORDER BY intrabox_map.box_order ASC;'
 			,$uid);
 		$ret = array();
-		foreach($boxen as $box) {
-			$ret[] = new Intrabox($box);
+	
+		while ($boxen->more_rows()) {
+			$ret[] = new Intrabox($boxen->fetch_array(Result::ASSOC));
 		}
 		return $ret;
 	}

@@ -87,6 +87,8 @@ class Kerberos {
 
 		$env = array('KRB5CCNAME' => $cache);
 
+		$user = strtr($user,';><@|!`','           ');
+
 		$process = proc_open("/usr/bin/kinit $user@$realm", $descriptors, $pipes, NULL, $env);
 		if(is_resource($process)) {
 			fwrite($pipes[0], "$password\n");

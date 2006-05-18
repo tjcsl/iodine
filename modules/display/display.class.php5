@@ -72,6 +72,7 @@ class Display {
 	* @param string $module_name The name of the module this Display object applies to.
 	*/
 	public function __construct($module_name='core') {
+		global $I2_LOG;
 		require_once('Smarty.class.php');
 		$this->smarty = new Smarty;
 		//$this->smarty->register_prefilter(array(&$this,'prefilter'));
