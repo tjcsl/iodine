@@ -1,0 +1,5 @@
+	[<if isSet($info)>]
+		[<include file="search/search_results_pane.tpl">]
+	[<else>]
+		[<include file="search/search_pane.tpl">]
+	[</if>]
