@@ -568,15 +568,16 @@ class User {
 
 		$str = trim($str);
 
-		if ($str == '') {
-			$res = $I2_LDAP->search('ou=people',"$newgrades",array('iodineUid'));
-			return self::sort_users($res->fetch_all_single_values());
-		}
 
 		$results = array();
 		$firstres = TRUE;
-
-		if (is_numeric($str)) {
+		
+		if (!$str || $str == '') {
+			$res = $I2_LDAP->search('ou=people',"$newgrades",array('iodineUid'));
+			while ($uid = $res->fetch_single_value()) {
+				$results[] = $uid;
+			}
+		} elseif (is_numeric($str)) {
 				  $res = $I2_LDAP->search('ou=people',"(&(|(tjhsstStudentId=$str)(iodineUidNumber=$str))$newgrades)",array('iodineUid'));
 				  while ($uid = $res->fetch_single_value()) {
 							 $results[] = $uid;
