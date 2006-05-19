@@ -300,6 +300,25 @@ class NewsItem {
 	}
 
 	/**
+	 * Mark item as read
+	 *
+	 * Marks an item as read
+	 *
+	 * @access public
+	 * @param User $user The user for which to mark the item as read
+	 */
+
+	public function mark_as_read($user = NULL) {
+			  global $I2_SQL;
+
+			  if($user===NULL) {
+						 $user = $GLOBALS['I2_USER'];
+			  }
+
+			  $I2_SQL->query('INSERT INTO news_read_map (nid,uid) VALUES (%d,%d)', $this->mynid, $user->uid);
+	}
+
+	/**
 	 * Determine if this post is editable by a user.
 	 *
 	 * Returns whether a user (by default, the current user) has permission

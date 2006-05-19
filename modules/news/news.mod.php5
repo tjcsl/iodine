@@ -69,7 +69,9 @@ class News implements Module {
 		if (!isSet($this->newsadmin)) {
 			$this->set_news_admin();
 		}
-		
+
+		$archive = false;
+
 		switch($I2_ARGS[1]) {
 
 			case 'add':
@@ -171,8 +173,25 @@ class News implements Module {
 					$item->xpost($_REQUEST['xpost_groups']);
 					return 'News Post Successfully Cross-Posted';
 				}
-			
-			default:
+
+			case 'read':
+				$this->template = 'news_read.tpl';
+				if( !isset($I2_ARGS[2]) ) {
+					throw new I2Exception('ID of article to mark as unread not specified.');
+				}
+
+				try {
+					$item = new Newsitem($I2_ARGS[2]);
+				} catch(I2Exception $e) {
+					throw new I2Exception("Specified article ID {$I2_ARGS[2]} invalid.");
+				}
+
+				$item->mark_as_read();
+
+			case 'archive';
+				$archive = true;
+
+	   	default:
 				$this->template = 'news_pane.tpl';
 				$I2_ARGS[1] = '';
 
@@ -183,7 +202,7 @@ class News implements Module {
 				}
 
 				foreach($this->stories as $story) {
-					if ($story->readable()) {
+					if ($story->readable() && (!$story->has_been_read() || $archive)) {
 						$story->text = stripslashes($story->text);	  
 						$story->title = stripslashes($story->title);
 						$this->template_args['stories'][] = $story;
