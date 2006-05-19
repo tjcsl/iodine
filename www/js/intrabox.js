@@ -198,7 +198,7 @@ function init(box) {
 			for (var i = box_index; i != to_box_index-1; i+=add) {
 				boxes[i] = boxes[i+add];
 			}
-			boxes[i] = this.parentNode;
+			boxes[to_box_index-1] = this.parentNode;
 			box_index = -1;
 			var dist = 15;
 			var left = parseInt(make_intrabox().style.left);
