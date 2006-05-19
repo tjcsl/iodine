@@ -41,7 +41,7 @@ class Prefs implements Module {
 				if (isSet($_REQUEST[$pref])) {
 					$I2_USER->$pref = 'TRUE';
 				} else {
-						  $I2_USER->$pref = 'FALSE';
+					$I2_USER->$pref = 'FALSE';
 				}
 			}
 
