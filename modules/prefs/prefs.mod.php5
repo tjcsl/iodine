@@ -31,9 +31,12 @@ class Prefs implements Module {
 		if( isset($_REQUEST['prefs_form']) ) {
 			//form submitted, update info
 			foreach($_REQUEST as $key=>$val) {
-				if( substr($key, 0, 5) == 'pref_' ) {
-					$field = substr($key, 5);
-					$I2_USER->$field = $val;
+				if(substr($key, 0, 5) == 'pref_' ) {
+					$val = array_filter($val);
+					if($val && $val != array()) {
+						$field = substr($key, 5);
+						$I2_USER->$field = $val;
+					}
 				}
 			}
 
