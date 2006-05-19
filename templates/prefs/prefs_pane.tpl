@@ -10,20 +10,20 @@
 	[</foreach>]
 </select></td></tr></table><br />
 <table>
-[<*	<tr>
-		<td>Cell Phone:</td>
-		<td><input type="text" name="pref_mobile" /></td>
-	</tr>*>]
 	<tr>
-	[<*	<td>Other Phone #(s):</td>
+		<td>Cell Phone:</td>
+		<td><input type="text" name="pref_mobile" value="[<$I2_USER->mobile>]" /></td>
+	</tr>
+	<tr>
+		<td>Other Phone #(s):</td>
 		<td>
-[<foreach from=$I2_USER->phone_other item=phone_other name=phone_other_loop>]
+[<foreach from=$I2_USER->telephoneNumber item=phone_other name=phone_other_loop>]
 			<input class="pref_preference_input" type="text" name="pref_telephoneNumber[]" value="[<$phone_other>]" />[<if $smarty.foreach.phone_other_loop.first>]<a href="#" onClick="add_field('telephoneNumber', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('phone_other', this);">Remove</a>[</if>][<if !$smarty.foreach.phone_other_loop.last>]<br />[</if>]
 [<foreachelse>]
 			<input class="pref_preference_input" type="text" name="pref_telephoneNumber[]" /><a href="#" onClick="add_field('telephoneNumber', this);">Add Another</a>
 [</foreach>]
 		</td>
-	</tr>*>]
+	</tr>
 	<tr>
 		<td>Alternate Email(s):</td>
 		<td>
@@ -106,7 +106,7 @@
 	</tr>
 	<tr>
 		<td>Locker:</td>
-		<td><input type="text" name="pref_locker" /></td>
+		<td><input type="text" name="pref_locker" value="[<$I2_USER->locker>]"/></td>
 	</tr>
 </table>
 <b>Privacy Options</b><br />
