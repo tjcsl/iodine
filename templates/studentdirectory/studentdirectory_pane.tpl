@@ -1,5 +1,6 @@
 [<if $info === FALSE and not $user>]
 
+
 The specified student does not exist. Either you mistyped a URL, or something in Intranet is broken.
 [</if>]
 [<if $user && $user->fname>]
@@ -49,67 +50,67 @@ Counselor: [<$user->counselor>]<br />
 [<if count($user->mail)>]Personal e-mail address(es):<br />
  <ul>
  [<foreach from=$user->mail item=email>]
-  <li><a href="mailto:[<$email>]">[<$email>]</a></li>
+  <li><a href="mailto:[<$email>]">[<$email|escape:'html'>]</a></li>
  [</foreach>]
  </ul>
 [</if>]
 [<if count($user->aim)>]AIM/AOL Screenname(s):
  <ul>
  [<foreach from=$user->aim item=aim>]
-  <li><a href="aim:goim?screenname=[<$aim>]">[<$aim>]</a> <img src="[<$I2_ROOT>]www/pics/osi/aim[<$im_status.aim.$aim>].gif" /></li>
+  <li><a href="aim:goim?screenname=[<$aim>]">[<$aim|escape:'html'>]</a> <img src="[<$I2_ROOT>]www/pics/osi/aim[<$im_status.aim.$aim>].gif" /></li>
  [</foreach>]
  </ul>
 [</if>]
 [<if count($user->yahoo)>]Yahoo! ID(s):
  <ul>
  [<foreach from=$user->yahoo item=yahoo>]
-  <li>[<$yahoo>] <img src="[<$I2_ROOT>]www/pics/osi/yahoo[<$im_status.yahoo.$yahoo>].gif" /></li>
+  <li>[<$yahoo|escape:'html'>] <img src="[<$I2_ROOT>]www/pics/osi/yahoo[<$im_status.yahoo.$yahoo>].gif" /></li>
  [</foreach>]
  </ul>
 [</if>]
 [<if count($user->msn)>]MSN Username(s):
  <ul>
  [<foreach from=$user->msn item=msn>]
-  <li>[<$msn>]</li>
+  <li>[<$msn|escape:'html'>]</li>
  [</foreach>]
  </ul>
 [</if>]
 [<if count($user->jabber)>]Jabber Username(s):
  <ul>
  [<foreach from=$user->jabber item=jabber>]
-  <li>[<$jabber>] <img src="[<$I2_ROOT>]www/pics/osi/jabber[<$im_status.jabber.$jabber>].gif" /></li>
+  <li>[<$jabber|escape:'html'>] <img src="[<$I2_ROOT>]www/pics/osi/jabber[<$im_status.jabber.$jabber>].gif" /></li>
  [</foreach>]
  </ul>
 [</if>]
 [<if count($user->icq)>]ICQ Number(s):
  <ul>
  [<foreach from=$user->icq item=icq>]
-  <li>[<$icq>] <img src="[<$I2_ROOT>]www/pics/osi/icq[<$im_status.icq.$icq>].gif" /></li>
+  <li>[<$icq|escape:'html'>] <img src="[<$I2_ROOT>]www/pics/osi/icq[<$im_status.icq.$icq>].gif" /></li>
  [</foreach>]
  </ul>
 [</if>]
 [<if count($user->googleTalk)>]Google Talk Username(s):
  <ul>
  [<foreach from=$user->googleTalk item=googleTalk>]
-  <li>[<$googleTalk>]</li>
+  <li>[<$googleTalk|escape:'html'>]</li>
  [</foreach>]
  </ul>
 [</if>]
 [<if count($user->xfire)>]XFire handle(s):
  <ul>
  [<foreach from=$user->xfire item=xfire>]
-  <li>[<$xfire>]</li>
+  <li>[<$xfire|escape:'html'>]</li>
  [</foreach>]
  </ul>
 [</if>]
 [<if count($user->webpage)>]Webpage(s):
  <ul>
  [<foreach from=$user->webpage item=webpage>]
-  <li><a href="[<$webpage>]">[<$webpage>]</a></li>
+  <li><a href="[<$webpage|escape:'html'>]">[<$webpage>]</a></li>
  [</foreach>]
  </ul>
 [</if>]
-[<if $user->locker>]Locker Number: [<$user->locker>]<br />[</if>]
+[<if $user->locker>]Locker Number: [<$user->locker|escape:'html'>]<br />[</if>]
 </td></tr></table>
 
 [<if $schedule>]
