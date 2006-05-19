@@ -112,6 +112,11 @@ interface Result extends Iterator {
 	* @return array All the values of the first column.
 	*/
 	public function fetch_all_single_values();
+
+	/**
+	* Fetches binary data from the Result.
+	*/
+	public function fetch_binary_value($colname);
 }
 				
 ?>

@@ -229,7 +229,9 @@ class MySQLResult implements Result {
 		}
 		return $ret;
 	}
-
-
+	
+	public function fetch_binary_value($colname) {
+		throw new I2Exception("Function not implemented yet.");
+	}
 }
 ?>
