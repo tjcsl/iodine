@@ -162,7 +162,6 @@ class Groups implements Module {
 	*/
 	function pane() {
 		global $I2_ARGS, $I2_USER, $I2_SQL;
-
 		$group = new Group($I2_ARGS[2]);
 		$this->template_args['group'] = $group->name;
 		$this->template_args['gid'] = $group->gid;
@@ -199,6 +198,33 @@ class Groups implements Module {
 		}
 		return 'Groups: ' .  $group->name;
 	}
+
+	/**
+	 * Private helper function
+	 */
+	private static function get_memberinfo(Group $group) {
+		$group_members = array();
+		
+		$uids = $group->get_members();
+		foreach($uids as $uid) {
+			$person_array = array();
+
+			$person_user = new User($uid);
+			$person_array['name'] = $person_user->name;
+			$person_array['uid'] = $person_user->uid;
+			$person_array['perms'] = $group->get_permissions($person_user);
+			$person_array['has_perms'] = $person_array['perms']->num_rows() > 0;
+
+			if ($group->is_admin($person_user)) {
+				$person_array['admin'] = 'Admin';
+			}
+
+			$group_members[] = $person_array;
+		}
+
+		return $group_members;
+	}
+	
 	/**
 	* The master admin interface
 	*/
@@ -221,25 +247,6 @@ class Groups implements Module {
 			$this->template = 'groups_error.tpl';
 		}
 		return 'Groups: Admin';
-
-		$uids = $group->get_members();
-		foreach($uids as $uid) {
-			$person_array = array();
-
-			$person_user = new User($uid);
-			$person_array['name'] = $person_user->name;
-			$person_array['uid'] = $person_user->uid;
-			$person_array['perms'] = $group->get_permissions($person_user);
-			$person_array['has_perms'] = $person_array['perms']->num_rows() > 0;
-
-			if ($group->is_admin($person_user)) {
-				$person_array['admin'] = 'Admin';
-			}
-
-			$group_members[] = $person_array;
-		}
-
-		return $group_members;
 	}
 
 	public function display_help($disp, $args) {

@@ -12,3 +12,7 @@
 .date {
 	color: white;
 }
+@extend
+.blurb {
+   color: white;
+}
