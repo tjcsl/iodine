@@ -158,24 +158,6 @@ class News implements Module {
 					return array('Delete News Post', 'Confirm News Post Delete');
 				}
 				
-			case 'xpost':
-				$this->template = 'news_xpost.tpl';
-				
-				if( !isset($I2_ARGS[2]) ) {
-					throw new I2Exception('ID of article to cross-post not specified.');
-				}
-
-				try {
-					$item = new Newsitem($I2_ARGS[2]);
-				} catch(I2Exception $e) {
-					throw new I2Exception("Specified article ID {$I2_ARGS[2]} invalid.");
-				}
-
-				if( isset($_REQUEST['xpost_groups']) ) {
-					$item->xpost($_REQUEST['xpost_groups']);
-					return 'News Post Successfully Cross-Posted';
-				}
-
 			case 'archive';
 				return self::display_news(true,'Old News Posts');
 
