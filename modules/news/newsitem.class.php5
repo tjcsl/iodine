@@ -57,16 +57,8 @@ class NewsItem {
 			case 'groups':
 				return $I2_SQL->query('SELECT gid FROM news_group_map WHERE nid=%d',$this->mynid)->fetch_all_single_values();
 			case 'groupsstring':
-				$groupsarray = array();
 				$gidsarray = $this->__get('groups');
-				foreach($gidsarray as $gid) {
-					try {
-						$group = new Group($gid);
-						$groupsarray[] = $group->name;
-					} catch (I2Exception $e) {
-					}
-				}
-				return implode(', ', $groupsarray);
+				return implode(', ', $gidsarray);
 		}
 	}
 
@@ -155,10 +147,10 @@ class NewsItem {
 		$nid = $I2_SQL->query('SELECT LAST_INSERT_ID()')->fetch_single_value();
 		
 		foreach ($groups as $group) {
-				  if($group->gid == NULL) {
+				  if($group->name == NULL) {
 							 break;
 				  }
-				  $I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%d', $nid, $group->gid);
+				  $I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%s', $nid, $group->name);
 		}
 
 		return true;
@@ -225,10 +217,10 @@ class NewsItem {
 		// flush the group mappings for this post and recreate them entirely
 		$I2_SQL->query('DELETE FROM news_group_map WHERE nid=%d', $this->mynid);
 		foreach ($groups as $group) {
-				if($group->gid == NULL) {
+				if($group->name == NULL) {
 						  break;
 				}
-				$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%d', $this->mynid, $group->gid);
+				$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%s', $this->mynid, $group->name);
 		}
 	}
 
@@ -249,6 +241,7 @@ class NewsItem {
 		}
 
 		$gids = $this->groups;
+		var_dump($gids);
 		if(count($gids) == 0) {
 			// if no groups were specified, anyone can read it
 			return true;
@@ -265,8 +258,7 @@ class NewsItem {
 		}
 
 		foreach($gids as $gid) {
-			$group = new Group($gid);
-			if($group->has_member($user)) {
+			if($user->is_group_member($gid)) {
 				return true;
 			}
 		}

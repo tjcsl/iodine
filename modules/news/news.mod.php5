@@ -233,7 +233,7 @@ class News implements Module {
 			$this->stories = Newsitem::get_all_items();
 		}
 		foreach($this->stories as $story) {
-			if ($story->readable()) {
+			if ($story->readable() && !$story->has_been_read()) {
 				$this->summaries[] = $story->title;
 			}
 		}
@@ -268,6 +268,7 @@ class News implements Module {
 		}
 
 		foreach($this->stories as $story) {
+			var_dump($story->readable());	  
 			if ($story->readable() && (!$story->has_been_read() || $archive)) {
 				$story->text = stripslashes($story->text);	  
 				$story->title = stripslashes($story->title);
