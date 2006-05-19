@@ -54,7 +54,7 @@
 			<th>Room</th>
 		</tr>
 [<foreach from=$activities item="activity">]
-		<tr style="background-color: [<cycle values="#EEEEFF,#FFFFFF">];">
+		<tr class="[<cycle values="c1,c2">]">
 			<td style="text-align: center;">[<if !$activity->block->locked || $eighth_admin>]<input type="checkbox" name="bids[]" value="[<$activity->bid>]" onclick="CCA(this);" />[<else>]&nbsp;[</if>]</td>
 			<td style="text-align: center;">[<if !$activity->block->locked || $eighth_admin>]<a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>]/bids/[<$activity->bid>]">Change</a>[<else>]LOCKED[</if>]</td>
 			<td style="text-align: center;">[<$activity->block->date|date_format:"%a">]</td>
