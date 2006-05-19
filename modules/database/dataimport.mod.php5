@@ -927,6 +927,21 @@ class dataimport implements Module {
 		return $res->get_insert_id();
 	}
 
+	private function import_aphorisms() {
+		global $I2_SQL;
+		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
+		$res = $oldsql->query('SELECT * FROM StudentAphorismsInfo');
+		while ($res->more_rows()) {
+				  $row = $res->fetch_array(Result::ASSOC);
+				  $I2_SQL->query('REPLACE INTO aphorisms SET uid=%d,college=%s,collegeplans=%s,nationalmeritsemifinalist=%d,nationalmeritfinalist=%d,
+							 nationalachievement=%d,hispanicachievement=%d,honor1=%s,honor2=%s,honor3=%s,aphorism=%s',
+							 User::to_uidnumber($row['StudentID']),$row['College'],$row['CollegePlans'],$row['NationalMeritSemifinalist'],
+							 $row['NationalMeritFinalist'],$row['NationalAchievement'],$row['HispanicAchievement'],$row['Honor1'],$row['Honor2'],$row['Honor3'],
+							 $row['Aphorism']
+				  );
+		}
+	}
+
 	/**
 	* Expands a student's Intranet 2 presence by adding their non-critical data from Intranet 1.
 	* DEPRECATED - dessicated, moved into import_ methods
@@ -1342,6 +1357,9 @@ class dataimport implements Module {
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'doeverything' && isSet($_REQUEST['doit'])) {
 			$this->do_imports();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'aphorisms' && isSet($_REQUEST['doit'])) {
+			$this->import_aphorisms();
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'fixit' && isSet($_REQUEST['doit'])) {
 			$this->init_db();

@@ -115,6 +115,10 @@
 		</form>
 		<br /><br />
 	[</if>]
+		<form action="[<$I2_ROOT>]dataimport/aphorisms" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Import Aphorisms"/><br/>
+		</form>
 [</if>]
 	[<if !$admin_pass>]
 		<form action="[<$I2_ROOT>]dataimport" method="post">
