@@ -38,7 +38,7 @@
 		<td>AIM:</td>
 		<td>
 [<foreach from=$I2_USER->aim item=aim name=aim_loop>]
-			<input class="pref_preference_input" type="text" name="pref_aim[]" value="[<$aim>]" />[<if $smarty.foreach.aim_loop.first>]<a href="#" onClick="add_field('aim', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('aim', this);">Remove</a>[</if>][<if !$smarty.foreach.aim_loop.last>]<br />[</if>]
+			<input class="pref_preference_input" type="text" name="pref_aim[]" value="[<$aim|escape:'quotes'>]" />[<if $smarty.foreach.aim_loop.first>]<a href="#" onClick="add_field('aim', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('aim', this);">Remove</a>[</if>][<if !$smarty.foreach.aim_loop.last>]<br />[</if>]
 [<foreachelse>]
 			<input class="pref_preference_input" type="text" name="pref_aim[]" /><a href="#" onClick="add_field('aim', this);">Add Another</a>
 [</foreach>]
