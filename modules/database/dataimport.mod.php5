@@ -954,6 +954,16 @@ class dataimport implements Module {
 		//$I2_LOG->debug_on();
 	}
 
+	private function import_polls() {
+		$oldsql = NULL;
+		
+		if ($do_old_intranet) {
+			$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);	
+		}
+
+		$oldsql->query('SELECT PollID,PollName,StartDatetime,EndDatetime');
+	}
+
 	/**
 	* Turns all teachers into 8th-period-activity sponsors
 	*/

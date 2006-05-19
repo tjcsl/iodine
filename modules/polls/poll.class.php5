@@ -64,7 +64,7 @@ class Poll {
 	public function __construct($pid) {
 		global $I2_SQL;
 
-		$pollinfo = $I2_SQL->query('SELECT name, introduction, visible, startdt, enddt FROM polls WHERE pid=%d', $pid)->fetch_array();
+		$pollinfo = $I2_SQL->query('SELECT name, introduction, visible, startdt, enddt FROM polls WHERE pid=%d', $pid)->fetch_array(Result::ASSOC);
 
 		$this->mypid = $pid;
 		$this->myname = $pollinfo['name'];
@@ -140,8 +140,24 @@ class Poll {
 				continue;
 			}
 			$this->groups[] = new Group($gid);
-			$I2_SQL->query('INSERT INTO group_poll_map SET gid=%d, pid=%d', $gid, $this->pid);
+			$this->add_group($gid);
 		}
+	}
+
+	/**
+	* Adds a group to the poll.
+	*/
+	public function add_group($gid) {
+		global $I2_SQL;
+		$I2_SQL->query('INSERT INTO group_poll_map (gid,pid) VALUES(%d,%d)',$gid,$this->pid);
+	}
+
+	/**
+	* Removes a group from the poll.
+	*/
+	public function remove_group($gid) {
+		global $I2_SQL;
+		$I2_SQL->query('DELETE FROM group_poll_map WHERE gid=%d AND pid=%d',$gid,$this->pid);
 	}
 
 	/**
@@ -272,6 +288,7 @@ class Poll {
 		$I2_SQL->query('DELETE FROM poll_questions WHERE pid=%d', $pid);
 		$I2_SQL->query('DELETE FROM poll_answers WHERE pid=%d', $pid);
 		$I2_SQL->query('DELETE FROM poll_votes WHERE pid=%d', $pid);
+		$I2_SQL->query('DELETE FROM group_poll_map WHERE pid=%d', $pid);
 	}
 
 	/**

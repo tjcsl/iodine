@@ -96,12 +96,15 @@ class PollQuestion {
 		$I2_SQL->query('DELETE FROM poll_answers WHERE pid=%d AND qid=%d', $this->pid, $this->qid);
 		$this->answers = array();
 		
-		$aid = 1;
 		foreach ($answers as $answer) {
-			$I2_SQL->query('INSERT INTO poll_answers SET pid=%d, qid=%d, aid=%d, answer=%s', $this->pid, $this->qid, $aid, $answer);
-			$this->answers[$aid] = $answer;
-			$aid++;
+			$I2_SQL->query('INSERT INTO poll_answers SET pid=%d, qid=%d, answer=%s', $this->pid, $this->qid, $answer);
+			$this->answers[] = $answer;
 		}
+	}
+
+	public function change_answer($aid,$newtext) {
+			  global $I2_SQL;
+			  $I2_SQL->query('UPDATE poll_answers SET answer=%s WHERE aid=%d AND qid=%d AND pid=%d',$newtext,$aid,$this->qid,$this->pid);
 	}
 
 	/**
@@ -123,11 +126,11 @@ class PollQuestion {
 
 		if ($I2_SQL->query('SELECT COUNT(*) FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d', $this->mypid, $this->myqid, $user->uid)->fetch_single_value() == 0) {
 			// user has not yet voted; create a new row
-			$I2_SQL->query('INSERT INTO poll_votes SET answer=%d, pid=%d, qid=%d, uid=%d', $answer, $this->mypid, $this->myqid, $user->uid);
+			$I2_SQL->query('INSERT INTO poll_votes SET answer=%s, pid=%d, qid=%d, uid=%d', $answer, $this->mypid, $this->myqid, $user->uid);
 		}
 		else {
-			// user has votedd; change vote
-			$I2_SQL->query('UPDATE poll_votes SET answer=%d WHERE pid=%d AND qid=%d AND uid=%d', $answer, $this->mypid, $this->myqid, $user->uid);
+			// user has voted; change vote
+			$I2_SQL->query('UPDATE poll_votes SET answer=%s WHERE pid=%d AND qid=%d AND uid=%d', $answer, $this->mypid, $this->myqid, $user->uid);
 		}
 	}
 

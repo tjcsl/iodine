@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS poll_questions;
+CREATE TABLE poll_questions (
+		  pid MEDIUMINT(8) UNSIGNED NOT NULL,
+		  qid MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT NULL AUTO_INCREMENT,
+		  PRIMARY KEY(qid),
+		  maxvotes INT(10) UNSIGNED,
+		  question TEXT
+);

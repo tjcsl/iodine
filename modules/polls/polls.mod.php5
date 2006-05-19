@@ -214,6 +214,11 @@ class Polls implements Module {
 			$this->admin();
 			return;
 		}
+		$this->template_args['pid'] = $I2_ARGS[2];
+
+		if (isSet($I2_ARGS[3])) {
+				  $this->template_args['qid'] = $I2_ARGS[3];
+		}
 
 		if (isset($_REQUEST['poll_edit_form'])) {
 			if ($_REQUEST['poll_edit_form'] == 'poll') {
@@ -237,8 +242,11 @@ class Polls implements Module {
 				$question->set_answers(explode("\r\n\r\n", trim($_REQUEST['answers'])));
 			}
 		}
-
-		if (isset($I2_ARGS[3])) {
+		if (isset($I2_ARGS[4])) {
+			$this->template_args['aid'] = $I2_ARGS[4];
+			$this->template = 'polls_edit_answer.tpl';
+			$this->template_args['question'] = new PollQuestion($I2_ARGS[2], $I2_ARGS[3]);
+		} elseif (isset($I2_ARGS[3])) {
 			$this->template = 'polls_edit_question.tpl';
 			$this->template_args['question'] = new PollQuestion($I2_ARGS[2], $I2_ARGS[3]);
 		}
@@ -264,7 +272,7 @@ class Polls implements Module {
 		}
 
 		if (isset($_REQUEST['polls_delete_form'])) {
-			if ($_REQUEST['polls_delete_form'] == 'delete_poll') {
+	1		if ($_REQUEST['polls_delete_form'] == 'delete_poll') {
 				Poll::delete_poll($I2_ARGS[2]);
 				$this->template_args['deleted'] = TRUE;
 			}
@@ -274,10 +282,11 @@ class Polls implements Module {
 				$this->template_args['deleted'] = TRUE;
 			}
 		}
-		$this->template_args['pid'] = $I2_ARGS[2];
-		if (isset($I2_ARGS[3])) {
+		if (isset($I2_ARGS[4])) {
+				  $this->template = 'polls_delete_answer.tpl';
+		}
+		elseif (isset($I2_ARGS[3])) {
 			$this->template = 'polls_delete_question.tpl';
-		$this->template_args['qid'] = $I2_ARGS[3];
 		}
 		else {
 			$this->template = 'polls_delete.tpl';
@@ -288,7 +297,16 @@ class Polls implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
-		global $I2_SQL, $I2_USER;
+		global $I2_SQL, $I2_USER, $I2_ARGS;
+		if (isset($I2_ARGS[2])) {
+			$this->template_args['pid'] = $I2_ARGS[2];
+		}
+		if (isset($I2_ARGS[3])) {
+			$this->template_args['qid'] = $I2_ARGS[3];
+		}
+		if (isset($I2_ARGS[4])) {
+			$this->template_args['aid'] = $I2_ARGS[4];
+		}
 		$display->disp($this->template, $this->template_args);
 	}
 

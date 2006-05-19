@@ -7,49 +7,75 @@ access to attr=userPassword
 
 # Nobody should be able to read studentIds except admins
 access to attr=tjhsstStudentId
+	by dn="cn=Manager,dc=tjhsst,dc=edu" write
 	by self read
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
+	by group="cn=admin_all,ou=group,dc=iodine,dc=tjhsst,dc=edu" write
+	by group="cn=admin_eighth,ou=group,dc=iodine,dc=tjhsst,dc=edu" write
 	by * none
 
+# Allow users to change their own prefs
+access to attr=startpage,style,header
+	by dn="cn=Manager,dc=tjhsst,dc=edu" write
+	by self write
+	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
+	by * read
+
 # Allow users to set their own permissions bits
-access to attr=perm-showtelephone-self,perm-showbirthday-self,perm-showaddress-self,perm-showmap-self,perm-showpictures-self,perm-showschedule-self
+access to attr=perm-showtelephone-self,perm-showbirthday-self,perm-showaddress-self,perm-showmap-self,perm-showpictures-self,perm-showschedule-self,showphoneself,showscheduleself,showbdayself,showaddressself,showmapself,showpictureself
+	by dn="cn=Manager,dc=tjhsst,dc=edu" write
 	by self write
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
 	by * read
 
 # ... but not the parental ones
 access to attr=perm-showtelephone,perm-showbirthday,perm-showaddress,perm-showmap,perm-showpictures,perm-showschedule
+	by dn="cn=Manager,dc=tjhsst,dc=edu" write
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
+	by group="cn=admin_all,ou=group,dc=iodine,dc=tjhsst,dc=edu" write
+	by group="cn=admin_eighth,ou=group,dc=iodine,dc=tjhsst,dc=edu" write
 	by * read
 
 # Restrict reading of restricted info to admins only
 access to filter="(|(perm-showtelephone-self=FALSE)(perm-showtelephone=FALSE))"
-			 attr=telephoneNumber,homePhone,mobile
+		attr=homePhone
+	by dn="cn=Manager,dc=tjhsst,dc=edu" write
 	by self read
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
+	by group="cn=admin_all,ou=group,dc=iodine,dc=tjhsst,dc=edu" write
+	by group="cn=admin_eighth,ou=group,dc=iodine,dc=tjhsst,dc=edu" write
 	by * none
 
 access to filter="(|(perm-showbirthday-self=FALSE)(perm-showbirthday=FALSE))"
-			 attr=bday
+		attr=bday
+	by dn="cn=Manager,dc=tjhsst,dc=edu" write
 	by self read
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
+	by group="cn=admin_all,ou=group,dc=iodine,dc=tjhsst,dc=edu" write
+	by group="cn=admin_eighth,ou=group,dc=iodine,dc=tjhsst,dc=edu" write
 	by * none
 
 access to filter="(|(perm-showaddress-self=FALSE)(perm-showaddress=FALSE))"
-			 attr=st,street,l,postalcode,postaladdress,c
+		attr=st,street,l,postalCode,postalAddress,c
+	by dn="cn=Manager,dc=tjhsst,dc=edu" write
 	by self read
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
+	by group="cn=admin_all,ou=group,dc=iodine,dc=tjhsst,dc=edu" write
+	by group="cn=admin_eighth,ou=group,dc=iodine,dc=tjhsst,dc=edu" write
 	by * none
 
 # Ensure all sensitive info is kept to authorized users, no matter what
-access to attr=telephoneNumber,mail,l,postalcode,postaladdress,homePhone,homePostalAddress,street,st,mobile,aim,msn,icq,googletalk,yahoo,locker,counselor
+access to attr=telephoneNumber,mail,l,postalcode,postaladdress,homePhone,homePostalAddress,street,st,mobile,aim,msn,icq,googletalk,yahoo,locker,counselor,cn,sn,givenName,soundexFirst,soundexLast,displayName,mname,nickname,birthday,sex,title,graduationYear
+	by dn="cn=Manager,dc=tjhsst,dc=edu" write
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
+	by group="cn=admin_all,ou=group,dc=iodine,dc=tjhsst,dc=edu" write
+	by group="cn=admin_eighth,ou=group,dc=iodine,dc=tjhsst,dc=edu" write
 	by users read
 	by * none
 
 # Catch-all clause
 access to *
 	by dn="cn=Manager,dc=tjhsst,dc=edu" write
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
+	by dn.regex="uid=.+/ldap,dc=tjhsst,dc=edu" write
 	by self write
 	by * read
