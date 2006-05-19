@@ -31,20 +31,25 @@ IE7_PNG_SUFFIX = ".png";
       [<else>]
       Please type your username and password to login to the Intranet.
       [</if>]
-          <form action='[<$I2_SELF>]' method='post'>
+          <form action="[<$I2_SELF>]" method="post">
        <table id="login_box">
 	     <tr>
              <td>Username:</td>
-             <td><input name='login_username' type='text' value='[<$uname>]'/><br /></td>
+             <td><input name="login_username" type="text" size="25" value="[<$uname>]" /></td>
             </tr>
          <tr>
          <td>Password:</td>
-         <td><input name='login_password' type='password'/><br /></td>
+         <td><input name="login_password" type="password" size="25" /></td>
        </tr>
            <tr>
-             <td><input type='submit' value='Login'/></td>
+             <td align="right" colspan="2"><input type="submit" value="Login" /></td>
            </tr>
        </table>
      </form>
+     <div style="text-align: right">
+     <a href="http://www.tjhsst.edu/">TJHSST</a> -
+     <a href="http://mail.tjhsst.edu/">Mail</a> -
+     <a href="http://postman.tjhsst.edu/">Postman (Calendar)</a>
+     </div>
      </td></tr>
 </table>
