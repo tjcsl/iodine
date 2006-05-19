@@ -487,6 +487,10 @@ class dataimport implements Module {
 		}
 	}
 
+	private function repair_user($uid) {
+		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
+	}
+
 	/**
 	* Adds a new user from the given data
 	*/
@@ -497,7 +501,7 @@ class dataimport implements Module {
 		}
 		$usernew = array();
 		$usernew['objectClass'] = 'tjhsstStudent';
-		$usernew['graduationYear'] = (-1*($user['grade']-12))+2006;
+		$usernew['graduationYear'] = (-1*($user['grade']-12))+i2config_get('senior_gradyear',date('Y'),'user');
 		$usernew['cn'] = $user['fname'].' '.$user['lname'];
 		$usernew['sn'] = $user['lname'];
 		$usernew['tjhsstStudentId'] = $user['studentid'];
