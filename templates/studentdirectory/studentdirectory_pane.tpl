@@ -6,7 +6,7 @@ The specified student does not exist. Either you mistyped a URL, or something in
 [<if $user && $user->fname>]
 [<if $user->uid == $I2_USER->uid>]
 This is YOUR info page.  All information stored in the Intranet database is visible to you. <br />
-Data may or may not be visible to others, depending on how you set your <a href="[<$I2_ROOT>]prefs">preferences</a> and what your parents allow.<br />
+In order to choose what info can be seen by OTHER users, please setup your <a href="[<$I2_ROOT>]prefs">preferences</a>.<br /><br />
 [</if>]
 <table>
 <tr><td valign="top">
@@ -15,7 +15,6 @@ Data may or may not be visible to others, depending on how you set your <a href=
 [<$user->fullname>] (<a href="mailto:[<$user->username>]@tjhsst.edu">[<$user->username>]@tjhsst.edu</a>)[<if $user->grade != -1>], Grade [<$user->grade>][</if>]<br />
 [<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]
 [<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]Phone (home): [<$phone>]<br />[</foreach>]
- [<else>]Home phone information not available.
 [</if>]<br />
 [<if $user->phone_cell>]Cell phone: [<$user->phone_cell>]<br />[</if>]
 [<if count($user->phone_other)>]Alternate phone number(s):
@@ -39,21 +38,18 @@ Data may or may not be visible to others, depending on how you set your <a href=
   [<$user->address3_street>]<br />
   [<$user->address3_city>], [<$user->address3_state>] [<$user->address3_zip>]<br />
  [</if>]
-[<else>]
- Address information not available.<br />
 [</if>]
 [<if $user->street && $user->show_map>]
 [<if $I2_UID != $user->uid>]<a href="http://maps.google.com/maps?f=d&hl=en&saddr=[<$I2_USER->street>], [<$I2_USER->l>], [<$I2_USER->st>] [<$I2_USER->postalCode>]&daddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]">Map from home</a> | [</if>]<a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexandria, VA 22312&daddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]">Map from school</a><br />
 [</if>]
 Counselor: [<$user->counselor>]<br />
 <br />
-[<if count($user->mail)>]Personal e-mail address(es):<br />
- <ul>
+[<if count($user->mail)>]Personal e-mail address(es): 
  [<foreach from=$user->mail item=email>]
-  <li><a href="mailto:[<$email>]">[<$email|escape:'html'>]</a></li>
+  <a href="mailto:[<$email>]">[<$email|escape:'html'>]</a>
  [</foreach>]
- </ul>
 [</if>]
+<br />
 [<if count($user->aim)>]AIM/AOL Screenname(s):
  <ul>
  [<foreach from=$user->aim item=aim>]
