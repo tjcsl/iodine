@@ -22,6 +22,7 @@ class Highlight implements Module {
 	*/
 	function init_pane() {
 		global $I2_ARGS;
+		return FALSE;
 
 		$filename = "";
 		$linenum = intval($I2_ARGS[1]);
