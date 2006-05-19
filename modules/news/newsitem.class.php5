@@ -106,6 +106,25 @@ class NewsItem {
 	}
 
 	/**
+	 * The function to clean text for input
+	 *
+	 * Prepairs text for insertion in MySQL
+	 *
+	 * @static
+	 * @access public
+	 * @param string $text The text to clean
+	 */
+
+	public static function clean_text($text) {
+			  $text = str_replace('&','&amp;',$text);
+			  $text = str_replace('\r','<br />',$text);
+			  $text = str_replace('"','&quot;',$text);
+			  $text = str_replace('\'','&#039;',$text);
+			  return $text;
+	}
+
+
+	/**
 	 * The function to post a brand-new news item.
 	 *
 	 * Creates a new newsitem in the database.
@@ -128,16 +147,23 @@ class NewsItem {
 				}
 			}
 		}
+
+	//	$text = self::clean_text($text);
+
 		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP', $author->uid, $title, $text);
 
 		$nid = $I2_SQL->query('SELECT LAST_INSERT_ID()')->fetch_single_value();
 		
 		foreach ($groups as $group) {
-			$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%d', $nid, $group->gid);
+				  if($group->gid == NULL) {
+							 break;
+				  }
+				  $I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%d', $nid, $group->gid);
 		}
 
 		return true;
 	}
+
 
 	/**
 	 * The function to delete a news item.
@@ -194,12 +220,15 @@ class NewsItem {
 	public function edit($title, $text, $groups) {
 		global $I2_SQL;
 
-		$I2_SQL->query('UPDATE news SET title=%s, text=%s, revised=CURRENT_TIMESTAMP WHERE id=%d', $title, $text, $this->mynid);
+		$I2_SQL->query('UPDATE news SET title=%s, text=%s WHERE id=%d', $title, $text, $this->mynid);
 
 		// flush the group mappings for this post and recreate them entirely
 		$I2_SQL->query('DELETE FROM news_group_map WHERE nid=%d', $this->mynid);
 		foreach ($groups as $group) {
-			$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%d', $this->mynid, $group->gid);
+				if($group->gid == NULL) {
+						  break;
+				}
+				$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%d', $this->mynid, $group->gid);
 		}
 	}
 
