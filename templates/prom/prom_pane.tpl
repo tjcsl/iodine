@@ -1,5 +1,4 @@
-<p>Please fill out the information below to receive tickets for prom. Remind your date to register themselves (if they are not a member of the TJ c
-lass of 2006, please see below). Thanks.</p>
+<p>Please fill out the information below to receive tickets for prom. Remind your date to register themselves (if they are not a member of the TJ class of 2006, please see below). Thanks.</p>
         <form action="[<$I2_ROOT>]prom" method="post">
                 <p>Will you attend prom (check for yes)?: <input type="checkbox" name="attending" checked="checked" /></p>
                 <p>Your current first period teacher and room number:</p>
