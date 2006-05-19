@@ -14,3 +14,7 @@
 	color: white;
 	top: 23px;
 }
+@extend
+.blurb {
+	color: white;
+}
