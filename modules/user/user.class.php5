@@ -320,7 +320,7 @@ class User {
 	}
 
 	public function set($name,$val,$ldap=NULL) {
-		global $I2_LDAP;
+		global $I2_LDAP,$I2_USER;
 		if ($ldap === NULL) {
 			$ldap = $I2_LDAP;
 		}
@@ -330,6 +330,9 @@ class User {
 		/*if (!$this->username) {
 			throw new I2Exception('User entries without usernames cannot be modified!');
 		}*/
+		if ($val == '') {
+			$val = array();
+		}
 
 		switch ($name) {
 			case 'phone_cell':

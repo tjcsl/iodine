@@ -16,7 +16,7 @@ Data may or may not be visible to others, depending on how you set your <a href=
 [<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]
 [<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]Phone (home): [<$phone>]<br />[</foreach>]
  [<else>]Home phone information not available.
-[</if>]</br />
+[</if>]<br />
 [<if $user->phone_cell>]Cell phone: [<$user->phone_cell>]<br />[</if>]
 [<if count($user->phone_other)>]Alternate phone number(s):
  <ul>

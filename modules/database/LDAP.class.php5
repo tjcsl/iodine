@@ -25,7 +25,7 @@ class LDAP {
 	const SCOPE_ONE = 3;
 
 	private $dnbase;
-	private $ou_bases = array();
+	private static $ou_bases = array();
 	private $bind;
 	private $conn;
 	private $server;
@@ -42,10 +42,10 @@ class LDAP {
 			$this->server = i2config_get('server','localhost','ldap');
 		}
 		$this->dnbase = i2config_get('base_dn','dc=tjhsst,dc=edu','ldap');
-		$this->ou_bases['user'] = i2config_get('user_dn','ou=people,dc=tjhsst,dc=edu','ldap');
-		$this->ou_bases['group'] = i2config_get('group_dn','ou=groups,dc=iodine,dc=tjhsst,dc=edu','ldap');
-		$this->ou_bases['room'] = i2config_get('room_dn','ou=rooms,dc=tjhsst,dc=edu','ldap');
-		$this->ou_bases['schedule'] = i2config_get('schedule_dn','ou=schedule,dc=tjhsst,dc=edu','ldap');
+		self::$ou_bases['user'] = i2config_get('user_dn','ou=people,dc=tjhsst,dc=edu','ldap');
+		self::$ou_bases['group'] = i2config_get('group_dn','ou=groups,dc=iodine,dc=tjhsst,dc=edu','ldap');
+		self::$ou_bases['room'] = i2config_get('room_dn','ou=rooms,dc=tjhsst,dc=edu','ldap');
+		self::$ou_bases['schedule'] = i2config_get('schedule_dn','ou=schedule,dc=tjhsst,dc=edu','ldap');
 		$this->sizelimit = i2config_get('max_rows',500,'ldap');
 		$this->timelimit = i2config_get('max_time',0,'ldap');
 		
@@ -67,7 +67,7 @@ class LDAP {
 			*/
 			//$this->bind = ldap_sasl_bind($this->conn,'','','GSSAPI',i2config_get('sasl_realm','CSL.TJHSST.EDU','ldap'),$proxydn);
 			
-			d("Bound to LDAP via GSSAPI",8);
+			d('Bound to LDAP via GSSAPI',8);
 		} elseif ($dn !== NULL && $pass !== NULL) {
 			/*
 			** Simple bind
@@ -344,7 +344,7 @@ class LDAP {
 			throw new I2Exception("Attempted to create null LDAP object with dn $dn");
 		}
 		if (!is_array($values)) {
-			throw new I2Exception("Cannot create LDAP object $dn with non-array \"$values\"");
+			throw new I2Exception("Cannot add LDAP attributes to object $dn with non-array \"$values\"");
 		}
 		/*
 		** Filter out empty-string and null values
@@ -363,45 +363,59 @@ class LDAP {
 			throw new I2Exception("Attempted to create null LDAP object with dn $dn");
 		}
 		if (!is_array($values)) {
-			throw new I2Exception("Cannot create LDAP object $dn with non-array \"$values\"");
+			throw new I2Exception("Cannot delete LDAP attributes from $dn with non-array \"$values\"");
 		}
 		/*
 		** Filter out empty-string and null values
 		*/
 		$newvalues = array_filter($values);
+		//$newvalues = $values;
+		/*$fin = array();
+		foreach ($newvalues as $value) {
+			$fin[$value] = 1;
+		}*/
 		d("LDAP modifying dn $dn deleting values: ".print_r($newvalues,TRUE),7);
-		return ldap_mod_del($bind, $dn, $newvalues);
+		//return ldap_mod_del($bind, $dn, $newvalues);
+		return ldap_modify($bind, $dn, $newvalues);
 	}
 
 	public static function get_user_dn($uid = NULL) {
+		$oubase = self::$ou_bases['user'];
+		$user = new User($uid);
+		$uid = $user->uid;
 		if($uid) {
-			return "iodineUid={$uid},{$ou_bases['user']}";
+			return "iodineUid={$uid},{$oubase}";
 		} else {
-			return $ou_bases['user'];
+			return $oubase;
 		}
 	}
 
 	public static function get_group_dn($name = NULL) {
+		$oubase = self::$ou_bases['group'];
+		$group = new Group($name);
+		$name = $group->name;
 		if($name) {
-			return "cn={$name},{$ou_bases['group']}";
+			return "cn={$name},{$oubase}";
 		} else {
-			return $ou_bases['group'];
+			return $oubase;
 		}
 	}
 
 	public static function get_room_dn($name = NULL) {
+		$oubase = self::$ou_bases['room'];
 		if($name) {
-			return "cn={$name},{$ou_bases['room']}";
+			return "cn={$name},{$oubase}";
 		} else {
-			return $ou_bases['room'];
+			return $oubase;
 		}
 	}
 
 	public static function get_schedule_dn($name = NULL) {
+		$oubase = self::$ou_bases['schedule'];
 		if($dn) {
-			return "cn={$name},{$ou_bases['schedule']}";
+			return "cn={$name},{$oubase}";
 		} else {
-			return $ou_bases['schedule'];
+			return $oubase;
 		}
 	}
 	
