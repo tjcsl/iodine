@@ -98,10 +98,11 @@ class Aphorisms implements Module {
 			} else if($I2_ARGS[1] == 'data') {
 				$this->template = 'data.tpl';
 				$this->template_args['data'] = $I2_SQL->query('SELECT * FROM aphorisms ORDER BY uid')->fetch_array(Result::ASSOC);
+			} else {
+				$uidnumber = $I2_ARGS[1];
+				$user = new User($uidnumber);
+				$this->template_args['username'] = $user->name;
 			}
-			$uidnumber = $I2_ARGS[1];
-			$user = new User($uidnumber);
-			$this->template_args['username'] = $user->name;
 		}
 		if (!$uidnumber) {
 			$uidnumber = $I2_USER->uid;
