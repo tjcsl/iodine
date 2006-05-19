@@ -97,7 +97,8 @@ firstpdroom']}\n\nIf the next stuff is blank that means that they will be dating
         $headers = "MIME-Version: 1.0\r\n";
         $headers .= "From: intranet@tjhsst.edu\r\n";
         $headers .= "Content-type: text/html; charset=iso-8859-1\r\n";
-        mail($emailto,"Prom Registration - {$I2_USER->name} [form]", nl2br($msg),$headers);
+		  mail($emailto,"Prom Registration - {$I2_USER->name} [form]", nl2br($msg),$headers);
+		  redirect();
 		}
 		return 'Prom Registration';
 	}
