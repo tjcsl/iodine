@@ -568,6 +568,11 @@ class User {
 
 		$str = trim($str);
 
+		if ($str == '') {
+			$res = $I2_LDAP->search('ou=people',"$newgrades",array('iodineUid'));
+			return self::sort_users($res->fetch_all_single_values());
+		}
+
 		$results = array();
 		$firstres = TRUE;
 
