@@ -125,6 +125,8 @@ class News implements Module {
 					$this->template_args['groups'] = Group::get_user_groups($I2_USER,FALSE,News::PERM_POST);
 				}
 
+				$item->title = stripslashes($item->title);
+				$item->text = stripslashes($item->text);
 				$this->template_args['newsitem'] = $item;
 				return 'Edit News Post';
 				
