@@ -3,6 +3,10 @@
 The specified student does not exist. Either you mistyped a URL, or something in Intranet is broken.
 [</if>]
 [<if $user && $user->fname>]
+[<if $user->uid == $I2_USER->uid>]
+This is YOUR info page.  All information stored in the Intranet database is visible to you. <br />
+Data may or may not be visible to others, depending on how you set your <a href="[<$I2_ROOT>]prefs">preferences</a> and what your parents allow.<br />
+[</if>]
 <table>
 <tr><td valign="top">
 <img src="[<$I2_ROOT>]pictures/photo/uid/[<$user->uid>]" vspace="2" width="172" height="228" /></td>
