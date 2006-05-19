@@ -79,27 +79,29 @@ class Aphorisms implements Module {
 	* @abstract
 	*/
 	function init_pane() {
-			  global $I2_USER,$I2_SQL,$I2_ARGS;
-			  $uidnumber = FALSE;
-			  $admin = $I2_USER->is_group_member('aphorisms');
-			  $this->template_args['username'] = $I2_USER->name;
+		global $I2_USER,$I2_SQL,$I2_ARGS;
+		$uidnumber = FALSE;
+		$admin = $I2_USER->is_group_member('aphorisms');
+		$this->template_args['username'] = $I2_USER->name;
 		$this->template_args['admin_aphorisms'] = $admin;
-			  if (isSet($I2_ARGS[1])) {
-						 if ($I2_ARGS[1] == 'choose') {
-									$this->template = 'choose.tpl';
-									$this->template_args['search_destination'] = 'aphorisms/searched/';
-									return 'Find a Student';
-						 }
-						 if ($I2_ARGS[1] == 'searched') {
-									$this->template = 'choose.tpl';
-									$this->template_args['results_destination'] = 'aphorisms/';
-									$this->template_args['return_destination'] = 'aphorisms/choose/';
-									$this->template_args['info'] = Search::get_results();
-									return 'Search Results';
-						 }
-						 $uidnumber = $I2_ARGS[1];
-						 $user = new User($uidnumber);
-			  			$this->template_args['username'] = $user->name;
+		if (isSet($I2_ARGS[1])) {
+			if ($I2_ARGS[1] == 'choose') {
+				$this->template = 'choose.tpl';
+				$this->template_args['search_destination'] = 'aphorisms/searched/';
+				return 'Find a Student';
+			} else if ($I2_ARGS[1] == 'searched') {
+				$this->template = 'choose.tpl';
+				$this->template_args['results_destination'] = 'aphorisms/';
+				$this->template_args['return_destination'] = 'aphorisms/choose/';
+				$this->template_args['info'] = Search::get_results();
+				return 'Search Results';
+			} else if($I2_ARGS[1] == 'data') {
+				$this->template = 'data.tpl';
+				$this->template_args['data'] = $I2_SQL->query('SELECT * FROM aphorisms ORDER BY uid')->fetch_array(Result::ASSOC);
+			}
+			$uidnumber = $I2_ARGS[1];
+			$user = new User($uidnumber);
+			$this->template_args['username'] = $user->name;
 		}
 		if (!$uidnumber) {
 			$uidnumber = $I2_USER->uid;

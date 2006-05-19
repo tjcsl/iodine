@@ -241,7 +241,6 @@ class NewsItem {
 		}
 
 		$gids = $this->groups;
-		var_dump($gids);
 		if(count($gids) == 0) {
 			// if no groups were specified, anyone can read it
 			return true;

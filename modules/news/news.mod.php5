@@ -268,7 +268,6 @@ class News implements Module {
 		}
 
 		foreach($this->stories as $story) {
-			var_dump($story->readable());	  
 			if ($story->readable() && (!$story->has_been_read() || $archive)) {
 				$story->text = stripslashes($story->text);	  
 				$story->title = stripslashes($story->title);
