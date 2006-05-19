@@ -166,21 +166,30 @@ class GroupSQL extends Group {
 	}
 
 	public function add_user($user) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_USER;
 
 		$user = new User($user);
 		
 		if($this->special) {
 			throw new I2Exception("Attempted to add user {$user->uid} to invalid group {$this->mygid}");
 		}
+		
+		if (!self::admin_groups()->has_member($I2_USER)) {
+			throw new I2Exception('You are not authorized to add users from groups!');
+		}
+		
 		return $I2_SQL->query('REPLACE INTO group_user_map (gid,uid) VALUES (%d,%d)',$this->mygid,$user->uid);
 	}
 
 	public function remove_user(User $user) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_USER;
 
 		if($this->special) {
 			throw new I2Exception("Attempted to remove user {$user->uid} from invalid group {$this->mygid}");
+		}
+
+		if (!self::admin_groups()->has_member($I2_USER)) {
+			throw new I2Exception('You are not authorized to remove users from groups!');
 		}
 		
 		return $I2_SQL->query('DELETE FROM group_user_map WHERE uid=%d AND gid=%d',$user->uid,$this->mygid);
@@ -191,6 +200,10 @@ class GroupSQL extends Group {
 
 		if($this->special) {
 			throw new I2Exception("Attempted to remove all users from invalid group {$this->mygid}");
+		}
+		
+		if (!self::admin_groups()->has_member($I2_USER)) {
+			throw new I2Exception('You are not authorized to remove users from groups!');
 		}
 
 		return $I2_SQL->query('DELETE FROM group_user_map WHERE gid=%d', $this->mygid);
@@ -203,6 +216,10 @@ class GroupSQL extends Group {
 			throw new I2Exception("Attempted to grant privileges to user {$user->uid} for invalid group {$this->mygid}");
 		}
 		
+		if (!self::admin_groups()->has_member($I2_USER)) {
+			throw new I2Exception('You are not authorized to remove users from groups!');
+		}
+		
 		return $I2_SQL->query('INSERT INTO groups_perms (uid,gid,permission) VALUES (%d,%d,%s)', $user->uid, $this->mygid, $perm);
 	}
 	
@@ -211,6 +228,10 @@ class GroupSQL extends Group {
 
 		if($this->special) {
 			throw new I2Exception("Attempted to revoke privileges from user {$user->uid} for invalid group {$this->mygid}");
+		}
+		
+		if (!self::admin_groups()->has_member($I2_USER)) {
+			throw new I2Exception('You are not authorized to remove users from groups!');
 		}
 
 		return $I2_SQL->query('DELETE FROM groups_perms WHERE uid=%d AND gid=%d AND permission=%s', $user->uid, $this->mygid, $perm);
@@ -276,6 +297,11 @@ class GroupSQL extends Group {
 
 	public function set_group_name($name) {
 		global $I2_SQL;
+		
+		if (!self::admin_groups()->has_member($I2_USER)) {
+			throw new I2Exception('You are not authorized to remove users from groups!');
+		}
+		
 		return $I2_SQL->query('UPDATE groups SET name=%s WHERE gid=%d',$name,$this->mygid);
 	}
 
