@@ -65,7 +65,7 @@ access to filter="(|(perm-showaddress-self=FALSE)(perm-showaddress=FALSE))"
 	by * none
 
 # Changeable student info
-access to attr=mobile,aim,msn,icq,googletalk,yahoo,locker,telephoneNumber,webpage,jabber,mail
+access to attr=mobile,aim,msn,icq,googletalk,yahoo,locker,telephoneNumber,webpage,jabber,mail,xfire
 	by dn="cn=Manager,dc=tjhsst,dc=edu" write
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
 	by group="cn=admin_all,ou=group,dc=iodine,dc=tjhsst,dc=edu" write

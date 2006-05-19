@@ -491,6 +491,13 @@ attributetype ( i2Attr:60
 	SINGLE-VALUE
 	)
 
+attributetype ( i2Attr:61
+	NAME ('xfire')
+	DESC 'XFire handle'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	)
+
 objectclass ( i2OC:1
 	NAME ('tjhsstStudent' 'iodineStudent')
 	SUP inetOrgPerson STRUCTURAL
@@ -527,6 +534,7 @@ objectclass ( i2OC:1
 		birthday $
 		sex $
 		aim $
+		xfire $
 		yahoo $
 		msn $
 		jabber $

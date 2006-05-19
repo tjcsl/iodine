@@ -95,6 +95,13 @@ Counselor: [<$user->counselor>]<br />
  [</foreach>]
  </ul>
 [</if>]
+[<if count($user->xfire)>]XFire handle(s):
+ <ul>
+ [<foreach from=$user->xfire item=xfire>]
+  <li>[<$xfire>]</li>
+ [</foreach>]
+ </ul>
+[</if>]
 [<if count($user->webpage)>]Webpage(s):
  <ul>
  [<foreach from=$user->webpage item=webpage>]

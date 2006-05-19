@@ -95,6 +95,16 @@
 		</td>
 	</tr>
 	<tr>
+		<td>XFire:</td>
+		<td>
+[<foreach from=$I2_USER->xfire item=xfire name=xfire_loop>]
+			<input class="pref_preference_input" type="text" name="pref_xfire[]" value="[<$xfire>]" />[<if $smarty.foreach.xfire_loop.first>]<a href="#" onClick="add_field('xfire', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('xfire', this);">Remove</a>[</if>][<if !$smarty.foreach.xfire_loop.last>]<br />[</if>]
+[<foreachelse>]
+			<input class="pref_preference_input" type="text" name="pref_xfire[]" /><a href="#" onClick="add_field('xfire', this);">Add Another</a>
+[</foreach>]
+		</td>
+	</tr>
+	<tr>
 		<td>Webpage(s):</td>
 		<td>
 [<foreach from=$I2_USER->webpage item=webpage name=webpage_loop>]
