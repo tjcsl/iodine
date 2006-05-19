@@ -291,8 +291,8 @@ class NewsItem {
 			$user = $GLOBALS['I2_USER'];
 		}
 		
-		$ret = $I2_SQL->query('SELECT * FROM news_read_map WHERE nid=%d AND uid=%d', $this->mynid, $user->uid)->fetch_single_value();
-		if(isset($ret)) {
+		$ret = $I2_SQL->query('SELECT * FROM news_read_map WHERE nid=%d AND uid=%d', $this->mynid, $user->uid);
+		if($ret->num_rows() > 0) {
 			return true;
 		}
 		
@@ -317,6 +317,25 @@ class NewsItem {
 
 			  $I2_SQL->query('INSERT INTO news_read_map (nid,uid) VALUES (%d,%d)', $this->mynid, $user->uid);
 	}
+
+	/**
+	 * Mark item as unread
+	 *
+	 * Marks an item as unread
+	 *
+	 * @access public
+	 * @param User $user The user for which to mark the item as unread
+	 */
+
+	public function mark_as_unread($user = NULL) {
+			  global $I2_SQL;
+
+			  if($user===NULL) {
+						 $user = $GLOBALS['I2_USER'];
+			  }
+
+			  $I2_SQL->query('DELETE FROM news_read_map WHERE nid=%d AND uid=%d', $this->mynid, $user->uid);
+	}	
 
 	/**
 	 * Determine if this post is editable by a user.

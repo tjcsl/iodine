@@ -174,42 +174,41 @@ class News implements Module {
 					return 'News Post Successfully Cross-Posted';
 				}
 
-			case 'read':
-				$this->template = 'news_read.tpl';
-				if( !isset($I2_ARGS[2]) ) {
-					throw new I2Exception('ID of article to mark as unread not specified.');
-				}
-
-				try {
-					$item = new Newsitem($I2_ARGS[2]);
-				} catch(I2Exception $e) {
-					throw new I2Exception("Specified article ID {$I2_ARGS[2]} invalid.");
-				}
-
-				$item->mark_as_read();
-
 			case 'archive';
-				$archive = true;
+				return self::display_news(true,'Old News Posts');
+
+			case 'read':
+					$this->template = 'news_read.tpl';
+					if( !isset($I2_ARGS[2]) ) {
+						throw new I2Exception('ID of article to mark as read not specified.');
+					}
+
+					try {
+							$item = new Newsitem($I2_ARGS[2]);
+					} catch(I2Exception $e) {
+						throw new I2Exception("Specified article ID {$I2_ARGS[2]} invalid.");
+					}
+
+					$item->mark_as_read();
+		 			return self::display_news(false);
+
+		 	case 'unread':
+					$this->template = 'news_unread.tpl';
+					if( !isset($I2_ARGS[2]) ) {
+						throw new I2Exception('ID of article to mark as unread not specified.');
+					}
+
+					try {
+							$item = new Newsitem($I2_ARGS[2]);
+					} catch(I2Exception $e) {
+						throw new I2Exception("Specified article ID {$I2_ARGS[2]} invalid.");
+					}
+
+					$item->mark_as_unread();
+		 			return self::display_news(true,'Old News Posts');
 
 	   	default:
-				$this->template = 'news_pane.tpl';
-				$I2_ARGS[1] = '';
-
-				$this->template_args['stories'] = array();
-
-				if( $this->stories === NULL) {
-					$this->stories = Newsitem::get_all_items();
-				}
-
-				foreach($this->stories as $story) {
-					if ($story->readable() && (!$story->has_been_read() || $archive)) {
-						$story->text = stripslashes($story->text);	  
-						$story->title = stripslashes($story->title);
-						$this->template_args['stories'][] = $story;
-					}
-				}
-				
-				return array('News', 'Recent News Posts');
+				   return self::display_news(false);
 		}
 		//should not happen
 		throw new I2Exception('Internal error: sanity check, reached end of init_pane in news.');
@@ -257,6 +256,25 @@ class News implements Module {
 	*/
 	function get_name() {
 		return 'News';
+	}
+	function display_news($archive = false,$title='Recent News Posts') {	
+		$this->template = 'news_pane.tpl';
+		$I2_ARGS[1] = '';
+
+		$this->template_args['stories'] = array();
+
+		if( $this->stories === NULL) {
+			$this->stories = Newsitem::get_all_items();
+		}
+
+		foreach($this->stories as $story) {
+			if ($story->readable() && (!$story->has_been_read() || $archive)) {
+				$story->text = stripslashes($story->text);	  
+				$story->title = stripslashes($story->title);
+				$this->template_args['stories'][] = $story;
+			}
+		}
+		return array('News',$title);
 	}
 }
 
