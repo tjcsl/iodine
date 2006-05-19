@@ -35,10 +35,8 @@ class Prefs implements Module {
 					if(is_array($val)) {
 						$val = array_filter($val);
 					}
-					if($val && $val != array()) {
-						$field = substr($key, 5);
-						$I2_USER->$field = $val;
-					}
+					$field = substr($key, 5);
+					$I2_USER->$field = $val;
 				}
 			}
 

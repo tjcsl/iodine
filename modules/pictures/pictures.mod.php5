@@ -13,7 +13,8 @@ class Pictures implements Module {
 			$args[$I2_ARGS[$i - 1]] = $I2_ARGS[$i];
 		}
 		Display::stop_display();
-		$I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', 'iodineUid=asmith')->fetch_col('givenName');
+		var_dump($I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', '(iodineUid=asmith)')->fetch_binary_value('freshmanPhoto'));
+
 		/*$user = new User($args['uid']);
 		if($photo = $user->juniorPhoto) {
 			header("Content-type: image/jpeg");

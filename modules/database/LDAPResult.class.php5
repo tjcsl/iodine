@@ -328,6 +328,9 @@ class LDAPResult implements Result {
 		return $data;
 	}
 
+	public function fetch_binary_value($colname) {
+		return ldap_get_values_len($this->ldap, $this->current(), $colname);
+	}
 }
 
 ?>
