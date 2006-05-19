@@ -1,5 +1,7 @@
 [<if $admin_aphorisms>]
-<a href="[<$I2_ROOT>]aphorisms/choose">Select a Student</a><br /><br />
+<a href="[<$I2_ROOT>]aphorisms/choose">Select a Student</a><br />
+<a href="[<$I2_ROOT>]aphorisms/data">Data Dump</a><br />
+<a href="[<$I2_ROOT>]aphorisms/csv">CSV File</a><br /><br />
 Aphorisms for [<$username>]<br /><br />
 [</if>]
 

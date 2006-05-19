@@ -1,4 +1,4 @@
-<table>
+<table>	
 	<tr>
 		<th>Student</th>
 		<th>College</th>
@@ -12,19 +12,20 @@
 		<th>Third Honor</th>
 		<th>Aphorism</th>
 	</tr>
-[<foreach from=$data item=$dataitem>]
-<tr>
-	<td>[<$dataitem.uid>]</td>
-	<td>[<$dataitem.college>]</td>
-	<td>[<$dataitem.collegeplans>]</td>
-	<td>[<$dataitem.nationalmeritsemifinalist>]</td>
-	<td>[<$dataitem.nationalmeritfinalist>]</td>
-	<td>[<$dataitem.nationalachievement>]</td>
-	<td>[<$dataitem.hispanicachievement>]</td>
-	<td>[<$dataitem.honor1>]</td>
-	<td>[<$dataitem.honor2>]</td>
-	<td>[<$dataitem.honor3>]</td>
-	<td>[<$dataitem.aphorism>]</td>
-</tr>
+[<foreach from=$users item=user>]
+	[<assign var=uid value=$user->uid>]
+	<tr>
+		<td>[<$user->name>]</td
+		<td>[<$data.$uid.college>]</td>
+		<td>[<$data.$uid.collegeplans>]</td>
+		<td>[<if $data.$uid.nationalmeritsemifinalist>]Yes[<else>]No[</if>]</td>
+		<td>[<if $data.$uid.nationalmeritfinalist>]Yes[<else>]No[</if>]</td>
+		<td>[<if $data.$uid.nationalachievement>]Yes[<else>]No[</if>]</td>
+		<td>[<if $data.$uid.hispanicachievement>]Yes[<else>]No[</if>]</td>
+		<td>[<$data.$uid.honor1>]</td>
+		<td>[<$data.$uid.honor2>]</td>
+		<td>[<$data.$uid.honor3>]</td>
+		<td>[<$data.$uid.aphorism>]</td>
+	</tr>
 [</foreach>]
 </table>

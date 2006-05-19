@@ -97,7 +97,29 @@ class Aphorisms implements Module {
 				return 'Search Results';
 			} else if($I2_ARGS[1] == 'data') {
 				$this->template = 'data.tpl';
-				$this->template_args['data'] = $I2_SQL->query('SELECT * FROM aphorisms ORDER BY uid')->fetch_array(Result::ASSOC);
+				$data = $I2_SQL->query('SELECT * FROM aphorisms ORDER BY uid')->fetch_all_arrays(Result::ASSOC);
+				$this->template_args['data'] = array();
+				$this->template_args['users'] = array();
+				foreach($data as $row) {
+					$this->template_args['users'][] = new User($row['uid']);
+					$this->template_args['data'][$row['uid']] = $row;
+				}
+				usort($this->template_args['users'], array('User', 'name_cmp'));
+			} else if ($I2_ARGS[1] == 'csv') {
+				$in_data = $I2_SQL->query('SELECT * FROM aphorisms ORDER BY uid')->fetch_all_arrays(Result::ASSOC);
+				$data = array();
+				$users = array();
+				foreach($in_data as $row) {
+					$users[] = new User($row['uid']);
+					$data[$row['uid']] = $row;
+				}
+				usort($users, array('User', 'name_cmp'));
+				Display::stop_display();
+				echo "|Student|\t|College|\t|College Plans|\t|National Merit Semi-finalist|\t|National Merit Finalist|\t|National Achievement|\t|Hispanic Achievement|\t|First Honor|\t|Second Honor|\t|Third Honor|\t|Aphorism|\n";
+				foreach($users as $user) {
+					$uid = $user->uid;
+					echo "|{$user->name}|\t|{$data[$uid]['college']}|\t|{$data[$uid]['collegeplans']}|\t|" . ($data[$uid]['nationalmeritsemifinalist'] ? 'Yes' : 'No') . "|\t|" . ($data[$uid]['nationalmeritfinalist'] ? 'Yes' : 'No') . "|\t|" . ($data[$uid]['nationalachievement'] ? 'Yes' : 'No') . "|\t|" . ($data[$uid]['hispanicachievement'] ? 'Yes' : 'No') . "|\t|{$data[$uid]['honor1']}|\t|{$data[$uid]['honor2']}|\t|{$data[$uid]['honor3']}|\t|{$data[$uid]['aphorism']}|\n";
+				}
 			} else {
 				$uidnumber = $I2_ARGS[1];
 				$user = new User($uidnumber);
@@ -126,7 +148,7 @@ class Aphorisms implements Module {
 					  $_REQUEST['honor1'],$_REQUEST['honor2'],$_REQUEST['honor3'],$_REQUEST['aphorism']
 			);*/
 			$I2_SQL->query('REPLACE INTO aphorisms SET uid=%d,college=%s,honor1=%s,honor2=%s,honor3=%s,aphorism=%s',$uidnumber,
-					  $_REQUEST['college'],$_REQUEST['honor1'],$_REQUEST['honor2'],$_REQUEST['honor3'],$_REQUEST['aphorism']
+					  $_REQUEST['college'],$_REQUEST['honor1'],$_REQUEST['honor2'],$_REQUEST['honor3'],strtr($_REQUEST['aphorism'], array('|' => ''))
 			);
 			$this->updated = TRUE;
 		}
