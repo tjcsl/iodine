@@ -110,8 +110,8 @@ class NewsItem {
 	public static function clean_text($text) {
 			  $text = str_replace('&','&amp;',$text);
 			  $text = str_replace('\r','<br />',$text);
+			  $text = preg_replace("/\r\n|\n|\r/", "<br />", $text);
 			  $text = str_replace('"','&quot;',$text);
-			  $text = str_replace('\'','&#039;',$text);
 			  return $text;
 	}
 
@@ -140,7 +140,7 @@ class NewsItem {
 			}
 		}
 
-	//	$text = self::clean_text($text);
+		$text = self::clean_text($text);
 
 		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP', $author->uid, $title, $text);
 
@@ -211,6 +211,8 @@ class NewsItem {
 	 */
 	public function edit($title, $text, $groups) {
 		global $I2_SQL;
+
+		$text = self::clean_text($text);
 
 		$I2_SQL->query('UPDATE news SET title=%s, text=%s WHERE id=%d', $title, $text, $this->mynid);
 

@@ -129,6 +129,8 @@ class News implements Module {
 
 				$item->title = stripslashes($item->title);
 				$item->text = stripslashes($item->text);
+				$item->text = htmlspecialchars_decode($item->text);
+				$item->text = preg_replace('/<br\\s*?\/??>/i', "\n", $item->text);
 				$this->template_args['newsitem'] = $item;
 				return 'Edit News Post';
 				
