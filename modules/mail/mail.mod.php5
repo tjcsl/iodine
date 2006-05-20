@@ -55,13 +55,17 @@ class Mail implements Module {
 		
 		$max_msgs = i2config_get('max_pane_msgs', 20, 'mail');
 
-		$offset = isset($I2_ARGS[1]) ? $I2_ARGS[1] : 0;
+		$offset = (isset($I2_ARGS[1]) && $I2_ARGS[1] > 0) ? $I2_ARGS[1] : 0;
 
 		if(!is_array($this->messages)) {
 			if(($this->messages = self::download_msgs($offset, $max_msgs)) === FALSE) {
 				$this->pane_args['err'] = TRUE;
 				return 'TJ Mail: Error in retrieving messages';
 			}
+		}
+
+		if($offset >= $this->nmsgs) {
+			$offset = 0;
 		}
 
 		// If we downloaded the first messages, set the box messages,
@@ -129,6 +133,10 @@ class Mail implements Module {
 		}
 
 		$this->nmsgs = imap_num_msg($this->connection);
+
+		if($offset >= $this->nmsgs) {
+			$offset = 0;
+		}
 
 		$sorted = array_slice(imap_sort($this->connection, SORTDATE, 1), $offset, $length);
 		$messages = imap_fetch_overview($this->connection, implode(',',$sorted));
