@@ -128,11 +128,11 @@ class GroupSQL extends Group {
 			}
 			else {
 				try {
-					$group = Group::get_special_group($group);
-					if (!$group) {
+					$gid = Group::get_special_group($group);
+					if (!$gid) {
 						return;
 					}
-					$this->mygid = $group->gid;
+					$this->mygid = $gid;
 					$this->myname = $group;
 				} catch (I2Exception $e) {
 					throw new I2Exception("Nonexistent group $group given to the Group module");
