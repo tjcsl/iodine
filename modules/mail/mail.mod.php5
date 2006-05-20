@@ -24,8 +24,10 @@ class Mail implements Module {
 
 	private $connection;
 	private $messages;
+	private $box_messages;
 	private $nmsgs;
 	private $cache_file;
+	private static $msgno_map;
 
 	/**
 	* The Mail class constructor.
@@ -56,16 +58,23 @@ class Mail implements Module {
 		$offset = isset($I2_ARGS[1]) ? $I2_ARGS[1] : 0;
 
 		if(!is_array($this->messages)) {
-			if(!self::download_msgs($offset, $max_msgs)) {
+			if(($this->messages = self::download_msgs($offset, $max_msgs)) === FALSE) {
 				$this->pane_args['err'] = TRUE;
 				return 'TJ Mail: Error in retrieving messages';
 			}
+		}
+
+		// If we downloaded the first messages, set the box messages,
+		// so the intrabox doesn't redundantly download them
+		if($offset == 0) {
+			$this->box_messages = array_slice($this->messages, 0, i2config_get('max_box_msgs', 5, 'mail'));
 		}
 
 		$this->pane_args['messages'] = &$this->messages;
 		$this->pane_args['goleft'] = $offset > 0;
 		$this->pane_args['goright'] = $offset + $max_msgs < $this->nmsgs;
 		$this->pane_args['nmsgs'] = $this->nmsgs;
+		$this->pane_args['offset'] = $offset;
 		return "TJ Mail: You have {$this->nmsgs} messages";
 	}
 	
@@ -74,17 +83,26 @@ class Mail implements Module {
 	}
 	
 	function init_box() {
-		return FALSE;
 		$max_msgs = i2config_get('max_box_msgs', 5, 'mail');
 
-		if (!is_array($this->messages)) {
-			if(!self::download_msgs(0, 5)) {
+		if (!is_array($this->box_messages)) {
+			if(($cache = self::get_cache()) !== FALSE) {
+				// Cache exists and is valid
+				d('Using IMAP header cache', 7);
+				$this->nmsgs = $cache[0];
+				$this->box_messages = $cache[1];
+				
+			} elseif(($this->box_messages = self::download_msgs(0, $max_msgs)) === FALSE) {
+				// Downloading messages failed
 				$this->box_args['err'] = TRUE;
 				return 'Mail -- Error';
+			} else {
+				// Downloading messages worked, store them in cache
+				self::store_cache($this->nmsgs, $this->box_messages);
 			}
 		}
 
-		$this->box_args['messages'] = &$this->messages;
+		$this->box_args['messages'] = &$this->box_messages;
 		$this->box_args['nmsgs'] = $this->nmsgs;
 		return "Mail: {$this->nmsgs} message". ($this->nmsgs != 1 ? 's' : '') . ' in your inbox';
 	}
@@ -102,12 +120,6 @@ class Mail implements Module {
 		if( ! $I2_AUTH->get_user_password()) {
 			return FALSE;
 		}
-
-		if(($this->messages = self::get_cache()) !== FALSE) {
-			d('Using IMAP header cache',7);
-			$this->nmsgs = count($this->messages);
-			return TRUE;
-		}
 		
 		$path = i2config_get('imap_path','{mail.tjhsst.edu:993/imap/ssl/novalidate-cert}INBOX', 'mail');
 		d("Not using IMAP cache, downloading messages from $path",6);
@@ -118,10 +130,13 @@ class Mail implements Module {
 
 		$this->nmsgs = imap_num_msg($this->connection);
 
-		$sorted = imap_sort($this->connection, SORTDATE, 1);
-		$this->messages = imap_fetch_overview($this->connection, implode(',',array_slice($sorted, $offset, $length)));
+		$sorted = array_slice(imap_sort($this->connection, SORTDATE, 1), $offset, $length);
+		$messages = imap_fetch_overview($this->connection, implode(',',$sorted));
 
-		foreach($this->messages as $message) {
+		// Used for the usort() call below; swaps the keys/values in $sorted
+		self::$msgno_map = array_combine(array_values($sorted), array_keys($sorted));
+
+		foreach($messages as $i=>$message) {
 			$message->unread = $message->recent || !$message->seen;
 
 			if(strlen($message->subject) > 31) {
@@ -141,9 +156,13 @@ class Mail implements Module {
 			}
 		}
 
-		self::store_cache($this->messages);
+		usort($messages, array($this, 'cmp_message'));
 
-		return TRUE;
+		return $messages;
+	}
+
+	private function cmp_message($msg1, $msg2) {
+		return ( self::$msgno_map[$msg1->msgno] < self::$msgno_map[$msg2->msgno] ) ? -1 : 1;
 	}
 
 	private function get_cache() {
@@ -159,11 +178,32 @@ class Mail implements Module {
 		}
 
 		$ret = unserialize(file_get_contents($this->cache_file));
+
+		// Checks the format of the cache file it must contain
+		// serialized data that represents:
+		// array(
+		//	$nmsgs,
+		//	array(
+		//		$message1,
+		//		$message2,
+		//		...
+		//	)
+		// )
+		if( !(	is_array($ret) &&
+				count($ret) == 2 &&
+				is_int($ret[0]) &&
+				is_array($ret[1]) &&
+				(count($ret[1]) == 0 || is_object($ret[1][0])) )) {
+			d('Invalid mail cache file format', 5);
+			unlink($this->cache_file);
+			return FALSE;
+		}
+		
 		return $ret;
 	}
 
-	private function store_cache($messages) {
-		$data = serialize($messages);
+	private function store_cache($nmsgs, $messages) {
+		$data = serialize(array($nmsgs,$messages));
 		
 		$fh = fopen($this->cache_file, 'w');
 		fwrite($fh, $data);
