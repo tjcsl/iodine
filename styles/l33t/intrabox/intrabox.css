@@ -8,14 +8,15 @@
 }
 @extend
 .intrabox {
+	border: solid 1px #999999;
 	background: #000000;
 	width: 320px;
 }
 @extend
 .boxheader {
 	background-color: #000000;
-	border-left: 4px solid #000000;
-	border-right: 4px solid #000000
+	margin-left: 4px;
+	margin-right: 4px;
 }
 .upbutton {
 	background: url(/www/pics/up.gif) center no-repeat;
@@ -40,6 +41,7 @@
 @extend
 .mainbox {
 	margin-left: 20px;
+	border: solid 1px #999999;
 }
 @extend
 .activity_cancelled {
