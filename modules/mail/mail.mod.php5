@@ -26,7 +26,6 @@ class Mail implements Module {
 	private $messages;
 	private $nmsgs;
 	private $cache_file;
-	private $nunseen;
 
 	/**
 	* The Mail class constructor.
@@ -40,8 +39,8 @@ class Mail implements Module {
 
 		$this->cache_file = $cache_dir . session_id();
 
-		/*$timeout = i2config_get('imap_timeout','','mail');
-		if($timeout) {
+		$timeout = i2config_get('imap_timeout','','mail');
+		/*if($timeout) {
 			d('Setting IMAP timeout to '.$timeout,8);
 			foreach(array(1,2,3,4) as $i) {
 				imap_timeout($i, $timeout);
@@ -51,23 +50,24 @@ class Mail implements Module {
 	
 	function init_pane() {
 		global $I2_ARGS;
+		return FALSE;
+		
+		$max_msgs = i2config_get('max_pane_msgs', 20, 'mail');
+
+		$offset = isset($I2_ARGS[1]) ? $I2_ARGS[1] : 0;
+
 		if(!is_array($this->messages)) {
-			if(!self::download_msgs()) {
+			if(!self::download_msgs($offset, $max_msgs)) {
 				$this->pane_args['err'] = TRUE;
 				return 'TJ Mail: Error in retrieving messages';
 			}
 		}
 
-		if(!isset($I2_ARGS[1])) {
-			$I2_ARGS[1] = 0;
-		}
-		
 		$this->pane_args['messages'] = &$this->messages;
-		$this->pane_args['nmsgs'] = &$this->nmsgs;
-		$this->pane_args['nmsgs_show'] = ($this->nmsgs < 20 ? $this->nmsgs : 20);
-		$this->pane_args['offset'] = $I2_ARGS[1];
-		$this->pane_args['nunseen'] = &$this->nunseen;
-		return "TJ Mail: {$this->nunseen} new message(s)";
+		$this->pane_args['goleft'] = $offset > 0;
+		$this->pane_args['goright'] = $offset + $max_msgs < $this->nmsgs;
+		$this->pane_args['nmsgs'] = $this->nmsgs;
+		return "TJ Mail: You have {$this->nmsgs} messages";
 	}
 	
 	function display_pane($display) {
@@ -75,17 +75,19 @@ class Mail implements Module {
 	}
 	
 	function init_box() {
+		return FALSE;
+		$max_msgs = i2config_get('max_box_msgs', 5, 'mail');
+
 		if (!is_array($this->messages)) {
-			if(!self::download_msgs()) {
+			if(!self::download_msgs(0, 5)) {
 				$this->box_args['err'] = TRUE;
 				return 'Mail -- Error';
 			}
 		}
+
 		$this->box_args['messages'] = &$this->messages;
-		$this->box_args['nmsgs'] = &$this->nmsgs;
-		$this->box_args['nmsgs_show'] = ($this->nmsgs < 5 ? $this->nmsgs : 5);
-		$this->box_args['nunseen'] = &$this->nunseen;
-		return 'Mail';
+		$this->box_args['nmsgs'] = $this->nmsgs;
+		return "Mail: {$this->nmsgs} message". ($this->nmsgs != 1 ? 's' : '') . ' in your inbox';
 	}
 
 	function display_box($display) {
@@ -96,7 +98,7 @@ class Mail implements Module {
 		return 'Mail';
 	}
 
-	private function download_msgs() {
+	private function download_msgs($offset, $length) {
 		global $I2_AUTH;
 		if( ! $I2_AUTH->get_user_password()) {
 			return FALSE;
@@ -105,9 +107,6 @@ class Mail implements Module {
 		if(($this->messages = self::get_cache()) !== FALSE) {
 			d('Using IMAP header cache',7);
 			$this->nmsgs = count($this->messages);
-			foreach($this->messages as $message) {
-				if(!$message->seen) { $this->nunseen++; }
-			}
 			return TRUE;
 		}
 		
@@ -121,16 +120,10 @@ class Mail implements Module {
 		$this->nmsgs = imap_num_msg($this->connection);
 
 		$sorted = imap_sort($this->connection, SORTDATE, 1);
-		$this->messages = imap_fetch_overview($this->connection, implode(',',$sorted));
-
-		$this->nunseen=0;
+		$this->messages = imap_fetch_overview($this->connection, implode(',',array_slice($sorted, $offset, $length)));
 
 		foreach($this->messages as $message) {
 			$message->unread = $message->recent || !$message->seen;
-
-			if(!$message->seen) {
-				$this->nunseen++;
-			}
 
 			if(strlen($message->subject) > 31) {
 				$message->short_subject = substr($message->subject, 0, 30);
