@@ -45,7 +45,7 @@ class StudentDirectory implements Module {
 				return array('Student Directory: '.$this->user->fname.' '.$this->user->lname, $this->user->fname.' '.$this->user->lname);
 
 			case 'search':
-				if( $_REQUEST['studentdirectory_query'] == '' ) {
+				if( !isSet($_REQUEST['studentdirectory_query']) || $_REQUEST['studentdirectory_query'] == '') {
 					$this->information = 'help';
 					return array('Student Directory Help', 'Searching Help');
 				}
