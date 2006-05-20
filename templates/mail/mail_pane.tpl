@@ -17,7 +17,7 @@ You have [<$nmsgs>] messages in your inbox.<br />
 		<th align="center">Date</th>
 	</tr>
 	[<foreach from=$messages item=msg>]
-		<tr bgcolor="[<cycle values="#EEEEEE,#FFFFFF">]">
+		<tr class="[<cycle values="c1,c2">]">
 			<td class="mail_pane" style="width:120px;">[<if $msg->unread>]<span class="mail_unread">[</if>][<$msg->from>][<if $msg->unread>]</span>[</if>]</td>
 			<td class="mail_pane">[<if $msg->unread>]<span class="mail_unread">[</if>][<$msg->subject>][<if $msg->unread>]</span>[</if>]</td>
 			<td class="mail_pane" style="width:75px;">[<if $msg->unread>]<span class="mail_unread">[</if>][<$msg->date|date_format:"%I:%M %p, %d %B %Y">][<if $msg->unread>]</span>[</if>]</td>

@@ -1,4 +1,12 @@
 @extend
+.boxes {
+	width: 320px;
+}
+@extend
+.boxes_noheader {
+	width: 320px;
+}
+@extend
 .intrabox {
 	background: #000000;
 	width: 320px;

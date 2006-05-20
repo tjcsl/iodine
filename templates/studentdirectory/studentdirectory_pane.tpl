@@ -14,6 +14,7 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
 <td valign="top">
 [<$user->fullname>] (<a href="mailto:[<$user->username>]@tjhsst.edu">[<$user->username>]@tjhsst.edu</a>)[<if $user->grade != -1>], Grade [<$user->grade>][</if>]<br />
 [<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]
+Counselor: [<$user->counselor>]<br />
 [<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]Phone (home): [<$phone>]<br />[</foreach>]
 [</if>]<br />
 [<if $user->phone_cell>]Cell phone: [<$user->phone_cell>]<br />[</if>]
@@ -40,15 +41,20 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
  [</if>]
 [</if>]
 [<if $user->street && $user->show_map>]
-[<if $I2_UID != $user->uid>]<a href="http://maps.google.com/maps?f=d&hl=en&saddr=[<$I2_USER->street>], [<$I2_USER->l>], [<$I2_USER->st>] [<$I2_USER->postalCode>]&daddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]">Map from home</a> | [</if>]<a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexandria, VA 22312&daddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]">Map from school</a><br />
+Get directions:
+[<if $I2_UID != $user->uid>]<a href="http://maps.google.com/maps?f=d&hl=en&saddr=[<$I2_USER->street>], [<$I2_USER->l>], [<$I2_USER->st>] [<$I2_USER->postalCode>]&daddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]">from your home</a>
+or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexandria, VA 22312&daddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]">from school</a>
+[<else>]<a href="http://maps.google.com/maps?f=d&hl=en&saddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]&daddr=6560 Braddock Rd, Alexandria, VA 22312">to school</a>
 [</if>]
-Counselor: [<$user->counselor>]<br />
+<br />
+[</if>]
 <br />
 [<if count($user->mail)>]Personal e-mail address(es): 
  [<foreach from=$user->mail item=email>]
-  <a href="mailto:[<$email>]">[<$email|escape:'html'>]</a>
+  <a href="mailto:[<$email>]">[<$email|escape:'html'>]</a> 
  [</foreach>]
 [</if>]
+<br />
 <br />
 [<if count($user->aim)>]AIM/AOL Screenname(s):
  <ul>
