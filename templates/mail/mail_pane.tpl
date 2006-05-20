@@ -4,7 +4,7 @@ There was an error retrieving your email messages. Either your password for the 
 [<else>]
 You have [<$nmsgs>] messages in your inbox.<br />
 [<if $nmsgs>]
-	<table cellspacing="0">
+	<table cellspacing="0" style="width: 100%">
 	<tbody>
 	<tr>
 	<td>[<if $goleft>]<a href="[<$I2_ROOT>]mail/[<$offset-20>]">&lt;&lt; More recent</a>[</if>]</td>

@@ -9,7 +9,7 @@ You have [<$nmsgs>] messages in your inbox.<br />
 [<if count($messages) > 0>]
 	<table cellspacing="0">
 	<tbody style="text-align:left;">
-		<tr style="background-color:#DEDEDE">
+		<tr style="background-color:#DEDEDE;">
 			<th align="center">From</th>
 			<th align="center">Subject</th>
 			<th align="center">Date</th>

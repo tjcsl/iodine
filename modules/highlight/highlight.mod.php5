@@ -21,14 +21,31 @@ class Highlight implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_ARGS;
-		return FALSE;
+		global $I2_ARGS, $I2_USER;
 
-		$filename = "";
+		if (!$I2_USER->is_group_member('admin_all')) {
+			throw new I2Exception('You are not authorized to view application source through this module.  Please contact the Intranet 2 Development Team.');
+		}
+
+		$filename = '';
 		$linenum = intval($I2_ARGS[1]);
 		foreach (array_slice($I2_ARGS, 2) as $arg) {
-			$filename .= "/" . $arg;
+			$filename .= '/' . $arg;
 		}
+		$filename = realpath($filename);
+
+		if (!$filename) {
+				  throw new I2Exception('No such file!');
+		}
+
+		if (strpos($filename,i2config_get('root_path','FOOBAR','core') != 0)) {
+				  throw new I2Exception('Highlight cannot be used to read arbitrary files from the server!');
+		}
+		
+		if (strpos($filename,'config.ini')) {
+				  throw new I2Exception('Highlight cannot be used to read the server config file!');
+		}
+
 		$array = explode('<br />', highlight_file($filename, TRUE));
 		$num = 1;
 		foreach ($array as &$line) {
