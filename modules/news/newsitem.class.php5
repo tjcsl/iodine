@@ -112,7 +112,7 @@ class NewsItem {
 			  $text = str_replace('\r','<br />',$text);
 			  $text = preg_replace("/\r\n|\n|\r/", "<br />", $text);
 			  $text = preg_replace('/<br\\s*?\/??>/i', "<br />", $text);
-			  $text = str_replace('"','&quot;',$text);
+			  //$text = str_replace('"','&quot;',$text);
 			  return $text;
 	}
 
@@ -169,6 +169,16 @@ class NewsItem {
 	 */
 	public static function delete_item($nid) {
 		global $I2_SQL;
+		
+		$newsadm = new Group('admin_news');
+		if(!$newsadm->has_member()) {
+			foreach($groups as $group) {
+				if(!$group->has_permission($I2_USER,News::PERM_POST)) {
+					throw new I2Exception("You do not have permission to delete news for the group {$group->name}");
+				}
+			}
+		}
+
 		$I2_SQL->query('DELETE FROM news WHERE id=%d', $nid);
 		$I2_SQL->query('DELETE FROM news_group_map WHERE nid=%d', $nid);
 		$I2_SQL->query('DELETE FROM news_read_map WHERE nid=%d',$nid);
@@ -214,6 +224,15 @@ class NewsItem {
 		global $I2_SQL;
 
 		$text = self::clean_text($text);
+
+		$newsadm = new Group('admin_news');
+		if(!$newsadm->has_member()) {
+			foreach($groups as $group) {
+				if(!$group->has_permission($I2_USER,News::PERM_POST)) {
+					throw new I2Exception("You do not have permission to edit news for the group {$group->name}");
+				}
+			}
+		}
 
 		$I2_SQL->query('UPDATE news SET title=%s, text=%s WHERE id=%d', $title, $text, $this->mynid);
 
@@ -320,7 +339,6 @@ class NewsItem {
 	 * @access public
 	 * @param User $user The user for which to mark the item as unread
 	 */
-
 	public function mark_as_unread($user = NULL) {
 			  global $I2_SQL;
 

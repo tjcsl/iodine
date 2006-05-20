@@ -128,7 +128,7 @@ class News implements Module {
 				}
 
 				$item->title = stripslashes($item->title);
-				$item->text = stripslashes($item->text);
+				//$item->text = stripslashes($item->text);
 				$item->text = htmlspecialchars_decode($item->text);
 				$item->text = preg_replace('/<br\\s*?\/??>/i', "\n", $item->text);
 				$this->template_args['newsitem'] = $item;
@@ -253,7 +253,7 @@ class News implements Module {
 
 		foreach($this->stories as $story) {
 			if ($story->readable() && (!$story->has_been_read() || $archive)) {
-				$story->text = stripslashes($story->text);	  
+				//$story->text = stripslashes($story->text);	  
 				$story->title = stripslashes($story->title);
 				$this->template_args['stories'][] = $story;
 			}
