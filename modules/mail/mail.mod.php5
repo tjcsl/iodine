@@ -26,6 +26,7 @@ class Mail implements Module {
 	private $messages;
 	private $nmsgs;
 	private $cache_file;
+	private $nunseen;
 
 	/**
 	* The Mail class constructor.
@@ -50,7 +51,6 @@ class Mail implements Module {
 	
 	function init_pane() {
 		global $I2_ARGS;
-		return FALSE;
 		if(!is_array($this->messages)) {
 			if(!self::download_msgs()) {
 				$this->pane_args['err'] = TRUE;
@@ -66,7 +66,8 @@ class Mail implements Module {
 		$this->pane_args['nmsgs'] = &$this->nmsgs;
 		$this->pane_args['nmsgs_show'] = ($this->nmsgs < 20 ? $this->nmsgs : 20);
 		$this->pane_args['offset'] = $I2_ARGS[1];
-		return "TJ Mail: You have {$this->nmsgs} messages";
+		$this->pane_args['nunseen'] = &$this->nunseen;
+		return "TJ Mail: {$this->nunseen} new message(s)";
 	}
 	
 	function display_pane($display) {
@@ -74,7 +75,6 @@ class Mail implements Module {
 	}
 	
 	function init_box() {
-		return FALSE;
 		if (!is_array($this->messages)) {
 			if(!self::download_msgs()) {
 				$this->box_args['err'] = TRUE;
@@ -82,8 +82,9 @@ class Mail implements Module {
 			}
 		}
 		$this->box_args['messages'] = &$this->messages;
-		$this->box_args['nmsgs'] = $this->nmsgs;
+		$this->box_args['nmsgs'] = &$this->nmsgs;
 		$this->box_args['nmsgs_show'] = ($this->nmsgs < 5 ? $this->nmsgs : 5);
+		$this->box_args['nunseen'] = &$this->nunseen;
 		return 'Mail';
 	}
 
@@ -104,6 +105,9 @@ class Mail implements Module {
 		if(($this->messages = self::get_cache()) !== FALSE) {
 			d('Using IMAP header cache',7);
 			$this->nmsgs = count($this->messages);
+			foreach($this->messages as $message) {
+				if(!$message->seen) { $this->nunseen++; }
+			}
 			return TRUE;
 		}
 		
@@ -119,10 +123,16 @@ class Mail implements Module {
 		$sorted = imap_sort($this->connection, SORTDATE, 1);
 		$this->messages = imap_fetch_overview($this->connection, implode(',',$sorted));
 
+		$this->nunseen=0;
+
 		foreach($this->messages as $message) {
 			$message->unread = $message->recent || !$message->seen;
 
-			if(strlen($message->subject) > 30) {
+			if(!$message->seen) {
+				$this->nunseen++;
+			}
+
+			if(strlen($message->subject) > 31) {
 				$message->short_subject = substr($message->subject, 0, 30);
 				$message->short_subject .= '...';
 			}
@@ -130,7 +140,7 @@ class Mail implements Module {
 				$message->short_subject = $message->subject;
 			}
 
-			if(strlen($message->from) > 15) {
+			if(strlen($message->from) > 16) {
 				$message->short_from = substr($message->from, 0, 15);
 				$message->short_from .= '...';
 			}

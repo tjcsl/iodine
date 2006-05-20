@@ -1,4 +1,3 @@
-<a href="https://mail.tjhsst.edu/"><b>Check Your TJHSST Email</b></a><br />
 <a href="http://fcps.blackboard.com/">FCPS Blackboard</a><br />
 <a href="[<$I2_ROOT>]info/resources">Online Research Resources</a><br />
 <a href="http://www.tjhsst.edu/~ccc/career.htm">College &amp; Career Center</a><br />

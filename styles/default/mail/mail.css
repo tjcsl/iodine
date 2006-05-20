@@ -1,0 +1,9 @@
+.mail_unread {
+	font-weight: bold;
+}
+td.mail_pane {
+	padding: 2px 5px;
+}
+td.mail_box {
+	padding: 1px 2px;
+}
