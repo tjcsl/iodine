@@ -17,9 +17,9 @@ mkdir /tmp/i2cache-`whoami`/smarty/templates_c
 chmod -R 777 /tmp/i2cache-`whoami`
 chmod 777 /tmp/i2cache-`whoami`/
 echo "Iodine cache dir /tmp/i2cache-`whoami`/ created and given 777 modifier... be warned."
-cat .htaccess.user | sed "s/<username>/`whoami`/g" > .htaccess
+cat .htaccess.user | sed "s/<username>/`whoami`/g" | sed "s'<home>'${HOME}'g" > .htaccess
 echo ".htaccess created"
-cat config.user.ini | sed "s/<username>/`whoami`/g" > config.ini
+cat config.user.ini | sed "s/<username>/`whoami`/g" | sed "s'<home>'${HOME}'g" > config.ini
 echo "config.ini created"
 cp scripts/update.humboldt update
 chmod +x update
@@ -27,7 +27,7 @@ echo "./update created"
 cp scripts/commit.humboldt commit
 chmod +x commit
 echo "./commit created"
-cat scripts/hgrc.humboldt | sed "s/<username>/`whoami`/g" > ${HOME}/.hgrc
+cat scripts/hgrc.humboldt | sed "s/<username>/`whoami`/g" | sed "s'<home>'${HOME}'g" > ${HOME}/.hgrc
 echo "~/.hgrc created"
 if [ ! -d "$HOME/web-docs/i2" ] ; then
 	ln -s ../intranet2 ${HOME}/web-docs/i2
