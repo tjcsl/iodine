@@ -34,7 +34,7 @@ class toggleheader implements Module {
 		global $I2_ROOT,$I2_ARGS,$I2_USER;
 		$dest = null;
 		d("Args:".print_r($I2_ARGS,1));
-		if ($I2_USER->header) {
+		if ($I2_USER->header != 'FALSE') {
 			$I2_USER->header = 'FALSE';
 		} else {
 			$I2_USER->header = 'TRUE';

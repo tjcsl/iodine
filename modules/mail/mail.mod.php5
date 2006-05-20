@@ -40,17 +40,16 @@ class Mail implements Module {
 		$this->cache_file = $cache_dir . session_id();
 
 		$timeout = i2config_get('imap_timeout','','mail');
-		/*if($timeout) {
+		if($timeout) {
 			d('Setting IMAP timeout to '.$timeout,8);
 			foreach(array(1,2,3,4) as $i) {
 				imap_timeout($i, $timeout);
 			}
-		}*/
+		}
 	}
 	
 	function init_pane() {
 		global $I2_ARGS;
-		return FALSE;
 		
 		$max_msgs = i2config_get('max_pane_msgs', 20, 'mail');
 
