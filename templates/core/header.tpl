@@ -25,11 +25,10 @@ IE7_PNG_SUFFIX = ".png";
 		[<elseif not $smarty.foreach.activities.first>]
 			,
 		[</if>]
-		[<$activity->name_r>]
-	[</foreach>]
+		[<$activity->name_r>][</foreach>].
  [<else>]
- 	There aren't any currently scheduled 8th period activities
- [</if>].
+ 	There aren't any currently scheduled 8th period activities.
+ [</if>]
  </div>
 </div>
 <div class="date">[<include file='core/menu.tpl'>]</div>

@@ -50,9 +50,14 @@ or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexan
 [</if>]
 <br />
 [<if count($user->mail)>]Personal e-mail address(es): 
- [<foreach from=$user->mail item=email>]
-  <a href="mailto:[<$email>]">[<$email|escape:'html'>]</a> 
- [</foreach>]
+[<foreach from=$user->mail item="email" name="emails">]
+	[<if $smarty.foreach.emails.last and not $smarty.foreach.emails.first>]
+		and
+	[<elseif not $smarty.foreach.emails.first>]
+		,
+	[</if>]
+	<a href="mailto:[<$email>]">[<$email|escape:'html'>]</a>
+	[</foreach>]
 [</if>]
 <br />
 <br />

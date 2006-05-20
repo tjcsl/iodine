@@ -7,13 +7,6 @@
 <input name="Submit" type="submit" value="Search" class="directory-button" />
 </td>
 </tr>
-<tr>
-<td align="center" class="directory-field">
-<em>Submit a blank query to get help.</em>
-</td><td align="center" class="directory-button">
-<a href="[<$I2_ROOT>]studentdirectory/info/[<$I2_UID>]">Your info</a>
-</td>
-</tr>
 </table>
-<div style="text-align: right"><a href="[<$I2_ROOT>]search">Advanced Search</a></div>
 </form>
+<span style="font-style: italic;"><a href="[<$I2_ROOT>]StudentDirectory/search/">Help</a> | <a href="[<$I2_ROOT>]studentdirectory/info/[<$I2_UID>]">Your info</a> | <a href="[<$I2_ROOT>]search">Advanced Search</a></span>

@@ -20,7 +20,7 @@ function options(anchor, type) {
 			"<a href='" + url + "'>Download file</a><br/>" + 
 			"<a href='" + url + "?download=zip'>Download file as ZIP</a><br/>" + 
 			"<a href=\"javascript:rename('" + file + "')\">Rename file</a><br/>" + 
-			"<a href='#'>Delete file</a>";
+			"<a href='#'>Delete file</a><br/>";
 		} else {
 			cell = row.insertCell(-1);
 			cell.id = "options";
@@ -29,7 +29,7 @@ function options(anchor, type) {
 			"<a href='" + url + "/'>Open directory</a><br/>" + 
 			"<a href='" + url + "/?download'>Download directory as ZIP</a><br/>" + 
 			"<a href=\"javascript:rename('" + file + "')\">Rename directory</a><br/>" +
-			"<a href='#'>Delete directory</a>";
+			"<a href='#'>Delete directory</a><br/>";
 		}
 		rowIndex = row.rowIndex;
 	} else {
