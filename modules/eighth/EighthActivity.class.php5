@@ -39,6 +39,7 @@ class EighthActivity {
 			$this->data = $I2_SQL->query('SELECT * FROM eighth_activities WHERE aid=%d', $activityid)->fetch_array(Result::ASSOC);
 			$this->data['sponsors'] = (!empty($this->data['sponsors']) ? explode(',', $this->data['sponsors']) : array());
 			$this->data['rooms'] = (!empty($this->data['rooms']) ? explode(',', $this->data['rooms']) : array());
+			$this->data['aid'] = $activityid;
 			if($blockid) {
 				$additional = $I2_SQL->query('SELECT bid,sponsors AS block_sponsors,rooms AS block_rooms,cancelled,comment,advertisement,attendancetaken FROM eighth_block_map WHERE bid=%d AND activityid=%d', $blockid, $activityid)->fetch_array(MYSQL_ASSOC);
 				$this->data = array_merge($this->data, $additional);

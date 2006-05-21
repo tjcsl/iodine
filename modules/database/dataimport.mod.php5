@@ -313,6 +313,7 @@ class dataimport implements Module {
 					$Nickname
 		 ) = explode('","',$line);
 			if ($studentidonly && $studentidonly != $StudentID) {
+					  $this->num++;
 					  continue;
 			}
 			/*
@@ -919,6 +920,7 @@ class dataimport implements Module {
 	}
 
 	private function import_eighth_permissions($studentidonly = FALSE) {
+		global $I2_LOG;
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 		$res = $oldsql->query('SELECT * FROM StudentActivityPermissionMap');
 		while ($row = $res->fetch_array(Result::ASSOC)) {
@@ -931,7 +933,11 @@ class dataimport implements Module {
 							 d('Bad studentid '.$row['StudentID'],3);
 							 continue;
 				  }
-				  EighthActivity::add_restricted_member_to_activity($row['ActivityID'],new User($user));
+				  //$I2_LOG->log_file('Allowing student with ID '.$row['StudentID'].' to go to activity #'.$row['ActivityID']);
+				  $act = new EighthActivity($row['ActivityID']);
+				  $act->add_restricted_member(new User($user));
+				  $I2_LOG->log_file('Allowing student with ID '.$row['StudentID'].' to go to activity #'.$row['ActivityID']);
+				  //EighthActivity::add_restricted_member_to_activity($row['ActivityID'],new User($user));
 		}
 	}
 
@@ -942,7 +948,10 @@ class dataimport implements Module {
 						 // User must be imported first
 						 $this->import_student_data(TRUE,$studentid);
 			  }
-
+			  $this->process_student_signups($studentid);
+			  $this->import_eighth_group_memberships($studentid);
+			  $this->import_eighth_permissions($studentid);
+			  $this->import_eighth_absences($studentid);
 	}
 
 	private function create_sponsor($sponsor) {
@@ -1491,6 +1500,9 @@ class dataimport implements Module {
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'fixit' && isSet($_REQUEST['doit'])) {
 			$this->init_db();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'fixuser' && isSet($_REQUEST['studentid'])) {
+			$this->fix_broken_user($_REQUEST['studentid']);
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teachers' && isSet($_REQUEST['doit'])) {
 			$this->import_teacher_data_file_one();

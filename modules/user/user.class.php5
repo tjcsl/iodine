@@ -278,7 +278,7 @@ class User {
 		}
 
 		if (!$res) {
-			d("$name not set!",1);
+			d("$name not set!",6);
 			return;
 		}
 
