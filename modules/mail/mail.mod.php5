@@ -147,10 +147,10 @@ class Mail implements Module {
 		foreach($messages as $i=>$message) {
 			$message->unread = $message->recent || !$message->seen;
 
-			if(!isset($message->subject) {
+			if(!isset($message->subject)) {
 				$message->subject = '';
 			}
-			if(!isset($message->from) {
+			if(!isset($message->from)) {
 				$message->from = '';
 			}
 
