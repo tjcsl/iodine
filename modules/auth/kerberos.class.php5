@@ -87,8 +87,7 @@ class Kerberos {
 
 		$env = array('KRB5CCNAME' => $cache);
 
-		$user = strtr($user,';><@|!%$#()~:{}[]=+\\&"/?`','                     ');
-		$user = str_replace(' ','',$user);
+		$user = escapeshellcmd($user);
 
 		$process = proc_open("/usr/bin/kinit $user@$realm", $descriptors, $pipes, NULL, $env);
 		if(is_resource($process)) {

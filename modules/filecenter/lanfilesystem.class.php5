@@ -59,6 +59,11 @@ class LANFilesystem extends Filesystem {
 			//2 => array('pipe', 'w')
 		);
 
+		// If they use these characters in their password, it's their own gosh-darned fault their login fails.
+		//$pass = strtr($pass,';|><&%$~"`\\','               ');
+		$pass = escapeshellcmd($pass);
+		$user = escapeshellcmd($user);
+
 		//TODO: figure out why ncpmount thinks it won't be given a password when run from php. Perhaps its because stdin is not tty?
 		//CONFIRMED: by wyang: ncpmount only waits on stdin if tty exists (does same if you do ssh iodine ncpmount -S ......)
 		//so maybe we should use ncpmount script that uses expect from original intranet (called stdinmnt or something)

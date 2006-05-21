@@ -25,7 +25,7 @@ class PortfolioFilesystem extends Filesystem {
 	 */
 	public function __construct($user, $pass) {
 		global $I2_USER;
-		$this->root_dir = i2config_get("samba_base_dir", "/tmp/samba/", "filecenter") . $user;
+		$this->root_dir = i2config_get('samba_base_dir', '/tmp/samba/', 'filecenter') . $user;
 
 		if (!(file_exists($this->root_dir) && isset($_SESSION['samba_mounted']))) {
 			self::smbmount($user, $pass, $this->root_dir);
@@ -60,7 +60,9 @@ class PortfolioFilesystem extends Filesystem {
 		
 		self::smbumount($mount_point);
 
-		$status = exec("smbmount //$server/$sharename $mount_point -o username=$user,password=$pass");
+		$pass = escapeshellarg($pass);
+
+		$status = exec("smbmount //$server/$sharename $mount_point -o username=\"$user\",password=$pass");
 
 		d("Mount status: $status");
 		
