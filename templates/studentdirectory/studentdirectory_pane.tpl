@@ -61,7 +61,8 @@ or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexan
 [</if>]
 <br />
 <br />
-[<if count($user->aim)>]AIM/AOL Screenname(s):
+[<if count($user->aim)>]
+AIM/AOL Screenname(s):
  <ul>
  [<foreach from=$user->aim item=aim>]
   <li><img src="[<$I2_ROOT>]www/pics/osi/[<$im_status.aim.$aim>].png" /> <a href="aim:goim?screenname=[<$aim>]">[<$aim|escape:'html'>]</a></li>
