@@ -248,9 +248,5 @@ class Groups implements Module {
 		}
 		return 'Groups: Admin';
 	}
-
-	public function display_help($disp, $args) {
-		$disp->disp('helpstuff.tpl',array('args'=>$args));
-	}
 }
 ?>

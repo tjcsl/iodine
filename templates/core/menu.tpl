@@ -7,7 +7,7 @@
   <a href="[<$I2_ROOT>]info/credits">Credits</a>
   <span class="bold">&middot;</span>
 
-  <a href="[<$I2_ROOT>]help/[<$I2_ARGSTRING>]">Help</a>
+  <a href="[<$I2_ROOT>]info/[<$I2_ARGSTRING>]">Help</a>
   <span class="bold">&middot;</span>
   <a href="[<$I2_ROOT>]logout">Logout</a>
 </div>
