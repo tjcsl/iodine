@@ -381,6 +381,9 @@ class LDAP {
 
 	public static function get_user_dn($uid = NULL) {
 		$oubase = self::$ou_bases['user'];
+		if (!$uid) {
+				  return $oubase;
+		}
 		$user = new User($uid);
 		$uid = $user->uid;
 		if($uid) {
@@ -392,6 +395,9 @@ class LDAP {
 
 	public static function get_group_dn($name = NULL) {
 		$oubase = self::$ou_bases['group'];
+		if (!$name) {
+				  return $oubase;
+		}
 		$group = new Group($name);
 		$name = $group->name;
 		if($name) {

@@ -25,7 +25,7 @@ class GroupSQL extends Group {
 	* This group's name.
 	*/
 	private $myname;
-	
+
 	/**
 	* groupname to GID mapping
 	*/
@@ -45,7 +45,6 @@ class GroupSQL extends Group {
 	* </ul>
 	*/
 	public function __get($var) {
-		global $I2_SQL;
 		switch($var) {
 			case 'gid':
 				return $this->mygid;
@@ -108,10 +107,10 @@ class GroupSQL extends Group {
 					$this->myname = $name;
 				}
 				else {
-					throw new I2Exception("Nonexistent group id $group given to the Group module");
+					throw new I2Exception("Nonexistant group id $group given to the Group module");
 				}
 			} catch(I2Exception $e) {
-				throw new I2Exception("Nonexistent group id $group given to the Group module");
+				throw new I2Exception("Nonexistant group id $group given to the Group module");
 			}
 		}
 		elseif (is_object($group)) {
@@ -130,21 +129,33 @@ class GroupSQL extends Group {
 				try {
 					$gid = Group::get_special_group($group);
 					if (!$gid) {
+						throw new I2Exception("Group lookup failure for group \"$group\"!");
 						return;
 					}
 					$this->mygid = $gid;
 					$this->myname = $group;
 				} catch (I2Exception $e) {
-					throw new I2Exception("Nonexistent group $group given to the Group module");
+					throw new I2Exception("Nonexistant group $group given to the Group module");
 				}
 			}
 		}
 	}
 
 	public function get_members() {
-		global $I2_SQL;
-
-		return flatten($I2_SQL->query('SELECT uid FROM group_user_map WHERE gid=%d',$this->mygid)->fetch_all_arrays(Result::NUM));
+		global $I2_SQL,$I2_LDAP;
+		if (!$this->special) {
+			return flatten($I2_SQL->query('SELECT uid FROM group_user_map WHERE gid=%d',$this->mygid)->fetch_all_arrays(Result::NUM));
+		}
+		if (substr($this->myname,0,6) == 'grade_') {
+				  $grade = substr($this->myname,6);
+				  $res = $I2_LDAP->search(LDAP::get_user_dn(),'graduationYear='.User::get_gradyear($grade),array('iodineUidNumber'));
+				  $ret = array();
+				  while ($uid = $res->fetch_single_value()) {
+				  		$ret[] = $uid;
+				  }
+				  return $ret;
+		}
+		throw new I2Exception('Unimplemented special group '.$this->myname.'!');
 	}
 
 	public static function get_all_groups($module = NULL) {
@@ -168,15 +179,15 @@ class GroupSQL extends Group {
 	public function add_user($user) {
 		global $I2_SQL, $I2_USER;
 
-		$user = new User($user);
-		
 		if($this->special) {
-			throw new I2Exception("Attempted to add user {$user->uid} to invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to add user {$user->uid} to special group {$this->myname}");
 		}
-		
+
 		if (!self::admin_groups()->has_member($I2_USER)) {
 			throw new I2Exception('You are not authorized to add users from groups!');
 		}
+
+		$user = new User($user);
 		
 		return $I2_SQL->query('REPLACE INTO group_user_map (gid,uid) VALUES (%d,%d)',$this->mygid,$user->uid);
 	}
@@ -185,7 +196,7 @@ class GroupSQL extends Group {
 		global $I2_SQL, $I2_USER;
 
 		if($this->special) {
-			throw new I2Exception("Attempted to remove user {$user->uid} from invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to remove user {$user->uid} from special group {$this->myname}");
 		}
 
 		if (!self::admin_groups()->has_member($I2_USER)) {
@@ -199,7 +210,7 @@ class GroupSQL extends Group {
 		global $I2_SQL;
 
 		if($this->special) {
-			throw new I2Exception("Attempted to remove all users from invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to remove all users from invalid group {$this->myname}");
 		}
 		
 		if (!self::admin_groups()->has_member($I2_USER)) {
@@ -213,7 +224,7 @@ class GroupSQL extends Group {
 		global $I2_SQL;
 
 		if($this->special) {
-			throw new I2Exception("Attempted to grant privileges to user {$user->uid} for invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to grant privileges to user {$user->uid} for invalid group {$this->myname}");
 		}
 		
 		if (!self::admin_groups()->has_member($I2_USER)) {
@@ -227,7 +238,7 @@ class GroupSQL extends Group {
 		global $I2_SQL;
 
 		if($this->special) {
-			throw new I2Exception("Attempted to revoke privileges from user {$user->uid} for invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to revoke privileges from user {$user->uid} for invalid group {$this->myname}");
 		}
 		
 		if (!self::admin_groups()->has_member($I2_USER)) {
@@ -241,7 +252,7 @@ class GroupSQL extends Group {
 		global $I2_SQL;
 		
 		if($this->special) {
-			throw new I2Exception("Attempted to list privileges for user {$user->uid} in invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to list privileges for user {$user->uid} in invalid group {$this->myname}");
 		}
 
 		return $I2_SQL->query('SELECT permission FROM groups_perms WHERE uid=%d AND gid=%d', $user->uid, $this->mygid);
@@ -251,7 +262,7 @@ class GroupSQL extends Group {
 		global $I2_SQL;
 
 		if($this->special) {
-			throw new I2Exception("Attempted to see if user {$user->uid} has permission $perm in invalid group {$this->mygid}");
+			throw new I2Exception("Attempted to see if user {$user->uid} has permission $perm in invalid group {$this->myname}");
 		}
 		
 		// admin_all has all permissions
@@ -309,6 +320,10 @@ class GroupSQL extends Group {
 		global $I2_SQL;
 		$ret = array();
 
+		if ($user->uid != $I2_USER->uid && Group::admin_groups()->has_member($I2_USER)) {
+				  throw new I2Exception('Information leak: you may not fetch another student\'s group memberships.');
+		}
+
 		if($perms && !is_array($perms)) {
 			$perms = array($perms);
 		}
@@ -356,7 +371,7 @@ class GroupSQL extends Group {
 
 		/*
 		** Any user with the admin password is allowed to create groups; this allows bootstrapping
-		** and his minimal ill side effects (ideally, no one knows/uses the admin password except 8th pd.)
+		** and has minimal ill side effects (ideally, no one knows/uses the admin password except 8th pd.)
 		*/
 		if(		!$I2_AUTH->used_master_password()
 				&& !Group::admin_groups()->has_member($GLOBALS['I2_USER']) 

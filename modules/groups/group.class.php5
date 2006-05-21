@@ -64,9 +64,6 @@ class Group {
 		return self::$admin_mysql;
 	}
 
-	private $mygid;
-	private $myname;
-
 	public function __get($var) {
 		return $this->wrap->__get($var);
 	}

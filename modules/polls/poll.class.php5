@@ -74,12 +74,12 @@ class Poll {
 		$this->myenddt = $pollinfo['enddt'];
 
 		$this->myquestions = array();
-		foreach($I2_SQL->query('SELECT qid FROM poll_questions WHERE qid > %d AND qid < %d ORDER BY qid ASC', $pid, self::upper_bound($pid))->fetch_col('qid') as $qid) {
-			$this->myquestions[] = new PollQuestion($pid, $qid);
+		foreach($I2_SQL->query('SELECT qid FROM poll_questions WHERE qid > %d AND qid < %d ORDER BY qid ASC', self::lower_bound($pid), self::upper_bound($pid))->fetch_col('qid') as $qid) {
+			$this->myquestions[] = new PollQuestion($qid);
 		}
 		
 		$this->mygroups = array();
-		foreach ($I2_SQL->query('SELECT gid FROM group_poll_map WHERE pid=%d', $pid)->fetch_col('gid') as $gid) {
+		foreach ($I2_SQL->query('SELECT gid FROM poll_group_map WHERE pid=%d', $pid)->fetch_col('gid') as $gid) {
 			$this->mygroups[] = new Group($gid);
 		}
 	}
@@ -88,7 +88,14 @@ class Poll {
 	* Gets the maximum possible value a qid may have while still pertaining to a poll, plus one
 	*/
 	public static function upper_bound($pid) {
-			  return $pid*1000+1000;
+			  return self::lower_bound($pid)+1000;
+	}
+
+	/**
+	* Gets the minimum possible value a qid may have while still pertaining to a poll, minus one
+	*/
+	public static function lower_bound($pid) {
+			  return $pid*1000;
 	}
 
 	public static function check_admin() {
@@ -154,7 +161,7 @@ class Poll {
 		self::check_admin();
 
 		$this->groups = array();
-		$I2_SQL->query('DELETE FROM group_poll_map WHERE pid=%d', $this->pid);
+		$I2_SQL->query('DELETE FROM poll_group_map WHERE pid=%d', $this->pid);
 
 		foreach ($gids as $gid) {
 			$gid = trim($gid);
@@ -172,7 +179,7 @@ class Poll {
 	public function add_group($gid) {
 		global $I2_SQL;
       self::check_admin();
-		$I2_SQL->query('INSERT INTO group_poll_map (gid,pid) VALUES(%d,%d)',$gid,$this->pid);
+		$I2_SQL->query('INSERT INTO poll_group_map (gid,pid) VALUES(%d,%d)',$gid,$this->pid);
 	}
 
 	/**
@@ -181,7 +188,7 @@ class Poll {
 	public function remove_group($gid) {
 		global $I2_SQL;
 		self::check_admin();
-		$I2_SQL->query('DELETE FROM group_poll_map WHERE gid=%d AND pid=%d',$gid,$this->pid);
+		$I2_SQL->query('DELETE FROM poll_group_map WHERE gid=%d AND pid=%d',$gid,$this->pid);
 	}
 
 	/**
@@ -203,8 +210,8 @@ class Poll {
 	* @param string $dt The date/time, in format YYYY-MM-DD HH:MM:SS
 	*/
 	public function set_end_datetime($dt) {
-			  global $I2_SQL;
-			  self::check_admin();
+	   global $I2_SQL;
+		self::check_admin();
 		
 		$this->myenddt = $dt;
 		$I2_SQL->query('UPDATE polls SET enddt=%s WHERE pid=%d', $dt, $this->pid);
@@ -234,7 +241,7 @@ class Poll {
 		for ($k = 0; $k < count($this->questions); $k++) {
 			if ($this->questions[$k]->qid == $qid) {
 				array_splice($this->questions, $k, 1);
-				PollQuestion::delete_question($this->pid, $qid);
+				PollQuestion::delete_question($qid);
 				break;
 			}
 		}
@@ -305,6 +312,19 @@ class Poll {
 	}
 
 	/**
+	* Returns the maximum number an answer may have while belonging to this poll, plus one.
+	*/
+	public static function answer_upper_bound($pid) {
+			  return self::answer_lower_bound($pid)+1000;
+	}
+
+	/**
+	* Returns the minimum number an answer may have while belonging to this poll, minus one.
+	*/
+	public static function answer_lower_bound($pid) {
+			  return 100000*$pid;
+	}
+	/**
 	* Deletes a poll.
 	*
 	* @param integer $pid The id of the poll to remove
@@ -313,10 +333,10 @@ class Poll {
 		global $I2_SQL;
 
 		$I2_SQL->query('DELETE FROM polls WHERE pid=%d', $pid);
-		$I2_SQL->query('DELETE FROM poll_questions WHERE pid=%d', $pid);
-		$I2_SQL->query('DELETE FROM poll_answers WHERE pid=%d', $pid);
-		$I2_SQL->query('DELETE FROM poll_votes WHERE pid=%d', $pid);
-		$I2_SQL->query('DELETE FROM group_poll_map WHERE pid=%d', $pid);
+		$I2_SQL->query('DELETE FROM poll_questions WHERE qid > %d AND qid < %d', self::lower_bound($pid), self::upper_bound($pid));
+		$I2_SQL->query('DELETE FROM poll_answers WHERE aid >= %d AND aid < %d', self::answer_lower_bound($pid), self::answer_upper_bound($pid));
+		$I2_SQL->query('DELETE FROM poll_votes WHERE aid >= %d AND aid < %d', self::answer_lower_bound($pid), self::answer_upper_bound($pid));
+		$I2_SQL->query('DELETE FROM poll_group_map WHERE pid=%d', $pid);
 	}
 
 	/**

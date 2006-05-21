@@ -4,11 +4,12 @@
 <input type="hidden" name="poll_edit_form" value="question" />
 <input type="hidden" name="qid" value="[<$question->qid>]" />
 <input type="submit" value="Update" name="submit">
-Question: <input type="text" name="question" value="[<$question->question>]" /><br />
+Question: <textarea rows="5" cols="80" name="question">[<$question->question|escape:"html">]</textarea><br />
 </form>
 Max Votes (0 for unlimited): <input type="text" name="maxvotes" value="[<$question->maxvotes>]" /><br />
 [<foreach from=$question->answers key=aid item=answer>]
-Answer: [<$answer>] <a href="[<$I2_ROOT>]poll/edit/[<$pid>]/[<$qid>]/[<$aid>]">Edit</a> <a href="[<$I2_ROOT>]poll/delete/[<$pid>]/[<$qid>]/[<$aid>]">Remove</a>
+Answer: [<$answer>] <a href="[<$I2_ROOT>]polls/edit/[<$pid>]/[<$qid>]/[<$aid>]">Edit</a> <a href="[<$I2_ROOT>]polls/delete/[<$pid>]/[<$qid>]/[<$aid>]">Remove</a><br />
 [</foreach>]<br />
+<a href="[<$I2_ROOT>]polls/add/[<$pid>]/[<$qid>]">Add an answer</a>
 </form>
 

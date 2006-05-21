@@ -114,9 +114,7 @@ class Polls implements Module {
 		foreach ($poll->questions as $q) {
 			$question = array();
 			$question['text'] = $q->question;
-			if ($q->maxvotes != 1) {
-				$question['approval'] = TRUE;
-			}
+			$question[$q->type] = TRUE;
 
 			$voters = $q->users_who_voted();
 			$question['voters'] = count($voters);
@@ -126,13 +124,15 @@ class Polls implements Module {
 
 			foreach ($q->answers as $aid => $text) {
 				$answer = array('text' => $text, 'votes' => 0);
-				foreach ($voters as $voter) {
-					if ($q->user_voted_for($aid, $voter)) {
-						$question['total']++;
-						$answer['votes']++;
-					}
+				$num = PollQuestion::get_num_votes($aid);
+				$question['total'] += $num;
+				$answer['votes'] += $num;
+				d($answer['votes'].' votes for aid '.$aid,1);
+				if ($question['voters'] != 0) {
+					$answer['percent'] = $answer['votes'] / $question['voters'] * 100;
+				} else {
+					$answer['percent'] = 'NA';
 				}
-				$answer['percent'] = $answer['votes'] / $question['voters'] * 100;
 				$question['answers'][] = $answer;
 			}
 			$this->template_args['questions'][] = $question;
@@ -186,8 +186,16 @@ class Polls implements Module {
 			}
 
 		}
-		
-		if (isset($I2_ARGS[2])) {
+		if (isSet($I2_ARGS[3])) {
+			if (isSet($_REQUEST['answer'])) {
+					  PollQuestion::add_answer_to_question($I2_ARGS[3],$_REQUEST['answer']);
+					  redirect('polls/edit/'.$I2_ARGS[2].'/'.$I2_ARGS[3]);
+			}
+			$this->template = 'polls_add_answer.tpl';
+			$this->template_args['pid'] = $I2_ARGS[2];
+			$this->template_args['qid'] = $I2_ARGS[3];
+			$this->template_args['question'] = new PollQuestion($this->template_args['qid']);
+		} elseif (isset($I2_ARGS[2])) {
 			$this->template = 'polls_add_question.tpl';
 			$this->template_args['pid'] = $I2_ARGS[2];
 		}
@@ -240,12 +248,17 @@ class Polls implements Module {
 			}
 		}
 		if (isset($I2_ARGS[4])) {
+		   if (isSet($_REQUEST['answer'])) {
+					  PollQuestion::change_answer($I2_ARGS[4],$_REQUEST['answer']);
+					  redirect('polls/edit/'.$I2_ARGS[2].'/'.$I2_ARGS[3]);
+			}
 			$this->template_args['aid'] = $I2_ARGS[4];
 			$this->template = 'polls_edit_answer.tpl';
-			$this->template_args['question'] = new PollQuestion($I2_ARGS[2], $I2_ARGS[3]);
+			$this->template_args['question'] = new PollQuestion($I2_ARGS[3]);
+			$this->template_args['answer'] = PollQuestion::get_answer_text($this->template_args['aid']);
 		} elseif (isset($I2_ARGS[3])) {
 			$this->template = 'polls_edit_question.tpl';
-			$this->template_args['question'] = new PollQuestion($I2_ARGS[2], $I2_ARGS[3]);
+			$this->template_args['question'] = new PollQuestion($I2_ARGS[3]);
 		}
 		else {
 			$this->template = 'polls_edit.tpl';
@@ -278,9 +291,13 @@ class Polls implements Module {
 				$poll->delete_question($I2_ARGS[3]);
 				$this->template_args['deleted'] = TRUE;
 			}
+			if ($_REQUEST['polls_delete_form'] == 'delete_answer') {
+				PollQuestion::delete_answer($I2_ARGS[4]);
+				$this->template_args['deleted'] = TRUE;
+			}
 		}
 		if (isset($I2_ARGS[4])) {
-				  $this->template = 'polls_delete_answer.tpl';
+			$this->template = 'polls_delete_answer.tpl';
 		}
 		elseif (isset($I2_ARGS[3])) {
 			$this->template = 'polls_delete_question.tpl';

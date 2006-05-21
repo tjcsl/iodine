@@ -218,7 +218,7 @@ class User {
 			/*case 'iodineUid':
 				return $this->username;*/
 			case 'grade':
-				return $this->get_grade($this->__get('graduationYear'));
+				return self::get_grade($this->__get('graduationYear'));
 			case 'phone_home':
 				$phone = $this->__get('homePhone');
 				return '(' . substr($phone, 0, 3) . ') ' . substr($phone, 3, 3) . '-' . substr($phone, 6);
@@ -293,15 +293,31 @@ class User {
 	* @param int $gradyear The year in which the student will graduate.
 	* @return int The student's grade, 9-12, or -1 if other.
 	*/
-	public function get_grade($gradyear) {
-		if (!$gradyear) {
+	public static function get_grade($gradyear) {
+	   if (!$gradyear) {
+			d('False gradyear passed to get_grade',5);
 			return -1;
 		}
 		$grade = ((int)i2config_get('senior_gradyear','foobertybroken','user'))-((int)$gradyear)+12;
 		if ($grade >= 9 && $grade <= 12) {
 			return $grade;
 		}
+		d('Gradyear out-of-bounds passed to get_grade',5);
 		return -1;
+	}
+
+	/**
+	* Gets the graduation year of a student based on their current grade.
+	*
+	* @param int $grade The student's current grade
+	* @return int The graduation year of the student
+	*/
+	public static function get_gradyear($grade) {
+			  if (!$grade || $grade < 9 || $grade > 12) {
+						 d('Grade out-of-bounds passed to get_gradyear',5);
+			  }
+			  $gradyear = ((int)i2config_get('senior_gradyear','ntohurchouorchu','user'))-((int)$grade)+12;
+			  return $gradyear;
 	}
 
 	/**
@@ -540,20 +556,150 @@ class User {
 	}
 
 	/**
+	* Provides legacy Intranet 1 powersearching.
+	* I firmly believe that the transparent modern searching style performed by search_info is superior.
+	* However, to keep the yearbook happy, this familiar style has been implemented.
+	* @param string $str The Intranet-1 style search string (fieldname:value), with wildcards etc.
+	* @param arary $grades The grades to search (overrides grade:)
+	* @return array An array of {@link User} objects representing the results, or an empty array if no matches.
+	*/
+	public static function search_info_legacy($str,$grades=FALSE) {
+			  global $I2_LDAP;
+			  /*
+			  ** Map things users would type into LDAP attributes
+			  */
+			  $maptable = array(
+						 'firstname' => 'givenName',
+						 'first' => 'givenName',
+						 'lastname' => 'sn',
+						 'last' => 'sn',
+						 'firstnamesound' => 'soundexfirst',
+						 'lastnamesound' => 'soundexlast',
+						 'city' => 'l',
+						 'town' => 'l',
+						 'middle' => 'mname',
+						 'phone' => 'homePhone',
+						 'cell' => 'mobile',
+						 'telephone' => 'homePhone',
+						 'address' => 'street'
+			  );
+
+			  $soundexed = array(
+						 'soundexfirst' => 1,
+						 'soundexlast' => 1
+			  );
+
+			  /*
+			  ** Construct query in three parts: prefix + infix + postfix
+			  */
+
+			  $prefix = '';
+			  $postfix = '';
+			  $infix = '';
+			  $ormode = FALSE;
+	   	  if ($grades) {
+				  $prefix = '(&(|';
+				  foreach ($grades as $grade) {
+							 $prefix .= "(graduationYear=$grade)";
+				  }
+				  $prefix .= ')';
+				  $postfix = ')';
+			  }
+			  
+			  $separator = " \t";
+
+			  $tok = strtok($str,$separator);
+
+			  while ($tok !== FALSE) {
+					$colonpos = strpos($str,':');
+					$key = FALSE;
+					$eq = '=';
+					if ($colonpos == 0) {
+							  //Invalid: leading colon
+							  $colonpos = -1;
+							  $tok = str_replace(':','',$tok);
+					}
+				   if	($colonpos == strlen($tok)-1) {
+							  // Invalid: trailing colon
+							  // Assume blah:*
+							  $tok .= '*';
+					}
+					if ($colonpos) {
+							  $boom = explode(':',$str);
+							  if (count($boom) > 2) {
+								  // Invalid: more than one colon
+								  $tok = str_replace(':','',$tok);
+							  } else {
+										 $key = $boom[0];
+										 //Apply attributename translation
+										 if (isSet($maptable[$key])) {
+													$key = $maptable[$key];
+										 }
+										 $tok = $boom[1];
+										 $poteq = substr($tok,0,1);
+										 // Check if gt or lt was specified instead of equals
+										 switch ($poteq) {
+										 	 case '>':
+													$eq = '>=';
+										 	 case '<':
+													$eq = '<=';
+											 case '=':
+											   // Strip character - this is run for gt,lt,and specified eq
+											   $tok = substr($tok,1);
+												break;
+											 default:
+												break;								
+										 }
+							  }
+					}
+					if (isSet($key)) {
+							  // We know what we're trying to search for
+							  if (isSet($soundexed[strtolower($key)])) {
+										 $tok = soundex($tok);
+							  }
+							  $prefix = '(&'.$prefix;
+							  $infix .= '('.$key.$eq.$tok.')';
+							  $postfix .= ')';
+					} else {
+							  if (strcasecmp($tok,'OR') == 0) {
+										 $ormode = TRUE;
+										 // User wants an OR for these search terms
+										 continue;
+							  }
+							  if ($ormode) {
+								  $prefix = '(&'.$prefix;
+								  $postfix .= ')';
+								  $infix .= "(|(iodineUid=$tok)(sn=$tok)(mname=$tok)(givenName=$tok))";
+								  $ormode = FALSE;
+							  }
+					}
+			  		$tok = strtok($str,$separator);
+			  }
+			  $res = $I2_LDAP->search(LDAP::get_user_dn(),$prefix.$infix.$postfix,array('iodineUid'))->fetch_all_single_values();
+			  return self::sort_users($res);
+	}
+
+	/**
 	* Search for users based on their information.
 	*
 	* @param string $str The search string.
 	* @param array $grades An array of graduation years to find results for
+	* @param boolean $old_style Whether to perform Intranet-1 style power searches
+	* 									 (or the best possible approximation thereof)
 	* @return array An array of {@link User} objects of the results. An
 	* empty array is returned if no match is found.
 	* @todo Improve drastically
 	*/
-	public static function search_info($str,$grades=NULL) {
+	public static function search_info($str,$grades=NULL,$old_style=FALSE) {
 		global $I2_LDAP;
-		d("search_info: $str",4);
+		d("search_info: $str".$old_style?' (legacy)':'',6);
 
 		if ($grades && !is_array($grades)) {
 				  $grades = explode(',',$grades);
+		}
+
+		if ($old_style) {
+			return self::search_info_legacy($str,$grades);
 		}
 
 		$newgrades = '(graduationYear=*)';
@@ -567,6 +713,9 @@ class User {
 		}
 
 		//FIXME: improve, close hole?
+		// Note from BRJ: Because we do server-side access control, the negative effects of LDAP code injection are minimal.
+		// They can create custom search strings, but they can't get any info they shouldn't have access to anyhow, and
+		// generating invalid search queries (thus causing errors) does no harm to anybody.
 		//$str = addslashes($str);
 
 		$str = trim($str);
@@ -597,10 +746,10 @@ class User {
 			$preres = array();
 
 
-			while ($tok) {
+			while ($tok !== FALSE) {
 				$soundex = soundex($tok);
 
-				$res = $I2_LDAP->search('ou=people',
+				$res = $I2_LDAP->search(LDAP::get_user_dn(),
 				"(&(|(soundexFirst=$soundex)(soundexLast=$soundex)(givenName=*$tok*)(sn=*$tok*)(iodineUid=*$tok*)(mname=*$tok*))$newgrades)"
 				,array('iodineUid'));
 

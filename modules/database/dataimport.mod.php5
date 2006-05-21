@@ -1061,7 +1061,7 @@ class dataimport implements Module {
 		$I2_SQL->query('DELETE FROM scratchpad');
 		$I2_SQL->query('DELETE FROM polls');
 		$I2_SQL->query('DELETE FROM poll_votes');
-		$I2_SQL->query('DELETE FROM group_poll_map');
+		$I2_SQL->query('DELETE FROM poll_group_map');
 		$I2_SQL->query('DELETE FROM groups_perms');
 		/*
 		** This stuff needs to come last so we retain privs to the bitter end
@@ -1206,16 +1206,18 @@ class dataimport implements Module {
 
 	private function clean_polls() {
 			  global $I2_SQL;
-			  $I2_SQL->query('DELETE FROM polls');
-			  $I2_SQL->query('DELETE FROM poll_questions');
-			  $I2_SQL->query('DELETE FROM poll_answers');
+			  $I2_SQL->query('TRUNCATE TABLE polls');
+			  $I2_SQL->query('TRUNCATE TABLE poll_questions');
+			  $I2_SQL->query('TRUNCATE TABLE poll_answers');
+			  $I2_SQL->query('TRUNCATE TABLE poll_group_map');
+			  $I2_SQL->query('TRUNCATE TABLE poll_votes');
 	}
 
 	/**
 	* Import poll data
 	*/
 	private function import_polls() {
-			global $I2_SQL;
+			global $I2_SQL, $I2_LOG;
 			$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 			$answerstopolls = array();
 			$answerstoquestions = array();
@@ -1227,12 +1229,15 @@ class dataimport implements Module {
 					  $questions = explode(',',$row['Polls']);
 					  $pollname = $row['GroupName'];
 					  $pollid = $row['GroupID'];
+					  foreach ($questions as $questionid) {
+							$questionstopolls[$questionid] = $pollid;
+					  }
 					  $pollstart = NULL;
 					  $pollend = NULL;
 					  $showpoll = TRUE;
 					  foreach ($questions as $questionid) {
 							$qres = $oldsql->query('SELECT * FROM PollInfo WHERE PollID=%d',$questionid)->fetch_array(Result::ASSOC);
-							list($questionid,$questionname,$questionstart,$questionend,$showresults,$type,$clases,$showquestion,$question,$maxvotes) =
+							list($questionid,$questionname,$questionstart,$questionend,$showresults,$type,$classes,$showquestion,$question,$maxvotes) =
 									  array(
 												 $qres['PollID'],$qres['PollName'],$qres['StartDatetime'],$qres['EndDatetime'],$qres['ShowResults'],
 												 $qres['Type'],$qres['Classes'],$qres['ShowPollBox'],$qres['PollQuestion'],$qres['MaxVotes']
@@ -1265,22 +1270,23 @@ class dataimport implements Module {
 							$ares = $oldsql->query('SELECT * FROM PollOptionInfo WHERE PollID=%d',$questionid);
 							while ($arow = $ares->fetch_array(Result::ASSOC)) {
 									  list($answerid,$answer) = array($arow['OptionID'],$arow['OptionName']);
-									  $answerstopolls[$answerid] = $pollid;
-									  $answerstoquestions[$answerid] = $questionid;
 									  // Noncolliding unique number (I hope)
 									  $answerid = 1000000*$pollid+1000*$questionid+$answerid;
-									  $I2_SQL->query('INSERT INTO poll_answers (aid,answer) VALUES(%d,%s)',
+									  $I2_SQL->query('REPLACE INTO poll_answers (aid,answer) VALUES(%d,%s)',
 												 	$answerid,$answer
 												 );
 							}
 							$questionid = 1000*$pollid+$questionid;
-							$I2_SQL->query('INSERT INTO poll_questions (qid,maxvotes,question,answertype) VALUES(%d,%d,%s,%s)',
-									  	$questionid,$maxvotes,$questionname,$type
+							if (empty($question)) {
+									  $question = $questionname;
+							}
+							$I2_SQL->query('REPLACE INTO poll_questions (qid,maxvotes,question,answertype) VALUES(%d,%d,%s,%s)',
+									  	$questionid,$maxvotes,$question,$type
 									  );
 					  }
-			  		  $I2_SQL->query('INSERT INTO polls SET pid=%d,name=%s,introduction=%s,visible=%d,startdt=%T,enddt=%T',
-						  $pollid,$pollname,$pollname,$showpoll?1:0,$pollstart?$pollstart:'1900-01-01 00:00:00',$pollend?$pollend:'3000-01-01 00:00:00');
-
+			  		  $I2_SQL->query('REPLACE INTO polls SET pid=%d,name=%s,introduction=%s,visible=%d,startdt=%T,enddt=%T',
+							$pollid,$pollname,$pollname,$showpoll?1:0,$pollstart?$pollstart:'1900-01-01 00:00:00',$pollend?$pollend:'3000-01-01 00:00:00');
+					  $this->import_poll_permissions($pollid,$classes);
 			}
 			/*
 			** Import user votes
@@ -1288,14 +1294,47 @@ class dataimport implements Module {
 			$res = $oldsql->query('SELECT * FROM StudentPollMap');
 			while ($row = $res->fetch_array(Result::ASSOC)) {
 					  list($studentid,$questionid,$answerid) = array($row['StudentID'],$row['PollID'],$row['OptionID']);
-					  $user = new User($studentid);
+					  $user = User::studentid_to_uid($studentid);
 					  if (!$user) {
 								 d('Invalid studentid '.$studentid,3);
+								 continue;
 					  }
-					  $answerid = 1000000*$answerstopolls[$answerid]+1000*$answerstoquestions[$answerid]+$answerid;
-					  $I2_SQL->query('INSERT INTO poll_votes SET uid=%d,aid=%d',$user->uidnumber,$answerid);
+					  $user = new User($user);
+					  if (isSet($questionstopolls[$questionid])) {
+						  $aid = 1000000*$questionstopolls[$questionid]+1000*$questionid+$answerid;
+						  $I2_LOG->log_file('Student '.$studentid.' voted for answer '.$aid);
+						  $I2_SQL->query('REPLACE INTO poll_votes SET uid=%d,aid=%d',$user->uid,$aid);
+					  } else {
+							$I2_LOG->log_file('Discarding answer '.$answerid.' to question '.$questionid);
+					  }
 			}
 	}
+
+	private function import_poll_permissions($pollid,$classes) {
+			  global $I2_SQL;
+				     /*
+					  ** I have no clue whatsover what's going on with the 'Classes' attribute
+					  ** It looks like a bitshifting combination
+					  ** I'll just copy some Intranet 1 code and translate to poll_group mappings, hoping it'll work.
+					  */
+					  $seniorgroup = new Group('grade_12');
+					  $juniorgroup = new Group('grade_11');
+					  $sophomoregroup = new Group('grade_10');
+					  $freshmangroup = new Group('grade_9');
+					  if ($classes & (1<<3)) {
+								 $I2_SQL->query('REPLACE INTO poll_group_map SET pid=%d,gid=%d',$pollid,$seniorgroup->gid);
+					  }
+					  if ($classes & (1<<2)) {
+								 $I2_SQL->query('REPLACE INTO poll_group_map SET pid=%d,gid=%d',$pollid,$juniorgroup->gid);
+					  }
+					  if ($classes & (1<<1)) {
+								 $I2_SQL->query('REPLACE INTO poll_group_map SET pid=%d,gid=%d',$pollid,$sophomoregroup->gid);
+					  }
+					  if ($classes & (1<<0)) {
+								 $I2_SQL->query('REPLACE INTO poll_group_map SET pid=%d,gid=%d',$pollid,$freshmangroup->gid);
+					  }
+	}
+
 
 	/**
 	* Final post-import tasks which need to be run
