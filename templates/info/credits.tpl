@@ -50,7 +50,6 @@ I2 (codename Iodine) Development Team:
 	<li>Jack "jbreese" Breese (2008)</li>
 	<li>Nathan Watson (2008)</li>
 	<li>William "wyang" Yang (2008)</li>
-	<li>(Add your own name or nickname if you or it are not listed.)</li>
 </ul>
 
 I2 User Experience Technicians:
