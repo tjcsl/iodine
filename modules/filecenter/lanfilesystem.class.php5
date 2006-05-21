@@ -42,7 +42,7 @@ class LANFilesystem extends Filesystem {
 	private static function ncpmount($user, $pass, $volume, $mount_point) {
 		$server = i2config_get('novell_server', 'TECHNOLOGY', 'filecenter');
 
-		d("Mounting $volume@$server to $mount_point as $user");
+		d("Mounting $volume@$server to $mount_point as $user",7);
 		
 		if (!file_exists($mount_point)) {
 			d('Creating mount-point');

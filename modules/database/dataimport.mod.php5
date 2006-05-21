@@ -271,9 +271,9 @@ class dataimport implements Module {
 	}
 
 	/** 
-	* Import student data from a SASI dump file (intranet.##a) into $datatable;
+	* Import student data from a SASI dump file (intranet.##a) into LDAP
 	*/
-	private function import_student_data($do_old_intranet=TRUE) {
+	private function import_student_data($do_old_intranet=TRUE, $studentidonly = FALSE) {
 		global $I2_LOG;	
 		
 		$ldap = LDAP::get_admin_bind($this->admin_pass);
@@ -311,7 +311,10 @@ class dataimport implements Module {
 					$Zip, 
 					$Couns,
 					$Nickname
-					) = explode('","',$line);
+		 ) = explode('","',$line);
+			if ($studentidonly && $studentidonly != $StudentID) {
+					  continue;
+			}
 			/*
 			** We need to strip the first and last quotation marks
 			** and escape the ' symbols where appropriate
@@ -407,10 +410,12 @@ class dataimport implements Module {
 				$student['showmap'] = $res['Map']==1?'TRUE':'FALSE';
 
 			}
-			$this->usertable[] = $student;
-			$numlines++;
-			if ($numlines % 100 == 0) {
-				$I2_LOG->log_file("-$numlines-");
+			if ($student) {
+				$this->usertable[] = $student;
+				$numlines++;
+				if ($numlines % 100 == 0) {
+					$I2_LOG->log_file("-$numlines-");
+				}
 			}
 		}
 		d("$numlines users imported.",6);
@@ -485,10 +490,6 @@ class dataimport implements Module {
 			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid,box_order,closed) VALUES(%d,%d,%d,%d)',$teacher['uid'],$boxid,$count,0);
 			$count++;
 		}
-	}
-
-	private function repair_user($uid) {
-		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 	}
 
 	/**
@@ -787,7 +788,7 @@ class dataimport implements Module {
 		return array($numactivities,$numrooms);
 	}	
 
-	private function process_student_signups() {
+	private function process_student_signups($studentidonly = FALSE) {
 	   global $I2_LOG;
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 		
@@ -821,6 +822,9 @@ class dataimport implements Module {
 		while ($res->more_rows()) {
 			$a = $res->fetch_array(Result::ASSOC);
 			list($studentid,$aid,$date,$block) = array($a['StudentID'],$a['ActivityID'],$a['ActivityDate'],$a['ActivityBlock']);
+			if ($studentidonly && $studentid != $studentidonly) {
+					  continue;
+			}
 			$activity = new EighthActivity($aid);
 			$bid = EighthBlock::add_block($date,$block,FALSE);
 			if (!isSet($studentids[$studentid])) {
@@ -842,7 +846,7 @@ class dataimport implements Module {
 		return $numactivitiesentered;
 	}
 
-	private function import_eighth_absences() {
+	private function import_eighth_absences($studentidonly = FALSE) {
 		global $I2_LOG;
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 		/*
@@ -851,6 +855,9 @@ class dataimport implements Module {
 		$numabsences = 0;
 		$res = $oldsql->query("SELECT * FROM StudentAbsences");
 		while ($row = $res->fetch_array(Result::ASSOC)) {
+			if ($studentidonly && $studentidonly != $row['StudentID']) {
+							 continue;
+			}
 			$uid = User::to_uidnumber($row['StudentID']);
 			//d(print_r($row,1).':'.$uid,6);
 			if (!$uid) {
@@ -885,7 +892,7 @@ class dataimport implements Module {
 	}
 
 
-	private function import_eighth_group_memberships() {
+	private function import_eighth_group_memberships($studentidonly = FALSE) {
 		global $I2_LOG;
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 		/*
@@ -896,7 +903,7 @@ class dataimport implements Module {
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 				  $group = new Group($row['GroupID']);
 				  // Must be cautious about students no longer at the school, junk data, etc.
-				  if (!$row['StudentID']) {
+				  if (!$row['StudentID'] || ($studentidonly && $studentidonly != $row['StudentID'])) {
 							 continue;
 				  }
 				  $uid = User::to_uidnumber($row['StudentID']);
@@ -911,11 +918,13 @@ class dataimport implements Module {
 		return $numgroupmembers;
 	}
 
-	private function import_eighth_permissions() {
-		global $I2_SQL;
+	private function import_eighth_permissions($studentidonly = FALSE) {
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 		$res = $oldsql->query('SELECT * FROM StudentActivityPermissionMap');
 		while ($row = $res->fetch_array(Result::ASSOC)) {
+				  if ($studentidonly && $studentidonly != $row['StudentID']) {
+							 continue;
+				  }
 				  $user = User::studentid_to_uid($row['StudentID']);
 				  // Arr, bad Intranet 1 data!
 				  if (!$user) {
@@ -924,6 +933,16 @@ class dataimport implements Module {
 				  }
 				  EighthActivity::add_restricted_member_to_activity($row['ActivityID'],new User($user));
 		}
+	}
+
+	private function fix_broken_user($studentid) {
+			  $oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
+			  $uid = User::studentid_to_uid($studentid);
+			  if (!$uid) {
+						 // User must be imported first
+						 $this->import_student_data(TRUE,$studentid);
+			  }
+
 	}
 
 	private function create_sponsor($sponsor) {
