@@ -35,6 +35,6 @@ Restricted Members of [<$activity->name>]<br />
 [<foreach from=$groups item="group">]
 		<option value="[<$group->gid>]">[<$group->name|replace:"eighth_":"">]</option>
 [</foreach>]
-	</select><input type="submit" value="Add Group" />
+	</select><br /><input type="submit" value="Add Group" />
 </form>
 </td></tr></table>
