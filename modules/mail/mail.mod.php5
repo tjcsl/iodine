@@ -150,10 +150,10 @@ class Mail implements Module {
 			$message->unread = $message->recent || !$message->seen;
 
 			if(!isset($message->subject)) {
-				$message->subject = '';
+				$message->subject = "(no subject)";
 			}
 			if(!isset($message->from)) {
-				$message->from = '';
+				$message->from = "(no name)";
 			}
 
 			if(strlen($message->subject) > 31) {
