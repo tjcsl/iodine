@@ -130,7 +130,7 @@ class Mail implements Module {
 		d("Not using IMAP cache, downloading messages from $path",6);
 		$this->connection = imap_open($path, $_SESSION['i2_username'], $I2_AUTH->get_user_password());
 		if (! $this->connection) {
-			d('IMAP connection failed', 3);
+			d('IMAP connection failed: ' . imap_last_error(), 3);
 			return FALSE;
 		}
 
