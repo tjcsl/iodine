@@ -1,5 +1,6 @@
 [<include file="eighth/header.tpl">]
 Restricted Members of [<$activity->name>]<br />
+<table><tr><td>
 <table cellpadding="0" cellspacing="0" style="border: 0px;">
 	<tr>
 		<th style="padding: 0px 5px;">Name</th>
@@ -21,6 +22,7 @@ Restricted Members of [<$activity->name>]<br />
 		<td></td>
 		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/alt_permissions/remove_all/aid/[<$activity->aid>]">Remove All</a></td>
 </table>
+</td><td style="vertical-align: top;">
 	<fieldset style="width: 250px;">
 	[<if isSet($search_destination)>]
 		[<include file="search/search_pane.tpl">]
@@ -35,3 +37,4 @@ Restricted Members of [<$activity->name>]<br />
 [</foreach>]
 	</select><input type="submit" value="Add Group" />
 </form>
+</td></tr></table>
