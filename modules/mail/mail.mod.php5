@@ -122,6 +122,7 @@ class Mail implements Module {
 	private function download_msgs($offset, $length) {
 		global $I2_AUTH;
 		if( ! $I2_AUTH->get_user_password()) {
+			d('User password not available! Cannot download mesasges',1);
 			return FALSE;
 		}
 		
@@ -129,6 +130,7 @@ class Mail implements Module {
 		d("Not using IMAP cache, downloading messages from $path",6);
 		$this->connection = imap_open($path, $_SESSION['i2_username'], $I2_AUTH->get_user_password());
 		if (! $this->connection) {
+			d('IMAP connection failed', 3);
 			return FALSE;
 		}
 
