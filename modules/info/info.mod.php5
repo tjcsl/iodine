@@ -10,17 +10,17 @@
 */
 
 /**
-* A Module to display static information, so that the information does not require an entire class devoted to it.
+* A Module to display static information (such as help), so that the information does not require an entire class devoted to it.
 * @package modules
 * @subpackage Info
 */
 class Info implements Module {
+	private $info_tpl;
 
 	/**
 	* Displays all of a module's ibox content.
 	*
 	* @param Display $disp The Display object to use for output.
-	* @abstract
 	*/
 	function display_box($disp) {
 		return FALSE;
@@ -30,17 +30,15 @@ class Info implements Module {
 	* Displays all of a module's main content.
 	*
 	* @param Display $disp The Display object to use for output.
-	* @abstract
 	*/
 	function display_pane($disp) {
 		global $I2_ARGS;
 		
-		$section = implode('/', array_slice($I2_ARGS, 1));
 		try {
-			$disp->disp($section . '.tpl');
+			$disp->disp($this->info_tpl);
 		}
 		catch( I2Exception $e ) {
-			$disp->disp('error.tpl', array('sec'=>$section));
+			$disp->disp('error.tpl');
 		}
 	}
 	
@@ -48,7 +46,6 @@ class Info implements Module {
 	* Gets the module's name.
 	*
 	* @returns string The name of the module.
-	* @abstract
 	*/
 	function get_name() {
 		return 'info';
@@ -60,7 +57,6 @@ class Info implements Module {
 	* @returns string The title of the box if it is to be displayed,
 	*                 otherwise FALSE if this module doesn't have an
 	*                 intrabox.
-	* @abstract
 	*/
 	function init_box() {
 		return FALSE;
@@ -78,20 +74,39 @@ class Info implements Module {
 	*                that this module has no main content pane (and will
 	*                show an error if someone tries to access it as such),
 	*                return FALSE.
-	* @abstract
 	*/
 	function init_pane() {
-		global $I2_ARGS;
+		global $I2_ARGS,$I2_USER;
 		
-		if(!isset($I2_ARGS[1])) {
-			redirect();
+		if(isset($I2_ARGS[1])) {
+			$arr = array_slice($I2_ARGS, 1);
+		} else {
+			// They might have hit 'help' when on the main page, when there are no arguments, so load the help for their startpage
+			$arr = array($I2_USER->startpage);
 		}
-		elseif(Display::is_template('info/'.$I2_ARGS[1].'.tpl')) {
-			return ucfirst($I2_ARGS[1]);
+		
+		$last_try = FALSE;
+		while(TRUE) {
+			$this->info_tpl = strtolower(implode('/',$arr)) . '/index.tpl';
+			if(Display::is_template('info/'.$this->info_tpl)) {
+				break;
+			}
+
+			$this->info_tpl = strtolower(implode('/',$arr)) . '.tpl';
+			if(Display::is_template('info/'.$this->info_tpl)) {
+				break;
+			}
+			
+			if(array_pop($arr) === NULL) {
+				$this->info_tpl = 'error.tpl';
+				break;
+			}
 		}
-		else {
-			return 'Error';
+			
+		if(isset($I2_ARGS[1])) {
+			return 'Iodine Info: '.ucfirst($I2_ARGS[1]);
 		}
+		return 'Error';
 	}
 }
 ?>

@@ -1,1 +1,1 @@
-The information section `[<$sec>]` does not exist.
+Sorry, but there was no information found about the item you requested.
