@@ -646,6 +646,14 @@ class Eighth implements Module {
 			$group = new Group($this->args['gid']);
 			$this->template = 'amr_group.tpl';
 			$this->template_args['group'] = $group;
+			if (isSet($this->args['lastadded'])) {
+					$user = new User($this->args['lastadded']);
+					$this->template_args['lastaction'] = 'Added user '.$user->fullname_comma;
+			}
+			if (isSet($this->args['lastremoved'])) {
+					$user = new User($this->args['lastremoved']);
+					$this->template_args['lastaction'] = 'Removed user '.$user->fullname_comma;
+			}
 			$membersorted = array();
 			$membersorted = $group->members_obj;
 			usort($membersorted,array('User','name_cmp'));
@@ -669,13 +677,13 @@ class Eighth implements Module {
 				$this->template = 'amr_group.tpl';
 			} else {
 				$group->add_user($this->args['uid']);
-				redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
+				redirect("eighth/amr_group/view/gid/{$this->args['gid']}/lastadded/".$this->args['uid']);
 			}
 		}
 		else if($this->op == 'remove_member') {
 			$group = new Group($this->args['gid']);
 			$group->remove_user(new User($this->args['uid']));
-			redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
+			redirect("eighth/amr_group/view/gid/{$this->args['gid']}/lastremoved/".$this->args['uid']);
 		}
 		else if($this->op == 'remove_all') {
 			$group = new Group($this->args['gid']);

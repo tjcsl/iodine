@@ -21,6 +21,7 @@
 [</if>]
 </td><td style="vertical-align: top;">
 <a href="[<$I2_ROOT>]eighth/amr_group/remove/gid/[<$group->gid>]">Remove Group</a><br />
+[<if isSet($lastaction)>]<b>[<$lastaction>]</b><br />[</if>]
 	<fieldset style="width: 220px;">
 	[<if isSet($info)>]
 		[<include file="search/search_results_pane.tpl">]

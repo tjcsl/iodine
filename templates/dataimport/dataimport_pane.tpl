@@ -103,6 +103,9 @@
 		<form action="[<$I2_ROOT>]dataimport/eighthdata" method="post">
 			<input type="hidden" name="doit" value="1"/>
 			<input type="submit" value="Load All 8th-period data"/><br/>
+		</form><br />
+		<form action="[<$I2_ROOT>]dataimport/fixuser" method="post">
+			<input type="text" name="studentid" value="StudentID"/><input type="submit" value="Repair a broken user"/><br/>
 		</form>
 		<form action="[<$I2_ROOT>]dataimport/eighth_absences" method="post">
 			<input type="hidden" name="doit" value="1"/>
