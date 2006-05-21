@@ -256,7 +256,7 @@ class GroupSQL extends Group {
 		
 		// admin_all has all permissions
 		if (Group::admin_all()->has_member($user)) {
-			return true;
+			return TRUE;
 		}
 
 		$res = $I2_SQL->query('SELECT count(*) FROM groups_perms WHERE uid=%d AND gid=%d AND permission=%s;', $user->uid,$this->mygid,$perm);

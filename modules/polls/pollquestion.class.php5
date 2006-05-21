@@ -24,6 +24,8 @@ class PollQuestion {
 
 	private $myanswers;
 
+	private $type;
+
 	public function __get($var) {
 		global $I2_SQL;
 		switch($var) {
@@ -42,26 +44,86 @@ class PollQuestion {
 		}
 	}
 
-	public function __construct($pid, $qid) {
+	public static function to_qid($pid, $qnum) {
+			  return 1000*$pid+$qnum;
+	}
+
+	public function __construct($pid, $qnum) {
 		global $I2_SQL;
+		
+		$qid = self::to_qid($pid,$qnum);
 
 		if (! self::question_exists($pid, $qid)) {
 			throw new I2Exception("Invalid PollQuestion attempted to be created with pid $pid, qid $qid");
 		}
 
-		$info = $I2_SQL->query('SELECT maxvotes, question FROM poll_questions WHERE pid=%d AND qid=%d', $pid, $qid)->fetch_array();
+		$info = $I2_SQL->query('SELECT maxvotes, question, answertype FROM poll_questions WHERE qid=%d', $pid, $qid)->fetch_array(Result::ASSOC);
 
 		$this->mypid = $pid;
 		$this->myqid = $qid;
+		$this->type = $info['answertype'];
 
 		$this->mymaxvotes = $info['maxvotes'];
 		$this->myquestion = $info['question'];
 		
-		$res = $I2_SQL->query('SELECT aid, answer FROM poll_answers WHERE pid=%d AND qid=%d ORDER BY aid ASC', $pid, $qid)->fetch_all_arrays();
+		$res = self::get_answers_to_question($qid);
+
 		foreach ($res as $row) {
 			$this->myanswers[$row['aid']] = $row['answer'];
 		}
 	}
+
+	/**
+	* Gets the maximum value an aid may hold while still belonging to a question, plus 1.
+	*/
+	private static function upper_bound($qid) {
+			  return $qid + 1000;
+	}
+
+	/**
+	* Gets the answers to a given question, or the answers given by a particular user to a particular question.
+	*
+	* @param int $qid The questionID in question (heh)
+	* @param int $uid An optional userid
+	* @return array An array of associative arrays with keys 'aid' and 'answer'.
+	* 					 If the user is specified, the value of each 'answer' is (one of) THEIR answers.
+	* 					 Otherwise, it is the answer text.
+	*/
+	private static function get_answers_to_question($qid,$uid = NULL) {
+			  global $I2_SQL;
+			  if (!$uid) {
+						 return $I2_SQL->query(
+									'SELECT aid,answer FROM poll_answers WHERE aid > %d AND aid < %d',
+									$qid,self::upper_bound($qid))->fetch_arrays(Result::ASSOC);
+			  } else {
+						 return $I2_SQL->query(
+									'SELECT aid,answer FROM poll_votes WHERE uid=%d AND aid > %d AND aid < %d',
+									$uid,$qid,self::upper_bound($qid))->fetch_arrays(Result::ASSOC);
+			  }
+	}
+
+	/**
+	* Gets this question's answers.
+	*
+	* @param int $uid An optional uid: if set, all answers returned are arrays of votes made by the given user.
+	* @return array An associative array, keyed by aid.
+	*/
+	public function get_answers($uid=NULL) {
+			  if ($uid == NULL) {
+						 return $this->myanswers;
+			  } else {
+						 $ret = array();
+						 $res = self::get_answers_to_question($this->qid,$uid);
+						 foreach ($res as $row) {
+									if (!isSet($res[$row['aid']])) {
+											  $ret[$row['aid']] = array();
+									}
+									$ret[$row['aid']][] = $row['answer'];
+						 }
+						 return $ret;
+			  }
+	}
+
 
 	/**
 	* Set the question
@@ -71,7 +133,9 @@ class PollQuestion {
 	public function set_question($q) {
 		global $I2_SQL;
 
-		$I2_SQL->query('UPDATE poll_questions SET question=%s WHERE pid=%d AND qid=%d', $q, $this->pid, $this->qid);
+		Poll::check_admin();
+
+		return $I2_SQL->query('UPDATE poll_questions SET question=%s WHERE qid=%d', $q, $this->qid);
 	}
 
 	/**
@@ -82,7 +146,9 @@ class PollQuestion {
 	public function set_maxvotes($maxvotes) {
 		global $I2_SQL;
 
-		$I2_SQL->query('UPDATE poll_questions SET maxvotes=%d WHERE pid=%d AND qid=%d', $maxvotes, $this->pid, $this->qid);
+		Poll::check_admin();
+
+		return $I2_SQL->query('UPDATE poll_questions SET maxvotes=%d WHERE qid=%d', $maxvotes, $this->qid);
 	}
 
 	/**
@@ -93,7 +159,9 @@ class PollQuestion {
 	public function set_answers($answers) {
 		global $I2_SQL;
 
-		$I2_SQL->query('DELETE FROM poll_answers WHERE pid=%d AND qid=%d', $this->pid, $this->qid);
+		Poll::check_admin();
+
+		return $I2_SQL->query('DELETE FROM poll_answers WHERE qid=%d', $this->qid);
 		$this->answers = array();
 		
 		foreach ($answers as $answer) {
@@ -104,20 +172,37 @@ class PollQuestion {
 
 	public function change_answer($aid,$newtext) {
 			  global $I2_SQL;
+			  Poll::check_admin();
 			  $I2_SQL->query('UPDATE poll_answers SET answer=%s WHERE aid=%d AND qid=%d AND pid=%d',$newtext,$aid,$this->qid,$this->pid);
+	}
+
+	/**
+	* Returns whether the given answerid refers to this question
+	*
+	* @param int $aid The answerid in question
+	* @return bool TRUE if the answer pertains to the question
+	*/
+	public function is_answer($aid) {
+			  return $aid >= $this->qid && $aid < self::upper_bound($this->qid);
 	}
 
 	/**
 	* Vote for the question
 	*
-	* @param int $answer The user's vote; a bitwise OR of all options the user selected
+	* @param int $answer The answerid (should be pollid+000 for freeresponse/text)
+	* @param string $answertext The text of the user's answer (optional)
 	* @param User $user The user voting; defaults to the current user
 	*/
-	public function record_vote($answer, $user=NULL) {
+	public function record_vote($answer, $answertext=NULL, $user=NULL) {
 		global $I2_USER, $I2_SQL;
 
-		if ($user === NULL) {
+		if (!$user) {
 			$user = $I2_USER;
+		}
+
+		$user = new User($user);
+		if ($user->uid != $I2_USER->uid) {
+				  Poll::check_admin();
 		}
 
 		if (! is_numeric($answer)) {
@@ -147,16 +232,13 @@ class PollQuestion {
 			$user = $I2_USER;
 		}
 
-		$res = $I2_SQL->query('SELECT answer FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d', $this->pid, $this->qid, $user->uid);
+		$res = $I2_SQL->query('SELECT answer FROM poll_votes WHERE qid=%d AND uid=%d', $this->qid, $user->uid);
 
-		if ($res->more_rows()) {
-			// the user has voted
-			return ((1 << $aid) & $res->fetch_single_value()) != 0;
+		$ret = array();
+		while ($res->more_rows()) {
+			$ret[] = $res->fetch_array();
 		}
-		else {
-			// the user has not voted; they are treated as if they voted for "Clear Vote" (aid 0)
-			return $aid == 0;
-		}
+		return $ret;
 	}
 	
 	/**
@@ -167,9 +249,11 @@ class PollQuestion {
 	public function users_who_voted() {
 		global $I2_SQL;
 
+		Poll::check_admin();
+
 		$ret = array();
 
-		$res = $I2_SQL->query('SELECT uid FROM poll_votes WHERE pid=%d AND qid=%d', $this->pid, $this->qid);
+		$res = $I2_SQL->query('SELECT uid FROM poll_votes WHERE qid=%d', $this->qid);
 		foreach ($res->fetch_col('uid') as $uid) {
 			$ret[] = new User($uid);
 		}
@@ -185,14 +269,10 @@ class PollQuestion {
 	*
 	* @return boolean True if the question exists
 	*/
-	public static function question_exists($pid, $qid) {
+	public static function question_exists($qid) {
 		global $I2_SQL;
 
-		if (! (is_numeric($pid) && is_numeric($qid))) {
-			throw new I2Exception("Invalid poll question tested for existance: pid $pid qid $qid");
-		}
-
-		if ($I2_SQL->query('SELECT COUNT(*) FROM poll_questions WHERE pid=%d AND qid=%d', $pid, $qid)->fetch_single_value() == 0) {
+		if ($I2_SQL->query('SELECT COUNT(*) FROM poll_questions WHERE qid=%d', $qid)->fetch_single_value() == 0) {
 			return false;
 		}
 

@@ -295,7 +295,7 @@ class EighthActivity {
 	public function add_restricted_member(User $user) {
 		global $I2_SQL;
 		Eighth::check_admin();
-		$query = 'INSERT INTO eighth_activity_permissions (aid,userid) VALUES (%d,%d)';
+		$query = 'REPLACE INTO eighth_activity_permissions (aid,userid) VALUES (%d,%d)';
 		$queryarg = array($this->data['aid'],$user->uid);
 		$I2_SQL->query_arr($query, $queryarg);
 		$invquery = 'DELETE FROM eighth_activity_permissions WHERE aid=%d AND userid=%d';
@@ -658,7 +658,7 @@ class EighthActivity {
 		}
 	}
 
-	private static function sort_by_name($one,$two) {
+	public static function sort_by_name($one,$two) {
 			  return strcasecmp($one->name_comma,$two->name_comma);
 	}
 

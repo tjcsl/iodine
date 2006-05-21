@@ -28,6 +28,7 @@ class EighthPrint {
 	* @param string The output format
 	*/
 	public static function print_class_roster($aid, $bid, $format = 'print') {
+		Eighth::check_admin();
 		$activity = new EighthActivity($aid, $bid);
 		$output = self::latexify('class_roster');
 		ob_start();
@@ -57,11 +58,11 @@ class EighthPrint {
 		ob_start();
 		eval($output);
 		$output = ob_get_clean();
-		if($format == "print") {
+		if($format == 'print') {
 			self::do_print($output);
 		}
 		else {
-			if($format == "pdf") {
+			if($format == 'pdf') {
 				self::add_info($output, "Print Sponsor Schedule", $sponsor->name);
 			}
 			self::do_display($output, $format, "Sponsor Schedule for {$sponsor->name}");
@@ -133,8 +134,12 @@ class EighthPrint {
 	* @param int The user's ID
 	* @param string The print format.
 	*/
-	public static function print_student_schedule($uid, $start_date = NULL, $format = "html") {
+	public static function print_student_schedule($uid, $start_date = NULL, $format = 'html') {
+		global $I2_USER;
 		$user = new User($uid);
+		if ($user->uid != $I2_USER->uid) {
+				  Eighth::check_admin();
+		}
 		$activities = EighthActivity::id_to_activity(EighthSchedule::get_activities($uid, $start_date));
 		$absences = EighthSchedule::get_absences($uid);
 		$output = self::latexify("student_schedule");
@@ -188,7 +193,7 @@ class EighthPrint {
 	* @param string The LaTeX output to print.
 	*/
 	private static function do_print($output, $landscape = FALSE) {
-		$temp = tempnam("/tmp", "EighthPrinting");
+		$temp = tempnam('/tmp', 'EighthPrinting');
 		file_put_contents($temp, $output);
 		exec("cd /tmp; latex {$temp}");
 		exec("cd /tmp; dvips {$temp}.dvi" . ($landscape ? ' -t landscape' : ''));
@@ -203,35 +208,35 @@ class EighthPrint {
 	*/
 	private static function do_display($output, $format, $filename, $landscape = FALSE) {
 		Display::stop_display();
-		$temp = tempnam("/tmp", "EighthPrinting");
+		$temp = tempnam('/tmp', 'EighthPrinting');
 		file_put_contents("{$temp}", $output);
-		//$disposition = "attachment";
-		$disposition = "inline";
-		if($format == "pdf") {
+		//$disposition = 'attachment';
+		$disposition = 'inline';
+		if($format == 'pdf') {
 			exec("cd /tmp; pdflatex {$temp}");
-			header("Content-type: application/pdf");
+			header('Content-type: application/pdf');
 		}
-		else if($format == "ps") {
+		else if($format == 'ps') {
 			exec("cd /tmp; latex {$temp}");
 			exec("cd /tmp; dvips {$temp}.dvi" . ($landscape ? ' -t landscape' : ''));
 			header("Content-type: application/postscript");
 		}
-		else if($format == "dvi") {
+		else if($format == 'dvi') {
 			exec("cd /tmp; latex {$temp}");
-			header("Content-type: application/x-dvi");
+			header('Content-type: application/x-dvi');
 		}
-		else if($format == "tex" || $format == "latex") {
+		else if($format == 'tex' || $format == 'latex') {
 			rename($temp, "{$temp}.{$format}");
-			header("Content-type: text/plain");
+			header('Content-type: text/plain');
 		}
-		else if($format == "html") {
-			header("Content-type: text/html");
-			$disposition = "inline";
+		else if($format == 'html') {
+			header('Content-type: text/html');
+			$disposition = 'inline';
 		}
-		else if($format == "rtf") {
+		else if($format == 'rtf') {
 			rename($temp, "{$temp}.tex");
 			exec("cd /tmp; latex2rtf {$temp}");
-			header("Content-type: application/rtf");
+			header('Content-type: application/rtf');
 		}
 		header("Content-Disposition: {$disposition}; filename=\"{$filename}.{$format}\"");
 		readfile("{$temp}.{$format}");
@@ -334,7 +339,7 @@ class EighthPrint {
 	* @param string Producer
 	* @param string Title
 	*/
-	private static function add_info(&$output, $producer = "", $title = "") {
+	private static function add_info(&$output, $producer = '', $title = '') {
 		$output = "\pdfinfo {
 /Author (Eighth Period Office)
 /Producer ({$producer})

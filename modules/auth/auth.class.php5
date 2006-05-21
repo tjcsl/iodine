@@ -274,7 +274,7 @@ class Auth {
 					$this->is_master = TRUE;
 				}
 					
-				//$_REQUEST['login_password'] = '';
+				//unset($_REQUEST['login_password']);
 					
 				$_SESSION['i2_login_time'] = time();
 				
@@ -297,7 +297,7 @@ class Auth {
 		if (! isset($image)) {
 
 			$images = array();
-			$dirpath = i2config_get('root_path', NULL, 'core') . 'www/pics/logins';
+			$dirpath = i2config_get('root_path', '', 'core') . 'www/pics/logins';
 			$dir = opendir($dirpath);
 			while ($file = readdir($dir)) {
 				if (! is_dir($dirpath . '/' . $file)) {

@@ -78,18 +78,15 @@ class Polls implements Module {
 			foreach ($poll->questions as $question) {
 				$answer = 0;
 				if ($question->maxvotes == 1) {
-					$answer = 1 << $_REQUEST[$question->qid];
+					$question->record_vote($_REQUEST[$question->qid]);
 				}
 				else {
 					foreach ($question->answers as $aid => $ans) {
-						if (isset($_REQUEST[$question->qid.'_'.$aid])) {
-							$answer = $answer | (1 << $aid);
+							$question->record_vote($aid, $ans);
 						}
 					}
 				}
-				$question->record_vote($answer, $I2_USER);
 			}
-		}
 		
 		$this->template = 'polls_vote.tpl';
 		$this->template_args['poll'] = $poll;
@@ -272,7 +269,7 @@ class Polls implements Module {
 		}
 
 		if (isset($_REQUEST['polls_delete_form'])) {
-	1		if ($_REQUEST['polls_delete_form'] == 'delete_poll') {
+			if ($_REQUEST['polls_delete_form'] == 'delete_poll') {
 				Poll::delete_poll($I2_ARGS[2]);
 				$this->template_args['deleted'] = TRUE;
 			}

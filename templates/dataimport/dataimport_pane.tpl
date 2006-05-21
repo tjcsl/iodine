@@ -68,7 +68,7 @@
 		[<* This is dangerous, so it's disabled
 		<form action="[<$I2_ROOT>]dataimport/fixit" method="post">
 			<input type="hidden" name="doit" value="1"/>
-			<input type="submit" value="Ensure the database is useable"/><br/>
+			<input type="submit" value="Ensure the database is usable"/><br/>
 		</form>
 		<br /><br/>*>]
 	[</if>]
@@ -95,6 +95,10 @@
 	<br /><br />
 	[</if>]
 [<if $intranet_pass>]
+		<form action="[<$I2_ROOT>]dataimport/eighth_permissions" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Import 8th-period permissions data"/><br/>
+		</form>
 	[<if $admin_pass>]
 		<form action="[<$I2_ROOT>]dataimport/eighthdata" method="post">
 			<input type="hidden" name="doit" value="1"/>
@@ -114,6 +118,10 @@
 			<input type="submit" value="Expand student information using old Intranet data"/><br/>
 		</form>
 		<br /><br />
+		<form action="[<$I2_ROOT>]dataimport/polls" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Import Polls"/><br/>
+		</form>
 	[</if>]
 		<form action="[<$I2_ROOT>]dataimport/aphorisms" method="post">
 			<input type="hidden" name="doit" value="1"/>

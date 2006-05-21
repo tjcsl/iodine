@@ -62,7 +62,7 @@ class MySQL {
 	/**
 	* A string representing all custom printf tags for mysql queries which require an argument. Each character represents a different tag.
 	*/
-	const TAGS_ARG = 'acdistDIS';
+	const TAGS_ARG = 'acdistTDIS';
 
 	/**
 	* A string representing all custom printf tags for mysql queries which do not require an argument. Each character represents a different tag.
@@ -162,6 +162,7 @@ class MySQL {
 	* characters for use in a mysql statement</li>
 	* <li>%S - An array of strings, quoted and escaped</li>
 	* <li>%t - A date of the form YYYY-MM-DD</li>
+	* <li>%T - A MySQL DateTime (YYYY-MM-DD HH:MM:SS)</li>
 	* <li>%V - Outputs the current Iodine version</li>
 	* <li>%% - Outputs a literal '%'</li>
 	* <li>%? - An item of indeterminate type</li>
@@ -354,12 +355,28 @@ class MySQL {
 			/* date */
 			case 't':
 				if(is_string($arg)) {
-					$parts = explode("-", $arg);
+					$parts = explode('-', $arg);
 					if(count($parts) == 3 && !empty($parts[1]) && !empty($parts[2]) && strlen($parts[0]) == 4 && strlen($parts[1]) <= 2 && strlen($parts[2]) <= 2 && ctype_digit($parts[0]) && ctype_digit($parts[1]) && ctype_digit($parts[2]) && checkdate($parts[1], $parts[2], $parts[0])) {
 						return '\''.$arg.'\'';
 					}
 				}
 				throw new I2Exception('The string `'.$arg.'` is not a properly formatted date, but was passed as %t in a mysql query');
+
+			/* datetime */
+	 		case 'T':
+				if (is_string($arg)) {
+						  $parts = explode('-', $arg);
+					if (count($parts) == 3 && strlen($parts[0]) == 4 && strlen($parts[1]) <= 2 && ctype_digit($parts[0]) && ctype_digit($parts[1])) {
+							  $exp = explode(' ',$parts[2]);
+							  if (count($exp) == 2 && strlen($exp[0]) == 2 && ctype_digit($exp[0]) && (($parts[1] == '0000' && $parts[0] == '00' && $exp[0] == '00') || checkdate($parts[1], $exp[0], $parts[0]))) {
+										 $time = explode(':',$exp[1]);
+										 if (count($time) == 3 && strlen($time[0]) <= 2 && strlen($time[1]) == 2 && strlen($time[2]) == 2 && ctype_digit($time[0]) && ctype_digit($time[1]) && ctype_digit($time[2]) && $time[2] >= 0 && $time[2] < 60 && $time[1] >= 0 && $time[1] < 60 && $time[0] >= 0 && $time[0] < 24) {
+													return '\''.$arg.'\'';
+										 }
+							  }
+					}
+				}
+				throw new I2Exception('The string `'.$arg.'` is not a properly formatted datetime, but was passed as %T in a mysql query');
 			
 			/* Non-argument tags below here */
 

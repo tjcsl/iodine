@@ -911,6 +911,21 @@ class dataimport implements Module {
 		return $numgroupmembers;
 	}
 
+	private function import_eighth_permissions() {
+		global $I2_SQL;
+		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
+		$res = $oldsql->query('SELECT * FROM StudentActivityPermissionMap');
+		while ($row = $res->fetch_array(Result::ASSOC)) {
+				  $user = User::studentid_to_uid($row['StudentID']);
+				  // Arr, bad Intranet 1 data!
+				  if (!$user) {
+							 d('Bad studentid '.$row['StudentID'],3);
+							 continue;
+				  }
+				  EighthActivity::add_restricted_member_to_activity($row['ActivityID'],new User($user));
+		}
+	}
+
 	private function create_sponsor($sponsor) {
 		global $I2_SQL;
 		$res = $I2_SQL->query('SELECT sid FROM eighth_sponsors WHERE lname=%s',$sponsor)->fetch_single_value();
@@ -971,16 +986,6 @@ class dataimport implements Module {
 			}
 		}
 		//$I2_LOG->debug_on();
-	}
-
-	private function import_polls() {
-		$oldsql = NULL;
-		
-		if ($do_old_intranet) {
-			$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);	
-		}
-
-		$oldsql->query('SELECT PollID,PollName,StartDatetime,EndDatetime');
 	}
 
 	/**
@@ -1171,6 +1176,99 @@ class dataimport implements Module {
 		
 	}
 
+	private function clean_polls() {
+			  global $I2_SQL;
+			  $I2_SQL->query('DELETE FROM polls');
+			  $I2_SQL->query('DELETE FROM poll_questions');
+			  $I2_SQL->query('DELETE FROM poll_answers');
+	}
+
+	/**
+	* Import poll data
+	*/
+	private function import_polls() {
+			global $I2_SQL;
+			$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
+			$answerstopolls = array();
+			$answerstoquestions = array();
+			/*
+			** Import polls
+			*/
+			$res = $oldsql->query('SELECT * FROM PollGroupInfo');
+			while ($row = $res->fetch_array(Result::ASSOC)) {
+					  $questions = explode(',',$row['Polls']);
+					  $pollname = $row['GroupName'];
+					  $pollid = $row['GroupID'];
+					  $pollstart = NULL;
+					  $pollend = NULL;
+					  $showpoll = TRUE;
+					  foreach ($questions as $questionid) {
+							$qres = $oldsql->query('SELECT * FROM PollInfo WHERE PollID=%d',$questionid)->fetch_array(Result::ASSOC);
+							list($questionid,$questionname,$questionstart,$questionend,$showresults,$type,$clases,$showquestion,$question,$maxvotes) =
+									  array(
+												 $qres['PollID'],$qres['PollName'],$qres['StartDatetime'],$qres['EndDatetime'],$qres['ShowResults'],
+												 $qres['Type'],$qres['Classes'],$qres['ShowPollBox'],$qres['PollQuestion'],$qres['MaxVotes']
+									  );
+							if ($type == 0) {
+									  $type = 'standard';
+							} elseif ($type == 1) {
+									  $type = 'approval';
+							} else {
+									  throw new I2Exception('Invalid poll type'.$type.'!');
+							}
+							if ($pollstart == NULL) {
+									  $pollstart = $questionstart;
+							}
+							if ($pollend == NULL) {
+									  $pollend = $questionend;
+							}
+							if ($questionstart != $pollstart) {
+									  d('Inconsistent start date!',1);
+							}
+							if ($questionend != $pollend) {
+									  d('Inconsistent ending date!',1);
+							}
+							if (!$showquestion) {
+									  if ($showpoll) {
+										  d('Poll not being shown due to hidden question');
+									  }
+									  $showpoll = FALSE;
+							}
+							$ares = $oldsql->query('SELECT * FROM PollOptionInfo WHERE PollID=%d',$questionid);
+							while ($arow = $ares->fetch_array(Result::ASSOC)) {
+									  list($answerid,$answer) = array($arow['OptionID'],$arow['OptionName']);
+									  $answerstopolls[$answerid] = $pollid;
+									  $answerstoquestions[$answerid] = $questionid;
+									  // Noncolliding unique number (I hope)
+									  $answerid = 1000000*$pollid+1000*$questionid+$answerid;
+									  $I2_SQL->query('INSERT INTO poll_answers (aid,answer) VALUES(%d,%s)',
+												 	$answerid,$answer
+												 );
+							}
+							$questionid = 1000*$pollid+$questionid;
+							$I2_SQL->query('INSERT INTO poll_questions (qid,maxvotes,question,answertype) VALUES(%d,%d,%s,%s)',
+									  	$questionid,$maxvotes,$questionname,$type
+									  );
+					  }
+			  		  $I2_SQL->query('INSERT INTO polls SET pid=%d,name=%s,introduction=%s,visible=%d,startdt=%T,enddt=%T',
+						  $pollid,$pollname,$pollname,$showpoll?1:0,$pollstart?$pollstart:'1900-01-01 00:00:00',$pollend?$pollend:'3000-01-01 00:00:00');
+
+			}
+			/*
+			** Import user votes
+			*/
+			$res = $oldsql->query('SELECT * FROM StudentPollMap');
+			while ($row = $res->fetch_array(Result::ASSOC)) {
+					  list($studentid,$questionid,$answerid) = array($row['StudentID'],$row['PollID'],$row['OptionID']);
+					  $user = new User($studentid);
+					  if (!$user) {
+								 d('Invalid studentid '.$studentid,3);
+					  }
+					  $answerid = 1000000*$answerstopolls[$answerid]+1000*$answerstoquestions[$answerid]+$answerid;
+					  $I2_SQL->query('INSERT INTO poll_votes SET uid=%d,aid=%d',$user->uidnumber,$answerid);
+			}
+	}
+
 	/**
 	* Final post-import tasks which need to be run
 	*/
@@ -1356,11 +1454,18 @@ class dataimport implements Module {
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'studentinfo' && isSet($_REQUEST['doit'])) {
 			$this->expand_student_info();
 		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'eighth_permissions' && isSet($_REQUEST['doit'])) {
+			$this->import_eighth_permissions();
+		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teachersponsors' && isSet($_REQUEST['doit'])) {
 			$this->make_teachers_sponsors();
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'doeverything' && isSet($_REQUEST['doit'])) {
 			$this->do_imports();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'polls' && isSet($_REQUEST['doit'])) {
+			$this->clean_polls();
+			$this->import_polls();
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'aphorisms' && isSet($_REQUEST['doit'])) {
 			$this->import_aphorisms();

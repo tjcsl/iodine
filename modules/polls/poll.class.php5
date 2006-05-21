@@ -74,7 +74,7 @@ class Poll {
 		$this->myenddt = $pollinfo['enddt'];
 
 		$this->myquestions = array();
-		foreach($I2_SQL->query('SELECT qid FROM poll_questions WHERE pid=%d ORDER BY qid ASC', $pid)->fetch_col('qid') as $qid) {
+		foreach($I2_SQL->query('SELECT qid FROM poll_questions WHERE qid > %d AND qid < %d ORDER BY qid ASC', $pid, self::upper_bound($pid))->fetch_col('qid') as $qid) {
 			$this->myquestions[] = new PollQuestion($pid, $qid);
 		}
 		
@@ -85,12 +85,28 @@ class Poll {
 	}
 
 	/**
+	* Gets the maximum possible value a qid may have while still pertaining to a poll, plus one
+	*/
+	public static function upper_bound($pid) {
+			  return $pid*1000+1000;
+	}
+
+	public static function check_admin() {
+			  global $I2_USER;
+			  if (!$I2_USER->is_group_member('admin_polls')) {
+						 throw new I2Exception('You are not a polls admin!');
+			  }
+	}
+
+	/**
 	* Sets the name of this poll.
 	*
 	* @param string $name The new name of the poll.
 	*/
 	public function set_name($name) {
 		global $I2_SQL;
+
+		self::check_admin();
 
 		$this->myname = $name;
 
@@ -105,6 +121,8 @@ class Poll {
 	public function set_introduction($intro) {
 		global $I2_SQL;
 
+		self::check_admin();
+
 		$this->myintroduction = $intro;
 
 		$I2_SQL->query('UPDATE polls SET introduction=%s WHERE pid=%d', $intro, $this->mypid);
@@ -118,6 +136,8 @@ class Poll {
 	public function set_visibility($isVisible) {
 		global $I2_SQL;
 
+		self::check_admin();
+
 		$this->myvisibility = $isVisible;
 
 		$I2_SQL->query('UPDATE polls SET visible=%s WHERE pid=%d', $isVisible, $this->mypid);
@@ -130,7 +150,9 @@ class Poll {
 	*/
 	public function set_groups($gids) {
 		global $I2_SQL;
-		
+
+		self::check_admin();
+
 		$this->groups = array();
 		$I2_SQL->query('DELETE FROM group_poll_map WHERE pid=%d', $this->pid);
 
@@ -149,6 +171,7 @@ class Poll {
 	*/
 	public function add_group($gid) {
 		global $I2_SQL;
+      self::check_admin();
 		$I2_SQL->query('INSERT INTO group_poll_map (gid,pid) VALUES(%d,%d)',$gid,$this->pid);
 	}
 
@@ -157,6 +180,7 @@ class Poll {
 	*/
 	public function remove_group($gid) {
 		global $I2_SQL;
+		self::check_admin();
 		$I2_SQL->query('DELETE FROM group_poll_map WHERE gid=%d AND pid=%d',$gid,$this->pid);
 	}
 
@@ -168,6 +192,7 @@ class Poll {
 	public function set_start_datetime($dt) {
 		global $I2_SQL;
 
+		self::check_admin();
 		$this->mystartdt = $dt;
 		$I2_SQL->query('UPDATE polls SET startdt=%s WHERE pid=%d', $dt, $this->pid);
 	}
@@ -178,7 +203,8 @@ class Poll {
 	* @param string $dt The date/time, in format YYYY-MM-DD HH:MM:SS
 	*/
 	public function set_end_datetime($dt) {
-		global $I2_SQL;
+			  global $I2_SQL;
+			  self::check_admin();
 		
 		$this->myenddt = $dt;
 		$I2_SQL->query('UPDATE polls SET enddt=%s WHERE pid=%d', $dt, $this->pid);
@@ -194,6 +220,7 @@ class Poll {
 	* @param array $answers The answers a user may choose from
 	*/
 	public function add_question($question, $maxvotes, $answers) {
+		self::check_admin();
 		$this->myquestions[] = PollQuestion::new_question($this->pid, $question, $maxvotes, $answers);
 	}
 
@@ -203,6 +230,7 @@ class Poll {
 	* @param int $qid The ID of the question to delete
 	*/
 	public function delete_question($qid) {
+		self::check_admin();
 		for ($k = 0; $k < count($this->questions); $k++) {
 			if ($this->questions[$k]->qid == $qid) {
 				array_splice($this->questions, $k, 1);
