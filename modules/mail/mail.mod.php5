@@ -147,6 +147,13 @@ class Mail implements Module {
 		foreach($messages as $i=>$message) {
 			$message->unread = $message->recent || !$message->seen;
 
+			if(!isset($message->subject) {
+				$message->subject = '';
+			}
+			if(!isset($message->from) {
+				$message->from = '';
+			}
+
 			if(strlen($message->subject) > 31) {
 				$message->short_subject = substr($message->subject, 0, 30);
 				$message->short_subject .= '...';
