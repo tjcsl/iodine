@@ -277,9 +277,10 @@ class PollQuestion {
 	*
 	* @param int $aid The ID number of the answer
 	* @param User $user The user (defaults to the current user)
+	* @return mixed The user's answer if they voted for the choice (and it's freeresponse/essay), or FALSE
 	*/
 	public function user_voted_for($aid, $user=NULL) {
-		global $I2_USER, $I2_SQL;
+		global $I2_USER, $I2_SQL, $I2_LOG;
 
 		if (!$user) {
 			$user = $I2_USER;
@@ -289,13 +290,18 @@ class PollQuestion {
 				  Poll::check_admin();
 		}
 
-		$res = $I2_SQL->query('SELECT aid FROM poll_votes WHERE uid=%d', $user->uid);
 
-		$ret = array();
-		while ($res->more_rows()) {
-			$ret[] = $res->fetch_array();
+		if ($this->type == 'approval' || $this->type == 'standard') {
+				  // We need to translate the value into TRUE or FALSE
+				  $res = $I2_SQL->query('SELECT COUNT(aid) FROM poll_votes WHERE aid=%d AND uid=%d', $aid, $user->uid)->fetch_single_value();
+				  if ($res > 1) {
+							 $I2_LOG->log_file('VOTING FRAUD!  User: '.$user.' Answer: '.$aid.'.  Detected and logged.');
+							 throw new I2Exception('VOTING FRAUD!  User: '.$user.' Answer: '.$aid.'.  Detected and logged.');
+				  }
+				  return ($res == 0)?FALSE:TRUE;
 		}
-		return $ret;
+		$res = $I2_SQL->query('SELECT answer FROM poll_votes WHERE aid=%d AND uid=%d', $aid, $user->uid)->fetch_single_value();
+		return $res;
 	}
 
 
