@@ -1309,12 +1309,13 @@ class dataimport implements Module {
 						  $ct = 0;
 						  while ($ct < strlen($bin)) {
 									 if (substr($bin,$ct,1) == '1') {
-												$aidparts[] = 2**$ct; // 2 ^ ct = old OptionID de-bitwise-ored
+												$aidparts[] = pow(2,strlen($bin)-$ct-1); // 2 ^ (len-ct) = old OptionID de-bitwise-ored
 									 }
+									 $ct++;
 						  }
 						  foreach ($aidparts as $aidpart) {
 							  $aid = 1000000*$questionstopolls[$questionid]+1000*$questionid+$aidpart;
-							  $I2_LOG->log_file('Student '.$studentid.' voted for answer '.$aid);
+							  $I2_LOG->log_file('Student '.$studentid.' voted for answer '.$aid.' ('.$aidpart.')');
 							  $I2_SQL->query('REPLACE INTO poll_votes SET uid=%d,aid=%d',$user->uid,$aid);
 						  }
 					  } else {

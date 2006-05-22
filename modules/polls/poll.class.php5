@@ -79,7 +79,8 @@ class Poll {
 		}
 		
 		$this->mygroups = array();
-		foreach ($I2_SQL->query('SELECT gid FROM poll_group_map WHERE pid=%d', $pid)->fetch_col('gid') as $gid) {
+		$res = $I2_SQL->query('SELECT gid FROM poll_group_map WHERE pid=%d', $pid);
+		while ($gid = $res->fetch_single_value()) {
 			$this->mygroups[] = new Group($gid);
 		}
 	}
@@ -258,7 +259,7 @@ class Poll {
 	public function user_can_access($user=NULL) {
 		global $I2_USER;
 
-		if ($user == NULL) {
+		if (!$user) {
 			$user = $I2_USER;
 		}
 
