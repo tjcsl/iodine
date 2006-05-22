@@ -601,6 +601,8 @@ class EighthActivity {
 					return $this->data['name'] . ($this->data['restricted'] ? ' (R)' : '')
 														. ($this->data['bothblocks'] ? ' (BB)' : '')
 														. ($this->data['sticky'] ? ' (S)' : '');
+				case 'name_friendly':
+					return $this->data['name'];
 				case 'sponsors_comma':
 					$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
 					$temp_sponsors = array();

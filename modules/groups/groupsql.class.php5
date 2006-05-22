@@ -321,7 +321,7 @@ class GroupSQL extends Group {
 		$ret = array();
 
 		if ($user->uid != $I2_USER->uid && Group::admin_groups()->has_member($I2_USER)) {
-				  throw new I2Exception('Information leak: you may not fetch another student\'s group memberships.');
+			throw new I2Exception('Information leak: you may not fetch another student\'s group memberships.');
 		}
 
 		if($perms && !is_array($perms)) {
