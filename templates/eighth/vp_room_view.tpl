@@ -14,9 +14,9 @@
 	<tr>
 		[<if isSet($inc.room)>]<td style="padding: 0px 5px;">[<$utilization.room->name>]</td>[</if>]
 		[<if isSet($inc.aid)>]<td style="padding: 0px 5px;">[<$utilization.activity->aid>]</td>[</if>]
-		[<if isSet($inc.name)>]<td style="padding: 0px 5px;">[<$utilization.activity->name>]</td>[</if>]
+		[<if isSet($inc.name)>]<td style="padding: 0px 5px;">[<$utilization.activity->name>] [<if $utilization.activity->comment>] ([<$utilization.activity->comment>])[</if>]</td>[</if>]
 		[<if isSet($inc.teacher)>]<td style="padding: 0px 5px;">[<$utilization.activity->block_sponsors_comma>]</td>[</if>]
-		[<if isSet($inc.comments)>]<td style="padding: 0px 5px;">[<$utilization.activity->block_comments>]</td>[</if>]
+		[<if isSet($inc.comments)>]<td style="padding: 0px 5px;">[<$utilization.activity->comment>]</td>[</if>]
 		[<if isSet($inc.students)>]<td style="padding: 0px 5px;">[<$utilization.students>]</td>[</if>]
 		[<if isSet($inc.capacity)>]<td style="padding: 0px 5px;">[<if $utilization.room->capacity == -1>]UNLIMITED[<else>][<$utilization.room->capacity>][</if>]</td>[</if>]
 	</tr>

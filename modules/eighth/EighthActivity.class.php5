@@ -732,6 +732,9 @@ class EighthActivity {
 					$name = ucFirst($name);
 					Eighth::push_undoable($query,$queryarg,$query,$invarg,"Change $name Status");
 					return;
+				case 'block_comment':
+				case 'block_comments':
+					return $this->block->comments;
 				case 'comment':
 				case 'advertisement':
 					$oldval = $I2_SQL->query("SELECT $name FROM eighth_block_map WHERE bid=%d AND activityid=%d",$this->data['bid'],$this->data['aid'])->fetch_single_value();
