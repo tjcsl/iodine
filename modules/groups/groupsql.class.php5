@@ -317,11 +317,11 @@ class GroupSQL extends Group {
 	}
 
 	public static function get_user_groups(User $user, $include_special = TRUE, $perms = NULL) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_USER;
 		$ret = array();
 
 		if ($user->uid != $I2_USER->uid && Group::admin_groups()->has_member($I2_USER)) {
-				  throw new I2Exception('Information leak: you may not fetch another student\'s group memberships.');
+			throw new I2Exception('Information leak: you may not fetch another student\'s group memberships.');
 		}
 
 		if($perms && !is_array($perms)) {
