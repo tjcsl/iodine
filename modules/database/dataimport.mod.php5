@@ -1301,9 +1301,22 @@ class dataimport implements Module {
 					  }
 					  $user = new User($user);
 					  if (isSet($questionstopolls[$questionid])) {
-						  $aid = 1000000*$questionstopolls[$questionid]+1000*$questionid+$answerid;
-						  $I2_LOG->log_file('Student '.$studentid.' voted for answer '.$aid);
-						  $I2_SQL->query('REPLACE INTO poll_votes SET uid=%d,aid=%d',$user->uid,$aid);
+						  // We need to remove the bitwise OR encoding used on these answers <sigh>
+						  $aidparts = array();
+						  // I know this isn't the normal way to decode the data but I feel safer doing it this way than
+						  // trusting myself to use bitshifts correctly.  This makes for simpler, safer code.
+						  $bin = decbin($answerid);
+						  $ct = 0;
+						  while ($ct < strlen($bin)) {
+									 if (substr($bin,$ct,1) == '1') {
+												$aidparts[] = 2**$ct; // 2 ^ ct = old OptionID de-bitwise-ored
+									 }
+						  }
+						  foreach ($aidparts as $aidpart) {
+							  $aid = 1000000*$questionstopolls[$questionid]+1000*$questionid+$aidpart;
+							  $I2_LOG->log_file('Student '.$studentid.' voted for answer '.$aid);
+							  $I2_SQL->query('REPLACE INTO poll_votes SET uid=%d,aid=%d',$user->uid,$aid);
+						  }
 					  } else {
 							$I2_LOG->log_file('Discarding answer '.$answerid.' to question '.$questionid);
 					  }
