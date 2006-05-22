@@ -597,6 +597,8 @@ class EighthActivity {
 			switch($name) {
 				case 'comment_short':
 					return substr($this->data['comment'], 0, 15);
+				case 'comment_notsoshort':
+					return substr($this->data['comment'], 0, 20);
 				case 'name_r':
 					return $this->data['name'] . ($this->data['restricted'] ? ' (R)' : '')
 														. ($this->data['bothblocks'] ? ' (BB)' : '')
