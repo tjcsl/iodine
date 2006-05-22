@@ -291,7 +291,6 @@ class PollQuestion {
 				  Poll::check_admin();
 		}
 
-
 		if ($this->type == 'approval' || $this->type == 'standard') {
 				  // We need to translate the value into TRUE or FALSE
 				  $res = $I2_SQL->query('SELECT COUNT(aid) FROM poll_votes WHERE aid=%d AND uid=%d', $aid, $user->uid)->fetch_single_value();

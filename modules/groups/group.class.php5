@@ -265,34 +265,45 @@ class Group {
 		return FALSE;
 	}
 
-	public static function get_special_groups() {
-		return array(
-			new Group(array(
-				'gid'=>-9,
-				'name'=>'grade_9',
-				'description'=>'Freshmen')
-			),
-			new Group(array(
-				'gid'=>-10,
-				'name'=>'grade_10',
-				'description'=>'Sophomores')
-			),
-			new Group(array(
-				'gid'=>-11,
-				'name'=>'grade_11',
-				'description'=>'Juniors')
-			),
-			new Group(array(
-				'gid'=>-12,
-				'name'=>'grade_12',
-				'description'=>'Seniors')
-			),
-			new Group(array(
-				'gid'=>-8,
-				'name'=>'grade_staff',
-				'description'=>'Staff')
-			)
-		);
+	public static function get_special_groups($user = NULL) {
+		if (!$user) {
+			return array(
+				new Group(array(
+					'gid'=>-9,
+					'name'=>'grade_9',
+					'description'=>'Freshmen')
+				),
+				new Group(array(
+					'gid'=>-10,
+					'name'=>'grade_10',
+					'description'=>'Sophomores')
+				),
+				new Group(array(
+					'gid'=>-11,
+					'name'=>'grade_11',
+					'description'=>'Juniors')
+				),
+				new Group(array(
+					'gid'=>-12,
+					'name'=>'grade_12',
+					'description'=>'Seniors')
+				),
+				new Group(array(
+					'gid'=>-8,
+					'name'=>'grade_staff',
+					'description'=>'Staff')
+				)
+		 );
+		}
+		else {
+				  $user = new User($user);
+				  $grade = $user->grade;
+				  return array (
+							 'gid' => -1*$grade,
+							 'name' => 'grade_'.$grade,
+							 'description' => 'Grade '.$grade
+							 );
+		}
 	}
 
 	/**

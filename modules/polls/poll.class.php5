@@ -263,6 +263,10 @@ class Poll {
 			$user = $I2_USER;
 		}
 
+		if ($user->is_group_member('admin_polls')) {
+				  return TRUE;
+		}
+
 		// poll visibility
 		if ($this->visible == FALSE) {
 			return FALSE;
@@ -307,6 +311,8 @@ class Poll {
 	public static function add_poll($name, $intro) {
 		global $I2_SQL;
 
+		self::check_admin();
+
 		$pid = $I2_SQL->query('INSERT INTO polls SET name=%s, introduction=%s', $name, $intro)->get_insert_id();
 
 		return new Poll($pid);
@@ -333,6 +339,8 @@ class Poll {
 	public static function delete_poll($pid) {
 		global $I2_SQL;
 
+		self::check_admin();
+
 		$I2_SQL->query('DELETE FROM polls WHERE pid=%d', $pid);
 		$I2_SQL->query('DELETE FROM poll_questions WHERE qid > %d AND qid < %d', self::lower_bound($pid), self::upper_bound($pid));
 		$I2_SQL->query('DELETE FROM poll_answers WHERE aid >= %d AND aid < %d', self::answer_lower_bound($pid), self::answer_upper_bound($pid));
@@ -348,9 +356,9 @@ class Poll {
 	public static function all_polls() {
 		global $I2_SQL;
 
-		$pids = $I2_SQL->query('SELECT pid FROM polls')->fetch_col('pid');
+		$pids = $I2_SQL->query('SELECT pid FROM polls');
 		$polls = array();
-		foreach ($pids as $pid) {
+		while ($pid = $pids->fetch_single_value()) {
 			$polls[] = new Poll($pid);
 		}
 

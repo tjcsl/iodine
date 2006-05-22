@@ -290,7 +290,7 @@ class GroupSQL extends Group {
 		if( $this->special ) {
 			$specs = Group::get_special_groups($user);
 			foreach ($specs as $gp) {
-				if ($gp->gid == $this->mygid) {
+				if ($gp['gid'] == $this->mygid) {
 					return TRUE;
 				}
 			}
