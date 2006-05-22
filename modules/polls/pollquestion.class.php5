@@ -262,13 +262,14 @@ class PollQuestion {
 			throw new I2Exception("Invalid answer value $answer attempted to be recorded in PollQuestion");
 		}
 
-		if ($I2_SQL->query('SELECT COUNT(*) FROM poll_votes WHERE aid >= %d AND aid < %d AND uid=%d', self::lower_bound($this->myqid), self::upper_bound($this->myqid), $user->uid)->fetch_single_value() == 0) {
-			// user has not yet voted; create a new row
+		$numvotes = $I2_SQL->query('SELECT COUNT(*) FROM poll_votes WHERE aid >= %d AND aid < %d AND uid=%d', self::lower_bound($this->myqid), self::upper_bound($this->myqid), $user->uid)->fetch_single_value();
+
+		if ($this->maxvotes == 0 || $numvotes < $this->maxvotes) {
+			// user may still vote here; create a new vote
 			$I2_SQL->query('INSERT INTO poll_votes SET answer=%s, aid=%d, uid=%d', $answertext, $answer, $user->uid);
 		}
-		else {
-			// user has voted; change vote
-			$I2_SQL->query('UPDATE poll_votes SET answer=%s,aid=%d WHERE aid >= %d AND aid < %d AND uid=%d', $answertext, $answer, self::lower_bound($this->myqid), self::upper_bound($this->myqid), $user->uid);
+		else  {
+			throw new I2Exception('You have attempted to vote too many times for one question!');
 		}
 	}
 
