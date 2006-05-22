@@ -172,17 +172,17 @@ attributetype ( i2Attr:17
 	)
 
 attributetype ( i2Attr:18
-	NAME ('prerequisite' 'requiredClass' 'prerequisiteDN' 'requiredClassDN')
+	NAME ('prerequisite' 'requiredClass' 'prerequisiteClassId' 'requiredClassId')
 	DESC 'A  required class'
-	EQUALITY distinguishedNameMatch
-	SYNTAX dnSyntax
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
 	)
 
 attributetype ( i2Attr:19
-	NAME ('corequisite' 'corequisiteDN')
+	NAME ('corequisite' 'corequisiteClassId' 'corequisiteClass')
 	DESC 'A corequisite class'
-	EQUALITY distinguishedNameMatch
-	SYNTAX dnSyntax
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
 	)
 
 attributetype ( i2Attr:20
@@ -213,7 +213,7 @@ attributetype ( i2Attr:23
 	NAME ('courseLength' 'length' 'quarters' 'numQuarters')
 	DESC 'How long a course is, in quarters'
 	EQUALITY integerMatch
-	SYNTAX integerSyntax
+	SYNTAX integerSyntax{4}
 	SINGLE-VALUE
 	)
 
@@ -399,7 +399,7 @@ attributetype ( i2Attr:48
 	)
 
 attributetype ( i2Attr:49
-	NAME ('soundexlast' 'lastsoundex')
+	NAME ('soundexlast' 'lastsoundex' 'lastnamesound')
 	DESC 'The soundex of a last name'
 	EQUALITY caseIgnoreMatch
 	SYNTAX stringSyntax
@@ -407,7 +407,7 @@ attributetype ( i2Attr:49
 	)
 	
 attributetype ( i2Attr:50
-	NAME ('soundexfirst' 'firstsoundex')
+	NAME ('soundexfirst' 'firstsoundex' 'firstnamesound')
 	DESC 'The soundex of a first name'
 	EQUALITY caseIgnoreMatch
 	SYNTAX stringSyntax
@@ -498,6 +498,12 @@ attributetype ( i2Attr:61
 	SYNTAX stringSyntax
 	)
 
+attribute ( i2Attr:62
+	NAME ('otherPicture')
+	DESC 'Another picture of the user'
+	SYNTAX jpegSyntax
+	)
+
 objectclass ( i2OC:1
 	NAME ('tjhsstStudent' 'iodineStudent')
 	SUP inetOrgPerson STRUCTURAL
@@ -508,6 +514,7 @@ objectclass ( i2OC:1
 		sn $
 		tjhsstStudentId $
 		startpage $
+		iodineUidNumber $
 		style $
 		header $
 		chrome
@@ -530,26 +537,18 @@ objectclass ( i2OC:1
 		nickname $
 		counselor $
 		group $
-		iodineUidNumber $
 		birthday $
-		sex $
-		aim $
-		xfire $
-		yahoo $
-		msn $
-		jabber $
-		icq $
-		googleTalk $
+		sex $ aim $ xfire $ yahoo $ msn $ jabber $ icq $ googleTalk $
 		webpage $
 		locker $
-		startpage $
 		soundexlast $
 		soundexfirst $
 		comments $
 		freshmanPicture $
 		sophomorePicture $
 		juniorPicture $
-		seniorPicture
+		seniorPicture $
+		otherPicture
 	)
 	)
 
@@ -559,6 +558,11 @@ objectclass ( i2OC:2
 	MUST (
 		cn $
 		iodineUid $
+		header $
+		style $
+		chrome $
+		startpage $
+		iodineUidNumber $
 		sn
 	)
 	MAY (
@@ -567,33 +571,18 @@ objectclass ( i2OC:2
 		middlename $
 		group $
 		nickname $
-		iodineUidNumber $
 		birthday $
 		sex $
-		startpage $
+		webpage $
 		header $
 		style $
 		chrome $
-		startpage $
+		comments $
+		counselor $
 		soundexlast $
-		soundexfirst
-	)
-	)
-
-objectclass ( i2OC:3
-	NAME ('tjhsstSection' 'section')
-	MUST (
-		tjhsstSectionId $
-		classPeriod $
-		associatedClassId
-	)
-	MAY (
-		displayname $
-		description $
-		year $
-		roomNumber $
-		enrolledStudent $
-		associatedTeacher
+		soundexfirst $
+		aim $ msn $ xfire $ yahoo $ googleTalk $ icq $ jabber $
+		otherPicture
 	)
 	)
 
@@ -601,47 +590,16 @@ objectclass ( i2OC:4
 	NAME ('tjhsstClass' 'tjhsstCourse')
 	MUST (
 		tjhsstClassId $
+		tjhsstSectionId $
 		courselength $
-		cn
+		cn $
+		classPeriod
 	)
 	MAY (
 		shortClassName $
 		description $
 		displayname $
 		year
-	)
-	)
-
-objectclass ( i2OC:5
-	NAME 'eighthActivity'
-	MUST (
-		tjhsstActivityId $
-		cn
-	)
-	MAY (
-		description $
-		comments $
-		enrolledStudent $
-		associatedTeacher
-	)
-	)
-
-objectclass ( i2OC:6
-	NAME ('eighthBlock' 'block')
-	MUST (
-		blockId
-	)
-	)
-
-objectclass ( i2OC:7
-	NAME 'i2Group'
-	MUST (
-		groupId $
-		cn $
-		groupAdministrator
-	)
-	MAY (
-		description
 	)
 	)
 

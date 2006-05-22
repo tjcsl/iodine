@@ -66,14 +66,12 @@ class EighthActivity {
 	public function add_member(User $user, $force = FALSE, $blockid = NULL) {
 		global $I2_SQL,$I2_USER,$I2_LOG;
 		$userid = $user->uid;
+		$admin = Eighth::is_admin();
 		/*
 		** Users need to be able to add themselves to an activity
 		*/
-		if (!($I2_USER->uid == $userid || Eighth::is_admin())) {
-			/*
-			** Trigger an error: check_admin() WILL fail.
-			*/
-			Eighth::check_admin();
+		if ($I2_USER->uid != $userid && !$admin) {
+			throw new I2Exception("You may not change other students' activities!");
 		}
 		if ($force) {
 			Eighth::check_admin();
@@ -107,7 +105,7 @@ class EighthActivity {
 		if ($otheractivity && $otheractivityid == $this->data['aid'] && $this->oneaday) {
 			$ret |= EighthActivity::ONEADAY;
 		}
-		if($this->presign && $this->block && time() > strtotime($this->block->date)-60*60*24*2) {
+		if ($this->presign && $this->block && time() > strtotime($this->block->date)-60*60*24*2) {
 			$ret |= EighthActivity::PRESIGN;
 		}
 		if (time() > strtotime($this->block->date)+60*60*24) {

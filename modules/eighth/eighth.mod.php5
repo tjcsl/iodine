@@ -1562,6 +1562,7 @@ class Eighth implements Module {
 							$stat = array_keys($act_status);
 							$this->template_args['forcereason'] = $stat[0];
 						}
+						$this->template_args['act_status'] = $act_status;
 					}
 				}
 				if(count($status) == 0) {
