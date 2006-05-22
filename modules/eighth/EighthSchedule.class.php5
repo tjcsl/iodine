@@ -196,7 +196,7 @@ class EighthSchedule {
 	*/
 	public static function get_next_date() {
 		global $I2_SQL;
-		if(date('Hi')>1530) {
+		if(date('Hi')>1550) {
 			$date = $I2_SQL->query('SELECT date FROM eighth_blocks WHERE date > %t ORDER BY date,block LIMIT 1', date('Y-m-d'))->fetch_array(Result::NUM);
 		} else {
 			$date = $I2_SQL->query('SELECT date FROM eighth_blocks WHERE date >= %t ORDER BY date,block LIMIT 1', date('Y-m-d'))->fetch_array(Result::NUM);
