@@ -86,7 +86,7 @@ class Poll {
 		
 		$this->mygroups = array();
 		foreach ($I2_SQL->query('SELECT gid FROM poll_group_map WHERE pid=%d', $pid) as $gid) {
-			$this->mygroups[] = new Group($gid);
+			$this->mygroups[] = new Group($gid['gid']);
 		}
 	}
 

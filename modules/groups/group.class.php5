@@ -298,11 +298,11 @@ class Group {
 		else {
 				  $user = new User($user);
 				  $grade = $user->grade;
-				  return array (
+				  return array ( new Group(array (
 							 'gid' => -1*$grade,
 							 'name' => 'grade_'.$grade,
 							 'description' => 'Grade '.$grade
-							 );
+							 )));
 		}
 	}
 

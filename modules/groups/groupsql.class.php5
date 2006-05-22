@@ -88,6 +88,7 @@ class GroupSQL extends Group {
 		}
 
 		if(is_array($group)) {
+			d(print_r($group,1),1);
 			$this->mygid = $group['gid'];
 			$this->myname = $group['name'];
 			$this->mydescription = $group['description'];
@@ -290,7 +291,7 @@ class GroupSQL extends Group {
 		if( $this->special ) {
 			$specs = Group::get_special_groups($user);
 			foreach ($specs as $gp) {
-				if ($gp['gid'] == $this->mygid) {
+				if ($gp->gid == $this->mygid) {
 					return TRUE;
 				}
 			}
