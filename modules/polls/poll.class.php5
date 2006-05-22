@@ -85,8 +85,7 @@ class Poll {
 		$I2_LOG->log_file('done');
 		
 		$this->mygroups = array();
-		$res = $I2_SQL->query('SELECT gid FROM poll_group_map WHERE pid=%d', $pid);
-		while ($gid = $res->fetch_single_value()) {
+		foreach ($I2_SQL->query('SELECT gid FROM poll_group_map WHERE pid=%d', $pid) as $gid) {
 			$this->mygroups[] = new Group($gid);
 		}
 	}
