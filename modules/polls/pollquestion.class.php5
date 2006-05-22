@@ -52,7 +52,7 @@ class PollQuestion {
 	}
 
 	public function __construct($qid) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_LOG;
 		
 		//$qid = self::to_qid($pid,$qnum);
 
@@ -69,7 +69,7 @@ class PollQuestion {
 		$this->myquestion = $info['question'];
 		
 		$res = self::get_answers_to_question($qid);
-
+		
 		foreach ($res as $row) {
 			$this->myanswers[$row['aid']] = $row['answer'];
 		}
