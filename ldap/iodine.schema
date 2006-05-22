@@ -514,6 +514,7 @@ objectclass ( i2OC:1
 		sn $
 		tjhsstStudentId $
 		startpage $
+		iodineUidNumber $
 		style $
 		header $
 		chrome
@@ -536,12 +537,10 @@ objectclass ( i2OC:1
 		nickname $
 		counselor $
 		group $
-		iodineUidNumber $
 		birthday $
 		sex $ aim $ xfire $ yahoo $ msn $ jabber $ icq $ googleTalk $
 		webpage $
 		locker $
-		startpage $
 		soundexlast $
 		soundexfirst $
 		comments $
@@ -559,6 +558,11 @@ objectclass ( i2OC:2
 	MUST (
 		cn $
 		iodineUid $
+		header $
+		style $
+		chrome $
+		startpage $
+		iodineUidNumber $
 		sn
 	)
 	MAY (
@@ -567,17 +571,14 @@ objectclass ( i2OC:2
 		middlename $
 		group $
 		nickname $
-		iodineUidNumber $
 		birthday $
 		sex $
-		startpage $
 		webpage $
 		header $
 		style $
 		chrome $
 		comments $
 		counselor $
-		startpage $
 		soundexlast $
 		soundexfirst $
 		aim $ msn $ xfire $ yahoo $ googleTalk $ icq $ jabber $
