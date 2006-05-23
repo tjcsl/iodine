@@ -89,10 +89,12 @@ class dataimport implements Module {
 		
 			d("Teacher: $id = $lastname,$firstname",3);
 
-			if (!isset($last_to_people[$lastname])) {
-				$this->last_to_people[$lastname] = array(array('fname'=>$firstname,'id'=>$id));
-			} else {
+			if (isSet($this->last_to_people[$lastname])) {
+				d("Adding alternate for $lastname - $firstname",5);
 				$this->last_to_people[$lastname][] = array('fname'=>$firstname,'id'=>$id);
+			} else {
+				$this->last_to_people[$lastname] = array(array('fname'=>$firstname,'id'=>$id));
+				d("Adding first name for $lastname,$firstname",5);
 			}
 			
 			$this->teachertable[$id] = array(
@@ -121,8 +123,8 @@ class dataimport implements Module {
 		
 		$count = 0;
 		
-		$teacherldap = LDAP::get_simple_bind($user,$pass,$server);
-		//$teacherldap = LDAP::get_user_bind($server);
+		//$teacherldap = LDAP::get_simple_bind($user,$pass,$server);
+		$teacherldap = LDAP::get_user_bind($server);
 		$res = $teacherldap->search('ou=Staff,dc=local,dc=tjhsst,dc=edu','cn=*',array('cn','sn','givenName'));
 		$validteachers = array();
 		while ($teacher = $res->fetch_array()) {
@@ -136,12 +138,15 @@ class dataimport implements Module {
 			);
 			d("Working on teacher {$farr['fname']} {$farr['lname']}",6);
 			if (!isSet($this->last_to_people[$farr['lname']])) {
+				d('No first name for '.$farr['lname'].'- skipping.',5);
 				continue;
 			}
 			$lnamematches = $this->last_to_people[$farr['lname']];
 			$found = FALSE;
 			foreach ($lnamematches as $match) {
-				if ($farr['fname'] == $match['fname']) {
+		 		d('Trying first name '.$match['fname'].' for '.$farr['fname'].' '.$farr['lname'],5);				  
+				if (strcasecmp($farr['fname'],$match['fname']) == 0) {
+		 			d('Matched first name '.$match['fname'],5);				  
 					$farr['uid'] = $match['id'];
 					$found = TRUE;
 					break;

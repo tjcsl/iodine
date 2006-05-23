@@ -260,6 +260,11 @@ class PollQuestion {
 				  Poll::check_admin();
 		}
 
+		$mypoll = new Poll($this->mypid);
+		if (!$mypoll->user_can_access($user)) {
+				  Poll::check_admin();
+		}
+
 		if (! is_numeric($answer)) {
 			throw new I2Exception("Invalid answer value $answer attempted to be recorded in PollQuestion");
 		}

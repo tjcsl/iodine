@@ -268,10 +268,6 @@ class Poll {
 			$user = $I2_USER;
 		}
 
-		if ($user->is_group_member('admin_polls')) {
-				  return TRUE;
-		}
-
 		// poll visibility
 		if ($this->visible == FALSE) {
 			return FALSE;
