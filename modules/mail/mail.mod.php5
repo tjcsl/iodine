@@ -52,6 +52,12 @@ class Mail implements Module {
 	
 	function init_pane() {
 		global $I2_ARGS;
+
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clear') {
+			// Clear the cache
+			$this->clear_cache();
+			redirect(implode('/'),array_slice($I2_ARGS,1));
+		}
 		
 		$max_msgs = i2config_get('max_pane_msgs', 20, 'mail');
 
@@ -186,6 +192,10 @@ class Mail implements Module {
 		return ( self::$msgno_map[$msg1->msgno] < self::$msgno_map[$msg2->msgno] ) ? -1 : 1;
 	}
 
+	private function clear_cache() {
+		unlink($this->cache_file);
+	}
+
 	private function get_cache() {
 		if(!file_exists($this->cache_file)) {
 			d('Cache file does not exist',6);
@@ -194,7 +204,7 @@ class Mail implements Module {
 		
 		if(time() - filemtime($this->cache_file) > i2config_get('imap_cache_time',300,'mail')) {
 			d('Cache file is too stale',6);
-			unlink($this->cache_file);
+			$this->clear_cache();
 			return FALSE;
 		}
 
