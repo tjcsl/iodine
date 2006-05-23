@@ -161,6 +161,15 @@ class News implements Module {
 			case 'archive';
 				return self::display_news(true,'Old News Posts');
 
+			case 'show':
+					$this->template = 'news_show.tpl';
+					if( !isset($I2_ARGS[2]) ) {
+						throw new I2Exception('ID of article to read not specified.');
+					}
+					$this->template_args['story'] = new Newsitem($I2_ARGS[2]);
+					return array(TRUE,$this->template_args['story']->title);
+
+
 			case 'read':
 					$this->template = 'news_read.tpl';
 					if( !isset($I2_ARGS[2]) ) {
@@ -218,7 +227,7 @@ class News implements Module {
 		}
 		foreach($this->stories as $story) {
 			if ($story->readable() && !$story->has_been_read()) {
-				$this->summaries[] = $story->title;
+				$this->summaries[] = array('title' => $story->title, 'id' => $story->id);
 			}
 		}
 		$num = count($this->summaries);

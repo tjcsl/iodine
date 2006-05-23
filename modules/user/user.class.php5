@@ -81,8 +81,8 @@ class User {
 			/*
 			** Someone tried new User(user object), so we'll just let them be stupid.
 			*/
-				  $this->myuid = $uid->iodineUidNumber;
-				  $this->username = $uid->uid;
+				  $this->myuid = $uid->uid;
+				  $this->username = $uid->username;
 				  return $uid;
 		} else {
 			$uid = self::to_uidnumber($uid);
@@ -211,7 +211,8 @@ class User {
 				return $this->__get('givenName');
 			case 'mname':
 				return $this->__get('middlename');
-			case 'uid':
+		   case 'uid':
+		   case 'uidnumber':
 				return $this->__get('iodineUidNumber');
 			case 'username':
 				return $this->__get('iodineUid');

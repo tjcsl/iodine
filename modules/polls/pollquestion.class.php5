@@ -249,6 +249,8 @@ class PollQuestion {
 	public function record_vote($answer, $answertext=NULL, $user=NULL) {
 		global $I2_USER, $I2_SQL;
 
+		d('Voting for '.$answer,4);
+
 		if (!$user) {
 			$user = $I2_USER;
 		}
@@ -264,13 +266,33 @@ class PollQuestion {
 
 		$numvotes = $I2_SQL->query('SELECT COUNT(*) FROM poll_votes WHERE aid >= %d AND aid < %d AND uid=%d', self::lower_bound($this->myqid), self::upper_bound($this->myqid), $user->uid)->fetch_single_value();
 
+		if ($this->type != 'approval') {
+				  // Delete previous votes
+				  $I2_SQL->query('DELETE FROM poll_votes WHERE aid=%d AND uid=%d',$answer,$user->uid);
+		}
+
 		if ($this->maxvotes == 0 || $numvotes < $this->maxvotes) {
-			// user may still vote here; create a new vote
-			$I2_SQL->query('INSERT INTO poll_votes SET answer=%s, aid=%d, uid=%d', $answertext, $answer, $user->uid);
+				  // user may still vote here; create a new vote
+			$I2_SQL->query('REPLACE INTO poll_votes SET answer=%s, aid=%d, uid=%d', $answertext, $answer, $user->uid);
 		}
 		else  {
 			throw new I2Exception('You have attempted to vote too many times for one question!');
 		}
+	}
+
+	/**
+	* Removes a user's vote.
+	*/
+	public function delete_vote($aid, $user=NULL) {
+			  global $I2_USER,$I2_SQL;
+			  if (!$user) {
+						 $user = $I2_USER;
+			  }
+			  $user = new User($user);
+			  if ($user->uid != $I2_USER->uid) {
+						 Poll::check_admin();
+			  }
+			  return $I2_SQL->query('DELETE FROM poll_votes WHERE aid=%d AND uid=%d',$aid,$user->uid);
 	}
 
 	/**

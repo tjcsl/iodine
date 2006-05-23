@@ -77,13 +77,29 @@ class Polls implements Module {
 		if (isset($_REQUEST['polls_vote_form'])) {
 			foreach ($poll->questions as $question) {
 				$answer = 0;
-				if ($question->maxvotes == 1) {
-					$question->record_vote($_REQUEST[$question->qid]);
+				if ($question->maxvotes == 1 || $question->type != 'approval') {
+						  if (isSet($_REQUEST[$question->qid])) {
+							$question->record_vote($_REQUEST[$question->qid]);
+						  }
 				}
 				else {
-					foreach ($question->answers as $aid => $ans) {
-							$question->record_vote($aid, $ans);
-						}
+					  // Perform deletions before addition to ensure we stay below maxvotes if possible
+					  $add = array();
+					  foreach ($question->answers as $aid => $ans) {
+								 $vote = isSet($_REQUEST[$aid])?$_REQUEST[$aid]:FALSE;
+								 if ($vote) {
+									$add[$aid] = $vote;
+								 } else {
+									$question->delete_vote($aid);
+								 }
+					  }
+					  foreach ($add as $aid=>$vote) {
+								 if ($question->type == 'approval') {
+											// Don't record text for voting questions
+											$vote = NULL;
+								 }
+								 $question->record_vote($aid, $vote);
+					  }
 					}
 				}
 			}

@@ -143,8 +143,12 @@ class Mail implements Module {
 		$sorted = array_slice(imap_sort($this->connection, SORTDATE, 1), $offset, $length);
 		$messages = imap_fetch_overview($this->connection, implode(',',$sorted));
 
-		// Used for the usort() call below; swaps the keys/values in $sorted
-		self::$msgno_map = array_combine(array_values($sorted), array_keys($sorted));
+		if (count($sorted) == 0) {
+				  self::$msgno_map = array();
+		} else {
+			// Used for the usort() call below; swaps the keys/values in $sorted
+			self::$msgno_map = array_combine(array_values($sorted), array_keys($sorted));
+		}
 
 		foreach($messages as $i=>$message) {
 			$message->unread = $message->recent || !$message->seen;
