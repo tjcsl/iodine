@@ -262,8 +262,8 @@ class PollQuestion {
 
 		$mypoll = new Poll($this->mypid);
 		
-		$I2_LOG->log_file('User '.$I2_USER->uid.' voting: poll '.$this->mypid.' : '.$mypoll->name);
-		d('User '.$I2_USER->uid.' voting: poll '.$this->mypid.' : '.$mypoll->name,4);
+		//$I2_LOG->log_file('User '.$I2_USER->uid.' voting: poll '.$this->mypid.' : '.$mypoll->name);
+		//d('User '.$I2_USER->uid.' voting: poll '.$this->mypid.' : '.$mypoll->name,4);
 
 		// Invalid poll
 		if (!$mypoll->name) {
