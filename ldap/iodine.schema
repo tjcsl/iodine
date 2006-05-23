@@ -504,6 +504,23 @@ attribute ( i2Attr:62
 	SYNTAX jpegSyntax
 	)
 
+attributetype ( i2Attr:63
+	NAME ('metaphonelast' 'lastmetaphone')
+	DESC 'the metaphone of a last name'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:64
+	NAME ('metaphonefirst' 'firstmetaphone')
+	DESC 'the metaphone of a first name'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
+	SINGLE-VALUE
+	)
+
+
 objectclass ( i2OC:1
 	NAME ('tjhsstStudent' 'iodineStudent')
 	SUP inetOrgPerson STRUCTURAL
@@ -543,6 +560,8 @@ objectclass ( i2OC:1
 		locker $
 		soundexlast $
 		soundexfirst $
+		metaphonelast $
+		metaphonefirst $
 		comments $
 		freshmanPicture $
 		sophomorePicture $
@@ -581,6 +600,8 @@ objectclass ( i2OC:2
 		counselor $
 		soundexlast $
 		soundexfirst $
+		metaphonelast $
+		metaphonefirst $
 		aim $ msn $ xfire $ yahoo $ googleTalk $ icq $ jabber $
 		otherPicture
 	)
