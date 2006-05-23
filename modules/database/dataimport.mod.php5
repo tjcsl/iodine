@@ -16,6 +16,8 @@ class dataimport implements Module {
 	private $boxes;
 	private $boxids;
 	private $numsponsors;
+	private $schedulefile;
+	private $classfile;
 
 	/**
 	* SASI Student dump - intranet.##a
@@ -492,10 +494,10 @@ class dataimport implements Module {
 		** Teachers need intraboxes, too!
 		*/
 		$count = 0;
-		foreach ($this->boxids as $boxid=>$name) {
+		/*foreach ($this->boxids as $boxid=>$name) {
 			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid,box_order,closed) VALUES(%d,%d,%d,%d)',$teacher['uid'],$boxid,$count,0);
 			$count++;
-		}
+		}*/
 	}
 
 	/**
@@ -944,6 +946,71 @@ class dataimport implements Module {
 				  $I2_LOG->log_file('Allowing student with ID '.$row['StudentID'].' to go to activity #'.$row['ActivityID']);
 				  //EighthActivity::add_restricted_member_to_activity($row['ActivityID'],new User($user));
 		}
+	}
+
+	private function import_schedules() {
+		global $I2_LDAP,$I2_LOG;
+		
+		/*
+		** Set up student <=> course mappings first
+		*/
+		$students = array();
+		$studentcoursefile = @fopen($this->schedulefile);
+		while ($studentline = fgets($studentcoursefile)) {
+			list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename, $teacherid, $teachername, $term, $room) = explode('","',trim($studentline,'"'));
+			if (!isSet($students[$sectionone])) {
+				$students[$sectionone] = array();
+			}
+			if (!isSet($students[$sectiontwo])) {
+				$students[$sectiontwo] = array();
+			}
+			$studentid = User::studentid_to_uid($studentid);
+			if (!$studentid) {
+				d('Invalid/unknown studentID '.$studentid,5);
+				continue;
+			}
+			$studentid = LDAP::get_user_dn($studentid);
+			$students[$sectionone][] = $studentid;
+			if ($sectionone != $sectiontwo) {
+				$students[$sectiontwo][] = $studentid;
+			}
+		}
+		fclose($studentcoursefile);
+		
+		/*
+		** Then create classes
+		*/
+		$file = @fopen($this->classfile);
+		while ($line = fgets($file)) {
+			list($sectionid,$period,$uhhotherperiod,$courselen,$othercourselen,$otherothercourselen,$teacherid,$room,$class) = explode('","',trim($line,'"'));
+			$classid = explode('-',$sectionid);
+			$classid = $classid[0];
+			$semesterno = $courselen[1];
+
+			// Hunt down the sponsor - and kill them!
+			$sponsordn = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUidNumber=$teacherid",array('dn'))->fetch_single_value();
+
+			if (!$sponsordn) {
+				d("Unable to find teacher number $teacherid for class \"$class\" ($sectionid)",4);
+			}
+
+			$newclass = array(
+				'objectClass' => 'tjhsstClass',
+				'tjhsstClassId' => $classid,
+				'tjhsstSectionId' => $sectionid,
+				'courselength' => $courselen=='YR'?4:($courselen[0]=='S'?2:1),
+				'quarternumber' => $courselent=='YR'?array(1,2,3,4):($courselen[0]=='S':($semesterno==1?array(1,2):array(3,4)):$semesterno),
+				'roomNumber' => $room,
+				'year' => i2config_get('senior_gradyear',date('Y'),'user'),
+				'cn' => $class,
+				'sponsorDn' => $sponsordn
+				'classPeriod' => $period,
+				'enrolledStudent' => $students[$sectionid]
+			);
+			// Create the course
+			$I2_LDAP->add(LDAP::get_schedule_dn($sectionid),$newclass);
+		}
+		fclose($file);
 	}
 
 	private function fix_broken_user($studentid) {
@@ -1418,6 +1485,10 @@ class dataimport implements Module {
 		if (isSet($_REQUEST['admin_pass'])) {
 			$_SESSION['ldap_admin_pass'] = $_REQUEST['admin_pass'];
 		}
+		if (isSet($_REQUEST['schedulefile']) && isSet($_REQUEST['classfile'])) {
+			$_SESSION['classfile'] = $_REQUEST['classfile'];
+			$_SESSION['schedulefile'] = $_REQUEST['schedulefile'];
+		}
 		if (isSet($_REQUEST['intranet_db']) && isSet($_REQUEST['intranet_pass']) 
 				&& isSet($_REQUEST['intranet_server']) && isSet($_REQUEST['intranet_user'])) {
 			$_SESSION['intranet_pass'] = $_REQUEST['intranet_pass'];
@@ -1439,6 +1510,12 @@ class dataimport implements Module {
 		}
 		if (isSet($_SESSION['intranet_user'])) {
 			$this->intranet_user = $_SESSION['intranet_user'];
+		}
+		if (isSet($_SESSION['schedulefile'])) {
+			$this->schedulefile = $_SESSION['schedulefile'];
+		}
+		if (isSet($_SESSION['classfile'])) {
+			$this->classfile = $_SESSION['classfile'];
 		}
 		if (isSet($_SESSION['userfile'])) {
 			$this->userfile = $_SESSION['userfile'];
@@ -1465,6 +1542,12 @@ class dataimport implements Module {
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_user') {
 			unset($_SESSION['userfile']);
 			unset($this->userfile);
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_schedules') {
+			unset($_SESSION['schedulefile']);
+			unset($this->schedulefile);
+			unset($_SESSION['classfile']);
+			unset($this->classfile);
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_teacher') {
 			unset($_SESSION['school_ldap_server']);
@@ -1568,6 +1651,9 @@ class dataimport implements Module {
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'students' && isSet($_REQUEST['doit'])) {
 			$this->import_student_data();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'schedules' && isSet($_REQUEST['doit'])) {
+			$this->import_schedules();
 		}
 		return 'Import Legacy Data';
 	}

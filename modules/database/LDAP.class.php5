@@ -416,10 +416,10 @@ class LDAP {
 		}
 	}
 
-	public static function get_schedule_dn($name = NULL) {
+	public static function get_schedule_dn($sectionid = NULL) {
 		$oubase = self::$ou_bases['schedule'];
-		if($dn) {
-			return "cn={$name},{$oubase}";
+		if($sectionid) {
+			return "tjhsstSectionId={$sectionid},{$oubase}";
 		} else {
 			return $oubase;
 		}

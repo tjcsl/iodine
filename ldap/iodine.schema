@@ -134,7 +134,7 @@ attributetype ( i2Attr:10
 	)
 
 attributetype ( i2Attr:11
-	NAME ('sponsorDn' 'sponsor')
+	NAME ('sponsorDn' 'sponsor' 'teacher')
 	DESC 'The DN of the teacher(s) sponsoring an activity'
 	EQUALITY distinguishedNameMatch
 	SYNTAX dnSyntax
@@ -166,8 +166,8 @@ attributetype ( i2Attr:14
 attributetype ( i2Attr:17
 	NAME ('tjhsstSectionId' 'sectionId')
 	DESC 'The ID of a class/period pairing'
-	EQUALITY integerMatch
-	SYNTAX integerSyntax
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
 	SINGLE-VALUE
 	)
 
@@ -213,7 +213,7 @@ attributetype ( i2Attr:23
 	NAME ('courseLength' 'length' 'quarters' 'numQuarters')
 	DESC 'How long a course is, in quarters'
 	EQUALITY integerMatch
-	SYNTAX integerSyntax{4}
+	SYNTAX integerSyntax{1}
 	SINGLE-VALUE
 	)
 
@@ -225,18 +225,18 @@ attributetype ( i2Attr:24
 	SINGLE-VALUE
 	)
 
-attributetype ( i2Attr:25
-	NAME ('associatedTeacher' 'teacher' 'associatedTeacherUid')
-	DESC 'The UID of an associated teacher'
-	EQUALITY caseIgnoreMatch
-	SYNTAX stringSyntax
-	)
+#attributetype ( i2Attr:25
+#	NAME ('associatedTeacher' 'teacher' 'associatedTeacherUid')
+#	DESC 'The UID of an associated teacher'
+#	EQUALITY caseIgnoreMatch
+#	SYNTAX stringSyntax
+#	)
 
 attributetype ( i2Attr:26
-	NAME ('enrolledStudent' 'classMember')
-	DESC 'The StudentID of a student enrolled in a class'
-	EQUALITY integerMatch
-	SYNTAX integerSyntax
+	NAME ('enrolledStudent' 'classMember' 'enrolledStudentDn')
+	DESC 'The DN of a student enrolled in a class'
+	EQUALITY distinguishedNameMatch
+	SYNTAX dnSyntax
 	)
 
 attributetype ( i2Attr:27
@@ -506,7 +506,7 @@ attribute ( i2Attr:62
 
 attributetype ( i2Attr:63
 	NAME ('metaphonelast' 'lastmetaphone')
-	DESC 'the metaphone of a last name'
+	DESC 'The metaphone of a last name'
 	EQUALITY caseIgnoreMatch
 	SYNTAX stringSyntax
 	SINGLE-VALUE
@@ -514,10 +514,17 @@ attributetype ( i2Attr:63
 
 attributetype ( i2Attr:64
 	NAME ('metaphonefirst' 'firstmetaphone')
-	DESC 'the metaphone of a first name'
+	DESC 'The metaphone of a first name'
 	EQUALITY caseIgnoreMatch
 	SYNTAX stringSyntax
 	SINGLE-VALUE
+	)
+
+attribute ( i2Attr:65
+	NAME ('quarterNumber' 'quarter')
+	DESC 'The quarter(s) in which a class occurs'
+	EQUALITY integerMatch
+	SYNTAX integerSyntax{1}
 	)
 
 
@@ -614,13 +621,17 @@ objectclass ( i2OC:4
 		tjhsstSectionId $
 		courselength $
 		cn $
+		sponsorDn $
+		year $
+		quarternumber $
 		classPeriod
 	)
 	MAY (
 		shortClassName $
 		description $
 		displayname $
-		year
+		enrolledStudent $
+		roomNumber
 	)
 	)
 
@@ -632,7 +643,8 @@ objectclass ( i2OC:8
 		uid $
 		uidNumber $
 		gidNumber $
-		homeDirectory
+		homeDirectory $
+		loginShell
 	)
 	MAY (
 		group
