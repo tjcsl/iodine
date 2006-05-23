@@ -147,9 +147,11 @@
 		LDAP Admin Password <a href="[<$I2_ROOT>]dataimport/unset_pass">SET</a><br />
 	[</if>]
 	[<if !$schedulefile>]
-		Student Schedule File: <input type="text" name="schedulefile" /><br />
-		Course Information File: <input type="text" name="classfile" /><br />
-		<input type="submit" value="Set Schedule Information"/><br />
+		<form action="[<$I2_ROOT>]dataimport" method="post">
+			Student Schedule File: <input type="text" name="schedulefile" /><br />
+			Course Information File: <input type="text" name="classfile" /><br />
+			<input type="submit" value="Set Schedule Information"/><br />
+		</form>
 	[<else>]
 		Student Schedule Information <a href="[<$I2_ROOT>]dataimport/unset_schedule">SET</a><br />
 	[</if>]

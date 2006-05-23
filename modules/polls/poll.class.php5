@@ -64,7 +64,7 @@ class Poll {
 	public function __construct($pid) {
 		global $I2_SQL,$I2_LOG;
 
-		$I2_LOG->log_file($pid);
+		//$I2_LOG->log_file($pid);
 
 		$pollinfo = $I2_SQL->query('SELECT name, introduction, visible, startdt, enddt FROM polls WHERE pid=%d', $pid)->fetch_array(Result::ASSOC);
 
@@ -78,11 +78,11 @@ class Poll {
 		$this->myquestions = array();
 		$res = $I2_SQL->query('SELECT qid FROM poll_questions WHERE qid > %d AND qid < %d ORDER BY qid ASC', self::lower_bound($pid), self::upper_bound($pid))->fetch_all_arrays(Result::ASSOC);
 		foreach($res as $row) {
-			$I2_LOG->log_file($row['qid']);
+			//$I2_LOG->log_file($row['qid']);
 			$this->myquestions[] = new PollQuestion($row['qid']);
 		}
 
-		$I2_LOG->log_file('done');
+		//$I2_LOG->log_file('done');
 		
 		$this->mygroups = array();
 		foreach ($I2_SQL->query('SELECT gid FROM poll_group_map WHERE pid=%d', $pid) as $gid) {

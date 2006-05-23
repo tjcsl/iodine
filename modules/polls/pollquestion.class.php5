@@ -247,7 +247,7 @@ class PollQuestion {
 	* @param User $user The user voting; defaults to the current user
 	*/
 	public function record_vote($answer, $answertext=NULL, $user=NULL) {
-		global $I2_USER, $I2_SQL;
+		global $I2_USER, $I2_SQL, $I2_LOG;
 
 		d('Voting for '.$answer,4);
 
@@ -261,7 +261,16 @@ class PollQuestion {
 		}
 
 		$mypoll = new Poll($this->mypid);
-		if (!$mypoll->user_can_access($user)) {
+		
+		$I2_LOG->log_file('User '.$I2_USER->uid.' voting: poll '.$this->mypid.' : '.$mypoll->name);
+		d('User '.$I2_USER->uid.' voting: poll '.$this->mypid.' : '.$mypoll->name,4);
+
+		// Invalid poll
+		if (!$mypoll->name) {
+			return;
+		}
+		
+		if (!$mypoll->user_can_access()) {
 				  Poll::check_admin();
 		}
 

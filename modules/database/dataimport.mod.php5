@@ -955,32 +955,27 @@ class dataimport implements Module {
 		** Set up student <=> course mappings first
 		*/
 		$students = array();
-		$studentcoursefile = @fopen($this->schedulefile);
+		$studentcoursefile = @fopen($this->schedulefile,'r');
 		while ($studentline = fgets($studentcoursefile)) {
 			list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename, $teacherid, $teachername, $term, $room) = explode('","',trim($studentline,'"'));
 			if (!isSet($students[$sectionone])) {
 				$students[$sectionone] = array();
 			}
-			if (!isSet($students[$sectiontwo])) {
-				$students[$sectiontwo] = array();
-			}
 			$studentid = User::studentid_to_uid($studentid);
 			if (!$studentid) {
-				d('Invalid/unknown studentID '.$studentid,5);
+				$I2_LOG->log_file('Invalid/unknown studentID '.$studentid);
 				continue;
 			}
-			$studentid = LDAP::get_user_dn($studentid);
-			$students[$sectionone][] = $studentid;
-			if ($sectionone != $sectiontwo) {
-				$students[$sectiontwo][] = $studentid;
-			}
+			$I2_LOG->log_file('StudentID '.$studentid.' enrolled in section '.$sectionone);
+			$uid = LDAP::get_user_dn($studentid);
+			$students[$sectionone][] = $uid;
 		}
 		fclose($studentcoursefile);
 		
 		/*
 		** Then create classes
 		*/
-		$file = @fopen($this->classfile);
+		$file = @fopen($this->classfile,'r');
 		while ($line = fgets($file)) {
 			list($sectionid,$period,$uhhotherperiod,$courselen,$othercourselen,$otherothercourselen,$teacherid,$room,$class) = explode('","',trim($line,'"'));
 			$classid = explode('-',$sectionid);
@@ -988,10 +983,12 @@ class dataimport implements Module {
 			$semesterno = $courselen[1];
 
 			// Hunt down the sponsor - and kill them!
-			$sponsordn = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUidNumber=$teacherid",array('dn'))->fetch_single_value();
+			$sponsordn = LDAP::get_user_dn($I2_LDAP->search('',"iodineUidNumber=$teacherid",array('iodineUid'))->fetch_single_value());
+			$I2_LOG->log_file(print_r($sponsordn,1));
 
 			if (!$sponsordn) {
-				d("Unable to find teacher number $teacherid for class \"$class\" ($sectionid)",4);
+				$I2_LOG->log_file("Unable to find teacher number $teacherid for class \"$class\" ($sectionid)");
+				continue;
 			}
 
 			$newclass = array(
@@ -999,14 +996,15 @@ class dataimport implements Module {
 				'tjhsstClassId' => $classid,
 				'tjhsstSectionId' => $sectionid,
 				'courselength' => $courselen=='YR'?4:($courselen[0]=='S'?2:1),
-				'quarternumber' => $courselent=='YR'?array(1,2,3,4):($courselen[0]=='S':($semesterno==1?array(1,2):array(3,4)):$semesterno),
+				'quarternumber' => $courselen=='YR'?array(1,2,3,4):($courselen[0]=='S'?($semesterno==1?array(1,2):array(3,4)):$semesterno),
 				'roomNumber' => $room,
 				'year' => i2config_get('senior_gradyear',date('Y'),'user'),
 				'cn' => $class,
-				'sponsorDn' => $sponsordn
+				'sponsorDn' => $sponsordn,
 				'classPeriod' => $period,
 				'enrolledStudent' => $students[$sectionid]
 			);
+			$I2_LOG->log_file('Creating section '.$sectionid.' ('.$class.' period '.$period.' taught by '.$sponsordn.' in '.$room.' quarters '.print_r($newclass['quarternumber'],1));
 			// Create the course
 			$I2_LDAP->add(LDAP::get_schedule_dn($sectionid),$newclass);
 		}
@@ -1664,6 +1662,7 @@ class dataimport implements Module {
 				'admin_pass' => isSet($this->admin_pass)?TRUE:FALSE,
 				'intranet_pass' => isSet($this->intranet_pass)?TRUE:FALSE,
 				'userfile' => isSet($this->userfile)?TRUE:FALSE,
+				'schedulefile' => isSet($this->schedulefile)?TRUE:FALSE,
 				//FIXME: meh, not quite userproof.
 				'teacherfile' => (isSet($this->teacherfile)&&(isSet($this->staffile)||isSet($this->school_ldap_server)))?TRUE:FALSE
 				));
