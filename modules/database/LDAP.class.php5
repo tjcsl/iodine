@@ -385,7 +385,7 @@ class LDAP {
 				  return $oubase;
 		}
 		$user = new User($uid);
-		$uid = $user->uid;
+		$uid = $user->username;
 		if($uid) {
 			return "iodineUid={$uid},{$oubase}";
 		} else {

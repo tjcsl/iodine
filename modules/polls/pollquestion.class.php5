@@ -15,7 +15,6 @@
 */
 class PollQuestion {
 
-	private $mypid;
 	private $myqid;
 	
 	private $mymaxvotes;
@@ -31,7 +30,7 @@ class PollQuestion {
 		switch($var) {
 			case 'mypid':
 			case 'pid':
-				return (int)($this->myqid/1000);
+				return (int)floor($this->myqid/1000);
 			case 'qid':
 				return $this->myqid;
 			case 'maxvotes':
@@ -255,21 +254,16 @@ class PollQuestion {
 			$user = $I2_USER;
 		}
 
-		$user = new User($user);
+		/*$user = new User($user);
 		if ($user->uid != $I2_USER->uid) {
 				  Poll::check_admin();
-		}
+		}*/
 
 		$mypoll = new Poll($this->mypid);
 		
 		//$I2_LOG->log_file('User '.$I2_USER->uid.' voting: poll '.$this->mypid.' : '.$mypoll->name);
-		//d('User '.$I2_USER->uid.' voting: poll '.$this->mypid.' : '.$mypoll->name,4);
+		d('User '.$I2_USER->uid.' voting: q#'.$this->myqid.' poll '.$this->mypid.' : '.$mypoll->name,4);
 
-		// Invalid poll
-		if (!$mypoll->name) {
-			return;
-		}
-		
 		if (!$mypoll->user_can_access()) {
 				  Poll::check_admin();
 		}

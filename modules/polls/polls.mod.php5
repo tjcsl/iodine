@@ -32,6 +32,9 @@ class Polls implements Module {
 	*/
 	function init_pane() {
 		global $I2_USER, $I2_ARGS;
+		if (!$I2_USER->is_group_member('admin_polls')) {
+			throw new I2Exception('Temporarily disabled by administrator');
+		}
 
 		if (count($I2_ARGS) <= 1) {
 			$I2_ARGS[1] = 'home';
