@@ -268,7 +268,7 @@ class PollQuestion {
 
 		if ($this->type != 'approval') {
 				  // Delete previous votes
-				  $I2_SQL->query('DELETE FROM poll_votes WHERE aid=%d AND uid=%d',$answer,$user->uid);
+				  $I2_SQL->query('DELETE FROM poll_votes WHERE aid >= %d AND aid < %d AND uid=%d',self::lower_bound($this->myqid),self::upper_bound($this->myqid),$user->uid);
 		}
 
 		if ($this->maxvotes == 0 || $numvotes < $this->maxvotes) {

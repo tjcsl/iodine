@@ -1,8 +1,8 @@
 <a href="[<$I2_ROOT>]polls">Polls Home</a><br /><br />
 
-<b>[<$poll->name>]</b><br /><br />
+<b>[<$poll->name|escape:"html">]</b><br /><br />
 
-[<$poll->introduction>]<br /><br />
+[<$poll->introduction|escape:"html">]<br /><br />
 
 <form method="post" action="[<$I2_ROOT>]polls/vote/[<$poll->pid>]" class="boxform">
 <input type="hidden" name="polls_vote_form" value="vote">
