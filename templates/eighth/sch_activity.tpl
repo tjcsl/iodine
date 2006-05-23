@@ -56,7 +56,7 @@ AID: <input type="text" name="aid"/>
 			<div id="div_room_list_[<$activity.block.bid>]" class="eighth_room_list">
 [<if $activity.scheduled>]
 	[<foreach from=$activity.rooms_obj item=room>]
-				[<$room->name>] <a href="#" onClick="do_action('remove_room', 0, '[<$activity.block.bid>]')">Remove</a><br />
+				[<$room->name>] <a href="#" onClick="do_action('remove_room', '[<$activity.block.bid>]', '[<$room->rid>]', event)">Remove</a><br />
 	[</foreach>]
 [</if>]
 			</div>
@@ -70,7 +70,7 @@ AID: <input type="text" name="aid"/>
 			<div id="div_sponsor_list_[<$activity.block.bid>]" class="eighth_sponsor_list">
 [<if $activity.scheduled>]
 	[<foreach from=$activity.sponsors_obj item=sponsor>]
-				[<$sponsor->name_comma>] <a href="#" onClick="do_action('remove_sponsor', 0, '[<$activity.block.bid>]')">Remove</a><br />
+				[<$sponsor->name_comma>] <a href="#" onClick="do_action('remove_sponsor', '[<$activity.block.bid>]', '[<$sponsor->sid>]', event)">Remove</a><br />
 	[</foreach>]
 [</if>]
 			</div>

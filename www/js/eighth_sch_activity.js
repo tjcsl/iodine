@@ -62,7 +62,7 @@ function show_comment_dialog(e, bid) {
 	cancel_button.innerHTML = "Cancel";
 	cancel_button.style.textAlign = "center";
 	cancel_button.style.fontWeight = "bold"
-	cancel_button.style.fontSize = "6px";
+	cancel_button.style.fontSize = "16px";
 	cancel_button.style.MozUserSelect = "none";
 	cancel_button.style.cursor = "default";
 	cancel_button.onmousedown = function() {
@@ -139,7 +139,7 @@ function do_action(action, bid, data, e) {
 		var list_of_rooms = rooms.value.split(",");
 		list_of_rooms.push(data.value);
 		rooms.value = list_of_rooms.join(",");
-		room_list.innerHTML += data.innerHTML + " <a href=\"#\" onClick=\"do_action('remove_room', 0, " + action_bid + ")\">Remove</a><br />";
+		room_list.innerHTML += data.innerHTML + " <a href=\"#\" onClick=\"do_action('remove_room', " + action_bid + ", " + data.value + ", event)\">Remove</a><br />";
 		var room_pane = document.getElementById("eighth_room_pane");
 		room_pane.style.display = "none";
 		action_bid = -1;
@@ -150,27 +150,49 @@ function do_action(action, bid, data, e) {
 		var list_of_sponsors = sponsors.value.split(",");
 		list_of_sponsors.push(data.value);
 		sponsors.value = list_of_sponsors.join(",");
-		sponsor_list.innerHTML += data.innerHTML + " <a href=\"#\" onClick=\"do_action('remove_sponsor', 0, " + action_bid + ")\">Remove</a><br />";
+		sponsor_list.innerHTML += data.innerHTML + " <a href=\"#\" onClick=\"do_action('remove_sponsor', " + action_bid + ", " + data.value + ", event)\">Remove</a><br />";
 		var sponsor_pane = document.getElementById("eighth_sponsor_pane");
 		sponsor_pane.style.display = "none";
 		action_bid = -1;
 	}
 	else if(action == "remove_room") {
-		var rooms = document.getElementById("room_list_" + action_bid);
-		var room_list = document.getElementById("div_room_list_" + action_bid);
+		var rooms = document.getElementById("room_list_" + bid);
+		var room_list = document.getElementById("div_room_list_" + bid);
 		var list_of_rooms = rooms.value.split(",");
+		for(var i = 0; i < list_of_rooms.length; i++) {
+			if(list_of_rooms[i] == data) {
+				list_of_rooms.splice(i,1);
+				break;
+			}
+		}
+		var remove_btn = e.srcElement;
+		remove_btn.parentNode.removeChild(remove_btn.nextSibling);
+		remove_btn.parentNode.removeChild(remove_btn.previousSibling);
+		remove_btn.parentNode.removeChild(remove_btn);
+		rooms.value = list_of_rooms.join(",");
 	}
 	else if(action == "remove_sponsor") {
-		var sponsors = document.getElementById("sponsor_list_" + action_bid);
-		var sponsor_list = document.getElementById("div_sponsor_list_" + action_bid);
+		var sponsors = document.getElementById("sponsor_list_" + bid);
+		var sponsor_list = document.getElementById("div_sponsor_list_" + bid);
 		var list_of_sponsors = sponsors.value.split(",");
+		for(var i = 0; i < list_of_sponsors.length; i++) {
+			if(list_of_sponsors[i] == data) {
+				list_of_sponsors.splice(i,1);
+				break;
+			}
+		}
+		var remove_btn = e.srcElement;
+		remove_btn.parentNode.removeChild(remove_btn.nextSibling);
+		remove_btn.parentNode.removeChild(remove_btn.previousSibling);
+		remove_btn.parentNode.removeChild(remove_btn);
+		sponsors.value = list_of_sponsors.join(",");
 	}
 	else if(action == "set_default_rooms") {
 		var rooms = document.getElementById("room_list_" + bid);
 		var room_list = document.getElementById("div_room_list_" + bid);
 		rooms.value = data[0].join(",");
 		for(room in data[1]) {
-			room_list.innerHTML += data[1][room] + " <a href=\"#\" onClick=\"do_action('remove_room', 0, " + action_bid + ")\">Remove</a><br />";
+			room_list.innerHTML += data[1][room] + " <a href=\"#\" onClick=\"do_action('remove_room', " + bid + ", " + data[0][room] + ", event)\">Remove</a><br />";
 		}
 	}
 	else if(action == "set_default_sponsors") {
@@ -178,7 +200,7 @@ function do_action(action, bid, data, e) {
 		var sponsor_list = document.getElementById("div_sponsor_list_" + bid);
 		sponsors.value = data[0].join(",");
 		for(sponsor in data[1]) {
-			sponsor_list.innerHTML += data[1][sponsor] + " <a href=\"#\" onClick=\"do_action('remove_sponsor', 0, " + action_bid + ")\">Remove</a><br />";
+			sponsor_list.innerHTML += data[1][sponsor] + " <a href=\"#\" onClick=\"do_action('remove_sponsor', " + bid + ", " + data[0][sponsor] + ", event)\">Remove</a><br />";
 		}
 	}
 	else if(action == "propagate") {
