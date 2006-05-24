@@ -138,7 +138,7 @@ class EighthPrint {
 		global $I2_USER;
 		$user = new User($uid);
 		if ($user->uid != $I2_USER->uid) {
-				  Eighth::check_admin();
+			Eighth::check_admin();
 		}
 		$activities = EighthActivity::id_to_activity(EighthSchedule::get_activities($uid, $start_date));
 		$absences = EighthSchedule::get_absences($uid);
@@ -151,9 +151,9 @@ class EighthPrint {
 		}
 		else {
 			if($format == "pdf") {
-				self::add_info($output, "Print Student Schedule", $user->name);
+				self::add_info($output, "Print Student Schedule", $user->name, TRUE);
 			}
-			self::do_display($output, $format, "Student Schedule for " . $user->name);
+			self::do_display($output, $format, "Student Schedule for " . $user->name, TRUE);
 		}
 	}
 	
@@ -197,7 +197,7 @@ class EighthPrint {
 		file_put_contents($temp, $output);
 		exec("cd /tmp; latex {$temp}");
 		exec("cd /tmp; dvips {$temp}.dvi" . ($landscape ? ' -t landscape' : ''));
-		/* Do magic printing stuff here */
+		exec("/usr/bin/nprint -U GUEST -P -S TJHSST_MEDIA -q MEDIA_Q5 {$temp}.ps");
 	}
 	
 	/**
@@ -213,6 +213,7 @@ class EighthPrint {
 		//$disposition = 'attachment';
 		$disposition = 'inline';
 		if($format == 'pdf') {
+			exec("cd /tmp; latex {$temp}");
 			exec("cd /tmp; pdflatex {$temp}");
 			header('Content-type: application/pdf');
 		}

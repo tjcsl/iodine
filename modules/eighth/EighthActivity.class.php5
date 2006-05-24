@@ -394,15 +394,27 @@ class EighthActivity {
 	*/
 	public function get_restricted_members() {
 		global $I2_SQL;
-		return flatten($I2_SQL->query('SELECT userid FROM eighth_activity_permissions WHERE aid=%d'
-			, $this->data['aid'])->fetch_all_arrays(Result::NUM));
+		return flatten($I2_SQL->query('SELECT userid FROM eighth_activity_permissions WHERE aid=%d', $this->data['aid'])->fetch_all_arrays(Result::NUM));
+	}
+
+	/**
+	* Checks to see if a user is a member of a restricted activity.
+	*
+	* @access public
+	*/
+	public function check_restricted_member($userid = NULL) {
+		global $I2_SQL, $I2_USER;
+		if($userid === NULL ) {
+			$userid = $I2_USER->uid;
+		}
+		return $I2_SQL->query('SELECT userid FROM eighth_activity_permissions WHERE aid=%d AND userid=%d', $this->data['aid'], $userid)->more_rows();
 	}
 
 	/**
 	* Adds a sponsor to the activity.
 	*
 	* @access public
-	* @param int $sponsorid The ssponsor ID.
+	* @param int $sponsorid The sponsor ID.
 	*/
 	public function add_sponsor($sponsorid) {
 		Eighth::check_admin();
@@ -580,6 +592,9 @@ class EighthActivity {
 	public function __get($name) {
 		global $I2_SQL;
 		if(array_key_exists($name, $this->data)) {
+			if($name == 'restricted') {
+				return ($this->data['restricted'] && !$this->check_restricted_member());
+			}
 			return $this->data[$name];
 		}
 		else if($name == 'members' && $this->data['bid']) {
@@ -594,13 +609,17 @@ class EighthActivity {
 		else {
 			switch($name) {
 				case 'comment_short':
-					return substr($this->data['comment'], 0, 15);
+					if(isset($this->data['comment'])) {
+						return substr($this->data['comment'], 0, 15);
+					}
+					return '';
 				case 'comment_notsoshort':
-					return substr($this->data['comment'], 0, 20);
+					if(isset($this->data['comment'])) {
+						return substr($this->data['comment'], 0, 20);
+					}
+					return '';
 				case 'name_r':
-					return $this->data['name'] . ($this->data['restricted'] ? ' (R)' : '')
-														. ($this->data['bothblocks'] ? ' (BB)' : '')
-														. ($this->data['sticky'] ? ' (S)' : '');
+					return $this->data['name'] . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
 				case 'name_friendly':
 					return $this->data['name'];
 				case 'sponsors_comma':
@@ -611,6 +630,9 @@ class EighthActivity {
 					}
 					return implode(', ', $temp_sponsors);
 				case 'block_sponsors_comma':
+					if($this->data['cancelled']) {
+						return 'CANCELLED';
+					}
 					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
 					$temp_sponsors = array();
 					foreach($sponsors as $sponsor) {
@@ -635,6 +657,9 @@ class EighthActivity {
 					}
 					return implode(', ', $temp_rooms);
 				case 'block_rooms_comma':
+					if($this->data['cancelled']) {
+						return '';
+					}
 					$rooms = EighthRoom::id_to_room($this->data['block_rooms']);
 					$temp_rooms = array();
 					foreach($rooms as $room) {
@@ -644,8 +669,8 @@ class EighthActivity {
 				case 'restricted_members':
 					return $this->get_restricted_members();
 				case 'restricted_members_obj':
-					return User::id_to_user($this->get_restricted_members());
-			   case 'restricted_members_obj_sorted':
+					return User::sort_users($this->get_restricted_members());
+				case 'restricted_members_obj_sorted':
 					$members = $this->__get('restricted_members_obj');
 					usort($members,array($this,'sort_by_name'));
 					return $members;

@@ -1,6 +1,8 @@
 \documentclass[fullpage,12pt]{article}
 \usepackage{fullpage}
+\usepackage[landscape,pdftex]{geometry}
 \pagestyle{empty}
+\special{landscape}
 \oddsidemargin -0.75in
 
 \begin{document}
