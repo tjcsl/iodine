@@ -14,6 +14,10 @@
 * @subpackage mail
 */
 class SquirrelMail implements Module {
+	
+	private $tpl_args = array();
+	private $tpl = NULL;
+
 	/**
 	* Displays all of a module's ibox content.
 	*
@@ -28,6 +32,7 @@ class SquirrelMail implements Module {
 	* @param Display $disp The Display object to use for output.
 	*/
 	function display_pane($disp) {
+		$disp->disp($this->tpl, $this->tpl_args);
 	}
 	
 	/**
@@ -66,19 +71,33 @@ class SquirrelMail implements Module {
 	* @abstract
 	*/
 	function init_pane() {
-		global $I2_USER, $I2_AUTH;
+		global $I2_USER, $I2_AUTH, $I2_ARGS;
 
-		$pass = $I2_AUTH->get_user_password();
 		$base_url = i2config_get('url_prefix', 'https://mail.tjhsst.edu', 'squirrelmail');
 
-		Display::stop_display();
+		if(isset($I2_ARGS[1])) {
+			if($I2_ARGS[1] == 'redirect') {
 
-		if(!$pass) {
-			header("Location: $base_url/");
-		} else {
-			header("Location: $base_url/src/redirect.php?login_username={$I2_USER->username}&secretkey=$pass&just_logged_in=1&js_autodetect_results=0");
+				$pass = $I2_AUTH->get_user_password();
+		
+				Display::stop_display();
+		
+				if(!$pass) {
+					header("Location: $base_url/");
+				} else {
+					header("Location: $base_url/src/redirect.php?login_username={$I2_USER->username}&secretkey=$pass&just_logged_in=1&js_autodetect_results=0");
+				}
+				exit();
+			}
+			
+			// invalid URL given, just return our equivalent of a 404
+			return FALSE;
 		}
-		exit();
+		
+		$this->tpl_args['mail_url'] = "$base_url/";
+		$this->tpl = 'iframe.tpl';
+
+		return 'Squirrelmail';
 	}
 }
 ?>
