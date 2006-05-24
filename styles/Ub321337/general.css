@@ -44,6 +44,12 @@ textarea {
 	border-width: 1px;
 	border-color: #007700;
 }
+.c1 {
+	background: transparent;
+}
+.c2 {
+	background: #006600;
+}
 @extend
 a {
 	color: #009900;
