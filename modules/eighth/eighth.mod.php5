@@ -75,22 +75,27 @@ class Eighth implements Module {
 	*/
 	private $force = FALSE;
 
+	/**
+	* The modules normal users should be able to access.
+	*/
+	private $safe_modules = array('vcp_schedule');
+
 	function __construct() {
 		self::init_undo();
 	}
 
 	private static function undo() {
-			  if (count(self::$undo) == 0) {
-						 /*
-						 ** Nothing to undo
-						 */
-						 return FALSE;
-			  }
-			  $undoandredo = array_pop(self::$undo);
-			  //array_pop($_SESSION['eighth_redo']);
-			  self::undo_exec($undoandredo[0],$undoandredo[1]);
-			  array_push(self::$redo,$undoandredo);
-			  //array_push($_SESSION['eighth_redo'],$undoandredo);
+		if (count(self::$undo) == 0) {
+			/*
+			** Nothing to undo
+			*/
+			return FALSE;
+		}
+		$undoandredo = array_pop(self::$undo);
+		//array_pop($_SESSION['eighth_redo']);
+		self::undo_exec($undoandredo[0],$undoandredo[1]);
+		array_push(self::$redo,$undoandredo);
+		//array_push($_SESSION['eighth_redo'],$undoandredo);
 	}
 
 	/**
@@ -212,44 +217,44 @@ class Eighth implements Module {
 	}
 
 	private static function redo() {
-			  if (count(self::$redo) == 0) {
-						 /*
-						 ** Nothing to redo
-						 */
-						 return FALSE;
-			  }
-			  $undoandredo = array_pop(self::$redo);
-			  //array_pop($_SESSION['eighth_redo']);
-			  self::undo_exec($undoandredo[2],$undoandredo[3]);
-			  array_push(self::$undo,$undoandredo);
-			  //array_push($_SESSION['eighth_undo'],$undoandredo);
+		if (count(self::$redo) == 0) {
+			/*
+			** Nothing to redo
+			*/
+			return FALSE;
+		}
+		$undoandredo = array_pop(self::$redo);
+		//array_pop($_SESSION['eighth_redo']);
+		self::undo_exec($undoandredo[2],$undoandredo[3]);
+		array_push(self::$undo,$undoandredo);
+		//array_push($_SESSION['eighth_undo'],$undoandredo);
 	}
 
 	public static function init_undo() {
 		if (isSet($_SESSION['eighth_undo'])) {
-				  self::$undo = &$_SESSION['eighth_undo'];
+			self::$undo = &$_SESSION['eighth_undo'];
 		} elseif (!self::$undo) {
-				  self::$undo = array();
-				  $_SESSION['eighth_undo'] = array();
+			self::$undo = array();
+			$_SESSION['eighth_undo'] = array();
 		}
 		if (isSet($_SESSION['eighth_redo'])) {
-				  self::$redo = &$_SESSION['eighth_redo'];
+			self::$redo = &$_SESSION['eighth_redo'];
 		} elseif (!self::$redo) {
-				  self::$redo = array();
-				  $_SESSION['eighth_redo'] = array();
+			self::$redo = array();
+			$_SESSION['eighth_redo'] = array();
 		}
 		d('8th-period undo stack: '.count(self::$undo).' element(s), topped by '.self::get_undo_name(),7);
 		foreach ((self::$undo) as $undo) {
-				  d('-- Undo Item: --'.print_r($undo,1),8);
+			d('-- Undo Item: --'.print_r($undo,1),8);
 		}
 		d('8th-period redo stack: '.count(self::$redo).' element(s), topped by '.self::get_redo_name(),7);
 		foreach ((self::$redo) as $redo) {
-				  d('-- Redo Item: --'.print_r($redo,1),8);
+			d('-- Redo Item: --'.print_r($redo,1),8);
 		}
 	}
 
 	public static function undo_off() {
-			  self::$doundo = FALSE;
+		self::$doundo = FALSE;
 	}
 
 	/**
@@ -257,14 +262,14 @@ class Eighth implements Module {
 	*
 	*/
 	public static function push_undoable($undoquery, $undoarr, $redoquery, $redoarr, $name='Unknown Action') {
-			  if (!self::$doundo || !is_array(self::$undo)) {
-						 return;
-			  }
-			global $I2_LOG;
-			$undo = array($redoquery,$redoarr,$undoquery,$undoarr,$name);
-			//$I2_LOG->log_file('PUSH UNDO: '.print_r($undo,1));
-			array_push(self::$undo,$undo);
-			//array_push($_SESSION['eighth_undo'],$undo);
+		if (!self::$doundo || !is_array(self::$undo)) {
+			return;
+		}
+		global $I2_LOG;
+		$undo = array($redoquery,$redoarr,$undoquery,$undoarr,$name);
+		//$I2_LOG->log_file('PUSH UNDO: '.print_r($undo,1));
+		array_push(self::$undo,$undo);
+		//array_push($_SESSION['eighth_undo'],$undo);
 	}
 
 	public static function get_undo_name($descend = FALSE) {
@@ -321,13 +326,16 @@ class Eighth implements Module {
 			if(isset($_SESSION['eighth'])) {
 				$this->args += $_SESSION['eighth'];
 			}
-			if(method_exists($this, $method)) {
+			if(method_exists($this, $method) && in_array($method, $this->safe_modules)) {
 				$this->$method();
 				$this->template_args['method'] = $method;
 				$this->template_args['help'] = $this->help_text;
 				if ($this->admin) {
 					return "Eighth Period Office Online: {$this->title}";
 				} else {
+					if($this->template == 'pane.tpl') {
+						return FALSE;
+					}
 					return "Eighth Period Online: {$this->title}";
 				}
 			} else {
@@ -1527,7 +1535,7 @@ class Eighth implements Module {
 			$this->title = 'Choose an Activity'.$blockdate;
 		}
 		else if($this->op == 'change') {
-			if ($this->args['bids'] && $this->args['aid']) {
+			if (isset($this->args['bids']) && isset($this->args['aid'])) {
 				$status = array();
 				$bids = explode(',', $this->args['bids']);
 				foreach($bids as $bid) {

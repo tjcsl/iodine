@@ -414,33 +414,34 @@ attributetype ( i2Attr:50
 	SINGLE-VALUE
 	)
 
-attributetype ( i2Attr:51
-	NAME ('freshmanPicture' 'freshmanPhoto' 'pictureGrade9' 'photoGrade9')
-	DESC 'The freshman picture of a user'
-	SYNTAX jpegSyntax
-	SINGLE-VALUE
-	)
 
-attributetype ( i2Attr:52
-	NAME ('sophomorePicture' 'sophomorePhoto' 'pictureGrade10' 'photoGrade10')
-	DESC 'The sohpomore picture of a user'
-	SYNTAX jpegSyntax
-	SINGLE-VALUE
-	)
+#attributetype ( i2Attr:51
+#	NAME ('freshmanPicture' 'freshmanPhoto' 'pictureGrade9' 'photoGrade9')
+#	DESC 'The freshman picture of a user'
+#	SYNTAX jpegSyntax
+#	SINGLE-VALUE
+#	)
 
-attributetype ( i2Attr:53
-	NAME ('juniorPicture' 'juniorPhoto' 'pictureGrade11' 'photoGrade11')
-	DESC 'The junior picture of a user'
-	SYNTAX jpegSyntax
-	SINGLE-VALUE
-	)
+#attributetype ( i2Attr:52
+#	NAME ('sophomorePicture' 'sophomorePhoto' 'pictureGrade10' 'photoGrade10')
+#	DESC 'The sohpomore picture of a user'
+#	SYNTAX jpegSyntax
+#	SINGLE-VALUE
+#	)
 
-attributetype ( i2Attr:54
-	NAME ('seniorPicture' 'seniorPhoto' 'pictureGrade12' 'photoGrade12')
-	DESC 'The senior picture of a user'
-	SYNTAX jpegSyntax
-	SINGLE-VALUE
-	)
+#attributetype ( i2Attr:53
+#	NAME ('juniorPicture' 'juniorPhoto' 'pictureGrade11' 'photoGrade11')
+#	DESC 'The junior picture of a user'
+#	SYNTAX jpegSyntax
+#	SINGLE-VALUE
+#	)
+
+#attributetype ( i2Attr:54
+#	NAME ('seniorPicture' 'seniorPhoto' 'pictureGrade12' 'photoGrade12')
+#	DESC 'The senior picture of a user'
+#	SYNTAX jpegSyntax
+#	SINGLE-VALUE
+#	)
 
 attributetype ( i2Attr:55
 	NAME ('perm-showbirthday-self' 'showbirthday-self' 'self-showbday' 'self-showbdate' 'showbdateself' 'showbdayself')
@@ -498,11 +499,11 @@ attributetype ( i2Attr:61
 	SYNTAX stringSyntax
 	)
 
-attribute ( i2Attr:62
-	NAME ('otherPicture')
-	DESC 'Another picture of the user'
-	SYNTAX jpegSyntax
-	)
+#attributetype ( i2Attr:62
+#	NAME ('otherPicture')
+#	DESC 'Another picture of the user'
+#	SYNTAX jpegSyntax
+#	)
 
 attributetype ( i2Attr:63
 	NAME ('metaphonelast' 'lastmetaphone')
@@ -520,13 +521,20 @@ attributetype ( i2Attr:64
 	SINGLE-VALUE
 	)
 
-attribute ( i2Attr:65
+attributetype ( i2Attr:65
 	NAME ('quarterNumber' 'quarter')
 	DESC 'The quarter(s) in which a class occurs'
 	EQUALITY integerMatch
 	SYNTAX integerSyntax{1}
 	)
 
+attributetype ( i2Attr:66
+	NAME ('preferredPhoto')
+	DESC 'The preferred photo of a user'
+	EQUALITY distinguishedNameMatch
+	SYNTAX dnSyntax
+	SINGLE-VALUE
+	)
 
 objectclass ( i2OC:1
 	NAME ('tjhsstStudent' 'iodineStudent')
@@ -570,11 +578,7 @@ objectclass ( i2OC:1
 		metaphonelast $
 		metaphonefirst $
 		comments $
-		freshmanPicture $
-		sophomorePicture $
-		juniorPicture $
-		seniorPicture $
-		otherPicture
+		preferredPhoto
 	)
 	)
 
@@ -610,7 +614,7 @@ objectclass ( i2OC:2
 		metaphonelast $
 		metaphonefirst $
 		aim $ msn $ xfire $ yahoo $ googleTalk $ icq $ jabber $
-		otherPicture
+		preferredPhoto
 	)
 	)
 
@@ -746,5 +750,13 @@ objectclass ( i2OC:20
 		description $
 		uniqueMember $
 		owner
+	)
+	)
+
+objectclass ( i2OC:21
+	NAME ('iodinePhoto')
+	MUST (
+		jpegPhoto $
+		cn
 	)
 	)
