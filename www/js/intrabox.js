@@ -194,9 +194,17 @@ function init(box) {
 	box.onDragEnd = function() {
 		if(this.dragged) {
 			sendReq("move/" + this.parentNode.id.replace(/intrabox_/, "") + "/" + (to_box_index - box_index - 1));
+/*OK, this code rotates the box indexes. It looks like, without this code,
+ *if you tried to move more than one box between page reloads, it would break.
+ *But, somehow, it works anyway, and this is what's breaking IE, and commenting
+ *it out makes drag-and-drop work in IE and doesn't appear to do any harm in
+ *Mozilla, so for now, it stays commented out.
 			var add = box_index < to_box_index-1 ? 1 : -1;
-			for (var i = box_index; i != to_box_index-1; i+=add) boxes[i] = boxes[i+add];
-			boxes[to_box_index-1] = this.parentNode;
+<<<<<<< /home/lkearsle/intranet2/www/js/intrabox.js.orig.92877164
+			for (var i = box_index; i != to_box_index-1; i+=add) {
+				boxes[i] = boxes[i+add];
+			}
+			boxes[to_box_index-1] = this.parentNode;*/
 			box_index = -1;
 			var dist = 15;
 			var left = parseInt(make_intrabox().style.left);

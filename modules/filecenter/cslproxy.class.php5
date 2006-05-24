@@ -19,29 +19,19 @@ class CSLProxy {
 
 	public function __construct($user = FALSE, $pass = FALSE, $realm = FALSE) {
 		global $I2_SQL,$I2_USER;
-		if ($realm) {
-			d('Using existing kerberos ticket for AFS',6);
-			$this->kerberos_cache = $_ENV['KRB5CCNAME'];
-			$this->kerberos_realm = $realm;
-			$this->valid = TRUE;
-		}
-		elseif (!isset($_SESSION['krb_csl_ticket'])) {
-			d('Getting CSL kerberos ticket',6);
-			/*$res = $I2_SQL->query("SELECT user,pass FROM cslfiles WHERE uid=%d",$I2_USER->uid);
-			if ($res->more_rows) {
-				$row = $res->fetch_row(RESULT_ASSOC);
-				$user = $row['user'];
-				$pass = $row['pass'];
-			}*/
+		if ($realm==FALSE) { $realm=i2config_get("afs_realm","CSL.TJHSST.EDU","kerberos"); }
+//		if (!isset($_SESSION['krb_csl_ticket'])) {
+			d("Getting $realm kerberos ticket",6);
 			try {
-				$kerberos = new Kerberos($user, $pass, i2config_get('afs_realm','CSL.TJHSST.EDU','kerberos'));
+				$kerberos = new Kerberos($user, $pass, $realm);
 			} catch (I2Exception $e) {
 				//The user's CSL username doesn't match their normal username: we should prompt for a different username/password.
 				$this->valid = FALSE;
 				return;
 			}
 			$_SESSION['krb_csl_ticket'] = $kerberos->cache();
-		}
+//		}
+//It is safe to uncomment the if statement once we have unified logins functioning.  This will allow us to properly use both CSL and NetWare migration in one session.
 		$this->kerberos_cache = $_SESSION['krb_csl_ticket'];
 		$this->valid = TRUE;
 	}
