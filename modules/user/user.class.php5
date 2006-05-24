@@ -759,6 +759,7 @@ class User {
 				//$soundex = soundex($tok);
 
 				$res = $I2_LDAP->search(LDAP::get_user_dn(),
+			//	"(&(|(soundexFirst=$soundex)(soundexLast=$soundex)(givenName=*$tok*)(sn=*$tok*)(iodineUid=*$tok*)(mname=*$tok*))$newgrades)"
 				"(&(|(givenName=*$tok*)(sn=*$tok*)(iodineUid=*$tok*)(mname=*$tok*))$newgrades)"
 				,array('iodineUid'));
 

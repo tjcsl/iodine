@@ -1303,6 +1303,7 @@ class dataimport implements Module {
 			$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 			$answerstopolls = array();
 			$answerstoquestions = array();
+			$questionstopolls=array();
 			/*
 			** Import polls
 			*/
@@ -1314,6 +1315,7 @@ class dataimport implements Module {
 					  foreach ($questions as $questionid) {
 							$questionstopolls[$questionid] = $pollid;
 					  }
+					  continue;
 					  $pollstart = NULL;
 					  $pollend = NULL;
 					  $showpoll = TRUE;
@@ -1381,10 +1383,9 @@ class dataimport implements Module {
 								 d('Invalid studentid '.$studentid,3);
 								 continue;
 					  }
-					  $user = new User($user);
 					  if (isSet($questionstopolls[$questionid])) {
 						  // We need to remove the bitwise OR encoding used on these answers <sigh>
-						  $aidparts = array();
+						  /*$aidparts = array();
 						  // I know this isn't the normal way to decode the data but I feel safer doing it this way than
 						  // trusting myself to use bitshifts correctly.  This makes for simpler, safer code.
 						  $bin = decbin($answerid);
@@ -1394,12 +1395,20 @@ class dataimport implements Module {
 												$aidparts[] = pow(2,strlen($bin)-$ct-1); // 2 ^ (len-ct) = old OptionID de-bitwise-ored
 									 }
 									 $ct++;
+						  }*/
+						  if ($questionstopolls[$questionid] != 24) {
+						  	// Only NHS stuff - fix it
+							$I2_LOG->log_file('Skipping pollid '.$questionstopolls[$questionid]);
+						  	continue;
 						  }
-						  foreach ($aidparts as $aidpart) {
-							  $aid = 1000000*$questionstopolls[$questionid]+1000*$questionid+$aidpart;
-							  $I2_LOG->log_file('Student '.$studentid.' voted for answer '.$aid.' ('.$aidpart.')');
+					  	  $user = new User($user);
+						  //foreach ($aidparts as $aidpart) {
+						  	$qid = 1000*$questionstopolls[$questionid]+$questionid;
+							  $aid = $qid*1000+$answerid;
+							  $I2_LOG->log_file('Student '.$studentid.' voted for answer '.$aid);
+							  $I2_SQL->query('DELETE FROM poll_votes WHERE uid=%d AND aid>=%d AND aid<%d',$user->uid,$qid*1000,$qid*1000+1000);
 							  $I2_SQL->query('REPLACE INTO poll_votes SET uid=%d,aid=%d',$user->uid,$aid);
-						  }
+						  //}
 					  } else {
 							$I2_LOG->log_file('Discarding answer '.$answerid.' to question '.$questionid);
 					  }
@@ -1643,7 +1652,7 @@ class dataimport implements Module {
 			$this->do_imports();
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'polls' && isSet($_REQUEST['doit'])) {
-			$this->clean_polls();
+			//$this->clean_polls();
 			$this->import_polls();
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'aphorisms' && isSet($_REQUEST['doit'])) {
