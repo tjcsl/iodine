@@ -10,7 +10,7 @@
  [<$question->question>]<br />
  [<if $question->type == 'standard'>]<input type="radio" name="[<$question->qid>]" value="[<$question->qid>]000" [<if $question->user_voted_for(0)>]CHECKED [</if>]/>Clear Vote<br />[</if>]
  [<foreach from=$question->answers key=aid item=answer>]
- <input [<if $question->type == 'standard' || ($question->type == 'approval' && $question->maxvotes == 1)>]type="radio" name="[<$question->qid>]" value="[<$aid>]"[<elseif $question->type=='approval'>]type="checkbox" name="[<$aid>]"[<else>]/>UNIMPLEMENTED[</if>] [<if $question->user_voted_for($aid)>]CHECKED [</if>]/>[<$answer>]<br />
+ <input [<if $question->type == 'standard'>]type="radio" name="[<$question->qid>]" value="[<$aid>]"[<elseif $question->type=='approval'>]type="checkbox" name="[<$question->qid>]_[<$aid>]"[<else>]UNIMPLEMENTED[</if>] [<if $question->user_voted_for($aid)>]CHECKED [</if>]/>[<$answer>]<br />
  [</foreach>]
  <br />
 [</foreach>]
