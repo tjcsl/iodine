@@ -51,6 +51,8 @@ class Mail implements Module {
 	}
 	
 	function init_pane() {
+		return FALSE;
+/*
 		global $I2_ARGS;
 		
 		$max_msgs = i2config_get('max_pane_msgs', 20, 'mail');
@@ -80,10 +82,11 @@ class Mail implements Module {
 		$this->pane_args['nmsgs'] = $this->nmsgs;
 		$this->pane_args['offset'] = $offset;
 		return "TJ Mail: You have {$this->nmsgs} messages";
+*/
 	}
 	
 	function display_pane($display) {
-		$display->disp('mail_pane.tpl', $this->pane_args);
+//		$display->disp('mail_pane.tpl', $this->pane_args);
 	}
 	
 	function init_box() {
@@ -108,6 +111,7 @@ class Mail implements Module {
 
 		$this->box_args['messages'] = &$this->box_messages;
 		$this->box_args['nmsgs'] = $this->nmsgs;
+		$this->box_args['readmail_url'] = $GLOBALS['I2_ROOT'] . i2config_get('webmail_module', 'squirrelmail', 'mail');
 		return "Mail: {$this->nmsgs} message". ($this->nmsgs != 1 ? 's' : '') . ' in your inbox';
 	}
 
