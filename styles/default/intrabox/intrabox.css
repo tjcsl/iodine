@@ -67,16 +67,6 @@
 .mainbox .boxheader {
 	cursor: default;
 }
-.activity_cancelled {
-	background-color: #FF3333;
-	color: #FFFFFF; font-weight: bold;
-}
-.activity_cancelled td {
-	color: #FFFFFF;
-}
-.activity_cancelled td a {
-	color: #FFFFFF;
-}
 .mainbox_noheader {
 	position: absolute;
 	top: 20px;

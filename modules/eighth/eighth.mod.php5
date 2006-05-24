@@ -326,7 +326,7 @@ class Eighth implements Module {
 			if(isset($_SESSION['eighth'])) {
 				$this->args += $_SESSION['eighth'];
 			}
-			if(method_exists($this, $method) && in_array($method, $this->safe_modules)) {
+			if(method_exists($this, $method) && (in_array($method, $this->safe_modules) || $this->admin)) {
 				$this->$method();
 				$this->template_args['method'] = $method;
 				$this->template_args['help'] = $this->help_text;
@@ -1286,12 +1286,14 @@ class Eighth implements Module {
 				$user = new User($this->args['lastuid']);
 				$this->template_args['lastname'] = $user->name;
 				$this->template_args['studentid'] = $user->studentid;
+				$this->template_args['activity'] = new EighthActivity(EighthSchedule::get_activities_by_block($user->uid, $this->args['bid']), $this->args['bid']);
 			}
 			$this->title = 'Enter TA Attendance';
 		}
 		else if($this->op == "mark_absent") {
-			EighthSchedule::add_absentee($this->args['bid'], $this->args['uid']);
-			redirect('eighth/ent_attendance/user/bid/'.$this->args['bid'].'/lastuid/'.$this->args['uid']);
+			$user = new User($this->args['uid']);
+			EighthSchedule::add_absentee($this->args['bid'], $user->uid);
+			redirect('eighth/ent_attendance/user/bid/'.$this->args['bid'].'/lastuid/'.$user->uid);
 		} else if ($this->op == 'unmark_absent') {
 			EighthSchedule::remove_absentee($this->args['bid'], $this->args['uid']);
 			redirect('eighth/ent_attendance/user/bid/'.$this->args['bid']);

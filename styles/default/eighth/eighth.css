@@ -1,3 +1,13 @@
+.activity_cancelled {
+	background-color: #FF3333;
+	color: #FFFFFF; font-weight: bold;
+}
+.activity_cancelled td {
+	color: #FFFFFF;
+}
+.activity_cancelled td a {
+	color: #FFFFFF;
+}
 #eighth_help_pane {
 	display: none;
 	z-index: 20;

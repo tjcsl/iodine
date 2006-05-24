@@ -5,9 +5,12 @@
 	<option value="[<$activity->aid>]"[<if isset($act) && ($act->aid == $activity->aid)>] SELECTED[</if>]>[<$activity->aid>]: [<$activity->name_r>]</option>
 [</foreach>]
 </select><br/>
-<form action="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">][<if isSet($bid)>]/bid/[<$bid>][</if>]" method="POST">
+<form name="activity_selection_form" action="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">][<if isSet($bid)>]/bid/[<$bid>][</if>]" method="POST">
 	Activity ID: <input type="text" name="aid">
 </form>
+<script language="javascript" type="text/javascript">
+	document.activity_selection_form.aid.focus();
+</script>
 [<if isset($add) >]
 <br />
 <br />

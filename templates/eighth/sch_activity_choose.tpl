@@ -4,6 +4,9 @@
 	<option value="[<$activity->aid>]"[<if $activity->cancelled>] style="font-weight: bold; color: #FF0000;"[<elseif $activity->scheduled>] style="font-weight: bold; color: #FF6600;"[</if>][<if isset($act) && ($act->aid == $activity->aid)>] SELECTED[</if>]>[<$activity->aid>]: [<$activity->name_r>]</option>
 [</foreach>]
 </select>
-<form action="[<$I2_ROOT>]eighth/sch_activity/view" method="POST">
+<form name="sch_activity_choose_form" action="[<$I2_ROOT>]eighth/sch_activity/view" method="POST">
 Activity ID: <input type="text" name="aid"/>
 </form>
+<script language="javascript" type="text/javascript">
+	document.sch_activity_choose_form.aid.focus();
+</script>

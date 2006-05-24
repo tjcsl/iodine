@@ -105,7 +105,7 @@ class EighthActivity {
 		if ($otheractivity && $otheractivityid == $this->data['aid'] && $this->oneaday) {
 			$ret |= EighthActivity::ONEADAY;
 		}
-		if ($this->presign && $this->block && time() > strtotime($this->block->date)-60*60*24*2) {
+		if ($this->presign && $this->block && time() < strtotime($this->block->date)-60*60*24*2) {
 			$ret |= EighthActivity::PRESIGN;
 		}
 		if (time() > strtotime($this->block->date)+60*60*24) {
@@ -618,10 +618,13 @@ class EighthActivity {
 					}
 					return implode(', ', $temp_sponsors);
 				case 'block_sponsors_comma_short':
+					if($this->data['cancelled']) {
+						return 'CANCELLED';
+					}
 					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
 					$temp_sponsors = array();
 					foreach($sponsors as $sponsor) {
-						$temp_sponsors[] = substr($sponsor->fname, 0, 1) . ". {$sponsor->lname}";
+						$temp_sponsors[] = ($sponsor->fname ? substr($sponsor->fname, 0, 1) . '. ' : '') . $sponsor->lname;
 					}
 					return implode(', ', $temp_sponsors);
 				case 'rooms_comma':

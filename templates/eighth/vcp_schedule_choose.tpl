@@ -10,7 +10,7 @@
 		document.getElementById('aid_box').value = aid;
 	}
 </script>
-<form action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$uid>]/bids/[<$bids>]" method="post">
+<form name="activity_select_form" action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$uid>]/bids/[<$bids>]" method="post">
 	<select name="aid" size="10" onchange="changeDescription(this.options[this.selectedIndex].value)">
 [<foreach from=$activities item="activity">]
 	[<assign var=capacity value=$activity->capacity>]
@@ -19,6 +19,9 @@
 	</select><br />
 	<input type="text" name="aid" id="aid_box" maxlength="4" size="4" /><input type="submit" value="Change" /><br />
 </form>
+<script language="javascript" type="text/javascript">
+	document.getElementById("aid_box").focus();
+</script>
 [<foreach from=$activities item="activity">]
 	[<assign var=capacity value=$activity->capacity>]
 <div id="desc_[<$activity->aid>]" style="display: none; border: solid thin; padding: 5px; margin: 5px; width: 300px;">
