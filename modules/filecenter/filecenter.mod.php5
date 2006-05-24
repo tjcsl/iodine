@@ -105,6 +105,9 @@ class Filecenter implements Module {
 				return array('Filecenter','CSL Authentication');
 			}
 			$this->template_args['max_file_size'] = 20971520; //20 mb
+		} else if ($system_type == 'transition') {
+			$this->filesystem = new CSLProxy();
+			$this->template_args['max_file_size'] = 20971520;
 		} else {
 			throw new I2Exception("Unknown filesystem type $system_type");
 		}
@@ -113,7 +116,7 @@ class Filecenter implements Module {
 		$this->directory = '/';
 		
 		if (count($I2_ARGS) > 2) {
-			$this->directory .= implode("/", array_slice($I2_ARGS, 2)) . '/';
+			$this->directory .= implode('/', array_slice($I2_ARGS, 2)) . '/';
 		}
 
 		if (isset($_FILES['file'])) {

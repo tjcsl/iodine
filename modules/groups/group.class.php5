@@ -247,7 +247,9 @@ class Group {
 			case '-12':
 				return 'grade_12';
 			case 'staff':
-				return 'grade_staff';
+					  return 'grade_staff';
+			case 'all':
+					  return -999;
 			case 'grade_9':
 				return -9;
 			case 'grade_10':
@@ -260,7 +262,9 @@ class Group {
 				return -8;
 			case -8:
 			case '-8':
-				return 'grade_staff';
+					  return 'grade_staff';
+			case '-999':
+					  return 'all';
 		}
 		return FALSE;
 	}
@@ -292,7 +296,12 @@ class Group {
 					'gid'=>-8,
 					'name'=>'grade_staff',
 					'description'=>'Staff')
-				)
+			   ),
+				new Group(array(
+					'gid'=>-999,
+					'name'=>'all',
+					'description'=>'All users')
+						  )
 		 );
 		}
 		else {
@@ -301,8 +310,13 @@ class Group {
 				  return array ( new Group(array (
 							 'gid' => -1*$grade,
 							 'name' => 'grade_'.$grade,
-							 'description' => 'Grade '.$grade
-							 )));
+							 'description' => 'Grade '.$grade)),
+				new Group(array(
+					'gid'=>-999,
+					'name'=>'all',
+					'description'=>'All users')
+						  )
+							 );
 		}
 	}
 

@@ -16,6 +16,8 @@ class dataimport implements Module {
 	private $boxes;
 	private $boxids;
 	private $numsponsors;
+	private $schedulefile;
+	private $classfile;
 
 	/**
 	* SASI Student dump - intranet.##a
@@ -89,10 +91,12 @@ class dataimport implements Module {
 		
 			d("Teacher: $id = $lastname,$firstname",3);
 
-			if (!isset($last_to_people[$lastname])) {
-				$this->last_to_people[$lastname] = array(array('fname'=>$firstname,'id'=>$id));
-			} else {
+			if (isSet($this->last_to_people[$lastname])) {
+				d("Adding alternate for $lastname - $firstname",5);
 				$this->last_to_people[$lastname][] = array('fname'=>$firstname,'id'=>$id);
+			} else {
+				$this->last_to_people[$lastname] = array(array('fname'=>$firstname,'id'=>$id));
+				d("Adding first name for $lastname,$firstname",5);
 			}
 			
 			$this->teachertable[$id] = array(
@@ -121,8 +125,8 @@ class dataimport implements Module {
 		
 		$count = 0;
 		
-		$teacherldap = LDAP::get_simple_bind($user,$pass,$server);
-		//$teacherldap = LDAP::get_user_bind($server);
+		//$teacherldap = LDAP::get_simple_bind($user,$pass,$server);
+		$teacherldap = LDAP::get_user_bind($server);
 		$res = $teacherldap->search('ou=Staff,dc=local,dc=tjhsst,dc=edu','cn=*',array('cn','sn','givenName'));
 		$validteachers = array();
 		while ($teacher = $res->fetch_array()) {
@@ -136,12 +140,15 @@ class dataimport implements Module {
 			);
 			d("Working on teacher {$farr['fname']} {$farr['lname']}",6);
 			if (!isSet($this->last_to_people[$farr['lname']])) {
+				d('No first name for '.$farr['lname'].'- skipping.',5);
 				continue;
 			}
 			$lnamematches = $this->last_to_people[$farr['lname']];
 			$found = FALSE;
 			foreach ($lnamematches as $match) {
-				if ($farr['fname'] == $match['fname']) {
+		 		d('Trying first name '.$match['fname'].' for '.$farr['fname'].' '.$farr['lname'],5);				  
+				if (strcasecmp($farr['fname'],$match['fname']) == 0) {
+		 			d('Matched first name '.$match['fname'],5);				  
 					$farr['uid'] = $match['id'];
 					$found = TRUE;
 					break;
@@ -487,10 +494,10 @@ class dataimport implements Module {
 		** Teachers need intraboxes, too!
 		*/
 		$count = 0;
-		foreach ($this->boxids as $boxid=>$name) {
+		/*foreach ($this->boxids as $boxid=>$name) {
 			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid,box_order,closed) VALUES(%d,%d,%d,%d)',$teacher['uid'],$boxid,$count,0);
 			$count++;
-		}
+		}*/
 	}
 
 	/**
@@ -941,6 +948,79 @@ class dataimport implements Module {
 		}
 	}
 
+	private function import_schedules() {
+		global $I2_LDAP,$I2_LOG;
+		
+		/*
+		** Set up student <=> course mappings first
+		*/
+		$students = array();
+		$studentcoursefile = @fopen($this->schedulefile,'r');
+		while ($studentline = fgets($studentcoursefile)) {
+			list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename, $teacherid, $teachername, $term, $room) = explode('","',trim($studentline,'"'));
+			if (!isSet($students[$sectionone])) {
+				$students[$sectionone] = array();
+			}
+			$uid = User::studentid_to_uid($studentid);
+			if (!$uid) {
+				$I2_LOG->log_file('Invalid/unknown studentID '.$studentid);
+				continue;
+			}
+			$I2_LOG->log_file('StudentID '.$studentid.' enrolled in section '.$sectionone);
+			$user = new User($uid);
+			$uid = LDAP::get_user_dn($user->username);
+			$students[$sectionone][] = $uid;
+		}
+		fclose($studentcoursefile);
+		
+		/*
+		** Then create classes
+		*/
+		$file = @fopen($this->classfile,'r');
+		while ($line = fgets($file)) {
+			list($sectionid,$period,$uhhotherperiod,$courselen,$othercourselen,$otherothercourselen,$teacherid,$room,$class) = explode('","',trim($line,'"'));
+			$classid = explode('-',$sectionid);
+			$classid = $classid[0];
+			$semesterno = $courselen[1];
+			$class = trim($class,"\r\n"); //chomp newline
+			$class = substr($class,0,strlen($class)-1); //chomp quotes
+
+			// Hunt down the sponsor - and kill them!
+			$sponsordn = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUidNumber=$teacherid",array('iodineUid'))->fetch_single_value();
+
+			if (!$sponsordn) {
+				$I2_LOG->log_file("Unable to find teacher number $teacherid for class \"$class\" ($sectionid)");
+				continue;
+			}
+
+			$sponsor = new User($sponsordn);
+			
+			$sponsordn = LDAP::get_user_dn($sponsor->username);
+			$I2_LOG->log_file(print_r($sponsordn,1));
+
+			$newclass = array(
+				'objectClass' => 'tjhsstClass',
+				'tjhsstClassId' => $classid,
+				'tjhsstSectionId' => $sectionid,
+				'courselength' => $courselen=='YR'?4:($courselen[0]=='S'?2:1),
+				'quarternumber' => $courselen=='YR'?array(1,2,3,4):($courselen[0]=='S'?($semesterno==1?array(1,2):array(3,4)):$semesterno),
+				'roomNumber' => $room,
+				'year' => i2config_get('senior_gradyear',date('Y'),'user'),
+				'cn' => $class,
+				'sponsorDn' => $sponsordn,
+				'classPeriod' => (int)$period,
+			);
+			if (isSet($students[$sectionid])) {
+				$newclass['enrolledStudent'] = $students[$sectionid];
+			}
+			$I2_LOG->log_file('Creating section '.$sectionid.' ('.$class.' period '.$period.') taught by '.$sponsordn.' in '.$room);
+			// Create the course
+			$I2_LOG->log_file('dn: '.LDAP::get_schedule_dn($sectionid).' === '.print_r($newclass,1));
+			$I2_LDAP->add(LDAP::get_schedule_dn($sectionid),$newclass);
+		}
+		fclose($file);
+	}
+
 	private function fix_broken_user($studentid) {
 			  $oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 			  $uid = User::studentid_to_uid($studentid);
@@ -1034,6 +1114,7 @@ class dataimport implements Module {
 		global $I2_SQL,$I2_LDAP;
 		if (!$ldap) {
 			$ldap = LDAP::get_admin_bind($this->admin_pass);
+			//$ldap = $I2_LDAP;
 		}
 		$ldap->delete_recursive('ou=people','(objectClass=tjhsstStudent)');
 		//$ldap->delete_recursive('ou=people');
@@ -1105,6 +1186,7 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = LDAP::get_admin_bind($this->admin_pass);
 		}
+		$ldap->delete_recursive('ou=schedule','objectClass=tjhsstClass');
 	}
 
 	/**
@@ -1413,6 +1495,10 @@ class dataimport implements Module {
 		if (isSet($_REQUEST['admin_pass'])) {
 			$_SESSION['ldap_admin_pass'] = $_REQUEST['admin_pass'];
 		}
+		if (isSet($_REQUEST['schedulefile']) && isSet($_REQUEST['classfile'])) {
+			$_SESSION['classfile'] = $_REQUEST['classfile'];
+			$_SESSION['schedulefile'] = $_REQUEST['schedulefile'];
+		}
 		if (isSet($_REQUEST['intranet_db']) && isSet($_REQUEST['intranet_pass']) 
 				&& isSet($_REQUEST['intranet_server']) && isSet($_REQUEST['intranet_user'])) {
 			$_SESSION['intranet_pass'] = $_REQUEST['intranet_pass'];
@@ -1434,6 +1520,12 @@ class dataimport implements Module {
 		}
 		if (isSet($_SESSION['intranet_user'])) {
 			$this->intranet_user = $_SESSION['intranet_user'];
+		}
+		if (isSet($_SESSION['schedulefile'])) {
+			$this->schedulefile = $_SESSION['schedulefile'];
+		}
+		if (isSet($_SESSION['classfile'])) {
+			$this->classfile = $_SESSION['classfile'];
 		}
 		if (isSet($_SESSION['userfile'])) {
 			$this->userfile = $_SESSION['userfile'];
@@ -1460,6 +1552,12 @@ class dataimport implements Module {
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_user') {
 			unset($_SESSION['userfile']);
 			unset($this->userfile);
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_schedules') {
+			unset($_SESSION['schedulefile']);
+			unset($this->schedulefile);
+			unset($_SESSION['classfile']);
+			unset($this->classfile);
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_teacher') {
 			unset($_SESSION['school_ldap_server']);
@@ -1564,6 +1662,10 @@ class dataimport implements Module {
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'students' && isSet($_REQUEST['doit'])) {
 			$this->import_student_data();
 		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'schedules' && isSet($_REQUEST['doit'])) {
+			$this->clean_schedules();
+			$this->import_schedules();
+		}
 		return 'Import Legacy Data';
 	}
 
@@ -1573,6 +1675,7 @@ class dataimport implements Module {
 				'admin_pass' => isSet($this->admin_pass)?TRUE:FALSE,
 				'intranet_pass' => isSet($this->intranet_pass)?TRUE:FALSE,
 				'userfile' => isSet($this->userfile)?TRUE:FALSE,
+				'schedulefile' => isSet($this->schedulefile)?TRUE:FALSE,
 				//FIXME: meh, not quite userproof.
 				'teacherfile' => (isSet($this->teacherfile)&&(isSet($this->staffile)||isSet($this->school_ldap_server)))?TRUE:FALSE
 				));

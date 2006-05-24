@@ -86,7 +86,13 @@
 		</form>
 		<br /><br/>
 	[</if>]
-	
+	[<if $schedulefile && $admin_pass>]
+		<form action="[<$I2_ROOT>]dataimport/schedules" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Import Schedule Data"/><br/>
+		</form>
+		<br /><br/>
+	[</if>]
 	[<if $teacherfile && $userfile && $admin_pass && $intranet_pass>]
 		<form action="[<$I2_ROOT>]dataimport/doeverything" method="post">
 			<input type="hidden" name="doit" value="1"/>
@@ -133,12 +139,21 @@
 [</if>]
 	[<if !$admin_pass>]
 		<form action="[<$I2_ROOT>]dataimport" method="post">
-			LDAP Admin Password: <input type="password" name="admin_pass"/><br/>
+			LDAP Admin Password: <input type="password" name="admin_pass"/><br />
 			<input type="submit" value="Set LDAP Password"/><br/>
 		</form>
 		<br/>
 	[<else>]
-		LDAP Admin Password <a href="[<$I2_ROOT>]dataimport/unset_pass">SET</a><br/>
+		LDAP Admin Password <a href="[<$I2_ROOT>]dataimport/unset_pass">SET</a><br />
+	[</if>]
+	[<if !$schedulefile>]
+		<form action="[<$I2_ROOT>]dataimport" method="post">
+			Student Schedule File: <input type="text" name="schedulefile" /><br />
+			Course Information File: <input type="text" name="classfile" /><br />
+			<input type="submit" value="Set Schedule Information"/><br />
+		</form>
+	[<else>]
+		Student Schedule Information <a href="[<$I2_ROOT>]dataimport/unset_schedule">SET</a><br />
 	[</if>]
 	[<if !$intranet_pass>]
 		<form action="[<$I2_ROOT>]dataimport" method="post">

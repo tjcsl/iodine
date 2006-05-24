@@ -51,7 +51,15 @@ class Mail implements Module {
 	}
 	
 	function init_pane() {
+		return FALSE;
+/*
 		global $I2_ARGS;
+
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clear') {
+			// Clear the cache
+			$this->clear_cache();
+			redirect(implode('/'),array_slice($I2_ARGS,1));
+		}
 		
 		$max_msgs = i2config_get('max_pane_msgs', 20, 'mail');
 
@@ -80,10 +88,11 @@ class Mail implements Module {
 		$this->pane_args['nmsgs'] = $this->nmsgs;
 		$this->pane_args['offset'] = $offset;
 		return "TJ Mail: You have {$this->nmsgs} messages";
+*/
 	}
 	
 	function display_pane($display) {
-		$display->disp('mail_pane.tpl', $this->pane_args);
+//		$display->disp('mail_pane.tpl', $this->pane_args);
 	}
 	
 	function init_box() {
@@ -108,6 +117,7 @@ class Mail implements Module {
 
 		$this->box_args['messages'] = &$this->box_messages;
 		$this->box_args['nmsgs'] = $this->nmsgs;
+		$this->box_args['readmail_url'] = $GLOBALS['I2_ROOT'] . i2config_get('webmail_module', 'squirrelmail', 'mail');
 		return "Mail: {$this->nmsgs} message". ($this->nmsgs != 1 ? 's' : '') . ' in your inbox';
 	}
 
@@ -143,8 +153,12 @@ class Mail implements Module {
 		$sorted = array_slice(imap_sort($this->connection, SORTDATE, 1), $offset, $length);
 		$messages = imap_fetch_overview($this->connection, implode(',',$sorted));
 
-		// Used for the usort() call below; swaps the keys/values in $sorted
-		self::$msgno_map = array_combine(array_values($sorted), array_keys($sorted));
+		if (count($sorted) == 0) {
+				  self::$msgno_map = array();
+		} else {
+			// Used for the usort() call below; swaps the keys/values in $sorted
+			self::$msgno_map = array_combine(array_values($sorted), array_keys($sorted));
+		}
 
 		foreach($messages as $i=>$message) {
 			$message->unread = $message->recent || !$message->seen;
@@ -182,6 +196,10 @@ class Mail implements Module {
 		return ( self::$msgno_map[$msg1->msgno] < self::$msgno_map[$msg2->msgno] ) ? -1 : 1;
 	}
 
+	private function clear_cache() {
+		unlink($this->cache_file);
+	}
+
 	private function get_cache() {
 		if(!file_exists($this->cache_file)) {
 			d('Cache file does not exist',6);
@@ -190,7 +208,7 @@ class Mail implements Module {
 		
 		if(time() - filemtime($this->cache_file) > i2config_get('imap_cache_time',300,'mail')) {
 			d('Cache file is too stale',6);
-			unlink($this->cache_file);
+			$this->clear_cache();
 			return FALSE;
 		}
 

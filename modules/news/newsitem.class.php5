@@ -328,7 +328,7 @@ class NewsItem {
 						 $user = $GLOBALS['I2_USER'];
 			  }
 
-			  $I2_SQL->query('INSERT INTO news_read_map (nid,uid) VALUES (%d,%d)', $this->mynid, $user->uid);
+			  $I2_SQL->query('REPLACE INTO news_read_map (nid,uid) VALUES (%d,%d)', $this->mynid, $user->uid);
 	}
 
 	/**

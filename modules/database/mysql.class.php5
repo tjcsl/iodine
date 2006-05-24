@@ -251,8 +251,8 @@ class MySQL {
 			case 'UPDATE':
 				$query_t = MYSQL::UPDATE;
 				break;
-	  	   case 'DELETE':
-		   case 'TRUNCATE':
+		  	case 'DELETE':
+			case 'TRUNCATE':
 				$query_t = MYSQL::DELETE;
 				break;
 			case 'INSERT':
