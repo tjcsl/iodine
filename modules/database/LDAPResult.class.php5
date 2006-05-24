@@ -329,7 +329,10 @@ class LDAPResult implements Result {
 	}
 
 	public function fetch_binary_value($colname) {
-		return ldap_get_values_len($this->ldap, $this->current(), $colname);
+		if(!$this->current_row) {
+			$this->current_row = $this->get_first_row();
+		}
+		return ldap_get_values_len($this->ldap, $this->current_row, $colname);
 	}
 }
 

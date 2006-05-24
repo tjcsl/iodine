@@ -235,12 +235,20 @@ class User {
 					return array('(' . substr($phone, 0, 3) . ') ' . substr($phone, 3, 3) . '-' . substr($phone, 6));
 				}
 				return array();
-		 case 'bdate':
-					$born = $this->__get('birthday');
-					if (!$born) { // heh
-							  return FALSE;
-					}
+			case 'bdate':
+				$born = $this->__get('birthday');
+				if (!$born) { // heh
+					return FALSE;
+				}
 				return date('M j, Y', strtotime($born));
+			case 'preferredPhoto':
+			case 'preferredphoto':
+			case 'preferred_photo':
+				$row = $I2_LDAP->search(LDAP::get_user_dn($this->username), 'preferredPhoto')->fetch_array(Result::NUM);
+				if(!$row) {
+					return NULL;
+				}
+				$row = $I2_LDAP->search_base($row[0])->fetch_binary_value('jpegPhoto');
 			case 'show_map':
 					  return ($this->__get('perm-showmap')!='FALSE')&&($this->__get('perm-showmap-self')!='FALSE');
 			case 'showpictureself':
@@ -249,10 +257,10 @@ class User {
 			case 'showmapself':
 			case 'showscheduleself':
 			case 'showbdayself':
-					  $row = $I2_LDAP->search_base("iodineUid={$this->username},ou=people",$name);
-					  if (!$row) {
-								 return NULL;
-					  }
+				$row = $I2_LDAP->search_base(LDAP::get_user_dn($this->username),$name);
+				if (!$row) {
+					return NULL;
+				}
 				return $row->fetch_single_value()=='TRUE'?TRUE:FALSE;
 		}
 		

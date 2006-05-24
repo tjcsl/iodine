@@ -291,6 +291,9 @@ class EighthSchedule {
 	*/
 	public static function is_activity_valid($activityid, $blockid) {
 		global $I2_SQL;
+		if(!$activityid || ! $blockid) {
+			return FALSE;
+		}
 		return $I2_SQL->query('SELECT NULL FROM eighth_block_map WHERE activityid=%d AND bid=%d', $activityid, $blockid)->more_rows();
 	}
 }

@@ -10,7 +10,7 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
 [</if>]
 <table>
 <tr><td valign="top">
-<img src="[<$I2_ROOT>]pictures/photo/uid/[<$user->uid>]" vspace="2" width="172" height="228" /></td>
+<img src="[<$I2_ROOT>]pictures/[<$user->uid>]" vspace="2" width="172" height="228" /></td>
 <td valign="top">
 [<$user->fullname>] (<a href="mailto:[<$user->username>]@tjhsst.edu">[<$user->username>]@tjhsst.edu</a>)[<if $user->grade != -1>], Grade [<$user->grade>][</if>]<br />
 [<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]
