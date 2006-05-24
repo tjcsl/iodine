@@ -34,14 +34,14 @@ class Scratchpad implements Module {
 		}
 
 		switch ($I2_ARGS[1]) {
-			case "save":
-				$I2_SQL->query("REPLACE INTO scratchpad (uid, padtext) VALUES (%d, %s)", $I2_USER->uid, $I2_ARGS[2]);
+			case 'save':
+				$I2_SQL->query('REPLACE INTO scratchpad (uid, padtext) VALUES (%d, %s)', $I2_USER->uid, $I2_ARGS[2]);
 				return FALSE;
-			case "load":
-				$this->text = $I2_SQL->query("SELECT padtext FROM scratchpad WHERE uid=%d", $I2_USER->uid)->fetch_single_value('padtext');
+			case 'load':
+				$this->text = $I2_SQL->query('SELECT padtext FROM scratchpad WHERE uid=%d', $I2_USER->uid)->fetch_single_value('padtext');
 				return TRUE;
-			case "help":
-				return TRUE;
+			case 'help':
+				return 'What is Scratchpad?';
 			default :
 				return FALSE;
 				
