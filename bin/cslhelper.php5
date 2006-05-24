@@ -13,6 +13,8 @@ require_once('functions.inc.php5');
 
 load_module_map();
 
+$realm = $argv[0];
+
 function csl_error($err) {
 	fwrite(STDERR, serialize(array('error', $err)));
 	exit(1);
@@ -27,8 +29,11 @@ set_error_handler('csl_error');
 set_exception_handler('csl_exception');
 
 list($function, $args) = unserialize(stream_get_contents(STDIN));
-
+if ($realm == 'LOCAL.TJHSST.EDU') {
+$filesystem = new CSLFilesystem(FALSE,FALSE,$realm);
+} else {
 $filesystem = new CSLFilesystem();
+}
 $ret_val = call_user_func_array(array($filesystem, $function), $args);
 
 fwrite(STDERR, serialize($ret_val));

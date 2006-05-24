@@ -341,7 +341,10 @@ class Eighth implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
-		global $I2_ARGS;
+		global $I2_ARGS, $I2_USER;
+		if ($this->template == 'pane.tpl' && !$I2_USER->is_group_member('admin_eighth')) {
+			redirect();
+		}
 		$argstr = implode('/', array_slice($I2_ARGS,1));
 		$this->template_args['argstr'] = $argstr;
 		$this->template_args['last_undo'] = self::get_undo_name(TRUE);

@@ -106,7 +106,7 @@ class Filecenter implements Module {
 			}
 			$this->template_args['max_file_size'] = 20971520; //20 mb
 		} else if ($system_type == 'transition') {
-			$this->filesystem = new CSLProxy();
+			$this->filesystem = new CSLProxy(FALSE,FALSE,'LOCAL.TJHSST.EDU');
 			$this->template_args['max_file_size'] = 20971520;
 		} else {
 			throw new I2Exception("Unknown filesystem type $system_type");
