@@ -1070,6 +1070,34 @@ class dataimport implements Module {
 	}
 
 	/**
+	* Imports teacher parking data
+	*/
+	private function import_teacherparking() {
+		global $I2_SQL, $I2_LDAP;
+		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
+
+		$nonexistant = array();
+
+		$I2_SQL->query('DELETE FROM parking_apps WHERE special_name IS NOT NULL');
+
+		$res = $oldsql->query('SELECT * FROM ParkingInfo WHERE TeacherName != ""');
+		while ($res->more_rows()) {
+			$row = $res->fetch_array(Result::ASSOC);
+			$ldaprow = $I2_LDAP->search(LDAP::get_user_dn(), "(&(objectClass=tjhsstTeacher)(cn={$row['TeacherName']}))")->fetch_array();
+			if ($ldaprow['iodineUidNumber'] == "") {
+				d('Nonexistant user: ' . $row['TeacherName'] . ' Using SpecialName for them');
+				$I2_SQL->query('INSERT INTO parking_apps SET special_name=%s, assigned=%d', $row['TeacherName'], $row['Assigned']);
+			}
+			else {
+				d('adding user: ' . $ldaprow['iodineUidNumber']);
+				$user = new User($ldaprow['iodineUidNumber']);
+				$I2_SQL->query('DELETE FROM parking_apps WHERE uid=%d', $ldaprow['iodineUidNumber']);
+				$I2_SQL->query('INSERT INTO parking_apps SET uid=%d, name=%s, assigned=%d', $ldaprow['iodineUidNumber'], $user->name_comma, $row['Assigned']);
+			}
+		}
+	}
+
+	/**
 	* Expands a student's Intranet 2 presence by adding their non-critical data from Intranet 1.
 	* DEPRECATED - dessicated, moved into import_ methods
 	*/
@@ -1657,6 +1685,9 @@ class dataimport implements Module {
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'aphorisms' && isSet($_REQUEST['doit'])) {
 			$this->import_aphorisms();
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherparking' && isSet($_REQUEST['doit'])) {
+			$this->import_teacherparking();
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'fixit' && isSet($_REQUEST['doit'])) {
 			$this->init_db();
