@@ -226,7 +226,7 @@ class News implements Module {
 			$this->stories = Newsitem::get_all_items();
 		}
 		foreach($this->stories as $story) {
-			if ($story->readable() && !$story->has_been_read()) {
+			if (!$story->has_been_read() && $story->readable()) {
 				$this->summaries[] = array('title' => $story->title, 'id' => $story->id);
 			}
 		}
