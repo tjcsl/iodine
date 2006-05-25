@@ -96,7 +96,11 @@ class Mail implements Module {
 	}
 	
 	function init_box() {
-		$max_msgs = i2config_get('max_box_msgs', 5, 'mail');
+		GLOBAL $I2_USER;
+		$max_msgs = $I2_USER->mailmessages;
+		if (!$max_msgs) {
+			$max_msgs = i2config_get('max_box_msgs', 5, 'mail');
+		}
 
 		if (!is_array($this->box_messages)) {
 			if(($cache = self::get_cache()) !== FALSE) {

@@ -537,8 +537,8 @@ attributetype ( i2Attr:66
 	)
 
 attributetype ( i2Attr:67
-	NAME ('mailMessages')
-	DESC 'The number of mail messages a user wishes to see in their mail intrabox'
+	NAME ('mailentries' 'mailMessages')
+	DESC 'The number of entries a user wishes in their mail intrabox'
 	EQUALITY integerMatch
 	SYNTAX integerSyntax
 	SINGLE-VALUE
