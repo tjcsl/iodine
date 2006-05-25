@@ -379,8 +379,16 @@ class User {
 			case 'showscheduleself':
 			case 'showaddressself':
 			case 'showphoneself':
-			case 'showpictureself':
 				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';
+				break;
+			case 'showpictureself':
+				// Set all the pictures' attributes to match the parent user's
+				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';
+				$res = $ldap->search_one(LDAP::get_user_dn($this->__get('username')),'objectClass=iodinePhoto',array('dn'));
+				while ($row = $res->fetch_array()) {
+					$ldap->modify_val($pic['dn'],$val);
+				}
+				
 		}
 		
 		$ldap->modify_val("iodineUid={$this->username},ou=people",$name,$val);
