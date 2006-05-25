@@ -28,9 +28,11 @@ class ModulesMapper {
 					if (!self::process_dir("$dir$file/")) {
 						return FALSE;
 					}
-				} else {
+				} else if (ends_with($file, '.php5')) {
 					$arr = split('\.', $file);
 					self::$map[strtolower($arr[0])] = "$dir$file";
+				} else {
+					d("Ignoring $file");
 				}
 			}
 		} else {
