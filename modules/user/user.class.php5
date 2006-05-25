@@ -244,11 +244,12 @@ class User {
 			case 'preferredPhoto':
 			case 'preferredphoto':
 			case 'preferred_photo':
-				$row = $I2_LDAP->search(LDAP::get_user_dn($this->username), 'preferredPhoto')->fetch_array(Result::NUM);
+				$row = $I2_LDAP->search_base(LDAP::get_user_dn($this), 'preferredPhoto')->fetch_array(Result::NUM);
 				if(!$row) {
 					return NULL;
 				}
-				$row = $I2_LDAP->search_base($row[0])->fetch_binary_value('jpegPhoto');
+				$row = $I2_LDAP->search($row['preferredPhoto'])->fetch_binary_value('jpegPhoto');
+				return $row[0];
 			case 'show_map':
 					  return ($this->__get('perm-showmap')!='FALSE')&&($this->__get('perm-showmap-self')!='FALSE');
 			case 'showpictureself':
