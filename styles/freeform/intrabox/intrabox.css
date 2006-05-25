@@ -1,5 +1,5 @@
 .intrabox {
-	background-color: #fff;
+	background: none;
 	margin-bottom: 10pt;
 	width: 305px;
 }
@@ -24,7 +24,7 @@
 
 @extend
 .mainbox, .mainbox_noheader {
-	background-color: #fff;
+	background: none;
 	border: none;
 	border-left: dashed 1px #999999;
 	padding-left: 10pt;
