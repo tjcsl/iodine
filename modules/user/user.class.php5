@@ -241,6 +241,10 @@ class User {
 					return FALSE;
 				}
 				return date('M j, Y', strtotime($born));
+			case 'counselor_obj':
+				return new User($this->__get('counselor'));
+			case 'counselor_name':
+				return $this->__get('counselor_obj')->sn;
 			case 'preferredPhoto':
 			case 'preferredphoto':
 			case 'preferred_photo':

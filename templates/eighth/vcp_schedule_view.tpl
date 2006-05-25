@@ -27,11 +27,16 @@
 
 [<if $I2_USER->is_group_member('admin_eighth')>]
 	[<include file="eighth/header.tpl">]
+	<img src="[<$I2_ROOT>]pictures/[<$user->uid>]" vspace="2" width="86" height="114" style="float: left; margin: 10px;" /></td>
 	<h2>[<$user->name_comma>] ([<$user->tjhsstStudentId>], [<$user->grade>][<if $user->grade != 'staff' >]th[</if>])</h2>
-	<b>Counselor: [<$user->counselor>], TA: </b><br />
+	<div style="float: right; margin: 10px;">
+		<a href="[<$I2_ROOT>]eighth/vcp_schedule/absences/uid/[<$user->uid>]" style="font-weight: bold; font-size: 14pt;">[<$absence_count>] absence[<if $absence_count != 1>]s[</if>]</a><br />
+		<a href="[<$I2_ROOT>]eighth/view/student/uid/[<$user->uid>]">Edit Student</a><br />
+	</div>
+	<b>Counselor: [<$user->counselor_name>], TA: </b><br />
 	<span style="color: #FF0000; font-weight: bold;">Comments: [<if isSet($comments) && $comments != "">][<$comments>][<else>]none[</if>]</span><br />
-	<a href="[<$I2_ROOT>]eighth/vcp_schedule/absences/uid/[<$user->uid>]">[<$absence_count>] absence[<if $absence_count != 1>]s[</if>]</a><br />
-	<a href="[<$I2_ROOT>]eighth/view/comments/uid/[<$user->uid>]">Edit Comments</a> - <a href="[<$I2_ROOT>]eighth/view/student/uid/[<$user->uid>]">Edit Student</a><br />
+	<a href="[<$I2_ROOT>]eighth/view/comments/uid/[<$user->uid>]">Edit Comments</a><br />
+	<br /><br />
 [</if>]
 	<form name="activities" action="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>]" method="post">
 	<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; border: 0px; width: 100%;">
