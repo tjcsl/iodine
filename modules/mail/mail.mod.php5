@@ -97,6 +97,10 @@ class Mail implements Module {
 	
 	function init_box() {
 		GLOBAL $I2_USER;
+		// Mailboxes are students only
+		if (!$I2_USER->objectClass == 'tjhsstStudent') {
+			return FALSE;
+		}
 		$max_msgs = $I2_USER->mailmessages;
 		if (!$max_msgs) {
 			$max_msgs = i2config_get('max_box_msgs', 5, 'mail');
