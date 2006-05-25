@@ -21,6 +21,16 @@ class NewsItem {
 	private $mynid;
 
 	/**
+	* An associative array containing various information about the newsitem.
+	*/
+	protected $info = array();
+
+	/**
+	* An array of NewsItem objects whose info hasn't been fetched yet.
+	*/
+	private static $unfetched = array();
+
+	/**
 	 * The php magical __get method.
 	 *
 	 * Used as $newsitem-><field> to get a field, for example
@@ -38,35 +48,86 @@ class NewsItem {
 	 */
 	public function __get($var) {
 		global $I2_SQL;
+
+		if(isset($this->info[$var])) {
+			return $this->info[$var];
+		}
+
 		switch($var) {
 			case 'id':
 			case 'nid':
 				return $this->mynid;
-			case 'title':
-				return $I2_SQL->query('SELECT title FROM news WHERE id=%d',$this->mynid)->fetch_single_value();
-			case 'text':
-				return $I2_SQL->query('SELECT text FROM news WHERE id=%d',$this->mynid)->fetch_single_value();
-			case 'authorID':
-				return $I2_SQL->query('SELECT authorID FROM news WHERE id=%d',$this->mynid)->fetch_single_value();
+			case 'groupsstring':
+				return implode(', ', $this->__get('groups'));
 			case 'author':
 				return new User($this->__get('authorID'));
-			case 'revised':
-				return $I2_SQL->query('SELECT revised FROM news WHERE id=%d',$this->mynid)->fetch_single_value();
+			case 'text':
+				$res = $I2_SQL->query("SELECT `text` FROM news WHERE `id` = %d", $this->mynid);
+				if($res->num_rows() < 1) {
+					throw new I2Exception('Invalid NID accessed: '.$this->mynid);
+				}
+				return $res->fetch_single_value();
+
+			case 'title':
+			case 'authorID':
 			case 'posted':
-				return $I2_SQL->query('SELECT posted FROM news WHERE id=%d',$this->mynid)->fetch_single_value();
+				$res = $I2_SQL->query('SELECT `title`,`authorID`,`posted` FROM news WHERE `id` = %d', $this->mynid);
+				if($res->num_rows() < 1) {
+					throw new I2Exception('Invalid NID accessed: '.$this->mynid);
+				}
+				$row = $res->fetch_array(Result::ASSOC);
+				$this->info['title'] = $row['title'];
+				$this->info['authorID'] = $row['authorID'];
+				$this->info['posted'] = $row['posted'];
+				break;
+
 			case 'groups':
-				return $I2_SQL->query('SELECT gid FROM news_group_map WHERE nid=%d',$this->mynid)->fetch_all_single_values();
-			case 'groupsstring':
-				$gidsarray = $this->__get('groups');
-				return implode(', ', $gidsarray);
+			case 'read':
+				self::fetch_data();
+				break;
 		}
+
+		if(!isset($this->info[$var])) {
+			throw new I2Exception('Invalid attribute passed to Newsitem::__get(): '.$var.', or invalid NID: '.$this->mynid);
+		}
+
+		return $this->info[$var];
+	}
+
+	/**
+	* Fetches group and read data for all pending news posts at once.
+	*/
+	private static function fetch_data() {
+		global $I2_SQL,$I2_USER;
+
+		if(count(self::$unfetched) < 1) {
+			return;
+		}
+
+		// Fetches the groups to which the item was posted
+		foreach(self::$unfetched as $item) {
+			$item->info['groups'] = array();
+		}
+		foreach($I2_SQL->query('SELECT `nid`,`gid` FROM news_group_map WHERE `nid` IN (%D)', array_keys(self::$unfetched)) as $row) {
+			$item = self::$unfetched[$row['nid']];
+			$item->info['groups'][] = $row['gid'];
+		}
+
+		// Fetches the read status
+		foreach(self::$unfetched as $item) {
+			$item->info['read'] = FALSE;
+		}
+		foreach($I2_SQL->query('SELECT `nid` FROM news_read_map WHERE `uid` = %d AND `nid` IN (%D)', $I2_USER->uid, array_keys(self::$unfetched)) as $row) {
+			self::$unfetched[$row['nid']]->info['read'] = TRUE;
+		}
+
+		self::$unfetched = array();
 	}
 
 	/**
 	 * The Newsitem class constructor.
 	 *
-	 * This takes a news id number as an argument. If the requested newsitem
-	 * does not exist, an {@link I2Exception} is thrown.
+	 * This takes a news id number as an argument.
 	 *
 	 * @access public
 	 * @param int $nid The id of the requested news item.
@@ -74,9 +135,7 @@ class NewsItem {
 	public function __construct($nid) {
 		$this->mynid = $nid;
 
-		if(!$this->item_exists()) {
-			throw new I2Exception("News item $nid was referenced, but does not exist");
-		}
+		self::$unfetched[$nid] = $this;
 	}
 
 	/**
@@ -111,12 +170,12 @@ class NewsItem {
 	 */
 
 	public static function clean_text($text) {
-			  $text = str_replace('&','&amp;',$text);
-			  $text = str_replace('\r','<br />',$text);
-			  $text = preg_replace("/\r\n|\n|\r/", "<br />", $text);
-			  $text = preg_replace('/<br\\s*?\/??>/i', "<br />", $text);
-			  //$text = str_replace('"','&quot;',$text);
-			  return $text;
+		$text = str_replace('&','&amp;',$text);
+		$text = str_replace('\r','<br />',$text);
+		$text = preg_replace("/\r\n|\n|\r/", "<br />", $text);
+		$text = preg_replace('/<br\\s*?\/??>/i', "<br />", $text);
+		//$text = str_replace('"','&quot;',$text);
+		return $text;
 	}
 
 
@@ -151,10 +210,10 @@ class NewsItem {
 		$nid = $I2_SQL->query('SELECT LAST_INSERT_ID()')->fetch_single_value();
 		
 		foreach ($groups as $group) {
-				  if($group->name == NULL) {
-							 break;
-				  }
-				  $I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%s', $nid, $group->name);
+			if($group->name == NULL) {
+				break;
+			}
+			$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%s', $nid, $group->name);
 		}
 
 		return true;
@@ -242,10 +301,10 @@ class NewsItem {
 		// flush the group mappings for this post and recreate them entirely
 		$I2_SQL->query('DELETE FROM news_group_map WHERE nid=%d', $this->mynid);
 		foreach ($groups as $group) {
-				if($group->name == NULL) {
-						  break;
-				}
-				$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%s', $this->mynid, $group->name);
+			if($group->name == NULL) {
+				break;
+			}
+			$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%s', $this->mynid, $group->name);
 		}
 	}
 
@@ -301,10 +360,14 @@ class NewsItem {
 	 * @param User $user The user for which to find the item status.
 	 */
 	public function has_been_read($user = NULL) {
-		global $I2_SQL;
+		global $I2_SQL,$I2_USER;
 
 		if($user===NULL) {
-			$user = $GLOBALS['I2_USER'];
+			$user = $I2_USER;
+		}
+
+		if($user == $I2_USER) {
+			return $this->__get('read');
 		}
 		
 		$ret = $I2_SQL->query('SELECT * FROM news_read_map WHERE nid=%d AND uid=%d', $this->mynid, $user->uid);
@@ -325,13 +388,17 @@ class NewsItem {
 	 */
 
 	public function mark_as_read($user = NULL) {
-			  global $I2_SQL;
+		global $I2_SQL,$I2_USER;
 
-			  if($user===NULL) {
-						 $user = $GLOBALS['I2_USER'];
-			  }
+		if($user===NULL) {
+			$user = &$I2_USER;
+		}
 
-			  $I2_SQL->query('REPLACE INTO news_read_map (nid,uid) VALUES (%d,%d)', $this->mynid, $user->uid);
+		if($user == $I2_USER) {
+			$this->info['read'] = TRUE;
+		}
+
+		$I2_SQL->query('REPLACE INTO news_read_map (nid,uid) VALUES (%d,%d)', $this->mynid, $user->uid);
 	}
 
 	/**
@@ -343,13 +410,17 @@ class NewsItem {
 	 * @param User $user The user for which to mark the item as unread
 	 */
 	public function mark_as_unread($user = NULL) {
-			  global $I2_SQL;
+		global $I2_SQL, $I2_USER;
 
-			  if($user===NULL) {
-						 $user = $GLOBALS['I2_USER'];
-			  }
+		if($user===NULL) {
+			$user = &$I2_USER;
+		}
 
-			  $I2_SQL->query('DELETE FROM news_read_map WHERE nid=%d AND uid=%d', $this->mynid, $user->uid);
+		if($user == $I2_USER) {
+			$this->info['read'] = FALSE;
+		}
+
+		$I2_SQL->query('DELETE FROM news_read_map WHERE nid=%d AND uid=%d', $this->mynid, $user->uid);
 	}	
 
 	/**
