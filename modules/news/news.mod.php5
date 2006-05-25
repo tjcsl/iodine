@@ -162,46 +162,47 @@ class News implements Module {
 				return self::display_news(true,'Old News Posts');
 
 			case 'show':
-					$this->template = 'news_show.tpl';
-					if( !isset($I2_ARGS[2]) ) {
-						throw new I2Exception('ID of article to read not specified.');
-					}
-					$this->template_args['story'] = new Newsitem($I2_ARGS[2]);
-					return array(TRUE,$this->template_args['story']->title);
+				$this->template = 'news_show.tpl';
+				if( !isset($I2_ARGS[2]) ) {
+					throw new I2Exception('ID of article to read not specified.');
+				}
+				$item = new Newsitem($I2_ARGS[2]);
+				$this->template_args['story'] = $item;
+				return "News: $item->title";
 
 
 			case 'read':
-					$this->template = 'news_read.tpl';
-					if( !isset($I2_ARGS[2]) ) {
-						throw new I2Exception('ID of article to mark as read not specified.');
-					}
+				$this->template = 'news_read.tpl';
+				if( !isset($I2_ARGS[2]) ) {
+					throw new I2Exception('ID of article to mark as read not specified.');
+				}
 
-					try {
-							$item = new Newsitem($I2_ARGS[2]);
-					} catch(I2Exception $e) {
-						throw new I2Exception("Specified article ID {$I2_ARGS[2]} invalid.");
-					}
+				try {
+					$item = new Newsitem($I2_ARGS[2]);
+				} catch(I2Exception $e) {
+					throw new I2Exception("Specified article ID {$I2_ARGS[2]} invalid.");
+				}
 
-					$item->mark_as_read();
-		 			return self::display_news(false);
+				$item->mark_as_read();
+		 		return self::display_news(false);
 
 		 	case 'unread':
-					$this->template = 'news_unread.tpl';
-					if( !isset($I2_ARGS[2]) ) {
-						throw new I2Exception('ID of article to mark as unread not specified.');
-					}
+				$this->template = 'news_unread.tpl';
+				if( !isset($I2_ARGS[2]) ) {
+					throw new I2Exception('ID of article to mark as unread not specified.');
+				}
 
-					try {
-							$item = new Newsitem($I2_ARGS[2]);
-					} catch(I2Exception $e) {
-						throw new I2Exception("Specified article ID {$I2_ARGS[2]} invalid.");
-					}
+				try {
+					$item = new Newsitem($I2_ARGS[2]);
+				} catch(I2Exception $e) {
+					throw new I2Exception("Specified article ID {$I2_ARGS[2]} invalid.");
+				}
 
-					$item->mark_as_unread();
-		 			return self::display_news(true,'Old News Posts');
+				$item->mark_as_unread();
+		 		return self::display_news(true,'Old News Posts');
 
-	   	default:
-				   return self::display_news(false);
+	   		default:
+				return self::display_news(false);
 		}
 		//should not happen
 		throw new I2Exception('Internal error: sanity check, reached end of init_pane in news.');
