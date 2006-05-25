@@ -118,6 +118,10 @@
 		<td>Locker:</td>
 		<td><input type="text" name="pref_locker" value="[<$I2_USER->locker|escape:'html'>]"/></td>
 	</tr>
+	<tr>
+		<td>Mail messages in box:</td>
+		<td><input type="text" name="pref_mailmessages" value="[<$I2_USER->mailmessages>]"/></td>
+	</tr>
 </table>
 <b>Privacy Options</b><br />
 <input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/> Show Address<br />
