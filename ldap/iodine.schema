@@ -536,6 +536,14 @@ attributetype ( i2Attr:66
 	SINGLE-VALUE
 	)
 
+attributetype ( i2Attr:67
+	NAME ('mailMessages')
+	DESC 'The number of mail messages a user wishes to see in their mail intrabox'
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
+	SINGLE-VALUE
+	)
+
 objectclass ( i2OC:1
 	NAME ('tjhsstStudent' 'iodineStudent')
 	SUP inetOrgPerson STRUCTURAL
@@ -578,7 +586,8 @@ objectclass ( i2OC:1
 		metaphonelast $
 		metaphonefirst $
 		comments $
-		preferredPhoto
+		preferredPhoto $
+		mailMessages
 	)
 	)
 
@@ -614,7 +623,8 @@ objectclass ( i2OC:2
 		metaphonelast $
 		metaphonefirst $
 		aim $ msn $ xfire $ yahoo $ googleTalk $ icq $ jabber $
-		preferredPhoto
+		preferredPhoto $
+		mailMessages
 	)
 	)
 
@@ -758,5 +768,9 @@ objectclass ( i2OC:21
 	MUST (
 		jpegPhoto $
 		cn
+	)
+	MAY (
+		perm-showpictures $
+		perm-showpictures-self
 	)
 	)

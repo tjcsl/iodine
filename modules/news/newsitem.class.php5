@@ -139,9 +139,9 @@ class NewsItem {
 	}
 
 	/**
-	 * All the existant newsitems.
+	 * All the existant newsitems which the user has access to.
 	 *
-	 * Gets an array of all newsitems.
+	 * Gets an array of all readable newsitems.
 	 *
 	 * @static
 	 * @access public
@@ -151,7 +151,10 @@ class NewsItem {
 		global $I2_SQL;
 		$items = array();
 		foreach($I2_SQL->query('SELECT id FROM news ORDER BY posted DESC')->fetch_all_single_values() as $nid) {
-			$items[] = new Newsitem($nid);
+			$item = new Newsitem($nid);
+			if ($item->readable()) {
+				$items[] = $item;
+			}
 		}
 		return $items;
 	}
@@ -324,27 +327,27 @@ class NewsItem {
 		$gids = $this->groups;
 		if(count($gids) == 0) {
 			// if no groups were specified, anyone can read it
-			return true;
+			return TRUE;
 		}
 
 		if($this->authorID == $user->uid) {
 			// author can always read
-			return true;
+			return TRUE;
 		}
 
 		if($user->is_group_member('admin_news')) {
 			// news admins can read anything
-			return true;
+			return TRUE;
 		}
 
 		foreach($gids as $gid) {
 			if($user->is_group_member($gid)) {
-				return true;
+				return TRUE;
 			}
 		}
 		
 		// User was in none of the groups
-		return false;
+		return FALSE;
 	}
 
 	/**
