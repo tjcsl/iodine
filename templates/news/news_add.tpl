@@ -15,7 +15,6 @@
     <td>Groups:</td>
     <td>
      <select id="groups" class="groups_list" name="add_groups[]">
-      <option value="all">All Users</option>
       [<foreach from=$groups item=group>]
       	<option value="[<$group->gid>]">[<$group->name>]</option>
       [</foreach>]
