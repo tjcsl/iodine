@@ -1,0 +1,12 @@
+@extend
+a {
+	color: #666666;
+}
+@extend
+a:visited {
+	color: #888888;
+}
+
+.c1 {
+	background-color: #EEEEEE;
+}
