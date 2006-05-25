@@ -27,6 +27,11 @@ class GroupSQL extends Group {
 	private $myname;
 
 	/**
+	* Membership cache.
+	*/
+	private $mymembers = array();
+
+	/**
 	* groupname to GID mapping
 	*/
 	private static $gid_map;
@@ -190,6 +195,7 @@ class GroupSQL extends Group {
 
 		$user = new User($user);
 		
+		$this->mymembers[$user->uid] = TRUE;
 		return $I2_SQL->query('REPLACE INTO group_user_map (gid,uid) VALUES (%d,%d)',$this->mygid,$user->uid);
 	}
 
@@ -204,6 +210,7 @@ class GroupSQL extends Group {
 			throw new I2Exception('You are not authorized to remove users from groups!');
 		}
 		
+		$this->mymebers[$user->uid] = FALSE;
 		return $I2_SQL->query('DELETE FROM group_user_map WHERE uid=%d AND gid=%d',$user->uid,$this->mygid);
 	}
 
@@ -218,6 +225,7 @@ class GroupSQL extends Group {
 			throw new I2Exception('You are not authorized to remove users from groups!');
 		}
 
+		$this->mymembers = array();
 		return $I2_SQL->query('DELETE FROM group_user_map WHERE gid=%d', $this->mygid);
 	}
 
@@ -297,10 +305,16 @@ class GroupSQL extends Group {
 			}
 			return FALSE;
 		}
+
+		// Cache check
+		if( isset($this->mymembers[$user->uid]) ) {
+			return $this->mymembers[$user->uid];
+		}
 		
 		// Standard DB check
 		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d AND gid=%d', $user->uid, $this->mygid);
 		if( $res->num_rows() > 0) {
+			$this->mymembers[$user->uid] = TRUE;
 			return TRUE;
 		}
 
