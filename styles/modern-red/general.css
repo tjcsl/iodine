@@ -1,0 +1,9 @@
+@extend
+a {
+	color: #C31F0D;
+}
+@extend
+a:visited {
+	color: #F72710;
+}
+	
