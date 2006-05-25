@@ -1144,7 +1144,7 @@ class dataimport implements Module {
 			$ldap = LDAP::get_admin_bind($this->admin_pass);
 			//$ldap = $I2_LDAP;
 		}
-		$ldap->delete_recursive('ou=people','(objectClass=tjhsstStudent)');
+		$ldap->delete_recursive('ou=people','(objectClass=tjhsstStudent)',NULL,FALSE);
 		//$ldap->delete_recursive('ou=people');
 		//$this->init_db();
 	}
@@ -1154,7 +1154,7 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = LDAP::get_admin_bind($this->admin_pass);
 		}
-		$ldap->delete_recursive('ou=people','(objectClass=tjhsstTeacher)');
+		$ldap->delete_recursive('ou=people','(objectClass=tjhsstTeacher)',NULL,FALSE);
 		//$ldap->delete_recursive('ou=people');
 		
 	}
@@ -1214,7 +1214,7 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = LDAP::get_admin_bind($this->admin_pass);
 		}
-		$ldap->delete_recursive('ou=schedule','objectClass=tjhsstClass');
+		$ldap->delete_recursive('ou=schedule','objectClass=tjhsstClass',NULL,FALSE);
 	}
 
 	/**

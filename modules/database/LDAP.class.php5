@@ -257,7 +257,7 @@ class LDAP {
 	* Recursively delete a node and all its children
 	*
 	*/
-	public function delete_recursive($dn,$filter,$bind=NULL) {
+	public function delete_recursive($dn,$filter,$bind=NULL,$delete_entry=TRUE) {
 		$this->rebase($dn);
 		if (!$bind) {
 			$bind = $this->conn;
@@ -274,9 +274,11 @@ class LDAP {
 				continue;
 			}
 			//d("Deleting dn $itemdn with filter $filter from LDAP recursive delete",6);
-			$this->delete_recursive($itemdn,$filter,$bind);
+			$this->delete_recursive($itemdn,$filter,$bind,FALSE);
 		}
-		$this->delete($dn,$bind);
+		if ($delete_entry) {
+			$this->delete($dn,$bind);
+		}
 	}
 
 	public function modify_val($dn,$attribute_name,$value,$bind=NULL) {
