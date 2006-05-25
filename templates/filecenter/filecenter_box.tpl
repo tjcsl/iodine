@@ -3,9 +3,7 @@
 <a href="[<$I2_ROOT>]filecenter/portfolio/[<$grad_year>]/[<$i2_username>]/">View your portfolio files</a><br />*>]
 <a href="http://shares.tjhsst.edu">View your Windows (M:) files</a><br/>
 <a href="[<$I2_ROOT>]filecenter/csl/user/[<$csl_username>]/">View your Computer Systems Lab files</a><br/>
-[<if $I2_USER->is_group_member('admin_all') >]
 <a href="[<$I2_ROOT>]filecenter/transition/netware/[<$i2_username>]/">View your Intranet 2 files</a><br/>
-[</if>]
 [<if $I2_USER->objectclass == 'tjhsstTeacher'>]
   	<a href="http://shares.tjhsst.edu/Staff">Staff Intranet</a>
 [</if>]
