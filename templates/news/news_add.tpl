@@ -6,6 +6,8 @@
   There was an error in posting your news item.
  [</if>]
  <a href="[<$I2_ROOT>]news">Back to News</a>
+[<elseif count($groups) < 1>]
+ <p>You do not have permission to post to any groups.</p>
 [<else>]
  <form action="[<$I2_SELF>]" method="POST">
   <input type="hidden" name="add_form" value="1" />
@@ -15,7 +17,6 @@
     <td>Groups:</td>
     <td>
      <select id="groups" class="groups_list" name="add_groups[]">
-      <option value="all">All Users</option>
       [<foreach from=$groups item=group>]
       	<option value="[<$group->gid>]">[<$group->name>]</option>
       [</foreach>]
