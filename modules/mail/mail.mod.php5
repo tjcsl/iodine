@@ -51,8 +51,6 @@ class Mail implements Module {
 	}
 	
 	function init_pane() {
-		return FALSE;
-/*
 		global $I2_ARGS;
 
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clear') {
@@ -60,6 +58,8 @@ class Mail implements Module {
 			$this->clear_cache();
 			redirect(implode('/'),array_slice($I2_ARGS,1));
 		}
+		return FALSE;
+/*
 		
 		$max_msgs = i2config_get('max_pane_msgs', 20, 'mail');
 

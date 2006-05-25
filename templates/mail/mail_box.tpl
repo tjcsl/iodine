@@ -2,7 +2,7 @@
 There was an error retrieving your email messages. Either your password for the mail system is different than your Intranet password, or the mail server is unavailable.
 [<else>]
 You have [<$nmsgs>] messages in your inbox.<br />
-<a href="[<$readmail_url>]">Read and send messages</a><br />
+<table style="width: 100%" cellspacing="0"><tr><td><a href="[<$readmail_url>]">Read and send messages</a></td><td style="text-align: right"><a href="[<$I2_ROOT>]mail/clear/[<$I2_ARGSTRING>]">Refresh</a></td></tr></table>
 [<if count($messages) > 0>]
 	<table cellspacing="0">
 	<tbody style="text-align:left;">
