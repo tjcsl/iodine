@@ -26,7 +26,7 @@ class NewsItem {
 	protected $info = array();
 
 	/**
-	* An array of NewsItem objects whose info hasn't been fetched yet. When data is requested, fetch the data all at once.
+	* An array of NewsItem objects whose info hasn't been fetched yet.
 	*/
 	private static $unfetched = array();
 
@@ -49,6 +49,10 @@ class NewsItem {
 	public function __get($var) {
 		global $I2_SQL;
 
+		if(isset($this->info[$var])) {
+			return $this->info[$var];
+		}
+
 		switch($var) {
 			case 'id':
 			case 'nid':
@@ -63,13 +67,25 @@ class NewsItem {
 					throw new I2Exception('Invalid NID accessed: '.$this->mynid);
 				}
 				return $res->fetch_single_value();
-		}
 
-		if(isset($this->info[$var])) {
-			return $this->info[$var];
-		}
+			case 'title':
+			case 'authorID':
+			case 'posted':
+				$res = $I2_SQL->query('SELECT `title`,`authorID`,`posted` FROM news WHERE `id` = %d', $this->mynid);
+				if($res->num_rows() < 1) {
+					throw new I2Exception('Invalid NID accessed: '.$this->mynid);
+				}
+				$row = $res->fetch_array(Result::ASSOC);
+				$this->info['title'] = $row['title'];
+				$this->info['authorID'] = $row['authorID'];
+				$this->info['posted'] = $row['posted'];
+				break;
 
-		self::fetch_data();
+			case 'groups':
+			case 'read':
+				self::fetch_data();
+				break;
+		}
 
 		if(!isset($this->info[$var])) {
 			throw new I2Exception('Invalid attribute passed to Newsitem::__get(): '.$var.', or invalid NID: '.$this->mynid);
@@ -79,23 +95,13 @@ class NewsItem {
 	}
 
 	/**
-	* Fetches data for all pending news posts.
-	*
-	* This takes the self::$unfetched array, and fetches the data for all newsitems in the array at once.
+	* Fetches group and read data for all pending news posts at once.
 	*/
 	private static function fetch_data() {
 		global $I2_SQL,$I2_USER;
-		
+
 		if(count(self::$unfetched) < 1) {
 			return;
-		}
-		
-		// Fetches general information about the news post
-		foreach($I2_SQL->query('SELECT `id`,`title`,`authorID`,`posted` FROM news WHERE `id` IN (%D)', array_keys(self::$unfetched)) as $row) {
-			$item = self::$unfetched[$row['id']];
-			$item->info['title'] = $row['title'];
-			$item->info['authorID'] = $row['authorID'];
-			$item->info['posted'] = $row['posted'];
 		}
 
 		// Fetches the groups to which the item was posted
