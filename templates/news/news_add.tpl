@@ -6,6 +6,8 @@
   There was an error in posting your news item.
  [</if>]
  <a href="[<$I2_ROOT>]news">Back to News</a>
+[<elseif count($groups) < 1>]
+ <p>You do not have permission to post to any groups.</p>
 [<else>]
  <form action="[<$I2_SELF>]" method="POST">
   <input type="hidden" name="add_form" value="1" />
