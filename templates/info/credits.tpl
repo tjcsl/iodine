@@ -29,6 +29,7 @@ Intranet Maintainers:
 	<li>Jeff Arnold (2003)</li>
 	<li>Evan Danaher (2004)</li>
 	<li>Dan Tran (2006)</li>
+	<li>Victor Mircea (2007)</li>
 	<li>Josiah Boning (2008)</li>
 </ul>
 </td>
@@ -49,6 +50,7 @@ I2 Development Team:
 	<li>Andrew "asmith" Smith (2006)</li>
 	<li>Dan "The Intranet Man" Tran (2006)</li>
 	<li>Logan Kearsley (2007)</li>
+	<li>Victor "vmircea" Mircea (2007)</li>
 	<li>Josiah "Jobin" Boning (2008)</li>
 	<li>Jack "jbreese" Breese (2008)</li>
 	<li>Nathan Watson (2008)</li>
