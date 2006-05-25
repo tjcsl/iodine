@@ -1590,7 +1590,7 @@ class dataimport implements Module {
 			unset($_SESSION['userfile']);
 			unset($this->userfile);
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_schedules') {
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_schedule') {
 			unset($_SESSION['schedulefile']);
 			unset($this->schedulefile);
 			unset($_SESSION['classfile']);
