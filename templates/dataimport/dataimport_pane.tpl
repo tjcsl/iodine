@@ -136,6 +136,10 @@
 			<input type="hidden" name="doit" value="1"/>
 			<input type="submit" value="Import Aphorisms"/><br/>
 		</form>
+		<form action="[<$I2_ROOT>]dataimport/teacherparking" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Import teacher parking spots"/><br/>
+		</form>
 [</if>]
 	[<if !$admin_pass>]
 		<form action="[<$I2_ROOT>]dataimport" method="post">
