@@ -261,7 +261,7 @@ class News implements Module {
 		}
 
 		foreach($this->stories as $story) {
-			if ($story->readable() && (!$story->has_been_read() || $archive)) {
+			if (($archive || !$story->has_been_read()) && $story->readable()) {
 				//$story->text = stripslashes($story->text);	  
 				$story->title = stripslashes($story->title);
 				$this->template_args['stories'][] = $story;
