@@ -28,7 +28,7 @@ class Schedule implements Iterator {
 	public function __construct(User $user) {
 		global $I2_LDAP;
 		$this->ldap = $I2_LDAP;
-		$this->res = $this->ldap->search('ou=schedule,dc=tjhsst,dc=edu','(&(objectClass=tjhsstClass)(enrolledStudent='.$this->ldap->get_user_dn($user->uid).'))', array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod'));
+		$this->res = $this->ldap->search('ou=schedule,dc=tjhsst,dc=edu','(&(objectClass=tjhsstClass)(enrolledStudent='.$this->ldap->get_user_dn($user->uid).'))', array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDn'));
 		$this->res->sort(array('classPeriod'));
 	}
 

@@ -31,6 +31,7 @@ class SectionLDAP implements Section {
 			$this->info['students'] = array();
 			foreach($data['enrolledStudent'] as $student_dn) {
 				$this->info['students'][] = new User($I2_LDAP->search_base($student_dn, 'iodineUidNumber')->fetch_single_value());
+				usort($this->info['students'], array('User', 'name_cmp'));
 			}
 		}
 	}

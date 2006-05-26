@@ -123,9 +123,26 @@ AIM/AOL Screenname(s):
 
 [<if $schedule>]
  <br />Classes:<br />
+ <table cellspacing="0">
+  <thead>
+   <tr>
+    <th>Period</th>
+    <th>Name</th>
+    <th>Room(s)</th>
+    <th>Teacher</th>
+   </tr>
+  </thead>
+  <tbody>
  [<foreach from=$schedule item=class>]
-  <a href="[<$I2_ROOT>]studentdirectory/class/[<$class->sectionid>]">Period: [<$class->period>], Name: [<$class->name>], Room: [<$class->room>]</a><br />
+   <tr class="[<cycle values="c1,c2">]">
+    <td class="directory-table" style="text-align:center;">[<$class->period>]</td>
+    <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$class->sectionid>]">[<$class->name>]</a></td>
+    <td class="directory-table" style="text-align:center;">[<$class->room>]</td>
+    <td class="directory-table">[<$class->teacher->sn>]</td>
+   </tr>
  [</foreach>]
+  </tbody>
+ </table>
 [</if>]
 
 [<if $eighth>]
@@ -145,6 +162,29 @@ AIM/AOL Screenname(s):
  [</foreach>]
  </table>
 [</if>]
+[<elseif $info and isset($info.class) and isset($info.students)>]
+<p>Students in [<$info.class->name>], period [<$info.class->period>]:</p>
+<table cellspacing="0">
+ <thead>
+  <tr>
+   <th>Name</th>
+   <th>Email</th>
+  </tr>
+ </thead>
+[<foreach from=$info.students item=student>]
+ <tbody>
+  <tr class="[<cycle values="c1,c2">]">
+   <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/info/[<$student->uid>]">[<$student->name>]</a></td>
+   <td class="directory-table">
+    [<if count($student->mail)>]
+     <a href="mailto:[<$student->mail>]">[<$student->mail|escape:'html'>]</a></td>
+    [<else>]
+     &nbsp;
+    [</if>]
+  </tr>
+ </tbody>
+[</foreach>]
+</table>
 [<elseif $info>]
 [<include file="search/search_results_pane.tpl" results_destination="StudentDirectory/info/">]
 [<else>]

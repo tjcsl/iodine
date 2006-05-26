@@ -91,7 +91,7 @@ class User {
 			} else {
 				$this->info = $I2_LDAP->search('ou=people',"iodineUidNumber=$uid",array('iodineUid'))->fetch_array(RESULT::ASSOC);
 			}
-			$this->username = $this->info['iodineUid'];
+			$this->username = isset($this->info['iodineUid']) ? $this->info['iodineUid'] : $this->info['iodineuid'];
 			$this->myuid = $uid;
 		}
 
