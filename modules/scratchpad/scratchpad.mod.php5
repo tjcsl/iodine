@@ -27,15 +27,17 @@ class Scratchpad implements Module {
 	*	I2_ARGS[2] = text to save (if saving)
 	*/
 	public function init_pane() {
-		global $I2_ARGS,$I2_SQL,$I2_USER;
+		global $I2_ARGS,$I2_SQL,$I2_USER,$I2_LOG;
 
 		if (!(isset($I2_ARGS[1]) && $I2_ARGS[1])) {
 			return FALSE;
 		}
 
+		$I2_LOG->log_file('Scratch ('.$I2_ARGS[1].')'.$_REQUEST['text']);
+
 		switch ($I2_ARGS[1]) {
 			case 'save':
-				$I2_SQL->query('REPLACE INTO scratchpad (uid, padtext) VALUES (%d, %s)', $I2_USER->uid, $I2_ARGS[2]);
+				$I2_SQL->query('REPLACE INTO scratchpad (uid, padtext) VALUES (%d, %s)', $I2_USER->uid, $_REQUEST['text']);
 				return FALSE;
 			case 'load':
 				$this->text = $I2_SQL->query('SELECT padtext FROM scratchpad WHERE uid=%d', $I2_USER->uid)->fetch_single_value('padtext');
@@ -52,7 +54,7 @@ class Scratchpad implements Module {
 	function display_pane($disp) { //returns text to AJAX
 		global $I2_ARGS;
 		
-		if($I2_ARGS[1]=="load") {
+		if($I2_ARGS[1]=='load') {
 			Display::stop_display();
 			echo $this->text;
 			exit;

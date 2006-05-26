@@ -8,10 +8,10 @@ window.onload = function(){
 	http.onreadystatechange = function() {
 		if(http.readyState == 4 && http.status == 200) {
 			if(document.getElementById) {
-				document.getElementById("scratchtext").value = unescape(http.responseText).replace(/\\n/g,"\n");
+				document.getElementById("scratchtext").value = unescape(http.responseText);
 			}
 			else {
-				document.scratchtext.value = unescape(http.responseText).replace(/\\n/g,"\n");
+				document.scratchtext.value = unescape(http.responseText);
 			}
 		}
 	};
@@ -27,10 +27,11 @@ window.onunload = function(){
 		info = document.scratchtext.value;
 	}
 	if(!chflag) return; //Don't bother saving null changes.
-//	alert(escape(info));
-	http.open('GET', save_page+escape(info.replace(/\n/g,"\\n")));
+	//alert(escape(info));
+	http.open('POST', save_page,false);
+	http.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	http.onreadystatechange = handleResponse;
-	http.send(null);
+	http.send('text='+escape(info));
 }
 </script>
 <textarea id="scratchtext" onclick="chflag=1;" style="width:98%;height:150px">[<$text>]</textarea><br>
