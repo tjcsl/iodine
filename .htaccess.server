@@ -1,7 +1,7 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 
-	RewriteRule ^$ /shared/apache2/iodine/intranet2/core.php5 [L]
+	RewriteRule ^$ /var/www/iodine/core.php5 [L]
 
 	RewriteRule ^www/ - [L]
 
@@ -13,5 +13,5 @@
 
 	RewriteRule ^login - [L]
 
-	RewriteRule ^(.*)$ /shared/apache2/iodine/intranet2/core.php5?$1?%{QUERY_STRING} [L]
+	RewriteRule ^(.*)$ /var/www/iodine/core.php5?$1?%{QUERY_STRING} [L]
 </IfModule>

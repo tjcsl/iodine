@@ -9,5 +9,3 @@ ssh = ssh://<username>@humboldt.tjhsst.edu/intranet2
 [ui]
 verbose = True
 username=<username>
-[extensions]
-hgext.mq=
