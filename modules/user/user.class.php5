@@ -844,7 +844,7 @@ class User {
 	* Returns a student's schedule.
 	*/
 	public function schedule() {
-		return new ScheduleSQL($this);
+		return new Schedule($this);
 	}
 
 	/**
