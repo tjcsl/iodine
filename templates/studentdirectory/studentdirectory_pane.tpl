@@ -185,6 +185,24 @@ AIM/AOL Screenname(s):
  </tbody>
 [</foreach>]
 </table>
+<br />
+Other classes taught by [<$info.class->teacher->name>]:
+<table cellspacing="0">
+ <thead>
+  <th>Period</th>
+  <th>Name</th>
+  <th>Room(s)</th>
+ </thead>
+ <tbody>
+ [<foreach from=$info.class->other_classes() item=otherclass>]
+  <tr class="[<cycle values="c1,c2">]">
+   <td class="directory-table">[<$otherclass->period>]</td>
+   <td class="directory-table"><a href="studentdirectory/class/[<$otherclass->sectionid>]">[<$otherclass->name>]</a></td>
+   <td class="directory-table">[<$otherclass->room>]</td>
+  </tr>
+ [</foreach>]
+ </tbody>
+</table>
 [<elseif $info>]
 [<include file="search/search_results_pane.tpl" results_destination="StudentDirectory/info/">]
 [<else>]
