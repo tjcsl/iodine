@@ -68,9 +68,13 @@ class User {
 				if (isSet(self::$cache[$uid])) {
 					$this->info = &self::$cache[$uid];
 				} else {
-					$this->info = $I2_LDAP->search('ou=people',"iodineUid=$uid",array('iodineUidNumber'))->fetch_array(RESULT::ASSOC);
+					$this->info = array();
+					$blah = $I2_LDAP->search('ou=people',"iodineUid=$uid",array('iodineUidNumber'))->fetch_array(RESULT::ASSOC);
+					foreach ($blah as $key=>$val) {
+						$this->info[strtolower($key)] = $val;
+					}
 				}
-				$this->myuid = $this->info['iodineUidNumber'];
+				$this->myuid = $this->info['iodineuidnumber'];
 			}
 			else {
 				$I2_ERR->fatal_error('Your password and username were correct, but you don\'t appear to exist in our database. If this is a mistake, please contact the intranetmaster about it.');
@@ -89,9 +93,13 @@ class User {
 			if (isSet(self::$cache[$uid])) {
 				$this->info = &self::$cache[$uid];
 			} else {
-				$this->info = $I2_LDAP->search('ou=people',"iodineUidNumber=$uid",array('iodineUid'))->fetch_array(RESULT::ASSOC);
+				$this->info = array();
+				$blah = $I2_LDAP->search('ou=people',"iodineUidNumber=$uid",array('iodineUid'))->fetch_array(RESULT::ASSOC);
+				foreach ($blah as $key=>$val) {
+					$this->info[strtolower($key)] = $val;
+				}
 			}
-			$this->username = $this->info['iodineUid'];
+			$this->username = $this->info['iodineuid'];
 			$this->myuid = $uid;
 		}
 
