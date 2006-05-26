@@ -426,6 +426,10 @@ class LDAP {
 			return $oubase;
 		}
 	}
+
+	public static function get_pic_dn($picname, $user = NULL) {
+		return 'cn='.$picname.','.self::get_user_dn($user);
+	}
 	
 }
 
