@@ -1,0 +1,11 @@
+.activity_cancelled {
+	background-color: #660066;
+	color: #FF0066; font-weight: bold;
+}
+.activity_cancelled td {
+	color: #FF0066;
+}
+.activity_cancelled td a {
+	color: #FF0066;
+}
+

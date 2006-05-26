@@ -1,0 +1,20 @@
+@extend
+.intrabox {
+	border: none;
+}
+
+@extend
+.boxheader {
+	background-color: #660066;
+	color: #FF99FF;
+}
+
+@extend
+.mainbox, .mainbox_noheader {
+	border: none;
+}
+
+@extend
+.boxcontent {
+	color: #660066;
+}
