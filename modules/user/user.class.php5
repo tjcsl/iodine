@@ -184,6 +184,8 @@ class User {
 			throw new I2Exception('Tried to retrieve information for nonexistent user! UID: '.$this->myuid);
 		}
 
+		$name = strtolower($name);
+
 		/* pseudo-fields
 		** must use explicit __get calls here, since recursive implicit
 		** __get calls apparently are not allowed.
@@ -369,7 +371,8 @@ class User {
 		if ($ldap === NULL) {
 			$ldap = $I2_LDAP;
 		}
-		if ($name == 'username' || $name == 'iodineUid') {
+		$name = strtolower($name);
+		if ($name == 'username' || $name == 'iodineuid') {
 			$this->username = $val;
 		}
 		/*if (!$this->username) {
@@ -379,7 +382,7 @@ class User {
 			$val = array();
 		}
 			
-		if(!strcasecmp($name, 'mobile') || !strcasecmp($name, 'homePhone') || !strcasecmp($name, 'telephoneNumber')) {
+		if($name == 'mobile' || $name == 'homephone' || $name == 'telephoneNumber') {
 			if(is_array($val)) {
 				foreach($val as $key=>$value) {
 					$val[$key] = preg_replace('/[^0-9]/', '', $value);
