@@ -106,6 +106,8 @@ class EighthSchedule {
 	public static function add_absentee($blockid, $userid) {
 		global $I2_SQL;
 		Eighth::check_admin();
+		$user = new User($userid);
+		$userid = $user->uid;
 		$old = $I2_SQL->query('SELECT userid FROM eighth_absentees WHERE bid=%d AND userid=%d',$blockid,$userid)->fetch_single_value();
 		if ($old) {
 			//nothing to do
