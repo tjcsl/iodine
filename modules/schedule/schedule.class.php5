@@ -25,13 +25,24 @@ class Schedule implements Iterator {
 	*/
 	private $sections;
 	
-	public function __construct() {
+	public function __construct(User $user) {
 		global $I2_LDAP;
 		$this->ldap = $I2_LDAP;
+		$this->res = $this->ldap->search('ou=schedule,dc=tjhsst,dc=edu','(&(objectClass=tjhsstClass)(enrolledStudent='.$this->ldap->get_user_dn($user->uid).'))', array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDn'));
+		$this->res->sort(array('classPeriod'));
 	}
 
 	public function set_ldap($ldap) {
 		$this->ldap = $ldap;
+	}
+	
+	public public function section($sectionid) {
+		global $I2_LDAP;
+		$res = $I2_LDAP->search('ou=schedule,dc=tjhsst,dc=edu',"(&(objectClass=tjhsstClass)(tjhsstSectionId=$sectionid))",array('tjhsstSectionId','cn','sponsorDn','roomNumber','quarterNumber','classPeriod','enrolledStudent'));
+		if($res->num_rows() < 1) {
+			throw new I2Exception('Invalid Section ID passed to Schedule::section(): '.$sectionid);
+		}
+		return new SectionLDAP($res->fetch_array(Result::ASSOC));
 	}
 
 	public function fill_schedule(User $user) {
@@ -90,23 +101,36 @@ class Schedule implements Iterator {
 	}
 
 	public function next() {
+		if(($next = $this->res->next()) === FALSE) {
+			return FALSE;
+		}
+		return new SectionLDAP($next);
 	}
 
 	public function prev() {
+		if(($prev = $this->res->prev()) === FALSE) {
+			return FALSE;
+		}
+		return new SectionLDAP($prev);
 	}
 
 	public function key() {
+		return $this->res->key();
 	}
 
 	public function rewind() {
+		return $this->res->rewind();
 	}
 
 	public function current() {
+		if(($cur = $this->res->current()) === FALSE) {
+			return FALSE;
+		}
+		return new SectionLDAP($cur);
 	}
 
 	public function valid() {
 		return $this->current() !== FALSE;
 	}
-
 }	
 ?>

@@ -8,29 +8,44 @@
 */
 class SectionLDAP implements Section {
 
-	private $ldap;
-	private $dn;
+	private $info;
 
-	public function __construct($sectiondn,LDAP $ldap = NULL) {
+	public function __construct($data) {
 		global $I2_LDAP;
-		if (!$ldap) {
-			$this->ldap = $I2_LDAP;
-		} else {
-			$this->ldap = ldap;
+	
+		$this->info['sectionid'] = $data['tjhsstSectionId'];
+		$this->info['quarters'] = $data['quarterNumber'];
+		$this->info['room'] = $data['roomNumber'];
+		$this->info['name'] = $data['cn'];
+		$this->info['period'] = $data['classPeriod'];
+
+		if(isset($data['sponsorDn'])) {
+			$this->info['teacher'] = new User($I2_LDAP->search_base($data['sponsorDn'], 'iodineUidNumber')->fetch_single_value());
 		}
-		$this->dn = $sectiondn;
+
+		if(isset($data['enrolledStudent'])) {
+			if(!is_array($data['enrolledStudent'])) {
+				$data['enrolledStudent'] = array($data['enrolledStudent']);
+			}
+		
+			$this->info['students'] = array();
+			foreach($data['enrolledStudent'] as $student_dn) {
+				$this->info['students'][] = new User($I2_LDAP->search_base($student_dn, 'iodineUidNumber')->fetch_single_value());
+				usort($this->info['students'], array('User', 'name_cmp'));
+			}
+		}
 	}
 
-	public function __get($name) {
-		return $this->ldap->search_base($this->dn,"$name")->fetch_single_value();
-	}
+	public function __get($var) {
+		if(isset($this->info[$var])) {
+			return $this->info[$var];
+		}
 
-	public function __set($name) {
-		//TODO: allow setting section attributes in LDAP
-		throw new I2Exception("Attempt to modify $name in LDAP failed: unimplemented!");
+		throw new I2Exception('Invalid attribute passed to SectionLDAP::__get(): '.$var);
 	}
 
 	public function get_students() {
+		return $this->info['students'];
 	}
 }
 ?>
