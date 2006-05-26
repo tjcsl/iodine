@@ -14,7 +14,7 @@
 	<select name="aid" size="10" onchange="changeDescription(this.options[this.selectedIndex].value)">
 [<foreach from=$activities item="activity">]
 	[<assign var=capacity value=$activity->capacity>]
-        <option value="[<$activity->aid>]"[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"[</if>]>[<$activity->aid>]: [<$activity->name_r>][<if $activity->comment_notsoshort>] ([<$activity->comment_notsoshort>][<if strlen($activity->comment) > 20>]...[</if>])[</if>]</option>
+        <option value="[<$activity->aid>]"[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"[</if>]>[<$activity->aid>]: [<$activity->name_full_r>]</option>
 [</foreach>] 
 	</select><br />
 	<input type="text" name="aid" id="aid_box" maxlength="4" size="4" /><input type="submit" value="Change" /><br />

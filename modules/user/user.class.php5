@@ -363,16 +363,26 @@ class User {
 		if ($val == '') {
 			$val = array();
 		}
+			
+		if(!strcasecmp($name, 'mobile') || !strcasecmp($name, 'homePhone') || !strcasecmp($name, 'telephoneNumber')) {
+			if(is_array($val)) {
+				foreach($val as $key=>$value) {
+					$val[$key] = preg_replace('/[^0-9]/', '', $value);
+				}
+			} else {
+				$val = preg_replace('/[^0-9]/', '', $val);
+			}
+		}
 
 		switch ($name) {
 			case 'phone_cell':
-				$this->__set('mobile',$val,$ldap);
+				$this->set('mobile',$val,$ldap);
 				return;
 			case 'phone_home':
-				$this->__set('homePhone',$val,$ldap);
+				$this->set('homePhone',$val,$ldap);
 				return;
 			case 'phone_other':
-				$this->__set('phoneNumber',$val,$ldap);
+				$this->set('phoneNumber',$val,$ldap);
 				return;
 			case 'showmapself':
 			case 'showbdayself':
@@ -388,7 +398,6 @@ class User {
 				while ($row = $res->fetch_array()) {
 					$ldap->modify_val($pic['dn'],$val);
 				}
-				
 		}
 		
 		$ldap->modify_val("iodineUid={$this->username},ou=people",$name,$val);

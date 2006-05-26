@@ -138,8 +138,8 @@ AIM/AOL Screenname(s):
   </tr>
  [<foreach from=$eighth item=activity>]
   <tr class="[<cycle values="c1,c2">]">
-   <td class="directory-table">[<$activity->block->date>]</td>
-   <td class="directory-table">[<if $activity->aid != 999>]<a href="[<$I2_ROOT>]eighth/vcp_schedule/roster/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_r>]</a>[<else>]HAS NOT SELECTED AN ACTIVITY[</if>]</td>
+   <td class="directory-table">[<$activity->block->date|date_format>], [<$activity->block->block>] Block</td>
+   <td class="directory-table">[<if $activity->aid != 999>]<a href="[<$I2_ROOT>]eighth/vcp_schedule/roster/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_full_r>]</a>[<else>]HAS NOT SELECTED AN ACTIVITY[</if>]</td>
    <td class="directory-table">[<$activity->block_rooms_comma>]</td>
   </tr>
  [</foreach>]

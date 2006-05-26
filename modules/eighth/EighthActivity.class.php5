@@ -610,16 +610,18 @@ class EighthActivity {
 			switch($name) {
 				case 'comment_short':
 					if(isset($this->data['comment'])) {
-						return substr($this->data['comment'], 0, 15);
+						return substr($this->data['comment'], 0, 15) . (strlen($this->data['comment']) > 15 ? '...' : '');
 					}
 					return '';
 				case 'comment_notsoshort':
 					if(isset($this->data['comment'])) {
-						return substr($this->data['comment'], 0, 20);
+						return substr($this->data['comment'], 0, 20) . (strlen($this->data['comment']) > 20 ? '...' : '');
 					}
 					return '';
 				case 'name_r':
 					return $this->data['name'] . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
+				case 'name_full_r':
+					return $this->data['name'] . ($this->__get('comment') ? ' - ' . $this->__get('comment') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
 				case 'name_friendly':
 					return $this->data['name'];
 				case 'sponsors_comma':
