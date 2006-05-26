@@ -35,11 +35,14 @@ class Findcalc implements Module {
 	*/
 	function init_pane() {
 		global $I2_USER, $I2_ARGS, $I2_SQL;
+		if ($I2_USER->objectClass != 'tjhsstTeacher' && !$I2_USER->is_group_member('admin_calc')) {
+				  return FALSE;
+		}
 
 		if( isset($_REQUEST['calc_form']) ) {
 			//form submitted
 			$type = $_REQUEST['calc_form'];
-			if ($type == "sn") {
+			if ($type == 'sn') {
 				if ($_REQUEST['number']==""||!is_numeric($_REQUEST['number'])) {
 					$this->template_args['message'] = "You didn't specify a valid serial number!";
 				}
@@ -48,7 +51,7 @@ class Findcalc implements Module {
 					$calcs = $I2_SQL->query('SELECT uid,calcsn,calcid FROM calculators WHERE calcsn like %s',$number)->fetch_all_arrays(Result::ASSOC);
 				}
 			}
-			else if ($type == "id") {
+			else if ($type == 'id') {
 				if($_REQUEST['number']=="") {
 					$this->template_args['message'] = "You didn't specify a valid calculator ID!";
 				}
