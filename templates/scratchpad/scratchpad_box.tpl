@@ -8,10 +8,10 @@ window.onload = function(){
 	http.onreadystatechange = function() {
 		if(http.readyState == 4 && http.status == 200) {
 			if(document.getElementById) {
-				document.getElementById("scratchtext").value = unescape(http.responseText);
+				document.getElementById("scratchtext").value = unescape(http.responseText).replace(/\\n/g,"\n");
 			}
 			else {
-				document.scratchtext.value = unescape(http.responseText);
+				document.scratchtext.value = unescape(http.responseText).replace(/\\n/g,"\n");
 			}
 		}
 	};
@@ -28,7 +28,7 @@ window.onunload = function(){
 	}
 	if(!chflag) return; //Don't bother saving null changes.
 //	alert(escape(info));
-	http.open('GET', save_page+escape(info));
+	http.open('GET', save_page+escape(info.replace(/\n/g,"\\n")));
 	http.onreadystatechange = handleResponse;
 	http.send(null);
 }

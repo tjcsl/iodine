@@ -951,30 +951,14 @@ class dataimport implements Module {
 	private function import_schedules() {
 		global $I2_LDAP,$I2_LOG;
 		
-		/*
-		** Set up student <=> course mappings first
-		*/
-		$students = array();
-		$studentcoursefile = @fopen($this->schedulefile,'r');
-		while ($studentline = fgets($studentcoursefile)) {
-			list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename, $teacherid, $teachername, $term, $room) = explode('","',trim($studentline,'"'));
-			if (!isSet($students[$sectionone])) {
-				$students[$sectionone] = array();
-			}
-			$uid = User::studentid_to_uid($studentid);
-			if (!$uid) {
-				$I2_LOG->log_file('Invalid/unknown studentID '.$studentid);
-				continue;
-			}
-			$I2_LOG->log_file('StudentID '.$studentid.' enrolled in section '.$sectionone);
-			$user = new User($uid);
-			$uid = LDAP::get_user_dn($user->username);
-			$students[$sectionone][] = $uid;
+		if (isSet($this->admin_pw)) {
+			$ldap = LDAP::get_admin_bind($this->admin_pw);
+		} else {
+			$ldap = $I2_LDAP;
 		}
-		fclose($studentcoursefile);
-		
+				
 		/*
-		** Then create classes
+		** First create classes
 		*/
 		$file = @fopen($this->classfile,'r');
 		while ($line = fgets($file)) {
@@ -986,7 +970,7 @@ class dataimport implements Module {
 			$class = substr($class,0,strlen($class)-1); //chomp quotes
 
 			// Hunt down the sponsor - and kill them!
-			$sponsordn = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUidNumber=$teacherid",array('iodineUid'))->fetch_single_value();
+			$sponsordn = $ldap->search(LDAP::get_user_dn(),"iodineUidNumber=$teacherid",array('iodineUid'))->fetch_single_value();
 
 			if (!$sponsordn) {
 				$I2_LOG->log_file("Unable to find teacher number $teacherid for class \"$class\" ($sectionid)");
@@ -1010,15 +994,44 @@ class dataimport implements Module {
 				'sponsorDn' => $sponsordn,
 				'classPeriod' => (int)$period,
 			);
-			if (isSet($students[$sectionid])) {
+			/*if (isSet($students[$sectionid])) {
 				$newclass['enrolledStudent'] = $students[$sectionid];
-			}
+			}*/
 			$I2_LOG->log_file('Creating section '.$sectionid.' ('.$class.' period '.$period.') taught by '.$sponsordn.' in '.$room);
 			// Create the course
 			$I2_LOG->log_file('dn: '.LDAP::get_schedule_dn($sectionid).' === '.print_r($newclass,1));
-			$I2_LDAP->add(LDAP::get_schedule_dn($sectionid),$newclass);
+			$ldap->add(LDAP::get_schedule_dn($sectionid),$newclass);
 		}
 		fclose($file);
+		
+		/*
+		** Set up student <=> course mappings
+		*/
+		$students = array();
+		$studentcoursefile = @fopen($this->schedulefile,'r');
+		while ($studentline = fgets($studentcoursefile)) {
+			list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename, $teacherid, $teachername, $term, $room) = explode('","',trim($studentline,'"'));
+			if (!isSet($students[$sectionone])) {
+				$students[$sectionone] = array();
+			}
+			$uid = User::studentid_to_uid($studentid);
+			if (!$uid) {
+				$I2_LOG->log_file('Invalid/unknown studentID '.$studentid);
+				continue;
+			}
+			$I2_LOG->log_file('StudentID '.$studentid.' enrolled in section '.$sectionone);
+			$user = new User($uid);
+			$studentdn = LDAP::get_user_dn($user->username);
+			$class = $ldap->search(LDAP::get_schedule_dn(),"tjhsstSectionId=$sectionone",array('tjhsstSectionId'))->fetch_single_value();
+			if (!$class) {
+				$I2_LOG->log_file('Invalid SectionID '.$sectionone.' for studentid '.$studentid);
+				continue;
+			}
+			$ldap->
+			//$students[$sectionone][] = $uid;
+		}
+		fclose($studentcoursefile);
+
 	}
 
 	private function fix_broken_user($studentid) {
