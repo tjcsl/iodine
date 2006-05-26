@@ -871,6 +871,9 @@ class User {
 	public static function id_to_user($userids) {
 		$ret = array();
 		foreach($userids as $userid) {
+			if (!$userid) {
+				continue;
+			}
 			$ret[] = new User($userid);
 		}
 		return $ret;

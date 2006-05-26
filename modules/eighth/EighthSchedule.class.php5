@@ -173,9 +173,9 @@ class EighthSchedule {
 			$wheres[] = 'date <= %T';
 		}
 		if(($start == null || $end == null) && count($wheres) == 1) {
-			return $I2_SQL->query("SELECT userid, COUNT(userid) AS absences FROM eighth_absentees LEFT JOIN eighth_blocks USING (bid) WHERE {$wheres[0]} GROUP BY userid HAVING COUNT(*) >= %d AND COUNT(*) <= %d", ($start == null ? $end : $start), $lower, $upper)->fetch_all_arrays(MYSQL_ASSOC);
+			return $I2_SQL->query("SELECT userid, COUNT(userid) AS absences FROM eighth_absentees LEFT JOIN eighth_blocks USING (bid) WHERE {$wheres[0]} GROUP BY userid HAVING COUNT(*) >= %d AND COUNT(*) <= %d", ($start == null ? $end : $start), $lower, $upper)->fetch_all_arrays(Result::ASSOC);
 		}
-		return $I2_SQL->query('SELECT userid, COUNT(userid) AS absences FROM eighth_absentees LEFT JOIN eighth_blocks USING (bid) ' . (count($wheres) != 0 ? 'WHERE ' : '') . implode(' AND ', $wheres) . ' GROUP BY userid HAVING COUNT(*) >= %d AND COUNT(*) <= %d', $start, $end, $lower, $upper)->fetch_all_arrays(MYSQL_ASSOC);
+		return $I2_SQL->query('SELECT userid, COUNT(userid) AS absences FROM eighth_absentees LEFT JOIN eighth_blocks USING (bid) ' . (count($wheres) != 0 ? 'WHERE ' : '') . implode(' AND ', $wheres) . ' GROUP BY userid HAVING COUNT(*) >= %d AND COUNT(*) <= %d', $start, $end, $lower, $upper)->fetch_all_arrays(Result::ASSOC);
 	}
 
 	/**
