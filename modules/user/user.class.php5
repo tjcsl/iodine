@@ -222,19 +222,34 @@ class User {
 				return self::get_grade($this->__get('graduationYear'));
 			case 'phone_home':
 				$phone = $this->__get('homePhone');
-				return '(' . substr($phone, 0, 3) . ') ' . substr($phone, 3, 3) . '-' . substr($phone, 6);
+				$phone = preg_replace('/[^0-9]/', '', $phone);
+				$international = strlen($phone) - 10;
+				return ($international ? '+' . substr($phone, 0, $international) . ' ' : '') . '(' . substr($phone, $international, 3) . ') ' . substr($phone, $international + 3, 3) . '-' . substr($phone, $international + 6);
 			case 'phone_cell':
 				$phone = $this->__get('mobile');
 				if($phone) {
-					return '(' . substr($phone, 0, 3) . ') ' . substr($phone, 3, 3) . '-' . substr($phone, 6);
+					$phone = preg_replace('/[^0-9]/', '', $phone);
+					$international = strlen($phone) - 10;
+					return ($international ? '+' . substr($phone, 0, $international) . ' ' : '') . '(' . substr($phone, $international, 3) . ') ' . substr($phone, $international + 3, 3) . '-' . substr($phone, $international + 6);
 				}
 				return NULL;
 			case 'phone_other':
 				$phone = $this->__get('telephoneNumber');
 				if($phone) {
-					return array('(' . substr($phone, 0, 3) . ') ' . substr($phone, 3, 3) . '-' . substr($phone, 6));
+					if(is_array($phone)) {
+						$numbers = array();
+						foreach($phone as $key => $value) {
+							$value = preg_replace('/[^0-9]/', '', $value);
+							$international = strlen($value) - 10;
+							$numbers[] = ($international ? '+' . substr($value, 0, $international) . ' ' : '') . '(' . substr($value, $international, 3) . ') ' . substr($value, $international + 3, 3) . '-' . substr($value, $international + 6);
+						}
+					} else {
+						$phone = preg_replace('/[^0-9]/', '', $phone);
+						$international = strlen($phone) - 10;
+						return ($international ? '+' . substr($phone, 0, $international) . ' ' : '') . '(' . substr($phone, $international, 3) . ') ' . substr($phone, $international + 3, 3) . '-' . substr($phone, $international + 6);
+					}
 				}
-				return array();
+				return NULL;
 			case 'bdate':
 				$born = $this->__get('birthday');
 				if (!$born) { // heh
