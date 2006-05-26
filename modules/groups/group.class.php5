@@ -306,7 +306,12 @@ class Group {
 		}
 		else {
 				  $user = new User($user);
-				  $grade = $user->grade;
+				  if ($user->objectClass == 'tjhsstStudent') {
+				  		$grade = $user->grade;
+				  } else {
+						// Make gid be -8, which is grade_staff
+						$grade = 8;
+				  }
 				  return array ( new Group(array (
 							 'gid' => -1*$grade,
 							 'name' => 'grade_'.$grade,
