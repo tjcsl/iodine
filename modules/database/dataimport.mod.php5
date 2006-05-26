@@ -1249,6 +1249,35 @@ class dataimport implements Module {
 	}
 
 	/**
+	* Replace studentids with uidnumbers in a corrupted database
+	*/
+	private function repair_db($table,$column) {
+		global $I2_SQL,$I2_LOG;
+		$res = $I2_SQL->query("SELECT * FROM $table");
+		while ($row = $res->fetch_array(Result::ASSOC)) {
+			if (!isSet($row[$column])) {
+				throw new I2Exception('Column '.$column.' not set');
+			}
+			$query = "UPDATE $table SET ";
+			$queryarr = array();
+			$studentid = $row[$column];
+			$user = new User($studentid);
+			$uid = $user->uid;
+			$query .= "$column=%d WHERE "
+			$queryarr[] = $uid;
+			foreach ($row as $key=>$val) {
+				$query .= "$key=%?";
+				$queryarr[] = $val;
+				if ($res->more_rows()) {
+					$query .= ' AND ';
+				}
+			}
+			$I2_LOG->log_file('Running repair query: '.$query.' === '.print_r($queryarr,1));
+			//$I2_SQL->query_arr($query,$queryarr);
+		}
+	}
+
+	/**
 	* Do basic database setup
 	*/
 	private function init_db() {
