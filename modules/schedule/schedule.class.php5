@@ -36,7 +36,7 @@ class Schedule implements Iterator {
 		$this->ldap = $ldap;
 	}
 	
-	public public function section($sectionid) {
+	public static function section($sectionid) {
 		global $I2_LDAP;
 		$res = $I2_LDAP->search('ou=schedule,dc=tjhsst,dc=edu',"(&(objectClass=tjhsstClass)(tjhsstSectionId=$sectionid))",array('tjhsstSectionId','cn','sponsorDn','roomNumber','quarterNumber','classPeriod','enrolledStudent'));
 		if($res->num_rows() < 1) {

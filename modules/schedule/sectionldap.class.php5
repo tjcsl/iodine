@@ -9,6 +9,7 @@
 class SectionLDAP implements Section {
 
 	private $info;
+	private $teacher_dn = NULL;
 
 	public function __construct($data) {
 		global $I2_LDAP;
@@ -21,6 +22,7 @@ class SectionLDAP implements Section {
 
 		if(isset($data['sponsorDn'])) {
 			$this->info['teacher'] = new User($I2_LDAP->search_base($data['sponsorDn'], 'iodineUidNumber')->fetch_single_value());
+			$this->teacher_dn = $data['sponsorDn'];
 		}
 
 		if(isset($data['enrolledStudent'])) {
@@ -46,6 +48,26 @@ class SectionLDAP implements Section {
 
 	public function get_students() {
 		return $this->info['students'];
+	}
+
+	/**
+	* @returns Array An array of SectionLDAP objects which represent the other classes taught by the same teacher as this one
+	*/
+	public function other_classes() {
+		global $I2_LDAP;
+		if($this->teacher_dn === NULL) {
+			throw new I2Exception('Tried to get the other classes from a Section that does not have teacher data! Sectionid: '.$this->sectionid);
+		}
+
+		$res = $I2_LDAP->search('ou=schedule,dc=tjhsst,dc=edu','(&(objectClass=tjhsstClass)(sponsorDn='.$this->teacher_dn.'))', array('classPeriod','roomNumber','cn','tjhsstSectionId','quarterNumber'));
+		$res->sort(array('classPeriod'));
+		
+		$ret = array();
+		foreach($res as $row) {
+			$ret[] = new SectionLDAP($row);
+		}
+
+		return $ret;
 	}
 }
 ?>
