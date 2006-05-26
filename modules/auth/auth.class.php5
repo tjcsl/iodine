@@ -264,7 +264,7 @@ class Auth {
 
 				$_SESSION['i2_uid'] = $_REQUEST['login_username'];
 				$_SESSION['i2_username'] = $_REQUEST['login_username'];
-				$_SERVER['REMOTE_USER'] = $_REQUEST['login_username'];
+				//$_SERVER['REMOTE_USER'] = $_REQUEST['login_username'];
 					
 				// Do not cache the password if the master password was used.
 				if($check_result != self::SUCCESS_MASTER) {
