@@ -544,6 +544,13 @@ attributetype ( i2Attr:67
 	SINGLE-VALUE
 	)
 
+attributetype ( i2Attr:68
+	NAME ('enrolledclass')
+	DESC 'The DN of a class a student is enrolled in'
+	EQUALITY distinguishedNameMatch
+	SYNTAX dnSyntax
+	)
+
 objectclass ( i2OC:1
 	NAME ('tjhsstStudent' 'iodineStudent')
 	SUP inetOrgPerson STRUCTURAL
@@ -587,6 +594,7 @@ objectclass ( i2OC:1
 		metaphonefirst $
 		comments $
 		preferredPhoto $
+		enrolledclass $
 		mailMessages
 	)
 	)

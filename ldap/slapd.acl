@@ -53,6 +53,13 @@ access to filter="(|(perm-showtelephone-self=FALSE)(perm-showtelephone=FALSE))"
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
 	by * none
 
+access to filter="(|(perm-showschedule-self=FALSE)(perm-showschedule=FALSE))"
+		attrs=enrolledclass
+	by dn="cn=Manager,dc=tjhsst,dc=edu" write
+	by self read
+	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
+	by * none
+
 access to filter="(|(perm-showpictures-self=FALSE)(perm-showpicture=FALSE))"
 		attrs=preferredPhoto,jpegPhoto
 	by dn="cn=Manager,dc=tjhsst,dc=edu" write

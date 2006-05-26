@@ -1331,20 +1331,22 @@ class Eighth implements Module {
 			$delinquents = EighthSchedule::get_delinquents($lower, $upper, $start, $end);
 			$this->template_args['students'] = array();
 			$this->template_args['absences'] = array();
-			for($i = 0; $i < count($delinquents); $i++) {
-				$this->template_args['students'][] = $delinquents[$i]['userid'];
-				$this->template_args['absences'][] = $delinquents[$i]['absences'];
+			foreach ($delinquents as $delinquent) {
+				$this->template_args['students'][] = $delinquent['userid'];
+				$this->template_args['absences'][] = $delinquent['absences'];
 			}
-			$this->template_args['students'] = User::id_to_user($this->template_args['students']);
-			$this->template = "vp_delinquent.tpl";
-			$this->title = "View Delinquent Students";
+			if (count($this->template_args['students']) != 0) {
+				$this->template_args['students'] = User::id_to_user($this->template_args['students']);
+			}
+			$this->template = 'vp_delinquent.tpl';
+			$this->title = 'View Delinquent Students';
 		}
-		else if($this->op == "query") {
+		else if($this->op == 'query') {
 			// TODO: Query the delinquents
-			$this->template = "vp_delinquent.tpl";
-			$this->title = "Query Delinquent Students";
+			$this->template = 'vp_delinquent.tpl';
+			$this->title = 'Query Delinquent Students';
 		}
-		else if($this->op == "sort") {
+		else if($this->op == 'sort') {
 		}
 	}
 
