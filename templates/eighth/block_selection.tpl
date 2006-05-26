@@ -1,4 +1,4 @@
-[<if $header!='FALSE'>]
+[<if isSet($header) && $header!='FALSE'>]
 [<include file="eighth/header.tpl">]
 [</if>]
 <span style="font-weight: bold; font-size: 125%;">[<$title|default:"">]</span><br />
