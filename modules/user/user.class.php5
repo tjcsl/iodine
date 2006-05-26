@@ -427,9 +427,9 @@ class User {
 			case 'showpictureself':
 				// Set all the pictures' attributes to match the parent user's
 				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';
-				$res = $ldap->search_one(LDAP::get_user_dn($this->__get('username')),'objectClass=iodinePhoto',array('dn'));
+				$res = $ldap->search_one(LDAP::get_user_dn($this->__get('username')),'objectClass=iodinePhoto',array('cn'));
 				while ($row = $res->fetch_array()) {
-					$ldap->modify_val($pic['dn'],$val);
+					$ldap->modify_val(LDAP::get_pic_dn($row['cn'],$this),'showpictureself',$val);
 				}
 		}
 		
@@ -859,7 +859,7 @@ class User {
 	* Returns a student's schedule.
 	*/
 	public function schedule() {
-		return new ScheduleSQL($this);
+		return new Schedule($this);
 	}
 
 	/**

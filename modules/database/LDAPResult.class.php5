@@ -85,7 +85,7 @@ class LDAPResult implements Result {
 		if ($this->last_row_fetched > -1) {
 			throw new I2Exception('An LDAPResult with fetched rows cannot be sorted!');
 		}
-		foreach ($attrs as $attr) {
+		foreach ($sortattrs as $attr) {
 			ldap_sort($this->ldap,$this->ldap_result,$attr);
 		}
 	}
@@ -218,7 +218,9 @@ class LDAPResult implements Result {
 		** Fetch until our cache is sufficiently filled
 		*/
 		while ($fetched < $rownum) {
-			$this->fetch_array();
+			if($this->fetch_array() === FALSE) {
+				return FALSE;
+			}
 			$fetched++;
 		}
 	}
@@ -244,7 +246,9 @@ class LDAPResult implements Result {
 	}
 
 	public function fetch_row($rownum,$type=Result::BOTH) {
-		$this->fetch_to($rownum);
+		if($this->fetch_to($rownum) === FALSE) {
+			return FALSE;
+		}
 		/*
 		** You CANNOT switch the $type!
 		** If you do, cached data is wrong and will still be given to you
