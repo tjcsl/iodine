@@ -5,7 +5,7 @@ The following activities need to be forced to work:<br /><br />
 You were unsuccessful in registering for the following activities:<br /><br />
 [</if>]
 [<if isset($act_status.past)>]Activity is in the past<br />[</if>]
-[<if isset($act_status.presign)>]Activity is presign<br />[</if>]
+[<if isset($act_status.presign)>]This activity is popular, and signups for it are not yet open.  Try signing up within 48 hours of the activity date.<br />[</if>]
 [<if isset($act_status.capacity)>]Activity is full<br />[</if>]
 [<if isset($act_status.sticky)>][<if $eighth_admin>]Student is[<else>]You are[</if>] stuck to another activity<br />[</if>]
 [<if isset($act_status.permissions)>]Student is not allowed into the activity<br />[</if>]

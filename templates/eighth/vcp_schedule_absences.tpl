@@ -1,6 +1,6 @@
 [<include file="eighth/header.tpl">]
 [<php>] $this->_tpl_vars['count'] = count($this->_tpl_vars['absences']); [</php>]
-Absence information for <a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$uid>]">[<$name>]</a>: [<$count>] absence[<if $count != 1 >]s[</if>]<br /><br />
+Absence information for <a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]">[<$user->fullname_comma>] ([<$user->uid>])</a>: [<$count>] absence[<if $count != 1 >]s[</if>]<br /><br />
 <table cellspacing="0" cellpadding="0" style="padding: 0; spacing: 0; border: none">
 	<tr>
 		<th style="padding: 0px 10px;">Date</th>
@@ -16,7 +16,7 @@ Absence information for <a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$uid
 		<td style="padding: 0px 10px; text-align: center;">[<$activity->name_r>]</td>
 		<td style="padding: 0px 10px; text-align: center;">[<$activity->aid>]</td>
 		<td style="padding: 0px 10px; text-align: center;">[<$activity->block_sponsors_comma_short>]</td>
-		[<if $admin>]<td style="padding: 0px 10px; text-align: center;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/remove_absence/uid/[<$uid>]/bid/[<$activity->bid>]">Remove</a></td>[</if>]
+		[<if $admin>]<td style="padding: 0px 10px; text-align: center;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/remove_absence/uid/[<$user->uid>]/bid/[<$activity->bid>]">Remove</a></td>[</if>]
 	</tr>
 [</foreach>]
 </table>

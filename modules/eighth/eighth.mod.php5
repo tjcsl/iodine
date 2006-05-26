@@ -1179,6 +1179,7 @@ class Eighth implements Module {
 			$this->template_args['op'] = "user/bid/{$this->args['bid']}";
 		}
 		else if($this->op == 'user') {
+			$this->setup_block_selection();
 			$this->template = 'res_student.tpl';
 			$this->template_args['block'] = new EighthBlock($this->args['bid']);
 			$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bid']);
@@ -1598,8 +1599,9 @@ class Eighth implements Module {
 			$absences = EighthActivity::id_to_Activity(EighthSchedule::get_absences($this->args['uid']));
 			$this->template_args['absences'] = $absences;
 			$user = new User($this->args['uid']);
-			$this->template_args['uid'] = $this->args['uid'];
-			$this->template_args['name'] = $user->fullname_comma;
+			//$this->template_args['uid'] = $this->args['uid'];
+			//$this->template_args['name'] = $user->fullname_comma;
+			$this->template_args['user'] = $user;
 			$this->template_args['admin'] = $this->admin;
 			$this->template = 'vcp_schedule_absences.tpl';
 		}

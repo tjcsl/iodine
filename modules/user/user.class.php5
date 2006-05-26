@@ -90,13 +90,20 @@ class User {
 				  return $uid;
 		} else {
 			$uid = self::to_uidnumber($uid);
+			if (!$uid) {
+				throw new I2Exception('Blank uidnumber used in User construction');
+			}
 			if (isSet(self::$cache[$uid])) {
 				$this->info = &self::$cache[$uid];
 			} else {
 				$this->info = array();
-				$blah = $I2_LDAP->search('ou=people',"iodineUidNumber=$uid",array('iodineUid'))->fetch_array(RESULT::ASSOC);
-				foreach ($blah as $key=>$val) {
-					$this->info[strtolower($key)] = $val;
+				$blah = $I2_LDAP->search('ou=people',"iodineUidNumber=$uid",array('iodineUid'))->fetch_array(Result::ASSOC);
+				if ($blah) {
+					foreach ($blah as $key=>$val) {
+						$this->info[strtolower($key)] = $val;
+					}
+				} else {
+					throw new I2Exception('Invalid iodineUidNumber '.$uid);
 				}
 			}
 			$this->username = $this->info['iodineuid'];

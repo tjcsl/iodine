@@ -8,4 +8,5 @@
 [<include file="search/search_pane.tpl">]
 [<elseif isSet($results_destination)>]
 [<include file="search/search_results_pane.tpl">]
-[</if>]
+[</if>]<br />
+[<include file="eighth/block_selection.tpl" header="FALSE" title='' method='res_student' op='activity' field='bid' bid=$block->bid>]

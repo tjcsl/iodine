@@ -115,7 +115,7 @@ class EighthSponsor {
 			  if (!$startdate) {
 						 $startdate = date('Y-m-d');
 			  }
-			$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date>%t ORDER BY eighth_blocks.date,eighth_blocks.block',$startdate);
+			$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date>=%t ORDER BY eighth_blocks.date,eighth_blocks.block',$startdate);
 			$activities = array();
 			foreach($result as $activity) {
 				$sponsors = explode(',', $activity['sponsors']);
