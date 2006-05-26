@@ -621,7 +621,7 @@ class EighthActivity {
 				case 'name_r':
 					return $this->data['name'] . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
 				case 'name_full_r':
-					return $this->data['name'] . ($this->__get('comment') ? ' - ' . $this->__get('comment') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
+					return $this->data['name'] . ($this->__get('comment_notsoshort') ? ' - ' . $this->__get('comment_notsoshort') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
 				case 'name_friendly':
 					return $this->data['name'];
 				case 'sponsors_comma':
