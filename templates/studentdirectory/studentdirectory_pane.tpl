@@ -121,7 +121,7 @@ AIM/AOL Screenname(s):
 [<if $user->locker>]Locker Number: [<$user->locker|escape:'html'>]<br />[</if>]
 </td></tr></table>
 
-[<if $schedule>]
+[<if $schedule && count($schedule)>=1 >]
  <br />Classes:<br />
  <table cellspacing="0">
   <thead>
