@@ -3,7 +3,7 @@
 	<table style="border: 0px; padding: 0px; margin: 0px;">
 		<tr>
 			<td>Name:</td>
-			<td><input type="text" name="name" value="[<$activity->name>]" /></td>
+			<td><input type="text" name="name" value="[<$activity->name|escape:"html">]" /></td>
 		</tr>
 		<tr>
 			<td>Sponsor(s):</td>

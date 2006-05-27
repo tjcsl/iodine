@@ -620,8 +620,14 @@ class EighthActivity {
 					return '';
 				case 'name_r':
 					return $this->data['name'] . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
-				case 'name_full_r':
-					return $this->data['name'] . ($this->__get('comment_notsoshort') ? ' - ' . $this->__get('comment_notsoshort') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
+			 case 'name_full_r':
+					$namelen = strlen($this->data['name']);
+					// Make it so that all names w/comments are 50ish characters or less w/o truncating the name itself
+					if ($namelen >= 60) {
+							  return $this->data['name'];
+					}
+					$commentlen = strlen($this->data['comment']);
+					return $this->data['name'] . ($commentlen ? ' - ' . substr($this->data['comment'],0,60-$namelen).(60-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
 				case 'name_friendly':
 					return $this->data['name'];
 				case 'sponsors_comma':
