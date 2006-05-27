@@ -163,7 +163,7 @@ AIM/AOL Screenname(s):
  </table>
 [</if>]
 [<elseif $info and isset($info.class) and isset($info.students)>]
-<p>Students in [<$info.class->name>], period [<$info.class->period>]:</p>
+<p>Students in [<$info.class->teacher->name>]'s [<$info.class->name>], period [<$info.class->period>]:</p>
 <table cellspacing="0">
  <thead>
   <tr>
@@ -174,10 +174,17 @@ AIM/AOL Screenname(s):
 [<foreach from=$info.students item=student>]
  <tbody>
   <tr class="[<cycle values="c1,c2">]">
-   <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/info/[<$student->uid>]">[<$student->name>]</a></td>
+   <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/info/[<$student->uid>]">[<$student->fullname_comma>] ([<$student->grade>])</a></td>
    <td class="directory-table">
     [<if count($student->mail)>]
-     <a href="mailto:[<$student->mail>]">[<$student->mail|escape:'html'>]</a></td>
+     <a href="mailto:[<$student->mail>]">
+	  	[<if count($student->mail) == 1>]
+			[<$student->mail|escape:'html'>]
+		[<else>]
+			[<$student->mail.0|escape:"html">]
+		[</if>]
+	  </a>
+	  </td>
     [<else>]
      &nbsp;
     [</if>]
@@ -197,7 +204,7 @@ Other classes taught by [<$info.class->teacher->name>]:
  [<foreach from=$info.class->other_classes() item=otherclass>]
   <tr class="[<cycle values="c1,c2">]">
    <td class="directory-table">[<$otherclass->period>]</td>
-   <td class="directory-table"><a href="studentdirectory/class/[<$otherclass->sectionid>]">[<$otherclass->name>]</a></td>
+   <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$otherclass->sectionid>]">[<$otherclass->name>]</a></td>
    <td class="directory-table">[<$otherclass->room>]</td>
   </tr>
  [</foreach>]

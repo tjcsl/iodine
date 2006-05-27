@@ -50,7 +50,7 @@ access to filter="(|(perm-showtelephone-self=FALSE)(perm-showtelephone=FALSE))"
 access to filter="(|(perm-showschedule-self=FALSE)(perm-showschedule=FALSE))"
 		attrs=enrolledclass
 	by self read
-	by set="this/sponsorDn"
+	by set="user/objectClass & [tjhsstTeacher]" read
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
 	by * none
 
@@ -87,7 +87,7 @@ access to attrs=mobile,aim,msn,icq,googletalk,yahoo,locker,telephoneNumber,webpa
 
 
 # Ensure all sensitive info is kept to authorized users, no matter what
-access to attrs=l,postalcode,postaladdress,homePhone,homePostalAddress,street,st,counselor,cn,sn,givenName,soundexFirst,soundexLast,displayName,mname,nickname,birthday,sex,title,graduationYear,jpegPhoto
+access to attrs=l,postalcode,postaladdress,homePhone,homePostalAddress,street,st,counselor,cn,sn,givenName,soundexFirst,soundexLast,displayName,mname,nickname,birthday,sex,title,graduationYear,jpegPhoto,enrolledClass,tjhsstClassId,tjhsstSectionId,quarter,periodNumber,sponsorDn
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
 	by users read
 	by * none

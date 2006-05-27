@@ -24,12 +24,28 @@ class Schedule implements Iterator {
 	* An array of the sectionIds in which the student is enrolled.
 	*/
 	private $sections;
+
+	/**
+	* The position in the schedule we are currently at
+	*/
+	private $index = -1;
 	
 	public function __construct(User $user) {
 		global $I2_LDAP;
 		$this->ldap = $I2_LDAP;
-		$this->res = $this->ldap->search('ou=schedule,dc=tjhsst,dc=edu','(&(objectClass=tjhsstClass)(enrolledStudent='.$this->ldap->get_user_dn($user->uid).'))', array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDn'));
-		$this->res->sort(array('classPeriod'));
+		$res = $this->ldap->search_base(LDAP::get_user_dn($user),array('enrolledclass'))->fetch_single_value();
+		$this->sections = array();
+		if ($res) {
+			foreach ($res as $classdn) {
+					  $this->sections[] = $this->ldap->search_base($classdn,array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDn'))->fetch_array(Result::ASSOC);
+			}
+			$this->index = 0;
+			usort($this->sections,array('Schedule','periodsort'));
+		}
+	}
+
+	private static function periodsort($one, $two) {
+			  return $one['classPeriod']-$two['classPeriod'];
 	}
 
 	public function set_ldap($ldap) {
@@ -62,7 +78,7 @@ class Schedule implements Iterator {
 
 	public function remove_user($uname) {
 		//FIXME: escape stuff
-		$res = $this->ldap->search('ou=people',"iodineUid=$uname",'dn');
+		$res = $this->ldap->search(LDAP::get_user_dn(),"iodineUid=$uname",'dn');
 		if ($res->num_rows() > 1) {
 			throw new I2Exception("Username '$uname' returned more than one match in remove_user!");
 		}
@@ -72,7 +88,7 @@ class Schedule implements Iterator {
 	}
 
 	public function remove_student($studentid) {
-		$res = $this->ldap->search('ou=people',"tjhsstStudentId=$studentid",'dn');
+		$res = $this->ldap->search(LDAP::get_user_dn(),"tjhsstStudentId=$studentid",'dn');
 		if ($res->num_rows() > 1) {
 			throw new I2Exception("StudentID '$studentid' returned more than one match in remove_student!");
 		}
@@ -83,50 +99,50 @@ class Schedule implements Iterator {
 	}
 
 	public function get_sections($studentid) {
-		//TODO: input checking
-		return $this->ldap->search('ou=schedule',"(&(objectClass=tjhsstSection)(enrolledStudent=$studentid))");
+		$user = new User($studentid);
+		return $this->ldap->search_base(LDAP::get_user_dn($user->uid),array('enrolledClass'));
 	}
 
 	public function get_class_name($classid) {
 		//TODO: input checking
-		$ret = $this->ldap->search('ou=schedule',"tjhsstClassId=$classid",'cn')->fetch_array(LDAP::ASSOC);
+		$ret = $this->ldap->search(LDAP::get_schedule_dn(),"tjhsstClassId=$classid",'cn')->fetch_array(LDAP::ASSOC);
 		return $ret['cn'];
 	}
 
 	public function get_section_name($sectionid) {
-		$res = $this->ldap->search('ou=schedule',"tjhsstSectionId=$sectionid",'associatedClass');
+		$res = $this->ldap->search(LDAP::get_schedule_dn(),"tjhsstSectionId=$sectionid",'associatedClass');
 		$res = $this->ldap->search_one($res->fetch_single_value(),'objectClass=*','cn');
 		$ret = $res->fetch_array(LDAP::ASSOC);
 		return $ret['cn'];
 	}
 
 	public function next() {
-		if(($next = $this->res->next()) === FALSE) {
+		if($this->index >= count($this->sections)) {
 			return FALSE;
 		}
-		return new SectionLDAP($next);
+		return new SectionLDAP($this->sections[$this->index++]);
 	}
 
 	public function prev() {
-		if(($prev = $this->res->prev()) === FALSE) {
+		if($this->index <= 0) {
 			return FALSE;
 		}
-		return new SectionLDAP($prev);
+		return new SectionLDAP($this->sections[--$this->index]);
 	}
 
 	public function key() {
-		return $this->res->key();
+		return $this->index;
 	}
 
 	public function rewind() {
-		return $this->res->rewind();
+		$this->index = 0;
 	}
 
 	public function current() {
-		if(($cur = $this->res->current()) === FALSE) {
+		if($this->index < 0 || $this->index >= count($this->sections)) {
 			return FALSE;
 		}
-		return new SectionLDAP($cur);
+		return new SectionLDAP($this->sections[$this->index]);
 	}
 
 	public function valid() {

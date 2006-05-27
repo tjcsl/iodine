@@ -1000,10 +1000,11 @@ class dataimport implements Module {
 			$I2_LOG->log_file('Creating section '.$sectionid.' ('.$class.' period '.$period.') taught by '.$sponsordn.' in '.$room);
 			// Create the course
 			$I2_LOG->log_file('dn: '.LDAP::get_schedule_dn($sectionid).' === '.print_r($newclass,1));
+			$ldap->delete(LDAP::get_schedule_dn($sectionid));
 			$ldap->add(LDAP::get_schedule_dn($sectionid),$newclass);
 		}
 		fclose($file);
-		
+
 		/*
 		** Set up student <=> course mappings
 		*/
@@ -1011,9 +1012,6 @@ class dataimport implements Module {
 		$studentcoursefile = @fopen($this->schedulefile,'r');
 		while ($studentline = fgets($studentcoursefile)) {
 			list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename, $teacherid, $teachername, $term, $room) = explode('","',trim($studentline,'"'));
-			if (!isSet($students[$sectionone])) {
-				$students[$sectionone] = array();
-			}
 			$uid = User::studentid_to_uid($studentid);
 			if (!$uid) {
 				$I2_LOG->log_file('Invalid/unknown studentID '.$studentid);
@@ -1027,10 +1025,18 @@ class dataimport implements Module {
 				$I2_LOG->log_file('Invalid SectionID '.$sectionone.' for studentid '.$studentid);
 				continue;
 			}
-			$ldap->
-			//$students[$sectionone][] = $uid;
+			$classdn = LDAP::get_schedule_dn($class);
+			if (!isSet($students[$studentdn])) {
+				$students[$studentdn] = array();
+			}
+			$students[$studentdn][] = $classdn;
 		}
 		fclose($studentcoursefile);
+
+		foreach ($students as $studentdn=>$classdns) {
+				  $I2_LOG->log_file($studentdn.': '.print_r($classdns,1));
+				  $ldap->modify_val($studentdn,'enrolledClass',$classdns);
+		}
 
 	}
 
@@ -1227,7 +1233,7 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = LDAP::get_admin_bind($this->admin_pass);
 		}
-		$ldap->delete_recursive('ou=schedule','objectClass=tjhsstClass',NULL,FALSE);
+		$ldap->delete_recursive('ou=schedule','(objectClass=tjhsstClass)',NULL,FALSE);
 	}
 
 	/**
@@ -1263,7 +1269,7 @@ class dataimport implements Module {
 			$studentid = $row[$column];
 			$user = new User($studentid);
 			$uid = $user->uid;
-			$query .= "$column=%d WHERE "
+			$query .= "$column=%d WHERE ";
 			$queryarr[] = $uid;
 			foreach ($row as $key=>$val) {
 				$query .= "$key=%?";
