@@ -4,6 +4,9 @@ var box_after = null;
 var interval = 0;
 var scroll = 0;
 var box_index = -1, to_box_index = -1;
+if(!document.getElementByID && document.all) {
+	document.getElementById = function(id) {return document.all[id]; };
+}
 var boxes = document.getElementById("intraboxes").childNodes;
 for(var i = 0; i < boxes.length - 1; i++) {
 	if(boxes[i].id) {
@@ -200,7 +203,6 @@ function init(box) {
  *it out makes drag-and-drop work in IE and doesn't appear to do any harm in
  *Mozilla, so for now, it stays commented out.
 			var add = box_index < to_box_index-1 ? 1 : -1;
-<<<<<<< /home/lkearsle/intranet2/www/js/intrabox.js.orig.92877164
 			for (var i = box_index; i != to_box_index-1; i+=add) {
 				boxes[i] = boxes[i+add];
 			}
