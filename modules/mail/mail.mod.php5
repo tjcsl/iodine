@@ -56,7 +56,7 @@ class Mail implements Module {
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clear') {
 			// Clear the cache
 			$this->clear_cache();
-			redirect(implode('/'),array_slice($I2_ARGS,1));
+			redirect(implode('/',array_slice($I2_ARGS,2)));
 		}
 		return FALSE;
 /*

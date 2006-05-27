@@ -120,7 +120,22 @@
 	</tr>
 	<tr>
 		<td>Mail messages in box:</td>
-		<td><input type="text" name="pref_mailmessages" value="[<$I2_USER->mailmessages>]"/></td>
+		<td>
+			[<assign var="messages" value=$I2_USER->mailmessages>]
+			<select name="pref_mailmessages">
+				<option value="0" [<if $messages == 0>]selected="selected"[</if>]/>0
+				<option value="1" [<if $messages == 1>]selected="selected"[</if>]/>1
+				<option value="2" [<if $messages == 2>]selected="selected"[</if>]/>2
+				<option value="3" [<if $messages == 3>]selected="selected"[</if>]/>3
+				<option value="4" [<if $messages == 4>]selected="selected"[</if>]/>4
+				<option value="5" [<if $messages == 5>]selected="selected"[</if>]/>5
+				<option value="6" [<if $messages == 6>]selected="selected"[</if>]/>6
+				<option value="7" [<if $messages == 7>]selected="selected"[</if>]/>7
+				<option value="8" [<if $messages == 8>]selected="selected"[</if>]/>8
+				<option value="9" [<if $messages == 9>]selected="selected"[</if>]/>9
+				<option value="10" [<if $messages == 10>]selected="selected"[</if>]/>10
+			</select>
+		</td>
 	</tr>
 </table>
 <b>Privacy Options</b><br />
