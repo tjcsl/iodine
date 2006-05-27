@@ -40,7 +40,7 @@ class Schedule implements Iterator {
 					  $this->sections[] = $this->ldap->search_base($classdn,array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDn'))->fetch_array(Result::ASSOC);
 			}
 			$this->index = 0;
-			usort($this->sections,array('Schedule','periodsort'));
+			usort($this->sections,array('this','periodsort'));
 		}
 	}
 
