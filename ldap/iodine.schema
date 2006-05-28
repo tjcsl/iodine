@@ -551,6 +551,14 @@ attributetype ( i2Attr:68
 	SYNTAX dnSyntax
 	)
 
+attributetype ( i2Attr:69
+	NAME ('perm-hideeighth-self' 'hideeighthself')
+	DESC 'Whether the user wants their eighth-period presence shown'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+
 objectclass ( i2OC:1
 	NAME ('tjhsstStudent' 'iodineStudent')
 	SUP inetOrgPerson STRUCTURAL
@@ -579,6 +587,7 @@ objectclass ( i2OC:1
 		perm-showbirthday-self $
 		perm-showschedule-self $
 		perm-showmap-self $
+		perm-hideeighth-self $
 		displayName $
 		middlename $
 		nickname $

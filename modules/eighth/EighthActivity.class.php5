@@ -234,20 +234,26 @@ class EighthActivity {
 	* @param int $blockid The block ID to get the members for.
 	*/
 	public function get_members($blockid = NULL) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_USER;
+		$admin = $I2_USER->is_group_member('admin_eighth');
 		if($blockid == NULL) {
 			if($this->data['bid']) {
-				return flatten($I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d", $this->data['bid'], $this->data['aid'])->fetch_all_arrays(Result::NUM));
+					  $blockid = $this->data['bid'];
 			}
 			else {
 				return array();
 			}
 		}
-		else {
-			return flatten(
-				$I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d', $blockid, $this->data['aid'])
-					->fetch_all_arrays(Result::NUM));
+		$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d', $blockid, $this->data['aid']);
+		$ret = array();
+		// Don't show students who don't want to be found
+		while ($row = $res->fetch_array(Result::ASSOC)) {
+				  $user = new User($row['userid']);
+				  if ($admin || !$user->hideeighthself) {
+							 $ret[] = $user->uid;
+				  }
 		}
+		return $ret;
 	}
 
 	public static function remove_all_from_activity($aid, $blockid = NULL) {

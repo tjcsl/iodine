@@ -293,6 +293,7 @@ class User {
 			case 'showphoneself':
 			case 'showmapself':
 			case 'showscheduleself':
+		 	case 'hideeighthself':
 			case 'showbdayself':
 				$row = $I2_LDAP->search_base(LDAP::get_user_dn($this->username),$name);
 				if (!$row) {
@@ -420,6 +421,7 @@ class User {
 			case 'showmapself':
 			case 'showbdayself':
 			case 'showscheduleself':
+			case 'hideeighthself':
 			case 'showaddressself':
 			case 'showphoneself':
 				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';
@@ -870,6 +872,9 @@ class User {
 	*/
 	public static function id_to_user($userids) {
 		$ret = array();
+		if (!is_array($userids)) {
+				  $userids = array($userids);
+		}
 		foreach($userids as $userid) {
 			if (!$userid) {
 				continue;

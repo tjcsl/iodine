@@ -9,6 +9,7 @@ Date: <b>[<$activity->block->date|date_format:"%A, %B %e %Y">]</b> Block <b>[<$a
 [</if>]
 
 <br />
+[<if count($activity->members_obj) > 0>]
 <table cellspacing="0" cellpadding="0">
 	<tr>
 		<th>Name</th>
@@ -22,4 +23,7 @@ Date: <b>[<$activity->block->date|date_format:"%A, %B %e %Y">]</b> Block <b>[<$a
 	</tr>
 [</foreach>]
 </table><br />
-Total: [<$activity->member_count>]
+Total: [<$activity->member_count>] (NOTE: some students may have elected not to appear on this list)
+[<else>]
+<b>No students signed up for this block</b>
+[</if>]
