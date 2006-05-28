@@ -1,4 +1,12 @@
+Roster for <b>[<$activity->name>]</b><br />
 Room: [<$activity->block_rooms_comma>]<br />
+
+[<if $activity->comment>]
+<br />
+<em>[<$activity->comment>]</em>
+<br />
+[</if>]
+
 <br />
 <table cellspacing="0" cellpadding="0">
 	<tr>
