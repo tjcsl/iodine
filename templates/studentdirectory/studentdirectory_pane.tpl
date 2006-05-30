@@ -121,8 +121,9 @@ AIM/AOL Screenname(s):
 [<if $user->locker>]Locker Number: [<$user->locker|escape:'html'>]<br />[</if>]
 </td></tr></table>
 
-[<if $schedule && count($schedule)>=1 >]
- <br />Classes:<br />
+[<if $schedule && count($schedule) > 0 >]
+<div style="float: left; margin-right: 50px;">
+ <br /><span class="bold">Classes:</span><br />
  <table cellspacing="0">
   <thead>
    <tr>
@@ -143,10 +144,11 @@ AIM/AOL Screenname(s):
  [</foreach>]
   </tbody>
  </table>
+</div>
 [</if>]
 
 [<if $eighth>]
- <br />Eighth Periods:<br />
+ <br /><span class="bold">Eighth Periods:</span><br />
  <table cellspacing="0">
   <tr>
    <th>Date</th>
