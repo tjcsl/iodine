@@ -153,7 +153,7 @@ class EighthSchedule {
 	*/
 	public static function get_absentees($blockid, $activityid) {
 		global $I2_SQL;
-		return flatten($I2_SQL->query('SELECT eighth_absentees.userid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) WHERE eighth_absentees.bid=%d AND aid=%d ORDER BY bid DESC', $blockid, $activityid)->fetch_all_arrays(Result::NUM));
+		return flatten($I2_SQL->query('SELECT eighth_absentees.userid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) WHERE eighth_absentees.bid=%d AND aid=%d ORDER BY eighth_block_map.bid DESC', $blockid, $activityid)->fetch_all_arrays(Result::NUM));
 	}
 
 	/**
