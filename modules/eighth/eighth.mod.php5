@@ -326,7 +326,7 @@ class Eighth implements Module {
 			if(isset($_SESSION['eighth'])) {
 				$this->args += $_SESSION['eighth'];
 			}
-			if(method_exists($this, $method) && (in_array($method, $this->safe_modules) || $this->admin)) {
+			if(method_exists($this, $method) && (in_array($method, $this->safe_modules) || $this->admin) || $I2_USER->is_group_member('grade_staff')) {
 				$this->$method();
 				$this->template_args['method'] = $method;
 				$this->template_args['help'] = $this->help_text;
@@ -350,7 +350,7 @@ class Eighth implements Module {
 	*/
 	function display_pane($display) {
 		global $I2_ARGS, $I2_USER;
-		if ($this->template == 'pane.tpl' && !$I2_USER->is_group_member('admin_eighth')) {
+		if ($this->template == 'pane.tpl' && !$I2_USER->is_group_member('admin_eighth') && !$I2_USER->is_group_member('grade_staff')) {
 			redirect();
 		}
 		$argstr = implode('/', array_slice($I2_ARGS,1));

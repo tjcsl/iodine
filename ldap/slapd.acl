@@ -50,7 +50,6 @@ access to filter="(|(perm-showtelephone-self=FALSE)(perm-showtelephone=FALSE))"
 access to filter="(|(perm-showschedule-self=FALSE)(perm-showschedule=FALSE))"
 		attrs=enrolledclass
 	by self read
-	by set="user/objectClass & [tjhsstTeacher]" read
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
 	by * none
 

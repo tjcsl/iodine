@@ -18,14 +18,18 @@ IE7_PNG_SUFFIX = ".png";
  <div class="title"> Welcome, [<$first_name>]!</div>
  <div class="blurb">Today is [<$smarty.now|date_format:"%B %e, %Y">]. 
  [<if $date != "none">]
- 	The next 8th period is [<$date>], and you are currently signed up for 
- 	[<foreach from=$activities item="activity" name="activities">]
- 		[<if $smarty.foreach.activities.last and not $smarty.foreach.activities.first>]
-			and
-		[<elseif not $smarty.foreach.activities.first>]
-			,
-		[</if>]
-		[<$activity->name_friendly>][</foreach>].
+ 	[<if $I2_USER->objectClass == 'tjhsstTeacher'>]
+		<a href="[<$I2_ROOT>]eighth/vcp_attendance">View Eighth-period Rosters</a>
+	[<else>]
+	 	The next 8th period is [<$date>], and you are currently signed up for 
+ 		[<foreach from=$activities item="activity" name="activities">]
+ 			[<if $smarty.foreach.activities.last and not $smarty.foreach.activities.first>]
+				and
+			[<elseif not $smarty.foreach.activities.first>]
+				,
+			[</if>]
+			[<$activity->name_friendly>][</foreach>].
+	[</if>]
  [<else>]
  	There aren't any currently scheduled 8th period activities.
  [</if>]
