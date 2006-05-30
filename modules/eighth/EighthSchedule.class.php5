@@ -187,7 +187,11 @@ class EighthSchedule {
 	* @param int $userid The student's user ID.
 	*/
 	public static function get_absences($userid) {
-		global $I2_SQL;
+		global $I2_SQL,$I2_USER;
+		$user = new User($userid);
+		if ($user->uid != $I2_USER->uid) {
+			Eighth::check_admin();
+		}
 		return $I2_SQL->query('SELECT aid,eighth_activity_map.bid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) LEFT JOIN eighth_blocks USING (bid) WHERE eighth_absentees.userid=%d ORDER BY date,block', $userid)->fetch_all_arrays(Result::NUM);
 	}
 
