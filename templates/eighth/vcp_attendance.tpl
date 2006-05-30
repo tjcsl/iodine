@@ -3,6 +3,7 @@
 Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<$activity->block->date|date_format>], [<$activity->block->block>] block<br />
 Room(s):&nbsp;&nbsp;&nbsp;&nbsp;[<$activity->block_rooms_comma>]<br />
 Sponsor(s):&nbsp;[<$activity->block_sponsors_comma>]<br />
+<table><tr><td>
 <br />
 <form action="[<$I2_ROOT>]eighth/vcp_attendance/update/bid/[<$activity->bid>]/aid/[<$activity->aid>]" method="post">
 	<input type="button" value="Select All" onclick=";" /> <input type="submit" value="Update" /><br />
@@ -25,6 +26,12 @@ Sponsor(s):&nbsp;[<$activity->block_sponsors_comma>]<br />
 	</table><br />
 	<input type="submit" value="Update" />
 </form>
+</td><td>
+Activity ID: <br />
+<form action="[<$I2_ROOT>]eighth/vcp_attendance/view/bid/[<$activity->bid>]" method="post">
+<input type="text" name="aid"/>
+</form>
+</td></tr></table>
 <div style="float: right; margin: 10px;">
 	<a href="[<$I2_ROOT>]eighth/vcp_attendance/format/aid/[<$activity->aid>]/bid/[<$activity->bid>]"><img src="[<$I2_ROOT>]www/pics/eighth/printer.png" alt="Print" title="Print" /></a>
 </div>
