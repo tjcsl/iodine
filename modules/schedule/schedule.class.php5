@@ -44,7 +44,7 @@ class Schedule implements Iterator {
 		}
 	}
 
-	private static function periodsort($one, $two) {
+	private function periodsort($one, $two) {
 			  return $one['classPeriod']-$two['classPeriod'];
 	}
 

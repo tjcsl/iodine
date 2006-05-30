@@ -1123,6 +1123,7 @@ class Eighth implements Module {
 		else if($this->op == 'view') {
 			$this->template = 'room_sanity.tpl';
 			$this->template_args['conflicts'] = EighthRoom::get_conflicts($this->args['bid']);
+			//$sponsorcon = EighthSponsor::get_conflicts($this->args['bid']);
 			$this->template_args['sponsorconflicts'] = EighthSponsor::get_conflicts($this->args['bid']);
 			$this->title = 'Room Assignment Sanity Check';
 		}

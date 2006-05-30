@@ -10,14 +10,18 @@
 				<td style="padding-left: 5px;"><a href="[<$I2_ROOT>]eighth/sch_activity/view/aid/[<$activity.aid>]">[<$activity.name>] - [<$activity.aid>]</a></td>
 			</tr>
 		[</foreach>]
-		<tr>
-		[<foreach from=$sponsorconflicts.$room item="otherroomarray" key="sponsor">]
-			<th>[<$sponsor.name>] must also be in the following rooms:</th>
-				[<foreach from=$otherroomarray item="otherroom">]
-					<td>[<$otherroom>]</td>
+		[<if isSet($sponsorconflicts.$room)>]
+			<tr>
+			[<foreach from=$sponsorconflicts.$room item="arr">]
+				[<foreach from=$arr key="sponsorid" item="subarr">]
+				<th>[<$subarr.sponsor->name>] must also be in the following rooms:</th>
+					[<foreach from=$subarr.rooms item="otherroom">]
+						<td>[<$otherroom>]</td>
+					[</foreach>]
 				[</foreach>]
-		[</foreach>]
-		</tr>
+			[</foreach>]
+			</tr>
+		[</if>]
 	[</foreach>]
 	</table>
 [<else>]

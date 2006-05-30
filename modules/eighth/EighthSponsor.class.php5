@@ -54,33 +54,23 @@ class EighthSponsor {
 		global $I2_SQL;
 		$conflicts = array();
 		$sponsorstorooms = array();
-		$res = $I2_SQL->query('SELECT rooms,sponsors FROM eighth_block_map');
+		$res = $I2_SQL->query('SELECT rooms,sponsors FROM eighth_block_map WHERE bid=%d',$blockid);
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 			$sponsors = explode(',',$row['sponsors']);
 			$rooms = explode(',',$row['rooms']);
 			foreach ($sponsors as $sponsorid) {
-				if (!isSet($sponsorstorooms[$sponsor])) {
-					$sponsorstorooms[$sponsor] = array();
+				if (!isSet($sponsorstorooms[$sponsorid])) {
+					$sponsorstorooms[$sponsorid] = array();
 				}
 				foreach ($rooms as $room) {
-					$sponsorstorooms[$sponsor][] = $room;
+					$sponsorstorooms[$sponsorid][] = $room;
 				}
 			}
 		}
 		$ret = array();
-		/*
-		** Return an array like this:
-		** 	$ret[$sponsor] =
-		**			array(
-		**				$room =>
-		**					array(
-		**						array($sponsorwithconflicts => $otherrooms),
-		**						array($othersponsorwithconflicts => $otherrooms)
-		**						)
-		**			);
-		*/
+		
 		foreach ($sponsorstorooms as $sponsorid=>$rooms) {
-			if (count($rooms) == 0) {
+			if (count($rooms) < 2) {
 				continue;
 			}
 			foreach ($rooms as $room) {
@@ -97,7 +87,8 @@ class EighthSponsor {
 					}
 				}
 				$sponsor = new EighthSponsor($sponsorid);
-				$ret[$room][] = array($sponsor => $sponsorotherrooms);
+				//d(print_r($sponsor->name,1),1);
+				$ret[$room][] = array($sponsorid => array('sponsor'=>$sponsor,'rooms'=>$sponsorotherrooms));
 			}
 		}
 		return $ret;
