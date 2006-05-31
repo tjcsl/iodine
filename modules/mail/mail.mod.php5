@@ -197,6 +197,10 @@ class Mail implements Module {
 
 		usort($messages, array($this, 'cmp_message'));
 
+		// Make sure these get deleted when the user logs out - so you don't get other people's cached mail.
+
+		$_SESSION['logout_funcs'] = array(array($this,'clear_cache'),array());
+
 		return $messages;
 	}
 
