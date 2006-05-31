@@ -28,7 +28,7 @@ Sponsor(s):&nbsp;[<$activity->block_sponsors_comma>]<br />
 </form>
 </td><td>
 Activity ID: <br />
-<form action="[<$I2_ROOT>]eighth/vcp_attendance/view/bid/[<$activity->bid>]" method="post">
+<form action="[<$I2_ROOT>]eighth/vcp_attendance/view/bid/[<$activity->bid>]" method="get">
 <input type="text" name="aid"/>
 </form>
 </td></tr></table>
