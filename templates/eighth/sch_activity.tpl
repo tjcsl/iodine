@@ -81,6 +81,9 @@ AID: <input type="text" name="aid"/>
 			<a href="#" onClick="do_action('view_sponsors', '[<$activity.block.bid>]', new Array([<$activity.sponsors_array>]), event);">Add Sponsor</a><br />
 			<a href="#" onClick="do_action('set_default_sponsors', '[<$activity.block.bid>]', new Array(new Array([<$activity.sponsors_array>]), new Array([<$activity.sponsors_name_array>])));">Set to Default Sponsor(s)</a>
 		</td>
+		<td style="padding: 0px;">
+		<input type="checkbox" name="special[[<$activity.block.bid>]]" id="special_[<$activity.block.bid>]"/> <br />SP
+		</td>
 		<td style="padding: 5px;">
 			<textarea name="comments[[<$activity.block.bid>]]" id="comment_[<$activity.block.bid>]" readonly="readonly" class="eighth_sch_activity_commentcell" rows="1">[<if isset($activity.comment) >][<$activity.comment|escape:"html">][</if>]</textarea>
 		</td>
