@@ -14,7 +14,7 @@ class SectionLDAP implements Section {
 	public function __construct($data) {
 		global $I2_LDAP;
 
-		d(print_r($data,1),1);
+		//d(print_r($data,1),1);
 
 		$this->info['sectionid'] = $data['tjhsstSectionId'];
 		$this->info['quarters'] = $data['quarterNumber'];
