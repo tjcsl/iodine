@@ -31,7 +31,7 @@ class StudentDirectory implements Module {
 		$this->user = NULL;
 		if( ! isset($I2_ARGS[1]) ) {
 			$this->information = 'help';
-			return array('Student Directory Help', 'Searching Help');
+			return array('Directory Help', 'Searching Help');
 		}
 		
 		switch($I2_ARGS[1]) {
@@ -40,14 +40,14 @@ class StudentDirectory implements Module {
 				try {
 					$this->user = isset($I2_ARGS[2]) ? new User($I2_ARGS[2]) : $I2_USER;
 				} catch(I2Exception $e) {
-					return array('Error', 'Error: Student does not exist');
+					return array('Error', 'Error: User does not exist');
 				}
 				return array('Student Directory: '.$this->user->fname.' '.$this->user->lname, $this->user->fname.' '.$this->user->lname);
 
 			case 'search':
 				if( !isSet($_REQUEST['studentdirectory_query']) || $_REQUEST['studentdirectory_query'] == '') {
 					$this->information = 'help';
-					return array('Student Directory Help', 'Searching Help');
+					return array('Directory Help', 'Searching Help');
 				}
 				else {
 					$this->information = $I2_USER->search_info($_REQUEST['studentdirectory_query']);
@@ -68,7 +68,7 @@ class StudentDirectory implements Module {
 				break;
 			default:
 				$this->information = FALSE;
-				return array('Error', 'Error: Student does not exist');
+				return array('Error', 'Error: User does not exist');
 				
 		}
 	}
@@ -182,7 +182,7 @@ class StudentDirectory implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_box() {
-		return 'Search the Student Directory'; // right now we don't need to get any initial values, the box will just contain a form like the old intranet for queries
+		return 'Search the Directory'; // right now we don't need to get any initial values, the box will just contain a form like the old intranet for queries
 	}
 
 	/**
@@ -208,7 +208,7 @@ class StudentDirectory implements Module {
 		//print_r($im_status);
 		if (isset($im_status[$type][$id])) { return $im_status[$type][$id]; }
 		switch($type) {
-			case "yahoo":
+			case 'yahoo':
 				$fp = fopen('http://mail.opi.yahoo.com/online?u=' . $id . '&m=t&t=1', 'r');
 				do {
 				$response .= fread($fp, 128);
@@ -217,7 +217,7 @@ class StudentDirectory implements Module {
 				if ($response == '01') { $im_status[$type][$id] = IM_ONLINE; return IM_ONLINE; }
 				else { $im_status[$type][$id] = IM_OFFLINE; return IM_OFFLINE; }
 				break;
-			case "icq":
+			case 'icq':
 				$icq2im = array(0 => IM_OFFLINE, 1 => IM_ONLINE, 2 => IM_UNKNOWN);
 				$server = 'status.icq.com';
 				$url = '/online.gif?icq=' . $id . '&img=1';
@@ -237,7 +237,7 @@ class StudentDirectory implements Module {
 				$im_status[$type][$id] = $icq2im[$status];
 				return($icq2im[$status]);
 				break;
-			case "aim":
+			case 'aim':
 				/* This works by opening an url in the form of
 				 * http://big.oscar.aol.com/AIM_ID?on_url=ON_URL&off_url=OFF_URL
 				 * Which then redirects with a Location: headerto either ON_URL or

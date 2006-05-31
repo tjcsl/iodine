@@ -33,15 +33,25 @@ class Schedule implements Iterator {
 	public function __construct(User $user) {
 		global $I2_LDAP;
 		$this->ldap = $I2_LDAP;
-		$res = $this->ldap->search_base(LDAP::get_user_dn($user),array('enrolledclass'))->fetch_single_value();
 		$this->sections = array();
-		if ($res) {
-			foreach ($res as $classdn) {
-					  $this->sections[] = $this->ldap->search_base($classdn,array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDn'))->fetch_array(Result::ASSOC);
+		if ($user->is_group_member('grade_staff')) {
+			$res = $this->ldap->search(LDAP::get_schedule_dn(),'sponsorDN='.LDAP::get_user_dn($user),array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDN'));
+			if ($res) {
+				while ($row = $res->fetch_array(Result::ASSOC)) {
+					$this->sections[] = $row;
+				}
+				$this->index = 0;
 			}
-			$this->index = 0;
-			usort($this->sections,array($this,'periodsort'));
+		} else {
+			$res = $this->ldap->search_base(LDAP::get_user_dn($user),array('enrolledclass'))->fetch_single_value();
+			if ($res) {
+				foreach ($res as $classdn) {
+					  $this->sections[] = $this->ldap->search_base($classdn,array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDn'))->fetch_array(Result::ASSOC);
+				}
+				$this->index = 0;
+			}
 		}
+		usort($this->sections,array($this,'periodsort'));
 	}
 
 	private function periodsort($one, $two) {

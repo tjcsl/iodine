@@ -1,7 +1,7 @@
 [<if $info === FALSE and not $user>]
 
 
-The specified student does not exist. Either you mistyped a URL, or something in Intranet is broken.
+The specified user does not exist. Either you mistyped a URL, or something in Intranet is broken.
 [</if>]
 [<if $user && $user->fname>]
 [<if $user->uid == $I2_USER->uid>]
@@ -14,9 +14,9 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
 <td valign="top">
 [<assign var="mailaddr" value=$user->username>]
 [<assign var="mailaddr" value=$mailaddr@tjhsst.edu>]
-[<$user->fullname>] ([<mailto address=$mailaddr encode="hex">])[<if $user->grade != -1>], Grade [<$user->grade>][</if>]<br />
+[<$user->fullname>] ([<mailto address=$mailaddr encode="hex">])[<if $user->grade != 'staff'>], Grade [<$user->grade>][<else>], on staff[</if>]<br />
 [<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]
-Counselor: [<$user->counselor_name>]<br />
+[<if $user->counselor>]Counselor: [<$user->counselor_name>]<br />[</if>]
 [<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]Phone (home): [<$phone>]<br />[</foreach>]
 [</if>]<br />
 [<if $user->phone_cell>]Cell phone: [<$user->phone_cell>]<br />[</if>]

@@ -93,7 +93,6 @@ class GroupSQL extends Group {
 		}
 
 		if(is_array($group)) {
-			d(print_r($group,1),1);
 			$this->mygid = $group['gid'];
 			$this->myname = $group['name'];
 			$this->mydescription = $group['description'];

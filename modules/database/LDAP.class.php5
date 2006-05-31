@@ -384,7 +384,7 @@ class LDAP {
 	public static function get_user_dn($uid = NULL) {
 		$oubase = self::$ou_bases['user'];
 		if (!$uid) {
-				  return $oubase;
+			return $oubase;
 		}
 		$user = new User($uid);
 		$uid = $user->username;

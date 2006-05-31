@@ -85,18 +85,18 @@ class User {
 			/*
 			** Someone tried new User(user object), so we'll just let them be stupid.
 			*/
-				  $this->myuid = $uid->uid;
-				  $this->username = $uid->username;
-				  return $uid;
+			$this->myuid = $uid->uid;
+			$this->username = $uid->username;
+			return $uid;
 		} else {
 			$uid = self::to_uidnumber($uid);
 			if (!$uid) {
 				throw new I2Exception('Blank uidnumber used in User construction');
 			}
-			if (isSet(self::$cache[$uid])) {
-				$this->info = &self::$cache[$uid];
+			$this->info = array();
+			if (isSet(self::$cache[$uid]) && isSet(self::$cache[$uid]['iodineuid'])) {
+				$this->info['iodineuid'] = self::$cache[$uid]['iodineuid'];
 			} else {
-				$this->info = array();
 				$blah = $I2_LDAP->search('ou=people',"iodineUidNumber=$uid",array('iodineUid'))->fetch_array(Result::ASSOC);
 				if ($blah) {
 					foreach ($blah as $key=>$val) {
@@ -196,7 +196,7 @@ class User {
 		global $I2_SQL,$I2_ERR,$I2_LDAP;
 
 		if(!$this->username) {
-			throw new I2Exception('Tried to retrieve information for nonexistent user! UID: '.$this->myuid);
+			throw new I2Exception('Tried to retrieve information for nonexistant user! UID: '.$this->myuid);
 		}
 
 		$name = strtolower($name);
@@ -228,15 +228,22 @@ class User {
 				return $this->__get('givenName');
 			case 'mname':
 				return $this->__get('middlename');
+			/*case 'graduationyear':
+				if (in_array('tjhsstTeacher',$this->__get('objectClass'))) {
+					return -1;
+				}
+				break;*/
 		   case 'uid':
 		   case 'uidnumber':
 				return $this->__get('iodineUidNumber');
 			case 'username':
 				return $this->__get('iodineUid');
-			/*case 'iodineUid':
-				return $this->username;*/
 			case 'grade':
-				return self::get_grade($this->__get('graduationYear'));
+				$grade = self::get_grade($this->__get('graduationYear'));
+				if ($grade < 0) {
+					return 'staff';
+				}
+				return $grade;
 			case 'phone_home':
 				$phone = $this->__get('homePhone');
 				$phone = preg_replace('/[^0-9]/', '', $phone);
@@ -274,9 +281,18 @@ class User {
 				}
 				return date('M j, Y', strtotime($born));
 			case 'counselor_obj':
-				return new User($this->__get('counselor'));
+				$couns = $this->__get('counselor');
+				if (!$couns) {
+					return FALSE;
+				}
+				$user = new User($couns);
+				return $user;
 			case 'counselor_name':
-				return $this->__get('counselor_obj')->sn;
+				$couns = $this->__get('counselor_obj');
+				if ($couns) {
+					return $couns->sn;
+				}
+				return FALSE;
 			case 'preferredPhoto':
 			case 'preferredphoto':
 			case 'preferred_photo':
@@ -342,7 +358,7 @@ class User {
 	*/
 	public static function get_grade($gradyear) {
 	   if (!$gradyear) {
-			d('False gradyear passed to get_grade',5);
+			d('False gradyear passed to get_grade',6);
 			return -1;
 		}
 		$grade = ((int)i2config_get('senior_gradyear','foobertybroken','user'))-((int)$gradyear)+12;
@@ -758,7 +774,7 @@ class User {
 	*/
 	public static function search_info($str,$grades=NULL,$old_style=FALSE) {
 		global $I2_LDAP;
-		d("search_info: $str".$old_style?' (legacy)':'',6);
+		d("search_info: $str".($old_style?' (legacy)':''),6);
 
 		if ($grades && !is_array($grades)) {
 				  $grades = explode(',',$grades);
@@ -768,14 +784,15 @@ class User {
 			return self::search_info_legacy($str,$grades);
 		}
 
-		$newgrades = '(graduationYear=*)';
-
 		if ($grades) {
-				  $newgrades = '(|';
-				  foreach ($grades as $grade) {
-							 $newgrades .= "(graduationYear=$grade)";
-				  }
-				  $newgrades .= ')';
+			$newgrades = '(graduationYear=*)';
+			$newgrades = '(|';
+		  	foreach ($grades as $grade) {
+				$newgrades .= "(graduationYear=$grade)";
+			}
+			$newgrades .= ')';
+		} else {
+			$newgrades = '(objectClass=*)';
 		}
 
 		//FIXME: improve, close hole?

@@ -30,7 +30,8 @@
 			<td>Room(s):</td>
 			<td>
 [<if count($activity->rooms) > 0 >]
-				<select name="rooms[]" id="rooms" size="[<php>] echo count($this->_tpl_vars['activity']->rooms); [</php>]">
+	[<assign var="roomcount" value=count($activity->rooms)>]
+				<select name="rooms[]" id="rooms" size="[<$roomcount>]">
 [<php>]
 	$this->_tpl_vars['rooms'] = EighthRoom::id_to_room($this->_tpl_vars['activity']->rooms);
 [</php>]
