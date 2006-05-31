@@ -28,6 +28,10 @@ class EighthRoom {
 	*/
 	public function __construct($roomid) {
 		global $I2_SQL;
+		if (!$roomid) {
+			d('Null room constructed...',3);
+			return;
+		}
 		if (isSet($cache[$roomid])) {
 				  $this->data = &self::$cache[$roomid]->data;
 		} else {
@@ -310,6 +314,9 @@ class EighthRoom {
 	public static function id_to_room($roomids) {
 		$ret = array();
 		foreach($roomids as $roomid) {
+			if (!$roomid) {
+				continue;
+			}
 			$ret[] = new EighthRoom($roomid);
 		}
 		return $ret;

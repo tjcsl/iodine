@@ -323,6 +323,26 @@ class Eighth implements Module {
 				$this->args[$I2_ARGS[$i - 1]] = $I2_ARGS[$i];
 			}
 			$this->args += $_POST;
+			// Add GET variables into the array - and let them clobber POST
+			foreach ($_GET as $key=>$value) {
+				// Strip to the last question mark to determine real key name - I don't know why we have to do this.
+				// It's probably related to the .htaccess file we use.
+				$newkey = substr($key,strrpos($key,'?')+1);
+				// Don't skip the first argument
+				$value = $newkey.'='.$value;
+				$tok = strtok($value,'?');
+				while ($tok !== FALSE) {
+					$meh = explode('=',$tok);
+					if (count($meh) != 2) {
+						throw new I2Exception('Unparseable GET string!');
+					}
+					$keypart = $meh[0];
+					$valpart = $meh[1];
+					d($keypart.'=>'.$valpart,1);
+					$this->args[$keypart] = $valpart;
+					$tok = strtok('?');
+				}
+			}
 			if(isset($_SESSION['eighth'])) {
 				$this->args += $_SESSION['eighth'];
 			}
@@ -1025,9 +1045,6 @@ class Eighth implements Module {
 			$this->template_args['op'] = "view/bid/{$this->args['bid']}";
 		}
 		else if($this->op == 'view') {
-			if (isSet($_REQUEST['aid'])) {
-				$this->args['aid'] = $_REQUEST['aid'];
-			}
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->template = 'vp_roster.tpl';
 			$this->template_args['activity'] = $activity;
