@@ -12,7 +12,9 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
 <tr><td valign="top">
 <img src="[<$I2_ROOT>]pictures/[<$user->uid>]" vspace="2" width="172" height="228" /></td>
 <td valign="top">
-[<$user->fullname>] (<a href="mailto:[<$user->username>]@tjhsst.edu">[<$user->username>]@tjhsst.edu</a>)[<if $user->grade != -1>], Grade [<$user->grade>][</if>]<br />
+[<assign var="mailaddr" value=$user->username>]
+[<assign var="mailaddr" value=$mailaddr@tjhsst.edu>]
+[<$user->fullname>] ([<mailto address=$mailaddr encode="hex">])[<if $user->grade != -1>], Grade [<$user->grade>][</if>]<br />
 [<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]
 Counselor: [<$user->counselor_name>]<br />
 [<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]Phone (home): [<$phone>]<br />[</foreach>]
@@ -56,7 +58,7 @@ or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexan
 	[<elseif not $smarty.foreach.emails.first>]
 		,
 	[</if>]
-	<a href="mailto:[<$email>]">[<$email|escape:'html'>]</a>
+	[<mailto address=$email encode="hex">]
 	[</foreach>]
 [</if>]
 <br />
