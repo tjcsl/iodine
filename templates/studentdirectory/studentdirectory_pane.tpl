@@ -167,7 +167,7 @@ AIM/AOL Screenname(s):
  </table>
 [</if>]
 [<elseif $info and isset($info.class) and isset($info.students)>]
-<p>Students in [<$info.class->teacher->name>]'s [<$info.class->name>], period [<$info.class->period>]:</p>
+<p>Students in <a href=[<$I2_ROOT>]studentdirectory/info/[<$info.class->teacher->uid>]>[<$info.class->teacher->name>]</a>'s [<$info.class->name>], period [<$info.class->period>]:</p>
 <table cellspacing="0">
  <thead>
   <tr>
@@ -181,13 +181,12 @@ AIM/AOL Screenname(s):
    <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/info/[<$student->uid>]">[<$student->fullname_comma>] ([<$student->grade>])</a></td>
    <td class="directory-table">
     [<if count($student->mail)>]
-     <a href="mailto:[<$student->mail>]">
 	  	[<if count($student->mail) == 1>]
-			[<$student->mail|escape:'html'>]
+			[<assign var="mail" value=$student->mail>]
 		[<else>]
-			[<$student->mail.0|escape:"html">]
+			[<assign var="mail" value=$student->mail.0>]
 		[</if>]
-	  </a>
+		[<mailto address=$mail encode="hex">]
 	  </td>
     [<else>]
      &nbsp;
