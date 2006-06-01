@@ -10,30 +10,23 @@
 	<input type="hidden" name="op" value="search" />
 	<table id="eighth_header_table">
 		<tr>
-			<td rowspan="3">
+			<td rowspan="2">
 				<a href="[<$I2_ROOT>]eighth"><img src="[<$I2_ROOT>]www/pics/eighth/eighth.png" id="eighth_header_logo" alt="Eighth Period Office Online" title="Return to 8th Period Office Menu" /></a>
 			</td>
-			<td colspan="2" style="text-align: right;">
+			<td style="text-align: right; vertical-align: middle;">
 				<b>[<$smarty.now|date_format:"%B %e, %Y, %l:%M %p">]</b>
 			</td>
-			<td colspan="2" style="text-align: right">
-				<span id="eighth_help_text" onclick="show_help(0)">Help</span>
+			<td style="text-align: right">
+				<span class="bold" id="eighth_help_text" onclick="show_help(0)">Help</span>
+[<if isset($print_url)>]
+				<a href="[<$I2_ROOT>]eighth/[<$method>]/format/[<$print_url>]"><img src="[<$I2_ROOT>]www/pics/eighth/printer.png" alt="Print" title="Print" style="vertical-align: middle; margin-left: 30px;" /></a>
+[</if>]
 			</td>
 		</tr>
 		<tr>
-			<td style="width: 90px; text-align: right;">First name:</td>
-			<td style="width: 120px"><input type="text" name="fname" style="width: 100%;" /></td>
-			<td style="width: 90px; text-align: right;">Student ID:</td>
-			<td style="width: 120px">
-				<input type="text" name="uid" style="width: 100%;" />
+			<td style="text-align: right;">
+				Name/ID: <input type="text" name="lname" />
 			</td>
-		</tr>
-		<tr>
-			<td style="width: 90px; text-align: right;">Last name:</td>
-			<td style="width: 120px">
-				<input type="text" name="lname" style="width: 100%;" />
-			</td>
-			<td style="width: 90px">&nbsp;</td>
 			<td style="width: 120px">
 				<input type="submit" value="View Schedule" style="width: 100%;" tabindex="4" />
 			</td>

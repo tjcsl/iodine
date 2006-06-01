@@ -80,7 +80,6 @@ class EighthPrint {
 	public static function print_attendance_data($aid, $bid, $format = "print") {
 		$activity = new EighthActivity($aid, $bid);
 		$output = self::latexify("attendance_data");
-		return;
 		ob_start();
 		eval($output);
 		$output = ob_get_clean();

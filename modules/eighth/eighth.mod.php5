@@ -1048,6 +1048,7 @@ class Eighth implements Module {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->template = 'vp_roster.tpl';
 			$this->template_args['activity'] = $activity;
+			$this->template_args['print_url'] = "bid/{$this->args['bid']}/aid/{$this->args['aid']}";
 			$this->title = 'View Roster';
 		}
 		else if($this->op == 'format') {
@@ -1086,6 +1087,7 @@ class Eighth implements Module {
 			}
 			$this->template_args['inc'] = $inc;
 			$this->title = 'View Room Utilization';
+			$this->template_args['print_url'] = "bid/{$this->args['bid']}";
 		}
 		else if($this->op == 'format') {
 			$this->setup_format_selection('vp_room', 'Room Utilization', array('bid' => $this->args['bid']));
@@ -1170,6 +1172,7 @@ class Eighth implements Module {
 				$startdate = date('Y-m-d');
 			}
 			$this->template_args['activities'] = EighthSponsor::get_schedule($sponsor->sid,$startdate);
+			$this->template_args['print_url'] = "sid/{$this->args['sid']}";
 			$this->title = 'View Sponsor Schedule';
 		}
 		else if($this->op == 'format') {
@@ -1256,8 +1259,11 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'view') {
 			$this->template = 'vcp_attendance.tpl';
-			$this->template_args['activity'] = new EighthActivity($this->args['aid'], $this->args['bid']);
+			$this->template_args['op'] = "view/bid/{$this->args['bid']}";
+			$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bid']);
+			$this->template_args['act'] = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->template_args['absentees'] = EighthSchedule::get_absentees($this->args['bid'], $this->args['aid']);
+			$this->template_args['print_url'] = "bid/{$this->args['bid']}/aid/{$this->args['aid']}";
 			$this->title = 'View Attendance';
 		}
 		else if($this->op == 'update') {
