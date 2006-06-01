@@ -51,7 +51,7 @@ class Mail implements Module {
 	}
 	
 	function init_pane() {
-		global $I2_ARGS;
+		global $I2_ARGS,$I2_USER;
 
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clear') {
 			// Clear the cache
@@ -78,8 +78,8 @@ class Mail implements Module {
 
 		// If we downloaded the first messages, set the box messages,
 		// so the intrabox doesn't redundantly download them
-		if($offset == 0) {
-			$this->box_messages = array_slice($this->messages, 0, i2config_get('max_box_msgs', 5, 'mail'));
+		if ($offset == 0) {
+			$this->box_messages = array_slice($this->messages, 0, $I2_USER->mailentries);
 		}
 
 		$this->pane_args['messages'] = &$this->messages;
@@ -96,14 +96,17 @@ class Mail implements Module {
 	}
 	
 	function init_box() {
-		GLOBAL $I2_USER;
+		global $I2_USER;
 		// Mailboxes are students only
-		if (!$I2_USER->objectClass == 'tjhsstStudent') {
+		if ($I2_USER->is_group_member('grade_staff')) {
 			return FALSE;
 		}
-		$max_msgs = $I2_USER->mailmessages;
-		if (!$max_msgs) {
+		$max_msgs = $I2_USER->mailentries;
+		if ($max_msgs === FALSE || $max_msgs === NULL) {
 			$max_msgs = i2config_get('max_box_msgs', 5, 'mail');
+		}
+		if ($max_msgs < 0) {
+			$max_msgs = 0;
 		}
 
 		if (!is_array($this->box_messages)) {

@@ -119,11 +119,11 @@
 		<td><input type="text" name="pref_locker" value="[<$I2_USER->locker|escape:'html'>]"/></td>
 	</tr>
 	<tr>
-		<td>Mail messages in box:</td>
+		<td>Mail messages to display in mail box:</td>
 		<td>
 			[<assign var="messages" value=$I2_USER->mailmessages>]
 			<select name="pref_mailmessages">
-				<option value="0" [<if $messages == 0>]selected="selected"[</if>]/>0
+				<option value="-1" [<if $messages == -1>]selected="selected"[</if>]/>0
 				<option value="1" [<if $messages == 1>]selected="selected"[</if>]/>1
 				<option value="2" [<if $messages == 2>]selected="selected"[</if>]/>2
 				<option value="3" [<if $messages == 3>]selected="selected"[</if>]/>3
