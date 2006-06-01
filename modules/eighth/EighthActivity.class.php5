@@ -635,7 +635,11 @@ class EighthActivity {
 					$commentlen = strlen($this->data['comment']);
 					return $this->data['name'] . ($commentlen ? ' - ' . substr($this->data['comment'],0,60-$namelen).(60-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
 				case 'name_friendly':
-					return $this->data['name'];
+					$comment = $this->__get('comment_short');
+					if (!$comment) {
+						return $this->data['name'];
+					}
+					return $this->data['name'].' - '.$comment;
 				case 'sponsors_comma':
 					$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
 					$temp_sponsors = array();
