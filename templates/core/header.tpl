@@ -15,10 +15,10 @@ IE7_PNG_SUFFIX = ".png";
 <body>
 <div class="logo"><a href="[<$I2_ROOT>]"><span id="logotext">Intranet 2</span></a></div>
 <div class="header">
- <div class="title"> Welcome, [<$first_name>]!</div>
+ <div class="title"> Welcome, [<$I2_USER->firstornick>]!</div>
  <div class="blurb">Today is [<$smarty.now|date_format:"%B %e, %Y">]. 
  [<if $date != "none">]
- 	[<if $I2_USER->objectClass == 'tjhsstTeacher'>]
+ 	[<if $I2_USER->is_group_member('grade_staff')>]
 		<a href="[<$I2_ROOT>]eighth/vcp_attendance">View Eighth-period Rosters</a>
 	[<else>]
 	 	The next 8th period is [<$date>], and you are currently signed up for 

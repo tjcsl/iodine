@@ -226,6 +226,12 @@ class User {
 				return $this->__get('sn');
 			case 'fname':
 				return $this->__get('givenName');
+			case 'firstornick':
+				$nick = $this->__get('nickname');
+				if ($nick) {
+					return $nick;
+				}
+				return $this->__get('fname');
 			case 'mname':
 				return $this->__get('middlename');
 			/*case 'graduationyear':
@@ -838,7 +844,7 @@ class User {
 
 				$res = $I2_LDAP->search(LDAP::get_user_dn(),
 			//	"(&(|(soundexFirst=$soundex)(soundexLast=$soundex)(givenName=*$tok*)(sn=*$tok*)(iodineUid=*$tok*)(mname=*$tok*))$newgrades)"
-				"(&(|(givenName=*$tok*)(sn=*$tok*)(iodineUid=*$tok*)(mname=*$tok*))$newgrades)"
+				"(&(|(givenName=*$tok*)(sn=*$tok*)(iodineUid=*$tok*)(mname=*$tok*)(nickname=*$tok*))$newgrades)"
 				,array('iodineUid'));
 
 				while ($uid = $res->fetch_single_value()) {
