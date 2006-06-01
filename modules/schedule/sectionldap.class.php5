@@ -14,9 +14,8 @@ class SectionLDAP implements Section {
 	public function __construct($data) {
 		global $I2_LDAP;
 
-		//d(print_r($data,1),1);
-
 		$this->info['sectionid'] = $data['tjhsstSectionId'];
+		$this->info['classid'] = $data['tjhsstClassId'];
 		$this->info['quarters'] = $data['quarterNumber'];
 		$this->info['room'] = $data['roomNumber'];
 		$this->info['name'] = $data['cn'];
@@ -74,7 +73,7 @@ class SectionLDAP implements Section {
 			throw new I2Exception('Tried to get the other classes from a Section that does not have teacher data! Sectionid: '.$this->sectionid);
 		}
 
-		$res = $I2_LDAP->search('ou=schedule,dc=tjhsst,dc=edu','(&(objectClass=tjhsstClass)(sponsorDn='.$this->teacher_dn.'))', array('classPeriod','roomNumber','cn','tjhsstSectionId','quarterNumber'));
+		$res = $I2_LDAP->search('ou=schedule,dc=tjhsst,dc=edu','(&(objectClass=tjhsstClass)(sponsorDn='.$this->teacher_dn.'))', array('classPeriod','roomNumber','cn','tjhsstSectionId','quarterNumber','tjhsstClassId'));
 		$res->sort(array('classPeriod'));
 		
 		$ret = array();

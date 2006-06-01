@@ -18,9 +18,7 @@ class StudentDirectory implements Module {
 	
 	private $information;
 	private $user = NULL;
-
-	public function get_classes($studentId) {
-	}
+	private $classes;
 
 	/**
 	* Required by the {@link Module} interface.
@@ -35,42 +33,65 @@ class StudentDirectory implements Module {
 		}
 		
 		switch($I2_ARGS[1]) {
-			//Get info about someone
+			//Get info about someone or something
 			case 'info':
 				try {
 					$this->user = isset($I2_ARGS[2]) ? new User($I2_ARGS[2]) : $I2_USER;
 				} catch(I2Exception $e) {
 					return array('Error', 'Error: User does not exist');
 				}
-				return array('Student Directory: '.$this->user->fname.' '.$this->user->lname, $this->user->fname.' '.$this->user->lname);
+				return array('Directory: '.$this->user->fname.' '.$this->user->lname, $this->user->fname.' '.$this->user->lname);
 
 			case 'search':
 				if( !isSet($_REQUEST['studentdirectory_query']) || $_REQUEST['studentdirectory_query'] == '') {
 					$this->information = 'help';
 					return array('Directory Help', 'Searching Help');
-				}
-				else {
+				} else {
 					$this->information = $I2_USER->search_info($_REQUEST['studentdirectory_query']);
 					
 					if( count($this->information) == 1 ) {
 						redirect('studentdirectory/info/'.$this->information[0]->uid);
 					}
-					return array('Student Directory search results for "'.$_REQUEST['studentdirectory_query'].'"', 'Search results for "'.$_REQUEST['studentdirectory_query'].'"');
+					return array('Directory search results for "'.$_REQUEST['studentdirectory_query'].'"', 'Search results for "'.$_REQUEST['studentdirectory_query'].'"');
 				}
 				break;
 			case 'class':
-				if(!isset($I2_ARGS[2])) {
+				if(!isSet($I2_ARGS[2])) {
 					redirect();
 				}
 				$sec = Schedule::section($I2_ARGS[2]);
 				$this->information = array('class'=>$sec,'students'=>$sec->get_students());
 				return "Students in {$sec->name}, Period {$sec->period}";
 				break;
+			case 'section':
+				if (isSet($I2_ARGS[2])) {
+					$classid = $I2_ARGS[2];
+				} else {
+					$classid = NULL;
+				}
+				$sectionids = Schedule::sections($classid);
+				$this->classes = array();
+				foreach ($sectionids as $sectionid) {
+					$sec = Schedule::section($sectionid);
+					$this->classes[] = array('class'=>$sec);
+				}
+				usort($this->classes,array($this,'teacherperiodsort'));
+				$classname = $this->classes[0]['class']->name;
+				$this->information = 'classes';
+				return "Sections of $classname";
 			default:
 				$this->information = FALSE;
 				return array('Error', 'Error: User does not exist');
 				
 		}
+	}
+	
+	private function teacherperiodsort($one, $two) {
+			  $diff = strcasecmp($one['class']->teacher->name_comma,$two['class']->teacher->name_comma);
+			  if ($diff != 0) {
+			  	return $diff;
+			  }
+			  return $one['class']->period-$two['class']->period;
 	}
 	
 	/**
@@ -81,6 +102,9 @@ class StudentDirectory implements Module {
 		$im_status = NULL;
 		if( $this->information == 'help' ) {
 			$display->disp('studentdirectory_help.tpl');
+		} elseif ($this->information == 'classes') {
+			$display->smarty_assign('classes',$this->classes);
+			$display->disp('classes.tpl');
 		} else {
 			if($this->user !== NULL) {
 				try {

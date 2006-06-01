@@ -35,7 +35,7 @@ class Schedule implements Iterator {
 		$this->ldap = $I2_LDAP;
 		$this->sections = array();
 		if ($user->is_group_member('grade_staff')) {
-			$res = $this->ldap->search(LDAP::get_schedule_dn(),'sponsorDN='.LDAP::get_user_dn($user),array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDN'));
+			$res = $this->ldap->search(LDAP::get_schedule_dn(),'sponsorDN='.LDAP::get_user_dn($user),array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDN','tjhsstClassId'));
 			if ($res) {
 				while ($row = $res->fetch_array(Result::ASSOC)) {
 					$this->sections[] = $row;
@@ -46,7 +46,7 @@ class Schedule implements Iterator {
 			$res = $this->ldap->search_base(LDAP::get_user_dn($user),array('enrolledclass'))->fetch_single_value();
 			if ($res) {
 				foreach ($res as $classdn) {
-					  $this->sections[] = $this->ldap->search_base($classdn,array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDn'))->fetch_array(Result::ASSOC);
+					  $this->sections[] = $this->ldap->search_base($classdn,array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDn','tjhsstClassId'))->fetch_array(Result::ASSOC);
 				}
 				$this->index = 0;
 			}
@@ -64,11 +64,30 @@ class Schedule implements Iterator {
 	
 	public static function section($sectionid) {
 		global $I2_LDAP;
-		$res = $I2_LDAP->search('ou=schedule,dc=tjhsst,dc=edu',"(&(objectClass=tjhsstClass)(tjhsstSectionId=$sectionid))",array('tjhsstSectionId','cn','sponsorDn','roomNumber','quarterNumber','classPeriod','enrolledStudent'));
+		$res = $I2_LDAP->search(LDAP::get_schedule_dn(),"(&(objectClass=tjhsstClass)(tjhsstSectionId=$sectionid))",array('tjhsstSectionId','cn','sponsorDn','roomNumber','quarterNumber','classPeriod','enrolledStudent','tjhsstClassId'));
 		if($res->num_rows() < 1) {
 			throw new I2Exception('Invalid Section ID passed to Schedule::section(): '.$sectionid);
 		}
 		return new SectionLDAP($res->fetch_array(Result::ASSOC));
+	}
+
+	/**
+	* Returns an array of SectionIDs representing every instance of a particular class (period/teacher nonwithstanding)
+	*
+	* @param int $classid The tjhsstClassId number.
+	* @return array An array of SectionID numbers
+	*/
+	public static function sections($classid) {
+		global $I2_LDAP;
+		$res = $I2_LDAP->search(LDAP::get_schedule_dn(),"(&(objectClass=tjhsstClass)(tjhsstClassId=$classid))",array('tjhsstSectionId'));
+		if($res->num_rows() < 1) {
+			throw new I2Exception('Invalid Class ID passed to Schedule::sections(): '.$classid);
+		}
+		$ret = array();
+		while ($row = $res->fetch_array(Result::ASSOC)) {
+			$ret[] = $row['tjhsstSectionId'];
+		}
+		return $ret;
 	}
 
 	public function fill_schedule(User $user) {

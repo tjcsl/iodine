@@ -12,9 +12,7 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
 <tr><td valign="top">
 <img src="[<$I2_ROOT>]pictures/[<$user->uid>]" vspace="2" width="172" height="228" /></td>
 <td valign="top">
-[<assign var="mailaddr" value=$user->username>]
-[<assign var="mailaddr" value=$mailaddr@tjhsst.edu>]
-[<$user->fullname>] ([<mailto address=$mailaddr encode="hex">])[<if $user->grade != 'staff'>], Grade [<$user->grade>][<else>], on staff[</if>]<br />
+[<$user->fullname>][<if $user->grade != 'staff'>], Grade [<$user->grade>][<else>], on staff[</if>]<br />
 [<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]
 [<if $user->counselor>]Counselor: [<$user->counselor_name>]<br />[</if>]
 [<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]Phone (home): [<$phone>]<br />[</foreach>]
@@ -51,7 +49,7 @@ or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexan
 <br />
 [</if>]
 <br />
-[<if count($user->mail)>]Personal e-mail address(es): 
+E-mail address(es): 
 [<foreach from=$user->mail item="email" name="emails">]
 	[<if $smarty.foreach.emails.last and not $smarty.foreach.emails.first>]
 		and
@@ -60,7 +58,6 @@ or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexan
 	[</if>]
 	[<mailto address=$email encode="hex">]
 	[</foreach>]
-[</if>]
 <br />
 <br />
 [<if count($user->aim)>]
@@ -138,10 +135,10 @@ AIM/AOL Screenname(s):
   <tbody>
  [<foreach from=$schedule item=class>]
    <tr class="[<cycle values="c1,c2">]">
-    <td class="directory-table" style="text-align:center;">[<$class->period>]</td>
-    <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$class->sectionid>]">[<$class->name>]</a></td>
+    <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$class->sectionid>]">[<$class->period>]</a></td>
+    <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/section/[<$class->classid>]">[<$class->name>]</a></td>
     <td class="directory-table" style="text-align:center;">[<$class->room>]</td>
-    <td class="directory-table">[<$class->teacher->sn>]</td>
+    <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/info/[<$class->teacher->uid>]">[<$class->teacher->sn>]</a></td>
    </tr>
  [</foreach>]
   </tbody>
