@@ -84,12 +84,15 @@ class Birthdays implements Module {
 		$result = $I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', "(birthday=$date)", 'iodineUidNumber');
 		while ($uid = $result->fetch_single_value()) {
 			$user = new User((int)$uid);
-			$people[] = array(
+			$person = array(
 				'uid' => $user->uid,
 				'name' => $user->name,
 				'grade' => $user->grade,
 				'age' => $year - ((int)substr($user->birthday, 0, 4))
 			);
+			if ($person['age'] > 0) {
+				$people[] = $person;
+			}
 		}
 
 		usort($people, array($this, 'person_compare'));
