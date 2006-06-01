@@ -661,8 +661,8 @@ class User {
 			  ** Map things users would type into LDAP attributes
 			  */
 			  $maptable = array(
-						 'firstname' => 'givenName',
-						 'first' => 'givenName',
+						 'firstname' => 'givenname',
+						 'first' => 'givenname',
 						 'lastname' => 'sn',
 						 'last' => 'sn',
 						 'firstnamesound' => 'soundexfirst',
@@ -670,9 +670,9 @@ class User {
 						 'city' => 'l',
 						 'town' => 'l',
 						 'middle' => 'mname',
-						 'phone' => 'homePhone',
+						 'phone' => 'homephone',
 						 'cell' => 'mobile',
-						 'telephone' => 'homePhone',
+						 'telephone' => 'homephone',
 						 'address' => 'street'
 			  );
 
@@ -689,7 +689,7 @@ class User {
 			  $postfix = '';
 			  $infix = '';
 			  $ormode = FALSE;
-	   	  if ($grades) {
+	 		  if ($grades) {
 				  $prefix = '(&(|';
 				  foreach ($grades as $grade) {
 							 $prefix .= "(graduationYear=$grade)";
@@ -707,68 +707,81 @@ class User {
 					$key = FALSE;
 					$eq = '=';
 					if ($colonpos == 0) {
-							  //Invalid: leading colon
+							  //Ignore leading colons to allow people to trigger this search function for anything
 							  $colonpos = -1;
 							  $tok = str_replace(':','',$tok);
 					}
-				   if	($colonpos == strlen($tok)-1) {
+					if ($colonpos == strlen($tok)-1) {
 							  // Invalid: trailing colon
 							  // Assume blah:*
 							  $tok .= '*';
 					}
 					if ($colonpos) {
-							  $boom = explode(':',$str);
-							  if (count($boom) > 2) {
-								  // Invalid: more than one colon
-								  $tok = str_replace(':','',$tok);
-							  } else {
-										 $key = $boom[0];
-										 //Apply attributename translation
-										 if (isSet($maptable[$key])) {
-													$key = $maptable[$key];
-										 }
-										 $tok = $boom[1];
-										 $poteq = substr($tok,0,1);
-										 // Check if gt or lt was specified instead of equals
-										 switch ($poteq) {
-										 	 case '>':
-													$eq = '>=';
-										 	 case '<':
-													$eq = '<=';
-											 case '=':
-											   // Strip character - this is run for gt,lt,and specified eq
-											   $tok = substr($tok,1);
-												break;
-											 default:
-												break;								
-										 }
-							  }
+						$boom = explode(':',$str);
+						if (count($boom) > 2) {
+							// Invalid: more than one colon
+							$tok = str_replace(':','',$tok);
+						} else {
+							$key = $boom[0];
+							//Apply attributename translation
+							if (isSet($maptable[$key])) {
+								$key = $maptable[$key];
+							}
+							$tok = $boom[1];
+							$poteq = substr($tok,0,1);
+							// Check if gt or lt was specified instead of equals
+							switch ($poteq) {
+								case '>':
+									$eq = '>=';
+									$tok = substr($tok,1);
+									break;
+								case '<':
+									$eq = '<=';
+									$tok = substr($tok,1);
+									break;
+								case '=':
+									$tok = substr($tok,1);
+									break;
+								default:
+									break;								
+							}
+						}
 					}
-					if (isSet($key)) {
-							  // We know what we're trying to search for
-							  if (isSet($soundexed[strtolower($key)])) {
-										 $tok = soundex($tok);
-							  }
-							  $prefix = '(&'.$prefix;
-							  $infix .= '('.$key.$eq.$tok.')';
-							  $postfix .= ')';
+					if ($key) {
+						// We know what we're trying to search for
+						if (isSet($soundexed[strtolower($key)])) {
+							$tok = soundex($tok);
+						}
+						if (isSet($maptable[$key])) {
+							$key = $maptable[$key];
+						}
+						$prefix = '(&'.$prefix;
+						$infix .= '('.$key.$eq.$tok.')';
+						$postfix .= ')';
 					} else {
-							  if (strcasecmp($tok,'OR') == 0) {
-										 $ormode = TRUE;
-										 // User wants an OR for these search terms
-										 continue;
-							  }
-							  if ($ormode) {
-								  $prefix = '(&'.$prefix;
-								  $postfix .= ')';
-								  $infix .= "(|(iodineUid=$tok)(sn=$tok)(mname=$tok)(givenName=$tok))";
-								  $ormode = FALSE;
-							  }
+						if (strcasecmp($tok,'OR') == 0) {
+							$ormode = TRUE;
+							// User wants an OR for these search terms
+							continue;
+						}
+						// Yay yay prefix!  This just works (TM)
+						if ($ormode) {
+							$prefix = '(|'.$prefix;
+						} else {
+							$prefix = '(&'.$prefix;
+						}
+						$postfix .= ')';
+						$infix .= "(|(iodineUid=$tok)(sn=$tok)(mname=$tok)(givenName=$tok)(nickname=$tok))";
+						$ormode = FALSE;
 					}
-			  		$tok = strtok($str,$separator);
+			  		$tok = strtok($separator);
 			  }
-			  $res = $I2_LDAP->search(LDAP::get_user_dn(),$prefix.$infix.$postfix,array('iodineUid'))->fetch_all_single_values();
-			  return self::sort_users($res);
+			  $res = $I2_LDAP->search(LDAP::get_user_dn(),$prefix.$infix.$postfix,array('iodineUid'));
+			  $ret = array();
+			  while ($row = $res->fetch_array(Result::ASSOC)) {
+			  	$ret[] = $row['iodineUid'];
+			  }
+			  return self::sort_users($ret);
 	}
 
 	/**
@@ -784,6 +797,12 @@ class User {
 	*/
 	public static function search_info($str,$grades=NULL,$old_style=FALSE) {
 		global $I2_LDAP;
+
+		if (strpos($str,':') !== FALSE) {
+			// If a user puts a colon in the string, assume they want old-style searching
+			$old_style = TRUE;
+		}
+
 		d("search_info: $str".($old_style?' (legacy)':''),6);
 
 		if ($grades && !is_array($grades)) {
