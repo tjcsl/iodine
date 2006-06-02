@@ -1,7 +1,3 @@
-[<* A '*'  next to an item means it's not quite done yet *>]
-[<* A 'P+' next to an item means it prints fully *>]
-[<* A 'P-' next to an item means it prints somewhat *>]
-
 [<include file="eighth/header.tpl">]
 
 <table id="eighth_pane_table">
@@ -12,7 +8,7 @@
 			<ol>
 				<li><a href="[<$I2_ROOT>]eighth/reg_group"><b>Register a group of students for an activity</b></a></li>
 				<li><a href="[<$I2_ROOT>]eighth/amr_group">Add, modify, or remove a special group of students</a></li>
-				<li><b>*</b><a href="[<$I2_ROOT>]eighth/alt_permissions">Add students to a restricted activity</a></li>
+				<li><a href="[<$I2_ROOT>]eighth/alt_permissions">Add students to a restricted activity</a></li>
 				<li><a href="[<$I2_ROOT>]eighth/people_switch">Switch all the students in one activity into another</a></li>
 			</ol>
 		</td>
@@ -22,9 +18,9 @@
 
 			<ol>
 				<li><a href="[<$I2_ROOT>]eighth/res_student"><b>Reschedule students by student ID for a single activity</b></a></li>
-				<li><b>P+</b> <a href="[<$I2_ROOT>]eighth/vcp_attendance"><b>View, change, or print attendance data</b></a></li>
+				<li><a href="[<$I2_ROOT>]eighth/vcp_attendance"><b>View, change, or print attendance data</b></a></li>
 				<li><a href="[<$I2_ROOT>]eighth/ent_attendance"><b>Enter TA absences by student ID</b></a></li>
-				<li><b>P- *</b><a href="[<$I2_ROOT>]eighth/vp_delinquent">View or print a list of delinquent students</a></li>
+				<li><a href="[<$I2_ROOT>]eighth/vp_delinquent">View or print a list of delinquent students</a></li>
 			</ol>
 		</td>
 	</tr>
@@ -38,11 +34,11 @@
 				<li><a href="[<$I2_ROOT>]eighth/amr_room">Add, modify, or remove a room</a></li>
 				<li><a href="[<$I2_ROOT>]eighth/amr_sponsor">Add, modify, or remove an activity sponsor</a></li>
 				<li><a href="[<$I2_ROOT>]eighth/sch_activity"><b>Schedule an activity for eighth period</b></a></li>
-				<li><b>P+</b> <a href="[<$I2_ROOT>]eighth/vp_roster"><b>View or print a class roster</b></a></li>
-				<li><b>P-</b> <a href="[<$I2_ROOT>]eighth/vp_room"><b>View or print the utilization of a room</b></a></li>
+				<li><a href="[<$I2_ROOT>]eighth/vp_roster"><b>View or print a class roster</b></a></li>
+				<li><a href="[<$I2_ROOT>]eighth/vp_room"><b>View or print the utilization of a room</b></a></li>
 				<li><a href="[<$I2_ROOT>]eighth/cancel_activity">Cancel/set comments/advertise for an activity</a></li>
 				<li><a href="[<$I2_ROOT>]eighth/room_sanity">Room assignment sanity check</a></li>
-				<li><b>P+</b> <a href="[<$I2_ROOT>]eighth/vp_sponsor">View or print sponsor schedule</a></li>
+				<li><a href="[<$I2_ROOT>]eighth/vp_sponsor">View or print sponsor schedule</a></li>
 			</ol>
 		</td>
 
@@ -51,7 +47,7 @@
 
 			<ol>
 				<li><a href="[<$I2_ROOT>]eighth/fin_schedules"><b>Finalize student schedules</b></a></li>
-				<li><b>P+</b> <a href="[<$I2_ROOT>]eighth/prn_attendance"><b>Print activity rosters</b></a></li>
+				<li><a href="[<$I2_ROOT>]eighth/prn_attendance"><b>Print activity rosters</b></a></li>
 				<li><a href="[<$I2_ROOT>]eighth/chg_start"><b>Change starting date</b></a></li>
 				<li><a href="[<$I2_ROOT>]eighth/ar_block">Add or remove 8th period block from system</a></li>
 
