@@ -243,6 +243,7 @@ attributetype ( i2Attr:27
 	NAME ('middlename' 'mname')
 	DESC 'A middle name'
 	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX stringSyntax
 	)
 
@@ -273,6 +274,7 @@ attributetype ( i2Attr:31
 	NAME ('nickname' 'nick' 'nname')
 	DESC 'The nickname of a person'
 	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX stringSyntax
 	SINGLE-VALUE	
 	)
@@ -322,6 +324,7 @@ attributetype ( i2Attr:37
 	NAME ('aim')
 	DESC 'AIM/AOL Screenname'
 	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX stringSyntax
 	)
 
@@ -329,6 +332,7 @@ attributetype ( i2Attr:38
 	NAME ('yahoo')
 	DESC 'Yahoo! ID'
 	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX stringSyntax
 	)
 	
@@ -336,6 +340,7 @@ attributetype ( i2Attr:39
 	NAME ('msn')
 	DESC 'MSN Username'
 	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX stringSyntax
 	)
 	
@@ -343,6 +348,7 @@ attributetype ( i2Attr:40
 	NAME ('jabber')
 	DESC 'Jabber Username'
 	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX stringSyntax
 	)
 	
@@ -350,6 +356,7 @@ attributetype ( i2Attr:41
 	NAME ('icq')
 	DESC 'ICQ Number'
 	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX stringSyntax
 	)
 	
@@ -357,6 +364,7 @@ attributetype ( i2Attr:42
 	NAME ('googleTalk')
 	DESC 'Google Talk'
 	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX stringSyntax
 	)
 
@@ -496,6 +504,7 @@ attributetype ( i2Attr:61
 	NAME ('xfire')
 	DESC 'XFire handle'
 	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX stringSyntax
 	)
 
