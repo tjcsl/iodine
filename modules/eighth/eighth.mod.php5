@@ -1483,15 +1483,16 @@ class Eighth implements Module {
 	*/
 	public function rep_schedules() {
 		global $I2_SQL;
-		if($this->op == '') {
+		throw new I2Exception('Don\'t hit that button!');
+		if ($this->op == '') {
 			$bids = flatten($I2_SQL->query('SELECT bid FROM eighth_blocks')->fetch_all_arrays(MYSQL_NUM));
 			foreach($bids as $bid) {
-				$activity = new EighthActivity(1);
+				$activity = new EighthActivity(i2config_get('default_aid',999,'eighth'));
 				EighthSchedule::schedule_activity($bid, $activity->aid, $activity->sponsors, $activity->rooms);
-				$uids = flatten($I2_SQL->query('SELECT uid FROM user WHERE uid NOT IN (SELECT userid FROM eighth_activity_map WHERE bid=%d)', $bid)->fetch_all_arrays(MYSQL_NUM));
+				$uids = flatten($I2_SQL->query('SELECT uid FROM user WHERE uid NOT IN (SELECT userid FROM eighth_activity_map WHERE bid=%d)', $bid)->fetch_all_arrays(Result::NUM));
 				$activity->add_members($uids, false, $bid);
 			}
-			redirect("eighth");
+			redirect('eighth');
 		}
 	}
 
