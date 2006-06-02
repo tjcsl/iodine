@@ -662,9 +662,10 @@ class User {
 			  */
 			  $maptable = array(
 						 'firstname' => 'givenname',
-						 'first' => 'givenname',
+						 'first' => array('givenname','nickname'),
 						 'lastname' => 'sn',
 						 'last' => 'sn',
+						 'nick' => 'nickname',
 						 'firstnamesound' => 'soundexfirst',
 						 'lastnamesound' => 'soundexlast',
 						 'city' => 'l',
@@ -685,48 +686,52 @@ class User {
 			  ** Construct query in three parts: prefix + infix + postfix
 			  */
 
-			  $prefix = '';
-			  $postfix = '';
+			  $prefix = '(&';
+			  $postfix = ')';
 			  $infix = '';
 			  $ormode = FALSE;
 	 		  if ($grades) {
-				  $prefix = '(&(|';
+				  $prefix .= '(|';
 				  foreach ($grades as $grade) {
 							 $prefix .= "(graduationYear=$grade)";
 				  }
 				  $prefix .= ')';
-				  $postfix = ')';
 			  }
 			  
-			  $separator = " \t";
+			  $separator = " \n\t";
 
-			  $tok = strtok($str,$separator);
+			  $rawtok = strtok($str,$separator);
 
-			  while ($tok !== FALSE) {
-					$colonpos = strpos($str,':');
+			  while ($rawtok !== FALSE) {
+					$colonpos = strpos($rawtok,':');
+					$tok = $rawtok;
 					$key = FALSE;
 					$eq = '=';
-					if ($colonpos == 0) {
+					if ($colonpos === 0) {
 							  //Ignore leading colons to allow people to trigger this search function for anything
-							  $colonpos = -1;
+							  $colonpos = FALSE;
 							  $tok = str_replace(':','',$tok);
+							  d('Leading colon',8);
 					}
 					if ($colonpos == strlen($tok)-1) {
 							  // Invalid: trailing colon
 							  // Assume blah:*
 							  $tok .= '*';
+							  d('Trailing colon',8);
 					}
 					if ($colonpos) {
-						$boom = explode(':',$str);
+						$boom = explode(':',$tok);
 						if (count($boom) > 2) {
 							// Invalid: more than one colon
 							$tok = str_replace(':','',$tok);
+							d('Multiple colons',8);
 						} else {
-							$key = $boom[0];
+							$key = strtolower($boom[0]);
 							//Apply attributename translation
-							if (isSet($maptable[$key])) {
+							/*if (isSet($maptable[$key])) {
+								d($key.' remapped to '.print_r($maptable[$key],1),8);
 								$key = $maptable[$key];
-							}
+							}*/
 							$tok = $boom[1];
 							$poteq = substr($tok,0,1);
 							// Check if gt or lt was specified instead of equals
@@ -749,33 +754,38 @@ class User {
 					}
 					if ($key) {
 						// We know what we're trying to search for
-						if (isSet($soundexed[strtolower($key)])) {
+						$key = strtolower($key);
+						if (isSet($soundexed[$key])) {
 							$tok = soundex($tok);
 						}
 						if (isSet($maptable[$key])) {
 							$key = $maptable[$key];
 						}
-						$prefix = '(&'.$prefix;
-						$infix .= '('.$key.$eq.$tok.')';
-						$postfix .= ')';
+						if (!is_array($key)) {
+							$key = array($key);
+						}
+						$infix .= '(|';
+						foreach ($key as $keypart) {
+							$infix .= '('.$keypart.$eq.$tok.')';
+						}
+						$infix .= ')';
 					} else {
 						if (strcasecmp($tok,'OR') == 0) {
 							$ormode = TRUE;
 							// User wants an OR for these search terms
+			  				$rawtok = strtok($separator);
 							continue;
 						}
-						// Yay yay prefix!  This just works (TM)
-						if ($ormode) {
-							$prefix = '(|'.$prefix;
-						} else {
-							$prefix = '(&'.$prefix;
-						}
-						$postfix .= ')';
 						$infix .= "(|(iodineUid=$tok)(sn=$tok)(mname=$tok)(givenName=$tok)(nickname=$tok))";
+					}
+					if ($ormode) {
+						$prefix .= '(|';
+						$postfix = ')'.$postfix;
 						$ormode = FALSE;
 					}
-			  		$tok = strtok($separator);
+			  		$rawtok = strtok($separator);
 			  }
+
 			  $res = $I2_LDAP->search(LDAP::get_user_dn(),$prefix.$infix.$postfix,array('iodineUid'));
 			  $ret = array();
 			  while ($row = $res->fetch_array(Result::ASSOC)) {
