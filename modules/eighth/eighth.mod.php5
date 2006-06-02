@@ -1204,8 +1204,10 @@ class Eighth implements Module {
 			$this->template = 'res_student.tpl';
 			$this->template_args['block'] = new EighthBlock($this->args['bid']);
 			$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bid']);
-			$this->template_args['op'] = "user/bid/{$this->args['bid']}";
+			$this->template_args['op'] = "user";
 			$this->template_args['act'] = new EighthActivity($this->args['aid']);
+			$this->template_args['bid'] = $this->args['bid'];
+			$this->template_args['aid'] = $this->args['aid'];
 			if (isSet($this->args['rescheduled'])) {
 				$this->template_args['lastuser'] = new User($this->args['rescheduled']);
 			}
