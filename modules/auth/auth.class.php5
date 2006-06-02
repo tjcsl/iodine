@@ -253,7 +253,7 @@ class Auth {
 	public function login() {
 		global $I2_ARGS;
 
-		if(!isset($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
+		if(!isSet($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
 			$_SESSION['logout_funcs'] = array();
 		}
 		//$this->cache_password($_REQUEST['login_password']);
@@ -279,6 +279,8 @@ class Auth {
 					
 				$_SESSION['i2_login_time'] = time();
 				
+				session_regenerate_id(TRUE);
+
 				redirect(implode('/', $I2_ARGS));
 				return TRUE; //never reached
 			} else {

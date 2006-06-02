@@ -216,6 +216,7 @@ class Mail implements Module {
 	}
 
 	private function get_cache() {
+		global $I2_USER;
 		if(!file_exists($this->cache_file)) {
 			d('Cache file does not exist',6);
 			return FALSE;
@@ -240,11 +241,17 @@ class Mail implements Module {
 		//	)
 		// )
 		if( !(	is_array($ret) &&
-				count($ret) == 2 &&
+				count($ret) == 3 &&
 				is_int($ret[0]) &&
 				is_array($ret[1]) &&
 				(count($ret[1]) == 0 || is_object($ret[1][0])) )) {
 			d('Invalid mail cache file format', 5);
+			unlink($this->cache_file);
+			return FALSE;
+		}
+
+		if ($ret[2] != $I2_USER->uid) {
+			d('Cache is for another user',5);
 			unlink($this->cache_file);
 			return FALSE;
 		}
@@ -253,7 +260,8 @@ class Mail implements Module {
 	}
 
 	private function store_cache($nmsgs, $messages) {
-		$data = serialize(array($nmsgs,$messages));
+		global $I2_USER;
+		$data = serialize(array($nmsgs,$messages,$I2_USER->uid));
 		
 		$fh = fopen($this->cache_file, 'w');
 		fwrite($fh, $data);
