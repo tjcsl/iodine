@@ -1,5 +1,5 @@
 [<include file="eighth/header.tpl">]
-Restricted Members of [<$activity->name>]<br />
+Restricted Members of [<$activity->name_full_r>]<br />
 <table><tr><td>
 <table cellpadding="0" cellspacing="0" style="border: 0px;">
 	<tr>

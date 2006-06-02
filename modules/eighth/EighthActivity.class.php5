@@ -632,8 +632,14 @@ class EighthActivity {
 					if ($namelen >= 60) {
 							  return $this->data['name'];
 					}
-					$commentlen = strlen($this->data['comment']);
-					return $this->data['name'] . ($commentlen ? ' - ' . substr($this->data['comment'],0,60-$namelen).(60-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
+					if (isSet($this->data['comment'])) {
+						$comment = $this->data['comment'];
+						$commentlen = strlen($comment);
+					} else {
+						$commentlen = 0;
+						$comment = '';
+					}
+					return $this->data['name'] . ($commentlen ? ' - ' . substr($comment,0,60-$namelen).(60-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
 				case 'name_friendly':
 					$comment = $this->__get('comment_short');
 					if (!$comment) {
