@@ -1280,7 +1280,7 @@ class Eighth implements Module {
 				}
 			}
 			$activity->attendancetaken = TRUE;
-			redirect("eighth/vcp_attendance/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
+			redirect("eighth/vcp_attendance/activity/bid/{$this->args['bid']}");
 		}
 		else if($this->op == 'format') {
 			$this->setup_format_selection('vcp_attendance', 'Attendance Data', array('aid' => $this->args['aid'], 'bid' => $this->args['bid']));
