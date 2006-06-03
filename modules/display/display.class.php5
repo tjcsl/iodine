@@ -107,6 +107,15 @@ class Display {
 	}
 
 	/**
+	* Sets the name of the module associated with this Display object. 
+	*
+	* Useful for handing off Display objects to other classes.
+	*/
+	public function set_module_name($name) {
+		$this->my_module_name = $name;
+	}
+
+	/**
 	* The main non-core executing loop of Iodine.
 	*
 	* This function basically displays everything and performs
@@ -311,6 +320,21 @@ class Display {
 			$this->smarty->display($tpl);
 		}
 	}
+
+	/**
+	* Fetches a template's output without displaying it.
+	*
+	* @param string $temple File name of the template.
+	* @param array $args Associative array of Smarty arguments.
+	*/
+	public function fetch($template, $args=array()) {
+		$this->assign_i2vals();
+		$this->smarty_assign($args);
+		if( ($tpl = self::get_template(strtolower($this->my_module_name).'/'.$template)) === NULL ) {
+			throw new I2Exception('Invalid template `'.$this->my_module_name.'/'.$template.'` passed to Display');
+		}
+		return $this->smarty->fetch($tpl);
+	}
 	
 	/**
 	* Output raw HTML to the browser.  Not advisable.
@@ -334,14 +358,19 @@ class Display {
 	* Clear any output buffers, ensuring that all data is written to the browser.
 	*/
 	public function flush_buffer() {
-		if (1) {
-			echo(self::$core_display->buffer);
-			self::$core_display->buffer = '';
-		}
+		echo(self::$core_display->buffer);
+		self::$core_display->buffer = '';
 	}
 
 	/**
-	* Clears any output buffers not current pushed through to the browser.
+	* Gets the contents of the display buffer
+	*/
+	public function get_buffer() {
+		return self::$core_display->buffer;
+	}
+
+	/**
+	* Clears any output buffers not currently pushed through to the browser.
 	*/
 	public function clear_buffer() {
 		self::$core_display->buffer = '';
@@ -353,11 +382,9 @@ class Display {
 	* @param bool $on Whether to buffer output.
 	*/
 	public function set_buffering($on) {
-		if ($this == self::$core_display) {
-			self::$core_display->buffering = $on;
-			if (!$this->buffering_on()) {
-				$this->flush_buffer();
-			}
+		self::$core_display->buffering = $on;
+		if (!$this->buffering_on()) {
+			$this->flush_buffer();
 		}
 	}
 	
