@@ -105,6 +105,16 @@
 		</td>
 	</tr>
 	<tr>
+		<td>Skype:</td>
+		<td>
+[<foreach from=$I2_USER->skype item=skype name=skype_loop>]
+			<input class="pref_preference_input" type="text" name="pref_skype[]" value="[<$skype|escape:'html'>]" />[<if $smarty.foreach.skype_loop.first>]<a href="#" onClick="add_field('skype', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('skype', this);">Remove</a>[</if>][<if !$smarty.foreach.skype_loop.last>]<br />[</if>]
+[<foreachelse>]
+			<input class="pref_preference_input" type="text" name="pref_skype[]" /><a href="#" onClick="add_field('skype', this);">Add Another</a>
+[</foreach>]
+		</td>
+	</tr>
+	<tr>
 		<td>Webpage(s):</td>
 		<td>
 [<foreach from=$I2_USER->webpage item=webpage name=webpage_loop>]

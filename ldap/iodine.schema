@@ -568,6 +568,14 @@ attributetype ( i2Attr:69
 	SINGLE-VALUE
 	)
 
+attributetype ( i2Attr:70
+	NAME ('skype')
+	DESC 'A skype handle'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
+	SYNTAX stringSyntax
+	)
+
 objectclass ( i2OC:1
 	NAME ('tjhsstStudent' 'iodineStudent')
 	SUP inetOrgPerson STRUCTURAL
@@ -603,7 +611,8 @@ objectclass ( i2OC:1
 		counselor $
 		group $
 		birthday $
-		sex $ aim $ xfire $ yahoo $ msn $ jabber $ icq $ googleTalk $
+		sex $ 
+		aim $ xfire $ yahoo $ msn $ jabber $ icq $ googleTalk $ skype $
 		webpage $
 		locker $
 		soundexlast $
@@ -648,7 +657,7 @@ objectclass ( i2OC:2
 		soundexfirst $
 		metaphonelast $
 		metaphonefirst $
-		aim $ msn $ xfire $ yahoo $ googleTalk $ icq $ jabber $
+		aim $ msn $ xfire $ yahoo $ googleTalk $ icq $ jabber $ xfire $ skype $
 		preferredPhoto $
 		mailMessages
 	)
