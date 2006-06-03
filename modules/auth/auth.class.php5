@@ -112,7 +112,7 @@ class Auth {
 		*/
 		if (	isset($_SESSION['i2_uid']) 
 			&& isset($_SESSION['i2_login_time'])) {
-			if( $_SESSION['i2_login_time'] > time()+i2config_get('timeout',600,'login') && !$this->used_master_password()) {
+			if( time() > $_SESSION['i2_login_time']+i2config_get('timeout',600,'login') && !$this->used_master_password()) {
 				$this->log_out();
 				return FALSE;
 			}
