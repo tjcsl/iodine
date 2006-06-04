@@ -14,9 +14,9 @@
 * @subpackage Display
 */
 class TopBar {
-	public static function display($disp, $chrome) {
+	public static function display($disp, $chrome, $nagging) {
 		global $I2_USER;
-		if($I2_USER->header=='TRUE' && $chrome) {
+		if($I2_USER->header=='TRUE' && $chrome && !$nagging) {
 			$date = EighthSchedule::get_next_date();
 			$activites = array();
 			if($date) {

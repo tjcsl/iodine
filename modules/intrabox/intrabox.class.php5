@@ -139,10 +139,11 @@ class IntraBox {
 	*                            the main content pane. This is passed so
 	*                            that particular module is not instantiated
 	*                            twice.
+	* @param boolean $nags Whether 'nagging mode' - minimal display - is on.
 	*/
-	public static function display_boxes($main_module) {
+	public static function display_boxes($main_module,$nags=FALSE) {
 		global $I2_USER;
-		
+
 		if( self::$main_module === NULL && is_object($main_module) ) {
 			self::$main_module = $main_module;
 		}
@@ -150,20 +151,25 @@ class IntraBox {
 		if( self::$display === NULL ) {
 			self::$display = new Display('Intrabox');
 		}
-
+		
 		$openclass = null;
 
-		if ($I2_USER->header=='TRUE') {
+		if ($I2_USER->header=='TRUE' && !$nags) {
 			$openclass = 'boxes';
 		} else {
 			$openclass = 'boxes_noheader';
 		}
 
+		// Hack needed for nags
+		Display::style_changed();
+
 		self::$display->disp('intrabox_open.tpl',array('intrabox_open_class'=>$openclass));
-		
-		$b = self::get_user_boxes($I2_USER->uid);
-		foreach($b as $box) {
-			$box->display_box();
+
+		if (!$nags) {
+			$b = self::get_user_boxes($I2_USER->uid);
+			foreach($b as $box) {
+				$box->display_box();
+			}
 		}
 
 		self::$display->disp('intrabox_close.tpl');

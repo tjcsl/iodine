@@ -929,7 +929,7 @@ class User {
 	public static function id_to_user($userids) {
 		$ret = array();
 		if (!is_array($userids)) {
-				  $userids = array($userids);
+			$userids = array($userids);
 		}
 		foreach($userids as $userid) {
 			if (!$userid) {

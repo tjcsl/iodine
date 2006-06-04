@@ -86,6 +86,8 @@ class Prom implements Module {
                			$going = 0;
         		}
 			$I2_SQL->query('REPLACE INTO prom SET uid=%d,dateschool=%s,attending=%d,teacher=%s,room=%s,datename=%s',$I2_USER->uid,$_POST['dateschool'],$going,$_POST['firstpdteacher'],$_POST['firstpdroom'],$_POST['datename']);
+			$group = new Group('prom_registered_2006');
+			$group->add_user_force($I2_USER);
 			redirect();
 		}
 		return 'Prom Registration';

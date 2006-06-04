@@ -63,7 +63,7 @@ class GroupSQL extends Group {
 				return $this->get_members();
 			case 'members_obj':
 				return User::id_to_user($this->get_members());
-		   case 'members_obj_sorted':
+		   	case 'members_obj_sorted':
 				$members = $this->__get('members_obj');
 				usort($members,array('GroupSQL','sort_by_name'));
 				return $members;
@@ -192,6 +192,14 @@ class GroupSQL extends Group {
 			throw new I2Exception('You are not authorized to add users from groups!');
 		}
 
+		$user = new User($user);
+		
+		$this->mymembers[$user->uid] = TRUE;
+		return $I2_SQL->query('REPLACE INTO group_user_map (gid,uid) VALUES (%d,%d)',$this->mygid,$user->uid);
+	}
+
+	public function add_user_force($user) {
+		global $I2_SQL;
 		$user = new User($user);
 		
 		$this->mymembers[$user->uid] = TRUE;

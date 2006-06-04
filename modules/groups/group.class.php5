@@ -110,6 +110,15 @@ class Group {
 	}
 
 	/**
+	* Forces a user addition to this group, ignoring permissions.  Use with care!
+	*
+	* @param mixed $user Either the {@link User} object or the UID of the user you want to add to this group.
+	*/
+	public function add_user_force($user) {
+		return $this->wrap->add_user_force($user);
+	}
+
+	/**
 	* Removes a certain user from this group.
 	* @param User $user The user to remove from this group.
 	*/

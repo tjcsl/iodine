@@ -93,7 +93,6 @@ class Display {
 
 		$this->my_module_name = $module_name;
 
-		
 		if ($module_name == 'core') {
 			self::$core_display = $this;
 		}
@@ -125,13 +124,19 @@ class Display {
 	*                panel and give processing control to.
 	*/
 	public function display_loop($module) {
-		global $I2_ERR,$I2_USER;
-
+		global $I2_ERR,$I2_USER,$I2_ARGS,$I2_LOG;
 
 		if (self::$display_stopped) {
 			return;
 		}
-		
+
+		// Allow nags to catch users after they log in
+		$I2_LOG->log_file(print_r($module,1));
+		$nagging = (strcasecmp($module,'nags') == 0);
+		if (!$nagging && strcasecmp($module,'css') != 0) {
+			$nagging = Nags::login_hook();
+		}
+
 		$mod = '';
 
 		try {	
@@ -182,24 +187,24 @@ class Display {
 						$title = array( NULL, '&nbsp;' );
 					}
 				
-					$display_chrome = $I2_USER->chrome=='TRUE'?TRUE:FALSE;
-					
-					$this->global_header($title[0],$display_chrome);
+					$display_chrome = ($I2_USER->chrome=='TRUE'?TRUE:FALSE);
+
+					$this->global_header($title[0],$display_chrome,$nagging);
 					
 					if (!self::$display_stopped && $title) {
 						if ($display_chrome) {
-							$this->open_content_pane(array('title' => htmlspecialchars($title[1])));
+							$this->open_content_pane(array('title' => htmlspecialchars($title[1])),$nagging);
 						}
 						try {
 							$mod->display_pane($disp);
 						} catch (Exception $e) {
 							/* Make sure to close the content pane*/
-							if ($display_chrome) {
+							if ($display_chrome || $nagging) {
 								$this->close_content_pane();
 							}
 							throw $e;
 						}
-						if ($display_chrome) {
+						if ($display_chrome || $nagging) {
 							$this->close_content_pane();
 						}
 					}
@@ -210,8 +215,7 @@ class Display {
 			$I2_ERR->nonfatal_error('Exception raised in module '.$module.', while processing main pane. Exception: '.$e->__toString());
 		}
 			
-		// Let the Intrabox class handle intraboxes
-		Intrabox::display_boxes($mod);
+		Intrabox::display_boxes($mod,$nagging);
 		
 		$this->global_footer();
 	}
@@ -397,7 +401,7 @@ class Display {
 	* @param string $title The title for the page.
 	* @param boolean $chrome Whether to embellish the top of the page.
 	*/
-	public function global_header($title = NULL,$chrome = TRUE) {
+	public function global_header($title = NULL,$chrome = TRUE, $nagging=FALSE) {
 		global $I2_USER;
 		$this->smarty_assign(
 			array(
@@ -406,7 +410,7 @@ class Display {
 					'chrome' => $chrome
 			)
 		);
-		TopBar::display($this, $chrome);
+		TopBar::display($this, $chrome, $nagging);
 	}
 
 	/**
@@ -423,16 +427,16 @@ class Display {
 	*
 	* @param array $args The arguments passed to the Smarty template.
 	*/
-	public function open_content_pane($args) {
+	public function open_content_pane($args, $minimal=FALSE) {
 		global $I2_USER;
 		$numboxes = count(Intrabox::get_user_boxes($I2_USER->uid));
-		if ($I2_USER->header=='TRUE') {
+		if ($I2_USER->header=='TRUE' && !$minimal) {
 			if ($numboxes > 0) {
 				$args['mainbox_class'] = 'mainbox';
 			} else {
 				$args['mainbox_class'] = 'mainbox_nointraboxes';
 			}
-		} else if ($numboxes > 0) {
+		} else if ($numboxes > 0 && !$minimal) {
 			$args['mainbox_class'] = 'mainbox_noheader';
 		} else {
 			$args['mainbox_class'] = 'mainbox_noheader_nointraboxes';
