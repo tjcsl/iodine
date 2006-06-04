@@ -5,9 +5,9 @@
 .boxheader {
 	color: #FFFFFF;
 	font-weight: bold;
-	background-color: black;
-	border-left: 4px solid black;
-	border-right: 4px solid black;
+	background-color: #[<$I2_USER->boxcolor|default:'000000'>];
+	border-left: 4px solid #[<$I2_USER->boxcolor|default:'000000'>];
+	border-right: 4px solid #[<$I2_USER->boxcolor|default:'000000'>];
 }
 .upbutton {
 	background: url(/www/pics/up.gif) center no-repeat;

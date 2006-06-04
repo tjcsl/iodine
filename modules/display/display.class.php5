@@ -133,6 +133,7 @@ class Display {
 		// Allow nags to catch users after they log in
 		$I2_LOG->log_file(print_r($module,1));
 		$nagging = (strcasecmp($module,'nags') == 0);
+		// But let CSS escape the horror
 		if (!$nagging && strcasecmp($module,'css') != 0) {
 			$nagging = Nags::login_hook();
 		}
@@ -246,6 +247,7 @@ class Display {
 		if (isSet($I2_USER)) {
 			$I2_USER->recache('style');
 			self::$style = ($I2_USER->style);
+			CSS::flush_cache($I2_USER);
 		}
 		else {
 			self::$style = 'default';
@@ -305,7 +307,7 @@ class Display {
 	* @param string $template File name of the template.
 	* @param array $args Associative array of Smarty arguments.
 	*/
-	public function disp($template, $args=array()) {
+	public function disp($template, $args=array(), $validate=TRUE) {
 		if(self::$display_stopped) {
 			return;
 		}
@@ -314,7 +316,7 @@ class Display {
 		$this->smarty_assign($args);
 		
 		// Validate template given
-		if( ($tpl = self::get_template(strtolower($this->my_module_name).'/'.$template)) === NULL ) {
+		if( $validate && (($tpl = self::get_template(strtolower($this->my_module_name).'/'.$template)) === NULL) ) {
 			throw new I2Exception('Invalid template `'.$this->my_module_name.'/'.$template.'` passed to Display');
 		}
 		
@@ -331,13 +333,13 @@ class Display {
 	* @param string $temple File name of the template.
 	* @param array $args Associative array of Smarty arguments.
 	*/
-	public function fetch($template, $args=array()) {
+	public function fetch($template, $args=array(), $validate = TRUE) {
 		$this->assign_i2vals();
 		$this->smarty_assign($args);
-		if( ($tpl = self::get_template(strtolower($this->my_module_name).'/'.$template)) === NULL ) {
+		if( $validate && (($tpl = self::get_template(strtolower($this->my_module_name).'/'.$template)) === NULL) ) {
 			throw new I2Exception('Invalid template `'.$this->my_module_name.'/'.$template.'` passed to Display');
 		}
-		return $this->smarty->fetch($tpl);
+		return $this->smarty->fetch($template);
 	}
 	
 	/**

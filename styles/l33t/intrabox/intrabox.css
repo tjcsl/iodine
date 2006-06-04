@@ -14,7 +14,9 @@
 }
 @extend
 .boxheader {
-	background-color: #000000;
+	background-color: #[<$I2_USER->boxcolor|default:'000000'>];
+	border-left: #[<$I2_USER->boxcolor|default:'000000'>];
+	border-right: #[<$I2_USER->boxcolor|default:'000000'>];
 	margin-left: 4px;
 	margin-right: 4px;
 }

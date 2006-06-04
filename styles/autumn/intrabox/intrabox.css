@@ -9,7 +9,7 @@
 .boxheader {
 	color: #87ceeb;
 	font-weight: bold;
-	background-color: #990022;
+	background-color: #[<$I2_USER->boxcolor|default:"990022">];
 	border-bottom-style: dotted;
 	border-bottom-width: 1px;
 	border-bottom-color: #fcc303;

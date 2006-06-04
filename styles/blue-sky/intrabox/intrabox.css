@@ -13,7 +13,7 @@
 	color: #fff;
 	border-top: 0.1em solid #65B6E3;   
 	border-left: 0.1em solid #65B6E3; 
-	background-color: #4284B5;
+	background-color: #[<$I2_USER->boxcolor|default:"4284B5">];
 	font-weight: bold;
 	font-family: Verdana, Arial, sans-serif;
 }

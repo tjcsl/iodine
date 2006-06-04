@@ -122,7 +122,7 @@ class User {
 
 	public function recache($field) {
 		global $I2_LDAP;
-		$this->info[$field] = $I2_LDAP->search_base("iodineUid={$this->iodineUid},ou=people",'style')->fetch_single_value();
+		$this->info[$field] = $I2_LDAP->search_base("iodineUid={$this->iodineUid},ou=people",array($field))->fetch_single_value();
 	}
 
 	/**

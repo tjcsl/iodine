@@ -14,7 +14,7 @@
 .boxheader {
 	color: #FFFFFF;
 	font-weight: bold;
-	background-color: #FFCCFF;
+	background-color: #[<$I2_USER->boxcolor|default:'FFCCFF'>];
 	border: 2px outset #FFCCFF;
 	padding: 0px 10px;
 	-moz-user-select: none;

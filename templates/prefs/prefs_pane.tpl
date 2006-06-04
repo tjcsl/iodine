@@ -125,6 +125,10 @@
 		</td>
 	</tr>
 	<tr>
+		<td>Intrabox hex color:</td>
+		<td><input type="text" name="pref_boxcolor" value="[<$I2_USER->boxcolor|escape:'html'>]"/></td>
+	</tr>
+	<tr>
 		<td>Locker:</td>
 		<td><input type="text" name="pref_locker" value="[<$I2_USER->locker|escape:'html'>]"/></td>
 	</tr>

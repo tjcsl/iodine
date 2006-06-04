@@ -19,7 +19,7 @@
 	color: #FFFFFF;
 	font-weight: bold;
 	/*background-color: #464678;*/
-	background-color: #618CAF;
+	background-color: #[<$I2_USER->boxcolor|default:'618CAF'>];
 	/*border-left: 4px solid #464678;
 	border-right: 4px solid #464678;*/
 	padding: 1px 4px;

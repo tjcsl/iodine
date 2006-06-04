@@ -48,7 +48,7 @@ class Prefs implements Module {
 				}
 			}
 
-			if (isSet($_REQUEST['pref_style'])) {
+			if (isSet($_REQUEST['pref_style']) || isSet($_REQUEST['pref_boxcolor'])) {
 				Display::style_changed();
 			}
 

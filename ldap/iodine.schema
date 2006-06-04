@@ -576,6 +576,14 @@ attributetype ( i2Attr:70
 	SYNTAX stringSyntax
 	)
 
+attributetype ( i2Attr:71
+	NAME ('boxcolor')
+	DESC 'The color of Intrabox headers'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubStringsMatch
+	SYNTAX stringSyntax{6}
+	)
+
 objectclass ( i2OC:1
 	NAME ('tjhsstStudent' 'iodineStudent')
 	SUP inetOrgPerson STRUCTURAL
@@ -608,6 +616,7 @@ objectclass ( i2OC:1
 		displayName $
 		middlename $
 		nickname $
+		boxcolor $
 		counselor $
 		group $
 		birthday $
@@ -652,6 +661,7 @@ objectclass ( i2OC:2
 		style $
 		chrome $
 		comments $
+		boxcolor $
 		counselor $
 		soundexlast $
 		soundexfirst $

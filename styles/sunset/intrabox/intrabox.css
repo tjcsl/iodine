@@ -5,7 +5,7 @@
 
 @extend
 .boxheader {
-	background-color: #660066;
+	background-color: #[<$I2_USER->boxcolor|default:'660066'>];
 	color: #FF99FF;
 }
 

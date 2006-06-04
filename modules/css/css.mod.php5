@@ -20,6 +20,12 @@ class CSS implements Module {
 
 	private $warnings = array();
 
+	private $style_cache;
+
+	private $date;
+
+	private $gmdate;
+
 	/**
 	* Required by the {@link Module} interface.
 	*/
@@ -31,9 +37,21 @@ class CSS implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($disp) {
-		Display::stop_display();
 		
-		echo $this->css_text;
+		header('Content-type: text/css');
+		header("Last-Modified: {$this->gmdate}");
+		header('Cache-Control: public');
+		header('Pragma:'); //Unset pragma header
+		header('Expires:'); //Unset expires header
+		//echo $this->css_text;
+		echo "/* Server-Cache: {$this->style_cache} */\n";
+		echo "/* Client-Cached: {$this->date} */\n";
+		$disp->clear_buffer();
+		$text = $disp->fetch($this->style_cache,array(),FALSE);
+		//TODO: cache to stop extra Smarty runs?
+		echo $text;
+		
+		Display::stop_display();
 		
 		exit;
 	}
@@ -56,7 +74,7 @@ class CSS implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_ARGS;
+		global $I2_ARGS, $I2_USER;
 		
 		$current_style = $I2_ARGS[1];
 
@@ -69,7 +87,7 @@ class CSS implements Module {
 		if (!is_dir($cache_dir)) {
 			mkdir($cache_dir, 0700, TRUE);
 		}
-		$style_cache = $cache_dir . $current_style;
+		$style_cache = $cache_dir . $I2_USER->uid;
 
 		//Recompile the cache if it's stale
 		if (!file_exists($style_cache) || filemtime($style_cache) < dirmtime($this->style_path)) {
@@ -91,7 +109,7 @@ class CSS implements Module {
 		}
 		
 		//Modification date of cache file
-		$gmdate = gmdate('D, d M Y H:i:s', filemtime($style_cache)) . ' GMT';
+		$this->gmdate = gmdate('D, d M Y H:i:s', filemtime($style_cache)) . ' GMT';
 
 		//Checks to see if the client's cache is stale
 		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
@@ -103,17 +121,13 @@ class CSS implements Module {
 			}
 		}
 		
-		header('Content-type: text/css');
-		header("Last-Modified: $gmdate");
-		header('Cache-Control: public');
-		header('Pragma:'); //Unset pragma header
-		header('Expires:'); //Unset expires header
 		
-		$date = date("D M j G:i:s T Y");
-		echo "/* Server-Cache: $style_cache */\n";
-		echo "/* Client-Cached: $date */\n";
+		$date = date('D M j G:i:s T Y');
+		$this->date = $date;
 
-		$this->css_text = file_get_contents($style_cache);
+		$this->style_cache = $style_cache;
+
+		//$this->css_text = file_get_contents($style_cache);
 		
 		return 'css';
 	}
@@ -176,7 +190,7 @@ class CSS implements Module {
 		$filename = basename($path);
 
 		/* remove comments */
-		$contents = preg_replace("/\/\*.*?\*\//s", "", $contents);
+		$contents = preg_replace("/\/\*.*?\*\//s", '', $contents);
 
 		$rules = array_map('trim', explode('}', $contents));
 		foreach ($rules as $rule) {
@@ -211,7 +225,9 @@ class CSS implements Module {
 					continue;
 				}
 
-				list ($key, $value) = array_map('trim', explode(':', $property));
+				$colonpos = strpos($property,':');
+				$key = trim(substr($property,0,$colonpos));
+				$value = trim(substr($property,$colonpos+1));
 				$rule->set_property($key, $value);
 			}
 
@@ -228,6 +244,12 @@ class CSS implements Module {
 				$this->style_sheet->extend_rule($rule);
 			}
 		}
+	}
+
+	public static function flush_cache(User $user) {
+		$cache_dir = i2config_get('cache_dir', NULL, 'core') . 'styles/';
+		$style_cache = $cache_dir . $user->uid;
+		exec("rm -f $style_cache");
 	}
 }
 
