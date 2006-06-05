@@ -659,17 +659,20 @@ class User {
 			  global $I2_LDAP;
 			  /*
 			  ** Map things users would type into LDAP attributes
+			  ** Supports mapping to one of an array of values, in which case it ORs the match
 			  */
 			  $maptable = array(
-						 'firstname' => 'givenname',
+						 'firstname' => array('givenname','mname'),
 						 'first' => array('givenname','nickname'),
 						 'lastname' => 'sn',
 						 'last' => 'sn',
 						 'nick' => 'nickname',
+						 'name' => array('sn','mname','givenname'),
 						 'firstnamesound' => 'soundexfirst',
 						 'firstsound' => 'soundexfirst',
 						 'lastnamesound' => 'soundexlast',
 						 'lastsound' => 'soundexlast',
+						 'namesound' => array('soundexfirst','soundexlast'),
 						 'city' => 'l',
 						 'town' => 'l',
 						 'middle' => 'mname',
@@ -683,7 +686,10 @@ class User {
 
 			  $soundexed = array(
 						 'soundexfirst' => 1,
-						 'soundexlast' => 1
+						 'soundexlast' => 1,
+						 'namesound' => 1,
+						 'lastsound' => 1,
+						 'firstsound' => 1
 			  );
 
 			  /*
