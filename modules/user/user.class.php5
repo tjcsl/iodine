@@ -681,7 +681,8 @@ class User {
 						 'cell' => 'mobile',
 						 'telephone' => 'homephone',
 						 'address' => 'street',
-						 'zip' => 'postalcode'
+						 'zip' => 'postalcode',
+						 'grade' => 'graduationYear'
 			  );
 
 			  $soundexed = array(
@@ -765,6 +766,10 @@ class User {
 					if ($key) {
 						// We know what we're trying to search for
 						$key = strtolower($key);
+						if ($key == 'grade') {
+							$tok = self::get_gradyear($tok);
+							$key = 'graduationYear';
+						}
 						if (isSet($soundexed[$key])) {
 							$tok = soundex($tok);
 						}
