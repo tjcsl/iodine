@@ -16,7 +16,7 @@
 }
 @extend
 .boxheader {
-	color: #FFFFFF;
+	color: #[<$I2_USER->boxtitlecolor|default:'FFFFFF'>];
 	font-weight: bold;
 	background-color: #[<$I2_USER->boxcolor|default:'006699'>];
 	border: 1px transparent;

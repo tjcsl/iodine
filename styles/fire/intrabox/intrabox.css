@@ -8,7 +8,7 @@
 @extend
 .boxheader {
 	background-color: #[<$I2_USER->boxcolor|default:'330000'>];
-	color: #FF9933;
+	color: #[<$I2_USER->boxtitlecolor|default:"FF9933">];
 }
 
 @extend

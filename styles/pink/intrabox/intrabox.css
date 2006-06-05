@@ -5,7 +5,7 @@
 }
 @extend
 .boxheader {
-	color: #336699;
+	color: #[<$I2_USER->boxtitlecolor|default:'336699'>];
 	background-color: #[<$I2_USER->boxcolor|default:'f3a8e2'>];
 	border-left: 4px solid #[<$I2_USER->boxcolor|default:'f3a8e2'>];
 	border-right: 4px solid #[<$I2_USER->boxcolor|default:'f3a8e2'>];

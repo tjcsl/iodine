@@ -3,7 +3,7 @@
 	background: black;
 }
 .boxheader {
-	color: #FFFFFF;
+	color: #[<$I2_USER->boxtitlecolor|default:"FFFFFF">];
 	font-weight: bold;
 	background-color: #[<$I2_USER->boxcolor|default:'000000'>];
 	border-left: 4px solid #[<$I2_USER->boxcolor|default:'000000'>];

@@ -16,7 +16,7 @@
 	width: 305px;
 }
 .boxheader {
-	color: #FFFFFF;
+	color: #[<$I2_USER->boxtitlecolor|default:"FFFFFF">];
 	font-weight: bold;
 	/*background-color: #464678;*/
 	background-color: #[<$I2_USER->boxcolor|default:'618CAF'>];

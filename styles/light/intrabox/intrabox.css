@@ -1,9 +1,9 @@
 .boxheader {
-	color: black;
+	color: #[<$I2_USER->boxtitlecolor|default:"000000">];
 	font-weight: bold;
-	background-color: #[<$I2_USER->boxcolor|default:ffffff>];
-	border-left: 4px solid #[<$I2_USER->boxcolor|default:ffffff>];
-	border-right: 4px solid #[<$I2_USER->boxcolor|default:ffffff>];
+	background-color: #[<$I2_USER->boxcolor|default:"ffffff">];
+	border-left: 4px solid #[<$I2_USER->boxcolor|default:"ffffff">];
+	border-right: 4px solid #[<$I2_USER->boxcolor|default:"ffffff">];
 }
 .upbutton {
 	background: url(/www/pics/up.gif) center no-repeat;

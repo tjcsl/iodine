@@ -78,7 +78,7 @@ access to filter="(|(perm-showpicture-self=FALSE)(perm-showpicture=FALSE))"
 	by * none
 
 # Changeable student info
-access to attrs=mobile,aim,msn,icq,googletalk,yahoo,locker,telephoneNumber,webpage,jabber,mail,xfire,children,skype,boxcolor
+access to attrs=mobile,aim,msn,icq,googletalk,yahoo,locker,telephoneNumber,webpage,jabber,mail,xfire,children,skype,boxcolor,boxtitlecolor
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
 	by self write
 	by users read

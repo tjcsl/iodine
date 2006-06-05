@@ -7,7 +7,7 @@
 }
 @replace
 .boxheader {
-	color: #87ceeb;
+	color: #[<$I2_USER->boxtitlecolor|default:"87ceeb">];
 	font-weight: bold;
 	background-color: #[<$I2_USER->boxcolor|default:"990022">];
 	border-bottom-style: dotted;
