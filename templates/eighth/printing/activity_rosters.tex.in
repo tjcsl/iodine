@@ -12,6 +12,9 @@
 
 \begin{document}
 %@begin header
+\begin{raggedright}
+	{\bf\Large Activity ID %@$activity->aid@%} \\
+\end{raggedright}
 \begin{raggedleft}
 	\begin{tabular}[c]{rl}
 		{\Large %@$activity->block_sponsors_comma_short@%} & \multirow{3}*{\HUGE %@$activity->block->block@%} \\
@@ -20,8 +23,8 @@
 	\end{tabular} \\
 \end{raggedleft}
 \begin{center}
-{\bf\large %@$activity->name_r@%%@($activity->comment ? ' -- ' . $activity->comment : '')@%} \\
-Activity ID %@$activity->aid@% -- %@count($activity->members)@% Students \\
+{\bf\large %@$activity->name_full_r@%} \\
+%@count($activity->members)@% Students \\
 \end{center}
 \begin{tabular*}{6 in}{cl@{\extracolsep{\fill}}c}
 Check if Present & Student Name (ID) & Grade \\

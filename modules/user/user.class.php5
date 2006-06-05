@@ -667,14 +667,18 @@ class User {
 						 'last' => 'sn',
 						 'nick' => 'nickname',
 						 'firstnamesound' => 'soundexfirst',
+						 'firstsound' => 'soundexfirst',
 						 'lastnamesound' => 'soundexlast',
+						 'lastsound' => 'soundexlast',
 						 'city' => 'l',
 						 'town' => 'l',
 						 'middle' => 'mname',
+						 'middlename' => 'mname',
 						 'phone' => 'homephone',
 						 'cell' => 'mobile',
 						 'telephone' => 'homephone',
-						 'address' => 'street'
+						 'address' => 'street',
+						 'zip' => 'postalcode'
 			  );
 
 			  $soundexed = array(

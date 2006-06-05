@@ -12,3 +12,6 @@ verbose = True
 username=<username>
 [extensions]
 hgext.mq=
+[gpg]
+DC9B12A3=Bryan Jacobs <BryanRJ@gmail.com>
+525CF968=Andrew Smith <asmith2004@gmail.com>

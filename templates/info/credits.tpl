@@ -48,7 +48,6 @@ I2 Development Team:
 	<li>Alfie Parthum (2006)</li> 
 	<li>Bryan "brj" Rau-Jacobs (2006)</li>
 	<li>Andrew "asmith" Smith (2006)</li>
-	<li>Dan "The Intranet Man" Tran (2006)</li>
 	<li>Logan Kearsley (2007)</li>
 	<li>Victor "vmircea" Mircea (2007)</li>
 	<li>Josiah "Jobin" Boning (2008)</li>
@@ -61,7 +60,6 @@ I2 User Experience Technicians:
 <ul>
 	<li>Eric Harmon</li>
 	<li>Andrew Smith</li>
-	<li>Dan Tran</li>
 	<li>William "wyang" Yang</li>
 </ul>
 </td>

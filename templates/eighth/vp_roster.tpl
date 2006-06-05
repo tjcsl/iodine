@@ -1,9 +1,10 @@
 [<include file="eighth/header.tpl">]
-<span style="font-family: courier;">
+<div style="font-family: courier;">
 Activity:&nbsp;&nbsp;&nbsp;[<$activity->name>][<if $activity->restricted >] (R)[</if>]<br />
 Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<$activity->block->date|date_format>], [<$activity->block->block>] block<br />
 Room(s):&nbsp;&nbsp;&nbsp;&nbsp;[<$activity->block_rooms_comma>]<br />
 Sponsor(s):&nbsp;[<$activity->block_sponsors_comma>]<br />
+</div>
 <br />
 [<if $activity->advertisement>]Special Info: [<$activity->advertisement>]<br />[</if>]
 
