@@ -112,10 +112,6 @@ class Auth {
 		*/
 		if (	isset($_SESSION['i2_uid']) 
 			&& isset($_SESSION['i2_login_time'])) {
-			if( time() > $_SESSION['i2_login_time']+i2config_get('timeout',600,'login') && !$this->used_master_password()) {
-				$this->log_out();
-				return FALSE;
-			}
 
 			/*
 			** Make Kerberos credentials available for the duration of the request
@@ -129,6 +125,11 @@ class Auth {
 			} else {
 				//We're iodine-authed without kerberos ... so we must be the master!
 				$this->is_master = TRUE;
+			}
+			
+			if( time() > $_SESSION['i2_login_time']+i2config_get('timeout',600,'login') && !$this->used_master_password()) {
+				$this->log_out();
+				return FALSE;
 			}
 
 			$_SESSION['i2_login_time'] = time();
