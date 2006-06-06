@@ -131,7 +131,6 @@ class Display {
 		}
 
 		// Allow nags to catch users after they log in
-		$I2_LOG->log_file(print_r($module,1));
 		$nagging = (strcasecmp($module,'nags') == 0);
 		// But let CSS escape the horror
 		if (!$nagging && strcasecmp($module,'css') != 0) {

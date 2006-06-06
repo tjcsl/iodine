@@ -980,7 +980,7 @@ class dataimport implements Module {
 			$sponsor = new User($sponsordn);
 			
 			$sponsordn = LDAP::get_user_dn($sponsor->username);
-			$I2_LOG->log_file(print_r($sponsordn,1));
+			//$I2_LOG->log_file(print_r($sponsordn,1));
 
 			$newclass = array(
 				'objectClass' => 'tjhsstClass',
@@ -997,9 +997,9 @@ class dataimport implements Module {
 			/*if (isSet($students[$sectionid])) {
 				$newclass['enrolledStudent'] = $students[$sectionid];
 			}*/
-			$I2_LOG->log_file('Creating section '.$sectionid.' ('.$class.' period '.$period.') taught by '.$sponsordn.' in '.$room);
+			//$I2_LOG->log_file('Creating section '.$sectionid.' ('.$class.' period '.$period.') taught by '.$sponsordn.' in '.$room);
 			// Create the course
-			$I2_LOG->log_file('dn: '.LDAP::get_schedule_dn($sectionid).' === '.print_r($newclass,1));
+			//$I2_LOG->log_file('dn: '.LDAP::get_schedule_dn($sectionid).' === '.print_r($newclass,1));
 			$ldap->delete(LDAP::get_schedule_dn($sectionid));
 			$ldap->add(LDAP::get_schedule_dn($sectionid),$newclass);
 		}
@@ -1017,7 +1017,7 @@ class dataimport implements Module {
 				$I2_LOG->log_file('Invalid/unknown studentID '.$studentid);
 				continue;
 			}
-			$I2_LOG->log_file('StudentID '.$studentid.' enrolled in section '.$sectionone);
+			//$I2_LOG->log_file('StudentID '.$studentid.' enrolled in section '.$sectionone);
 			$user = new User($uid);
 			$studentdn = LDAP::get_user_dn($user->username);
 			$class = $ldap->search(LDAP::get_schedule_dn(),"tjhsstSectionId=$sectionone",array('tjhsstSectionId'))->fetch_single_value();
@@ -1034,7 +1034,7 @@ class dataimport implements Module {
 		fclose($studentcoursefile);
 
 		foreach ($students as $studentdn=>$classdns) {
-				  $I2_LOG->log_file($studentdn.': '.print_r($classdns,1));
+				  //$I2_LOG->log_file($studentdn.': '.print_r($classdns,1));
 				  $ldap->modify_val($studentdn,'enrolledClass',$classdns);
 		}
 
