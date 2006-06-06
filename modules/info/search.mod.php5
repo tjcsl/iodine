@@ -34,7 +34,10 @@ class Search implements Module {
 	}
 
 	public static function get_results() {
-			  return $_SESSION['search_results'];
+		if (!isSet($_SESSION['search_results'])) {
+			return FALSE;
+		}
+		return $_SESSION['search_results'];
 	}
 
 	public static function clear_results() {

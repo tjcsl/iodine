@@ -311,12 +311,21 @@ class User {
 			case 'show_map':
 					  return ($this->__get('perm-showmap')!='FALSE')&&($this->__get('perm-showmap-self')!='FALSE');
 			case 'showpictureself':
+			case 'showpicture':
+			case 'showpictures':
 			case 'showaddressself':
+			case 'showaddress':
 			case 'showphoneself':
+			case 'showphone':
 			case 'showmapself':
+			case 'showmap':
 			case 'showscheduleself':
+			case 'showschedule':
 		 	case 'hideeighthself':
+		 	case 'hideeighth':
 			case 'showbdayself':
+			case 'showbdateself':
+			case 'showbdate':
 				$row = $I2_LDAP->search_base(LDAP::get_user_dn($this->username),$name);
 				if (!$row) {
 					return NULL;
@@ -445,19 +454,27 @@ class User {
 				$this->set('phoneNumber',$val,$ldap);
 				return;
 			case 'showmapself':
+			case 'showmap':
 			case 'showbdayself':
+			case 'showbdateself':
+			case 'showbdate':
 			case 'showscheduleself':
+			case 'showschedule':
 			case 'hideeighthself':
+			case 'hideeighth':
 			case 'showaddressself':
+			case 'showaddress':
 			case 'showphoneself':
+			case 'showphone':
 				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';
 				break;
 			case 'showpictureself':
+			case 'showpicture':
 				// Set all the pictures' attributes to match the parent user's
 				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';
 				$res = $ldap->search_one(LDAP::get_user_dn($this->__get('username')),'objectClass=iodinePhoto',array('cn'));
 				while ($row = $res->fetch_array()) {
-					$ldap->modify_val(LDAP::get_pic_dn($row['cn'],$this),'showpictureself',$val);
+					$ldap->modify_val(LDAP::get_pic_dn($row['cn'],$this),$name,$val);
 				}
 		}
 		
