@@ -1,5 +1,6 @@
 [<include file="eighth/header.tpl">]
 <table><tr><td>
+<br /><b>[<$group->name>]</b><br /><br />
 [<if count($group->members) > 0>]
 <table cellspacing="0" style="border: 0px; margin: 0px; padding: 0px;">
 	<tr>
