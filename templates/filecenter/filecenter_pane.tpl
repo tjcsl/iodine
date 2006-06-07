@@ -4,7 +4,13 @@
   <input type="submit" value="Show/hide hidden files"/>
  </form>
 </div>
-   
+
+<form method="post">
+<input type="text" name="mkdir" />
+<input type="submit" value="Create Directory"/>
+</form>
+<br />
+
 <table id="filetable">
  <thead>
   <tr>

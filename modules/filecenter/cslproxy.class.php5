@@ -19,7 +19,7 @@ class CSLProxy {
 
 	public function __construct($user = FALSE, $pass = FALSE, $realm = FALSE) {
 		global $I2_SQL,$I2_USER;
-		if ($realm==FALSE) { $realm=i2config_get("afs_realm","CSL.TJHSST.EDU","kerberos"); }
+		if ($realm==FALSE) { $realm=i2config_get('afs_realm','CSL.TJHSST.EDU','kerberos'); }
 //		if (!isset($_SESSION['krb_csl_ticket'])) {
 			d("Getting $realm kerberos ticket",6);
 			try {

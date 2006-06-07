@@ -140,16 +140,19 @@ class Filecenter implements Module {
 					die;
 				}
 			}
-		} else if (isset($I2_QUERY['rename'])) {
+		} else if (isSet($I2_QUERY['rename'])) {
 			$from = $this->directory . $I2_QUERY['rename'];
 			$to = $this->directory . $I2_QUERY['to'];
 			if ($from != $to) {
 				$this->filesystem->move_file($from, $to);
 			}
-			redirect("filecenter/$system_type$this->directory");
+			redirect("filecenter/$system_type"."{$this->directory}");
+		} else if (isSet($_REQUEST['mkdir'])) {
+			$this->filesystem->make_dir($this->directory . $_REQUEST['mkdir']);
+			redirect("filecenter/$system_type"."{$this->directory}");
 		}
 		
-		$this->template = "filecenter_pane.tpl";
+		$this->template = 'filecenter_pane.tpl';
 
 		return array('Filecenter', 'Current directory: ' . $this->directory);
 	}
