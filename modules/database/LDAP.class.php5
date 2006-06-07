@@ -102,10 +102,19 @@ class LDAP {
 	}
 
 	private function conn_options($conn) {
+		/*
+		** Version 3 required for GSSAPI binds
+		*/
 		ldap_set_option($conn,LDAP_OPT_PROTOCOL_VERSION,3);
+		/*
+		** Not currently used, but a good idea
+		*/
 		ldap_set_option($conn,LDAP_OPT_DEREF,LDAP_DEREF_ALWAYS);
 	}
 
+	/**
+	* Connect to the LDAP server
+	*/
 	private function connect() {
 		$conn = ldap_connect($this->server);
 		$this->conn_options($conn);
@@ -114,6 +123,9 @@ class LDAP {
 		return $conn;
 	}
 
+	/**
+	* Rebind if necessary to chase a referral
+	*/ 
 	private function rebind($conn,$url) {
 		$this->conn_options($conn);
 		$bind = ldap_sasl_bind($conn);

@@ -325,7 +325,7 @@ attributetype ( i2Attr:37
 	DESC 'AIM/AOL Screenname'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax
+	SYNTAX stringSyntax{256}
 	)
 
 attributetype ( i2Attr:38
@@ -333,7 +333,7 @@ attributetype ( i2Attr:38
 	DESC 'Yahoo! ID'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax
+	SYNTAX stringSyntax{256}
 	)
 	
 attributetype ( i2Attr:39
@@ -341,7 +341,7 @@ attributetype ( i2Attr:39
 	DESC 'MSN Username'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax
+	SYNTAX stringSyntax{256}
 	)
 	
 attributetype ( i2Attr:40
@@ -349,7 +349,7 @@ attributetype ( i2Attr:40
 	DESC 'Jabber Username'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax
+	SYNTAX stringSyntax{256}
 	)
 	
 attributetype ( i2Attr:41
@@ -357,7 +357,7 @@ attributetype ( i2Attr:41
 	DESC 'ICQ Number'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax
+	SYNTAX stringSyntax{256}
 	)
 	
 attributetype ( i2Attr:42
@@ -365,14 +365,14 @@ attributetype ( i2Attr:42
 	DESC 'Google Talk'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax
+	SYNTAX stringSyntax{256}
 	)
 
 attributetype ( i2Attr:43
 	NAME ('webpage' 'website')
 	DESC 'The website of a user'
 	EQUALITY caseIgnoreMatch
-	SYNTAX stringSyntax
+	SYNTAX stringSyntax{256}
 	)
 
 attributetype ( i2Attr:44
@@ -505,7 +505,7 @@ attributetype ( i2Attr:61
 	DESC 'XFire handle'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax
+	SYNTAX stringSyntax{256}
 	)
 
 #attributetype ( i2Attr:62
@@ -573,7 +573,7 @@ attributetype ( i2Attr:70
 	DESC 'A skype handle'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax
+	SYNTAX stringSyntax{256}
 	)
 
 attributetype ( i2Attr:71

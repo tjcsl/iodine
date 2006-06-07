@@ -1,5 +1,20 @@
 <?php
 
+/**
+* @author The Intranet 2 Development Team <intranet2@thsst.edu>
+* @copyright 2006 The Intranet 2 Development Team
+* @since 1.0
+* @package modules
+* @subpackage info
+* @filesource
+*/
+
+/**
+* Provides a modular search-info plug-in which may be used in other components. 
+*
+* @package modules
+* @subpackage info
+*/
 class Search implements Module {
 
 	public function init_box() {
