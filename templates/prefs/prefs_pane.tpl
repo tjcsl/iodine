@@ -126,7 +126,7 @@
 	</tr>
 	<tr>
 		<td>Intrabox color (hex RRBBGG):</td>
-		<td><input type="text" name="pref_boxcolor" value="[<$I2_USER->boxcolor|escape:'html'>]"/></td>
+		<td><input type="text" name="pref_boxcolor" value="[<$I2_USER->boxcolor|escape:'html'>]"/> <a target="_blank" href="[<$I2_ROOT>]info/prefs/color">Color chooser</a></td>
 	</tr>
 	<tr>
 		<td>Intrabox title color (hex RRBBGG):</td>
