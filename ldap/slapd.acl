@@ -53,7 +53,7 @@ access to filter="(|(perm-showschedule-self=FALSE)(perm-showschedule=FALSE))"
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
 	by * none
 
-access to filter="(|(perm-showpictures-self=FALSE)(perm-showpicture=FALSE))"
+access to filter="(|(perm-showpictures-self=FALSE)(perm-showpictures=FALSE))"
 		attrs=preferredPhoto,jpegPhoto
 	by self read
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write

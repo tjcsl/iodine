@@ -211,7 +211,6 @@ class Auth {
 				$I2_LOG->log_file('Invalid callback in the logout_funcs SESSION array, skipping it. Callback: '.print_r($callback,TRUE));
 			}
 		}
-		
 		/*
 		** Try to get rid of Kerberos credentials
 		*/
