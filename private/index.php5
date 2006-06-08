@@ -1,4 +1,12 @@
 <?php
+/**
+* A page to just test WebAuth-related things.
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2005-2006 The Intranet 2 Development Team
+* @package core
+* @subpackage Auth
+* @filesource
+*/
 	$user = getenv('REMOTE_USER');
 	$creds = getenv('KRB5CCNAME');
 ?>

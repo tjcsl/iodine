@@ -1,4 +1,18 @@
 <?php
+/**
+* Just contains the definition for the {@link Module} {@link Randomsample}.
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2005-2006 The Intranet 2 Development Team
+* @package modules
+* @subpackage Info
+* @filesource
+*/
+
+/**
+* A module to obtain a random sampling of students.
+* @package modules
+* @subpackage Info
+*/
 class Randomsample implements Module {
 
 		  private $sample;

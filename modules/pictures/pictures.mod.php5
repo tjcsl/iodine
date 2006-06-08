@@ -1,5 +1,18 @@
 <?php
+/**
+* Just contains the definition for the {@link Module} {@link Pictures}.
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2005-2006 The Intranet 2 Development Team
+* @package modules
+* @subpackage Studentdirectory
+* @filesource
+*/
 
+/**
+* A {@link Module} to display someone's preferred picture.
+* @package core
+* @subpackage Module
+*/
 class Pictures implements Module {
 
 	function display_box($disp) {

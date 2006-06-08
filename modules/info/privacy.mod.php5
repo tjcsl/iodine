@@ -1,4 +1,18 @@
 <?php
+/**
+* Just contains the definition for the {@link Module} {@link Privacy}.
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2005-2006 The Intranet 2 Development Team
+* @package core
+* @subpackage Module
+* @filesource
+*/
+
+/**
+* A {@link Module} to set the parental privacy controls on a student.
+* @package core
+* @subpackage Module
+*/
 class Privacy implements Module {
 
 	private $template = 'view.tpl';

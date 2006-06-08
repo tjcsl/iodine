@@ -1,4 +1,18 @@
 <?php
+/**
+* Just contains the definition for the {@link Module} {@link Nags}.
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2005-2006 The Intranet 2 Development Team
+* @package modules
+* @subpackage News
+* @filesource
+*/
+
+/**
+* The {@link Module} that displays {@link Nag}s.
+* @package modules
+* @subpackage News
+*/
 class Nags implements Module {
 
 	private $template = 'pane.tpl';
