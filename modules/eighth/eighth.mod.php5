@@ -997,10 +997,7 @@ class Eighth implements Module {
 		else if($this->op == 'modify') {
 			Eighth::start_undo_transaction();
 			foreach($this->args['modify'] as $bid) {
-				if($this->args['activity_status'][$bid] == 'CANCELLED') {
-					EighthActivity::cancel($bid, $this->args['aid']);
-				}
-				else if($this->args['activity_status'][$bid] == 'UNSCHEDULED') {
+				if($this->args['activity_status'][$bid] == 'UNSCHEDULED') {
 					EighthSchedule::unschedule_activity($bid, $this->args['aid']);
 				}
 				else {
@@ -1021,6 +1018,9 @@ class Eighth implements Module {
 						$commentslist = $this->args['comments'][$bid];
 					}
 					EighthSchedule::schedule_activity($bid, $aid, $sponsorlist, $roomlist, $commentslist);
+				}
+				if($this->args['activity_status'][$bid] == 'CANCELLED') {
+					EighthActivity::cancel($bid, $this->args['aid']);
 				}
 			}
 			Eighth::end_undo_transaction();

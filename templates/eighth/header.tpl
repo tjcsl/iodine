@@ -39,7 +39,7 @@
 	[<if $last_redo || $last_undo>]<a href="[<$I2_ROOT>]eighth/undoit/clear/[<$argstr>]">Clear undo stack</a>[</if>]
 </div>
 <script language="javascript" type="text/javascript">
-	document.scheduleform.uid.focus();
+	document.scheduleform.lname.focus();
 </script>
 [<if isSet($startdate)>]<b>Start date: [<$startdate|date_format>]</b><br />[</if>]
 [</if>]
