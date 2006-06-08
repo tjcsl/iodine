@@ -206,7 +206,7 @@ class Auth {
 				d('Invalid callback in the logout_funcs SESSION array, skipping it. Callback: '.print_r($callback,TRUE));
 			}
 		}
-		
+
 		session_destroy();
 		unset($_SESSION);
 		
