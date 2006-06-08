@@ -137,6 +137,7 @@ attributetype ( i2Attr:11
 	NAME ('sponsorDn' 'sponsor' 'teacher')
 	DESC 'The DN of the teacher(s) sponsoring an activity'
 	EQUALITY distinguishedNameMatch
+	ORDERING caseExactOrderingMatch
 	SYNTAX dnSyntax
 	)
 
@@ -557,6 +558,7 @@ attributetype ( i2Attr:68
 	NAME ('enrolledclass')
 	DESC 'The DN of a class a student is enrolled in'
 	EQUALITY distinguishedNameMatch
+	ORDERING caseExactOrderingMatch
 	SYNTAX dnSyntax
 	)
 

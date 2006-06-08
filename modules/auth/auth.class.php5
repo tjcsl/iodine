@@ -27,6 +27,11 @@ class Auth {
 	* Whether encryption of the user's password in $_SESSION is enabled.
 	*/
 	private $encryption;
+
+	/**
+	* Authentication object used.
+	*/
+	private $auth;
 	
 	/**
 	* Location of credentials cache
@@ -196,24 +201,28 @@ class Auth {
 	* @return bool TRUE if the user was successfully logged out.
 	*/
 	private function log_out() {
-		global $I2_ARGS;
+		global $I2_ARGS,$I2_LOG;
 		
 		foreach($_SESSION['logout_funcs'] as $callback) {
 			if( is_callable($callback[0]) ) {
 				call_user_func_array($callback[0], $callback[1]);
 			}
 			else {
-				d('Invalid callback in the logout_funcs SESSION array, skipping it. Callback: '.print_r($callback,TRUE));
+				$I2_LOG->log_file('Invalid callback in the logout_funcs SESSION array, skipping it. Callback: '.print_r($callback,TRUE));
 			}
 		}
-		
-		session_destroy();
-		unset($_SESSION);
 		
 		/*
 		** Try to get rid of Kerberos credentials
 		*/
-		`kdestroy`;
+		if (isSet($_SESSION['i2_credentials'])) {
+			$_SESSION['i2_credentials']->destroy();
+		} else {
+			`kdestroy`;
+		}
+		
+		session_destroy();
+		unset($_SESSION);
 		
 		return TRUE;
 	}
