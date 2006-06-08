@@ -73,4 +73,5 @@ Special Thanks to:
 	<li>Mr. Randy Latimer</li>
 	<li>Mr. Joshua Strong</li>
 	<li>Mr. Shane Torbert</li>
+	<li>Ms. Marie Lauducci</li>
 </ul>
