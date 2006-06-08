@@ -63,7 +63,7 @@ class EighthPrint {
 		}
 		else {
 			if($format == 'pdf') {
-				self::add_info($output, "Print Sponsor Schedule", $sponsor->name);
+				self::add_info($output, 'Print Sponsor Schedule', $sponsor->name);
 			}
 			self::do_display($output, $format, "Sponsor Schedule for {$sponsor->name}");
 		}
@@ -77,18 +77,18 @@ class EighthPrint {
 	* @param int The block ID
 	* @param string The output format
 	*/
-	public static function print_attendance_data($aid, $bid, $format = "print") {
+	public static function print_attendance_data($aid, $bid, $format = 'print') {
 		$activity = new EighthActivity($aid, $bid);
-		$output = self::latexify("attendance_data");
+		$output = self::latexify('attendance_data');
 		ob_start();
 		eval($output);
 		$output = ob_get_clean();
-		if($format == "print") {
+		if($format == 'print') {
 			self::do_print($output);
 		}
 		else {
-			if($format == "pdf") {
-				self::add_info($output, "Print Attendance Data", "{$activity->name} ({$activity->block->date} - {$activity->block->block} Block)");
+			if($format == 'pdf') {
+				self::add_info($output, 'Print Attendance Data', "{$activity->name} ({$activity->block->date} - {$activity->block->block} Block)");
 			}
 			self::do_display($output, $format, "Attendance Data for {$activity->name} ({$activity->block->date} - {$activity->block->block} Block)");
 		}
@@ -103,7 +103,7 @@ class EighthPrint {
 	*/
 	public static function print_activity_rosters($bids, $format = "print") {
 		global $I2_SQL;
-		$activities = EighthActivity::id_to_activity($I2_SQL->query("SELECT activityid,bid FROM eighth_block_map WHERE bid IN (%D) ORDER BY activityid ASC, bid ASC", $bids)->fetch_all_arrays(MYSQL_NUM));
+		$activities = EighthActivity::id_to_activity($I2_SQL->query('SELECT activityid,bid FROM eighth_block_map WHERE bid IN (%D) ORDER BY activityid ASC, bid ASC', $bids)->fetch_all_arrays(MYSQL_NUM));
 		usort($activities, array('EighthPrint', 'sort_by_sponsor'));
 		$block = NULL;
 		$blocks = array();
@@ -111,18 +111,18 @@ class EighthPrint {
 			$block = new EighthBlock($bid);
 			$blocks[] = "{$block->date} ({$block->block} block)";
 		}
-		$output = self::latexify("activity_rosters");
+		$output = self::latexify('activity_rosters');
 		ob_start();
 		eval($output);
 		$output = ob_get_clean();
-		if($format == "print") {
+		if($format == 'print') {
 			self::do_print($output);
 		}
 		else {
-			if($format == "pdf") {
-				self::add_info($output, "Print Activity Rosters", implode(", ", $blocks) . " Activity Rosters");
+			if($format == 'pdf') {
+				self::add_info($output, 'Print Activity Rosters', implode(', ', $blocks) . ' Activity Rosters');
 			}
-			self::do_display($output, $format, "Activity Rosters for " . implode(", ", $blocks));
+			self::do_display($output, $format, 'Activity Rosters for ' . implode(', ', $blocks));
 		}
 	}
 
@@ -141,7 +141,7 @@ class EighthPrint {
 		}
 		$activities = EighthActivity::id_to_activity(EighthSchedule::get_activities($uid, $start_date));
 		$absences = EighthSchedule::get_absences($uid);
-		$output = self::latexify("student_schedule");
+		$output = self::latexify('student_schedule');
 		ob_start();
 		eval($output);
 		$output = ob_get_clean();
@@ -150,9 +150,9 @@ class EighthPrint {
 		}
 		else {
 			if($format == "pdf") {
-				self::add_info($output, "Print Student Schedule", $user->name, TRUE);
+				self::add_info($output, 'Print Student Schedule', $user->name, TRUE);
 			}
-			self::do_display($output, $format, "Student Schedule for " . $user->name, TRUE);
+			self::do_display($output, $format, "Student Schedule for {$user->name}", TRUE);
 		}
 	}
 	
@@ -163,19 +163,19 @@ class EighthPrint {
 	* @param int The user's ID
 	* @param string The print format.
 	*/
-	public static function print_room_utilization($bid, $format = "pdf") {
+	public static function print_room_utilization($bid, $format = 'pdf') {
 		$block = new EighthBlock($bid);
 		$utilizations = EighthRoom::get_utilization($bid);
 		$output = self::latexify('room_utilization');
 		ob_start();
 		eval($output);
 		$output = ob_get_clean();
-		if($format == "print") {
+		if($format == 'print') {
 			self::do_print($output);
 		}
 		else {
-			if($format == "pdf") {
-				self::add_info($output, "Print Room Utilization", "{$activity->block->date} - {$activity->block->block} Block", TRUE);
+			if($format == 'pdf') {
+				self::add_info($output, 'Print Room Utilization', "{$activity->block->date} - {$activity->block->block} Block", TRUE);
 			}
 			self::do_display($output, $format, "Room Utilization for {$activity->block->date} - {$activity->block->block} Block", TRUE);
 		}
@@ -195,8 +195,12 @@ class EighthPrint {
 		$temp = tempnam('/tmp', 'EighthPrinting');
 		file_put_contents($temp, $output);
 		exec("cd /tmp; latex {$temp}");
-		exec("cd /tmp; dvips {$temp}.dvi" . ($landscape ? ' -t landscape' : ''));
-		exec("/usr/bin/nprint -U GUEST -P -S TJHSST_MEDIA -q MEDIA_Q5 {$temp}.ps");
+		exec("cd /tmp; dvips {$temp}.dvi -t letter" . ($landscape ? ' -t landscape' : ''));
+		$ftpconn = ftp_connect('198.38.28.59');
+		ftp_login($ftpconn, 'anonymous', '');
+		ftp_chdir($ftpconn, 'PORT1');
+		ftp_put($ftpconn, "{$temp}.ps", "{$temp}.ps", FTP_BINARY);
+		ftp_close($ftpconn);
 	}
 	
 	/**
@@ -212,16 +216,18 @@ class EighthPrint {
 		//$disposition = 'attachment';
 		$disposition = 'inline';
 		if($format == 'pdf') {
-			exec("cd /tmp; latex {$temp}");
+			exec("cd /tmp; pdflatex {$temp}");
 			exec("cd /tmp; pdflatex {$temp}");
 			header('Content-type: application/pdf');
 		}
 		else if($format == 'ps') {
 			exec("cd /tmp; latex {$temp}");
-			exec("cd /tmp; dvips {$temp}.dvi" . ($landscape ? ' -t landscape' : ''));
+			exec("cd /tmp; latex {$temp}");
+			exec("cd /tmp; dvips {$temp}.dvi -t letter" . ($landscape ? ' -t landscape' : ''));
 			header("Content-type: application/postscript");
 		}
 		else if($format == 'dvi') {
+			exec("cd /tmp; latex {$temp}");
 			exec("cd /tmp; latex {$temp}");
 			header('Content-type: application/x-dvi');
 		}
@@ -257,22 +263,22 @@ class EighthPrint {
 		$currsections = array();
 		$code = '';
 		$output = '';
-		$echoed = false;
-		$incode = false;
+		$echoed = FALSE;
+		$incode = FALSE;
 		foreach($lines as $line) {
 			$line = trim($line);
-			if(preg_match("/^\%\@begin (.*)$/", $line, $matches)) {
+			if(preg_match('/^\%\@begin (.*)$/', $line, $matches)) {
 				$currsections[] = $matches[1];
-				self::$sections[$matches[1]] = "";
+				self::$sections[$matches[1]] = '';
 			}
-			else if(preg_match("/^\%\@end (.*)$/", $line, $matches)) {
+			else if(preg_match('/^\%\@end (.*)$/', $line, $matches)) {
 				unset($currsections[array_search($matches[1], $currsections)]);
 			}
-			else if(preg_match("/^\%\@include (.*)$/", $line, $matches)) {
+			else if(preg_match('/^\%\@include (.*)$/', $line, $matches)) {
 				if(count($currsections) == 0) {
 					if(!$echoed) {
 						$output .= "echo '";
-						$echoed = true;
+						$echoed = TRUE;
 					}
 					$output .= self::$sections[$matches[1]];
 				}
@@ -284,8 +290,8 @@ class EighthPrint {
 			}
 			else if(substr($line, 0, 3) == '%@?') {
 				$output .= "';\n";
-				$echoed = false;
-				$incode = true;
+				$echoed = FALSE;
+				$incode = TRUE;
 				if(substr($line, 3) != '') {
 					if(substr($line, -2) != '@%') {
 						$code .= substr($line, 3) . "\n";
@@ -294,17 +300,17 @@ class EighthPrint {
 						$code .= substr($line, 3, -2);
 						$output .= "{$code}\n";
 						$code = '';
-						$incode = false;
+						$incode = FALSE;
 					}
 				}
 			}
-			else if($incode && substr($line, -2) == "@%") {
+			else if($incode && substr($line, -2) == '@%') {
 				$output .= "{$code}\n";
-				$code = "";
-				$incode = false;
+				$code = '';
+				$incode = FALSE;
 			}
 			else {
-				$line = preg_replace('/%@(.*?)@%/', '\' . strtr($1, array(\'&\' => \'\&\', \'%\' => \'\%\', \'{\' => \'\{\', \'}\' => \'\}\', \'_\' => \'\_\', \'#\' => \'\#\')) . \'', $line);
+				$line = preg_replace('/%@(.*?)@%/', '\' . strtr($1, array(\'$\' => \'\\\\$\', \'&\' => \'\&\', \'%\' => \'\%\', \'{\' => \'\{\', \'}\' => \'\}\', \'_\' => \'\_\', \'#\' => \'\#\')) . \'', $line);
 				$line = strtr($line, array('\\' => '\\\\'));
 				if(count($currsections) == 0) {
 					if($incode) {
@@ -313,7 +319,7 @@ class EighthPrint {
 					else {
 						if(!$echoed) {
 							$output .= "echo '";
-							$echoed = true;
+							$echoed = TRUE;
 						}
 						$output .= "{$line}\n";
 					}

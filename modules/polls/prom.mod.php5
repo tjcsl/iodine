@@ -76,6 +76,7 @@ class Prom implements Module {
 	*/
 	function init_pane() {
 		global $I2_USER,$I2_SQL;
+		throw new I2Exception('Prom registration is temporarily disabled.  It will return soon.');
 		if (!$I2_USER->grade == 12) {
 			throw new I2Exception('Only seniors may register for the SENIOR prom!');
 		}
