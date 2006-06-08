@@ -1,10 +1,17 @@
 <?php
 /**
-*
+* Just contains the definition for the {@link Section} {@link SectionLDAP}.
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2005-2006 The Intranet 2 Development Team
+* @package core
+* @subpackage Database
+* @filesource
 */
 
 /**
-*
+* A class that represents a single Section that is stored in LDAP.
+* @package core
+* @subpackage Database
 */
 class SectionLDAP implements Section {
 

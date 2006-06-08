@@ -1,4 +1,18 @@
 <?php
+/**
+* Just contains the definition for the class Nag.
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2005-2006 The Intranet 2 Development Team
+* @package modules
+* @subpackage News
+* @filesource
+*/
+
+/**
+* A class to represent a "Nag", i.e. a piece of news that users absolutely must see, and nag them.
+* @package modules
+* @subpackage News
+*/
 class Nag {
 
 	private $data;

@@ -1,4 +1,18 @@
 <?php
+/**
+* Just contains the definition for the {@link Module} {@link TabbedPane}.
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2005-2006 The Intranet 2 Development Team
+* @package core
+* @subpackage Display
+* @filesource
+*/
+
+/**
+* A {@link Module} to display different panes in tabs, perhaps? I'm not really sure.
+* @package core
+* @subpackage Display
+*/
 class TabbedPane implements Module {
 
 	/**

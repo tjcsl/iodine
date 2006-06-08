@@ -1,6 +1,19 @@
 <?php
+/**
+* Just contains the definition for the {@link Module} {@link ScheduleNagivator}.
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2005-2006 The Intranet 2 Development Team
+* @package modules
+* @subpackage StudentDirectory
+* @filesource
+*/
 
-class ScheduleNavigtator implements Module {
+/**
+* A {@link Module} to navigate the schedules.
+* @package modules
+* @subpackage StudentDirectory
+*/
+class ScheduleNavigator implements Module {
 
 	private $template;
 	private $template_args;
