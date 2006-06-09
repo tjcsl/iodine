@@ -272,7 +272,7 @@ class LDAPResult implements Result {
 	}
 
 	public function fetch_single_value() {
-		$row = $this->fetch_array(Result::NUM);
+		$row = $this->fetch_array();
 		if (!$row) {
 			return FALSE;
 		}
@@ -283,7 +283,10 @@ class LDAPResult implements Result {
 			return $row['dn'];
 		}
 		$keys = array_keys($row);
-		return $row[$keys[0]];
+		if (isSet($keys[0])) {
+			return $row[$keys[0]];
+		}
+		return FALSE;
 	}
 
 	public function fetch_col($colname) {

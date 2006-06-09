@@ -69,7 +69,7 @@ class User {
 					$this->info = &self::$cache[$uid];
 				} else {
 					$this->info = array();
-					$blah = $I2_LDAP->search('ou=people',"iodineUid=$uid",array('iodineUidNumber'))->fetch_array(RESULT::ASSOC);
+					$blah = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid=$uid",array('iodineUidNumber'))->fetch_array(RESULT::ASSOC);
 					foreach ($blah as $key=>$val) {
 						$this->info[strtolower($key)] = $val;
 					}
@@ -97,7 +97,7 @@ class User {
 			if (isSet(self::$cache[$uid]) && isSet(self::$cache[$uid]['iodineuid'])) {
 				$this->info['iodineuid'] = self::$cache[$uid]['iodineuid'];
 			} else {
-				$blah = $I2_LDAP->search('ou=people',"iodineUidNumber=$uid",array('iodineUid'))->fetch_array(Result::ASSOC);
+				$blah = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUidNumber=$uid",array('iodineUid'))->fetch_array(Result::ASSOC);
 				if ($blah) {
 					foreach ($blah as $key=>$val) {
 						$this->info[strtolower($key)] = $val;
@@ -122,7 +122,7 @@ class User {
 
 	public function recache($field) {
 		global $I2_LDAP;
-		$this->info[$field] = $I2_LDAP->search_base("iodineUid={$this->iodineUid},ou=people",array($field))->fetch_single_value();
+		$this->info[$field] = $I2_LDAP->search_base(LDAP::get_user_dn($this),array($field))->fetch_single_value();
 	}
 
 	/**
@@ -139,7 +139,7 @@ class User {
 				/*
 				** Number is a StudentID
 				*/
-				$res = $I2_LDAP->search('ou=people',"(&(objectClass=tjhsstStudent)(tjhsstStudentId=$thing))",array('iodineUidNumber'));
+				$res = $I2_LDAP->search(LDAP::get_user_dn(),"(&(objectClass=tjhsstStudent)(tjhsstStudentId=$thing))",array('iodineUidNumber'));
 				$uid = $res->fetch_single_value();
 				//self::$cache[$uid] = array('tjhsstStudentId' => $thing);
 				if (!$uid) {
@@ -236,11 +236,11 @@ class User {
 				return $this->__get('middlename');
 			case 'tjmail':
 				return $this->get_tjmail();
-		   case 'uid':
-		   case 'uidnumber':
+		   	case 'uid':
+		   	case 'uidnumber':
 				return $this->__get('iodineUidNumber');
 			case 'username':
-				return $this->__get('iodineUid');
+				return $this->username;
 			case 'grade':
 				$grade = self::get_grade($this->__get('graduationYear'));
 				if ($grade < 0) {
@@ -336,7 +336,7 @@ class User {
 			return $this->info[$name];
 		}
 		
-		$row = $I2_LDAP->search_base("iodineUid={$this->username},ou=people",$name);
+		$row = $I2_LDAP->search_base(LDAP::get_user_dn($this->username),$name);
 		
 		if (!$row) {
 			//$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information for '.$name);
@@ -479,7 +479,7 @@ class User {
 				}
 		}
 		
-		$ldap->modify_val("iodineUid={$this->username},ou=people",$name,$val);
+		$ldap->modify_val(LDAP::get_user_dn($this),$name,$val);
 	}
 
 	/**
@@ -492,7 +492,7 @@ class User {
 	*/
 	public static function get_by_uname($username) {
 		global $I2_LDAP;
-		$uid = $I2_LDAP->search_base("iodineUid=$username,ou=people",'iodineUidNumber')->fetch_single_value();
+		$uid = $I2_LDAP->search_base(LDAP::get_user_dn($username),array('iodineUidNumber'))->fetch_single_value();
 		if(!$uid) {
 			return FALSE;
 		}
@@ -548,7 +548,7 @@ class User {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
 		}
 		
-		$ret = $I2_LDAP->search('ou=people',"iodineUid={$this->username}")->fetch_array(Result::ASSOC);
+		$ret = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid={$this->username}")->fetch_array(Result::ASSOC);
 
 		if( $ret === FALSE ) {
 			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->username.'` was used in obtaining information');
@@ -603,67 +603,6 @@ class User {
 		$group = new Group($groupname);
 		return $group->has_member($this);
 	}	
-
-	/**
-	* Get only certain columns of info about the user.
-	*
-	* Even though the column values are checked, it's not adviseable to have
-	* user input go into this method, at least, not directly (just for
-	* general security reasons). It was created mainly so you could do
-	* <code>
-	* $user = new User($id);
-	* $arr = $user->get_cols('username', 'fname', 'lname', 'bdate');
-	* </code>
-	* or something like that.
-	*
-	* @param mixed $cols,... Either an array containing the names of the
-	*                        columns to retrieve, or just pass a string for
-	*                        each column you want returned.
-	* @return Array The information in the columns you requested.
-	*/
-	public function get_cols() {
-		global $I2_LDAP;
-
-		if( $this->myuid === NULL ) {
-			throw new I2Exception('Tried to retrieve information for nonexistent user!');
-		}
-		
-		if( func_num_args() < 1 ) {
-			throw new I2Exception('Illegal number of arguments passed to User::get_cols()');
-		}
-
-		$argv = func_get_args();
-
-		if( is_array($argv[0]) ) {
-			$cols = $argv[0];
-		}
-		else {
-			$cols = $argv;
-		}
-
-		$ret = $I2_LDAP->query('ou=people',"iodineUid={$this->username}",$cols)->fetch_array(Result::BOTH);
-		
-		if( $ret === FALSE ) {
-			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->username.'` was used in obtaining information');
-		}
-
-		return $ret;
-	}
-
-	/**
-	* Get information about multiple users at once.
-	*
-	* @param array $uids An array of UIDs of users to get info about.
-	* @param mixed $cols Either pass an array of columns of information you
-	*                    want to retrieve, or pass a series of strings as
-	*                    additional arguments.
-	* @param mixed $cols,...
-	* @return array Two-dimensional array of the results, each row being an
-	*               associative array with the column as the key.
-	*/
-	public function get_multi( $uids, $cols ) {
-		throw new I2Exception('get_multi not implemented!');
-	}
 
 	/**
 	* Provides legacy Intranet 1 powersearching.
@@ -841,103 +780,110 @@ class User {
 	public static function search_info($str,$grades=NULL,$old_style=FALSE) {
 		global $I2_LDAP;
 
+
 		if (strpos($str,':') !== FALSE) {
 			// If a user puts a colon in the string, assume they want old-style searching
 			$old_style = TRUE;
 		}
 
 		d("search_info: $str".($old_style?' (legacy)':''),6);
-
-		if ($grades && !is_array($grades)) {
-				  $grades = explode(',',$grades);
-		}
-
-		if ($old_style) {
-			return self::search_info_legacy($str,$grades);
-		}
-
-		if ($grades) {
-			$newgrades = '(graduationYear=*)';
-			$newgrades = '(|';
-		  	foreach ($grades as $grade) {
-				$newgrades .= "(graduationYear=$grade)";
-			}
-			$newgrades .= ')';
-		} else {
-			$newgrades = '(objectClass=*)';
-		}
-
-		//FIXME: improve, close hole?
-		// Note from BRJ: Because we do server-side access control, the negative effects of LDAP code injection are minimal.
-		// They can create custom search strings, but they can't get any info they shouldn't have access to anyhow, and
-		// generating invalid search queries (thus causing errors) does no harm to anybody.
-		//$str = addslashes($str);
-
-		$str = trim($str);
-
-
-		$results = array();
-		$firstres = TRUE;
 		
-		if (!$str || $str == '') {
-			$res = $I2_LDAP->search('ou=people',"$newgrades",array('iodineUid'));
-			while ($uid = $res->fetch_single_value()) {
-				$results[] = $uid;
+		// User is trying an LDAP query
+		if (strpos($str,'&') !== FALSE || strpos($str,'|') !== FALSE) {
+			$res = $I2_LDAP->search(LDAP::get_user_dn(),"$str",array('iodineUid'));
+			$results = array();
+			while ($row = $res->fetch_array(Result::ASSOC)) {
+				$results[] = $row['iodineUid'];
 			}
-		} elseif (is_numeric($str)) {
-				  $res = $I2_LDAP->search('ou=people',"(&(|(tjhsstStudentId=$str)(iodineUidNumber=$str))$newgrades)",array('iodineUid'));
-				  while ($uid = $res->fetch_single_value()) {
-							 $results[] = $uid;
-				  }
 		} else {
 
-			/*
-			** Complicated code: finds results which match ALL space-delimited terms in the search string
-			*/
+			if ($grades && !is_array($grades)) {
+				$grades = explode(',',$grades);
+			}
 
-			$numtokens = 0;
-			$separator = " \t";
-			$tok = strtok($str,$separator);
-			$preres = array();
+			if ($old_style) {
+				return self::search_info_legacy($str,$grades);
+			}
+
+			if ($grades) {
+				$newgrades = '(graduationYear=*)';
+				$newgrades = '(|';
+			  	foreach ($grades as $grade) {
+					$newgrades .= "(graduationYear=$grade)";
+				}
+				$newgrades .= ')';
+			} else {
+				$newgrades = '(objectClass=*)';
+			}
+
+			//FIXME: improve, close hole?
+			// Note from BRJ: Because we do server-side access control, the negative effects of LDAP code injection are minimal.
+			// They can create custom search strings, but they can't get any info they shouldn't have access to anyhow, and
+			// generating invalid search queries (thus causing errors) does no harm to anybody.
+			//$str = addslashes($str);
+
+			$str = trim($str);
 
 
-			while ($tok !== FALSE) {
-				//$soundex = soundex($tok);
+			$results = array();
+			$firstres = TRUE;
+		
+			if (!$str || $str == '') {
+				$res = $I2_LDAP->search(LDAP::get_user_dn(),"$newgrades",array('iodineUid'));
+				while ($row = $res->fetch_array(Result::ASSOC)) {
+					$results[] = $row['iodineUid'];
+				}
+			} elseif (is_numeric($str)) {
+				$res = $I2_LDAP->search(LDAP::get_user_dn(),"(&(|(tjhsstStudentId=$str)(iodineUidNumber=$str))$newgrades)",array('iodineUid'));
+				while ($row = $res->fetch_array(Result::ASSOC)) {
+					$results[] = $row['iodineUid'];
+				}
+			} else {
 
-				$res = $I2_LDAP->search(LDAP::get_user_dn(),
-			//	"(&(|(soundexFirst=$soundex)(soundexLast=$soundex)(givenName=*$tok*)(sn=*$tok*)(iodineUid=*$tok*)(mname=*$tok*))$newgrades)"
-				"(&(|(givenName=*$tok*)(sn=*$tok*)(iodineUid=*$tok*)(mname=*$tok*)(nickname=*$tok*))$newgrades)"
-				,array('iodineUid'));
+				/*
+				** Complicated code: finds results which match ALL space-delimited terms in the search string
+				*/
 
-				while ($uid = $res->fetch_single_value()) {
-					if (!$firstres && !isSet($preres[$uid])) {
+				$numtokens = 0;
+				$separator = " \t";
+				$tok = strtok($str,$separator);
+				$preres = array();
+
+				while ($tok !== FALSE) {
+					$res = $I2_LDAP->search(LDAP::get_user_dn(),
+					"(&(|(givenName=*$tok*)(sn=*$tok*)(iodineUid=*$tok*)(mname=*$tok*)(nickname=*$tok*))$newgrades)"
+					,array('iodineUid'));
+
+					while ($uid = $res->fetch_single_value()) {
+						if (!$firstres && !isSet($preres[$uid])) {
 							  // Results which weren't previously found should be discarded
 							  continue;
-					} elseif (!$firstres) {
+						} elseif (!$firstres) {
 							  //Increment the value so we know which results were only in the first query (they'll have a value of 1)
 							  $preres[$uid]++;
-					} else {
+						} else {
 							  $preres[$uid] = 1;
+						}
 					}
+
+					$firstres = FALSE;
+
+					$tok = strtok($separator);
+					$numtokens++;
 				}
 
-				$firstres = FALSE;
-
-				$tok = strtok($separator);
-				$numtokens++;
-			}
-
-			if ($numtokens == 0) {
+				if ($numtokens == 0) {
 					  $results = array();
-			} elseif ($numtokens == 1) {
+				} elseif ($numtokens == 1) {
 					  $results = array_keys($preres);
-			} else {
-				foreach ($preres as $key=>$value) {
+				} else {
+					foreach ($preres as $key=>$value) {
 						  if ($value == 1) {
-									 // The query matched our first token but not later ones - break
-									 continue;
+							// The query matched our first token but not later ones - break
+							continue;
 						  }
 						  $results[] = $key;
+					}
 				}
 			}
 		}
@@ -1004,7 +950,7 @@ class User {
 	*/
 	public static function studentid_to_uid($studentid) {
 		global $I2_LDAP;
-		return $I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', "(&(objectClass=tjhsstStudent)(tjhsstStudentId={$studentid}))", 'iodineUidNumber')->fetch_single_value();
+		return $I2_LDAP->search(LDAP::get_user_dn(), "(&(objectClass=tjhsstStudent)(tjhsstStudentId={$studentid}))", 'iodineUidNumber')->fetch_single_value();
 	}
 
 }
