@@ -132,7 +132,7 @@ class Auth {
 				$this->is_master = TRUE;
 			}
 			
-			if( time() > $_SESSION['i2_login_time']+i2config_get('timeout',600,'login') && !$this->used_master_password()) {
+			if( self::should_autologout($_SESSION['i2_login_time']) && !$this->used_master_password()) {
 				$this->log_out();
 				return FALSE;
 			}
@@ -141,6 +141,16 @@ class Auth {
 			return TRUE;
 		}
 		return FALSE;
+	}
+
+	/**
+	* Determines whether a user should be logged out.
+	*
+	* @param int $login_time The Unix timestamp of the user's login time.
+	* @return bool TRUE if the user should be automatically logged out, FALSE otherwise.
+	*/
+	public static function should_autologout($login_time) {
+		return ( time() > $login_time + i2config_get('timeout',600,'login') );
 	}
 
 	/**

@@ -1,8 +1,8 @@
 <?php
 /**
-* Just contains the definition for the {@link Module} SessionGC.
+* Just contains the definition for the {@link SessionGC} class.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
-* @copyright 2005 The Intranet 2 Development Team
+* @copyright 2005-2006 The Intranet 2 Development Team
 * @since 1.0
 * @package core
 * @subpackage Auth
@@ -10,80 +10,70 @@
 */
 
 /**
-* A module to clean up expired sessions.
+* A class to clean up expired sessions.
 * @package core
 * @subpackage Auth
 */
-class SessionGC implements Module {
+class SessionGC {
+	/**
+	* The directory where all PHP session files reside.
+	*/
 	const SESS_DIR = '/var/lib/php5/';
 
-	private $loggedout = '';
-
 	/**
-	* Displays all of a module's ibox content.
-	*
-	* @param Display $disp The Display object to use for output.
+	* Emulates default session handling behavior; required by session_set_save_handler().
 	*/
-	function display_box($disp) {
+	public static function open($save_path, $sess_name) {
+		return TRUE;
 	}
-	
 	/**
-	* Displays all of a module's main content.
-	*
-	* @param Display $disp The Display object to use for output.
+	* Emulates default session handling behavior; required by session_set_save_handler().
 	*/
-	function display_pane($disp) {
-		if($this->loggedout === FALSE) {
-			$disp->disp('error.tpl');
-			return;
+	public static function close() {
+		return TRUE;
+	}
+	/**
+	* Emulates default session handling behavior; required by session_set_save_handler().
+	*/
+	public static function read($sessid) {
+		return @file_get_contents(self::SESS_DIR . 'sess_' . $sessid);
+	}
+	/**
+	* Emulates default session handling behavior; required by session_set_save_handler().
+	*/
+	public static function write($sessid, $value) {
+		return file_put_contents(self::SESS_DIR . 'sess_' . $sessid, $value) > 0;
+	}
+	/**
+	* Emulates default session handling behavior; required by session_set_save_handler().
+	*/
+	public static function destroy($sessid) {
+		if(file_exists(self::SESS_DIR . 'sess_' . $sessid)) {
+			return @unlink(self::SESS_DIR . 'sess_' . $sessid);
 		}
-		if($this->loggedout) {
-			$this->loggedout = substr($this->loggedout, 0, -2);
-		}
-		$disp->disp('success.tpl', array('loggedout' => $this->loggedout));
-	}
-	
-	/**
-	* Gets the module's name.
-	*
-	* @returns string The name of the module.
-	*/
-	function get_name() {
-		return 'SessionGC';
-	}
-
-	/**
-	* Performs all initialization necessary for this module to be 
-	* displayed in an ibox.
-	*
-	* @returns string The title of the box if it is to be displayed,
-	*                 otherwise FALSE if this module doesn't have an
-	*                 intrabox.
-	*/
-	function init_box() {
 		return FALSE;
 	}
 
 	/**
-	* Performs all initialization necessary for this module to be
-	* displayed as the main page.
+	* Cleans up expired sessions, and executes their $_SESSION['logout_funcs'] functions.
 	*
-	* @returns mixed Either a string, which will be the title for both the
-	*                main pane and for part of the page title, or an array
-	*                of two strings: the first is part of the page title,
-	*                and the second is the title of the content pane. To
-	*                specify no titles, return an empty array. To specify
-	*                that this module has no main content pane (and will
-	*                show an error if someone tries to access it as such),
-	*                return FALSE.
+	* @param int $max_lifetime Passed by session_set_save_handler(), unused here.
+	* @return bool TRUE on success, FALSE on error.
 	*/
-	function init_pane() {
+	public static function gc($max_lifetime) {
 		clearstatcache();
 		if($dh = opendir(self::SESS_DIR)) {
 			while(FALSE !== ($file = readdir($dh))) {
+				$file = self::SESS_DIR . $file;
 				if(is_file($file) && is_readable($file)) {
-					$sess = self::unserializesession(file_get_contents(self::SESS_DIR.$file));
-					if($sess && $sess['i2_login_time'] > time()+i2config_get('timeout',500,'login')) {
+					$contents = file_get_contents($file);
+					$sess = self::unserializesession($contents);
+
+					// If we have no login time, use the session last-modified time
+					if($sess && !isset($sess['i2_login_time'])) {
+						$sess['i2_login_time'] = filemtime($file);
+					}
+					if($sess && Auth::should_autologout($sess['i2_login_time'])) {
 						if(isset($sess['logout_funcs'])) {
 							foreach($sess['logout_funcs'] as $callback) {
 								if(is_callable($callback[0])) {
@@ -92,26 +82,33 @@ class SessionGC implements Module {
 							}
 						}
 						unlink($file);
-						$this->loggedout .= "$file, ";
 					}
 				}
 			}
+			return TRUE;
 		}
-		else {
-			$this->loggedout = FALSE;
-			return 'Error';
-		}
-		return 'Success';
+		warn('Cannot open PHP session directory: ' . SESS_DIR . ', please contact the Intranetmaster about this issue!');
+		return FALSE;
 	}
 
+	/**
+	* Unserializes session data.
+	*
+	* @param string $data The session data to unserialize.
+	* @return Array An array of session data, akin to $_SESSION.
+	*/
 	private static function unserializesession($data) {
 		$vars=preg_split(
-			'/([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\|/',
+//			'/([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\|/',
+			'/([a-zA-Z_][a-zA-Z0-9_]*)\|/',
 			$data,-1,PREG_SPLIT_NO_EMPTY |
 			PREG_SPLIT_DELIM_CAPTURE
 		);
-		for($i=0; $vars[$i]; $i++) {
-			$result[$vars[$i++]]=unserialize($vars[$i]);
+		for($i=0; isset($vars[$i]) && $vars[$i]; $i++) {
+			$result[$vars[$i++]] = @unserialize($vars[$i]);
+		}
+		if(!isset($result)) {
+			$result = FALSE;
 		}
 		return $result;
 	}

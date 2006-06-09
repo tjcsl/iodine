@@ -2,7 +2,7 @@
 /**
 * The core module for Iodine.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
-* @copyright 2004-2005 The Intranet 2 Development Team
+* @copyright 2004-2006 The Intranet 2 Development Team
 * @package core
 * @filesource
 */
@@ -49,6 +49,9 @@ everyone. Edit config.server.ini to edit the server (production) config.
 try {
 
 	load_module_map();
+
+	//session_set_save_handler(open,close,read,write,destroy,gc);
+	session_set_save_handler(array('SessionGC','open'),array('SessionGC','close'),array('SessionGC','read'),array('SessionGC','write'),array('SessionGC','destroy'),array('SessionGC','gc'));
 
 	session_start();
 
