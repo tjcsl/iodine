@@ -70,7 +70,7 @@ class Parking implements Module {
 			redirect('');
 		}
 
-		$this->template_args['is_admin'] = $I2_USER->is_group_member('admin_polls');
+		$this->template_args['is_admin'] = $I2_USER->is_group_member('admin_parking');
 		$this->template_args['deadline'] = date('F jS, Y', strtotime($settings['deadline']));
 		$this->template_args['startdate'] = date('F jS, Y', strtotime($settings['startdate']));
 
