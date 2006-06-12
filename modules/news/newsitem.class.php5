@@ -135,7 +135,11 @@ class NewsItem {
 	public function __construct($nid) {
 		$this->mynid = $nid;
 
-		self::$unfetched[$nid] = $this;
+		if(isset(self::$unfetched[$nid])) {
+			$this->info = &self::$unfetched[$nid]->info;
+		} else {
+			self::$unfetched[$nid] = $this;
+		}
 	}
 
 	/**

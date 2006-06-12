@@ -18,7 +18,6 @@ class Group {
 	/**
 	* Commonly accessed administrative groups.
 	*/
-	private static $admin_groups = NULL;
 	private static $admin_all = NULL;
 	private static $admin_eighth = NULL;
 	private static $admin_ldap = NULL;
@@ -36,13 +35,6 @@ class Group {
 		return self::$admin_all;
 	}
 	
-	public static function admin_groups() {
-		if(self::$admin_groups === NULL) {
-			self::$admin_groups = new Group('admin_groups');
-		}
-		return self::$admin_groups;
-	}
-
 	public static function admin_eighth() {
 		if(self::$admin_eighth === NULL) {
 			self::$admin_eighth = new Group('admin_eighth');
@@ -77,8 +69,8 @@ class Group {
 	*
 	* @return Array An array of UIDs, one for each member in this group.
 	*/
-	public function get_members() {
-		return $this->wrap->get_members();
+	public function get_static_members() {
+		return $this->wrap->get_static_members();
 	}
 	
 	/**
@@ -103,19 +95,10 @@ class Group {
 	/**
 	* Adds a user to this group.
 	*
-	* @param mixed $user Either the {@link User} object or the UID of the user you want to add to this group.
+	* @param User $user Either the {@link User} object or the UID of the user you want to add to this group.
 	*/
-	public function add_user($user) {
+	public function add_user(User $user) {
 		return $this->wrap->add_user($user);
-	}
-
-	/**
-	* Forces a user addition to this group, ignoring permissions.  Use with care!
-	*
-	* @param mixed $user Either the {@link User} object or the UID of the user you want to add to this group.
-	*/
-	public function add_user_force($user) {
-		return $this->wrap->add_user_force($user);
 	}
 
 	/**
@@ -136,42 +119,42 @@ class Group {
 	/**
 	* Grants a permission to a certain user in this group.
 	*
-	* @param User $user The user to grant the permission to.
+	* @param mixed $subject The user or group to grant the permission to.
 	* @param string $perm The permission to grant.
 	*/
-	public function grant_permission(User $user, $perm) {
-		return $this->wrap->grant_permission($user, $perm);
+	public function grant_permission($subject, $perm) {
+		return $this->wrap->grant_permission($subject, $perm);
 	}
 	
 	/**
 	* Revokes a permission from a user for this group.
 	*
-	* @param User $user The user to revoke the permission from.
+	* @param mixed $subject The user or group to revoke the permission from.
 	* @param string $perm The permission to revoke.
 	*/
-	public function revoke_permission(User $user, $perm) {
-		return $this->wrap->revoke_permission($user, $perm);
+	public function revoke_permission($subject, $perm) {
+		return $this->wrap->revoke_permission($subject, $perm);
 	}
 
 	/**
 	* Get all permissions for a certain user in this group.
 	*
-	* @param User $user Which user to list permissions for.
-	* @return Result A {@link Result} object containing all of the permissions for this group for the specified user.
+	* @param mixed $subject Which user or group to list permissions for.
+	* @return Array An array containing all of the permissions for this group for the specified user or group.
 	*/
-	public function get_permissions(User $user) {
-		return $this->wrap->get_permissions($user);
+	public function get_permissions($subject) {
+		return $this->wrap->get_permissions($subject);
 	}
 
 	/**
 	* Determines whether the specified user has a certain permission in this group.
 	*
-	* @param User $user The user for which to check the permission.
+	* @param mixed $subject The user or group for which to check the permission.
 	* @param string $perm Which permission to check to see if the user has.
-	* @return bool TRUE if $user has permission $perm in this group, FALSE otherwise.
+	* @return bool TRUE if $subject has permission $perm in this group, FALSE otherwise.
 	*/
-	public function has_permission(User $user, $perm) {
-		return $this->wrap->has_permission($user, $perm);
+	public function has_permission($subject, $perm) {
+		return $this->wrap->has_permission($subject, $perm);
 	}
 
 	/**
@@ -227,111 +210,8 @@ class Group {
 	*
 	* @param string $name The name for the new group.
 	*/
-	public static function add_group($name,$description="No description available",$gid=NULL) {
+	public static function add_group($name,$description='No description available',$gid=NULL) {
 		return GroupSQL::add_group($name,$description,$gid);
-	}
-
-	/**
-	* Gets special group information.
-	*
-	* Given a special group name, returns the negative GID. Given a negative
-	* GID, returns the group name.
-	*
-	* @param $group mixed Either a string, the group name, or an int, the
-	*		GID.
-	* @return mixed Either a string, the group name, or an int, the GID.
-	*/
-	protected static function get_special_group($group) {
-		switch($group) {
-			case -9:
-			case '-9':
-				return 'grade_9';
-			case -10:
-			case '-10':
-				return 'grade_10';
-			case -11:
-			case '-11':
-				return 'grade_11';
-			case -12:
-			case '-12':
-				return 'grade_12';
-			case 'staff':
-					  return 'grade_staff';
-			case 'all':
-					  return -999;
-			case 'grade_9':
-				return -9;
-			case 'grade_10':
-				return -10;
-			case 'grade_11':
-				return -11;
-			case 'grade_12':
-				return -12;
-			case 'grade_staff':
-				return -8;
-			case -8:
-			case '-8':
-					  return 'grade_staff';
-			case '-999':
-					  return 'all';
-		}
-		return FALSE;
-	}
-
-	public static function get_special_groups($user = NULL) {
-		if (!$user) {
-			return array(
-				new Group(array(
-					'gid'=>-9,
-					'name'=>'grade_9',
-					'description'=>'Freshmen')
-				),
-				new Group(array(
-					'gid'=>-10,
-					'name'=>'grade_10',
-					'description'=>'Sophomores')
-				),
-				new Group(array(
-					'gid'=>-11,
-					'name'=>'grade_11',
-					'description'=>'Juniors')
-				),
-				new Group(array(
-					'gid'=>-12,
-					'name'=>'grade_12',
-					'description'=>'Seniors')
-				),
-				new Group(array(
-					'gid'=>-8,
-					'name'=>'grade_staff',
-					'description'=>'Staff')
-			   ),
-				new Group(array(
-					'gid'=>-999,
-					'name'=>'all',
-					'description'=>'All users')
-						  )
-		 );
-		}
-		else {
-				  $user = new User($user);
-				  if ($user->objectClass == 'tjhsstStudent') {
-				  		$grade = $user->grade;
-				  } else {
-						// Make gid be -8, which is grade_staff
-						$grade = 8;
-				  }
-				  return array ( new Group(array (
-							 'gid' => -1*$grade,
-							 'name' => 'grade_'.$grade,
-							 'description' => 'Grade '.$grade)),
-				new Group(array(
-					'gid'=>-999,
-					'name'=>'all',
-					'description'=>'All users')
-						  )
-							 );
-		}
 	}
 
 	/**
@@ -344,16 +224,6 @@ class Group {
 	*/
 	public function is_admin(User $user) {
 		return $this->wrap->is_admin($user);
-	}
-
-	/**
-	* Generate a bunch of groups at once.
-	*
-	* @param Array $gids An array of Group IDs to generate groups for.
-	* @return Array An array of {@link Group} objects
-	*/
-	public static function generate($gids) {
-		return GroupSQL::generate($gids);
 	}
 }
 ?>

@@ -16,25 +16,69 @@
 class GroupSQL extends Group {
 
 	const PERM_ADMIN = 'GROUP_ADMIN';
-
-	/**
-	* This group's GID.
-	*/
-	private $mygid;
-	/**
-	* This group's name.
-	*/
-	private $myname;
-
-	/**
-	* Membership cache.
-	*/
-	private $mymembers = array();
+	const PERM_ADD = 'GROUP_ADD';
+	const PERM_REMOVE = 'GROUP_REMOVE';
 
 	/**
 	* groupname to GID mapping
 	*/
 	private static $gid_map;
+
+	/**
+	* GID to groupname mapping
+	*/
+	private static $name_map;
+
+	/**
+	* Group info cache
+	*/
+	private $info = array();
+
+	/**
+	* The constructor.
+	*
+	* One of three things can be passed as an argument to __construct for GroupSQL. A GID or group name will cause Group to lookup the information in the database based on the specified info. Passing a Group object will cause this object to be a copy or reference to that group object, utilizing the same information cache.
+	*
+	* @param mixed $group Either a group name, a GID, or a Group object, as outlined above.
+	*/
+	public function __construct($group) {
+		global $I2_SQL;
+
+		// Generate the GID/name maps if they do not exist
+		if (self::$gid_map === NULL) {
+			 self::$gid_map = array();
+			 self::$name_map = array();
+			 $res = $I2_SQL->query('SELECT name,gid FROM groups');
+			 while ($row = $res->fetch_array(Result::ASSOC)) {
+			 	self::$gid_map[$row['name']] = $row['gid'];
+				self::$name_map[$row['gid']] = $row['name'];
+			 }
+		}
+
+		if(is_numeric($group)) {
+			// Passed GID, check existence
+			if(isset(self::$name_map[$group])) {
+				$name = self::$name_map[$group];
+				$this->info['gid'] = $group;
+				$this->info['name'] = $name;
+			} else {
+				throw new I2Exeption("Nonexistent GID $group given to the GroupSQL constructor");
+			}
+		} elseif (is_object($group)) {
+			// If passed a group object, make it a copy of that group
+			if (!$group instanceof Group) {
+				throw new I2Exception('Group construction attempted with non-Group object!');
+			}
+			$this->info = &$group->info;
+		} elseif(isset(self::$gid_map[$group])) {
+			// Passed group name, get info
+			$gid = self::$gid_map[$group];
+			$this->info['gid'] = $gid;
+			$this->info['name'] = $group;
+		} else {
+			throw new I2Exception("Nonexistent group $group given to the GroupSQL constructor");
+		}
+	}
 
 	/**
 	* The magical PHP __get method.
@@ -50,117 +94,38 @@ class GroupSQL extends Group {
 	* </ul>
 	*/
 	public function __get($var) {
+		if(isset($this->info[$var])) {
+			return $this->info[$var];
+		}
+
 		switch($var) {
-			case 'gid':
-				return $this->mygid;
-			case 'name':
-				return $this->myname;
 			case 'description':
-				return $this->mydescription;
-			case 'special':
-				return ($this->mygid < 0);
+				return $I2_SQL->query('SELECT description FROM groups WHERE gid=%d', $this->__get('gid'))->fetch_single_value();
 			case 'members':
-				return $this->get_members();
+				$this->info[$var] = $this->get_static_members();
+				break;
 			case 'members_obj':
-				return User::id_to_user($this->get_members());
+				return User::id_to_user($this->__get('members'));
 		   	case 'members_obj_sorted':
 				$members = $this->__get('members_obj');
 				usort($members,array('GroupSQL','sort_by_name'));
 				return $members;
 		}
+
+		if(!isset($this->info[$var])) {
+			throw new I2Exception('Invalid attribute passed to GroupSQL::__get(): '.$var.', or invalid GID: '.$this->__get('gid'));
+		}
+
+		return $this->info[$var];
 	}
 
 	private static function sort_by_name($one,$two) {
 			  return strcasecmp($one->name_comma,$two->name_comma);
 	}
 
-	/**
-	* The constructor.
-	*
-	* One of three things can be passed as an argument to __construct for GroupSQL. A GID or group name will cause Group to lookup the information in the database based on the specified info. Passing an array will cause the Group information to be determined just from that information in the array. This functionality should only be used for Group internally, such as by the generate() method, and is implemented just so creating a large amount of groups can be done with a single database query instead of numerous small ones.
-	*
-	* @param mixed $group Either a group name, a GID, or an array of group information, as outlined above.
-	*/
-	public function __construct($group) {
+	public function get_static_members() {
 		global $I2_SQL;
-
-		if (self::$gid_map === NULL) {
-			 self::$gid_map = array();
-			 $res = $I2_SQL->query('SELECT name,gid FROM groups');
-			 while ($row = $res->fetch_array(Result::ASSOC)) {
-			 	self::$gid_map[$row['name']] = $row['gid'];
-			 }
-		}
-
-		if(is_array($group)) {
-			$this->mygid = $group['gid'];
-			$this->myname = $group['name'];
-			$this->mydescription = $group['description'];
-		}
-		elseif(is_numeric($group)) {
-		// Numeric $group passed; figure out group name
-			$name = $I2_SQL->query('SELECT name FROM groups WHERE gid=%d', $group)->fetch_single_value();
-			$description = $I2_SQL->query('SELECT description FROM groups WHERE gid=%d', $group)->fetch_single_value();
-			try {
-				if($name) {
-					$this->mygid = $group;
-					$this->myname = $name;
-					$this->mydescription = $description;
-				}
-				elseif($name = Group::get_special_group($group)) {
-					$this->mygid = $group;
-					$this->myname = $name;
-				}
-				else {
-					throw new I2Exception("Nonexistant group id $group given to the Group module");
-				}
-			} catch(I2Exception $e) {
-				throw new I2Exception("Nonexistant group id $group given to the Group module");
-			}
-		}
-		elseif (is_object($group)) {
-			if (!$group instanceof Group) {
-				throw new I2Exception("Group construction attempted with non-Group object!");
-			}
-			$this->mygid = $group->mygid;
-			$this->myname = $group->myname;
-		} else {
-		// Non-numeric $group passed; figure out GID
-			if(isSet(self::$gid_map[$group])) {
-				$this->mygid = self::$gid_map[$group];
-				$this->myname = $group;
-			}
-			else {
-				try {
-					$gid = Group::get_special_group($group);
-					if (!$gid) {
-						throw new I2Exception("Group lookup failure for group \"$group\"!");
-						return;
-					}
-					$this->mygid = $gid;
-					$this->myname = $group;
-				} catch (I2Exception $e) {
-					throw new I2Exception("Nonexistant group $group given to the Group module");
-				}
-			}
-		}
-	}
-
-	public function get_members() {
-		global $I2_SQL,$I2_LDAP;
-		if (!$this->special) {
-			return flatten($I2_SQL->query('SELECT uid FROM group_user_map WHERE gid=%d',$this->mygid)->fetch_all_arrays(Result::NUM));
-		}
-		if (substr($this->myname,0,6) == 'grade_') {
-				  $grade = substr($this->myname,6);
-				  $res = $I2_LDAP->search(LDAP::get_user_dn(),'graduationYear='.User::get_gradyear($grade),array('iodineUidNumber'));
-				  $ret = array();
-				  while ($uid = $res->fetch_single_value()) {
-				  		$ret[] = $uid;
-				  }
-				  return $ret;
-		}
-		throw new I2Exception('Unimplemented special group '.$this->myname.'!');
+		return flatten($I2_SQL->query('SELECT uid FROM groups_static WHERE gid=%d',$this->gid)->fetch_all_arrays(Result::NUM));
 	}
 
 	public static function get_all_groups($module = NULL) {
@@ -181,192 +146,284 @@ class GroupSQL extends Group {
 		return $I2_SQL->query('SELECT name FROM groups');
 	}
 
-	public function add_user($user) {
+	public function add_user(User $user) {
 		global $I2_SQL, $I2_USER;
 
-		if($this->special) {
-			throw new I2Exception("Attempted to add user {$user->uid} to special group {$this->myname}");
+		if($this->has_member($user)) {
+			// Meh? they're already a member
+			return FALSE;
 		}
 
-		if (!self::admin_groups()->has_member($I2_USER)) {
-			throw new I2Exception('You are not authorized to add users from groups!');
+		if (	// Admins can add anyone to a group
+			self::admin_all()->has_member($I2_USER) ||
+
+			// People can add themselves if they have the GroupSQL::PERM_JOIN permission
+			($I2_USER->uid == $user->uid && $this->has_permission($user, self::PERM_JOIN)) ||
+
+			// People with the GroupSQL::PERM_ADD permission can add people
+			$this->has_permission($I2_USER,self::PERM_ADD)
+		) {
+
+			// Only insert member into the cache if the cache has been fetched
+			// Otherwise, the member would be the _only_ member in the cache if it hadn't been fetched, giving incorrect results from __get
+			if(isset($this->info['members'])) {
+				$this->info['members'][] = $user->uid;
+			}
+			return $I2_SQL->query('INSERT INTO groups_static (gid,uid) VALUES (%d,%d)',$this->gid,$user->uid);
+		} else {
+			throw new I2Exception('You are not authorized to add users into this group!');
 		}
-
-		$user = new User($user);
-		
-		$this->mymembers[$user->uid] = TRUE;
-		return $I2_SQL->query('REPLACE INTO group_user_map (gid,uid) VALUES (%d,%d)',$this->mygid,$user->uid);
-	}
-
-	public function add_user_force($user) {
-		global $I2_SQL;
-		$user = new User($user);
-		
-		$this->mymembers[$user->uid] = TRUE;
-		return $I2_SQL->query('REPLACE INTO group_user_map (gid,uid) VALUES (%d,%d)',$this->mygid,$user->uid);
 	}
 
 	public function remove_user(User $user) {
 		global $I2_SQL, $I2_USER;
 
-		if($this->special) {
-			throw new I2Exception("Attempted to remove user {$user->uid} from special group {$this->myname}");
-		}
-
-		if (!self::admin_groups()->has_member($I2_USER)) {
-			throw new I2Exception('You are not authorized to remove users from groups!');
-		}
-		
-		$this->mymebers[$user->uid] = FALSE;
-		return $I2_SQL->query('DELETE FROM group_user_map WHERE uid=%d AND gid=%d',$user->uid,$this->mygid);
-	}
-
-	public function remove_all_members() {
-		global $I2_SQL;
-
-		if($this->special) {
-			throw new I2Exception("Attempted to remove all users from invalid group {$this->myname}");
-		}
-		
-		if (!self::admin_groups()->has_member($I2_USER)) {
-			throw new I2Exception('You are not authorized to remove users from groups!');
-		}
-
-		$this->mymembers = array();
-		return $I2_SQL->query('DELETE FROM group_user_map WHERE gid=%d', $this->mygid);
-	}
-
-	public function grant_permission(User $user, $perm) {
-		global $I2_SQL;
-
-		if($this->special) {
-			throw new I2Exception("Attempted to grant privileges to user {$user->uid} for invalid group {$this->myname}");
-		}
-		
-		if (!self::admin_groups()->has_member($I2_USER)) {
-			throw new I2Exception('You are not authorized to remove users from groups!');
-		}
-		
-		return $I2_SQL->query('INSERT INTO groups_perms (uid,gid,permission) VALUES (%d,%d,%s)', $user->uid, $this->mygid, $perm);
-	}
-	
-	public function revoke_permission(User $user, $perm) {
-		global $I2_SQL;
-
-		if($this->special) {
-			throw new I2Exception("Attempted to revoke privileges from user {$user->uid} for invalid group {$this->myname}");
-		}
-		
-		if (!self::admin_groups()->has_member($I2_USER)) {
-			throw new I2Exception('You are not authorized to remove users from groups!');
-		}
-
-		return $I2_SQL->query('DELETE FROM groups_perms WHERE uid=%d AND gid=%d AND permission=%s', $user->uid, $this->mygid, $perm);
-	}
-
-	public function get_permissions(User $user) {
-		global $I2_SQL;
-		
-		if($this->special) {
-			throw new I2Exception("Attempted to list privileges for user {$user->uid} in invalid group {$this->myname}");
-		}
-
-		return $I2_SQL->query('SELECT permission FROM groups_perms WHERE uid=%d AND gid=%d', $user->uid, $this->mygid);
-	}
-
-	public function has_permission(User $user, $perm) {
-		global $I2_SQL;
-
-		if($this->special) {
-			throw new I2Exception("Attempted to see if user {$user->uid} has permission $perm in invalid group {$this->myname}");
-		}
-		
-		// admin_all has all permissions
-		if (Group::admin_all()->has_member($user)) {
-			return TRUE;
-		}
-
-		$res = $I2_SQL->query('SELECT count(*) FROM groups_perms WHERE uid=%d AND gid=%d AND permission=%s;', $user->uid,$this->mygid,$perm);
-		return ($res->fetch_single_value() > 0);
-	}
-
-	public function has_member($user=NULL) {
-		global $I2_SQL;
-
-		if($user===NULL) {
-			$user = $GLOBALS['I2_USER'];
-		}
-
-		// If the user is in admin_all, they're also admin_anything
-		if (substr($this->name, 0, 6) == 'admin_'  && $this->name != 'admin_all' && Group::admin_all()->has_member($user)) {
-			return TRUE;
-		}
-
-		// Check for 'special' groups
-		if( $this->special ) {
-			$specs = Group::get_special_groups($user);
-			foreach ($specs as $gp) {
-				if ($gp->gid == $this->mygid) {
-					return TRUE;
-				}
-			}
+		if(!$this->has_member($user)) {
+			// Meh? they're already not a member
 			return FALSE;
 		}
 
-		// Cache check
-		if( isset($this->mymembers[$user->uid]) ) {
-			return $this->mymembers[$user->uid];
+		if (	// Admins can remove anyone from a group
+			self::admin_all()->has_member($I2_USER) ||
+
+			// People can remove themselves if they can add themselves, as well
+			($I2_USER->uid == $user->uid && $this->has_permission($user, self::PERM_JOIN)) ||
+
+			// People with the GroupSQL::PERM_REMOVE permission can remove people
+			$this->has_permission($I2_USER,self::PERM_REMOVE)
+		) {
+
+			// Delete user from member cache if the cache has been fetched
+			if(isset($this->info['members']) && ($key = array_search($user->uid,$this->info['members']))) {
+				unset($this->info['members'][$key]);
+			}
+			return $I2_SQL->query('DELETE FROM groups_static WHERE gid=%d AND uid=%d',$this->gid,$user->uid);
+		} else {
+			throw new I2Exception('You are not authorized to remove users from this group!');
 		}
-		
-		// Standard DB check
-		$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d AND gid=%d', $user->uid, $this->mygid);
-		if( $res->num_rows() > 0) {
-			$this->mymembers[$user->uid] = TRUE;
-			return TRUE;
+	}
+
+	public function remove_static_members() {
+		global $I2_SQL,$I2_USER;
+
+		if (	// Admins can remove anyone from a group
+			self::admin_all()->has_member($I2_USER) ||
+
+			// People with the GroupSQL::PERM_REMOVE permission can remove people
+			$this->has_permission($I2_USER,self::PERM_REMOVE)
+		) {
+			
+			// Delete member cache if it has been fetched
+			if(isset($this->info['members'])) {
+				unset($this->info['members']);
+			}
+			return $I2_SQL->query('DELETE FROM groups_static WHERE gid=%d', $this->gid);
+		} else {
+			throw new I2Exception('You are not authorized to remove users from groups!');
 		}
 
+	}
+
+	public function grant_permission($subject, $perm) {
+		global $I2_SQL, $I2_USER;
+
+		// Check authorization
+		if(	// Admins can add permissions to anyone
+			!self::admin_all()->has_member($I2_USER) &&
+			!$this->has_permission($I2_USER,self::PERM_ADMIN)
+		) {
+			throw new I2Exception('You are not authorized to grant permissions in this group!');
+		}
+
+		// Check permission validity
+		if( ($pid = self::get_pid($perm)) === FALSE) {
+			throw new I2Exception("Invalid permission $perm passed to ".__METHOD__);
+		}
+
+		if($subject instanceof User) {
+			return $I2_SQL->query('INSERT INTO groups_user_perms (uid,gid,pid) VALUES (%d,%d,%d)',$subject->uid, $this->gid, $pid);
+		} elseif ($subject instanceof Group) {
+			return $I2_SQL->query('INSERT INTO groups_group_perms (usergroup,gid,pid) VALUES (%d,%d%d)',$subject->gid, $this->gid, $pid);
+		} else {
+			throw new I2Exception('Invalid object passed as $subject to '.__METHOD__);
+		}
+	}
+	
+	public function revoke_permission($subject, $perm) {
+		global $I2_SQL, $I2_USER;
+
+		// Check authorization
+		if(	// Admins can revoke permissions from anyone
+			!self::admin_all()->has_member($I2_USER) &&
+			!$this->has_permission($I2_USER,self::PERM_ADMIN)
+		) {
+			throw new I2Exception('You are not authorized to revoke permissions in this group!');
+		}
+
+		// Check permission validity
+		if( ($pid = self::get_pid($perm)) === FALSE) {
+			throw new I2Exception("Invalid permission $perm passed to ".__METHOD__);
+		}
+
+		if($subject instanceof User) {
+			return $I2_SQL->query('DELETE FROM groups_user_perms WHERE uid=%d AND gid=%d AND pid=%d', $subject->uid, $this->gid, $pid);
+		} elseif ($subject instanceof Group) {
+			return $I2_SQL->query('DELETE FROM groups_group_perms WHERE usergroup=%d AND gid=%d AND pid=%d', $subject->gid, $this->gid, $pid);
+		} else {
+			throw new I2Exception('Invalid object passed as $subject to '.__METHOD__);
+		}
+	}
+
+	public function get_permissions($subject) {
+		global $I2_SQL;
+
+		if($subject instanceof User) {
+			return flatten($I2_SQL->query('SELECT pid FROM groups_user_perms WHERE uid=%d AND gid=%d', $subject->uid, $this->gid)->fetch_all_arrays(Result::NUM));
+		} elseif($subject instanceof Group) {
+			return flatten($I2_SQL->query('SELECT pid FROM groups_group_perms WHERE usergroup=%d AND gid=%d', $subject->gid, $this->gid)->fetch_all_arrays(Result::NUM));
+		} else {
+			throw new I2Exception('Invalid object passed as $subject to '.__METHOD__);
+		}
+	}
+
+	public function has_permission($subject, $perm) {
+		global $I2_SQL;
+
+		// Check permission validity
+		if( ($pid = self::get_pid($perm)) === FALSE) {
+			throw new I2Exception("Invalid permission $perm passed to ".__METHOD__);
+		}
+
+		if($subject instanceof User) {
+			// admin_all has all permissions
+			if (Group::admin_all()->has_member($subject)) {
+				return TRUE;
+			}
+			$res = $I2_SQL->query('SELECT count(*) FROM groups_user_perms WHERE uid=%d AND gid=%d AND pid=%d', $subject->uid, $this->gid, $pid);
+			if($res->fetch_single_value() > 0) {
+				// User is listed in groups_user_perms as having that permission
+				return TRUE;
+			}
+
+		} elseif($subject instanceof Group) {
+			$res = $I2_SQL->query('SELECT count(*) FROM groups_group_perms WHERE usergroup=%d AND gid=%d AND pid=%d', $subject->gid, $this->gid, $pid);
+			if($res->fetch_single_value() > 0) {
+				// Group is listed in groups_group_perm has having that permission
+				return TRUE;
+			}
+
+		} else {
+			throw new I2Exception('Invalid object passed as $subject to '.__METHOD__);
+		}
+
+		// At this point, $subject does not have that permission listed
+		// Check to see if a group that $subject is in has the permission
+
+		foreach($this->groups_with_perm($pid) as $group) {
+			if($group->has_member($subject)) {
+				return TRUE;
+			}
+		}
 		return FALSE;
 	}
 
-	public function set_group_name($name) {
+	public function has_member($subject = NULL) {
 		global $I2_SQL;
-		
-		if (!self::admin_groups()->has_member($I2_USER)) {
-			throw new I2Exception('You are not authorized to remove users from groups!');
+
+		if($subject === NULL) {
+			$subject = $GLOBALS['I2_USER'];
 		}
-		
-		return $I2_SQL->query('UPDATE groups SET name=%s WHERE gid=%d',$name,$this->mygid);
+
+		// If the user is in admin_all, they're also admin_anything
+		if (substr($this->name, 0, 6) == 'admin_'  && $this->name != 'admin_all' && Group::admin_all()->has_member($subject)) {
+			return TRUE;
+		}
+
+		if($subject instanceof User) {
+			// Check static member list
+			if(in_array($subject->uid, $this->members)) {
+				return TRUE;
+			}
+
+			// Check dynamic groups
+			$dynamic = $I2_SQL->query('SELECT dbtype,query FROM groups_dynamic WHERE gid=%d', $this->gid);
+			foreach($dynamic as $group) {
+				if(self::is_dynamic_member($group['dbtype'], $group['query'], $subject)) {
+					return TRUE;
+				}
+			}
+
+		} elseif($subject instanceof Group) {
+			throw new I2Exception('has_member(group) not implemented yet; the programmer has yet to determine whether or not this is necessary');
+		} else {
+			throw new I2Exception('Invalid object passed as $subject to '.__METHOD__);
+		}
+
+		// Check dynamic join groups
+		$dynamic = $I2_SQL->query('SELECT optype,group1,group2 FROM groups_join WHERE gid=%d', $this->gid);
+		foreach($dynamic as $group) {
+			if(self::is_join_member($group['optype'], $group['group1'], $group['group2'], $subject)) {
+				return TRUE;
+			}
+		}
 	}
 
-	public static function get_user_groups(User $user, $include_special = TRUE, $perms = NULL) {
+	public function set_group_name($name) {
+		global $I2_SQL, $I2_USER;
+		
+		if (!self::admin_all()->has_member($I2_USER)) {
+			throw new I2Exception('You are not authorized to change group names');
+		}
+		
+		return $I2_SQL->query('UPDATE groups SET name=%s WHERE gid=%d',$name,$this->gid);
+	}
+
+	public static function get_static_groups(User $user, $perms = NULL) {
 		global $I2_SQL, $I2_USER;
 		$ret = array();
 
-		if ($user->uid != $I2_USER->uid && Group::admin_groups()->has_member($I2_USER)) {
-			throw new I2Exception('Information leak: you may not fetch another student\'s group memberships.');
+		if ($user->uid != $I2_USER->uid && Group::admin_all()->has_member($I2_USER)) {
+			throw new I2Exception('You are not authorized to view this user\'s group membership');
 		}
 
 		if($perms && !is_array($perms)) {
 			$perms = array($perms);
 		}
+
+		foreach($perms as $i=>$perm) {
+			$perms[$i] = self::get_pid($perm);
+			if($perms[$i] === FALSE) {
+				throw new I2Exception("Invalid permission $perm passed to".__METHOD__);
+			}
+		}
 		
-		if(is_array($perms)) {
-			$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d AND gid IN (SELECT gid FROM groups_perms WHERE uid=%d AND permission IN (%S))',$user->uid, $user->uid, $perms);
+		// If only one permission was specified, do the permission restricting in the database
+		if(is_array($perms) && count($perms) == 1) {
+			$res = $I2_SQL->query('SELECT grp.gid FROM groups_static AS grp LEFT JOIN (groups_user_perms AS perm) ON (grp.uid=perm.uid AND grp.gid=perm.gid) WHERE grp.uid=%d AND perm.pid=%d',$user->uid, $perms[0]);
 		} else {
-			$res = $I2_SQL->query('SELECT gid FROM group_user_map WHERE uid=%d',$user->uid);
+			$res = $I2_SQL->query('SELECT gid FROM groups_static WHERE uid=%d',$user->uid);
 		}
 		
+		$ret = array();
 		foreach($res as $row) {
-			$ret[] = new Group($row['gid']);
-		}
-		if($include_special && $user->grade) {
-			$ret[] = new Group("grade_{$user->grade}");
+			$grp = new Group($row[0]);
+			$ret[] = $grp;
+			if(is_array($perms) && count($perms) > 1) {
+				// If multiple permissions were passed, make sure the user has each of those permissions in the group before including that group in the return array
+				foreach($perms as $perm) {
+					if(!$grp->has_permission($user, $perm)) {
+						// User does not have all of the specified permissions in that group, so don't include that group
+						array_pop($ret);
+						break;
+					}
+				}
+			}
 		}
 		return $ret;
 	}
 
 	public static function get_admin_groups(User $user) {
-		$groups = Group::get_user_groups($user, FALSE);
+		$groups = Group::get_static_groups($user);
 		$ret = array();
 		
 		foreach($groups as $group) {
@@ -380,15 +437,19 @@ class GroupSQL extends Group {
 	public function delete_group() {
 		global $I2_SQL;
 		
-		if(!Group::admin_groups()->has_member($GLOBALS['I2_USER']) && !(Group::admin_eighth()->has_member($GLOBAL['I2_USER']) && substr($this->name, 0, 7) == 'eighth_')) {
+		if(!Group::admin_all()->has_member($GLOBALS['I2_USER'])) {
 			throw new I2Exception('User is not authorized to delete groups.');
 		}
 
-		$I2_SQL->query('DELETE FROM group_user_map WHERE gid=%d;', $this->mygid);
-		$I2_SQL->query('DELETE FROM groups WHERE gid=%d;', $this->mygid);
+		$I2_SQL->query('DELETE FROM groups_static WHERE gid=%d', $this->gid);
+		$I2_SQL->query('DELETE FROM groups_dynamic WHERE gid=%d', $this->gid);
+		$I2_SQL->query('DELETE FROM groups_group_perms WHERE gid=%d OR usergroup=%d', $this->gid, $this->gid);
+		$I2_SQL->query('DELETE FROM groups_join WHERE gid=%d OR group1=%d OR group2=%d', $this->gid, $this->gid, $this->gid);
+		$I2_SQL->query('DELETE FROM groups_user_perms WHERE gid=%d', $this->gid);
+		$I2_SQL->query('DELETE FROM groups WHERE gid=%d', $this->gid);
 	}
 
-	public static function add_group($name,$description="No description available",$gid=NULL) {
+	public static function add_group($name,$description='No description available',$gid=NULL) {
 		global $I2_SQL,$I2_AUTH;
 
 		/*
@@ -396,8 +457,7 @@ class GroupSQL extends Group {
 		** and has minimal ill side effects (ideally, no one knows/uses the admin password except 8th pd.)
 		*/
 		if(		!$I2_AUTH->used_master_password()
-				&& !Group::admin_groups()->has_member($GLOBALS['I2_USER']) 
-				&& !(Group::admin_eighth()->has_member($GLOBALS['I2_USER']) && substr($name, 0, 7) == 'eighth_')) {
+				&& !Group::admin_all()->has_member($GLOBALS['I2_USER'])) {
 			throw new I2Exception('User is not authorized to create groups.');
 		}
 
@@ -407,9 +467,9 @@ class GroupSQL extends Group {
 		}*/
 
 		if ($gid === NULL) {
-			$res = $I2_SQL->query('REPLACE INTO groups (name,description) VALUES (%s,%s);',$name,$description);
+			$res = $I2_SQL->query('REPLACE INTO groups (name,description) VALUES (%s,%s)',$name,$description);
 		} else {
-			$res = $I2_SQL->query('REPLACE INTO groups (name,description,gid) VALUES (%s,%s,%d);',$name,$description,$gid);
+			$res = $I2_SQL->query('REPLACE INTO groups (name,description,gid) VALUES (%s,%s,%d)',$name,$description,$gid);
 		}
 		return $res->get_insert_id();
 	}
@@ -417,19 +477,13 @@ class GroupSQL extends Group {
 	public function is_admin(User $user) {
 		global $I2_SQL;
 
-		$res = $I2_SQL->query('SELECT * FROM groups_perms WHERE uid=%d AND gid=%d AND permission=%s;',$user->uid,$this->mygid, GroupSQL::PERM_ADMIN);
-		if($res->num_rows() >= 1) {
+		if($this->has_permission($user, self::PERM_ADMIN)) {
 			return TRUE;
 		}
 
 		// admin_all members get admin access to all groups
 		if(Group::admin_all()->has_member($user)) {
 			return TRUE;
-		}
-		
-		// admin_groups members get admin to non admin groups
-		if (substr($this->name, 0, 6) != 'admin_' && Group::admin_groups()->has_member($user)) {
-			return true;
 		}
 
 		// They're not an admin of this group nor are they a member of admin_all
@@ -447,6 +501,82 @@ class GroupSQL extends Group {
 			return new Group($gids);
 		}
 		return $ret;
+	}
+
+	public static function get_pid($perm) {
+		global $I2_SQL;
+		if(is_numeric($perm)) {
+			// We were passed a PID, just check its existence
+			$res = $I2_SQL->query('SELECT pid FROM permissions WHERE pid=%d',$perm);
+		} else {
+			// We were passed a permission name, get the PID
+			$res = $I2_SQL->query('SELECT pid FROM permissions WHERE name=%s',$perm);
+		}
+
+		// If permission does not exist, return false
+		if($res->num_rows() < 1) {
+			return FALSE;
+		}
+
+		return $res->fetch_single_value();
+	}
+
+	/**
+	* Determines if a user is a member of a dynamic group.
+	*
+	* @param string $dbtype The type of database to consult for membership ('PHP','LDAP', or 'MYSQL')
+	* @param string $query The dbtype-specific query to perform to determine membership.
+	* @param User $user The user whose membership we are determining.
+	* @return bool TRUE if the user is a member of the dynamic group, FALSE otherwise.
+	*/
+	private static function is_dynamic_member($dbtype, $query, User $user) {
+		global $I2_LDAP, $I2_SQL;
+
+		switch ($dbtype) {
+			case 'PHP':
+				return eval($query);
+			case 'LDAP':
+				$res = $I2_LDAP->search(LDAP::get_user_dn($user->uid),$query,array('iodineUidNumber'));
+			case 'MYSQL':
+				$res = $I2_SQL->query($query);
+		}
+
+		if($res->num_rows() < 1) {
+			// Nobody is in that group, so... this person certainly is not
+			return FALSE;
+		}
+
+		while($row = $res->fetch_array(Result::NUM)) {
+			if($row[0] == $user->uid) {
+				return TRUE;
+			}
+		}
+		return FALSE;
+	}
+
+	/**
+	* Determines if a user is a member of a dynamic join group
+	*
+	* @param string $optype The logical operation to perform for this join group ('AND','AND NOT','OR' or 'OR NOT')
+	* @param int $grp1 The GID of the first group.
+	* @param int $grp2 The GID of the second group.
+	* @param User $subject The user whose membership we are determining.
+	* @return bool TRUE if the user is a member of the dynamic join group, FALSE otherwise.
+	*/
+	private static function is_join_member($optype, $grp1, $grp2, User $subject) {
+		$grp1 = new Group($grp1);
+		$grp2 = new Group($grp2);
+		switch($optype) {
+			case 'AND':
+				return $grp1->has_member($subject) && $grp2->has_member($subject);
+			case 'AND NOT':
+				return $grp1->has_member($subject) && !$grp2->has_member($subject);
+			case 'OR':
+				return $grp1->has_member($subject) || $grp2->has_member($subject);
+			case 'OR NOT':
+				return $grp1->has_member($subject) || !$grp2->has_member($subject);
+		}
+		throw new I2Exception('Invalid $optype passed to '.__METHOD__.": $optype");
 	}
 }
 ?>
