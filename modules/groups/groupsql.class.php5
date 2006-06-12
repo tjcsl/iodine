@@ -18,6 +18,7 @@ class GroupSQL extends Group {
 	const PERM_ADMIN = 'GROUP_ADMIN';
 	const PERM_ADD = 'GROUP_ADD';
 	const PERM_REMOVE = 'GROUP_REMOVE';
+	const PERM_JOIN = 'GROUP_JOIN';
 
 	/**
 	* groupname to GID mapping
@@ -88,12 +89,13 @@ class GroupSQL extends Group {
 	* <li>gid: Returns the GID of this group.</li>
 	* <li>name: Returns the group's name.</li>
 	* <li>description: Returns the group's description.</li>
-	* <li>special: A boolean, TRUE if this is a 'special' group (such as grade_X), FALSE otherise.</li>
-	* <li>members: An array of all of the members in the group. See get_members().</li>
+	* <li>members: An array of all of the members in the group. See get_static_members().</li>
 	* <li>members_obj: An array of {@link User} objects for all of the members of this group.</li>
+	* <li>members_obj_sorted: An alphabatized array of {@link User} objects for all of the members of this group.</li>
 	* </ul>
 	*/
 	public function __get($var) {
+		global $I2_SQL;
 		if(isset($this->info[$var])) {
 			return $this->info[$var];
 		}
@@ -326,6 +328,15 @@ class GroupSQL extends Group {
 		}
 		return FALSE;
 	}
+	
+	public static function list_permissions($pid = NULL) {
+		global $I2_SQL;
+		
+		if($pid === NULL) {
+			return $I2_SQL->query('SELECT pid,name,description FROM permissions');
+		}
+		return $I2_SQL->query('SELECT pid,name,description FROM permissions WHERE pid=%d',$pid)->fetch_array();
+	}
 
 	public function has_member($subject = NULL) {
 		global $I2_SQL;
@@ -353,8 +364,6 @@ class GroupSQL extends Group {
 				}
 			}
 
-		} elseif($subject instanceof Group) {
-			throw new I2Exception('has_member(group) not implemented yet; the programmer has yet to determine whether or not this is necessary');
 		} else {
 			throw new I2Exception('Invalid object passed as $subject to '.__METHOD__);
 		}
@@ -378,6 +387,38 @@ class GroupSQL extends Group {
 		return $I2_SQL->query('UPDATE groups SET name=%s WHERE gid=%d',$name,$this->gid);
 	}
 
+	public function groups_with_perm($pid = NULL) {
+		global $I2_SQL;
+
+		if($pid) {
+			$res = $I2_SQL->query('SELECT usergroup FROM groups_group_perms WHERE gid=%d AND pid=%d', $this->gid, $pid);
+		} else {
+			$res = $I2_SQL->query('SELECT usergroup FROM groups_group_perms WHERE gid=%d', $this->gid);
+		}
+
+		$ret = array();
+		foreach($res as $row) {
+			$ret[] = new Group($row[0]);
+		}
+		return $ret;
+	}
+
+	public function users_with_perm($pid = NULL) {
+		global $I2_SQL;
+
+		if($pid) {
+			$res = $I2_SQL->query('SELECT uid FROM groups_user_perms WHERE gid=%d AND pid=%d', $this->gid, $pid);
+		} else {
+			$res = $I2_SQL->query('SELECT uid FROM groups_user_perms WHERE gid=%d', $this->gid);
+		}
+
+		$ret = array();
+		foreach($res as $row) {
+			$ret[] = new User($row[0]);
+		}
+		return $ret;
+	}
+
 	public static function get_static_groups(User $user, $perms = NULL) {
 		global $I2_SQL, $I2_USER;
 		$ret = array();
@@ -390,10 +431,12 @@ class GroupSQL extends Group {
 			$perms = array($perms);
 		}
 
-		foreach($perms as $i=>$perm) {
-			$perms[$i] = self::get_pid($perm);
-			if($perms[$i] === FALSE) {
-				throw new I2Exception("Invalid permission $perm passed to".__METHOD__);
+		if($perms) {
+			foreach($perms as $i=>$perm) {
+				$perms[$i] = self::get_pid($perm);
+				if($perms[$i] === FALSE) {
+					throw new I2Exception("Invalid permission $perm passed to".__METHOD__);
+				}
 			}
 		}
 		

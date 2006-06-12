@@ -26,37 +26,16 @@ class Groups implements Module {
 	private $template_args = array();
 
 	/**
-	* Commonly accessed administrative groups.
-	*/
-	private static $admin_groups = NULL;
-	private static $admin_all = NULL;
-
-	/**
-	* Commonly accesed group memberships
-	*/
-	private static $is_admin_all = NULL;
-	private static $is_admin_groups = NULL;
-
-	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
 		global $I2_ARGS, $I2_USER;
 
-		// Ensure that admin groups are initialized
-		if( self::$admin_groups === NULL || self::$admin_all === NULL) {
-			self::$admin_groups = new Group('admin_groups');
-			self::$admin_all = new Group('admin_all');
-
-			self::$is_admin_groups = self::$admin_groups->has_member($I2_USER);
-			self::$is_admin_all = self::$admin_all->has_member($I2_USER);
-		}
-		
 		$args = array();
 		if(count($I2_ARGS) <= 1) {
 			$this->template = 'groups_home.tpl';
-			$this->template_args['groups'] = Group::get_user_groups($I2_USER,FALSE);
-			if (self::$admin_groups->has_member($I2_USER)) {
+			$this->template_args['groups'] = Group::get_static_groups($I2_USER);
+			if (Group::admin_all()->has_member($I2_USER)) {
 				$this->template_args['admin'] = 1;
 			}
 			return array('Groups: Home', 'Groups');
@@ -120,8 +99,32 @@ class Groups implements Module {
 			redirect('groups/pane/'.$grp->gid);
 		}
 		else {
-			$this->template_args['user'] = new User($I2_ARGS[2]);
+			$this->template_args['subject'] = new User($I2_ARGS[2]);
 			$this->template_args['group'] = new Group($I2_ARGS[3]);
+			$this->template_args['perms'] = Group::list_permissions();
+		}
+		$this->template = 'grant_perm.tpl';
+		return 'Groups: Grant Permissions';
+	}
+
+	public function grantgroup() {
+		global $I2_USER, $I2_ARGS;
+		$grp = new Group($I2_ARGS[3]);
+
+		if (!$grp->is_admin($I2_USER)) {
+			$this->template = 'groups_error.tpl';
+			return 'Permission denied';
+		}
+
+		if(isset($_REQUEST['groups_grant_permission'])) {
+			$grp->grant_permission(new Group($I2_ARGS[2]), $_REQUEST['groups_grant_permission']);
+			redirect('groups/pane/'.$grp->gid);
+		}
+		else {
+			$this->template_args['subject'] = new Group($I2_ARGS[2]);
+			$this->template_args['group'] = new Group($I2_ARGS[3]);
+			$this->template_args['perms'] = Group::list_permissions();
+			$this->template_args['group_perm'] = TRUE;
 		}
 		$this->template = 'grant_perm.tpl';
 		return 'Groups: Grant Permissions';
@@ -181,7 +184,7 @@ class Groups implements Module {
 						throw new I2Exception('Invalid user specified');
 					}
 					switch($_REQUEST['group_form']) {
-						case 'add':	$group->add_user($user->uid);
+						case 'add':	$group->add_user($user);
 								break;
 						case 'remove':	$group->remove_user($user);
 								break;
@@ -191,6 +194,8 @@ class Groups implements Module {
 				$this->template_args['admin'] = false;
 			}
 			$this->template_args['members'] = self::get_memberinfo($group);
+			$this->template_args['perm_users'] = self::get_perm_users($group);
+			$this->template_args['perm_groups'] = self::get_perm_groups($group);
 			$this->template = 'groups_group.tpl';
 		}
 		else {
@@ -205,15 +210,13 @@ class Groups implements Module {
 	private static function get_memberinfo(Group $group) {
 		$group_members = array();
 		
-		$uids = $group->get_members();
+		$uids = $group->get_static_members();
 		foreach($uids as $uid) {
 			$person_array = array();
 
 			$person_user = new User($uid);
 			$person_array['name'] = $person_user->name;
 			$person_array['uid'] = $person_user->uid;
-			$person_array['perms'] = $group->get_permissions($person_user);
-			$person_array['has_perms'] = $person_array['perms']->num_rows() > 0;
 
 			if ($group->is_admin($person_user)) {
 				$person_array['admin'] = 'Admin';
@@ -224,13 +227,61 @@ class Groups implements Module {
 
 		return $group_members;
 	}
+
+	/**
+	* Helper function to get info about users that have permissions in this group.
+	*/
+	private static function get_perm_users(Group $group) {
+		$users = $group->users_with_perm();
+
+		if(count($users) < 1) {
+			return array();
+		}
+
+		$ret = array();
+		foreach($users as $usr) {
+			$row['name'] = $usr->name;
+			$row['uid'] = $usr->uid;
+			$row['perms'] = $group->get_permissions($usr);
+			foreach($row['perms'] as $i=>$perm) {
+				$row['perms'][$i] = Group::list_permissions($perm);
+			}
+			$ret[] = $row;
+		}
+
+		return $ret;
+	}
+
+	/**
+	* Helper function to get info about groups that have permissions in this group.
+	*/
+	private static function get_perm_groups(Group $group) {
+		$groups = $group->groups_with_perm();
+
+		if(count($groups) < 1) {
+			return array();
+		}
+
+		$ret = array();
+		foreach($groups as $grp) {
+			$row['name'] = $grp->name;
+			$row['gid'] = $grp->gid;
+			$row['perms'] = $group->get_permissions($grp);
+			foreach($row['perms'] as $i=>$perm) {
+				$row['perms'][$i] = Group::list_permissions($perm);
+			}
+			$ret[] = $row;
+		}
+
+		return $ret;
+	}
 	
 	/**
 	* The master admin interface
 	*/
 	function admin() {
 		global $I2_USER;
-		if(self::$is_admin_groups) {
+		if(Group::admin_all()->has_member($I2_USER)) {
 			if(isset($_REQUEST['group_admin_form'])) {
 				if($_REQUEST['group_admin_form'] == 'add') {
 					Group::add_group($_REQUEST['name']);

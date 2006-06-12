@@ -16,29 +16,70 @@ To remove a person, enter their user id here:<br />
 </form>
 <br />
 [</if>]
-[<if count($members) > 0>]
-This group has the following members:<br />
+[<if count($perm_users) > 0>]
+<p>The following users have permissions in this group:</p>
 <table width="100%">
+ <thead>
   <th>User</th>
   <th>Permissions</th>
   <th>Grant</th>
-[<foreach from=$members item=person>]
-  <tr><td><a href="[<$I2_ROOT>]studentdirectory/info/[<$person.uid>]">[<$person.name>]</a></td>
-  <td>
-  [<if $person.has_perms>]
+ </thead>
+ <tbody>
+[<foreach from=$perm_users item=subject>]
+  <tr class="[<cycle values="c1,c2">]">
+   <td><a href="[<$I2_ROOT>]studentdirectory/info/[<$subject.uid>]">[<$subject.name>]</a></td>
+   <td>
     <ul>
-    [<foreach from=$person.perms item=perm>]
-      <li>[<$perm[0]>] <a href="[<$I2_ROOT>]groups/revoke/[<$person.uid>]/[<$gid>]/[<$perm[0]>]">[revoke]</a></li>
+    [<foreach from=$subject.perms item=perm>]
+      <li><acronym title="[<$perm.description>]">[<$perm.name>]</acronym> <a href="[<$I2_ROOT>]groups/revoke/[<$subject.uid>]/[<$gid>]/[<$perm.pid>]">[revoke]</a></li>
     [</foreach>]
     </ul>
-  [<else>]
-  User has no special permissions.
-  [</if>]
-  </td>
-  <td><a href="[<$I2_ROOT>]groups/grant/[<$person.uid>]/[<$gid>]">[grant new permission]</a></td>
+   </td>
+   <td><a href="[<$I2_ROOT>]groups/grant/[<$subject.uid>]/[<$gid>]">[grant new permission]</a></td>
   </tr>
 [</foreach>]
+ </tbody>
 </table>
-[<else>]
-This group has no members.<br />
+[</if>]
+[<if count($perm_groups) > 0>]
+<p>The following groups have permissions in this group:</p>
+<table width="100%">
+ <thead>
+  <th>Group</th>
+  <th>Permissions</th>
+  <th>Grant</th>
+ </thead>
+ <tbody>
+[<foreach from=$perm_groups item=subject>]
+  <tr class="[<cycle values="c1,c2">]">
+   <td><a href="[<$I2_ROOT>]groups/pane/[<$subject.gid>]">[<$subject.name>]</a></td>
+   <td>
+    <ul>
+    [<foreach from=$subject.perms item=perm>]
+      <li><acronym title="[<$perm.description>]">[<$perm.name>]</acronym> <a href="[<$I2_ROOT>]groups/revokegroup/[<$subject.gid>]/[<$gid>]/[<$perm.pid>]">[revoke]</a></li>
+    [</foreach>]
+    </ul>
+   </td>
+   <td><a href="[<$I2_ROOT>]groups/grantgroup/[<$subject.gid>]/[<$gid>]">[grant new permission]</a></td>
+  </tr>
+[</foreach>]
+ </tbody>
+</table>
+[</if>]
+[<if count($members) > 0>]
+<p>This group has the following static members:</p>
+<table width="100%">
+ <thead>
+  <th>User</th>
+  <th>Remove</th>
+ </thead>
+ <tbody>
+[<foreach from=$members item=person>]
+  <tr class="[<cycle values="c1,c2">]">
+   <td><a href="[<$I2_ROOT>]studentdirectory/info/[<$person.uid>]">[<$person.name>]</a></td>
+   <td><a href="[<$I2_ROOT>]groups/remove/[<$person.uid>]/[<$gid>]">[remove this person from this group]</a></td>
+  </tr>
+[</foreach>]
+ </tbody>
+</table>
 [</if>]

@@ -158,6 +158,38 @@ class Group {
 	}
 
 	/**
+	* Lists all available permissions in the system, or lists a specific permission.
+	*
+	* @param int $pid The PID to get information about, if specified.
+	* @return mixed A {@link Result} object with the PID, name, and description of all permissions if $pid is not passed. If $pid is passed, then returns an array of information about that specific permission.
+	*/
+	public static function list_permissions($pid = NULL) {
+		return GroupSQL::list_permissions($pid);
+	}
+
+	/**
+	* Lists all groups that have permissions in this group.
+	*
+	* If $pid is specified, returns all groups that have that permission in this group. If not specified, returns all groups that have any permissions in this group.
+	* @param int $pid What permission the group must have in this group to be included in the returned list.
+	* @return array An array of {@link Group}s, as outlined above.
+	*/
+	public function groups_with_perm($pid = NULL) {
+		return $this->wrap->groups_with_perm($pid);
+	}
+
+	/**
+	* Lists all users that have permissions in this group.
+	*
+	* If $pid is specified, returns all users that have that permission in this group. If not specified, returns all users that have any permissions in this group.
+	* @param int $pid What permission the user must have in this group to be included in the returned list.
+	* @return array An array of {@link User}s, as outlined above.
+	*/
+	public function users_with_perm($pid = NULL) {
+		return $this->wrap->users_with_perm($pid);
+	}
+
+	/**
 	* Determines if a user is a member of this group.
 	*
 	* If this is an admin_* group, this method also checks to see if the user is a member of the admin_all group, and returns TRUE if they are. Otherwise, just checks if this group is listed as one that the user is a member of.
@@ -184,8 +216,8 @@ class Group {
 	* @param User $user The {@link User} for which to fetch the groups.
 	* @return array The Groups in which the user has membership.
 	*/
-	public static function get_user_groups(User $user, $include_special = TRUE, $perms = NULL) {
-		return GroupSQL::get_user_groups($user,$include_special, $perms);
+	public static function get_static_groups(User $user, $perms = NULL) {
+		return GroupSQL::get_static_groups($user,$perms);
 	}
 
 	/**
