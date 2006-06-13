@@ -15,10 +15,35 @@
 */
 class Group {
 
+	/**
+	* The permission that grants all permissions to a user in a group.
+	*/
 	const PERM_ADMIN = 'GROUP_ADMIN';
+
+	/**
+	* The permission required to add users to a group.
+	*/
 	const PERM_ADD = 'GROUP_ADD';
+
+	/**
+	* The permission required to remove users from a group.
+	*/
 	const PERM_REMOVE = 'GROUP_REMOVE';
+
+	/**
+	* The permission required for a user to be able to join a group on their own.
+	*/
 	const PERM_JOIN = 'GROUP_JOIN';
+
+	/**
+	* The permission prefix for permissions granting "prefix" admin status. See {@link prefix_admin}.
+	*/
+	const PERM_ADMIN_PREFIX = 'ADMIN_';
+
+	/**
+	* The delimeter character that separates a group into a prefix and the rest of the name. See {@link prefix_admin}.
+	*/
+	const PREFIX_DELIMETER = '_';
 
 	/**
 	* Commonly accessed administrative groups.
@@ -289,6 +314,45 @@ class Group {
 			return new Group($gids);
 		}
 		return $ret;
+	}
+
+	/**
+	* Determines whether or not a user is a "prefix" admin.
+	*
+	* A prefix admin is a user who is an administrator for all groups that
+	* have the same prefix (i.e. the eighth period office has admin rights
+	* over all groups beginning with eighth_. This checks to see if the
+	* user has the permission Group::PERM_ADMIN_PREFIX appended by the
+	* prefix of the group name passed. They must have the permission in the
+	* group 'all'.
+	*
+	* @param string $name The name of the group.
+	* @param User $user Whom we are checking whether or not they are a prefix admin.
+	* @return bool TRUE if they are a "prefix" admin, FALSE otherwise.
+	*/
+	public static function prefix_admin($name, $user) {
+		// Group has no prefix, thus has no prefix admins
+		if(Group::prefix($name) === FALSE) {
+			return FALSE;
+		}
+
+		if(Group::all()->has_permission($user, Group::PERM_ADMIN_PREFIX . Group::prefix($name))) {
+			return TRUE;
+		}
+		return FALSE;
+	}
+
+	/**
+	* Determines the prefix for a group name.
+	*
+	* @param string $name The name of the group.
+	* @return string The prefix of the group name. Returns FALSE on error.
+	*/
+	public static function prefix($name) {
+		if(strpos($name, Group::PREFIX_DELIMETER) === FALSE) {
+			return FALSE;
+		}
+		return substr($name, 0, strpos($name, Group::PREFIX_DELIMETER));
 	}
 }
 ?>

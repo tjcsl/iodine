@@ -475,7 +475,7 @@ class GroupSQL extends Group {
 	public function delete_group() {
 		global $I2_SQL;
 		
-		if(!Group::admin_all()->has_member($GLOBALS['I2_USER'])) {
+		if(!Group::admin_all()->has_member($GLOBALS['I2_USER']) && !Group::prefix_admin($this->name, $GLOBALS['I2_USER'])) {
 			throw new I2Exception('User is not authorized to delete groups.');
 		}
 
@@ -495,7 +495,8 @@ class GroupSQL extends Group {
 		** and has minimal ill side effects (ideally, no one knows/uses the admin password except 8th pd.)
 		*/
 		if(		!$I2_AUTH->used_master_password()
-				&& !Group::admin_all()->has_member($GLOBALS['I2_USER'])) {
+				&& !Group::admin_all()->has_member($GLOBALS['I2_USER'])
+				&& !Group::prefix_admin($name, $GLOBALS['I2_USER'])) {
 			throw new I2Exception('User is not authorized to create groups.');
 		}
 
