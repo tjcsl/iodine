@@ -79,6 +79,27 @@ class Groups implements Module {
 	}
 
 	/**
+	* Removes a user from a certain group.
+	*
+	* Uses parameters in $I2_ARGS:
+	* <ul><li>$I2_ARGS[2]: UID of user</li>
+	* <li>$I2_ARGS[3]: GID of group</li></ul>
+	*/	
+	public function remove() {
+		global $I2_USER, $I2_ARGS;
+		$grp = new Group($I2_ARGS[3]);
+
+		if (!$grp->has_permission($I2_USER, Group::PERM_REMOVE)) {
+			$this->template = 'groups_error.tpl';
+			return 'Permission denied';
+		}
+
+		$grp->remove_user(new User($I2_ARGS[2]));
+
+		redirect('groups/pane/'.$grp->gid);
+	}
+
+	/**
 	* Grants a new permission to a user in a certain group.
 	*
 	* Uses parameters in $I2_ARGS:
@@ -187,6 +208,7 @@ class Groups implements Module {
 	*/
 	public function pane() {
 		global $I2_ARGS, $I2_USER, $I2_SQL;
+
 		$group = new Group($I2_ARGS[2]);
 		$this->template_args['group'] = $group->name;
 		$this->template_args['gid'] = $group->gid;
