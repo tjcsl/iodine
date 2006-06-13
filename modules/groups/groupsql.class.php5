@@ -384,7 +384,7 @@ class GroupSQL extends Group {
 			throw new I2Exception('You are not authorized to change group names');
 		}
 		
-		return $I2_SQL->query('UPDATE groups SET name=%s WHERE gid=%d',$name,$this->gid);
+		return $I2_SQL->query('UPDATE groups_name SET name=%s WHERE gid=%d',$name,$this->gid);
 	}
 
 	public function groups_with_perm($pid = NULL) {
@@ -510,9 +510,9 @@ class GroupSQL extends Group {
 		}*/
 
 		if ($gid === NULL) {
-			$res = $I2_SQL->query('REPLACE INTO groups (name,description) VALUES (%s,%s)',$name,$description);
+			$res = $I2_SQL->query('INSERT INTO groups_name (name,description) VALUES (%s,%s)',$name,$description);
 		} else {
-			$res = $I2_SQL->query('REPLACE INTO groups (name,description,gid) VALUES (%s,%s,%d)',$name,$description,$gid);
+			$res = $I2_SQL->query('INSERT INTO groups_name (name,description,gid) VALUES (%s,%s,%d)',$name,$description,$gid);
 		}
 		return $res->get_insert_id();
 	}
