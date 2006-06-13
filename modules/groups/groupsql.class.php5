@@ -63,7 +63,7 @@ class GroupSQL extends Group {
 				$this->info['gid'] = $group;
 				$this->info['name'] = $name;
 			} else {
-				throw new I2Exeption("Nonexistent GID $group given to the GroupSQL constructor");
+				throw new I2Exception("Nonexistent GID $group given to the GroupSQL constructor");
 			}
 		} elseif (is_object($group)) {
 			// If passed a group object, make it a copy of that group
