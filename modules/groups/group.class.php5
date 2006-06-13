@@ -323,7 +323,7 @@ class Group {
 				  }
 				  return array ( new Group(array (
 							 'gid' => -1*$grade,
-							 'name' => 'grade_'.$grade,
+							 'name' => $grade==8?'grade_staff':'grade_'.$grade,
 							 'description' => 'Grade '.$grade)),
 				new Group(array(
 					'gid'=>-999,
