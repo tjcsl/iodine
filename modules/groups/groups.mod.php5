@@ -28,7 +28,7 @@ class Groups implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function init_pane() {
+	public function init_pane() {
 		global $I2_ARGS, $I2_USER;
 
 		$args = array();
@@ -54,27 +54,27 @@ class Groups implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
+	public function display_pane($display) {
 		$display->disp($this->template, $this->template_args);
 	}
 
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function init_box() {
+	public function init_box() {
 		return FALSE;
 	}
 	
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_box($display) {
+	public function display_box($display) {
 	}
 	
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function get_name() {
+	public function get_name() {
 		return 'Groups';
 	}
 
@@ -153,6 +153,28 @@ class Groups implements Module {
 	}
 
 	/**
+	* Revokes a permission from a group in a certain group.
+	*
+	* Uses parameters in $I2_ARGS:
+	* <ul><li>$I2_ARGS[2]: GID of group to remove permission from</li>
+	* <li>$I2_ARGS[3]: GID of group</li>
+	* <li>$I2_ARGS[4]: Permission to revoke</li></ul>
+	*/	
+	public function revokegroup() {
+		global $I2_USER, $I2_ARGS;
+		$grp = new Group($I2_ARGS[3]);
+
+		if (!$grp->is_admin($I2_USER)) {
+			$this->template = 'groups_error.tpl';
+			return 'Permission denied';
+		}
+
+		$grp->revoke_permission(new Group($I2_ARGS[2]), $I2_ARGS[4]);
+
+		redirect('groups/pane/'.$grp->gid);
+	}
+
+	/**
 	* View a group
 	*
 	* Group admins may add or remove members and news posting privileges. However, they can
@@ -163,44 +185,71 @@ class Groups implements Module {
 	* This is slightly changed for "admin_" groups. Admin_groups members are no longer allowed
 	* to even view the group: admin_all takes the place of admin_groups in having admin abilities.
 	*/
-	function pane() {
+	public function pane() {
 		global $I2_ARGS, $I2_USER, $I2_SQL;
 		$group = new Group($I2_ARGS[2]);
 		$this->template_args['group'] = $group->name;
 		$this->template_args['gid'] = $group->gid;
 		
-		$is_admin = $group->is_admin($I2_USER);
+		// Only admins can alter permissions
+		$can_set_perms = $group->is_admin($I2_USER);
+		$can_add = $group->has_permission($I2_USER, Group::PERM_ADD);
 
-		if ($is_admin || $group->has_member($I2_USER)) {
-			// user is group member, groups admin if a normal group, or master admin if admin group
-			if($is_admin) {
-				// user is single-group admin or groups admin (or master admin)
-
-				$this->template_args['admin'] = true;
-
-				if( isset($_REQUEST['group_form']) ) {
-					$user = new User($_REQUEST['uid']);
-					if(!$user) {
-						throw new I2Exception('Invalid user specified');
-					}
-					switch($_REQUEST['group_form']) {
-						case 'add':	$group->add_user($user);
-								break;
-						case 'remove':	$group->remove_user($user);
-								break;
-					}
+		$action = FALSE;
+		if( isset($_REQUEST['group_form'])) {
+			if(isset($_REQUEST['uid'])) {
+				$user = new User($_REQUEST['uid']);
+				if(!$user) {
+					$this->template = 'groups_error.tpl';
+					return 'Invalid user specified';
 				}
-			} else {
-				$this->template_args['admin'] = false;
 			}
-			$this->template_args['members'] = self::get_memberinfo($group);
-			$this->template_args['perm_users'] = self::get_perm_users($group);
-			$this->template_args['perm_groups'] = self::get_perm_groups($group);
-			$this->template = 'groups_group.tpl';
+			if(isset($_REQUEST['gid'])) {
+				$req_group = new Group($_REQUEST['gid']);
+				if(!$req_group) {
+					$this->template = 'groups_error.tpl';
+					return 'Invalid group specified';
+				}
+			}
+			$action = $_REQUEST['group_form'];
 		}
-		else {
-			$this->template = 'groups_error.tpl';
+
+		$this->template_args['can_set_perms'] = $this->template_args['can_add'] = $this->template_args['can_remove'] = FALSE;
+
+		if($group->is_admin($I2_USER)) {
+			$this->template_args['can_set_perms'] = TRUE;
+			$this->template_args['perms'] = Group::list_permissions();
+
+			switch($action) {
+				case 'grant':
+					$group->grant_permission($user, $_REQUEST['permission']);
+					break;
+				case 'grantgroup':
+					$group->grant_permission($req_group, $_REQUEST['permission']);
+					break;
+			}
 		}
+
+		if($group->has_permission($I2_USER, Group::PERM_ADD)) {
+			$this->template_args['can_add'] = TRUE;
+
+			if($action == 'add') {
+				$group->add_user($user);
+			}
+		}
+
+		if($group->has_permission($I2_USER, Group::PERM_REMOVE)) {
+			$this->template_args['can_remove'] = TRUE;
+			
+			if($action == 'remove') {
+				$group->remove_user($user);
+			}
+		}
+
+		$this->template_args['members'] = self::get_memberinfo($group);
+		$this->template_args['perm_users'] = self::get_perm_users($group);
+		$this->template_args['perm_groups'] = self::get_perm_groups($group);
+		$this->template = 'groups_group.tpl';
 		return 'Groups: ' .  $group->name;
 	}
 
@@ -210,11 +259,10 @@ class Groups implements Module {
 	private static function get_memberinfo(Group $group) {
 		$group_members = array();
 		
-		$uids = $group->get_static_members();
-		foreach($uids as $uid) {
+		$users = $group->members_obj_sorted;
+		foreach($users as $person_user) {
 			$person_array = array();
 
-			$person_user = new User($uid);
 			$person_array['name'] = $person_user->name;
 			$person_array['uid'] = $person_user->uid;
 

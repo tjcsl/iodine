@@ -15,11 +15,6 @@
 */
 class GroupSQL extends Group {
 
-	const PERM_ADMIN = 'GROUP_ADMIN';
-	const PERM_ADD = 'GROUP_ADD';
-	const PERM_REMOVE = 'GROUP_REMOVE';
-	const PERM_JOIN = 'GROUP_JOIN';
-
 	/**
 	* groupname to GID mapping
 	*/
@@ -110,7 +105,7 @@ class GroupSQL extends Group {
 				return User::id_to_user($this->__get('members'));
 		   	case 'members_obj_sorted':
 				$members = $this->__get('members_obj');
-				usort($members,array('GroupSQL','sort_by_name'));
+				usort($members,array($this,'sort_by_name'));
 				return $members;
 		}
 
@@ -121,7 +116,7 @@ class GroupSQL extends Group {
 		return $this->info[$var];
 	}
 
-	private static function sort_by_name($one,$two) {
+	private function sort_by_name($one,$two) {
 			  return strcasecmp($one->name_comma,$two->name_comma);
 	}
 
@@ -159,11 +154,11 @@ class GroupSQL extends Group {
 		if (	// Admins can add anyone to a group
 			self::admin_all()->has_member($I2_USER) ||
 
-			// People can add themselves if they have the GroupSQL::PERM_JOIN permission
-			($I2_USER->uid == $user->uid && $this->has_permission($user, self::PERM_JOIN)) ||
+			// People can add themselves if they have the Group::PERM_JOIN permission
+			($I2_USER->uid == $user->uid && $this->has_permission($user, Group::PERM_JOIN)) ||
 
-			// People with the GroupSQL::PERM_ADD permission can add people
-			$this->has_permission($I2_USER,self::PERM_ADD)
+			// People with the Group::PERM_ADD permission can add people
+			$this->has_permission($I2_USER,Group::PERM_ADD)
 		) {
 
 			// Only insert member into the cache if the cache has been fetched
@@ -189,10 +184,10 @@ class GroupSQL extends Group {
 			self::admin_all()->has_member($I2_USER) ||
 
 			// People can remove themselves if they can add themselves, as well
-			($I2_USER->uid == $user->uid && $this->has_permission($user, self::PERM_JOIN)) ||
+			($I2_USER->uid == $user->uid && $this->has_permission($user, Group::PERM_JOIN)) ||
 
-			// People with the GroupSQL::PERM_REMOVE permission can remove people
-			$this->has_permission($I2_USER,self::PERM_REMOVE)
+			// People with the Group::PERM_REMOVE permission can remove people
+			$this->has_permission($I2_USER,Group::PERM_REMOVE)
 		) {
 
 			// Delete user from member cache if the cache has been fetched
@@ -211,8 +206,8 @@ class GroupSQL extends Group {
 		if (	// Admins can remove anyone from a group
 			self::admin_all()->has_member($I2_USER) ||
 
-			// People with the GroupSQL::PERM_REMOVE permission can remove people
-			$this->has_permission($I2_USER,self::PERM_REMOVE)
+			// People with the Group::PERM_REMOVE permission can remove people
+			$this->has_permission($I2_USER,Group::PERM_REMOVE)
 		) {
 			
 			// Delete member cache if it has been fetched
@@ -232,7 +227,7 @@ class GroupSQL extends Group {
 		// Check authorization
 		if(	// Admins can add permissions to anyone
 			!self::admin_all()->has_member($I2_USER) &&
-			!$this->has_permission($I2_USER,self::PERM_ADMIN)
+			!$this->has_permission($I2_USER,Group::PERM_ADMIN)
 		) {
 			throw new I2Exception('You are not authorized to grant permissions in this group!');
 		}
@@ -245,7 +240,7 @@ class GroupSQL extends Group {
 		if($subject instanceof User) {
 			return $I2_SQL->query('INSERT INTO groups_user_perms (uid,gid,pid) VALUES (%d,%d,%d)',$subject->uid, $this->gid, $pid);
 		} elseif ($subject instanceof Group) {
-			return $I2_SQL->query('INSERT INTO groups_group_perms (usergroup,gid,pid) VALUES (%d,%d%d)',$subject->gid, $this->gid, $pid);
+			return $I2_SQL->query('INSERT INTO groups_group_perms (usergroup,gid,pid) VALUES (%d,%d,%d)',$subject->gid, $this->gid, $pid);
 		} else {
 			throw new I2Exception('Invalid object passed as $subject to '.__METHOD__);
 		}
@@ -257,7 +252,7 @@ class GroupSQL extends Group {
 		// Check authorization
 		if(	// Admins can revoke permissions from anyone
 			!self::admin_all()->has_member($I2_USER) &&
-			!$this->has_permission($I2_USER,self::PERM_ADMIN)
+			!$this->has_permission($I2_USER,Group::PERM_ADMIN)
 		) {
 			throw new I2Exception('You are not authorized to revoke permissions in this group!');
 		}
@@ -393,7 +388,7 @@ class GroupSQL extends Group {
 		if($pid) {
 			$res = $I2_SQL->query('SELECT usergroup FROM groups_group_perms WHERE gid=%d AND pid=%d', $this->gid, $pid);
 		} else {
-			$res = $I2_SQL->query('SELECT usergroup FROM groups_group_perms WHERE gid=%d', $this->gid);
+			$res = $I2_SQL->query('SELECT DISTINCT usergroup FROM groups_group_perms WHERE gid=%d', $this->gid);
 		}
 
 		$ret = array();
@@ -409,7 +404,7 @@ class GroupSQL extends Group {
 		if($pid) {
 			$res = $I2_SQL->query('SELECT uid FROM groups_user_perms WHERE gid=%d AND pid=%d', $this->gid, $pid);
 		} else {
-			$res = $I2_SQL->query('SELECT uid FROM groups_user_perms WHERE gid=%d', $this->gid);
+			$res = $I2_SQL->query('SELECT DISTINCT uid FROM groups_user_perms WHERE gid=%d', $this->gid);
 		}
 
 		$ret = array();
@@ -520,7 +515,7 @@ class GroupSQL extends Group {
 	public function is_admin(User $user) {
 		global $I2_SQL;
 
-		if($this->has_permission($user, self::PERM_ADMIN)) {
+		if($this->has_permission($user, Group::PERM_ADMIN)) {
 			return TRUE;
 		}
 

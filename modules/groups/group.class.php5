@@ -15,6 +15,11 @@
 */
 class Group {
 
+	const PERM_ADMIN = 'GROUP_ADMIN';
+	const PERM_ADD = 'GROUP_ADD';
+	const PERM_REMOVE = 'GROUP_REMOVE';
+	const PERM_JOIN = 'GROUP_JOIN';
+
 	/**
 	* Commonly accessed administrative groups.
 	*/
