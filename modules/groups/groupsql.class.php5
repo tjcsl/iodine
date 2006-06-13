@@ -49,7 +49,7 @@ class GroupSQL extends Group {
 		if (self::$gid_map === NULL) {
 			 self::$gid_map = array();
 			 self::$name_map = array();
-			 $res = $I2_SQL->query('SELECT name,gid FROM groups');
+			 $res = $I2_SQL->query('SELECT name,gid FROM groups_name');
 			 while ($row = $res->fetch_array(Result::ASSOC)) {
 			 	self::$gid_map[$row['name']] = $row['gid'];
 				self::$name_map[$row['gid']] = $row['name'];
@@ -102,7 +102,7 @@ class GroupSQL extends Group {
 
 		switch($var) {
 			case 'description':
-				return $I2_SQL->query('SELECT description FROM groups WHERE gid=%d', $this->__get('gid'))->fetch_single_value();
+				return $I2_SQL->query('SELECT description FROM groups_name WHERE gid=%d', $this->__get('gid'))->fetch_single_value();
 			case 'members':
 				$this->info[$var] = $this->get_static_members();
 				break;
@@ -137,7 +137,7 @@ class GroupSQL extends Group {
 			$prefix = strtolower($module) . '_%';
 		}
 		$ret = array();
-		foreach($I2_SQL->query('SELECT gid FROM groups WHERE name LIKE %s ORDER BY name', $prefix) as $row) {
+		foreach($I2_SQL->query('SELECT gid FROM groups_name WHERE name LIKE %s ORDER BY name', $prefix) as $row) {
 			$ret[] = new Group($row[0]);
 		}
 		return $ret;
@@ -145,7 +145,7 @@ class GroupSQL extends Group {
 
 	public static function get_all_group_names() {
 		global $I2_SQL;
-		return $I2_SQL->query('SELECT name FROM groups');
+		return $I2_SQL->query('SELECT name FROM groups_name');
 	}
 
 	public function add_user(User $user) {
@@ -489,7 +489,7 @@ class GroupSQL extends Group {
 		$I2_SQL->query('DELETE FROM groups_group_perms WHERE gid=%d OR usergroup=%d', $this->gid, $this->gid);
 		$I2_SQL->query('DELETE FROM groups_join WHERE gid=%d OR group1=%d OR group2=%d', $this->gid, $this->gid, $this->gid);
 		$I2_SQL->query('DELETE FROM groups_user_perms WHERE gid=%d', $this->gid);
-		$I2_SQL->query('DELETE FROM groups WHERE gid=%d', $this->gid);
+		$I2_SQL->query('DELETE FROM groups_name WHERE gid=%d', $this->gid);
 	}
 
 	public static function add_group($name,$description='No description available',$gid=NULL) {
@@ -504,7 +504,7 @@ class GroupSQL extends Group {
 			throw new I2Exception('User is not authorized to create groups.');
 		}
 
-		/*$res = $I2_SQL->query('SELECT gid FROM groups WHERE name=%s;',$name);
+		/*$res = $I2_SQL->query('SELECT gid FROM groups_name WHERE name=%s;',$name);
 		if($res->num_rows() > 0) {
 			throw new I2Exception("Tried to create group with name `$name`, which already exists as gid `{$res->fetch_single_value()}`");
 		}*/
