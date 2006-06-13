@@ -220,6 +220,15 @@ class Group {
 	}
 
 	/**
+	* Returns a list of all dynamic membership rules for this group.
+	*
+	* @return array An array describing each dynamic membership rule.
+	*/
+	public function list_dynamic_rules() {
+		return $this->wrap->list_dynamic_rules();
+	}
+
+	/**
 	* Determines if a user is a member of this group.
 	*
 	* If this is an admin_* group, this method also checks to see if the user is a member of the admin_all group, and returns TRUE if they are. Otherwise, just checks if this group is listed as one that the user is a member of.

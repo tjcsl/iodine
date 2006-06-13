@@ -106,6 +106,27 @@ Group: <strong>[<$group>]</strong><br />
 </table>
 [</if>]
 <h3>Membership</h3>
+[<if count($dynamic_members) > 0>]
+<p>This group has the following dynamic membership rules:</p>
+<table>
+ <thead>
+  <th>Rule type</th>
+  <th>Query</th>
+ </thead>
+ <tbody>
+ [<foreach from=$dynamic_members item=member>]
+  <tr class="[<cycle values="c1,c2">]">
+   <td>[<$member.type>]</td>
+   [<if $member.type == 'JOIN'>]
+   <td><a href="[<$I2_ROOT>]groups/pane/[<$member.group1->gid>]">[<$member.group1->name>]</a> [<$member.optype>] <a href="[<$I2_ROOT>]groups/pane/[<$member.group2->gid>]">[<$member.group2->name>]</a></td>
+   [<else>]
+   <td>[<$member.query>]</td>
+   [</if>]
+  </tr>
+ [</foreach>]
+ </tbody>
+</table>
+[</if>]
 [<if count($members) > 0>]
 <p>This group has the following static members:</p>
 <table style="width: 30em;">

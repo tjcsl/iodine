@@ -18,12 +18,12 @@ class GroupSQL extends Group {
 	/**
 	* groupname to GID mapping
 	*/
-	private static $gid_map;
+	private static $gid_map = NULL;
 
 	/**
 	* GID to groupname mapping
 	*/
-	private static $name_map;
+	private static $name_map = NULL;
 
 	/**
 	* Group info cache
@@ -414,6 +414,26 @@ class GroupSQL extends Group {
 		return $ret;
 	}
 
+	public function list_dynamic_rules() {
+		global $I2_SQL;
+
+		$ret = array();
+		foreach($I2_SQL->query('SELECT dbtype,query FROM groups_dynamic WHERE gid=%d', $this->gid) as $row) {
+			$arr['type'] = $row['dbtype'];
+			$arr['query'] = $row['query'];
+
+			$ret[] = $arr;
+		}
+		foreach($I2_SQL->query('SELECT optype,group1,group2 FROM groups_join WHERE gid=%d', $this->gid) as $row) {
+			$arr = $row;
+			$arr['type'] = 'JOIN';
+
+			$ret[] = $arr;
+		}
+
+		return $ret;
+	}
+
 	public static function get_static_groups(User $user, $perms = NULL) {
 		global $I2_SQL, $I2_USER;
 		$ret = array();
@@ -510,7 +530,12 @@ class GroupSQL extends Group {
 		} else {
 			$res = $I2_SQL->query('INSERT INTO groups_name (name,description,gid) VALUES (%s,%s,%d)',$name,$description,$gid);
 		}
-		return $res->get_insert_id();
+		$gid = $res->get_insert_id();
+		if(self::$gid_map !== NULL) {
+			self::$gid_map[$name] = $gid;
+			self::$name_map[$gid] = $name;
+		}
+		return $gid;
 	}
 
 	public static function get_pid($perm) {
