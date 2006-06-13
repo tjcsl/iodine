@@ -260,7 +260,35 @@ class Group {
 	* @return bool TRUE if the user is an administrator of the group, FALSE otherwise.
 	*/
 	public function is_admin(User $user) {
-		return $this->wrap->is_admin($user);
+		if($this->has_permission($user, Group::PERM_ADMIN)) {
+			return TRUE;
+		}
+
+		// admin_all members get admin access to all groups
+		if(Group::admin_all()->has_member($user)) {
+			return TRUE;
+		}
+
+		// They're not an admin of this group nor are they a member of admin_all
+		return FALSE;
+	}
+
+	/**
+	* Generates several groups at once.
+	*
+	* @param mixed $gids Either an array of GIDs or a single GID
+	* @return array An array of {@link Group} objects.
+	*/
+	public static function generate($gids) {
+		if(is_array($gids)) {
+			$ret = array();
+			foreach($gids as $gid) {
+				$ret[] = new Group($gid);
+			}
+		} else {
+			return new Group($gids);
+		}
+		return $ret;
 	}
 }
 ?>
