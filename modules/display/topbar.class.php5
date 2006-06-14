@@ -30,7 +30,7 @@ class TopBar {
 				if (isSet($dates) && isSet($date)) {
 					$arr['date'] = $dates[$date];
 				} else {
-					$arr['date'] = '';
+					$arr['date'] = 'none';
 				}
 		        } else {
 			        $arr['date'] = 'none';
