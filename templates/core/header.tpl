@@ -30,8 +30,6 @@ IE7_PNG_SUFFIX = ".png";
 			[</if>]
 			<a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$I2_USER->uid>]/bids/[<$activity->bid>]">[<$activity->name_friendly>]</a>[</foreach>].
 	[</if>]
- [<else>]
- 	There aren't any currently scheduled 8th period activities.
  [</if>]
  </div>
 </div>
