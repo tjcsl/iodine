@@ -153,6 +153,7 @@ class LDAPResult implements Result {
 		$rawres = ldap_get_attributes($this->ldap,$row);
 
 		$res = array();
+		$i = 0;
 		
 		foreach ($rawres as $key=>$value) {
 			//TODO: think hard about this.
@@ -173,10 +174,10 @@ class LDAPResult implements Result {
 			if (is_array($value)) {
 			
 				if ($value['count'] == 1) {
-					$res[$key] = $value[0];
-					continue;
+					$value = $value[0];
+				} else {
+					unset($value['count']);
 				}
-				unset($value['count']);
 				/*$subarray = array();
 				for ($i=0;$i<$value['count'];$i++) {
 					$subarray[] = $value[$i];
@@ -184,7 +185,12 @@ class LDAPResult implements Result {
 				$value = $subarray;*/
 			}
 
-			$res[$key] = $value;
+			if($type == Result::NUM || $type == Result::BOTH) {
+				$res[$i++] = $value;
+			}
+			if($type == Result::ASSOC || $type == Result::BOTH) {
+				$res[$key] = $value;
+			}
 		}
 
 		return $res;
