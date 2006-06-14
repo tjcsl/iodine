@@ -17,7 +17,7 @@ Date: <b>[<$activity->block->date|date_format:"%A, %B %e %Y">]</b> Block <b>[<$a
 [<* Insert more personal information *>]
 	</tr>
 [<foreach from=$activity->members_obj item="member">]
-	<tr style="background-color: [<cycle values="#EEEEFF,#FFFFFF">];">
+	<tr class="[<cycle values="c1,c2">]">
 		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]studentdirectory/info/[<$member->uid>]">[<$member->name_comma>]</a></td>
 		<td style="padding: 0px 5px;">[<$member->grade>]</td>
 	</tr>
