@@ -572,8 +572,10 @@ class GroupSQL extends Group {
 				return eval($query);
 			case 'LDAP':
 				$res = $I2_LDAP->search(LDAP::get_user_dn($user->uid),$query,array('iodineUidNumber'));
+				break;
 			case 'MYSQL':
 				$res = $I2_SQL->query($query);
+				break;
 		}
 
 		if($res->num_rows() < 1) {
