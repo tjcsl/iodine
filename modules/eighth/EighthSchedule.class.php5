@@ -131,7 +131,7 @@ class EighthSchedule {
 		global $I2_SQL;
 		Eighth::check_admin();
 		$user = new User($userid);
-		$userid = $user->iodineuidnumber;
+		$userid = $user->uid;
 		$old = $I2_SQL->query('SELECT userid FROM eighth_absentees WHERE bid=%d AND userid=%d', $blockid, $userid)->fetch_single_value();
 		if (!$old) {
 			// Absentee not present
@@ -223,6 +223,8 @@ class EighthSchedule {
 	*/
 	public static function get_activities($userid, $starting_date = NULL, $number_of_days = 14) {
 		global $I2_SQL;
+		$user = new User($userid);
+		$userid = $user->uid;
 		if($starting_date == NULL) {
 			$starting_date = date('Y-m-d');
 		}
