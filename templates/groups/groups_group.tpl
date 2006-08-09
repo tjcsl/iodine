@@ -132,13 +132,15 @@ Group: <strong>[<$group>]</strong><br />
 <table style="width: 30em;">
  <thead>
   <th>User</th>
-  <th>Remove</th>
+  [<if $can_remove>]<th>Remove</th>[</if>]
  </thead>
  <tbody>
 [<foreach from=$members item=person>]
   <tr class="[<cycle values="c1,c2">]">
    <td style="text-align: center;"><a href="[<$I2_ROOT>]studentdirectory/info/[<$person.uid>]">[<$person.name>]</a></td>
-   <td style="text-align: center;"><a href="[<$I2_ROOT>]groups/remove/[<$person.uid>]/[<$gid>]">[remove this person from this group]</a></td>
+   [<if $can_remove>]
+    <td style="text-align: center;"><a href="[<$I2_ROOT>]groups/remove/[<$person.uid>]/[<$gid>]">[remove this person from this group]</a></td>
+   [</if>]
   </tr>
 [</foreach>]
  </tbody>
