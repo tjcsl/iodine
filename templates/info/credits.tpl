@@ -58,9 +58,9 @@ I2 Development Team:
 
 I2 User Experience Technicians:
 <ul>
-	<li>Eric Harmon</li>
-	<li>Andrew Smith</li>
-	<li>William "wyang" Yang</li>
+	<li>Eric Harmon (2006)</li>
+	<li>Andrew Smith (2006)</li>
+	<li>William "wyang" Yang (2008)</li>
 </ul>
 </td>
 </tr>
