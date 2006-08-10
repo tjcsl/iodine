@@ -299,7 +299,7 @@ class User {
 			case 'preferredPhoto':
 			case 'preferredphoto':
 			case 'preferred_photo':
-				$row = $I2_LDAP->search_base(LDAP::get_user_dn($this), 'preferredPhoto')->fetch_array(Result::NUM);
+				$row = $I2_LDAP->search_base(LDAP::get_user_dn($this), 'preferredPhoto')->fetch_array();
 				if(!$row) {
 					return NULL;
 				}
