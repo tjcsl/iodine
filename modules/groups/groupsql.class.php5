@@ -416,12 +416,6 @@ class GroupSQL extends Group {
 
 			$ret[] = $arr;
 		}
-		foreach($I2_SQL->query('SELECT optype,group1,group2 FROM groups_join WHERE gid=%d', $this->gid) as $row) {
-			$arr = $row;
-			$arr['type'] = 'JOIN';
-
-			$ret[] = $arr;
-		}
 
 		return $ret;
 	}
