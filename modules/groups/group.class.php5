@@ -363,5 +363,19 @@ class Group {
 		}
 		return substr($name, 0, strpos($name, Group::PREFIX_DELIMETER));
 	}
+
+	/**
+	 * Determines whether the current user can create a group with a given name.
+	 *
+	 * @param string $groupname The name of the group; defaults to NULL, representing any group.
+	 * @return bool TRUE if the user is allowed to create the group, FALSE otherwise.
+	 */
+	public static function user_can_create($groupname = NULL) {
+		global $I2_AUTH, $I2_USER;
+
+		return $I2_AUTH->used_master_password()
+			|| self::admin_all()->has_member($I2_USER)
+			|| self::prefix_admin($groupname, $I2_USER);
+	}
 }
 ?>
