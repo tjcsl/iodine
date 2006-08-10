@@ -362,14 +362,6 @@ class GroupSQL extends Group {
 		} else {
 			throw new I2Exception('Invalid object passed as $subject to '.__METHOD__);
 		}
-
-		// Check dynamic join groups
-		$dynamic = $I2_SQL->query('SELECT optype,group1,group2 FROM groups_join WHERE gid=%d', $this->gid);
-		foreach($dynamic as $group) {
-			if(self::is_join_member($group['optype'], $group['group1'], $group['group2'], $subject)) {
-				return TRUE;
-			}
-		}
 	}
 
 	public function set_group_name($name) {
@@ -589,31 +581,6 @@ class GroupSQL extends Group {
 			}
 		}
 		return FALSE;
-	}
-
-	/**
-	* Determines if a user is a member of a dynamic join group
-	*
-	* @param string $optype The logical operation to perform for this join group ('AND','AND NOT','OR' or 'OR NOT')
-	* @param int $grp1 The GID of the first group.
-	* @param int $grp2 The GID of the second group.
-	* @param User $subject The user whose membership we are determining.
-	* @return bool TRUE if the user is a member of the dynamic join group, FALSE otherwise.
-	*/
-	private static function is_join_member($optype, $grp1, $grp2, User $subject) {
-		$grp1 = new Group($grp1);
-		$grp2 = new Group($grp2);
-		switch($optype) {
-			case 'AND':
-				return $grp1->has_member($subject) && $grp2->has_member($subject);
-			case 'AND NOT':
-				return $grp1->has_member($subject) && !$grp2->has_member($subject);
-			case 'OR':
-				return $grp1->has_member($subject) || $grp2->has_member($subject);
-			case 'OR NOT':
-				return $grp1->has_member($subject) || !$grp2->has_member($subject);
-		}
-		throw new I2Exception('Invalid $optype passed to '.__METHOD__.": $optype");
 	}
 }
 ?>
