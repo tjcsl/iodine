@@ -558,29 +558,6 @@ class User {
 	}
 
 	/**
-	* Get a user's groups.
-	*
-	* Used for finding all a user's groups.
-	*
-	* @return array An array of {@link Group}s of which this user is a member.
-	*/
-	public function get_groups() {
-		return Group::get_user_groups($this);
-	}
-
-	/**
-	* Adds this user to the given group.
-	*
-	* Adds the given group to this user's membership list.
-	* 
-	* @param string $groupname The name of the group to which this user should be added.
-	*/
-	public function add_to_group($groupname) {
-		$group = new Group($groupname);
-		return $group->add_user($this);
-	}	
-
-	/**
 	* Indicates whether this User is a member of the given group. 
 	*
 	*	Looks up a user's membership status by group name.
@@ -589,17 +566,6 @@ class User {
 	*	@return boolean Whether this User is a member of the passed group.
 	*/
 	public function is_group_member($groupname) {
-
-		/*
-		** admin_all is admin_*
-		*/
-	
-		if (!self::$admin_all_group) {
-			self::$admin_all_group = new Group('admin_all');
-		}
-		if (substr($groupname,0,7) == 'admin_' && self::$admin_all_group->has_member($this)) {
-			return TRUE;
-		}
 		$group = new Group($groupname);
 		return $group->has_member($this);
 	}	
