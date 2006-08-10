@@ -110,7 +110,7 @@ class Group {
 	* @return Array An array of {@link Group} objects for all of the groups requested.
 	*/
 	public static function get_all_groups($module = NULL) {
-		return GroupSQL::get_all_groups($module);
+		return $this->wrap->get_all_groups($module);
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Group {
 	* @return Result A {@link Result} object with all group names.
 	*/
 	public static function get_all_group_names() {
-		return GroupSQL::get_all_group_names();
+		return $this->wrap->get_all_group_names();
 	}
 
 	/**
@@ -194,7 +194,7 @@ class Group {
 	* @return mixed A {@link Result} object with the PID, name, and description of all permissions if $pid is not passed. If $pid is passed, then returns an array of information about that specific permission.
 	*/
 	public static function list_permissions($pid = NULL) {
-		return GroupSQL::list_permissions($pid);
+		return $this->wrap->list_permissions($pid);
 	}
 
 	/**
@@ -256,7 +256,7 @@ class Group {
 	* @return array The Groups in which the user has membership.
 	*/
 	public static function get_static_groups(User $user, $perms = NULL) {
-		return GroupSQL::get_static_groups($user,$perms);
+		return $this->wrap->get_static_groups($user,$perms);
 	}
 
 	/**
@@ -266,7 +266,7 @@ class Group {
 	* @return Array An array of {@link Group} objects that the user is an administrator in.
 	*/
 	public static function get_admin_groups(User $user) {
-		return GroupSQL::get_admin_groups($user);
+		return $this->wrap->get_admin_groups($user);
 	}
 	
 	/**
@@ -282,7 +282,7 @@ class Group {
 	* @param string $name The name for the new group.
 	*/
 	public static function add_group($name,$description='No description available',$gid=NULL) {
-		return GroupSQL::add_group($name,$description,$gid);
+		return $this->wrap->add_group($name,$description,$gid);
 	}
 
 	/**
