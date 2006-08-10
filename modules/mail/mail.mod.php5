@@ -33,13 +33,15 @@ class Mail implements Module {
 	* The Mail class constructor.
 	*/
 	function __construct() {
+		global $I2_USER;
+
 		$cache_dir = i2config_get('cache_dir','/var/cache/iodine/','core') . 'mail/';
 
 		if(!is_dir($cache_dir)) {
 			mkdir($cache_dir, 0700, TRUE);
 		}
 
-		$this->cache_file = $cache_dir . session_id();
+		$this->cache_file = $cache_dir . hash('md5', $I2_USER->iodineUid);
 
 		$timeout = i2config_get('imap_timeout','','mail');
 		if($timeout) {
