@@ -562,7 +562,7 @@ class User {
 	*
 	* Used for finding all a user's groups.
 	*
-	* @return array An array of {link Group}s of which this user is a member.
+	* @return array An array of {@link Group}s of which this user is a member.
 	*/
 	public function get_groups() {
 		return Group::get_user_groups($this);
