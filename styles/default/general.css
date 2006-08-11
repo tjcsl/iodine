@@ -38,3 +38,13 @@ a:hover {
 .bold {
 	font-weight: bold;
 }
+
+ul {
+	margin: 2px 0px 8px 0px;
+	padding: 0px 0px 0px 32px;
+}
+
+ul.none {
+	list-style-type: none;
+	padding: 0px 0px 0px 16px;
+}

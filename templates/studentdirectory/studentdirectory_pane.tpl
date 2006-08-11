@@ -16,16 +16,14 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
 [<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]
 [<if $user->counselor>]Counselor: [<$user->counselor_name>]<br />[</if>]
 <br />
-[<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]Phone (home): [<$phone>]<br />[</foreach>][</if>]
-[<if $user->phone_cell>]Cell phone: [<$user->phone_cell>]<br />[</if>]
-[<if count($user->phone_other)>]Alternate phone number(s):
- <ul>
- [<foreach from=$user->phone_other item=phone_other>]
-  <li>[<$phone_other>]</li>
- [</foreach>]
+[<if $user->homePhone || $user->phone_cell || count($user->phone_other)>]
+Phone number(s):
+ <ul class="none">
+ [<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]<li>[<$phone>] (Home)</li>[</foreach>][</if>]
+ [<if $user->phone_cell>]<li>[<$user->phone_cell>] (Cell)</li>[</if>]
+ [<if count($user->phone_other)>][<foreach from=$user->phone_other item=phone_other>]<li>[<$phone_other>] (Other)</li>[</foreach>][</if>]
  </ul>
 [</if>]
-<br />
 [<if $user->street>]
  [<$user->street>]<br />
  [<$user->l>], [<$user->st>] [<$user->postalCode>]<br />
@@ -62,14 +60,14 @@ or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexan
 <br />
 [<if count($user->aim)>]
 AIM/AOL Screenname(s):
- <ul>
+ <ul class="none">
  [<foreach from=$user->aim item=aim>]
   <li><img src="[<$I2_ROOT>]www/pics/osi/[<$im_status.aim.$aim>].png" /> <a href="aim:goim?screenname=[<$aim>]">[<$aim|escape:'html'>]</a></li>
  [</foreach>]
  </ul>
 [</if>]
 [<if count($user->yahoo)>]Yahoo! ID(s):
- <ul>
+ <ul class="none">
  [<foreach from=$user->yahoo item=yahoo>]
   <li><img src="[<$I2_ROOT>]www/pics/osi/[<$im_status.yahoo.$yahoo>].png" /> [<$yahoo|escape:'html'>]</li>
  [</foreach>]
@@ -83,14 +81,14 @@ AIM/AOL Screenname(s):
  </ul>
 [</if>]
 [<if count($user->jabber)>]Jabber Username(s):
- <ul>
+ <ul class="none">
  [<foreach from=$user->jabber item=jabber>]
   <li><img src="[<$I2_ROOT>]www/pics/osi/[<$im_status.jabber.$jabber>].png" /> [<$jabber|escape:'html'>]</li>
  [</foreach>]
  </ul>
 [</if>]
 [<if count($user->icq)>]ICQ Number(s):
- <ul>
+ <ul class="none">
  [<foreach from=$user->icq item=icq>]
   <li><img src="[<$I2_ROOT>]www/pics/osi/[<$im_status.icq.$icq>].png" /> [<$icq|escape:'html'>]</li>
  [</foreach>]
@@ -111,7 +109,7 @@ AIM/AOL Screenname(s):
  </ul>
 [</if>]
 [<if count($user->skype)>]Skype handle(s):
- <ul>
+ <ul class="none">
  [<foreach from=$user->skype item=skype>]
   <li><img src="http://mystatus.skype.com/smallicon/[<$skype|escape:'html'>]" /> <a href="skype:[<$skype>]?call">[<$skype|escape:'html'>]</a></li>
  [</foreach>]
