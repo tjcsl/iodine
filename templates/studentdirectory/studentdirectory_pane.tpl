@@ -15,8 +15,8 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
 [<$user->fullname>][<if $user->grade != 'staff'>], Grade [<$user->grade>][<else>], on staff[</if>]<br />
 [<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]
 [<if $user->counselor>]Counselor: [<$user->counselor_name>]<br />[</if>]
-[<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]Phone (home): [<$phone>]<br />[</foreach>]
-[</if>]<br />
+<br />
+[<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]Phone (home): [<$phone>]<br />[</foreach>][</if>]
 [<if $user->phone_cell>]Cell phone: [<$user->phone_cell>]<br />[</if>]
 [<if count($user->phone_other)>]Alternate phone number(s):
  <ul>
