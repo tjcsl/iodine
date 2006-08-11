@@ -113,7 +113,7 @@ AIM/AOL Screenname(s):
 [<if count($user->skype)>]Skype handle(s):
  <ul>
  [<foreach from=$user->skype item=skype>]
-  <li><a href="skype:[<$skype>]">[<$skype|escape:'html'>]</a></li>
+  <li><img src="http://mystatus.skype.com/smallicon/[<$skype|escape:'html'>]" /> <a href="skype:[<$skype>]?call">[<$skype|escape:'html'>]</a></li>
  [</foreach>]
  </ul>
 [</if>]
