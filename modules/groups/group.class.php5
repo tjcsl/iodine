@@ -48,6 +48,7 @@ class Group {
 	/**
 	* Commonly accessed administrative groups.
 	*/
+	private static $all = NULL;
 	private static $admin_all = NULL;
 	private static $admin_eighth = NULL;
 	private static $admin_ldap = NULL;
@@ -57,6 +58,13 @@ class Group {
 	* The encapsulated Group backend object to use for Group database info.
 	*/
 	private $wrap;
+	
+	public static function all() {
+		if(self::$all === NULL) {
+			self::$all = new Group('all');
+		}
+		return self::$all;
+	}
 	
 	public static function admin_all() {
 		if(self::$admin_all === NULL) {
@@ -260,6 +268,16 @@ class Group {
 	}
 
 	/**
+	* Gets the dynamic groups of which a user is a member.
+	*
+	* @param User $user The {@link User} for which to fetch the groups.
+	* @return array The Groups in which the user has membership.
+	*/
+	public static function get_dynamic_groups(User $user, $perms = NULL) {
+		return GroupSQL::get_dynamic_groups($user,$perms);
+	}
+
+	/**
 	* Gets all groups for which a user is an admin.
 	*
 	* @param User $user The user who must be considered an admin in the groups that are returned.
@@ -267,6 +285,18 @@ class Group {
 	*/
 	public static function get_admin_groups(User $user) {
 		return GroupSQL::get_admin_groups($user);
+	}
+
+	/**
+	* Gets all groups in which a user is a member.
+	*
+	* This includes both static and dynamic groups.
+	*
+	* @param User $user The user.
+	* @return Array An array of {@link Group} objects that the user is a member of.
+	*/
+	public static function get_user_groups(User $user) {
+		return array_merge(Group::get_static_groups($user), Group::get_dynamic_groups($user));
 	}
 	
 	/**
@@ -303,6 +333,11 @@ class Group {
 			return TRUE;
 		}
 
+		// prefix admins get admin access to groups with their prefix
+		if(self::prefix($this->name) && Group::all()->has_permission($user, self::PERM_ADMIN_PREFIX . self::prefix($this->name))) {
+			return TRUE;
+		}
+
 		// They're not an admin of this group nor are they a member of admin_all
 		return FALSE;
 	}
@@ -323,6 +358,15 @@ class Group {
 			return new Group($gids);
 		}
 		return $ret;
+	}
+
+	/**
+	 * Gets all prefixes for which a user is a "prefix" admin.
+	 *
+	 * @param User $user The user.
+	 */
+	public static function user_admin_prefixes(User $user) {
+		return GroupSQL::user_admin_prefixes($user);
 	}
 
 	/**

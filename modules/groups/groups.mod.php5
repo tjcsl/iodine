@@ -34,10 +34,11 @@ class Groups implements Module {
 		$args = array();
 		if(count($I2_ARGS) <= 1) {
 			$this->template = 'groups_home.tpl';
-			$this->template_args['groups'] = Group::get_static_groups($I2_USER);
+			$this->template_args['groups'] = Group::get_user_groups($I2_USER);
 			if (Group::admin_all()->has_member($I2_USER)) {
 				$this->template_args['admin'] = 1;
 			}
+			$this->template_args['prefixes'] = Group::user_admin_prefixes($I2_USER);
 			return array('Groups: Home', 'Groups');
 		}
 		else {
@@ -381,8 +382,46 @@ class Groups implements Module {
 		}
 		else {
 			$this->template = 'groups_error.tpl';
+			return 'Permission Denied';
 		}
 		return 'Groups: Admin';
+	}
+
+	/**
+	 * The prefix admin interface
+	 *
+	 * Like the master admin interface, but for prefix admins.
+	 */
+	function padmin() {
+		global $I2_USER, $I2_ARGS;
+
+		if (!Group::prefix_admin($I2_ARGS[2].'_', $I2_USER)) {
+			$this->template = 'groups_error.tpl';
+			return 'Permission Denied';
+		}
+		else {
+			if(isset($_REQUEST['group_padmin_form'])) {
+				if($_REQUEST['group_padmin_form'] == 'add') {
+					if(!Group::prefix($_REQUEST['name']) == $I2_ARGS[2]) {
+						$this->template = 'groups_error.tpl';
+						return 'Invalid Group Name';
+					}
+					Group::add_group($_REQUEST['name']);
+				}
+				if($_REQUEST['group_padmin_form'] == 'remove') {
+					if(!Group::prefix($_REQUEST['name']) == $I2_ARGS[2]) {
+						$this->template = 'groups_error.tpl';
+						return 'Invalid Group Name';
+					}
+					$group = new Group($_REQUEST['name']);
+					$group->delete_group();
+				}
+			}
+			$this->template_args['groups'] = Group::get_all_groups($I2_ARGS[2]);
+			$this->template_args['prefix'] = $I2_ARGS[2];
+			$this->template = 'groups_padmin.tpl';
+		}
+		return 'Groups: Admin (' . $I2_ARGS[2] . '_)';
 	}
 }
 ?>

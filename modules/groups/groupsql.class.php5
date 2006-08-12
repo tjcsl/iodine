@@ -420,11 +420,51 @@ class GroupSQL extends Group {
 		return $ret;
 	}
 
+	public static function get_dynamic_groups(User $user, $perms = NULL) {
+		global $I2_SQL, $I2_USER;
+		$ret = array();
+
+		if ($user->uid != $I2_USER->uid && !Group::admin_all()->has_member($I2_USER)) {
+			throw new I2Exception('You are not authorized to view this user\'s group membership');
+		}
+
+		if ($perms && !is_array($perms)) {
+			$perms = array($perms);
+		}
+
+		if($perms) {
+			foreach($perms as $i=>$perm) {
+				$perms[$i] = self::get_pid($perm);
+				if($perms[$i] === FALSE) {
+					throw new I2Exception("Invalid permission $perm passed to".__METHOD__);
+				}
+			}
+		}
+
+		$res = $I2_SQL->query('SELECT gid, dbtype, query FROM groups_dynamic');
+		foreach ($res as $row) {
+			if (self::is_dynamic_member($row['dbtype'], $row['query'], $user)) {
+				$grp = new Group($row['gid']);
+				$ret[] = $grp;
+				if (is_array($perms)) {
+					foreach ($perms as $perm) {
+						if (!$grp->has_permission($user, $perm)) {
+							array_pop($ret);
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		return $ret;
+	}
+
 	public static function get_static_groups(User $user, $perms = NULL) {
 		global $I2_SQL, $I2_USER;
 		$ret = array();
 
-		if ($user->uid != $I2_USER->uid && Group::admin_all()->has_member($I2_USER)) {
+		if ($user->uid != $I2_USER->uid && !Group::admin_all()->has_member($I2_USER)) {
 			throw new I2Exception('You are not authorized to view this user\'s group membership');
 		}
 
@@ -466,6 +506,24 @@ class GroupSQL extends Group {
 		return $ret;
 	}
 
+	public static function user_admin_prefixes(User $user) {
+		global $I2_SQL;
+		$ret = array();
+
+		$all = Group::all();
+		$pids = $all->get_permissions($user);
+
+		foreach ($pids as $pid) {
+			$permname = $I2_SQL->query('SELECT name FROM permissions WHERE pid=%d', $pid)->fetch_single_value();
+			$prefix = preg_replace('/^ADMIN_/', '', $permname);
+			if ($prefix != $permname) { // $permname started with ADMIN_
+				$ret[] = $prefix;
+			}
+		}
+
+		return $ret;
+	}
+
 	public static function get_admin_groups(User $user) {
 		$groups = Group::get_static_groups($user);
 		$ret = array();
@@ -482,7 +540,7 @@ class GroupSQL extends Group {
 		global $I2_SQL;
 		
 		$name = $this->name;
-		if (!Group::user_can_add($name)) {
+		if (!Group::user_can_create($name)) {
 			throw new I2Exception("User is not authorized to delete group $name.");
 		}
 
@@ -496,7 +554,7 @@ class GroupSQL extends Group {
 	public static function add_group($name,$description='No description available',$gid=NULL) {
 		global $I2_SQL,$I2_AUTH;
 
-		if (!Group::user_can_add($name)) {
+		if (!Group::user_can_create($name)) {
 			throw new I2Exception("User is not authorized to create group $name.");
 		}
 
