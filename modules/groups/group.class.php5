@@ -155,6 +155,25 @@ class Group {
 	}
 
 	/**
+	 * Creates a new permission.
+	 *
+	 * @param string $name The name of the permission
+	 * @return The ID number of the new permission
+	 */
+	public static function add_permission($perm) {
+		return GroupSQL::add_permission($perm);
+	}
+
+	/**
+	 * Deletes a permission.
+	 *
+	 * @param string $name The name of the permission
+	 */
+	public static function del_permission($perm) {
+		return GroupSQL::del_permission($perm);
+	}
+
+	/**
 	* Grants a permission to a certain user in this group.
 	*
 	* @param mixed $subject The user or group to grant the permission to.

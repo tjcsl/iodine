@@ -221,6 +221,29 @@ class GroupSQL extends Group {
 
 	}
 
+	public static function add_permission($perm, $desc = 'No description available') {
+		global $I2_SQL, $I2_USER;
+
+		// Check authorization
+		if (! Group::admin_all()->has_member($I2_USER)) {
+			throw new I2Exception('You are not authorized to create a new permission!');
+		}
+
+		$res = $I2_SQL->query('INSERT INTO permissions (name, description) VALUES (%s, %s)', $perm, $desc);
+		return $res->get_insert_id();
+	}
+
+	public static function del_permission($pid) {
+		global $I2_SQL, $I2_USER;
+
+		// Check authorization
+		if (! Group::admin_all()->has_member($I2_USER)) {
+			throw new I2Exception('You are not authorized to create a new permission!');
+		}
+
+		$I2_SQL->query('DELETE FROM permissions WHERE pid=%d', $pid);
+	}
+
 	public function grant_permission($subject, $perm) {
 		global $I2_SQL, $I2_USER;
 
