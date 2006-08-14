@@ -155,10 +155,10 @@ class GroupSQL extends Group {
 			self::admin_all()->has_member($I2_USER) ||
 
 			// People can add themselves if they have the Group::PERM_JOIN permission
-			($I2_USER->uid == $user->uid && $this->has_permission($user, Group::PERM_JOIN)) ||
+			($I2_USER->uid == $user->uid && $this->has_permission($user, new Permission(Group::PERM_JOIN))) ||
 
 			// People with the Group::PERM_ADD permission can add people
-			$this->has_permission($I2_USER,Group::PERM_ADD)
+			$this->has_permission($I2_USER, new Permission(Group::PERM_ADD))
 		) {
 
 			// Only insert member into the cache if the cache has been fetched
@@ -184,10 +184,10 @@ class GroupSQL extends Group {
 			self::admin_all()->has_member($I2_USER) ||
 
 			// People can remove themselves if they can add themselves, as well
-			($I2_USER->uid == $user->uid && $this->has_permission($user, Group::PERM_JOIN)) ||
+			($I2_USER->uid == $user->uid && $this->has_permission($user, new Permission(Group::PERM_JOIN))) ||
 
 			// People with the Group::PERM_REMOVE permission can remove people
-			$this->has_permission($I2_USER,Group::PERM_REMOVE)
+			$this->has_permission($I2_USER, new Permission(Group::PERM_REMOVE))
 		) {
 
 			// Delete user from member cache if the cache has been fetched
@@ -207,7 +207,7 @@ class GroupSQL extends Group {
 			self::admin_all()->has_member($I2_USER) ||
 
 			// People with the Group::PERM_REMOVE permission can remove people
-			$this->has_permission($I2_USER,Group::PERM_REMOVE)
+			$this->has_permission($I2_USER, new Permission(Group::PERM_REMOVE))
 		) {
 			
 			// Delete member cache if it has been fetched
@@ -221,44 +221,18 @@ class GroupSQL extends Group {
 
 	}
 
-	public static function add_permission($perm, $desc = 'No description available') {
-		global $I2_SQL, $I2_USER;
-
-		// Check authorization
-		if (! Group::admin_all()->has_member($I2_USER)) {
-			throw new I2Exception('You are not authorized to create a new permission!');
-		}
-
-		$res = $I2_SQL->query('INSERT INTO permissions (name, description) VALUES (%s, %s)', $perm, $desc);
-		return $res->get_insert_id();
-	}
-
-	public static function del_permission($pid) {
-		global $I2_SQL, $I2_USER;
-
-		// Check authorization
-		if (! Group::admin_all()->has_member($I2_USER)) {
-			throw new I2Exception('You are not authorized to create a new permission!');
-		}
-
-		$I2_SQL->query('DELETE FROM permissions WHERE pid=%d', $pid);
-	}
-
-	public function grant_permission($subject, $perm) {
+	public function grant_permission($subject, Permission $perm) {
 		global $I2_SQL, $I2_USER;
 
 		// Check authorization
 		if(	// Admins can add permissions to anyone
 			!self::admin_all()->has_member($I2_USER) &&
-			!$this->has_permission($I2_USER,Group::PERM_ADMIN)
+			!$this->has_permission($I2_USER, new Permission(Group::PERM_ADMIN))
 		) {
 			throw new I2Exception('You are not authorized to grant permissions in this group!');
 		}
 
-		// Check permission validity
-		if( ($pid = self::get_pid($perm)) === FALSE) {
-			throw new I2Exception("Invalid permission $perm passed to ".__METHOD__);
-		}
+		$pid = $perm->pid;
 
 		if($subject instanceof User) {
 			return $I2_SQL->query('INSERT INTO groups_user_perms (uid,gid,pid) VALUES (%d,%d,%d)',$subject->uid, $this->gid, $pid);
@@ -275,15 +249,12 @@ class GroupSQL extends Group {
 		// Check authorization
 		if(	// Admins can revoke permissions from anyone
 			!self::admin_all()->has_member($I2_USER) &&
-			!$this->has_permission($I2_USER,Group::PERM_ADMIN)
+			!$this->has_permission($I2_USER, new Permission(Group::PERM_ADMIN))
 		) {
 			throw new I2Exception('You are not authorized to revoke permissions in this group!');
 		}
 
-		// Check permission validity
-		if( ($pid = self::get_pid($perm)) === FALSE) {
-			throw new I2Exception("Invalid permission $perm passed to ".__METHOD__);
-		}
+		$pid = $perm->pid;
 
 		if($subject instanceof User) {
 			return $I2_SQL->query('DELETE FROM groups_user_perms WHERE uid=%d AND gid=%d AND pid=%d', $subject->uid, $this->gid, $pid);
@@ -298,21 +269,24 @@ class GroupSQL extends Group {
 		global $I2_SQL;
 
 		if($subject instanceof User) {
-			return flatten($I2_SQL->query('SELECT pid FROM groups_user_perms WHERE uid=%d AND gid=%d', $subject->uid, $this->gid)->fetch_all_arrays(Result::NUM));
+			$pids = flatten($I2_SQL->query('SELECT pid FROM groups_user_perms WHERE uid=%d AND gid=%d', $subject->uid, $this->gid)->fetch_all_arrays(Result::NUM));
 		} elseif($subject instanceof Group) {
-			return flatten($I2_SQL->query('SELECT pid FROM groups_group_perms WHERE usergroup=%d AND gid=%d', $subject->gid, $this->gid)->fetch_all_arrays(Result::NUM));
+			$pids = flatten($I2_SQL->query('SELECT pid FROM groups_group_perms WHERE usergroup=%d AND gid=%d', $subject->gid, $this->gid)->fetch_all_arrays(Result::NUM));
 		} else {
 			throw new I2Exception('Invalid object passed as $subject to '.__METHOD__);
 		}
+
+		$ret = array();
+		foreach ($pids as $pid) {
+			$ret[] = new Permission($pid);
+		}
+		return $ret;
 	}
 
-	public function has_permission($subject, $perm) {
+	public function has_permission($subject, Permission $perm) {
 		global $I2_SQL;
 
-		// Check permission validity
-		if( ($pid = self::get_pid($perm)) === FALSE) {
-			throw new I2Exception("Invalid permission $perm passed to ".__METHOD__);
-		}
+		$pid = $perm->pid;
 
 		if($subject instanceof User) {
 			// admin_all has all permissions
@@ -347,15 +321,6 @@ class GroupSQL extends Group {
 		return FALSE;
 	}
 	
-	public static function list_permissions($pid = NULL) {
-		global $I2_SQL;
-		
-		if($pid === NULL) {
-			return $I2_SQL->query('SELECT pid,name,description FROM permissions');
-		}
-		return $I2_SQL->query('SELECT pid,name,description FROM permissions WHERE pid=%d',$pid)->fetch_array();
-	}
-
 	public function has_member($subject = NULL) {
 		global $I2_SQL;
 
@@ -457,7 +422,7 @@ class GroupSQL extends Group {
 
 		if($perms) {
 			foreach($perms as $i=>$perm) {
-				$perms[$i] = self::get_pid($perm);
+				$perms[$i] = $perm->pid;
 				if($perms[$i] === FALSE) {
 					throw new I2Exception("Invalid permission $perm passed to".__METHOD__);
 				}
@@ -497,7 +462,7 @@ class GroupSQL extends Group {
 
 		if($perms) {
 			foreach($perms as $i=>$perm) {
-				$perms[$i] = self::get_pid($perm);
+				$perms[$i] = $perm->pid;
 				if($perms[$i] === FALSE) {
 					throw new I2Exception("Invalid permission $perm passed to".__METHOD__);
 				}
@@ -597,24 +562,6 @@ class GroupSQL extends Group {
 			self::$name_map[$gid] = $name;
 		}
 		return $gid;
-	}
-
-	public static function get_pid($perm) {
-		global $I2_SQL;
-		if(is_numeric($perm)) {
-			// We were passed a PID, just check its existence
-			$res = $I2_SQL->query('SELECT pid FROM permissions WHERE pid=%d',$perm);
-		} else {
-			// We were passed a permission name, get the PID
-			$res = $I2_SQL->query('SELECT pid FROM permissions WHERE name=%s',$perm);
-		}
-
-		// If permission does not exist, return false
-		if($res->num_rows() < 1) {
-			return FALSE;
-		}
-
-		return $res->fetch_single_value();
 	}
 
 	/**

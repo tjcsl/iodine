@@ -155,31 +155,12 @@ class Group {
 	}
 
 	/**
-	 * Creates a new permission.
-	 *
-	 * @param string $name The name of the permission
-	 * @return The ID number of the new permission
-	 */
-	public static function add_permission($perm) {
-		return GroupSQL::add_permission($perm);
-	}
-
-	/**
-	 * Deletes a permission.
-	 *
-	 * @param string $name The name of the permission
-	 */
-	public static function del_permission($perm) {
-		return GroupSQL::del_permission($perm);
-	}
-
-	/**
 	* Grants a permission to a certain user in this group.
 	*
 	* @param mixed $subject The user or group to grant the permission to.
 	* @param string $perm The permission to grant.
 	*/
-	public function grant_permission($subject, $perm) {
+	public function grant_permission($subject, Permission $perm) {
 		return $this->wrap->grant_permission($subject, $perm);
 	}
 	
@@ -210,7 +191,7 @@ class Group {
 	* @param string $perm Which permission to check to see if the user has.
 	* @return bool TRUE if $subject has permission $perm in this group, FALSE otherwise.
 	*/
-	public function has_permission($subject, $perm) {
+	public function has_permission($subject, Permission $perm) {
 		return $this->wrap->has_permission($subject, $perm);
 	}
 
@@ -343,7 +324,7 @@ class Group {
 	* @return bool TRUE if the user is an administrator of the group, FALSE otherwise.
 	*/
 	public function is_admin(User $user) {
-		if($this->has_permission($user, Group::PERM_ADMIN)) {
+		if($this->has_permission($user, new Permission(Group::PERM_ADMIN))) {
 			return TRUE;
 		}
 
@@ -353,7 +334,7 @@ class Group {
 		}
 
 		// prefix admins get admin access to groups with their prefix
-		if(self::prefix($this->name) && Group::all()->has_permission($user, self::PERM_ADMIN_PREFIX . self::prefix($this->name))) {
+		if(self::prefix($this->name) && Group::all()->has_permission($user, new Permission(self::PERM_ADMIN_PREFIX . self::prefix($this->name)))) {
 			return TRUE;
 		}
 
@@ -408,7 +389,7 @@ class Group {
 			return FALSE;
 		}
 
-		if(Group::all()->has_permission($user, Group::PERM_ADMIN_PREFIX . Group::prefix($name))) {
+		if(Group::all()->has_permission($user, new Permission(Group::PERM_ADMIN_PREFIX . Group::prefix($name)))) {
 			return TRUE;
 		}
 		return FALSE;

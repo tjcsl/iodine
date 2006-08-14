@@ -90,7 +90,7 @@ class Groups implements Module {
 		global $I2_USER, $I2_ARGS;
 		$grp = new Group($I2_ARGS[3]);
 
-		if (!$grp->has_permission($I2_USER, Group::PERM_REMOVE)) {
+		if (!$grp->has_permission($I2_USER, new Permission(Group::PERM_REMOVE))) {
 			$this->template = 'groups_error.tpl';
 			return 'Permission denied';
 		}
@@ -117,13 +117,13 @@ class Groups implements Module {
 		}
 
 		if(isset($_REQUEST['groups_grant_permission'])) {
-			$grp->grant_permission(new User($I2_ARGS[2]), $_REQUEST['groups_grant_permission']);
+			$grp->grant_permission(new User($I2_ARGS[2]), new Permission($_REQUEST['groups_grant_permission']));
 			redirect('groups/pane/'.$grp->gid);
 		}
 		else {
 			$this->template_args['subject'] = new User($I2_ARGS[2]);
 			$this->template_args['group'] = new Group($I2_ARGS[3]);
-			$this->template_args['perms'] = Group::list_permissions();
+			$this->template_args['perms'] = Permission::list_permissions();
 		}
 		$this->template = 'grant_perm.tpl';
 		return 'Groups: Grant Permissions';
@@ -139,13 +139,13 @@ class Groups implements Module {
 		}
 
 		if(isset($_REQUEST['groups_grant_permission'])) {
-			$grp->grant_permission(new Group($I2_ARGS[2]), $_REQUEST['groups_grant_permission']);
+			$grp->grant_permission(new Group($I2_ARGS[2]), new Permission($_REQUEST['groups_grant_permission']));
 			redirect('groups/pane/'.$grp->gid);
 		}
 		else {
 			$this->template_args['subject'] = new Group($I2_ARGS[2]);
 			$this->template_args['group'] = new Group($I2_ARGS[3]);
-			$this->template_args['perms'] = Group::list_permissions();
+			$this->template_args['perms'] = Permission::list_permissions();
 			$this->template_args['group_perm'] = TRUE;
 		}
 		$this->template = 'grant_perm.tpl';
@@ -169,7 +169,7 @@ class Groups implements Module {
 			return 'Permission denied';
 		}
 
-		$grp->revoke_permission(new User($I2_ARGS[2]), $I2_ARGS[4]);
+		$grp->revoke_permission(new User($I2_ARGS[2]), new Permission($I2_ARGS[4]));
 
 		redirect('groups/pane/'.$grp->gid);
 	}
@@ -191,7 +191,7 @@ class Groups implements Module {
 			return 'Permission denied';
 		}
 
-		$grp->revoke_permission(new Group($I2_ARGS[2]), $I2_ARGS[4]);
+		$grp->revoke_permission(new Group($I2_ARGS[2]), new Permission($I2_ARGS[4]));
 
 		redirect('groups/pane/'.$grp->gid);
 	}
@@ -216,7 +216,7 @@ class Groups implements Module {
 		
 		// Only admins can alter permissions
 		$can_set_perms = $group->is_admin($I2_USER);
-		$can_add = $group->has_permission($I2_USER, Group::PERM_ADD);
+		$can_add = $group->has_permission($I2_USER, new Permission(Group::PERM_ADD));
 
 		$action = FALSE;
 		if( isset($_REQUEST['group_form'])) {
@@ -241,19 +241,19 @@ class Groups implements Module {
 
 		if($group->is_admin($I2_USER)) {
 			$this->template_args['can_set_perms'] = TRUE;
-			$this->template_args['perms'] = Group::list_permissions();
+			$this->template_args['perms'] = Permission::list_permissions();
 
 			switch($action) {
 				case 'grant':
-					$group->grant_permission($user, $_REQUEST['permission']);
+					$group->grant_permission($user, new Permission($_REQUEST['permission']));
 					break;
 				case 'grantgroup':
-					$group->grant_permission($req_group, $_REQUEST['permission']);
+					$group->grant_permission($req_group, new Permission($_REQUEST['permission']));
 					break;
 			}
 		}
 
-		if($group->has_permission($I2_USER, Group::PERM_ADD)) {
+		if($group->has_permission($I2_USER, new Permission(Group::PERM_ADD))) {
 			$this->template_args['can_add'] = TRUE;
 
 			if($action == 'add') {
@@ -261,7 +261,7 @@ class Groups implements Module {
 			}
 		}
 
-		if($group->has_permission($I2_USER, Group::PERM_REMOVE)) {
+		if($group->has_permission($I2_USER, new Permission(Group::PERM_REMOVE))) {
 			$this->template_args['can_remove'] = TRUE;
 			
 			if($action == 'remove') {
@@ -329,9 +329,6 @@ class Groups implements Module {
 			$row['name'] = $usr->name;
 			$row['uid'] = $usr->uid;
 			$row['perms'] = $group->get_permissions($usr);
-			foreach($row['perms'] as $i=>$perm) {
-				$row['perms'][$i] = Group::list_permissions($perm);
-			}
 			$ret[] = $row;
 		}
 
@@ -353,9 +350,6 @@ class Groups implements Module {
 			$row['name'] = $grp->name;
 			$row['gid'] = $grp->gid;
 			$row['perms'] = $group->get_permissions($grp);
-			foreach($row['perms'] as $i=>$perm) {
-				$row['perms'][$i] = Group::list_permissions($perm);
-			}
 			$ret[] = $row;
 		}
 
@@ -367,23 +361,32 @@ class Groups implements Module {
 	*/
 	function admin() {
 		global $I2_USER;
-		if(Group::admin_all()->has_member($I2_USER)) {
-			if(isset($_REQUEST['group_admin_form'])) {
-				if($_REQUEST['group_admin_form'] == 'add') {
-					Group::add_group($_REQUEST['name']);
-				}
-				if($_REQUEST['group_admin_form'] == 'remove') {
-					$group = new Group($_REQUEST['name']);
-					$group->delete_group();
-				}
-			}
-			$this->template_args['groups'] = Group::get_all_groups();
-			$this->template = 'groups_admin.tpl';
-		}
-		else {
+
+		if(!Group::admin_all()->has_member($I2_USER)) {
 			$this->template = 'groups_error.tpl';
 			return 'Permission Denied';
 		}
+
+		if(isset($_REQUEST['group_admin_form'])) {
+			if($_REQUEST['group_admin_form'] == 'add') {
+				Group::add_group($_REQUEST['name']);
+			}
+			if($_REQUEST['group_admin_form'] == 'remove') {
+				$group = new Group($_REQUEST['name']);
+				$group->delete_group();
+			}
+			if($_REQUEST['group_admin_form'] == 'add_perm') {
+				Permission::add_perm($_REQUEST['name']);
+			}
+			if($_REQUEST['group_admin_form'] == 'remove_perm') {
+				$perm = new Permision($_REQUEST['name']);
+				$perm->del_perm();
+			}
+		}
+
+		$this->template_args['groups'] = Group::get_all_groups();
+		$this->template_args['perms'] = Permission::list_permissions();
+		$this->template = 'groups_admin.tpl';
 		return 'Groups: Admin';
 	}
 
@@ -399,29 +402,63 @@ class Groups implements Module {
 			$this->template = 'groups_error.tpl';
 			return 'Permission Denied';
 		}
-		else {
-			if(isset($_REQUEST['group_padmin_form'])) {
-				if($_REQUEST['group_padmin_form'] == 'add') {
-					if(!Group::prefix($_REQUEST['name']) == $I2_ARGS[2]) {
-						$this->template = 'groups_error.tpl';
-						return 'Invalid Group Name';
-					}
-					Group::add_group($_REQUEST['name']);
+
+		if(isset($_REQUEST['group_padmin_form'])) {
+			if($_REQUEST['group_padmin_form'] == 'add') {
+				if(!Group::prefix($_REQUEST['name']) == $I2_ARGS[2]) {
+					$this->template = 'groups_error.tpl';
+					return 'Invalid Group Name';
 				}
-				if($_REQUEST['group_padmin_form'] == 'remove') {
-					if(!Group::prefix($_REQUEST['name']) == $I2_ARGS[2]) {
-						$this->template = 'groups_error.tpl';
-						return 'Invalid Group Name';
-					}
-					$group = new Group($_REQUEST['name']);
-					$group->delete_group();
-				}
+				Group::add_group($_REQUEST['name']);
 			}
-			$this->template_args['groups'] = Group::get_all_groups($I2_ARGS[2]);
-			$this->template_args['prefix'] = $I2_ARGS[2];
-			$this->template = 'groups_padmin.tpl';
+			if($_REQUEST['group_padmin_form'] == 'remove') {
+				if(!Group::prefix($_REQUEST['name']) == $I2_ARGS[2]) {
+					$this->template = 'groups_error.tpl';
+					return 'Invalid Group Name';
+				}
+				$group = new Group($_REQUEST['name']);
+				$group->delete_group();
+			}
 		}
+
+		$this->template_args['groups'] = Group::get_all_groups($I2_ARGS[2]);
+		$this->template_args['prefix'] = $I2_ARGS[2];
+		$this->template = 'groups_padmin.tpl';
 		return 'Groups: Admin (' . $I2_ARGS[2] . '_)';
+	}
+
+	/**
+	 * The permissions administration interface
+	 *
+	 * Allows permission name and description changes, as well as deleting.
+	 */
+	function perm() {
+		global $I2_USER, $I2_ARGS;
+
+		if (!Group::admin_all()->has_member($I2_USER)) {
+			$this->template = 'groups_error.tpl';
+			return 'Permission Denied';
+		}
+
+		$perm = new Permission($I2_ARGS[2]);
+
+		if (isset($_REQUEST['group_perm_form'])) {
+			switch ($_REQUEST['group_perm_form']) {
+			case 'delete':
+				$perm->del_perm();
+				redirect('groups/admin');
+			case 'set_name':
+				$perm->set_name($_REQUEST['name']);
+				break;
+			case 'set_desc':
+				$perm->set_desc($_REQUEST['desc']);
+				break;
+			}
+		}
+
+		$this->template_args['perm'] = $perm;
+		$this->template = 'groups_perm.tpl';
+		return 'Groups: Permission';
 	}
 }
 ?>

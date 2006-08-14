@@ -28,14 +28,12 @@ Group: <strong>[<$group>]</strong><br />
  and select a permission to grant here:<br />
  <select name="permission">
   [<foreach from=$perms item=perm>]
-   <option value="[<$perm.pid>]">[<$perm.name>] ([<$perm.description>])</option>
+   <option value="[<$perm->pid>]">[<$perm->name>] ([<$perm->description>])</option>
   [</foreach>]
  </select><br />
  <input type="submit" value="Grant" name="submit" /><br /><br />
  </form>
  </p>
- [<*Not sure why this does not happen internally...*>]
- [<$perms->rewind()>]
  <p>
  <form method="post" action="[<$I2_ROOT>]groups/pane/[<$group>]" class="boxform">
  <input type="hidden" name="group_form" value="grantgroup" />
@@ -44,7 +42,7 @@ Group: <strong>[<$group>]</strong><br />
  and select a permission to grant here:<br />
  <select name="permission">
   [<foreach from=$perms item=perm>]
-   <option value="[<$perm.pid>]">[<$perm.name>] ([<$perm.description>])</option>
+   <option value="[<$perm->pid>]">[<$perm->name>] ([<$perm->description>])</option>
   [</foreach>]
  </select><br />
  <input type="submit" value="Grant" name="submit" /><br /><br />
@@ -70,7 +68,7 @@ Group: <strong>[<$group>]</strong><br />
    <td>
     <ul>
     [<foreach from=$subject.perms item=perm>]
-      <li><acronym title="[<$perm.description>]">[<$perm.name>]</acronym> <a href="[<$I2_ROOT>]groups/revoke/[<$subject.uid>]/[<$gid>]/[<$perm.pid>]">[revoke]</a></li>
+      <li><acronym title="[<$perm->description>]">[<$perm->name>]</acronym> <a href="[<$I2_ROOT>]groups/revoke/[<$subject.uid>]/[<$gid>]/[<$perm->pid>]">[revoke]</a></li>
     [</foreach>]
     </ul>
    </td>
