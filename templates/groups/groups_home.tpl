@@ -1,5 +1,5 @@
 [<if isset($admin)>]
- You are a groups admin. <a href="[<$I2_ROOT>]groups/admin">Add, modify, or delete groups</a><br /><br />
+ You are a groups admin. <a href="[<$I2_ROOT>]groups/admin">Add, modify, or delete groups and permissions</a><br /><br />
 [</if>]
 [<if isset($prefixes)>]
  [<foreach from=$prefixes item=prefix>]
