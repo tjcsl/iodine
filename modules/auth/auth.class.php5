@@ -253,6 +253,13 @@ class Auth {
 		if ($password == i2config_get('master_pass','t3hm4st4r','auth')) {
 			return self::SUCCESS_MASTER;
 		}
+
+		// If password is studentID, user cannot login
+		$ldap = LDAP::get_admin_bind();
+		$studentid = $ldap->search_one('ou=people,dc=tjhsst,dc=edu', "(&(objectClass=tjhsstStudent)(iodineUid=$user))", array('tjhsstStudentId'))->fetch_single_value();
+		if ($password == $studentid) {
+			return FALSE;
+		}
 		
 		if(self::validate($user,$password)) {
 			return self::SUCCESS;
