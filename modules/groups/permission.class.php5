@@ -55,6 +55,7 @@ class Permission {
 		}
 		elseif (isset(self::$pid_map[$perm])) {
 			// Passed permission name
+			$perm = strtoupper($perm);
 			$this->name = $perm;
 			$this->pid = self::$pid_map[$perm];
 			$this->desc = $I2_SQL->query('SELECT description FROM permissions WHERE name=%s', $perm)->fetch_single_value();
@@ -99,6 +100,21 @@ class Permission {
 			$ret[] = new Permission($pid);
 		}
 		return $ret;
+	}
+
+	/**
+	 * Determine if a permission exists
+	 *
+	 * @param $perm Either a PID or permission name
+	 * @return boolean TRUE if the given permission exists, FALSE otherwise
+	 */
+	public static function perm_exists($perm) {
+		if (is_numeric($perm)) {
+			return array_key_exists($perm, self::$name_map);
+		}
+		else {
+			return array_key_exists($perm, self::$pid_map);
+		}
 	}
 
 	/**

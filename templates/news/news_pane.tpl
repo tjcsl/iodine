@@ -1,4 +1,4 @@
-[<if $newsadmin>]
+[<if $newsadmin || $maypost>]
 	<a href="[<$I2_ROOT>]news/add">Post a news article</a><br/>
 [</if>]
 [<foreach from=$stories item=story>]

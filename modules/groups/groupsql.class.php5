@@ -288,19 +288,32 @@ class GroupSQL extends Group {
 
 		$pid = $perm->pid;
 
+		$adminperm = new Permission(Group::PERM_ADMIN);
+		$adminpid = $adminperm->pid;
+
 		if($subject instanceof User) {
 			// admin_all has all permissions
 			if (Group::admin_all()->has_member($subject)) {
 				return TRUE;
 			}
-			$res = $I2_SQL->query('SELECT count(*) FROM groups_user_perms WHERE uid=%d AND gid=%d AND pid=%d', $subject->uid, $this->gid, $pid);
+
+			// prefix admins have all permissions
+			if (Group::prefix($this->name) && Permission::perm_exists(Group::PERM_ADMIN_PREFIX . Group::prefix($this->name))) {
+				$perm = new Permission(Group::PERM_ADMIN_PREFIX . Group::prefix($this->name));
+				$res = $I2_SQL->query('SELECT count(*) FROM groups_user_perms WHERE uid=%d AND gid=%d AND pid=%d', $subject->uid, Group::all()->gid, $perm->pid);
+				if ($res->fetch_single_value() > 0) {
+					return TRUE;
+				}
+			}
+
+			$res = $I2_SQL->query('SELECT count(*) FROM groups_user_perms WHERE uid=%d AND gid=%d AND (pid=%d OR pid=%d)', $subject->uid, $this->gid, $pid, $adminpid);
 			if($res->fetch_single_value() > 0) {
 				// User is listed in groups_user_perms as having that permission
 				return TRUE;
 			}
 
 		} elseif($subject instanceof Group) {
-			$res = $I2_SQL->query('SELECT count(*) FROM groups_group_perms WHERE usergroup=%d AND gid=%d AND pid=%d', $subject->gid, $this->gid, $pid);
+			$res = $I2_SQL->query('SELECT count(*) FROM groups_group_perms WHERE usergroup=%d AND gid=%d AND (pid=%d OR pid=%d)', $subject->gid, $this->gid, $pid, $adminpid);
 			if($res->fetch_single_value() > 0) {
 				// Group is listed in groups_group_perm has having that permission
 				return TRUE;
@@ -365,8 +378,11 @@ class GroupSQL extends Group {
 	public function groups_with_perm($pid = NULL) {
 		global $I2_SQL;
 
+		$adminperm = new Permission(Group::PERM_ADMIN);
+		$adminpid = $adminperm->pid;
+
 		if($pid) {
-			$res = $I2_SQL->query('SELECT usergroup FROM groups_group_perms WHERE gid=%d AND pid=%d', $this->gid, $pid);
+			$res = $I2_SQL->query('SELECT usergroup FROM groups_group_perms WHERE gid=%d AND (pid=%d OR pid=%d)', $this->gid, $pid, $adminpid);
 		} else {
 			$res = $I2_SQL->query('SELECT DISTINCT usergroup FROM groups_group_perms WHERE gid=%d', $this->gid);
 		}
@@ -421,9 +437,8 @@ class GroupSQL extends Group {
 		}
 
 		if($perms) {
-			foreach($perms as $i=>$perm) {
-				$perms[$i] = $perm->pid;
-				if($perms[$i] === FALSE) {
+			foreach($perms as $perm) {
+				if (! $perm instanceof Permission) {
 					throw new I2Exception("Invalid permission $perm passed to".__METHOD__);
 				}
 			}
@@ -461,27 +476,29 @@ class GroupSQL extends Group {
 		}
 
 		if($perms) {
-			foreach($perms as $i=>$perm) {
-				$perms[$i] = $perm->pid;
-				if($perms[$i] === FALSE) {
+			foreach($perms as $perm) {
+				if (! $perm instanceof Permission) {
 					throw new I2Exception("Invalid permission $perm passed to".__METHOD__);
 				}
 			}
 		}
 		
 		// If only one permission was specified, do the permission restricting in the database
-		if(is_array($perms) && count($perms) == 1) {
-			$res = $I2_SQL->query('SELECT grp.gid FROM groups_static AS grp LEFT JOIN (groups_user_perms AS perm) ON (grp.uid=perm.uid AND grp.gid=perm.gid) WHERE grp.uid=%d AND perm.pid=%d',$user->uid, $perms[0]);
+		/*if(is_array($perms) && count($perms) == 1) {
+			$res = $I2_SQL->query('SELECT grp.gid FROM groups_static AS grp LEFT JOIN (groups_user_perms AS perm) ON (grp.uid=perm.uid AND grp.gid=perm.gid) WHERE grp.uid=%d AND perm.pid=%d',$user->uid, $perms[0]->pid);
 		} else {
 			$res = $I2_SQL->query('SELECT gid FROM groups_static WHERE uid=%d',$user->uid);
-		}
+		}*/
+		// Can't do permission restricting in the database because of permission inheritance
+		// (ADMIN_GROUP has all other permissions, etc.)
+		$res = $I2_SQL->query('SELECT gid FROM groups_static WHERE uid=%d',$user->uid);
 		
 		$ret = array();
 		foreach($res as $row) {
 			$grp = new Group($row[0]);
 			$ret[] = $grp;
-			if(is_array($perms) && count($perms) > 1) {
-				// If multiple permissions were passed, make sure the user has each of those permissions in the group before including that group in the return array
+			if(is_array($perms)) {
+				// Make sure the user has each of those permissions in the group before including that group in the return array
 				foreach($perms as $perm) {
 					if(!$grp->has_permission($user, $perm)) {
 						// User does not have all of the specified permissions in that group, so don't include that group
@@ -499,12 +516,12 @@ class GroupSQL extends Group {
 		$ret = array();
 
 		$all = Group::all();
-		$pids = $all->get_permissions($user);
+		$perms = $all->get_permissions($user);
 
-		foreach ($pids as $pid) {
-			$permname = $I2_SQL->query('SELECT name FROM permissions WHERE pid=%d', $pid)->fetch_single_value();
-			$prefix = preg_replace('/^ADMIN_/', '', $permname);
-			if ($prefix != $permname) { // $permname started with ADMIN_
+		foreach ($perms as $perm) {
+			$prefix = preg_replace('/^ADMIN_/', '', $perm->name);
+			if ($prefix != $perm->name) {
+				// $permname started with ADMIN_
 				$ret[] = $prefix;
 			}
 		}

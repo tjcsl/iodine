@@ -47,6 +47,11 @@ class News implements Module {
 	* Whether the current user is a news administrator.
 	*/
 	private $newsadmin;
+
+	/**
+	 * Whether the current user can post at all.
+	 */
+	private $maypost;
 	
 	private function set_news_admin() {	
 		global $I2_USER;
@@ -54,6 +59,10 @@ class News implements Module {
 		if ($this->newsadmin) {
 			d('This user is a news administrator - news alteration privileges have been granted.',7);
 		}	
+
+		d('setting maypost');
+		$this->maypost = count(Group::get_user_groups($I2_USER, new Permission(News::PERM_POST))) > 0;
+		d('done setting maypost');
 	}
 	
 	/**
@@ -93,10 +102,12 @@ class News implements Module {
 				}
 				if($this->newsadmin) {
 					// If they are a news admin, they can post to anything.
-					$this->template_args['groups'] = array_merge(Group::get_all_groups(), Group::get_special_groups());
+					$this->template_args['groups'] = Group::get_all_groups();
 				}
 				else {
-					$this->template_args['groups'] = Group::get_user_groups($I2_USER,FALSE,News::PERM_POST);
+					d('getting user groups with PERM_POST');
+					$this->template_args['groups'] = Group::get_user_groups($I2_USER, new Permission(News::PERM_POST));
+					d('done getting user groups with PERM_POST');
 				}
 				return array('Post News', 'Add a news article');
 
@@ -121,10 +132,10 @@ class News implements Module {
 
 				if($this->newsadmin) {
 					// If they are a news admin, they can post to anything.
-					$this->template_args['groups'] = array_merge(Group::get_all_groups(), Group::get_special_groups());
+					$this->template_args['groups'] = Group::get_all_groups();
 				}
 				else {
-					$this->template_args['groups'] = Group::get_user_groups($I2_USER,FALSE,News::PERM_POST);
+					$this->template_args['groups'] = Group::get_user_groups($I2_USER, new Permission(News::PERM_POST));
 				}
 
 				$item->title = stripslashes($item->title);
@@ -215,6 +226,7 @@ class News implements Module {
 		global $I2_ARGS;
 		
 		$this->template_args['newsadmin'] = $this->newsadmin;
+		$this->template_args['maypost'] = $this->maypost;
 		$display->disp($this->template, $this->template_args);
 	}
 	

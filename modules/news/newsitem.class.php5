@@ -58,7 +58,7 @@ class NewsItem {
 			case 'nid':
 				return $this->mynid;
 			case 'groupsstring':
-				return implode(', ', $this->__get('groups'));
+				return implode(', ', array_map(create_function('$group', 'return $group->name;'), $this->__get('groups')));
 			case 'author':
 				return new User($this->__get('authorID'));
 			case 'text':
@@ -110,7 +110,7 @@ class NewsItem {
 		}
 		foreach($I2_SQL->query('SELECT `nid`,`gid` FROM news_group_map WHERE `nid` IN (%D)', array_keys(self::$unfetched)) as $row) {
 			$item = self::$unfetched[$row['nid']];
-			$item->info['groups'][] = $row['gid'];
+			$item->info['groups'][] = new Group($row['gid']);
 		}
 
 		// Fetches the read status
@@ -328,8 +328,8 @@ class NewsItem {
 			$user = $GLOBALS['I2_USER'];
 		}
 
-		$gids = $this->groups;
-		if(count($gids) == 0) {
+		$groups = $this->groups;
+		if(count($groups) == 0) {
 			// if no groups were specified, anyone can read it
 			return TRUE;
 		}
@@ -344,8 +344,8 @@ class NewsItem {
 			return TRUE;
 		}
 
-		foreach($gids as $gid) {
-			if($user->is_group_member($gid)) {
+		foreach($groups as $group) {
+			if($group->has_member($user)) {
 				return TRUE;
 			}
 		}
@@ -447,7 +447,13 @@ class NewsItem {
 			return true;
 		}
 
-		return false;
+		foreach ($this->__get('groups') as $group) {
+			if (! $group->has_permission($user, new Permission(News::PERM_POST))) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 }

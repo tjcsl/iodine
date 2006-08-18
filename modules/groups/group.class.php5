@@ -295,8 +295,13 @@ class Group {
 	* @param User $user The user.
 	* @return Array An array of {@link Group} objects that the user is a member of.
 	*/
-	public static function get_user_groups(User $user) {
-		return array_merge(Group::get_static_groups($user), Group::get_dynamic_groups($user));
+	public static function get_user_groups(User $user, $perms = NULL) {
+		d('begin static');
+		$static = Group::get_static_groups($user, $perms);
+		d('end static; begin dynamic');
+		$dynamic = Group::get_dynamic_groups($user, $perms);
+		d('end dynamic');
+		return array_merge($static, $dynamic);
 	}
 	
 	/**
@@ -334,7 +339,9 @@ class Group {
 		}
 
 		// prefix admins get admin access to groups with their prefix
-		if(self::prefix($this->name) && Group::all()->has_permission($user, new Permission(self::PERM_ADMIN_PREFIX . self::prefix($this->name)))) {
+		if(self::prefix($this->name)
+			&& Permission::perm_exists(self::PERM_ADMIN_PREFIX . self::prefix($this->name))
+			&& Group::all()->has_permission($user, new Permission(self::PERM_ADMIN_PREFIX . self::prefix($this->name)))) {
 			return TRUE;
 		}
 

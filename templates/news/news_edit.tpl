@@ -21,7 +21,7 @@ Yours news post has been changed.<br />
     <select id="groups" class="groups_list" name="add_groups[]">
      <option value="all">All Users</option>
      [<foreach from=$groups item=group>]
-      <option value="[<$group->gid>]"[<if $group->gid == $newsitem->groups[0]>] selected[</if>]>[<$group->name>]</option>
+      <option value="[<$group->gid>]"[<if $group->gid == $newsitem->groups[0]->gid>] selected[</if>]>[<$group->name>]</option>
      [</foreach>]
     </select>
     [</if>]
