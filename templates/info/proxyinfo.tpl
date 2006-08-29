@@ -27,6 +27,15 @@
    applications, there will be some variations in the screens you see.
 </p>
 
+<p>A proxy autoconfiguration script is available courtesy of William Yang. It
+   will allow you to use the TJ proxy server to access the databases without
+   changing your browser settings every time you need to access the rest of
+   the internet. To use it, copy the following URL into the "Proxy
+   Autoconfiguration Script" box in your browser's settings:
+   <b>[<$I2_ROOT>]www/border.pac</b> . This is the easiest way to use the TJ
+   proxy server; only continue if this does not work for you.
+</p>
+
 <br />
 <h3>PROXY USING INTERNET EXPLORER with a LAN (network, Cox Communications, 
    DSL, etc.)</h3>
