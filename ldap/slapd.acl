@@ -24,7 +24,6 @@ access to attrs=startpage,style,header
 # Let users set the (inherited) permissions bits of their own pictures
 access to dn.regex="^.*,iodineUid=([^,]+),ou=people,dc=tjhsst,dc=edu$"
 		attrs=showpictureself
-	by self read
 	by dn.exact,expand="iodineUid=$1,ou=people,dc=tjhsst,dc=edu" write
 	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
 	by * read continue

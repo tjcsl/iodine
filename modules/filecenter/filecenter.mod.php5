@@ -105,7 +105,7 @@ class Filecenter implements Module {
 				return array('Filecenter','CSL Authentication');
 			}
 			$this->template_args['max_file_size'] = 20971520; //20 mb
-		} else if ($system_type == 'transition') {
+		} else if ($system_type == 'main') {
 			$this->filesystem = new CSLProxy($_SESSION['i2_username'], $I2_AUTH->get_user_password(),'LOCAL.TJHSST.EDU');
 			$this->template_args['max_file_size'] = 20971520;
 		} else {
