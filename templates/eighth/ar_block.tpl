@@ -1,4 +1,5 @@
 [<include file="eighth/header.tpl">]
+<a href="#add">Jump to bottom</a><br />
 <table style="border: 0px; margin: 0px; padding: 0px;">
 	<tr>
 		<th style="text-align: left; padding: 0px 5px;">Date</th>
@@ -14,6 +15,7 @@
 [</foreach>]
 </table>
 <br />
+<a id="add"></a>
 <form action="[<$I2_ROOT>]eighth/ar_block/add" method="post">
 [<html_select_date prefix="" start_year="-1" end_year="+1" day_format="%d" day_value_format="%02d">]<br />
 <table>

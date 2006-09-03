@@ -707,7 +707,7 @@ class Eighth implements Module {
 				$this->template_args['group'] = $group;
 				$this->template = 'amr_group.tpl';
 			} else {
-				$group->add_user($this->args['uid']);
+				$group->add_user(new User($this->args['uid']));
 				redirect("eighth/amr_group/view/gid/{$this->args['gid']}/lastadded/".$this->args['uid']);
 			}
 		}
