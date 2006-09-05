@@ -29,11 +29,6 @@
 	<td><input name="perm_showschedule" type="checkbox" [<if $user->showschedule>]checked="checked"[</if>]/></td>
 </tr>
 <tr>
-	<th>Map</th>
-	<td><input name="perm_showmapself" type="checkbox" [<if $user->showmapself>]checked="checked"[</if>]/></td>
-	<td><input name="perm_showmap" type="checkbox" [<if $user->showmap>]checked="checked"[</if>]/></td>
-</tr>
-<tr>
 	<th>Eighth Period Schedule</th>
 	<td><input name="perm_showeighthself" type="checkbox" [<if $user->showeighthself>]checked="checked"[</if>]/></td>
 	<td><input name="perm_showeighth" type="checkbox" [<if $user->showeighth>]checked="checked"[</if>]/></td>
