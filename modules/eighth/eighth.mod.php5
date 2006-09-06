@@ -1465,11 +1465,11 @@ class Eighth implements Module {
 			foreach($this->args['blocks'] as $block) {
 				EighthBlock::add_block("{$this->args['Year']}-{$this->args['Month']}-{$this->args['Day']}", $block);
 			}
-			redirect('eighth/ar_block');
+			redirect('eighth/ar_block#add');
 		}
 		else if($this->op == 'remove') {
 			EighthBlock::remove_block($this->args['bid']);
-			redirect('eighth/ar_block');
+			redirect('eighth/ar_block#add');
 		}
 	}
 	
