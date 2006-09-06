@@ -318,8 +318,8 @@ class User {
 			case 'showmap':
 			case 'showscheduleself':
 			case 'showschedule':
-		 	case 'hideeighthself':
-		 	case 'hideeighth':
+		 	case 'showeighthself':
+		 	case 'showeighth':
 			case 'showbdayself':
 			case 'showbdateself':
 			case 'showbdate':
@@ -461,8 +461,8 @@ class User {
 			case 'showbdate':
 			case 'showscheduleself':
 			case 'showschedule':
-			case 'hideeighthself':
-			case 'hideeighth':
+			case 'showeighthself':
+			case 'showeighth':
 			case 'showaddressself':
 			case 'showaddress':
 			case 'showphoneself':
