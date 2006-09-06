@@ -1,8 +1,31 @@
 <b><a href="[<$I2_ROOT>]StudentDirectory/info/[<$user->uid>]">[<$user->fullname_comma>]</a></b><br /><br />
 
-<form action="[<$I2_ROOT>]privacy" method="POST">
+<script type="text/javascript">
+var parent_boxes = new Array("perm_showaddress", "perm_showphone", "perm_showbdate", "perm_showpictures", "perm_showschedule", "perm_showeighth");
+var self_boxes = new Array("perm_showaddressself", "perm_showphoneself", "perm_showbdayself", "perm_showpictureself", "perm_showscheduleself", "perm_showeighthself");
+
+function toggle_parent(currstate) {
+	for (var i in parent_boxes) {
+		eval("document.privacy_form."+parent_boxes[i]+".checked = "+currstate);
+	}
+}
+
+function toggle_self(currstate) {
+	for (var i in self_boxes) {
+		eval("document.privacy_form."+self_boxes[i]+".checked = "+currstate);
+	}
+}
+
+</script>
+
+<form action="[<$I2_ROOT>]privacy" method="POST" name="privacy_form">
 <table>
 <tr><th>&nbsp;</th><th>User</th><th>Parental</th></tr>
+<tr>
+	<th>ALL</th>
+	<td><input type="checkbox" onClick="toggle_self(this.checked);" /></td>
+	<td><input type="checkbox" onClick="toggle_parent(this.checked);" /></td>
+</tr>
 <tr>
 	<th>Address</th>
 	<td><input name="perm_showaddressself" type="checkbox" [<if $user->showaddressself>]checked="checked"[</if>]/></td>
