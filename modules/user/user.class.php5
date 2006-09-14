@@ -103,7 +103,9 @@ class User {
 						$this->info[strtolower($key)] = $val;
 					}
 				} else {
-					throw new I2Exception('Invalid iodineUidNumber '.$uid);
+					//throw new I2Exception('Invalid iodineUidNumber '.$uid);
+					$this->info['iodineuid']="nostudent";
+					$this->info['iodineuidnumber']=$uid;
 				}
 			}
 			$this->username = $this->info['iodineuid'];
