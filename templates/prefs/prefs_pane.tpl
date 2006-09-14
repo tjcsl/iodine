@@ -159,7 +159,7 @@
 <b>Privacy Options</b><br />
 <input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/> Show Address<br />
 <input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/> Show Birthday<br />
-<input type="checkbox" name="showmapself" [<if $prefs.showmapself>]checked="checked"[</if>]/> Show Map Links<br />
+[<*<input type="checkbox" name="showmapself" [<if $prefs.showmapself>]checked="checked"[</if>]/> Show Map Links<br />*>]
 <input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/> Show Pictures<br />
 <input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/> Show Home Telephone Number<br />
 <input type="checkbox" name="showscheduleself" [<if $prefs.showscheduleself>]checked="checked"[</if>]/> Show Schedule<br />
