@@ -286,7 +286,7 @@ class LDAP {
 				continue;
 			}
 			//d("Deleting dn $itemdn with filter $filter from LDAP recursive delete",6);
-			$this->delete_recursive($itemdn,$filter,$bind,FALSE);
+			$this->delete_recursive($itemdn,$filter,$bind,TRUE);
 		}
 		if ($delete_entry) {
 			$this->delete($dn,$bind);

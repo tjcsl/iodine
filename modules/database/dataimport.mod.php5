@@ -64,7 +64,7 @@ class dataimport implements Module {
 		// We don't need this overhead, it's slow enough as things stand
 		Eighth::undo_off();
 	}
-	
+
 	/**
 	* Imports a SASI teacher dump file (teacher.##a)
 	*/
@@ -73,7 +73,7 @@ class dataimport implements Module {
 		/*
 		** First pass through teacher.##a file
 		*/
-		$file = @fopen($filename,'r');
+		$file = fopen($filename,'r');
 		
 		d("Importing data from teacher data file $filename...",6);
 		
@@ -87,13 +87,8 @@ class dataimport implements Module {
 
 		$numlines = 0;
 
-		while ($line = fgets($file)) {
-			list($id,$lastname,$firstname) = explode('","',$line);
-			/*
-			** Strip remaining quotes
-			*/
-			$id = substr($id,1);
-			$firstname = ucFirst(strtolower(substr($firstname,0,strlen($firstname)-3)));
+		while (list($id,$lastname,$firstname) = fgetcsv($file)) {
+			$firstname = ucFirst(strtolower($firstname));
 			$lastname = ucFirst(strtolower($lastname));
 			
 			/*
@@ -187,45 +182,26 @@ class dataimport implements Module {
 	*/
 	private function import_teacher_data_file() {
 
-		$filename = $this->teacherfile;
-		$teachersfiletwo = $this->staffile;
+		#$filename = $this->teacherfile;
+		$teachersfiletwo = $this->stafffile;
 		
-		$this->import_teacher_data_file_one($filename);
+		#$this->import_teacher_data_file_one($filename);
 
 		/*
 		** Second pass through staff.# file
 		*/
 
-		$file = @fopen($teachersfiletwo,'r');
+		d("Importing data from staff data file: $teachersfiletwo...", 3);
+
+		$file = fopen($teachersfiletwo,'r');
 
 		$validteachers = array();
 
-		while ($line = fgets($file)) {
-			/*
-			** There's a ton of extra junk after the comma
-			*/
-			list($username,$extra) = explode(',',$line);
-			$extraarr = explode(' ',$extra);
+		while (list($username, , , $firstname, $lastname) = fgetcsv($file,0,';')) {
 			$username = strtolower($username);
-			/*
-			** Username is almost certainly f+m+last, so trim two chars
-			*/
-			$finit = ucFirst(substr($username,0,1));
-			$minit = ucFirst(substr($username,1,1));
-			$lastname = ucFirst(substr($username,2));
-			/*
-			** Now get rid of numbers
-			*/
-			$numchar = substr($lastname,strlen($lastname)-2,strlen($lastname)-1);
-			while (is_int($numchar)) {
-				/*
-				** Chop a character off the last name b/c it's numeric
-				*/
-				$lastname = substr($lastname,0,strlen($lastname)-1);
-				$numchar = substr($lastname,strlen($lastname)-2,strlen($lastname)-1);
-			}
-
-			d("Teacher ($finit. $minit. $lastname): $username",3);
+			$firstname = ucfirst(strtolower($firstname));
+			$lastname = ucfirst(strtolower($lastname));
+			d("Teacher ($firstname $lastname): $username",3);
 			
 			if (!isSet($this->last_to_people[$lastname])) {
 				//TODO: how to handle this?  Should we try weird name-guessing games?
@@ -251,7 +227,7 @@ class dataimport implements Module {
 						** Attempt to match first initial
 						*/
 						$myfinit = ucFirst(substr($choice['fname'],0,1));
-						if ($myfinit == $finit) {
+						if ($myfinit == $firstname) {
 							$valid[] = $choice;
 							d("Found a $myfinit. $lastname",7);
 						} else {
@@ -263,12 +239,12 @@ class dataimport implements Module {
 						continue;
 					}
 					if (count($valid) == 0) {
-						d("There is no \"$finit. $lastname\"!",1);
+						d("There is no \"$firstname $lastname\"!",1);
 						continue;
 					}
 					$newteach = array();
 					$newteach['username'] = $username;
-					$newteach['uid'] = $valid[0]['id'];
+					$newteach['id'] = $valid[0]['id'];
 					$newteach['lname'] = $lastname;
 					$newteach['fname'] = $valid[0]['fname'];
 					$validteachers[] = $newteach;
@@ -286,15 +262,27 @@ class dataimport implements Module {
 	private function finish_teachers($teacherarr) {
 		$ldap = LDAP::get_admin_bind($this->admin_pass);
 
+		$this->init_desired_boxes();
+
 		foreach ($teacherarr as $teacher) {
-			$this->create_teacher($teacher,$ldap);
+			$res = $ldap->search('ou=people,dc=tjhsst,dc=edu', "iodineUid={$teacher['username']}");
+			if ($res->num_rows() - 1 > 1) {
+				d("PROBLEM! More than one user found with iodineUid {$teacher['username']}...");
+			}
+			else if ($res->num_rows() - 1 > 0) {
+				$this->modify_teacher($teacher,$ldap);
+			}
+			else {
+				$this->create_teacher($teacher,$ldap);
+			}
 		}
 	}
 
 	/** 
 	* Import student data from a SASI dump file (intranet.##a) into LDAP
+	* DEPRECATED: use import_student_data to do this more intelligently
 	*/
-	private function import_student_data($do_old_intranet=TRUE, $studentidonly = FALSE) {
+	private function import_student_data_dep($do_old_intranet=TRUE, $studentidonly = FALSE) {
 		global $I2_LOG;	
 		
 		$ldap = LDAP::get_admin_bind($this->admin_pass);
@@ -316,8 +304,7 @@ class dataimport implements Module {
 
 		$numlines = 0;
 
-		while ($line = fgets($file)) {
-			list($username, 
+		while (list($username, 
 					$StudentID, 
 					$Lastname, 
 					$Firstname, 
@@ -332,19 +319,10 @@ class dataimport implements Module {
 					$Zip, 
 					$Couns,
 					$Nickname
-		 ) = explode('","',$line);
+				) = fgetcsv($file)) {
 			if ($studentidonly && $studentidonly != $StudentID) {
 					  $this->num++;
 					  continue;
-			}
-			/*
-			** We need to strip the first and last quotation marks
-			** and escape the ' symbols where appropriate
-			** and get rid of the newlines/junk after the last field
-			*/
-			$Nickname = rtrim($Nickname," \t\r\n\0\x0B'\"");
-			if (!$Nickname) {
-				$Nickname = '';
 			}
 			$student = array(
 					'username' => substr($username,1),
@@ -448,7 +426,95 @@ class dataimport implements Module {
 		$this->init_desired_boxes();
 	
 		foreach ($this->usertable as $user) {
-			$this->create_user($user,$ldap);
+			$this->create_user_depr($user,$ldap);
+		}
+	}
+
+	/** 
+	* Update student data from a SASI dump file (intranet.##a) into LDAP
+	*/
+	private function import_student_data($studentidonly = FALSE) {
+		global $I2_LOG;	
+		
+		$ldap = LDAP::get_admin_bind($this->admin_pass);
+		
+		$filename = $this->userfile;
+		$file = @fopen($filename, 'r');
+
+		d("Importing data from user data file $filename...",6);
+
+		$line = null;
+
+		$this->usertable = array();
+
+		$numlines = 0;
+
+		while (list($username, 
+					$StudentID, 
+					$Lastname, 
+					$Firstname, 
+					$Middlename, 
+					$Grade, 
+					$Sex, 
+					$Birthdate, 
+					$Homephone, 
+					$Address, 
+					$City, 
+					$State, 
+					$Zip, 
+					$Couns,
+					$Nickname
+				) = fgetcsv($file)) {
+			if ($studentidonly && $studentidonly != $StudentID) {
+					  $this->num++;
+					  continue;
+			}
+			$student = array(
+					'username' => $username,
+					'studentid' => $StudentID, 
+					'lname' => $Lastname,
+					'fname' => $Firstname, 
+					'mname' => $Middlename, 
+					'grade' => $Grade, 
+					'sex' => $Sex, 
+					'bdate' => $Birthdate, 
+					'phone_home' => $Homephone, 
+					'address' => $Address, 
+					'city' => $City, 
+					'state' => $State, 
+					'zip' => $Zip, 
+					'counselor' => $Couns,
+					'nick' => $Nickname
+					);
+			if ($student) {
+				$this->usertable[] = $student;
+				$numlines++;
+				if ($numlines % 100 == 0) {
+					$I2_LOG->log_file("-$numlines-");
+				}
+			}
+		}
+		d("$numlines users read from SASI dump file.",6);
+	
+		/*
+		** This line is needed b/c the create_user method uses $this->boxes and friends
+		*/
+		$this->init_desired_boxes();
+	
+		foreach ($this->usertable as $user) {
+			$username = $user['username'];
+			$res = $ldap->search('ou=people,dc=tjhsst,dc=edu', "iodineUid=$username");
+			if ($res->num_rows() - 1 > 1) {
+				d("PROBLEM! More than one user found with iodineUid $username...");
+			}
+			else if ($res->num_rows() - 1 > 0) {
+				//d("Would modify existing user $username");
+				$this->update_user($user,$ldap);
+			}
+			else {
+				//d("Would create new user $username");
+				$this->create_user($user,$ldap);
+			}
 		}
 	}
 
@@ -486,10 +552,12 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}
+		//print_r($teacher);
+		//echo "<br />";
 		$newteach = array();
 		$newteach['objectClass'] = 'tjhsstTeacher';
 		$newteach['iodineUid'] = $teacher['username'];
-		$newteach['iodineUidNumber'] = $teacher['uid'];
+		$newteach['iodineUidNumber'] = $teacher['id'];
 		$newteach['cn'] = $teacher['fname'].' '.$teacher['lname'];
 		$newteach['sn'] = $teacher['lname'];
 		$newteach['givenName'] = $teacher['fname'];
@@ -497,9 +565,11 @@ class dataimport implements Module {
 		$newteach['header'] = 'TRUE';
 		$newteach['chrome'] = 'TRUE';
 		$newteach['startpage'] = 'news';
-		$dn = "iodineUid={$newteach['iodineUid']},ou=people";
+		$dn = "iodineUid={$newteach['iodineUid']},ou=people,dc=tjhsst,dc=edu";
 
-		//FIXME: check if iodineUidNumber exists and update previous entry if so
+		// FIXME: check if iodineUidNumber exists and update previous entry if so
+		// Actually, it doesn't matter that much here since iodineUidNumbers are the 
+		// only thing that need to be constant, and SASI makes them be.
 		
 		d("Creating teacher \"{$newteach['iodineUid']}\"...",5);
 		$ldap->add($dn,$newteach);
@@ -508,16 +578,20 @@ class dataimport implements Module {
 		** Teachers need intraboxes, too!
 		*/
 		$count = 0;
-		/*foreach ($this->boxids as $boxid=>$name) {
-			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid,box_order,closed) VALUES(%d,%d,%d,%d)',$teacher['uid'],$boxid,$count,0);
+		foreach ($this->boxids as $boxid=>$name) {
+			if ($name == 'eighth' || $name == 'mail') {
+				continue; // teachers don't need (or want) eighth period or mail
+			}
+			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid,box_order,closed) VALUES(%d,%d,%d,%d)',$teacher['id'],$boxid,$count,0);
 			$count++;
-		}*/
+		}
 	}
 
 	/**
 	* Adds a new user from the given data
+	* DEPRECATED: use create_user instead.
 	*/
-	private function create_user($user,$ldap=NULL) {
+	private function create_user_depr($user,$ldap=NULL) {
 		global $I2_LDAP,$I2_SQL;
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
@@ -579,21 +653,156 @@ class dataimport implements Module {
 		$usernew['middlename'] = $user['mname'];
 		$usernew['style'] = 'default';
 		$usernew['header'] = 'TRUE';
-		$usernum = $this->num;
-		$this->num = $this->num + 1;
-		$usernew['iodineUidNumber'] = $usernum;
+		$res = $ldap->search('ou=people,dc=tjhsst,dc=edu', 'objectClass=tjhsstStudent', array('iodineUidNumber'));
+		$usernew['iodineUidNumber'] = max($res->fetch_col('iodineUidNumber')) + 1;
 		$usernew['startpage'] = 'news';
 		$usernew['chrome'] = 'TRUE';
 		$dn = "iodineUid={$usernew['iodineUid']},ou=people";
 
-		//FIXME: check if iodineUidNumber or tjhsstStudentId exists
-		
 		d("Creating user \"{$usernew['iodineUid']}\"...",5);
 		$ldap->add($dn,$usernew);
 		$box_order = 1;
 		foreach ($this->boxids as $boxid=>$name) {
 			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid,box_order) VALUES(%d,%d,%d)',$usernum,$boxid,$box_order++);
 		}
+	}
+
+	/**
+	* Adds a new user from the given data
+	*/
+	private function create_user($user,$ldap=NULL) {
+		global $I2_LDAP,$I2_SQL;
+		if (!$ldap) {
+			$ldap = $I2_LDAP;
+		}
+		$usernew = array();
+		$usernew['objectClass'] = 'tjhsstStudent';
+		$usernew['graduationYear'] = (-1*($user['grade']-12))+i2config_get('senior_gradyear',date('Y'),'user');
+		$usernew['cn'] = $user['fname'].' '.$user['lname'];
+		$usernew['sn'] = $user['lname'];
+		$usernew['tjhsstStudentId'] = $user['studentid'];
+		$usernew['iodineUid'] = strtolower($user['username']);
+		$usernew['postalCode'] = $user['zip'];
+		if ($user['counselor']) {
+			$usernew['counselor'] = $user['counselor'];
+		}
+		$usernew['st'] = $user['state'];
+		$usernew['l'] = $user['city'];
+		if ($user['phone_home']) {
+			$usernew['homePhone'] = $user['phone_home'];
+		}
+		$usernew['birthday'] = $user['bdate'];
+		$usernew['street'] = $user['address'];
+		$usernew['givenName'] = $user['fname'];
+		if ($user['nick']) {
+			$usernew['nickName'] = $user['nick'];
+		}
+		if ($user['mname'] != '') {
+			$usernew['displayName'] = $user['fname'].' '.$user['mname'].' '.$user['lname'];
+		} else {
+			$usernew['displayName'] = $user['fname'].' '.$user['lname'];
+		}
+		$usernew['gender'] = $user['sex'];
+		$usernew['showpictures'] = 'FALSE';
+		$usernew['showaddress'] = 'FALSE';
+		$usernew['showmap'] = 'FALSE';
+		$usernew['showschedule'] = 'FALSE';
+		$usernew['showphone'] = 'FALSE';
+		$usernew['showbirthday'] = 'FALSE';
+		$usernew['showeighth'] = 'FALSE';
+		$usernew['showphoneself'] = 'TRUE';
+		$usernew['showmapself'] = 'TRUE';
+		$usernew['showscheduleself'] = 'TRUE';
+		$usernew['showaddressself'] = 'TRUE';
+		$usernew['showpictureself'] = 'TRUE';
+		$usernew['showbdayself'] = 'TRUE';
+		$usernew['showeighthself'] = 'TRUE';
+		$usernew['title'] = ($user['sex']=='M')?'Mr.':'Ms.';
+		if ($user['mname']) {
+			$usernew['middlename'] = $user['mname'];
+		}
+		$usernew['style'] = 'default';
+		$usernew['header'] = 'TRUE';
+		$res = $ldap->search('ou=people,dc=tjhsst,dc=edu', 'objectClass=tjhsstStudent', array('iodineUidNumber'));
+		$usernew['iodineUidNumber'] = max($res->fetch_all_arrays());
+		$usernew['startpage'] = 'news';
+		$usernew['chrome'] = 'TRUE';
+		$dn = "iodineUid={$usernew['iodineUid']},ou=people,dc=tjhsst,dc=edu";
+
+		d("Creating user \"{$usernew['iodineUid']}\"...",5);
+		$ldap->add($dn,$usernew);
+		$box_order = 1;
+		foreach ($this->boxids as $boxid=>$name) {
+			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid,box_order) VALUES(%d,%d,%d)',$usernum,$boxid,$box_order++);
+		}
+	}
+
+	/**
+	* Updates a user's info from the given data
+	* Commented lines are info that shouldn't ever need updating
+	*/
+	private function update_user($user,$ldap=NULL) {
+		global $I2_LDAP,$I2_SQL;
+		if (!$ldap) {
+			$ldap = $I2_LDAP;
+		}
+		$usernew = array();
+		//$usernew['objectClass'] = 'tjhsstStudent';
+		$usernew['graduationYear'] = (-1*($user['grade']-12))+i2config_get('senior_gradyear',date('Y'),'user');
+		$usernew['cn'] = $user['fname'].' '.$user['lname'];
+		$usernew['sn'] = $user['lname'];
+		//$usernew['tjhsstStudentId'] = $user['studentid'];
+		//$usernew['iodineUid'] = strtolower($user['username']);
+		$usernew['postalCode'] = $user['zip'];
+		if ($user['counselor']) {
+			$usernew['counselor'] = $user['counselor'];
+		}
+		$usernew['st'] = $user['state'];
+		$usernew['l'] = $user['city'];
+		if ($user['phone_home']) {
+			$usernew['homePhone'] = $user['phone_home'];
+		}
+		$usernew['birthday'] = $user['bdate'];
+		$usernew['street'] = $user['address'];
+		$usernew['givenName'] = $user['fname'];
+		if ($user['nick']) {
+			$usernew['nickName'] = $user['nick'];
+		}
+		if ($user['mname'] != '') {
+			$usernew['displayName'] = $user['fname'].' '.$user['mname'].' '.$user['lname'];
+		} else {
+			$usernew['displayName'] = $user['fname'].' '.$user['lname'];
+		}
+		$usernew['gender'] = $user['sex'];
+		/*$usernew['showpictures'] = FALSE;
+		$usernew['showaddress'] = FALSE;
+		$usernew['showmap'] = FALSE;
+		$usernew['showschedule'] = FALSE;
+		$usernew['showphone'] = FALSE;
+		$usernew['showbirthday'] = FALSE;
+		$usernew['showeighth'] = FALSE;
+		$usernew['showphoneself'] = TRUE;
+		$usernew['showmapself'] = TRUE;
+		$usernew['showscheduleself'] = TRUE;
+		$usernew['showaddressself'] = TRUE;
+		$usernew['showpictureself'] = TRUE;
+		$usernew['showbdayself'] = TRUE;
+		$usernew['showeighthself'] = TRUE;*/
+		$usernew['title'] = ($user['sex']=='M')?'Mr.':'Ms.';
+		if ($user['mname']) {
+			$usernew['middlename'] = $user['mname'];
+		}
+		//$usernew['style'] = 'default';
+		//$usernew['header'] = 'TRUE';
+		//$usernum = $this->num;
+		//$this->num = $this->num + 1;
+		//$usernew['iodineUidNumber'] = $usernum;
+		//$usernew['startpage'] = 'news';
+		//$usernew['chrome'] = 'TRUE';
+		$dn = "iodineUid={$user['username']},ou=people,dc=tjhsst,dc=edu";
+
+		d("Updating user \"{$user['username']}\"...",5);
+		$ldap->modify_object($dn,$usernew);
 	}
 
 	private function import_eighth_data() {
@@ -974,14 +1183,13 @@ class dataimport implements Module {
 		/*
 		** First create classes
 		*/
-		$file = @fopen($this->classfile,'r');
-		while ($line = fgets($file)) {
-			list($sectionid,$period,$uhhotherperiod,$courselen,$othercourselen,$otherothercourselen,$teacherid,$room,$class) = explode('","',trim($line,'"'));
+		$classfile = $this->classfile;
+		d("Reading from class file: $classfile...");
+		$file = @fopen($classfile,'r');
+		while (list($sectionid,$period,$uhhotherperiod,$courselen,$othercourselen,$otherothercourselen,$teacherid,$room,$class) = fgetcsv($file)) {
 			$classid = explode('-',$sectionid);
 			$classid = $classid[0];
 			$semesterno = $courselen[1];
-			$class = trim($class,"\r\n"); //chomp newline
-			$class = substr($class,0,strlen($class)-1); //chomp quotes
 
 			// Hunt down the sponsor - and kill them!
 			$sponsordn = $ldap->search(LDAP::get_user_dn(),"iodineUidNumber=$teacherid",array('iodineUid'))->fetch_single_value();
@@ -1014,7 +1222,7 @@ class dataimport implements Module {
 			//$I2_LOG->log_file('Creating section '.$sectionid.' ('.$class.' period '.$period.') taught by '.$sponsordn.' in '.$room);
 			// Create the course
 			//$I2_LOG->log_file('dn: '.LDAP::get_schedule_dn($sectionid).' === '.print_r($newclass,1));
-			$ldap->delete(LDAP::get_schedule_dn($sectionid));
+			//$ldap->delete(LDAP::get_schedule_dn($sectionid));
 			$ldap->add(LDAP::get_schedule_dn($sectionid),$newclass);
 		}
 		fclose($file);
@@ -1023,9 +1231,10 @@ class dataimport implements Module {
 		** Set up student <=> course mappings
 		*/
 		$students = array();
-		$studentcoursefile = @fopen($this->schedulefile,'r');
-		while ($studentline = fgets($studentcoursefile)) {
-			list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename, $teacherid, $teachername, $term, $room) = explode('","',trim($studentline,'"'));
+		$schedulefile = $this->schedulefile;
+		d("Reading from schedule file: $schedulefile...");
+		$studentcoursefile = @fopen($schedulefile,'r');
+		while (list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename, $teacherid, $teachername, $term, $room) = fgetcsv($studentcoursefile)) {
 			$uid = User::studentid_to_uid($studentid);
 			if (!$uid) {
 				$I2_LOG->log_file('Invalid/unknown studentID '.$studentid);
@@ -1642,7 +1851,7 @@ class dataimport implements Module {
 			$this->school_ldap_pass = $_SESSION['school_ldap_pass'];
 		}
 		if (isSet($_SESSION['stafffile'])) {
-			$this->intranet_user = $_SESSION['stafffile'];
+			$this->stafffile = $_SESSION['stafffile'];
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_pass') {
 			unset($_SESSION['ldap_admin_pass']);
@@ -1691,7 +1900,9 @@ class dataimport implements Module {
 			//$this->import_teacher_data_ldap($_REQUEST['teacherserver'],$_REQUEST['teacherdn'],$_REQUEST['teacherpass']);
 		} elseif (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherdata' && isSet($_REQUEST['teacherfile']) && isSet($_REQUEST['stafffile'])) {
 			$this->staffile = $_REQUEST['stafffile'];
+			$_SESSION['stafffile'] = $_REQUEST['stafffile'];
 			$this->teacherfile = $_REQUEST['teacherfile'];
+			$_SESSION['teacherfile'] = $_REQUEST['teacherfile'];
 			//$this->import_teacher_data_file($_REQUEST['teacherfile'],$_REQUEST['stafffile']);
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'eighthdata' && isSet($_REQUEST['doit'])) {
@@ -1758,8 +1969,9 @@ class dataimport implements Module {
 			$this->fix_broken_user($_REQUEST['studentid']);
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teachers' && isSet($_REQUEST['doit'])) {
+			$this->clean_teachers();
 			$this->import_teacher_data_file_one();
-			$this->import_teacher_data_ldap();
+			$this->import_teacher_data_file();
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'students' && isSet($_REQUEST['doit'])) {
 			$this->import_student_data();

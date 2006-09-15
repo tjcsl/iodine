@@ -65,12 +65,12 @@
 			<input type="submit" value="Delete assorted data"/><br/>
 		</form>
 		<br /><br/>
-		[<* This is dangerous, so it's disabled
+		[<* This is dangerous, so it is disabled'
 		<form action="[<$I2_ROOT>]dataimport/fixit" method="post">
 			<input type="hidden" name="doit" value="1"/>
 			<input type="submit" value="Ensure the database is usable"/><br/>
 		</form>
-		<br /><br/>*>]
+		<br /><br/>'*>]
 	[</if>]
 	[<if $userfile && $admin_pass>]
 		<form action="[<$I2_ROOT>]dataimport/students" method="post">
@@ -99,7 +99,7 @@
 			<input type="submit" value="FIX INTRANET" style="font-style: bold; font-size: 40pt; color: red;"/><br/>
 		</form>
 	<br /><br />
-	[</if>]
+	[</if>
 [<if $intranet_pass>]
 		<form action="[<$I2_ROOT>]dataimport/eighth_permissions" method="post">
 			<input type="hidden" name="doit" value="1"/>
