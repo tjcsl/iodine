@@ -39,6 +39,18 @@ class Filecenter implements Module {
 	private $directory;
 
 	private $show_hidden_files;
+	
+	/**
+	* Allows you to reference a student by grade name (is that the term?)
+	*
+	* This is specific for tj01.
+	*/
+	private static $tj01_grade = array(
+		'12' => 'senior',
+		'11' => 'junior',
+		'10' => 'sophomore',
+		'9' => 'freshman'
+	);
 
 	/**
 	* Returns $size in a human-readable format.
@@ -218,6 +230,8 @@ class Filecenter implements Module {
 		} else {
 			$this->box_args['csl_username'] = $_SESSION['i2_username'];
 		}
+		$this->box_args['tj01path'] = 'students/' . self::$tj01_grade[$I2_USER->grade] . '/' . $_SESSION['i2_username'];
+
 		return 'Filecenter';
 	}
 	
