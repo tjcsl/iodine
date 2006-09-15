@@ -1,61 +1,120 @@
 <a href="[<$I2_ROOT>]info/eighth">Back to Eighth Period Info home</a>
-<p><b>Selecting an Activity:</b></p>
-Activity selections are expected to be made by the end of lunch on the day of the activity. The sign up process can be done in three ways.
-
-<p><b>First Method:</b></p>
-<ul>
-   <li>Go online to the TJ Homepage (wwww.tjhsst.edu)</li>
-   <li>Click on the Intranet link (located under the school address, next to the word Navigation)</li>
-   <li>Once the intranet log-in window appears type in your log-in name and your password.  The intranet will not accept your school ID# as your password.  It is very important to change your password as soon as possible during the first week of school</li>
-   <li>On the left side of the screen, under the word INTRANET you will find the 8th period menu. Click on <b>Full Schedule</b> to see all of the offerings for the next 8 weeks.</li>
-   <li>To sign up for an activity for a specific date and block click on the word <b>Change</b> next to the preferred date and block. A window will pop up with all the possible choices for that block.  Type the activity number that interests you into the Enter an Activity ID box (or highlight the activity name).  To learn more about that activity click on View Description.  If you wish to select that activity, click on <b>Change</b>.  If you decide against that choice highlight a different activity and continue the process until you find something you like.</li>
-   <li>To sign up for the same activity multiple times (for several days or blocks), click on the box next to the word change for each date or block that you wish to change.  Then at the top of the page click on the button marked <b>Change Selected</b>, highlight the activity, click on <b>Change</b> and all of the blocks that you have checked off will be changed to that activity, provided they are scheduled.</li>
-   <li>Special Events - On the left side of the screen, under the word INTRANET adjacent to <b>Full Schedule</b> is the link to Special Activities. This links you to the special or one-time events that are being offered.  You can sign up for these from this link or from the full schedule menu.</li>
-</ul>
-
-<p>Advantages to this method:</p>
-
-<ul>
-   <li>You can sign up for an activity at any time, from home or school.</li>
-   <li>You can sign up for activities days in advance.</li>
-   <li>You can view your schedule, read about upcoming specials, learn more about a particular club or activity and see your 8th period attendance record.</li>
-</ul>
-
-<p><b>Second Method:</b></p>
-<ul>
-   <li>Obtain an Activity Change form from the box outside the 8th Period Office (236 wk).</li>
-   <li>Complete the form, using the daily schedule of activities posted outside the office as a guide.</li>
-   <li>Return the form to the box by the door or above the lockers.  This method can be used prior to 11 am the day the activity is to occur.</li>
-</ul>
-
-<p>Advantages to this method:</p>
-<ul>
-   <li>You do not have to spend time to find a computer to sign up.</li>
-   <li>You may ask questions of the 8th period office staff, if necessary.</li>
-</ul>
-
-<p><b>Third Method</b>:</p>
-<ul>
-   <li>Come in to the 8th Period Office and make your change request in person.  A member of the 8th Period Office staff will enter the information for you.</li>
-</ul>
-
-<p>Advantages to this method:</p>
-<ul>
-   <li>You do not have to access or write anything. You just have to know what activities in which you wish to participate.</li>
-   <li>If an activity is full you can discuss alternatives with an 8th period staff member.</li>
-</ul>
-<p><b>Note:</b></p>
-<ul>
-   <li>Every student is automatically assigned to Administrative Study Hall.  If a student does not change out of this study hall assignment, the student is expected to report to this study hall.</li>
-   <li>All activity selections for the day must be made by 12:30 pm the day the activity is to occur.</li>
-</ul>
-
-<p><b>Activities Attendance:</b></p>
-
-<ul>
-<li><b>Because 8th period is part of the school day the school must account for the whereabouts of each student during this time. Attendance is recorded for each activity. A student who does not regularly attend the selected activities will be referred to the appropriate administrator for disciplinary action.</b></li>
-<li>Lists of students who have excessive absences from 8th period activities are routinely prepared and given to the guidance counselors and assistant principals. Counselors may use the lists as one measure of responsibility and reliability when considering students for leadership positions within the school, mentorships, or in preparing college recommendations.</li>
-<li>Student parking spaces are allocated after a review of 8th period attendance records.</li>
-<li>If necessary, letters may be sent home to parents regarding excessive absences.</li>
-<li>See <a href="clear">How to Clear an Absence</a> if you feel there is an error in your attendance record. </li>
-</ul>
+<P CLASS="western" ALIGN=CENTER STYLE="margin-bottom: 0in"><B>How to
+Sign up for Eighth Period</B></P>
+<P CLASS="western" ALIGN=CENTER STYLE="margin-bottom: 0in"><BR>
+</P>
+<P CLASS="western" STYLE="margin-bottom: 0in"><B>Selecting an
+Activity:</B></P>
+<P CLASS="western" STYLE="margin-bottom: 0in">Activity selections are
+expected to be made by the end of lunch on the day of the activity.
+The sign up process can be done in three ways.</P>
+<P CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P CLASS="western" STYLE="margin-bottom: 0in"><B><U>First Method:
+(Online)</U></B></P>
+<UL>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in">Go online to the
+	TJ Homepage (www.tjhsst.edu)</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in">Click on the
+	<U>Intranet</U> link (located under the school address, next to the
+	word “Navigation”)</P>
+</UL>
+<UL>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in">Once the intranet
+	log-in window appears type in your log-in name and your password. 
+	The intranet will not accept your school ID# as your password.  It
+	is very important to change your password as soon as possible during
+	the first week of school</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in">On the left side
+	of the screen, under the word INTRANET you will find “8<SUP>th</SUP>
+	Period Today”. Click on “Full Schedule” to see all of the
+	offerings for the next 8 weeks.</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in">To sign up for an
+	activity for a specific date and block click on the word “Change”
+	next to a date and block. A window will pop up with all the possible
+	choices for that block.  To learn more about any particular activity
+	click on the name of the activity. A description of that activity
+	will pop up. Click on as many as you wish – one at a time.  If you
+	wish to register for activity, click on “Change.”  If you decide
+	against that choice highlight a different activity and continue the
+	process until you find something you like.  Use the green “back”
+	arrow on your browser toolbar to navigate between pages.</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in">To sign up for the
+	same activity multiple times (for several days or blocks), click on
+	the box next to the word “change” for each date or block that
+	you wish to change.  Then at the top of the page click on the button
+	marked “Change Selected,” highlight the activity, click on
+	“Change” and all of the blocks that you have checked off will be
+	changed to that activity, provided they are scheduled for those
+	dates.</P>
+</UL>
+<P CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P CLASS="western" STYLE="margin-bottom: 0in">Advantages to this
+method:</P>
+<UL>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in">You can sign up
+	for an activity at any time, from home or school.</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in">You can sign up
+	for activities days in advance.</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in">You can view your
+	schedule, read about upcoming specials, learn more about a
+	particular club or activity and see your 8<SUP>th</SUP> period
+	attendance record.</P>
+</UL>
+<P CLASS="western" STYLE="margin-left: 0.13in; margin-bottom: 0in"><BR>
+</P>
+<P CLASS="western" STYLE="margin-bottom: 0in"><B><U>Second Method:</U></B></P>
+<UL>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in">Come in to the 8<SUP>th</SUP>
+	Period Office and make your change request in person.  A member of
+	the 8<SUP>th</SUP> Period Office staff will enter the information
+	for you.</P>
+</UL>
+<P CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P CLASS="western" STYLE="margin-bottom: 0in">Advantages to this
+method:</P>
+<UL>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0in">If an activity is
+	full you can discuss alternatives with an 8<SUP>th</SUP> period
+	staff member.</P>
+</UL>
+<P CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
+<P CLASS="western" STYLE="margin-bottom: 0in"><B>Activities
+Attendance:</B></P>
+<P CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.5in; margin-right: 0.75in; margin-bottom: 0in; widows: 0; orphans: 0">
+<B>Because 8th period is part of the school day the school must
+account for the whereabouts of each student during this time.
+Attendance is recorded for each activity. A student who does not
+regularly attend the selected activities will be referred to the
+appropriate administrator for disciplinary action.</B></P>
+<P CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.5in; margin-right: 0.75in; margin-bottom: 0in; widows: 0; orphans: 0">
+Lists of students who have excessive absences from 8th period
+activities are routinely prepared and given to the guidance
+counselors and assistant principals<B>. </B>Counselors may use the
+lists as one measure of responsibility and reliability when
+considering students for leadership positions within the school,
+mentorships, or in preparing college recommendations.</P>
+<P CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.5in; margin-right: 0.75in; margin-bottom: 0in; widows: 0; orphans: 0">
+<BR>
+</P>
+<P CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.5in; margin-right: 0.75in; margin-bottom: 0in; widows: 0; orphans: 0">
+Student parking spaces are allocated after a review of 8th period
+attendance records.</P>
+<P CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.5in; margin-right: 0.75in; margin-bottom: 0in; widows: 0; orphans: 0">
+<BR>
+</P>
+<P CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.5in; margin-right: 0.75in; margin-bottom: 0in; widows: 0; orphans: 0">
+If necessary, letters may be sent home to parents regarding excessive
+absences.</P>
+<P CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.5in; margin-right: 0.75in; margin-bottom: 0in; widows: 0; orphans: 0">
+<BR>
+</P>
+<P CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.5in; margin-right: 0.75in; margin-bottom: 0in; widows: 0; orphans: 0">
+See <B><I><a href="[<$I2_ROOT>]info/eighth/clear">How to Clear an Absence </a></I></B>if you feel there is an
+error in your attendance record.<B><I> </I></B>
+</P>
+<P CLASS="western" STYLE="margin-bottom: 0in"><BR>
+</P>
