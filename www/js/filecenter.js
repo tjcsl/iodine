@@ -20,7 +20,7 @@ function options(anchor, type) {
 			"<a href='" + url + "'>Download file</a><br/>" + 
 			"<a href='" + url + "?download=zip'>Download file as ZIP</a><br/>" + 
 			"<a href=\"javascript:rename('" + file + "')\">Rename file</a><br/>" + 
-			"<a href='#'>Delete file</a><br/>";
+			"<a href=\"javascript:rmf('" + file + "')\">Delete file</a><br/>";
 		} else {
 			cell = row.insertCell(-1);
 			cell.id = "options";
@@ -29,7 +29,7 @@ function options(anchor, type) {
 			"<a href='" + url + "/'>Open directory</a><br/>" + 
 			"<a href='" + url + "/?download'>Download directory as ZIP</a><br/>" + 
 			"<a href=\"javascript:rename('" + file + "')\">Rename directory</a><br/>" +
-			"<a href='#'>Delete directory</a><br/>";
+			"<a href=\"javascript:rmd('" + file + "')\">Delete directory</a><br/>";
 		}
 		rowIndex = row.rowIndex;
 	} else {
@@ -44,4 +44,18 @@ function rename(file) {
 		return;
 	}
 	window.location = window.location + "?rename=" + escape(file) + "&to=" + escape(name);
+}
+
+function rmf(file) {
+	var name = confirm("Are you sure you want to delete \"" + file + "\"?");
+	if (name) {
+		window.location = window.location + "?rmf=" + escape(file);
+	}
+}
+
+function rmd(file) {
+	var name = confirm("Are you sure you want to delete \"" + file + "\"?  (Note: Intranet filecenter currently only supports deleting of empty directories; delete the contents of this directory first.)");
+	if (name) {
+		window.location = window.location + "?rmd=" + escape(file);
+	}
 }

@@ -162,6 +162,12 @@ class Filecenter implements Module {
 		} else if (isSet($_REQUEST['mkdir'])) {
 			$this->filesystem->make_dir($this->directory . $_REQUEST['mkdir']);
 			redirect("filecenter/$system_type"."{$this->directory}");
+		} else if (isSet($I2_QUERY['rmf'])) {
+			$this->filesystem->delete_file($this->directory . $I2_QUERY['rmf']);
+			redirect("filecenter/$system_type"."{$this->directory}");
+		} else if (isSet($I2_QUERY['rmd'])) {
+			$this->filesystem->remove_dir($this->directory . $I2_QUERY['rmd']);
+			redirect("filecenter/$system_type"."{$this->directory}");
 		}
 		
 		$this->template = 'filecenter_pane.tpl';
