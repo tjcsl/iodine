@@ -327,14 +327,14 @@ class Poll {
 	* Returns the maximum number an answer may have while belonging to this poll, plus one.
 	*/
 	public static function answer_upper_bound($pid) {
-			  return self::answer_lower_bound($pid)+1000;
+			  return self::answer_lower_bound($pid)+10000;
 	}
 
 	/**
 	* Returns the minimum number an answer may have while belonging to this poll, minus one.
 	*/
 	public static function answer_lower_bound($pid) {
-			  return 100000*$pid;
+			  return 1000000*$pid;
 	}
 	/**
 	* Deletes a poll.
