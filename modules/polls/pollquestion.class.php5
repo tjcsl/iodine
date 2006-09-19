@@ -28,21 +28,24 @@ class PollQuestion {
 	public function __get($var) {
 		global $I2_SQL;
 		switch($var) {
-			case 'mypid':
-			case 'pid':
-				return (int)floor($this->myqid/1000);
-			case 'qid':
-				return $this->myqid;
-			case 'maxvotes':
-				return $this->mymaxvotes;
-			case 'question':
-				return $this->myquestion;
-			case 'answers':
-				return $this->myanswers;
-			case 'type':
-				return $this->mytype;
-			default:
-				throw new I2Exception("Invalid variable $var attempted to be accessed in PollQuestion");
+		case 'r_qid':
+		case 'readable_qid':
+			return $this->myqid % 1000;
+		case 'mypid':
+		case 'pid':
+			return (int)floor($this->myqid/1000);
+		case 'qid':
+			return $this->myqid;
+		case 'maxvotes':
+			return $this->mymaxvotes;
+		case 'question':
+			return $this->myquestion;
+		case 'answers':
+			return $this->myanswers;
+		//case 'type':
+		//	return $this->mytype;
+		default:
+			throw new I2Exception("Invalid variable $var attempted to be accessed in PollQuestion");
 		}
 	}
 
@@ -62,7 +65,7 @@ class PollQuestion {
 		$info = $I2_SQL->query('SELECT maxvotes, question, answertype FROM poll_questions WHERE qid=%d', $qid)->fetch_array(Result::ASSOC);
 
 		$this->myqid = $qid;
-		$this->mytype = $info['answertype'];
+		//$this->mytype = $info['answertype'];
 
 		$this->mymaxvotes = $info['maxvotes'];
 		$this->myquestion = $info['question'];
@@ -272,12 +275,12 @@ class PollQuestion {
 			throw new I2Exception("Invalid answer value $answer attempted to be recorded in PollQuestion");
 		}
 
-		$numvotes = $I2_SQL->query('SELECT COUNT(*) FROM poll_votes WHERE aid >= %d AND aid < %d AND uid=%d', self::lower_bound($this->myqid), self::upper_bound($this->myqid), $user->uid)->fetch_single_value();
-
-		if ($this->type != 'approval') {
+		if ($this->maxvotes == 1) {
 				  // Delete previous votes
 				  $I2_SQL->query('DELETE FROM poll_votes WHERE aid >= %d AND aid < %d AND uid=%d',self::lower_bound($this->myqid),self::upper_bound($this->myqid),$user->uid);
 		}
+
+		$numvotes = $I2_SQL->query('SELECT COUNT(*) FROM poll_votes WHERE aid >= %d AND aid < %d AND uid=%d', self::lower_bound($this->myqid), self::upper_bound($this->myqid), $user->uid)->fetch_single_value();
 
 		if ($this->maxvotes == 0 || $numvotes < $this->maxvotes) {
 				  // user may still vote here; create a new vote
@@ -321,15 +324,15 @@ class PollQuestion {
 				  Poll::check_admin();
 		}
 
-		if ($this->type == 'approval' || $this->type == 'standard') {
-				  // We need to translate the value into TRUE or FALSE
-				  $res = $I2_SQL->query('SELECT COUNT(aid) FROM poll_votes WHERE aid=%d AND uid=%d', $aid, $user->uid)->fetch_single_value();
-				  if ($res > 1) {
-							 $I2_LOG->log_file('VOTING FRAUD!  User: '.$user.' Answer: '.$aid.'.  Detected and logged.');
-							 throw new I2Exception('VOTING FRAUD!  User: '.$user.' Answer: '.$aid.'.  Detected and logged.');
-				  }
-				  return ($res == 0)?FALSE:TRUE;
-		}
+//		if ($this->type == 'approval' || $this->type == 'standard') {
+			// We need to translate the value into TRUE or FALSE
+			$res = $I2_SQL->query('SELECT COUNT(aid) FROM poll_votes WHERE aid=%d AND uid=%d', $aid, $user->uid)->fetch_single_value();
+			if ($res > 1) {
+				$I2_LOG->log_file('VOTING FRAUD!  User: '.$user.' Answer: '.$aid.'.  Detected and logged.');
+				throw new I2Exception('VOTING FRAUD!  User: '.$user.' Answer: '.$aid.'.  Detected and logged.');
+			}
+			return ($res == 0)?FALSE:TRUE;
+//		}
 		$res = $I2_SQL->query('SELECT answer FROM poll_votes WHERE aid=%d AND uid=%d', $aid, $user->uid)->fetch_single_value();
 		return $res;
 	}
@@ -422,7 +425,7 @@ class PollQuestion {
 		}
 
 		$I2_SQL->query('INSERT INTO poll_questions SET qid=%d, question=%s, maxvotes=%d', $qid, $question, $maxvotes);
-      $aid = self::lower_bound($qid);
+		$aid = self::lower_bound($qid) + 1;
 		foreach ($answers as $answer) {
 			$I2_SQL->query('INSERT INTO poll_answers SET aid=%d, answer=%s', $aid, $answer);
 			$aid++;

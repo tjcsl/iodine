@@ -73,11 +73,13 @@ class Polls implements Module {
 			return;
 		}
 
+		$this->template_args['errors'] = array();
+
 		$poll = new Poll($I2_ARGS[2]);
 		if (isset($_REQUEST['polls_vote_form'])) {
 			foreach ($poll->questions as $question) {
 				$answer = 0;
-				if ($question->maxvotes == 1 || $question->type != 'approval') {
+				if ($question->maxvotes == 1) {
 					if (isSet($_REQUEST[$question->qid])) {
 						$question->record_vote($_REQUEST[$question->qid]);
 					}
@@ -89,17 +91,22 @@ class Polls implements Module {
 						$vote = isSet($_REQUEST[$aid])?$_REQUEST[$aid]:FALSE;
 						if ($vote) {
 							$add[$aid] = $vote;
-						} else {
-							$question->delete_vote($aid);
 						}
-					  }
-					  foreach ($add as $aid=>$vote) {
-						if ($question->type == 'approval') {
+						$question->delete_vote($aid);
+					}
+
+					if ($question->maxvotes != 0 && count($add) > $question->maxvotes) {
+						$this->template_args['errors'][] = "Oops! You tried to vote for too many options on question #{$question->readable_qid}!";
+						continue;
+					}
+
+					foreach ($add as $aid=>$vote) {
+						//if ($question->type == 'approval') {
 							// Don't record text for voting questions
 							$vote = NULL;
-						}
+						//}
 						$question->record_vote($aid, $vote);
-					  }
+					}
 				}
 			}
 		}
@@ -130,7 +137,7 @@ class Polls implements Module {
 		foreach ($poll->questions as $q) {
 			$question = array();
 			$question['text'] = $q->question;
-			$question[$q->type] = TRUE;
+			//$question[$q->type] = TRUE;
 
 			$voters = $q->users_who_voted();
 			$question['voters'] = count($voters);
