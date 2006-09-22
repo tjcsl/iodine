@@ -724,7 +724,7 @@ class dataimport implements Module {
 		$usernew['style'] = 'default';
 		$usernew['header'] = 'TRUE';
 		$res = $ldap->search('ou=people,dc=tjhsst,dc=edu', 'objectClass=tjhsstStudent', array('iodineUidNumber'));
-		$usernew['iodineUidNumber'] = max($res->fetch_all_arrays());
+		$usernew['iodineUidNumber'] = max($res->fetch_col('iodineUidNumber'))+1;
 		$usernew['startpage'] = 'news';
 		$usernew['chrome'] = 'TRUE';
 		$dn = "iodineUid={$usernew['iodineUid']},ou=people,dc=tjhsst,dc=edu";
@@ -733,7 +733,7 @@ class dataimport implements Module {
 		$ldap->add($dn,$usernew);
 		$box_order = 1;
 		foreach ($this->boxids as $boxid=>$name) {
-			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid,box_order) VALUES(%d,%d,%d)',$usernum,$boxid,$box_order++);
+			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid,box_order) VALUES(%d,%d,%d)',$usernew['iodineUidNumber'],$boxid,$box_order++);
 		}
 	}
 

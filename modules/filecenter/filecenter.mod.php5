@@ -236,7 +236,12 @@ class Filecenter implements Module {
 		} else {
 			$this->box_args['csl_username'] = $_SESSION['i2_username'];
 		}
-		$this->box_args['tj01path'] = 'students/' . self::$tj01_grade[$I2_USER->grade] . '/' . $_SESSION['i2_username'];
+		d('grade: ' . $I2_USER->grade);
+		if ($I2_USER->grade != "staff") {
+			$this->box_args['tj01path'] = 'students/' . self::$tj01_grade[$I2_USER->grade] . '/' . $_SESSION['i2_username'];
+		} else {
+			$this->box_args['tj01path'] = 'staff/' . $_SESSION['i2_username'];
+		}
 
 		return 'Filecenter';
 	}
