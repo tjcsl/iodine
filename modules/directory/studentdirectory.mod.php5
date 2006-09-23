@@ -198,7 +198,7 @@ class StudentDirectory implements Module {
 				}
 				$eighth = EighthActivity::id_to_activity(EighthSchedule::get_activities($this->user->uid));
 			}
-			$display->disp('studentdirectory_pane.tpl',array('info' => $this->information, 'schedule' => $sched, 'user' => $this->user, 'eighth' => $eighth, 'im_status' => $im_status));
+			$display->disp('studentdirectory_pane.tpl',array('info' => $this->information, 'schedule' => $sched, 'user' => $this->user, 'eighth' => $eighth, 'im_status' => $im_status, 'homecoming_may_vote' => Homecoming::user_may_vote($this->user)));
 		}
 	}
 	
