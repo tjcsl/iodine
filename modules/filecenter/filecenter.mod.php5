@@ -239,8 +239,6 @@ class Filecenter implements Module {
 		d('grade: ' . $I2_USER->grade);
 		if ($I2_USER->grade != "staff") {
 			$this->box_args['tj01path'] = 'students/' . self::$tj01_grade[$I2_USER->grade] . '/' . $_SESSION['i2_username'];
-		} else {
-			$this->box_args['tj01path'] = 'staff/' . $_SESSION['i2_username'];
 		}
 
 		return 'Filecenter';
