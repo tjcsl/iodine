@@ -302,10 +302,19 @@ class User {
 			case 'preferredphoto':
 			case 'preferred_photo':
 				$row = $I2_LDAP->search_base(LDAP::get_user_dn($this), 'preferredPhoto')->fetch_array();
-				if(!$row) {
+				if (!$row) {
 					return NULL;
 				}
-				$row = $I2_LDAP->search($row['preferredPhoto'])->fetch_binary_value('jpegPhoto');
+				if ($row['preferredPhoto'] == 'cn=AUTO,dc=tjhsst,dc=edu') {
+					$userdn = LDAP::get_user_dn($this);
+					$cns = $I2_LDAP->search($userdn, 'objectClass=iodinePhoto', array('cn'))->fetch_col('cn');
+					usort($cns, "User::sort_photos");
+					$preferredPhoto = "cn={$cns[0]},$userdn";
+				}
+				else {
+					$preferredPhoto = $row['preferredPhoto'];
+				}
+				$row = $I2_LDAP->search($preferredPhoto)->fetch_binary_value('jpegPhoto');
 				return $row[0];
 			case 'show_map':
 					  return ($this->__get('perm-showmap')!='FALSE')&&($this->__get('perm-showmap-self')!='FALSE');
@@ -919,6 +928,17 @@ class User {
 	public static function studentid_to_uid($studentid) {
 		global $I2_LDAP;
 		return $I2_LDAP->search(LDAP::get_user_dn(), "(&(objectClass=tjhsstStudent)(tjhsstStudentId={$studentid}))", 'iodineUidNumber')->fetch_single_value();
+	}
+
+	/**
+	 * The helper function for sorting pictures by grade for AUTO preferredPhoto
+	 */
+	public static function sort_photos($photo1, $photo2) {
+		$priority = array(	'seniorPhoto' => 4,
+					'juniorPhoto' => 3,
+					'sophomorePhoto' => 2,
+					'freshmanPhoto' => 1);
+		return ($priority[$photo1] > $priority[$photo2]) ? 1 : -1;
 	}
 
 }

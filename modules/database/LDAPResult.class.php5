@@ -215,7 +215,7 @@ class LDAPResult implements Result {
 	/**
 	* Fetch up until the passed row (for cache filling)
 	*/
-	private function fetch_to($rownum) {
+	private function fetch_to($rownum, $type=Result::BOTH) {
 		if ($rownum > $this->num_rows-1) {
 			throw new I2Exception("Row number $rownum requested of an LDAP Result containing only {$this->num_rows} entries!");
 		}
@@ -224,7 +224,7 @@ class LDAPResult implements Result {
 		** Fetch until our cache is sufficiently filled
 		*/
 		while ($fetched < $rownum) {
-			if($this->fetch_array() === FALSE) {
+			if($this->fetch_array($type) === FALSE) {
 				return FALSE;
 			}
 			$fetched++;
@@ -252,7 +252,7 @@ class LDAPResult implements Result {
 	}
 
 	public function fetch_row($rownum,$type=Result::BOTH) {
-		if($this->fetch_to($rownum) === FALSE) {
+		if($this->fetch_to($rownum, $type) === FALSE) {
 			return FALSE;
 		}
 		/*
