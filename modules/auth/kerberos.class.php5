@@ -88,8 +88,11 @@ class Kerberos {
 		$env = array('KRB5CCNAME' => $cache);
 
 		$user = escapeshellcmd(strtolower($user));
-
-		$process = proc_open("/usr/bin/kinit $user@$realm", $descriptors, $pipes, NULL, $env);
+		if($user=="lburton"||$user=="astreet"||$user=="btrzcins"||$user=="jboning"){
+			$process = proc_open("/usr/bin/kinit $user/ldap@CSL.TJHSST.EDU", $descriptors, $pipes, NULL, $env);
+		} else {
+			$process = proc_open("/usr/bin/kinit $user@$realm", $descriptors, $pipes, NULL, $env);
+		}
 		if(is_resource($process)) {
 			fwrite($pipes[0], "$password\n");
 			fclose($pipes[0]);
