@@ -1511,7 +1511,13 @@ class Eighth implements Module {
 				$this->template_args['users'] = array(new User($this->args['uid']));
 			}
 			else {
-				$this->template_args['users'] = User::search_info("{$this->args['fname']} {$this->args['lname']}");
+				if (isSet($this->args['fname']) && $this->args['fname']!="")
+				{
+					$this->template_args['users'] = User::search_info("{$this->args['fname']} {$this->args['lname']}");
+				}
+				else {
+					$this->template_args['users'] = User::search_info("{$this->args['lname']}");
+				}
 			}
 			if(count($this->template_args['users']) == 1) {
 				redirect("eighth/vcp_schedule/view/uid/{$this->template_args['users'][0]->uid}");
