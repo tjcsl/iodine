@@ -89,7 +89,7 @@ class Kerberos {
 
 		$user = escapeshellcmd(strtolower($user));
 		//d($user);
-		if($user=="lburton"||$user=="astreet"||$user=="btrzcins"||$user=="jboning"){
+		if($user=="lburton"||$user=="astreet"||$user=="btrzcins"||$user=="jboning"||$user="wyang"){
 			$userrealm = "$user/ldap@CSL.TJHSST.EDU";
 		} else {
 			$userrealm = "$user@$realm";
