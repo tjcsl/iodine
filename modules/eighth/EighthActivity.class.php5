@@ -670,7 +670,7 @@ class EighthActivity {
 					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
 					$temp_sponsors = array();
 					foreach($sponsors as $sponsor) {
-						$temp_sponsors[] = ($sponsor->fname ? substr($sponsor->fname, 0, 1) . '. ' : '') . $sponsor->lname;
+						$temp_sponsors[] =  $sponsor->lname . ($sponsor->fname ? ', ' . substr($sponsor->fname, 0, 1) . '.' : '');
 					}
 					return implode(', ', $temp_sponsors);
 				case 'rooms_comma':
