@@ -33,7 +33,12 @@ class Scratchpad implements Module {
 			return FALSE;
 		}
 
-		$I2_LOG->log_file('Scratch ('.$I2_ARGS[1].')'.$_REQUEST['text']);
+		if(isset($_REQUEST['text']))
+		{
+			$I2_LOG->log_file('Scratch ('.$I2_ARGS[1].')'.$_REQUEST['text']);
+		} else {
+			$I2_LOG->log_file('Scratch ('.$I2_ARGS[1].')');
+		}
 
 		switch ($I2_ARGS[1]) {
 			case 'save':
