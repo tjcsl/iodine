@@ -8,11 +8,6 @@
 * @filesource
 */
 
-/*
-** Load auxilliary functions (mostly comparison functions for sorts)
-*/
-include "eighth.inc.php5";
-
 /**
 * The module that keeps the eighth block office happy.
 * @package modules
@@ -1411,7 +1406,8 @@ class Eighth implements Module {
 					);
 				}
 			}
-			usort($this->template_args['delinquents'], "eighth_delin_sort_$sort");
+			// This has issues... apparently, PHP doesn't actually think the methods are static...
+			@usort($this->template_args['delinquents'], array("Eighth", "delin_sort_$sort"));
 			$this->template_args['sorts'] = $legal_sorts;
 			$this->template_args['sort'] = $sort;
 			$this->template_args['lower'] = $lower;
@@ -1426,6 +1422,48 @@ class Eighth implements Module {
 			$this->template = 'vp_delinquent.tpl';
 			$this->title = 'Query Delinquent Students';
 		}
+	}
+
+	/**
+	 * Sort method for vp_delinquents
+	 */
+	public static function delin_sort_name($a, $b) {
+		return strcasecmp($a['name'], $b['name']);
+	}
+
+	/**
+	 * Sort method for vp_delinquents
+	 */
+	public static function delin_sort_name_desc($a, $b) {
+		return -1 * Eighth::delin_sort_name($a, $b);
+	}
+
+	/**
+	 * Sort method for vp_delinquents
+	 */
+	public static function delin_sort_grade($a, $b) {
+		return ($a['grade'] < $b['grade']) ? -1 : 1;
+	}
+
+	/**
+	 * Sort method for vp_delinquents
+	 */
+	public static function delin_sort_grade_desc($a, $b) {
+		return -1 * Eighth::delin_sort_grade($a, $b);
+	}
+
+	/**
+	 * Sort method for vp_delinquents
+	 */
+	public static function delin_sort_absences($a, $b) {
+		return ($a['absences'] < $b['absences']) ? -1 : 1;
+	}
+
+	/**
+	 * Sort method for vp_delinquents
+	 */
+	public static function delin_sort_absences_desc($a, $b) {
+		return -1 * Eighth::delin_sort_absences($a, $b);
 	}
 
 	/**
