@@ -5,13 +5,13 @@ The specified user does not exist. Either you mistyped a URL, or something in In
 [</if>]
 [<if $user && $user->fname>]
 [<if $user->uid == $I2_USER->uid>]
-This is YOUR info page.  All information stored in the Intranet database is visible to you. <br />
+<strong>This is YOUR info page.  All of your information will ALWAYS be visible to you.</strong><br />
 In order to choose what info can be seen by OTHER users, please setup your <a href="[<$I2_ROOT>]prefs">preferences</a>.<br /><br />
 [</if>]
 <table>
 <tr><td valign="top">
 <img src="[<$I2_ROOT>]pictures/[<$user->uid>]" vspace="2" width="172" height="228" /><br />
-[<if $homecoming_may_vote>]<b><a href="[<$I2_ROOT>]homecoming/vote/[<$user->uid>]">Vote for this person<br />for homecoming court</a></b>[</if>]
+[<if $homecoming_may_vote>]<strong><a href="[<$I2_ROOT>]homecoming/vote/[<$user->uid>]">Vote for this person<br />for homecoming court</a></strong>[</if>]
 </td>
 <td valign="top">
 [<$user->fullname>][<if $user->grade != 'staff'>], Grade [<$user->grade>][<else>], on staff[</if>]<br />
