@@ -1411,10 +1411,7 @@ class Eighth implements Module {
 					);
 				}
 			}
-			d("Eighth::sort_$sort", 1);
-			d(print_r($this->template_args['delinquents'], 1), 1);
 			usort($this->template_args['delinquents'], "eighth_delin_sort_$sort");
-			d(print_r($this->template_args['delinquents'], 1), 1);
 			$this->template_args['sorts'] = $legal_sorts;
 			$this->template_args['sort'] = $sort;
 			$this->template_args['lower'] = $lower;
