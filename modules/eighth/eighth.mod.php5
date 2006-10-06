@@ -8,6 +8,11 @@
 * @filesource
 */
 
+/*
+** Load auxilliary functions (mostly comparison functions for sorts)
+*/
+include "eighth.inc.php5";
+
 /**
 * The module that keeps the eighth block office happy.
 * @package modules
@@ -1336,12 +1341,22 @@ class Eighth implements Module {
 	*/
 	public function vp_delinquent() {
 		// TODO: Sorting and exporting for all
-		if($this->op == '') {
-			// TODO: Print a list of delinquents
+		if($this->op == '' || $this->op == 'sort') {
+			// Print a list of delinquents
 			$lower = 1;
 			$upper = 1000;
 			$start = null;
 			$end = null;
+			$sort = 'name';
+			$grades = array();
+			$legal_sorts = array(
+				'name' => 'Alphabetically',
+				'name_desc' => 'Alphabetically, descending',
+				'grade' => 'Grade',
+				'grade_desc' => 'Grade, descending',
+				'absences' => 'Number of absences',
+				'absences_desc' => 'Number of absences, descending'
+			);
 			if(!empty($this->args['lower']) && ctype_digit($this->args['lower'])) {
 				$lower = $this->args['lower'];
 			}
@@ -1354,16 +1369,55 @@ class Eighth implements Module {
 			if(!empty($this->args['end'])) {
 				$end = $this->args['end'];
 			}
+			if(!empty($this->args['sort']) && in_array($this->args['sort'], array_keys($legal_sorts))) {
+				$sort = $this->args['sort'];
+			}
+			if(!isset($this->args['seniors']) && !isset($this->args['juniors']) && !isset($this->args['sophomores']) && !isset($this->args['freshmen'])) {
+				$grades = array(9, 10, 11, 12);
+				$this->template_args['seniors'] = TRUE;
+				$this->template_args['juniors'] = TRUE;
+				$this->template_args['sophomores'] = TRUE;
+				$this->template_args['freshmen'] = TRUE;
+			}
+			else {
+				if (isset($this->args['seniors'])) {
+					$grades[] = 12;
+					$this->template_args['seniors'] = TRUE;
+				}
+				if (isset($this->args['juniors'])) {
+					$grades[] = 11;
+					$this->template_args['juniors'] = TRUE;
+				}
+				if (isset($this->args['sophomores'])) {
+					$grades[] = 10;
+					$this->template_args['sophomores'] = TRUE;
+				}
+				if (isset($this->args['freshmen'])) {
+					$grades[] = 9;
+					$this->template_args['freshmen'] = TRUE;
+				}
+			}
 			$delinquents = EighthSchedule::get_delinquents($lower, $upper, $start, $end);
-			$this->template_args['students'] = array();
-			$this->template_args['absences'] = array();
+			$this->template_args['delinquents'] = array();
 			foreach ($delinquents as $delinquent) {
-				$this->template_args['students'][] = $delinquent['userid'];
-				$this->template_args['absences'][] = $delinquent['absences'];
+				$user = new User($delinquent['userid']);
+				if (in_array($user->grade, $grades)) {
+					$this->template_args['delinquents'][] = array(
+						'absences' => $delinquent['absences'],
+						'name' => $user->name_comma,
+						'uid' => $user->uid,
+						'studentid' => $user->tjhsstStudentId,
+						'grade' => $user->grade
+					);
+				}
 			}
-			if (count($this->template_args['students']) != 0) {
-				$this->template_args['students'] = User::id_to_user($this->template_args['students']);
-			}
+			usort($this->template_args['delinquents'], "eighth_delin_sort_$sort");
+			$this->template_args['sorts'] = $legal_sorts;
+			$this->template_args['sort'] = $sort;
+			$this->template_args['lower'] = $lower;
+			$this->template_args['upper'] = $upper;
+			$this->template_args['start'] = $start;
+			$this->template_args['end'] = $end;
 			$this->template = 'vp_delinquent.tpl';
 			$this->title = 'View Delinquent Students';
 		}
@@ -1371,8 +1425,6 @@ class Eighth implements Module {
 			// TODO: Query the delinquents
 			$this->template = 'vp_delinquent.tpl';
 			$this->title = 'Query Delinquent Students';
-		}
-		else if($this->op == 'sort') {
 		}
 	}
 
