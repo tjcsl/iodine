@@ -114,7 +114,7 @@ class CSS implements Module {
 		//Checks to see if the client's cache is stale
 		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 			$if_modified_since = preg_replace('/;.*$/', '', $_SERVER['HTTP_IF_MODIFIED_SINCE']);
-			if ($if_modified_since == $gmdate) {
+			if ($if_modified_since == $this->gmdate) {
 				Display::stop_display();
 				header('HTTP/1.0 304 Not Modified');
 				exit;
