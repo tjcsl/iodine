@@ -22,7 +22,22 @@ class Pictures implements Module {
 		global $I2_ARGS, $I2_LDAP;
 		Display::stop_display();
 		$user = new User($I2_ARGS[1]);
-		if($photo = $user->preferredPhoto) {
+		$legal_args = array(
+			'freshmanPhoto',
+			'freshmanphoto',
+			'sophomorePhoto', 
+			'sophomorephoto', 
+			'juniorPhoto', 
+			'juniorphoto', 
+			'seniorPhoto', 
+			'seniorphoto' 
+		);
+		$photoname='preferredPhoto';
+		if (isset($I2_ARGS[2]) && in_array($I2_ARGS[2], $legal_args)) {
+			$photoname = $I2_ARGS[2];
+		}
+
+		if($photo = $user->$photoname) {
 			header("Content-type: image/jpeg");
 			echo $photo;
 		} else {

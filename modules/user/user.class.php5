@@ -308,13 +308,24 @@ class User {
 				if ($row['preferredPhoto'] == 'cn=AUTO,dc=tjhsst,dc=edu') {
 					$userdn = LDAP::get_user_dn($this);
 					$cns = $I2_LDAP->search($userdn, 'objectClass=iodinePhoto', array('cn'))->fetch_col('cn');
-					usort($cns, "User::sort_photos");
+					usort($cns, array("User", "sort_photos"));
 					$preferredPhoto = "cn={$cns[0]},$userdn";
 				}
 				else {
 					$preferredPhoto = $row['preferredPhoto'];
 				}
 				$row = $I2_LDAP->search($preferredPhoto)->fetch_binary_value('jpegPhoto');
+				return $row[0];
+			case 'freshmanPhoto':
+			case 'freshmanphoto':
+			case 'sophomorePhoto':
+			case 'sophomorephoto':
+			case 'juniorPhoto':
+			case 'juniorphoto':
+			case 'seniorPhoto':
+			case 'seniorphoto':
+				$userdn = LDAP::get_user_dn($this);
+				$row = $I2_LDAP->search("cn=$name,$userdn")->fetch_binary_value('jpegPhoto');
 				return $row[0];
 			case 'show_map':
 					  return ($this->__get('perm-showmap')!='FALSE')&&($this->__get('perm-showmap-self')!='FALSE');
@@ -938,7 +949,7 @@ class User {
 					'juniorPhoto' => 3,
 					'sophomorePhoto' => 2,
 					'freshmanPhoto' => 1);
-		return ($priority[$photo1] > $priority[$photo2]) ? 1 : -1;
+		return ($priority[$photo1] < $priority[$photo2]) ? 1 : -1;
 	}
 
 }

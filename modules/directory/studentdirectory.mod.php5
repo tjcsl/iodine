@@ -41,7 +41,14 @@ class StudentDirectory implements Module {
 					return array('Error', 'Error: User does not exist');
 				}
 				return array('Directory: '.$this->user->fname.' '.$this->user->lname, $this->user->fname.' '.$this->user->lname);
-
+			case 'pictures':
+				try {
+					$this->user = isset($I2_ARGS[2]) ? new User($I2_ARGS[2]) : $I2_USER;
+				} catch (I2Exception $e) {
+					return array('Error', 'Error: User does not exist');
+				}
+				$this->information = "pictures";
+				return array('Pictures: '.$this->user->fname.' '.$this->user->lname, $this->user->fname.' '.$this->user->lname);
 			case 'search':
 				if( !isSet($_REQUEST['studentdirectory_query']) || $_REQUEST['studentdirectory_query'] == '') {
 					$this->information = 'help';
@@ -103,8 +110,10 @@ class StudentDirectory implements Module {
 		if( $this->information == 'help' ) {
 			$display->disp('studentdirectory_help.tpl');
 		} elseif ($this->information == 'classes') {
-			$display->smarty_assign('classes',$this->classes);
-			$display->disp('classes.tpl');
+			$display->disp('classes.tpl', array('classes' => $this->classes));
+		} elseif ($this->information == 'pictures') {
+			d($this->user->name, 1);
+			$display->disp('pictures.tpl', array('user' => $this->user));
 		} else {
 			if($this->user !== NULL) {
 				try {
