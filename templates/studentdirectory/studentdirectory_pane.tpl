@@ -9,10 +9,14 @@ The specified user does not exist. Either you mistyped a URL, or something in In
 In order to choose what info can be seen by OTHER users, please setup your <a href="[<$I2_ROOT>]prefs">preferences</a>.<br /><br />
 [</if>]
 <table>
-<tr><td valign="top">
+<tr>
+[<if $user->grade != 'staff'>]
+<td valign="top">
 <img src="[<$I2_ROOT>]pictures/[<$user->uid>]" vspace="2" width="172" height="228" /><br />
-[<if $homecoming_may_vote>]<strong><a href="[<$I2_ROOT>]homecoming/vote/[<$user->uid>]">Vote for this person<br />for homecoming court</a></strong>[</if>]
+<a href="[<$I2_ROOT>]studentdirectory/allphotos/[<$user->uid>]">Show all photos</a>
+[<if $homecoming_may_vote>]<br /><br /><strong><a href="[<$I2_ROOT>]homecoming/vote/[<$user->uid>]">Vote for this person<br />for homecoming court</a></strong>[</if>]
 </td>
+[</if>]
 <td valign="top">
 [<$user->fullname>][<if $user->grade != 'staff'>], Grade [<$user->grade>][<else>], on staff[</if>]<br />
 [<if $user->bdate>]Born [<$user->bdate>]<br />[</if>]

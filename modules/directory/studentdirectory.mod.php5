@@ -79,6 +79,12 @@ class StudentDirectory implements Module {
 				$classname = $this->classes[0]['class']->name;
 				$this->information = 'classes';
 				return "Sections of $classname";
+			case 'allphotos':
+				if (isSet($I2_ARGS[2])) {
+					$this->user = new User($I2_ARGS[2]);
+					$this->information = 'photos';
+					return "All photos for {$this->user->fullname}";
+				}
 			default:
 				$this->information = FALSE;
 				return array('Error', 'Error: User does not exist');
@@ -107,6 +113,9 @@ class StudentDirectory implements Module {
 			case 'classes':
 				$display->smarty_assign('classes',$this->classes);
 				$display->disp('classes.tpl');
+				break;
+			case 'photos':
+				$display->disp('photos.tpl',array('user' => $this->user));
 				break;
 			default:
 				if($this->user !== NULL) {
