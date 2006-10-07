@@ -41,7 +41,14 @@ class StudentDirectory implements Module {
 					return array('Error', 'Error: User does not exist');
 				}
 				return array('Directory: '.$this->user->fname.' '.$this->user->lname, $this->user->fname.' '.$this->user->lname);
-
+			case 'pictures':
+				try {
+					$this->user = isset($I2_ARGS[2]) ? new User($I2_ARGS[2]) : $I2_USER;
+				} catch (I2Exception $e) {
+					return array('Error', 'Error: User does not exist');
+				}
+				$this->information = "pictures";
+				return array('Pictures: '.$this->user->fname.' '.$this->user->lname, $this->user->fname.' '.$this->user->lname);
 			case 'search':
 				if( !isSet($_REQUEST['studentdirectory_query']) || $_REQUEST['studentdirectory_query'] == '') {
 					$this->information = 'help';
@@ -79,12 +86,6 @@ class StudentDirectory implements Module {
 				$classname = $this->classes[0]['class']->name;
 				$this->information = 'classes';
 				return "Sections of $classname";
-			case 'allphotos':
-				if (isSet($I2_ARGS[2])) {
-					$this->user = new User($I2_ARGS[2]);
-					$this->information = 'photos';
-					return "All photos for {$this->user->fullname}";
-				}
 			default:
 				$this->information = FALSE;
 				return array('Error', 'Error: User does not exist');
@@ -114,8 +115,9 @@ class StudentDirectory implements Module {
 				$display->smarty_assign('classes',$this->classes);
 				$display->disp('classes.tpl');
 				break;
-			case 'photos':
-				$display->disp('photos.tpl',array('user' => $this->user));
+			case 'pictures':
+				d($this->user->name, 1);
+				$display->disp('pictures.tpl',array('user' => $this->user));
 				break;
 			default:
 				if($this->user !== NULL) {

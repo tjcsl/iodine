@@ -298,7 +298,6 @@ class User {
 					return $couns->sn;
 				}
 				return FALSE;
-			case 'preferredPhoto':
 			case 'preferredphoto':
 			case 'preferred_photo':
 				$row = $I2_LDAP->search_base(LDAP::get_user_dn($this), 'preferredPhoto')->fetch_array();
@@ -308,7 +307,7 @@ class User {
 				if ($row['preferredPhoto'] == 'cn=AUTO,dc=tjhsst,dc=edu') {
 					$userdn = LDAP::get_user_dn($this);
 					$cns = $I2_LDAP->search($userdn, 'objectClass=iodinePhoto', array('cn'))->fetch_col('cn');
-					usort($cns, "User::sort_photos");
+					usort($cns, array("User", "sort_photos"));
 					$preferredPhoto = "cn={$cns[0]},$userdn";
 				}
 				else {
@@ -945,7 +944,7 @@ class User {
 					'juniorPhoto' => 3,
 					'sophomorePhoto' => 2,
 					'freshmanPhoto' => 1);
-		return ($priority[$photo1] > $priority[$photo2]) ? 1 : -1;
+		return ($priority[$photo1] < $priority[$photo2]) ? 1 : -1;
 	}
 
 }

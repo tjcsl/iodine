@@ -13,7 +13,7 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
 [<if $user->grade != 'staff'>]
 <td valign="top">
 <img src="[<$I2_ROOT>]pictures/[<$user->uid>]" vspace="2" width="172" height="228" /><br />
-<a href="[<$I2_ROOT>]studentdirectory/allphotos/[<$user->uid>]">Show all photos</a>
+<a href="[<$I2_ROOT>]studentdirectory/pictures/[<$user->uid>]">View pictures from all years</a>
 [<if $homecoming_may_vote>]<br /><br /><strong><a href="[<$I2_ROOT>]homecoming/vote/[<$user->uid>]">Vote for this person<br />for homecoming court</a></strong>[</if>]
 </td>
 [</if>]
