@@ -316,6 +316,13 @@ class User {
 				}
 				$row = $I2_LDAP->search($preferredPhoto)->fetch_binary_value('jpegPhoto');
 				return $row[0];
+			case 'freshmanphoto':
+			case 'sophomorephoto':
+			case 'juniorphoto':
+			case 'seniorphoto':
+				$userdn = LDAP::get_user_dn($this);
+				$pic = $I2_LDAP->search("cn=$name,$userdn")->fetch_binary_value('jpegPhoto');
+				return $pic[0];
 			case 'show_map':
 					  return ($this->__get('perm-showmap')!='FALSE')&&($this->__get('perm-showmap-self')!='FALSE');
 			case 'showpictureself':
