@@ -24,7 +24,7 @@
 </script>
 [<foreach from=$activities item="activity">]
 	[<assign var=capacity value=$activity->capacity>]
-<div id="desc_[<$activity->aid>]" style="display: none; border: solid thin; padding: 5px; margin: 5px; width: 300px;">
+<div id="desc_[<$activity->aid>]" style="display: none; border: solid thin; padding: 5px; margin: 5px; width: 600px;">
 	<span class="bold">Description:</span><br />
 	[<$activity->description>]<br />
 	[<if $activity->comment>]<br /><b>[<$activity->comment>]</b><br /><br />[</if>]

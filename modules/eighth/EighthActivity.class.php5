@@ -629,7 +629,7 @@ class EighthActivity {
 			 case 'name_full_r':
 					$namelen = strlen($this->data['name']);
 					// Make it so that all names w/comments are 50ish characters or less w/o truncating the name itself
-					if ($namelen >= 60) {
+					if ($namelen >= 70) {
 							  return $this->data['name'];
 					}
 					if (isSet($this->data['comment'])) {
@@ -639,7 +639,7 @@ class EighthActivity {
 						$commentlen = 0;
 						$comment = '';
 					}
-					return $this->data['name'] . ($commentlen ? ' - ' . substr($comment,0,60-$namelen).(60-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
+					return $this->data['name'] . ($commentlen ? ' - ' . substr($comment,0,70-$namelen).(70-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
 				case 'name_friendly':
 					$comment = $this->__get('comment_short');
 					if (!$comment) {
