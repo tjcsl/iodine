@@ -1715,6 +1715,8 @@ class Eighth implements Module {
 				$this->template_args['uid'] = $this->args['uid'];
 				$this->template_args['bids'] = $this->args['bids'];
 				$this->template_args['aid'] = $this->args['aid'];
+				//Allows us to return to last date view after changing activities!
+				$this->template_args['start_date'] = isset($this->args['start_date']) ? $this->args['start_date'] : NULL;
 			}
 		}
 		else if($this->op == 'roster') {

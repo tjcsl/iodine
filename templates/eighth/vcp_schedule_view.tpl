@@ -38,7 +38,7 @@
 	<a href="[<$I2_ROOT>]eighth/view/comments/uid/[<$user->uid>]">Edit Comments</a><br />
 	<br /><br />
 [</if>]
-	<form name="activities" action="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>]" method="post">
+	<form name="activities" action="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>][<if $start_date != NULL>]/start_date/[<$start_date|date_format:"%Y-%m-%d">][</if>]" method="post">
 	<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; border: 0px; width: 100%;">
 	<tr>
 	<td style="text-align: left;"><input type="button" value="&lt; Back Two Weeks" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]'" /></td>

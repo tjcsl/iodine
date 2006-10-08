@@ -18,5 +18,5 @@ You were unsuccessful in registering for the following activities:<br /><br />
 <br />Reason: <b>[<$forcereason>]</b>
 </ul>
 [<if $eighth_admin>]
-<br/><a href="[<$I2_ROOT>]eighth/vcp_schedule/change/aid/[<$aid>]/uid/[<$uid>]/bids/[<$bids>]/force/1">FORCE</a>
+<br/><a href="[<$I2_ROOT>]eighth/vcp_schedule/change/aid/[<$aid>]/uid/[<$uid>][<if $start_date != NULL>]/start_date/[<$start_date>][</if>]/bids/[<$bids>]/force/1">FORCE</a>
 [</if>]
