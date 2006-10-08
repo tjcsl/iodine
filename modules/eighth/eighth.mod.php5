@@ -1661,6 +1661,8 @@ class Eighth implements Module {
 				}
 			}
 			$this->title = 'Choose an Activity'.$blockdate;
+			//Allows us to return to last date view after changing activities!
+			$this->template_args['start_date'] = isset($this->args['start_date']) ? $this->args['start_date'] : NULL;
 		}
 		else if($this->op == 'change') {
 			if (isset($this->args['bids']) && isset($this->args['aid'])) {
@@ -1705,7 +1707,8 @@ class Eighth implements Module {
 					}
 				}
 				if(count($status) == 0) {
-					redirect("eighth/vcp_schedule/view/uid/{$this->args['uid']}");
+					$append = $this->args['start_date'] != NULL ? "/start_date/{$this->args['start_date']}" : NULL;
+					redirect("eighth/vcp_schedule/view/uid/{$this->args['uid']}$append");
 				}
 				$this->template = 'vcp_schedule_change.tpl';
 				$this->template_args['status'] = $status;

@@ -61,7 +61,7 @@
 [<foreach from=$activities item="activity">]
 		<tr class="[<if $activity->cancelled>]activity_cancelled[<else>][<cycle values="c1,c2">][</if>]">
 			<td style="text-align: center;">[<if !$activity->block->locked || $eighth_admin>]<input type="checkbox" name="bids[]" value="[<$activity->bid>]" onclick="CCA(this);" />[<else>]&nbsp;[</if>]</td>
-			<td style="text-align: center;">[<if !$activity->block->locked || $eighth_admin>]<a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>]/bids/[<$activity->bid>]">Change</a>[<else>]LOCKED[</if>]</td>
+			<td style="text-align: center;">[<if !$activity->block->locked || $eighth_admin>]<a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>]/bids/[<$activity->bid>][<if $start_date != NULL>]/start_date/[<$start_date|date_format:"%Y-%m-%d">][</if>]">Change</a>[<else>]LOCKED[</if>]</td>
 			<td style="text-align: center;">[<$activity->block->date|date_format:"%a">]</td>
 			<td style="text-align: center;">[<$activity->block->date|date_format>]</td>
 			<td style="text-align: center;">[<$activity->block->block>]</td>
