@@ -68,7 +68,12 @@ class Prefs implements Module {
 
 		$this->prefs = $I2_USER->info();
 
-		$this->photonames = $I2_USER->photoNames;
+		$photonames = $I2_USER->photoNames;
+		$this->photonames = array();
+		foreach ($photonames as $photo) {
+			$text = ucfirst(strtolower(substr($photo, 0, -5)));
+			$this->photonames[$photo] = $text;
+		}
 
 		$this->prefs['showaddressself'] = $I2_USER->showaddressself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showscheduleself'] = $I2_USER->showscheduleself=='TRUE'?TRUE:FALSE;

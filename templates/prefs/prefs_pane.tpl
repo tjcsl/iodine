@@ -159,8 +159,8 @@
 
 <br />
 <b>Preferred Picture</b><br />
-[<foreach from=$photonames item=photoname>]
-<input type="radio" name="pref_preferredPhoto" value="[<$photoname>]" [<if $prefs.preferredPhoto == $photoname>]checked="checked"[</if>]/>[<$photoname>]<br />
+[<foreach from=$photonames key=photo item=text>]
+<input type="radio" name="pref_preferredPhoto" value="[<$photo>]" [<if $prefs.preferredPhoto == $photo>]checked="checked"[</if>]/>[<$text>] photo<br />
 [</foreach>]
 <input type="radio" name="pref_preferredPhoto" value="AUTO" [<if $prefs.preferredPhoto == "AUTO">]checked="checked"[</if>]/>Auto-select the most recent<br /><br />
 
