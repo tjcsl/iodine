@@ -298,22 +298,29 @@ class User {
 					return $couns->sn;
 				}
 				return FALSE;
-			case 'preferredphoto':
-			case 'preferred_photo':
+			case 'photonames':
+			case 'photoNames':
+				$cns = $I2_LDAP->search(LDAP::get_user_dn($this), 'objectClass=iodinePhoto', array('cn'))->fetch_col('cn');
+				@usort($cns, array("User", "sort_photos"));
+				return $cns;
+			case 'preferredphotoname':
+			case 'preferredPhotoName':
 				$row = $I2_LDAP->search_base(LDAP::get_user_dn($this), 'preferredPhoto')->fetch_array();
 				if (!$row) {
 					return NULL;
 				}
-				if ($row['preferredPhoto'] == 'cn=AUTO,dc=tjhsst,dc=edu' || $row['preferredPhoto'] == 'AUTO') {
-					$userdn = LDAP::get_user_dn($this);
-					$cns = $I2_LDAP->search($userdn, 'objectClass=iodinePhoto', array('cn'))->fetch_col('cn');
-					usort($cns, array("User", "sort_photos"));
-					$preferredPhoto = "$cns[0]";
+				if ($row['preferredPhoto'] == 'AUTO') {
+					$photos = $this->__get('photoNames');
+					$preferredPhoto = array_pop($photos);
 				}
 				else {
 					$preferredPhoto = $row['preferredPhoto'];
 				}
-				return $this->__get($preferredPhoto);
+				return $preferredPhoto;
+			case 'preferredphoto':
+			case 'preferredPhoto':
+			case 'preferred_photo':
+				return $this->__get($this->__get('preferredPhotoName'));
 			case 'freshmanPhoto':
 			case 'freshmanphoto':
 			case 'sophomorePhoto':
@@ -497,6 +504,23 @@ class User {
 				while ($row = $res->fetch_array()) {
 					$ldap->modify_val(LDAP::get_pic_dn($row['cn'],$this),$name,$val);
 				}
+				break;
+			case 'preferredPhoto':
+				$legal_photos = array(
+					'freshmanPhoto',
+					'freshmanphoto',
+					'sophomorePhoto',
+					'sophomorephoto',
+					'juniorPhoto',
+					'juniorphoto',
+					'seniorPhoto',
+					'seniorphoto',
+					'AUTO'
+				);
+				if (!in_array($value, $legal_photos)) {
+					throw new I2Exception("Illegal photo name: $value");
+				}
+				break;
 		}
 		
 		$ldap->modify_val(LDAP::get_user_dn($this),$name,$val);
@@ -947,7 +971,7 @@ class User {
 					'juniorPhoto' => 3,
 					'sophomorePhoto' => 2,
 					'freshmanPhoto' => 1);
-		return ($priority[$photo1] < $priority[$photo2]) ? 1 : -1;
+		return ($priority[$photo1] < $priority[$photo2]) ? -1 : 1;
 	}
 
 }

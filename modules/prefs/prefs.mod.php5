@@ -68,6 +68,8 @@ class Prefs implements Module {
 
 		$this->prefs = $I2_USER->info();
 
+		$this->photonames = $I2_USER->photoNames;
+
 		$this->prefs['showaddressself'] = $I2_USER->showaddressself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showscheduleself'] = $I2_USER->showscheduleself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showpictureself'] = $I2_USER->showpictureself=='TRUE'?TRUE:FALSE;
@@ -89,7 +91,8 @@ class Prefs implements Module {
 							'user_intraboxen' => $this->user_intraboxen,
 							'nonuser_intraboxen' => $this->nonuser_intraboxen,
 							'curtheme' => $this->prefs['style'],
-							'themes' => $this->themes
+							'themes' => $this->themes,
+							'photonames' => $this->photonames
 		));
 	}
 	
