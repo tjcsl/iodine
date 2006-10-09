@@ -304,20 +304,23 @@ class User {
 				if (!$row) {
 					return NULL;
 				}
-				if ($row['preferredPhoto'] == 'cn=AUTO,dc=tjhsst,dc=edu') {
+				if ($row['preferredPhoto'] == 'cn=AUTO,dc=tjhsst,dc=edu' || $row['preferredPhoto'] == 'AUTO') {
 					$userdn = LDAP::get_user_dn($this);
 					$cns = $I2_LDAP->search($userdn, 'objectClass=iodinePhoto', array('cn'))->fetch_col('cn');
 					usort($cns, array("User", "sort_photos"));
-					$preferredPhoto = "cn={$cns[0]},$userdn";
+					$preferredPhoto = "$cns[0]";
 				}
 				else {
 					$preferredPhoto = $row['preferredPhoto'];
 				}
-				$row = $I2_LDAP->search($preferredPhoto)->fetch_binary_value('jpegPhoto');
-				return $row[0];
+				return $this->__get($preferredPhoto);
+			case 'freshmanPhoto':
 			case 'freshmanphoto':
+			case 'sophomorePhoto':
 			case 'sophomorephoto':
+			case 'juniorPhoto':
 			case 'juniorphoto':
+			case 'seniorPhoto':
 			case 'seniorphoto':
 				$userdn = LDAP::get_user_dn($this);
 				$pic = $I2_LDAP->search("cn=$name,$userdn")->fetch_binary_value('jpegPhoto');
