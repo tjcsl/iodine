@@ -505,6 +505,21 @@ class User {
 					$ldap->modify_val(LDAP::get_pic_dn($row['cn'],$this),$name,$val);
 				}
 				break;
+			case 'webpage':
+				//TODO: less hacky... someone might theoretically want to use ftp or something
+				if (is_array($val)) {
+					foreach ($val as $key=>$thisval) {
+						if (substr($thisval, 0, 4) != 'http') {
+							$val[$key] = 'http://'.$thisval;
+						}
+					}
+				}
+				else {
+					if (substr($val, 0, 4) != 'http') {
+						$val = 'http://'.$val;
+					}
+				}
+				break;
 			case 'preferredPhoto':
 				$legal_photos = array(
 					'freshmanPhoto',
