@@ -1,5 +1,7 @@
 [<if $message>]<strong>[<$message>]</strong><br /><br />[</if>]
-Enter your calculator information, one at a time.<br />
+Welcome to Calculator Registration!  By registering your calculator, a teacher or administrator will be able to identify your calculator should you ever lose it.<br /><br />
+Please make every effort to accurately provide both pieces of information requested.  It is easier to certify that you are the owner of a particular calculator this way.<br />
+The instructions provided here are known to work with the TI-83 and TI-84 calculators.  Please enter your calculator information.  If you have more than one calculator, only enter information for one calculator at a time.<br />
 <form method="post" action="[<$I2_ROOT>]calc" class="boxform">
 <input type="hidden" name="calc_form" value="add" />
 <table border="0"><tr><td>

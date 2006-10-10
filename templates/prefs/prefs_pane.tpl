@@ -1,14 +1,7 @@
 <script src="[<$I2_ROOT>]www/js/prefs.js" type="text/javascript" language="javascript"></script>
 <form method="post" action="[<$I2_ROOT>]prefs" class="boxform">
 <input type="hidden" name="prefs_form" value="" />
-<table>
-<tr>
- <td>Style:</td>
- <td><select name="pref_style">
-	[<foreach from=$themes item=theme>]
-		<option value="[<$theme>]" [<if $curtheme==$theme>]selected="selected"[</if>]>[<$theme>]</option>
-	[</foreach>]
-</select></td></tr></table><br />
+<strong>Personal Information</strong>
 <table>
 	<tr>
 		<td>Cell Phone:</td>
@@ -125,16 +118,43 @@
 		</td>
 	</tr>
 	<tr>
+		<td>Locker:</td>
+		<td><input type="text" name="pref_locker" value="[<$I2_USER->locker|escape:'html'>]"/></td>
+	</tr>
+</table>
+<br />
+<strong><a href="[<$I2_ROOT>]calc">Calculator Registration</a></strong>
+<br /><br />
+<strong>Preferred Picture</strong><br />
+<input type="radio" name="pref_preferredPhoto" value="AUTO" [<if $prefs.preferredPhoto == "AUTO">]checked="checked"[</if>]/>Auto-select the most recent photo<br />
+[<foreach from=$photonames key=photo item=text>]
+<input type="radio" name="pref_preferredPhoto" value="[<$photo>]" [<if $prefs.preferredPhoto == $photo>]checked="checked"[</if>]/>[<$text>] photo<br />
+[</foreach>]
+<br />
+<strong>Privacy Options</strong><br />
+<input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/> Show Address<br />
+<input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/> Show Birthday<br />
+[<*<input type="checkbox" name="showmapself" [<if $prefs.showmapself>]checked="checked"[</if>]/> Show Map Links<br />*>]
+<input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/> Show Pictures<br />
+<input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/> Show Home Telephone Number<br />
+<input type="checkbox" name="showscheduleself" [<if $prefs.showscheduleself>]checked="checked"[</if>]/> Show Schedule<br />
+<br />
+<strong>Display Options</strong><br />
+<table>
+<tr>
+ <td>Style:</td>
+ <td><select name="pref_style">
+	[<foreach from=$themes item=theme>]
+		<option value="[<$theme>]" [<if $curtheme==$theme>]selected="selected"[</if>]>[<$theme>]</option>
+	[</foreach>]
+</select></td></tr>
+	<tr>
 		<td>Intrabox titlebar color (hex RRBBGG):</td>
 		<td><input type="text" name="pref_boxcolor" value="[<$I2_USER->boxcolor|escape:'html'>]"/> <a target="_blank" href="[<$I2_ROOT>]info/prefs/color">Color chooser</a></td>
 	</tr>
 	<tr>
 		<td>Intrabox title text color (hex RRBBGG):</td>
 		<td><input type="text" name="pref_boxtitlecolor" value="[<$I2_USER->boxtitlecolor|escape:'html'>]"/></td>
-	</tr>
-	<tr>
-		<td>Locker:</td>
-		<td><input type="text" name="pref_locker" value="[<$I2_USER->locker|escape:'html'>]"/></td>
 	</tr>
 	<tr>
 		<td>Mail messages to display in mail box:</td>
@@ -156,28 +176,11 @@
 		</td>
 	</tr>
 </table>
-
-<br />
-<b>Preferred Picture</b><br />
-<input type="radio" name="pref_preferredPhoto" value="AUTO" [<if $prefs.preferredPhoto == "AUTO">]checked="checked"[</if>]/>Auto-select the most recent photo<br />
-[<foreach from=$photonames key=photo item=text>]
-<input type="radio" name="pref_preferredPhoto" value="[<$photo>]" [<if $prefs.preferredPhoto == $photo>]checked="checked"[</if>]/>[<$text>] photo<br />
-[</foreach>]
-<br />
-<b>Privacy Options</b><br />
-<input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/> Show Address<br />
-<input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/> Show Birthday<br />
-[<*<input type="checkbox" name="showmapself" [<if $prefs.showmapself>]checked="checked"[</if>]/> Show Map Links<br />*>]
-<input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/> Show Pictures<br />
-<input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/> Show Home Telephone Number<br />
-<input type="checkbox" name="showscheduleself" [<if $prefs.showscheduleself>]checked="checked"[</if>]/> Show Schedule<br />
-<br /><input type="submit" value="Set Preferences" name="submit" /><br />
-<br /><br />
 Add/Remove intraboxes:<br />
 <table>
  <tr>
   <td>
-   <select name="delete_boxid[]" size="5" multiple="multiple">
+   <select name="delete_boxid[]" size="5" multiple="multiple" style="width: 200px;">
     [<foreach from=$user_intraboxen item=box>]
      <option value="[<$box.boxid>]">[<$box.display_name>]</option>
     [</foreach>]
@@ -194,7 +197,7 @@ Add/Remove intraboxes:<br />
    </table>
   </td>
   <td>
-   <select name="add_boxid[]" size="5" multiple="multiple">
+   <select name="add_boxid[]" size="5" multiple="multiple" style="width: 200px;">
     [<foreach from=$nonuser_intraboxen item=abox>]
      <option value="[<$abox.boxid>]">[<$abox.display_name>]</option>
     [</foreach>]
@@ -202,5 +205,6 @@ Add/Remove intraboxes:<br />
   </td>
  </tr>
 </table>
+<br /><input type="submit" value="Set Preferences" name="submit" /><br /><br />
 
 </form>
