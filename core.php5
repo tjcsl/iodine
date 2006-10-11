@@ -165,6 +165,12 @@ try {
 	 */
 	$I2_USER = new User();
 	/**
+	 * Checks whether our user is an LDAP admin or not, based on the groups system.
+	 */
+	if($I2_USER->is_group_member('admin_ldap')) {
+		$I2_LDAP = LDAP::get_admin_bind();
+	}
+	/**
 	 * The global display mechanism.
 	 *
 	 * Use this {@link Display} object for nothing, unless you're core.php.
