@@ -201,7 +201,7 @@ class NewsItem {
 		$newsadm = new Group('admin_news');
 		if(!$newsadm->has_member()) {
 			foreach($groups as $group) {
-				if(!$group->has_permission($I2_USER,News::PERM_POST)) {
+				if(!$group->has_permission($I2_USER,new Permission(News::PERM_POST))) {
 					throw new I2Exception("You do not have permission to post to the group {$group->name}");
 				}
 			}
@@ -234,12 +234,19 @@ class NewsItem {
 	 * @param integer $nid The id number of the post to delete.
 	 */
 	public static function delete_item($nid) {
-		global $I2_SQL;
+		global $I2_SQL,$I2_USER;
 		
 		$newsadm = new Group('admin_news');
 		if(!$newsadm->has_member()) {
-			foreach($groups as $group) {
-				if(!$group->has_permission($I2_USER,News::PERM_POST)) {
+			//You can't delete a news item unless you can manage news for ALL the groups it is posted to.
+			$groups = array();
+			foreach($I2_SQL->query('SELECT gid FROM news_group_map WHERE nid=%d', $nid)->fetch_all_arrays() as $group)
+			{
+				$groups[] = new Group($group[0]);
+			}
+			foreach($groups as $group)
+			{
+				if(!$group->has_permission($I2_USER,new Permission(News::PERM_POST))) {
 					throw new I2Exception("You do not have permission to delete news for the group {$group->name}");
 				}
 			}
@@ -287,14 +294,14 @@ class NewsItem {
 	 * @param string $groupnames The new comma-seperated list of groups.
 	 */
 	public function edit($title, $text, $groups) {
-		global $I2_SQL;
+		global $I2_SQL,$I2_USER;
 
 		$text = self::clean_text($text);
 
 		$newsadm = new Group('admin_news');
 		if(!$newsadm->has_member()) {
 			foreach($groups as $group) {
-				if(!$group->has_permission($I2_USER,News::PERM_POST)) {
+				if(!$group->has_permission($I2_USER,new Permission(News::PERM_POST))) {
 					throw new I2Exception("You do not have permission to edit news for the group {$group->name}");
 				}
 			}

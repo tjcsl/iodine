@@ -150,9 +150,6 @@ class News implements Module {
 				if( !isset($I2_ARGS[2]) ) {
 					throw new I2Exception('ID of article to delete not specified.');
 				}
-				if (!$this->newsadmin) {
-					throw new I2Exception('You do not have permission to delete this article!');
-				}
 				
 				try {
 					$item = new Newsitem($I2_ARGS[2]);
