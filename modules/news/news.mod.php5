@@ -116,8 +116,13 @@ class News implements Module {
 				if( !isset($I2_ARGS[2]) ) {
 					throw new I2Exception('ID of article to edit not specified.');
 				}
-				
-				$item = new Newsitem($I2_ARGS[2]);
+
+				try {
+					$item = new Newsitem($I2_ARGS[2]);
+				} catch(I2Exception $e) {
+					throw new I2Exception("Specified article ID {$I2_ARGS[2]} is invalid.");
+				}
+
 				if( !$item->editable() ) {
 					throw new I2Exception('You do not have permission to edit this article.');
 				}
@@ -155,6 +160,10 @@ class News implements Module {
 					$item = new Newsitem($I2_ARGS[2]);
 				} catch(I2Exception $e) {
 					throw new I2Exception("Specified article ID {$I2_ARGS[2]} is invalid.");
+				}
+
+				if( !$item->editable() ) {
+					throw new I2Exception('You do not have permission to delete this article.');
 				}
 
 				if( isset($_REQUEST['delete_confirm']) ) {
