@@ -8,6 +8,9 @@ The specified user does not exist. Either you mistyped a URL, or something in In
 <strong>This is YOUR info page.  All of your information will ALWAYS be visible to you.</strong><br />
 In order to choose what info can be seen by OTHER users, please setup your <a href="[<$I2_ROOT>]prefs">preferences</a>.<br /><br />
 [</if>]
+[<if $is_admin>]
+<strong>This student is an Intranet Administrator, please contact him/her with any problems you encounter.</strong><br /><br />
+[</if>]
 <table>
 <tr>
 [<if $user->grade != 'staff'>]
