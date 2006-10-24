@@ -1707,7 +1707,7 @@ class Eighth implements Module {
 					}
 				}
 				if(count($status) == 0) {
-					$append = $this->args['start_date'] != NULL ? "/start_date/{$this->args['start_date']}" : NULL;
+					$append = isset($this->args['start_date']) ? "/start_date/{$this->args['start_date']}" : NULL;
 					redirect("eighth/vcp_schedule/view/uid/{$this->args['uid']}$append");
 				}
 				$this->template = 'vcp_schedule_change.tpl';
