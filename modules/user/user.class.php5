@@ -330,7 +330,7 @@ class User {
 			case 'seniorPhoto':
 			case 'seniorphoto':
 				$userdn = LDAP::get_user_dn($this);
-				$pic = $I2_LDAP->search("cn=$name,$userdn")->fetch_binary_value('jpegPhoto');
+				@$pic = $I2_LDAP->search("cn=$name,$userdn")->fetch_binary_value('jpegPhoto');
 				return $pic[0];
 			case 'show_map':
 					  return ($this->__get('perm-showmap')!='FALSE')&&($this->__get('perm-showmap-self')!='FALSE');
