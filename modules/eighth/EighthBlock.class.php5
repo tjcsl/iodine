@@ -66,7 +66,7 @@ class EighthBlock {
 			//add all students to default activity
 			$uids = flatten_values($I2_LDAP->search('ou=people', '(objectClass=tjhsstStudent)', 'iodineUidNumber')->fetch_all_arrays(Result::NUM));
 			$activity = new EighthActivity($default_aid, $bid);
-			$activity->add_members($uids);
+			$activity->add_members($uids, TRUE);
 		}
 
 		Eighth::end_undo_transaction();
