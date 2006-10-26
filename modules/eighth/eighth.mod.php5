@@ -1566,6 +1566,10 @@ class Eighth implements Module {
 	/**
 	* Repair broken schedules
 	*
+	* If someone is not signed up for any activities during a given block, he will not be able to even see
+	* that block in order to sign up for anything. This signs everyone who is not already signed up for anything
+	* into the default activity, so that they can see and change their activity.
+	*
 	* @access private
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
@@ -1580,8 +1584,15 @@ class Eighth implements Module {
 				$activity = new EighthActivity(i2config_get('default_aid',999,'eighth'));
 				EighthSchedule::schedule_activity($bid, $activity->aid, $activity->sponsors, $activity->rooms);
 				#$uids = flatten($I2_SQL->query('SELECT uid FROM user WHERE uid NOT IN (SELECT userid FROM eighth_activity_map WHERE bid=%d)', $bid)->fetch_all_arrays(Result::NUM));
-				$uids = $I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', 'objectClass=tjhsstStudent', 'iodineUidNumber')->fetch_col('iodineUidNumber');
-				$activity->add_members($uids, false, $bid);
+				$alluids = $I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', 'objectClass=tjhsstStudent', 'iodineUidNumber')->fetch_col('iodineUidNumber');
+				$uidstofix = array();
+				foreach ($uids as $uid) {
+					$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d', $bid);
+					if ($res->num_rows > 0) {
+						$uidstofix[] = $uid;
+					}
+				}
+				$activity->add_members($uidstofix, true, $bid);
 			}
 			redirect('eighth');
 		}
