@@ -1576,17 +1576,18 @@ class Eighth implements Module {
 	* @todo Figure out what voodoo this does
 	*/
 	public function rep_schedules() {
-		global $I2_SQL;
+		global $I2_SQL, $I2_LDAP;
 		#throw new I2Exception('Don\'t hit that button!');
 		if ($this->op == '') {
-			$bids = flatten($I2_SQL->query('SELECT bid FROM eighth_blocks')->fetch_all_arrays(MYSQL_NUM));
+			$date = date('Y-m-d');
+			$bids = flatten($I2_SQL->query('SELECT bid FROM eighth_blocks WHERE date >= %s', $date)->fetch_all_arrays(MYSQL_NUM));
 			foreach($bids as $bid) {
 				$activity = new EighthActivity(i2config_get('default_aid',999,'eighth'));
 				EighthSchedule::schedule_activity($bid, $activity->aid, $activity->sponsors, $activity->rooms);
 				#$uids = flatten($I2_SQL->query('SELECT uid FROM user WHERE uid NOT IN (SELECT userid FROM eighth_activity_map WHERE bid=%d)', $bid)->fetch_all_arrays(Result::NUM));
 				$alluids = $I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', 'objectClass=tjhsstStudent', 'iodineUidNumber')->fetch_col('iodineUidNumber');
 				$uidstofix = array();
-				foreach ($uids as $uid) {
+				foreach ($alluids as $uid) {
 					$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d', $bid);
 					if ($res->num_rows > 0) {
 						$uidstofix[] = $uid;
