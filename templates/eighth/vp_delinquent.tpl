@@ -1,5 +1,8 @@
 [<include file="eighth/header.tpl">]
 <div style="font-weight: bold; font-size: 24pt;">Absences [<if isSet($dstart)>]from $dstart to $dend[</if>]</div>
+<br />
+<a href="[<$I2_ROOT>]eighth/vp_delinquent/csv">Click here to export a CSV of absentee information.</a>
+<br />
 <form method="post" action="[<$I2_ROOT>]eighth/vp_delinquent/sort/" class="boxform">
 <table>
  <tr><td>Minimum number of absences:</td><td><input type="text" name="lower" value="[<$lower>]" /></td><td><input type="checkbox" name="seniors" [<if isset($seniors)>]CHECKED[</if>] /> Seniors</td></tr>
@@ -12,9 +15,10 @@
  <option value="[<$sortname>]" [<if $sortname eq $sort>]SELECTED[</if>] />[<$sortdesc>]
 [</foreach>]
 </select>
-<input type="submit" value="Refresh" />
+<input type="submit" value="Load" />
 </form>
 
+[<if isset($show)>]
 <table>
 	<tr>
 		<th>Student</th>
@@ -31,3 +35,6 @@
 	</tr>
 [</foreach>]
 </table>
+[<else>]
+Select your options and click "Load" to view absentee information here.
+[</if>]

@@ -1336,7 +1336,7 @@ class Eighth implements Module {
 	*/
 	public function vp_delinquent() {
 		// TODO: Sorting and exporting for all
-		if($this->op == '' || $this->op == 'sort') {
+		if($this->op == '' || $this->op == 'sort' && $this->template_args['show'] = TRUE) {
 			// Print a list of delinquents
 			$lower = 1;
 			$upper = 1000;
@@ -1421,6 +1421,23 @@ class Eighth implements Module {
 			// TODO: Query the delinquents
 			$this->template = 'vp_delinquent.tpl';
 			$this->title = 'Query Delinquent Students';
+		}
+		else if($this->op == 'csv') {
+			Display::stop_display();
+			$delinquents = EighthSchedule::get_delinquents();
+			header('Content-type: text/csv');
+			$datestr = date('Y-m-d-His');
+			header("Content-Disposition: attachment; filename=\"EighthAbsentee-$datestr.csv\"");
+			print "Abs,Last,First,Student ID,Gr,Counselor,Phone,Address,City,State,ZIP\r\n";
+			$attrib = array('lname','fname','tjhsstStudentId','grade','counselor_name','phone_home','street','l','st','postalCode');
+			foreach ($delinquents as $delinquent) {
+				$user = new User($delinquent['userid']);
+				print "{$delinquent['absences']}";
+				foreach($attrib as $i) {
+					print ",{$user->$i}";
+				}
+				print "\r\n";
+			}
 		}
 	}
 
