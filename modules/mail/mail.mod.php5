@@ -121,6 +121,7 @@ class Mail implements Module {
 				d('Using IMAP header cache', 7);
 				$this->nmsgs = $cache[0];
 				$this->box_messages = $cache[1];
+				$this->nunseen = $cache[2];
 				
 			} elseif(($this->box_messages = self::download_msgs(0, $max_msgs)) === FALSE) {
 				// Downloading messages failed
@@ -128,14 +129,13 @@ class Mail implements Module {
 				return 'Mail -- Error';
 			} else {
 				// Downloading messages worked, store them in cache
-				self::store_cache($this->nmsgs, $this->box_messages);
+				self::store_cache($this->nmsgs, $this->box_messages, $this->nunseen);
 			}
 		}
 
 		$this->box_args['messages'] = &$this->box_messages;
-		$this->box_args['nmsgs'] = $this->nmsgs;
 		$this->box_args['readmail_url'] = $GLOBALS['I2_ROOT'] . i2config_get('webmail_module', 'squirrelmail', 'mail');
-		return "Mail: {$this->nmsgs} message". ($this->nmsgs != 1 ? 's' : '') . ' in your inbox';
+		return "Mail: {$this->nmsgs} message". ($this->nmsgs != 1 ? 's' : '') . ", {$this->nunseen} unread";
 	}
 
 	function display_box($display) {
@@ -162,6 +162,8 @@ class Mail implements Module {
 		}
 
 		$this->nmsgs = imap_num_msg($this->connection);
+		$lotsofinfo = imap_mailboxmsginfo($this->connection);
+		$this->nunseen = $lotsofinfo->Unread;
 
 		if($offset >= $this->nmsgs) {
 			$offset = 0;
@@ -247,7 +249,7 @@ class Mail implements Module {
 		//	)
 		// )
 		if( !(	is_array($ret) &&
-				count($ret) == 3 &&
+				count($ret) == 4 &&
 				is_int($ret[0]) &&
 				is_array($ret[1]) &&
 				(count($ret[1]) == 0 || is_object($ret[1][0])) )) {
@@ -256,7 +258,7 @@ class Mail implements Module {
 			return FALSE;
 		}
 
-		if ($ret[2] != $I2_USER->uid) {
+		if ($ret[3] != $I2_USER->uid) {
 			d('Cache is for another user',5);
 			unlink($this->cache_file);
 			return FALSE;
@@ -265,9 +267,9 @@ class Mail implements Module {
 		return $ret;
 	}
 
-	private function store_cache($nmsgs, $messages) {
+	private function store_cache($nmsgs, $messages, $nunseen) {
 		global $I2_USER;
-		$data = serialize(array($nmsgs,$messages,$I2_USER->uid));
+		$data = serialize(array($nmsgs,$messages,$nunseen,$I2_USER->uid));
 		
 		$fh = fopen($this->cache_file, 'w');
 		fwrite($fh, $data);
