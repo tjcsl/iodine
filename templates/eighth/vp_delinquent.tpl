@@ -16,7 +16,7 @@
 <input type="submit" value="Load Page" />
 </form>
 
-<hr>
+<hr />
 
 [<if isset($show)>]
 
@@ -49,5 +49,5 @@
 [</foreach>]
 </table>
 [<else>]
-Select your options and click "Load" to view absentee information here.
+Select your options and click "Load Page" to view absentee information here.
 [</if>]
