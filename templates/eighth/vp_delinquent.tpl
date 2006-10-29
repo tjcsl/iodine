@@ -29,6 +29,7 @@
 [<if isset($juniors)>]<input type="hidden" name="juniors" value="TRUE" />[</if>]
 [<if isset($sophomores)>]<input type="hidden" name="sophomores" value="TRUE" />[</if>]
 [<if isset($freshmen)>]<input type="hidden" name="freshmen" value="TRUE" />[</if>]
+<input type="hidden" name="sort" value="[<$sortname>]" />
 <input type="submit" value="Download CSV file of students as sorted below" />
 </form>
 

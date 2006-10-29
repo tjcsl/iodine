@@ -1401,19 +1401,7 @@ class Eighth implements Module {
 				foreach ($alldelinquents as $delinquent) {
 					$user = new User($delinquent['userid']);
 					if (in_array($user->grade, $grades)) {
-						$wanteddelinquents[] = array('user' => $user, 'absences' => $delinquent['absences']);
-					}
-				}
-				// This has issues... apparently, PHP doesn't actually think the methods are static...
-				@usort($this->template_args['delinquents'], array("Eighth", "delin_sort_$sort"));
-
-				// move the data to the format of choice
-				if ($this->op == 'sort') {
-					$this->template_args['show'] = TRUE;
-					$this->template_args['delinquents'] = array();
-					foreach ($wanteddelinquents as $delinquent) {
-						$user = $delinquent['user'];
-						$this->template_args['delinquents'][] = array(
+						$wanteddelinquents[] = array(
 							'absences' => $delinquent['absences'],
 							'name' => $user->name_comma,
 							'uid' => $user->uid,
@@ -1421,6 +1409,15 @@ class Eighth implements Module {
 							'grade' => $user->grade
 						);
 					}
+				}
+				// This has issues... apparently, PHP doesn't actually think the methods are static...
+				@usort($wanteddelinquents, array("Eighth", "delin_sort_$sort"));
+
+				// move the data to the format of choice
+				if ($this->op == 'sort') {
+					$this->template_args['show'] = TRUE;
+					$this->template_args['delinquents'] = array();
+					$this->template_args['delinquents'] = $wanteddelinquents;
 				}
 				elseif ($this->op == 'csv') {
 					Display::stop_display();
@@ -1431,7 +1428,7 @@ class Eighth implements Module {
 					print "Abs,Last,First,Student ID,Gr,Counselor,Phone,Address,City,State,ZIP\r\n";
 					$attrib = array('lname','fname','tjhsstStudentId','grade','counselor_name','phone_home','street','l','st','postalCode');
 					foreach ($wanteddelinquents as $delinquent) {
-						$user = $delinquent['user'];
+						$user = new User($delinquent['uid']);
 						print "{$delinquent['absences']}";
 						foreach($attrib as $i) {
 							print ",{$user->$i}";
