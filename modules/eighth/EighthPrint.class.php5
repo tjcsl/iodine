@@ -245,6 +245,7 @@ class EighthPrint {
 			header('Content-type: application/rtf');
 		}
 		header("Content-Disposition: {$disposition}; filename=\"{$filename}.{$format}\"");
+		header("Pragma: ");
 		readfile("{$temp}.{$format}");
 	}
 

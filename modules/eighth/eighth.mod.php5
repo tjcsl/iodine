@@ -1424,6 +1424,7 @@ class Eighth implements Module {
 				}
 				elseif ($this->op == 'csv') {
 					Display::stop_display();
+					header('Pragma: ');
 					header('Content-type: text/csv');
 					$datestr = date('Y-m-d-His');
 					header("Content-Disposition: attachment; filename=\"EighthAbsentee-$datestr.csv\"");

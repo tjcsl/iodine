@@ -264,7 +264,7 @@ class Filecenter implements Module {
 		header('Content-type: application/octet-stream');
 		header('Content-Disposition: attachment; filename="' . $name . '"');
 		header('Content-length: ' . $size);
-		header('Pragma: public');
+		header('Pragma: ');
 	}
 
 	public function send_zipped_dir($path) {
