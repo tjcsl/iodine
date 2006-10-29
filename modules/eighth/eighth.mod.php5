@@ -1336,7 +1336,7 @@ class Eighth implements Module {
 	*/
 	public function vp_delinquent() {
 		// TODO: Sorting and exporting for all
-		if($this->op == '' || $this->op == 'sort' && $this->template_args['show'] = TRUE) {
+		if($this->op == '' || $this->op == 'sort' || $this->op == 'csv') {
 			// Print a list of delinquents
 			$lower = 1;
 			$upper = 1000;
@@ -1392,22 +1392,54 @@ class Eighth implements Module {
 					$this->template_args['freshmen'] = TRUE;
 				}
 			}
-			$delinquents = EighthSchedule::get_delinquents($lower, $upper, $start, $end);
-			$this->template_args['delinquents'] = array();
-			foreach ($delinquents as $delinquent) {
-				$user = new User($delinquent['userid']);
-				if (in_array($user->grade, $grades)) {
-					$this->template_args['delinquents'][] = array(
-						'absences' => $delinquent['absences'],
-						'name' => $user->name_comma,
-						'uid' => $user->uid,
-						'studentid' => $user->tjhsstStudentId,
-						'grade' => $user->grade
-					);
+
+			// We actually want to get the data, in whatever form
+			if ($this->op == 'sort' || $this->op == 'csv') {
+				// so, get the data
+				$alldelinquents = EighthSchedule::get_delinquents($lower, $upper, $start, $end);
+				$wanteddelinquents = array();
+				foreach ($alldelinquents as $delinquent) {
+					$user = new User($delinquent['userid']);
+					if (in_array($user->grade, $grades)) {
+						$wanteddelinquents[] = array('user' => $user, 'absences' => $delinquent['absences']);
+					}
+				}
+				// This has issues... apparently, PHP doesn't actually think the methods are static...
+				@usort($this->template_args['delinquents'], array("Eighth", "delin_sort_$sort"));
+
+				// move the data to the format of choice
+				if ($this->op == 'sort') {
+					$this->template_args['show'] = TRUE;
+					$this->template_args['delinquents'] = array();
+					foreach ($wanteddelinquents as $delinquent) {
+						$user = $delinquent['user'];
+						$this->template_args['delinquents'][] = array(
+							'absences' => $delinquent['absences'],
+							'name' => $user->name_comma,
+							'uid' => $user->uid,
+							'studentid' => $user->tjhsstStudentId,
+							'grade' => $user->grade
+						);
+					}
+				}
+				elseif ($this->op == 'csv') {
+					Display::stop_display();
+					header('Content-type: text/csv');
+					$datestr = date('Y-m-d-His');
+					header("Content-Disposition: attachment; filename=\"EighthAbsentee-$datestr.csv\"");
+					print "Abs,Last,First,Student ID,Gr,Counselor,Phone,Address,City,State,ZIP\r\n";
+					$attrib = array('lname','fname','tjhsstStudentId','grade','counselor_name','phone_home','street','l','st','postalCode');
+					foreach ($wanteddelinquents as $delinquent) {
+						$user = $delinquent['user'];
+						print "{$delinquent['absences']}";
+						foreach($attrib as $i) {
+							print ",{$user->$i}";
+						}
+						print "\r\n";
+					}
+					return;
 				}
 			}
-			// This has issues... apparently, PHP doesn't actually think the methods are static...
-			@usort($this->template_args['delinquents'], array("Eighth", "delin_sort_$sort"));
 			$this->template_args['sorts'] = $legal_sorts;
 			$this->template_args['sort'] = $sort;
 			$this->template_args['lower'] = $lower;
@@ -1421,23 +1453,6 @@ class Eighth implements Module {
 			// TODO: Query the delinquents
 			$this->template = 'vp_delinquent.tpl';
 			$this->title = 'Query Delinquent Students';
-		}
-		else if($this->op == 'csv') {
-			Display::stop_display();
-			$delinquents = EighthSchedule::get_delinquents();
-			header('Content-type: text/csv');
-			$datestr = date('Y-m-d-His');
-			header("Content-Disposition: attachment; filename=\"EighthAbsentee-$datestr.csv\"");
-			print "Abs,Last,First,Student ID,Gr,Counselor,Phone,Address,City,State,ZIP\r\n";
-			$attrib = array('lname','fname','tjhsstStudentId','grade','counselor_name','phone_home','street','l','st','postalCode');
-			foreach ($delinquents as $delinquent) {
-				$user = new User($delinquent['userid']);
-				print "{$delinquent['absences']}";
-				foreach($attrib as $i) {
-					print ",{$user->$i}";
-				}
-				print "\r\n";
-			}
 		}
 	}
 
