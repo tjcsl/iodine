@@ -150,7 +150,7 @@ AIM/AOL Screenname(s):
  [<foreach from=$schedule item=class>]
    <tr class="[<cycle values="c1,c2">]">
     <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$class->sectionid>]">[<$class->period>]</a></td>
-    <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/section/[<$class->classid>]">[<$class->name>]</a></td>
+    <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$class->classid>]">[<$class->name>]</a></td>
     <td class="directory-table" style="text-align:center;">[<$class->room>]</td>
     <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/info/[<$class->teacher->uid>]">[<$class->teacher->sn>]</a></td>
    </tr>
