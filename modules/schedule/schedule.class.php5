@@ -90,6 +90,21 @@ class Schedule implements Iterator {
 		return $ret;
 	}
 
+	/**
+	 * Returns an array of SectionIDs representing all class periods in existence
+	 *
+	 * @return array
+	 */
+	public static function roster() {
+		global $I2_LDAP;
+		$res = $I2_LDAP->search(LDAP::get_schedule_dn(),"objectClass=tjhsstClass",array('tjhsstSectionId'));
+		$ret = array();
+		while ($row = $res->fetch_array(Result::ASSOC)) {
+			$ret[] = $row['tjhsstSectionId'];
+		}
+		return $ret;
+	}
+
 	public function fill_schedule(User $user) {
 		global $I2_LDAP;
 		$res = $this->get_sections($user->uid);

@@ -86,6 +86,34 @@ class StudentDirectory implements Module {
 				$classname = $this->classes[0]['class']->name;
 				$this->information = 'classes';
 				return "Sections of $classname";
+			case 'roster':
+				$sectionids = Schedule::roster();
+				$this->classes = array();
+				foreach ($sectionids as $sectionid) {
+					$sec = Schedule::section($sectionid);
+					$this->classes[] = $sec;
+				}
+				$I2_ARGS[2] = (isset($I2_ARGS[2]) ? $I2_ARGS[2] : '');
+				switch (strtolower($I2_ARGS[2])) {
+				case 'teacher':
+					@usort($this->classes, array('StudentDirectory', 'sort_teacher'));
+					break;
+				case 'period':
+					@usort($this->classes, array('StudentDirectory', 'sort_period'));
+					break;
+				case 'room':
+					@usort($this->classes, array('StudentDirectory', 'sort_room'));
+					break;
+				case 'term':
+					@usort($this->classes, array('StudentDirectory', 'sort_term'));
+					break;
+				case 'name':
+				default:
+					@usort($this->classes, array('StudentDirectory', 'sort_name'));
+					break;
+				}
+				$this->information = 'roster';
+				return "School Roster: All Classes";
 			default:
 				$this->information = FALSE;
 				return array('Error', 'Error: User does not exist');
@@ -114,6 +142,9 @@ class StudentDirectory implements Module {
 			case 'classes':
 				$display->smarty_assign('classes',$this->classes);
 				$display->disp('classes.tpl');
+				break;
+			case 'roster':
+				$display->disp('roster.tpl',array('courses' => $this->classes));
 				break;
 			case 'pictures':
 				d($this->user->name, 1);
@@ -334,6 +365,41 @@ class StudentDirectory implements Module {
 				break;
 		}
 	}
+
+	public static function sort_name($a, $b) {
+		return strcmp($a->name, $b->name);
+	}
+
+	public static function sort_teacher($a, $b) {
+		return strcmp($a->teacher->name_comma, $b->teacher->name_comma);
+	}
+
+	public static function sort_period($a, $b) {
+		return strcmp($a->period, $b->period);
+	}
+
+	public static function sort_room($a, $b) {
+		return strcmp($a->room, $b->room);
+	}
+
+	public static function sort_term($a, $b) {
+		if (count($a->quarters) < count($b->quarters)) {
+			return -1;
+		}
+		if (count($a->quarters) > count($b->quarters)) {
+			return 1;
+		}
+		for ($x = 0; $x < count($a->quarters); $x++) {
+			if ($a->quarters[$x] < $b->quarters[$x]) {
+				return -1;
+			}
+			if ($a->quarters[$x] > $b->quarters[$x]) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
 }
 
 ?>

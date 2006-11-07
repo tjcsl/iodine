@@ -47,8 +47,11 @@ class SectionLDAP implements Section {
 	}
 
 	public function __get($var) {
-	   if ($var == 'students') {
+		if ($var == 'students') {
 			return $this->get_students();
+		}
+		if ($var == 'term') {
+			return @implode(', ', $this->info['quarters']);
 		}
 		if(isset($this->info[$var])) {
 			return $this->info[$var];
