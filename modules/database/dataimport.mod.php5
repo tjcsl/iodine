@@ -1224,8 +1224,7 @@ class dataimport implements Module {
 		d("Reading from class file: $classfile...");
 		$file = @fopen($classfile,'r');
 		while (list($sectionid,$period,$uhhotherperiod,$courselen,$othercourselen,$otherothercourselen,$teacherid,$room,$class) = fgetcsv($file)) {
-			$classid = explode('-',$sectionid);
-			$classid = $classid[0];
+			list($classid,) = explode('-',$sectionid);
 			$semesterno = $courselen[1];
 
 			// Hunt down the sponsor - and kill them!
