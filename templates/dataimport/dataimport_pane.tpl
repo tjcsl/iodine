@@ -24,11 +24,11 @@
 	[<else>]
 		<form action="[<$I2_ROOT>]dataimport/teacherdata" method="post">
 			<table>
-			<tr><td>Teacher Data file:</td><td> <input type="text" name="teacherfile"/></td></tr>
+			<tr><td>Teacher Data file:</td><td> <input type="text" name="teacherfile"/></td><td>(TEACHER.***)</td></tr>
 			<tr><td>Teacher LDAP server: </td><td><input type="text" name="teacherserver"/></td></tr>
 			<tr><td>Teacher LDAP username: </td><td><input type="text" name="teacherdn"/></td></tr>
 			<tr><td>Teacher LDAP password: </td><td><input type="password" name="teacherpass"/></td></tr>
-			<tr><td>Obsolete</b> Staff file:</td><td><input type="text" name="stafffile"/></td></tr>
+			<tr><td>Obsolete Staff file:</td><td><input type="text" name="stafffile"/></td><td>(STAFF.TXT)</td></tr>
 			</table>
 			<input type="submit" value="Set Teacher Data Info"/><br/>
 		</form>
@@ -152,8 +152,8 @@
 	[</if>]
 	[<if !$schedulefile>]
 		<form action="[<$I2_ROOT>]dataimport" method="post">
-			Student Schedule File: <input type="text" name="schedulefile" /><br />
-			Course Information File: <input type="text" name="classfile" /><br />
+			Student Schedule File: <input type="text" name="schedulefile" /> (SCS.***)<br />
+			Course Information File: <input type="text" name="classfile" /> (CLS.***)<br />
 			<input type="submit" value="Set Schedule Information"/><br />
 		</form>
 	[<else>]
