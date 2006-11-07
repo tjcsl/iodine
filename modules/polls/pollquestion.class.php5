@@ -360,7 +360,7 @@ class PollQuestion {
 
 		$ret = array();
 
-		$res = $I2_SQL->query('SELECT uid FROM poll_votes WHERE aid >= %d AND aid < %d', self::lower_bound($this->qid),self::upper_bound($this->qid));
+		$res = $I2_SQL->query('SELECT uid FROM poll_votes WHERE aid > %d AND aid < %d', self::lower_bound($this->qid),self::upper_bound($this->qid));
 		foreach ($res->fetch_col('uid') as $uid) {
 			$ret[] = new User($uid);
 		}
