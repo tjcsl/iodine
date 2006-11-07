@@ -226,8 +226,9 @@ class dataimport implements Module {
 						/*
 						** Attempt to match first initial
 						*/
-						$myfinit = ucFirst(substr($choice['fname'],0,1));
-						if ($myfinit == $firstname) {
+						$otherfinit = ucFirst(substr($choice['fname'],0,1));
+						$myfinit = ucFirst(substr($firstname,0,1));
+						if ($otherfinit == $myfinit) {
 							$valid[] = $choice;
 							d("Found a $myfinit. $lastname",7);
 						} else {
@@ -265,16 +266,31 @@ class dataimport implements Module {
 		$this->init_desired_boxes();
 
 		foreach ($teacherarr as $teacher) {
-			$res = $ldap->search('ou=people,dc=tjhsst,dc=edu', "iodineUid={$teacher['username']}");
+			$res = $ldap->search('ou=people,dc=tjhsst,dc=edu', "iodineUidNumber={$teacher['id']}");
 			if ($res->num_rows() - 1 > 1) {
-				d("PROBLEM! More than one user found with iodineUid {$teacher['username']}...");
+				warn("PROBLEM! More than one user found with iodineUidNumber {$teacher['id']}...");
+				continue;
 			}
-			else if ($res->num_rows() - 1 > 0) {
-				$this->modify_teacher($teacher,$ldap);
-			}
-			else {
+
+			$res = $ldap->search('ou=people,dc=tjhsst,dc=edu', "(&(iodineUidNumber={$teacher['id']})(!(iodineUid={$teacher['username']})))");
+			if ($res->num_rows() - 1 > 0) {
+				$iodineUids = $res->fetch_col('iodineUid');
+				warn('Multiple teachers with same iodineUidNumber: clobbering previous teacher(s):'.implode(', ', $iodineUids));
+				foreach ($iodineUids as $uid) {
+					$ldap->delete("iodineUid=$uid,ou=people,dc=tjhsst,dc=edu");
+				}
 				$this->create_teacher($teacher,$ldap);
+				continue;
 			}
+
+			$res = $ldap->search('ou=people,dc=tjhsst,dc=edu', "(&(iodineUidNumber={$teacher['id']})(iodineUid={$teacher['username']}))");
+			if ($res->num_rows() - 1 > 0) {
+				d('Modifying existant teacher: '. $teacher['username']);
+				$this->modify_teacher($teacher,$ldap);
+				continue;
+			}
+
+			$this->create_teacher($teacher,$ldap);
 		}
 	}
 
@@ -545,6 +561,32 @@ class dataimport implements Module {
 	}
 
 	/**
+	* Modifies an existing teacher from the given data
+	* Commented lines are data that shouldn't ever change, or are user preferences, or something
+	*/
+	private function modify_teacher($teacher,$ldap=NULL) {
+		global $I2_LDAP,$I2_SQL;
+		if (!$ldap) {
+			$ldap = $I2_LDAP;
+		}
+		$newteach = array();
+		//$newteach['objectClass'] = 'tjhsstTeacher';
+		//$newteach['iodineUid'] = $teacher['username'];
+		//$newteach['iodineUidNumber'] = $teacher['id'];
+		$newteach['cn'] = $teacher['fname'].' '.$teacher['lname'];
+		$newteach['sn'] = $teacher['lname'];
+		$newteach['givenName'] = $teacher['fname'];
+		//$newteach['style'] = 'default';
+		//$newteach['header'] = 'TRUE';
+		//$newteach['chrome'] = 'TRUE';
+		//$newteach['startpage'] = 'news';
+		$dn = "iodineUid={$teacher['username']},ou=people,dc=tjhsst,dc=edu";
+		
+		d("Updating teacher \"{$teacher['username']}\"...",5);
+		$ldap->modify_object($dn,$newteach);
+	}
+
+	/**
 	* Adds a new teacher from the given data
 	*/
 	private function create_teacher($teacher,$ldap=NULL) {
@@ -552,8 +594,6 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}
-		//print_r($teacher);
-		//echo "<br />";
 		$newteach = array();
 		$newteach['objectClass'] = 'tjhsstTeacher';
 		$newteach['iodineUid'] = $teacher['username'];
@@ -566,10 +606,6 @@ class dataimport implements Module {
 		$newteach['chrome'] = 'TRUE';
 		$newteach['startpage'] = 'news';
 		$dn = "iodineUid={$newteach['iodineUid']},ou=people,dc=tjhsst,dc=edu";
-
-		// FIXME: check if iodineUidNumber exists and update previous entry if so
-		// Actually, it doesn't matter that much here since iodineUidNumbers are the 
-		// only thing that need to be constant, and SASI makes them be.
 		
 		d("Creating teacher \"{$newteach['iodineUid']}\"...",5);
 		$ldap->add($dn,$newteach);
@@ -578,6 +614,7 @@ class dataimport implements Module {
 		** Teachers need intraboxes, too!
 		*/
 		$count = 0;
+		$I2_SQL->query('DELETE FROM intrabox_map WHERE uid=%d', $teacher['id']);
 		foreach ($this->boxids as $boxid=>$name) {
 			if ($name == 'eighth' || $name == 'mail') {
 				continue; // teachers don't need (or want) eighth period or mail
@@ -1969,7 +2006,7 @@ class dataimport implements Module {
 			$this->fix_broken_user($_REQUEST['studentid']);
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teachers' && isSet($_REQUEST['doit'])) {
-			$this->clean_teachers();
+			//$this->clean_teachers();
 			$this->import_teacher_data_file_one();
 			$this->import_teacher_data_file();
 		}
