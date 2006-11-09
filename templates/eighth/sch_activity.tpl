@@ -76,7 +76,7 @@ AID: <input type="text" name="aid"/>
 [</if>]
 			</div>
 			<input type="hidden" name="sponsor_list[[<$activity.block.bid>]]" value="[<if $activity.scheduled>][<$activity.sponsors>][</if>]" id="sponsor_list_[<$activity.block.bid>]" />
-			<input type="hidden" id="activity_status_[<$activity.block.bid>]" name="activity_status[[<$activity.block.bid>]]" value="SCHEDULED" />
+			<input type="hidden" id="activity_status_[<$activity.block.bid>]" name="activity_status[[<$activity.block.bid>]]" value="[<if $activity.scheduled && $activity.cancelled>]CANCELLED[<else>]SCHEDULED[</if>]" />
 		</td>
 		<td style="text-align: left;">
 			<a href="#[<$activity.block.bid>]" onClick="do_action('view_sponsors', '[<$activity.block.bid>]', new Array([<$activity.sponsors_array>]), event);">Add Sponsor</a><br />

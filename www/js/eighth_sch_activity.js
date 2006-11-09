@@ -110,12 +110,10 @@ function do_action(action, bid, data, e) {
     else if(action == "cancel") {
 		if(cancel_id.innerHTML == "Cancel") {
 			cancel_id.innerHTML = "Uncancel";
-			check_id.checked = !check_id.checked;
 			activity_status_id.value = "CANCELLED";
 		}
 		else {
 			cancel_id.innerHTML = "Cancel";
-			check_id.checked = !check_id.checked;
 			activity_status_id.value = "SCHEDULED";
 		}
     }
