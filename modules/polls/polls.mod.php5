@@ -76,6 +76,9 @@ class Polls implements Module {
 		$this->template_args['errors'] = array();
 
 		$poll = new Poll($I2_ARGS[2]);
+		
+		$this->template_args['avail'] = $poll->user_can_access($I2_USER) ? TRUE : FALSE;
+
 		if (isset($_REQUEST['polls_vote_form'])) {
 			foreach ($poll->questions as $question) {
 				$answer = 0;

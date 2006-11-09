@@ -8,7 +8,7 @@
 
 [<$poll->introduction|escape:"html">]<br /><br />
 
-<form method="post" action="[<$I2_ROOT>]polls/vote/[<$poll->pid>]" class="boxform">
+<form method="post" action="[<if $avail>][<$I2_ROOT>]polls/vote/[<$poll->pid>][</if>]" class="boxform">
 <input type="hidden" name="polls_vote_form" value="vote">
 [<foreach from=$poll->questions item=question>]
  <b>[<$question->r_qid>].</b> [<$question->question>]<br />
@@ -25,5 +25,7 @@
  [</foreach>]
  <br />
 [</foreach>]
-<input type="submit" value="Vote" name="vote" />
+[<if $avail>]<input type="submit" value="Vote" name="vote" />
+[<else>]<font color="red">This poll is not currently available to you.  You may not have permissions to vote in this poll, the current date and time are not within the polling time window, or this poll has been disabled for other reasons.</font>
+[</if>]
 </form>
