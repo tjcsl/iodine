@@ -17,7 +17,7 @@ include('functions.inc.php5');
 *
 * Don't increment this until we have something runnable.
 */
-define('I2_VERSION', 0.1);
+define('I2_VERSION', 0.9);
 
 /**
 * The path to the master Iodine configuration file.
