@@ -118,7 +118,7 @@ class Logging {
 		/* IP - [Apache-style date format] [Mini-backtrace] "Request" "Error" */
 		fwrite($fh,
 			$_SERVER['REMOTE_ADDR'] . ' - [' .
-			date('d/M/Y:H:i:s O') . '] [' .
+			@date('d/M/Y:H:i:s O') . '] [' .
 			implode($trace_arr, ',') . '] "' .
 			$_SERVER['REQUEST_URI'] . '" "' .
 			$msg . '"' ."\n"
