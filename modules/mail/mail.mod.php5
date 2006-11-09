@@ -162,14 +162,15 @@ class Mail implements Module {
 		}
 
 		$this->nmsgs = imap_num_msg($this->connection);
-		$lotsofinfo = imap_mailboxmsginfo($this->connection);
-		$this->nunseen = $lotsofinfo->Unread;
+		$this->nunseen = imap_status($this->connection, $path, SA_UNSEEN)->unseen;
 
 		if($offset >= $this->nmsgs) {
 			$offset = 0;
 		}
 
-		$sorted = array_slice(imap_sort($this->connection, SORTDATE, 1), $offset, $length);
+		$sorted = array();
+		for( $i = $this->nmsgs; $i > $this->nmsgs-$length; $i--)
+			$sorted[] = $i;
 		$messages = imap_fetch_overview($this->connection, implode(',',$sorted));
 
 		if (count($sorted) == 0) {
