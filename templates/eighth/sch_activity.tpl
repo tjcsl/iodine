@@ -50,7 +50,7 @@ AID: <input type="text" name="aid"/>
 		<td class="eighth_sch_activity_datecell[<if !$activity.scheduled>]_unscheduled[</if>]">
 			[<$activity.block.date|date_format:"%a">] [<$activity.block.block>], [<$activity.block.date|date_format:"%m/%d/%y">]
 [<if $activity.scheduled>]
-			<br /><a id="unschedule_[<$activity.block.bid>]" onclick="do_action('unschedule', '[<$activity.block.bid>]');" href="#[<$activity.block.bid>]" class="eighth_sch_activity_unschedule">Unschedule</a>&nbsp;&nbsp;<a id="cancel_[<$activity.block.bid>]" onclick="do_action('cancel', '[<$activity.block.bid>]');" href="#" class="eighth_sch_activity_cancel">[<if $activity.cancelled>]Uncancel[<else>]Cancel[</if>]</a>
+			<br /><a id="unschedule_[<$activity.block.bid>]" onclick="do_action('unschedule', '[<$activity.block.bid>]');" href="#[<$activity.block.bid>]" class="eighth_sch_activity_unschedule">Unschedule</a>&nbsp;&nbsp;<a id="cancel_[<$activity.block.bid>]" onclick="do_action('cancel', '[<$activity.block.bid>]');" href="#[<$activity.block.bid>]" class="eighth_sch_activity_cancel">[<if $activity.cancelled>]Uncancel[<else>]Cancel[</if>]</a>
 [</if>]
 		</td>
 		<td class="eighth_sch_activity_listcell">
