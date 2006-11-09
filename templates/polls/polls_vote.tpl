@@ -1,12 +1,15 @@
 <a href="[<$I2_ROOT>]polls">Polls Home</a><br /><br />
 
-<b>[<$poll->name|escape:"html">]</b><br /><br />
+<strong>[<$poll->name|escape:"html">]</strong><br /><br />
 
 [<foreach from=$errors item=error>]
- <b>[<$error>]</b><br /><br />
+ <strong>[<$error>]</strong><br /><br />
 [</foreach>]
 
 [<$poll->introduction|escape:"html">]<br /><br />
+[<if !$avail>]
+<font color="red">This poll is not currently available to you.  You may not have permissions to vote in this poll, the current date and time are not within the polling time window, or this poll has been disabled for other reasons.</font>
+[</if>]
 
 <form method="post" action="[<if $avail>][<$I2_ROOT>]polls/vote/[<$poll->pid>][</if>]" class="boxform">
 <input type="hidden" name="polls_vote_form" value="vote">
