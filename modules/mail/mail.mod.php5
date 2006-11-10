@@ -168,8 +168,11 @@ class Mail implements Module {
 			$offset = 0;
 		}
 
+		//$sorted = array_slice(imap_sort($this->connection, SORTARRIVAL, 1), $offset, $length);
+		# We don't use the above because it's slower.
 		$sorted = array();
-		for( $i = $this->nmsgs; $i > $this->nmsgs-$length; $i--)
+		$endindex = $this->nmsgs-$length < 0 ? 0 : $this->nmsgs-$length;
+		for( $i = $this->nmsgs; $i > $endindex; $i--)
 			$sorted[] = $i;
 		$messages = imap_fetch_overview($this->connection, implode(',',$sorted));
 
