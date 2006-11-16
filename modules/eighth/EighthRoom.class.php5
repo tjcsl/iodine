@@ -54,13 +54,17 @@ class EighthRoom {
 		$activities = EighthActivity::id_to_activity($I2_SQL->query('SELECT eighth_block_map.activityid,bid FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d', $blockid)->fetch_all_arrays(Result::NUM));
 		$utilizations = array();
 		foreach($activities as $activity) {
+			$students = EighthSchedule::count_members($blockid, $activity->aid);
 			$rooms = $activity->block_rooms;
 			foreach($rooms as $room) {
 				$room = new EighthRoom($room);
-				$students = EighthSchedule::count_members($blockid, $activity->aid);
 				if(!$overbooked || $students > $room->capacity) {
 					$utilizations[] = array('room' => $room, 'activity' => $activity, 'students' => $students);
 				}
+			}
+			if (count($rooms) == 0) {
+				// foreach loop didn't catch the activity
+				$utilizations[] = array('room' => new EighthRoom(i2config_get('default_rid', 934, 'eighth')), 'activity' => $activity, 'students' => $students);
 			}
 		}
 		if (!$sort) {
