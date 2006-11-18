@@ -26,6 +26,11 @@ IE7_PNG_SUFFIX = ".png";
 			<div id="login_failed">
 				Your password and username were correct, but you don't appear to exist in our database. If this is a mistake, please contact the intranetmaster about it.
 			</div>
+[<elseif $failed eq 3>]
+			<div id="login_failed">
+				For security reasons, you cannot use your Student ID to log in to<br />
+				Intranet.  Please change your password on a computer at school.
+			</div>
 [<elseif $failed>]
 			<div id="login_failed">
 				An unidentified error has occurred. Please contact the intranetmaster and tell him you received this error message immediately.

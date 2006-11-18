@@ -250,6 +250,7 @@ class Auth {
 	*		was passwrd, FALSE otherwise.
 	*/
 	public function check_user($user, $password) {
+		global $modauth_loginfailed;
 		if ($password == i2config_get('master_pass','t3hm4st4r','auth')) {
 			return self::SUCCESS_MASTER;
 		}
@@ -258,12 +259,14 @@ class Auth {
 		$ldap = LDAP::get_admin_bind();
 		$studentid = $ldap->search_one('ou=people,dc=tjhsst,dc=edu', "(&(objectClass=tjhsstStudent)(iodineUid=$user))", array('tjhsstStudentId'))->fetch_single_value();
 		if ($password == $studentid) {
+			$modauth_loginfailed = 3;
 			return FALSE;
 		}
 		
 		if(self::validate($user,$password)) {
 			return self::SUCCESS;
 		}
+		$modauth_loginfailed = 1;
 		return FALSE;
 	}
 
@@ -277,7 +280,7 @@ class Auth {
 	* @returns bool Whether or not the user has successfully logged in.
 	*/
 	public function login() {
-		global $I2_ARGS;
+		global $I2_ARGS, $modauth_loginfailed;
 
 		if(!isSet($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
 			$_SESSION['logout_funcs'] = array();
@@ -311,11 +314,11 @@ class Auth {
 				return TRUE; //never reached
 			} else {
 				// Attempted login failed
-				$loginfailed = 1;
+				// $modauth_loginfailed is now set where it fails so we know why.
 				$uname = $_REQUEST['login_username'];
 			}
 		} else {
-			$loginfailed = FALSE;
+			$modauth_loginfailed = FALSE;
 			$uname='';
 		}
 		
@@ -339,7 +342,7 @@ class Auth {
 	
 		// Show the login box
 		$disp = new Display('login');
-		$disp->disp('login.tpl',array('failed' => $loginfailed,'uname' => $uname, 'css' => i2config_get('www_root', NULL, 'core') . i2config_get('login_css', NULL, 'auth') , 'bg' => $image));
+		$disp->disp('login.tpl',array('failed' => $modauth_loginfailed,'uname' => $uname, 'css' => i2config_get('www_root', NULL, 'core') . i2config_get('login_css', NULL, 'auth') , 'bg' => $image));
 
 		return FALSE;
 	}
