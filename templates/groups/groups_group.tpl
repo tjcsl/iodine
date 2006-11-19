@@ -93,7 +93,7 @@ Group: <strong>[<$group>]</strong><br />
    <td>
     <ul>
     [<foreach from=$subject.perms item=perm>]
-      <li><acronym title="[<$perm.description>]">[<$perm.name>]</acronym> <a href="[<$I2_ROOT>]groups/revokegroup/[<$subject.gid>]/[<$gid>]/[<$perm.pid>]">[revoke]</a></li>
+      <li><acronym title="[<$perm->description>]">[<$perm->name>]</acronym> <a href="[<$I2_ROOT>]groups/revokegroup/[<$subject.gid>]/[<$gid>]/[<$perm->pid>]">[revoke]</a></li>
     [</foreach>]
     </ul>
    </td>
