@@ -39,6 +39,7 @@ class Groups implements Module {
 				$this->template_args['admin'] = 1;
 			}
 			$this->template_args['prefixes'] = Group::user_admin_prefixes($I2_USER);
+			$this->template_args['group_admin'] = Group::get_admin_groups($I2_USER);
 			return array('Groups: Home', 'Groups');
 		}
 		else {

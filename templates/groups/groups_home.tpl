@@ -18,7 +18,9 @@
 [</if>]
 [<if isset($group_admin)>]
  You are currently an admin in the following groups:<br />
+ <ul>
  [<foreach from=$group_admin item=grp>]
-   <a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a><br />
+   <li><a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a></li>
  [</foreach>]
+ </ul>
 [</if>]
