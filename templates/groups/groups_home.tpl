@@ -6,7 +6,7 @@
   You are an admin for all groups beginning with "[<$prefix>]_". <a href="[<$I2_ROOT>]groups/padmin/[<$prefix>]">Add, modify, or delete [<$prefix>]_ groups</a><br /><br />
  [</foreach>]
 [</if>]
-[<if isset($groups)>]
+[<if isset($groups) && count($groups)>0>]
  You are currently a member of the following groups:<br />
  <ul>
  [<foreach from=$groups item=grp>]
@@ -16,7 +16,7 @@
 [<else>]
  You are not a member of any groups.<br />
 [</if>]
-[<if isset($group_admin)>]
+[<if isset($group_admin) && count($group_admin)>0>]
  You are currently an admin in the following groups:<br />
  <ul>
  [<foreach from=$group_admin item=grp>]
