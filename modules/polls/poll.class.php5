@@ -161,7 +161,7 @@ class Poll {
 	*
 	* @param array $gids The ID numbers of the groups that can vote
 	*/
-	public function set_groups($gids) {
+	public function set_groups($grps) {
 		global $I2_SQL;
 
 		self::check_admin();
@@ -169,23 +169,19 @@ class Poll {
 		$this->groups = array();
 		$I2_SQL->query('DELETE FROM poll_group_map WHERE pid=%d', $this->pid);
 
-		foreach ($gids as $gid) {
-			$gid = trim($gid);
-			if ($gid == '') {
-				continue;
-			}
-			$this->groups[] = new Group($gid);
-			$this->add_group($gid);
+		foreach ($grps as $grp) {
+			$this->groups[] = $grp;
+			$this->add_group($grp);
 		}
 	}
 
 	/**
 	* Adds a group to the poll.
 	*/
-	public function add_group($gid) {
+	public function add_group($grp) {
 		global $I2_SQL;
-      self::check_admin();
-		$I2_SQL->query('INSERT INTO poll_group_map (gid,pid) VALUES(%d,%d)',$gid,$this->pid);
+		self::check_admin();
+		$I2_SQL->query('INSERT INTO poll_group_map (gid,pid) VALUES(%d,%d)',$grp->gid,$this->pid);
 	}
 
 	/**
