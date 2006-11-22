@@ -540,6 +540,15 @@ class GroupSQL extends Group {
 		}
 		return $ret;
 	}
+
+	public static function get_userperm_groups(User $user, Permission $perm) {
+		$allgrps = Group::get_all_groups();
+		$ret = array();
+		foreach($allgrps as $i)
+			if($i->has_permission($user, $perm))
+				$ret[] = $i;
+		return $ret;
+	}
 	
 	public function delete_group() {
 		global $I2_SQL;

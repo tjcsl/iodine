@@ -10,11 +10,19 @@
  You are currently a member of the following groups:<br />
  <ul>
  [<foreach from=$groups item=grp>]
-  <li><a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a> ([<$grp->description>])</li>
+  <li><a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a> [<if $grp->has_permission($I2_USER,new Permission('GROUP_JOIN'))>]<em>- <a href="[<$I2_ROOT>]groups/sleave/[<$grp->gid>]">[Leave this group]</a> -</em> [</if>]([<$grp->description>])</li>
  [</foreach>]
  </ul>
 [<else>]
  You are not a member of any groups.<br />
+[</if>]
+[<if isset($group_join) && count($group_join)>0>]
+ You are not a member of the following groups, but you may join them (click to join):<br />
+ <ul>
+ [<foreach from=$group_join item=grp>]
+  <li><a href="[<$I2_ROOT>]groups/sjoin/[<$grp->gid>]">[<$grp->name>]</a> ([<$grp->description>])</li>
+ [</foreach>]
+ </ul>
 [</if>]
 [<if isset($group_admin) && count($group_admin)>0>]
  You are currently an admin in the following groups:<br />

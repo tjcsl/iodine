@@ -303,6 +303,17 @@ class Group {
 		d('end dynamic');
 		return array_merge($static, $dynamic);
 	}
+
+	/**
+	* Gets all groups in which a user has a specific permission.
+	*
+	* @param User $user The user.
+	* @param Permission $perm The permission for which to check.
+	* @return Array An array of {@link Group} objects that the user has the specified permission in.
+	*/
+	public static function get_userperm_groups(User $user, Permission $perm) {
+		return GroupSQL::get_userperm_groups($user, $perm);
+	}
 	
 	/**
 	* Deletes this group from the database, including all membership information associated with this group.

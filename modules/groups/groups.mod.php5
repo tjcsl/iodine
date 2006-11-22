@@ -40,6 +40,12 @@ class Groups implements Module {
 			}
 			$this->template_args['prefixes'] = Group::user_admin_prefixes($I2_USER);
 			$this->template_args['group_admin'] = Group::get_admin_groups($I2_USER);
+			$alluserjoin = Group::get_userperm_groups($I2_USER, new Permission('GROUP_JOIN'));
+			$this->template_args['group_join'] = array();
+			foreach($alluserjoin as $i) { //The groups of which this user is allowed to join.
+				if(!$i->has_member($I2_USER)) //Not already a member.
+					$this->template_args['group_join'][] = $i;
+			}
 			return array('Groups: Home', 'Groups');
 		}
 		else {
@@ -78,6 +84,44 @@ class Groups implements Module {
 	*/
 	public function get_name() {
 		return 'Groups';
+	}
+
+	/**
+	* Self-join this group.
+	*
+	* $I2_ARGS[2]: GID of group
+	*/
+	public function sjoin() {
+		global $I2_USER, $I2_ARGS;
+		$grp = new Group($I2_ARGS[2]);
+
+		if(!$grp->has_permission($I2_USER, new Permission(Group::PERM_JOIN))) {
+			$this->template = 'groups_error.tpl';
+			return 'Permission denied';
+		}
+
+		$grp->add_user($I2_USER);
+
+		redirect('groups/');
+	}
+	
+	/**
+	* Self-leave this group.
+	*
+	* $I2_ARGS[2]: GID of group
+	*/
+	public function sleave() {
+		global $I2_USER, $I2_ARGS;
+		$grp = new Group($I2_ARGS[2]);
+
+		if(!$grp->has_permission($I2_USER, new Permission(Group::PERM_JOIN))) {
+			$this->template = 'groups_error.tpl';
+			return 'Permission denied';
+		}
+
+		$grp->remove_user($I2_USER);
+
+		redirect('groups/');
 	}
 
 	/**
