@@ -34,7 +34,7 @@ Yours news post has been changed.<br />
  </table>
  <script type="text/javascript">
   [<section name=i loop=$newsitem->groups start=1>]
-   addGroup([<$newsitem->groups[i]>]);
+   addGroup([<$newsitem->groups[i]->gid>]);
   [</section>]
  </script>
  Text: <br />
