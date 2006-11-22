@@ -49,7 +49,6 @@ Group: <strong>[<$group>]</strong><br />
  </form>
  </p>
 [</if>]
-<br />
 [<if count($perm_users) gt 0 or count($perm_groups) gt 0>]
 <h3>Permissions</h3>
 [</if>]
