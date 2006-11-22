@@ -12,14 +12,12 @@ Yours news post has been changed.<br />
    <td>
     [<if count($newsitem->groups) == 0>]
     <select id="groups" class="groups_list" name="add_groups[]">
-     <option value="all">All Users</option>
      [<foreach from=$groups item=group>]
       <option value="[<$group->gid>]">[<$group->name>]</option>
      [</foreach>]
     </select>
     [<else>]
     <select id="groups" class="groups_list" name="add_groups[]">
-     <option value="all">All Users</option>
      [<foreach from=$groups item=group>]
       <option value="[<$group->gid>]"[<if $group->gid == $newsitem->groups[0]->gid>] selected[</if>]>[<$group->name>]</option>
      [</foreach>]
