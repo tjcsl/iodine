@@ -17,8 +17,8 @@
 * @subpackage Admin
 */
 class CodeInterface implements Module {
-	private $return = FALSE;
-	private $code = FALSE;
+	private $return;
+	private $code;
 
 	/**
 	* Unused; we don't display a box (yet)

@@ -1,4 +1,5 @@
-[<if $return>]
+[<if isset($return)>]
+ Return value (blank means FALSE):
  <pre>
  [<$return>]
  </pre>
