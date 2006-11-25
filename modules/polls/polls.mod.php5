@@ -192,13 +192,15 @@ class Polls implements Module {
 			return;
 		}
 
+		$this->template_args['groups'] = Group::get_all_groups();
+
 		if (isset($_REQUEST['poll_add_form'])) {
 			if ($_REQUEST['poll_add_form'] == 'poll') {
 				$poll = Poll::add_poll($_REQUEST['name'], $_REQUEST['intro']);
 				if (isset($_REQUEST['visible'])) {
 					$poll->set_visibility(TRUE);
 				}
-				$poll->set_groups(explode(',', trim($_REQUEST['groups'])));
+				$poll->set_groups(Group::generate($_REQUEST['add_groups']));
 				$poll->set_start_datetime($_REQUEST['startdt']);
 				$poll->set_end_datetime($_REQUEST['enddt']);
 				$pid = $poll->pid;
@@ -236,6 +238,8 @@ class Polls implements Module {
 	function edit() {
 		global $I2_USER, $I2_ARGS;
 
+		$this->template_args['groups'] = Group::get_all_groups();
+
 		if (! $I2_USER->is_group_member('admin_polls')) {
 			$this->home();
 			return;
@@ -262,7 +266,7 @@ class Polls implements Module {
 					$poll->set_visibility(0);
 				}
 				$poll->set_introduction($_REQUEST['intro']);
-				$poll->set_groups(explode(',', $_REQUEST['groups']));
+				$poll->set_groups(Group::generate($_REQUEST['add_groups']));
 				$poll->set_start_datetime($_REQUEST['startdt']);
 				$poll->set_end_datetime($_REQUEST['enddt']);
 			}
