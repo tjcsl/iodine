@@ -278,11 +278,13 @@ class StudentDirectory implements Module {
 		if (isset($im_status[$type][$id])) { return $im_status[$type][$id]; }
 		switch($type) {
 			case 'yahoo':
-				$fp = fopen('http://mail.opi.yahoo.com/online?u=' . $id . '&m=t&t=1', 'r');
-				do {
-				$response .= fread($fp, 128);
-				} while (!feof($fp));
-				fclose($fp);
+				$fp = @fopen('http://mail.opi.yahoo.com/online?u=' . $id . '&m=t&t=1', 'r');
+				if ($fp) {
+					do {
+					$response .= fread($fp, 128);
+					} while (!feof($fp));
+					fclose($fp);
+				}
 				if ($response == '01') { $im_status[$type][$id] = IM_ONLINE; return IM_ONLINE; }
 				else { $im_status[$type][$id] = IM_OFFLINE; return IM_OFFLINE; }
 				break;
@@ -290,18 +292,20 @@ class StudentDirectory implements Module {
 				$icq2im = array(0 => IM_OFFLINE, 1 => IM_ONLINE, 2 => IM_UNKNOWN);
 				$server = 'status.icq.com';
 				$url = '/online.gif?icq=' . $id . '&img=1';
-				$fp = fsockopen($server, 80, $errno, $errstr, 90);
-				socket_set_blocking($fp, 1);
+				$fp = @fsockopen($server, 80, $errno, $errstr, 90);
+				if ($fp) {
+					socket_set_blocking($fp, 1);
 
-				$data = '';
-				fputs($fp,
-				  'HEAD ' . $url . ' HTTP/1.1' . "\r\n" .
-				'Host: ' . $server . "\r\n\r\n");
-				do {
-				$data = fgets($fp, 1024);
-				if (strstr($data, '404 Not Found')) return IM_UNKNOWN;
-				} while(strstr($data, 'Location: /') === false && !feof($fp));
-				fclose($fp);
+					$data = '';
+					fputs($fp,
+					  'HEAD ' . $url . ' HTTP/1.1' . "\r\n" .
+					'Host: ' . $server . "\r\n\r\n");
+					do {
+					$data = fgets($fp, 1024);
+					if (strstr($data, '404 Not Found')) return IM_UNKNOWN;
+					} while(strstr($data, 'Location: /') === false && !feof($fp));
+					fclose($fp);
+				}
 				$status = substr($data, -7, 1);
 				$im_status[$type][$id] = $icq2im[$status];
 				return($icq2im[$status]);
@@ -316,19 +320,25 @@ class StudentDirectory implements Module {
 				$server = 'big.oscar.aol.com';
 				$url = '/'.$id.'?on_url=http://' . IM_ONLINE . '.com/&off_url=http://' . IM_OFFLINE . '.com/';
 				$fp = fsockopen($server, 80, $errno, $errstr, 90);
-				socket_set_blocking($fp, 1);
+				if ($fp) {
+					socket_set_blocking($fp, 1);
 
-				$data = '';
+					$data = '';
 
-				$request  = 'GET ' . $url . ' HTTP/1.0' . "\r\n";
-				$request .= 'Host: ' . $server . "\r\n";
-				$request .= 'Connection: Close' . "\r\n";
-				$request .= "\r\n";
+					$request  = 'GET ' . $url . ' HTTP/1.0' . "\r\n";
+					$request .= 'Host: ' . $server . "\r\n";
+					$request .= 'Connection: Close' . "\r\n";
+					$request .= "\r\n";
 
-				fputs($fp, $request);
-				while (!feof($fp)) {
-				$data = fgets($fp, 1024);
-				if (strpos($data, 'Location: ') === 0) { return (int) substr($data, 17, 1); }
+					fputs($fp, $request);
+					while (!feof($fp)) {
+						$data = fgets($fp, 1024);
+						if (strpos($data, 'Location: ') === 0) { 
+							fclose($fp);
+							return (int) substr($data, 17, 1);
+						}
+					}
+					@fclose($fp);
 				}
 				return IM_UNKNOWN;
 				break;
@@ -339,7 +349,7 @@ class StudentDirectory implements Module {
 				 */
 				 $server = 'edgar.netflint.net';
 				 $url = '/status.php';
-				 $status = join(file('http://' . $server . $url . '?jid=' . $id . '&type=text'),'');
+				 $status = join(@file('http://' . $server . $url . '?jid=' . $id . '&type=text'),'');
 				 $status = substr($status, 0, strpos($status, ':'));
 				 switch($status) {
 					 case 'Online':
