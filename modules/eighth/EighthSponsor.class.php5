@@ -220,7 +220,7 @@ class EighthSponsor {
 	*/
 	public function __get($name) {
 		global $I2_SQL;
-		if(array_key_exists($name, $this->data)) {
+		if(isset($this->data[$name])) {
 			return $this->data[$name];
 		}
 		else if($name == 'name') {
