@@ -429,7 +429,7 @@ class Event {
 			$user = $I2_USER;
 		}
 		else {
-			if (! $this->user_is_admin($I2_USER)) {
+			if ($user->uid != $I2_USER->uid && ! $this->user_is_admin($I2_USER)) {
 				throw new I2Exception('You are not allowed to sign '.$user.' up for event #'.$this->myeid);
 			}
 		}
