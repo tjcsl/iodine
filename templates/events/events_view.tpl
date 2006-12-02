@@ -6,11 +6,11 @@ Registration for this event costs $[<$event->amount>].<br />
  The following people can verify payment for the event:
  <ul>
  [<foreach from=$event->verifiers item=verifier>]
-  <li><a href="[<$I2_ROOT>]studentdirectory/info/[<$verifier->uid>]">[<$verifier->name>]</a></li>
+  <li><a href="[<$I2_ROOT>]studentdirectory/info/[<$verifier->uid>]">[<$verifier->name_comma>]</a></li>
  [</foreach>]
  </ul>
 [<else>]
-<a href="[<$I2_ROOT>]studentdirectory/info/[<$event->verifiers[0]->uid>]">[<$event->verifiers[0]->name>]</a> can verify payment for this event.
+<a href="[<$I2_ROOT>]studentdirectory/info/[<$event->verifiers[0]->uid>]">[<$event->verifiers[0]->name_comma>]</a> can verify payment for this event.
 [</if>]
 <br />
 

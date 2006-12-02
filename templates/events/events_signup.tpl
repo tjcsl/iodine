@@ -10,7 +10,7 @@ Registration for this event costs $[<$event->amount>].<br />
 
  <select name="event_verifier">
  [<foreach from=$event->verifiers item=verifier>]
-  <option value="[<$verifier->uid>]">[<$verifier->name>]</option>
+  <option value="[<$verifier->uid>]">[<$verifier->name_comma>]</option>
  [</foreach>]
  </select>
 [<else>]

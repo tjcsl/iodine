@@ -72,6 +72,7 @@ class Event {
 				foreach ($uids as $uid) {
 					$this->info[$var][] = new User($uid);
 				}
+				usort($this->info[$var], array('User', 'name_cmp'));
 				break;
 		}
 
