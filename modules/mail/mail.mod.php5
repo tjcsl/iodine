@@ -100,7 +100,7 @@ class Mail implements Module {
 	function init_box() {
 		// TEMPORARY HACK: because mail happens to be dead right now,
 		// we don't even want to try loading it.
-		//return FALSE;
+		return FALSE;
 
 		global $I2_USER;
 		// Mailboxes are students only
