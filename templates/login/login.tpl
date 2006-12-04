@@ -57,7 +57,7 @@ IE7_PNG_SUFFIX = ".png";
 				document.login_form.login_username.focus();
 			</script>
 			<div style="text-align: right">
-				<a href="http://www.tjhsst.edu/">TJHSST</a> &ndash; <a href="http://mail.tjhsst.edu/">Mail</a> &ndash; <a href="http://postman.tjhsst.edu/">Postman (Calendar)</a>
+				<a href="http://www.tjhsst.edu/">TJHSST</a> &ndash; <a href="https://franklin.tjhsst.edu/">Mail</a> &ndash; <a href="http://postman.tjhsst.edu/">Postman (Calendar)</a>
 			</div>
 		</td>
 	</tr>
