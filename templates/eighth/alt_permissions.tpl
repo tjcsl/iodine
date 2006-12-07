@@ -31,7 +31,7 @@ Restricted Members of [<$activity->name_full_r>]<br />
 	[</if>]
 	</fieldset>
 </td>
-<td>
+<td style="vertical-align: top;">
 <form action="[<$I2_ROOT>]eighth/alt_permissions/add_group/aid/[<$activity->aid>]" method="post">
 	Group to add: <select name="gid">
 [<foreach from=$groups item="group">]
