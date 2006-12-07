@@ -23,7 +23,7 @@ class Highlight implements Module {
 	function init_pane() {
 		global $I2_ARGS, $I2_USER;
 
-		if (!$I2_USER->is_group_member('admin_all')) {
+		if (!$I2_USER->is_group_member('admin_source')) {
 			throw new I2Exception('You are not authorized to view application source through this module.  Please contact the Intranet 2 Development Team.');
 		}
 
