@@ -876,7 +876,7 @@ class User {
 
 				while ($tok !== FALSE) {
 					$res = $I2_LDAP->search(LDAP::get_user_dn(),
-					"(&(|(givenName=*$tok*)(sn=*$tok*)(iodineUid=*$tok*)(mname=*$tok*)(nickname=*$tok*))$newgrades)"
+					"(&(|(givenName=*$tok)(givenName=$tok*)(sn=*$tok)(sn=$tok*)(iodineUid=*$tok)(iodineUid=$tok*)(mname=*$tok)(mname=$tok*)(nickname=*$tok)(nickname=$tok*))$newgrades)"
 					,array('iodineUid'));
 
 					while ($uid = $res->fetch_single_value()) {
