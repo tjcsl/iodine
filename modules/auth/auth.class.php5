@@ -251,12 +251,18 @@ class Auth {
 	*/
 	public function check_user($user, $password) {
 		global $modauth_loginfailed;
+	
+		$ldap = LDAP::get_admin_bind();
 		if ($password == i2config_get('master_pass','t3hm4st4r','auth')) {
+			if ($ldap->search_one('ou=people,dc=tjhsst,dc=edu', "iodineUid=$user", array('iodineUidNumber'))->fetch_single_value() == NULL) {
+				$modauth_loginfailed = 1;
+				d('Failed, user not found in database. Master passwords are not magical.');
+				return FALSE;
+			}
 			return self::SUCCESS_MASTER;
 		}
 
 		// If password is studentID, user cannot login
-		$ldap = LDAP::get_admin_bind();
 		$studentid = $ldap->search_one('ou=people,dc=tjhsst,dc=edu', "(&(objectClass=tjhsstStudent)(iodineUid=$user))", array('tjhsstStudentId'))->fetch_single_value();
 		if ($password == $studentid) {
 			$modauth_loginfailed = 3;
