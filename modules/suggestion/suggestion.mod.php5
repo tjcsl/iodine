@@ -34,8 +34,12 @@ class Suggestion implements Module {
 		$subj = "Suggestion from {$I2_USER->fullname}";
 		$browser = $_SERVER['HTTP_USER_AGENT'];
 		$mesg .= "\r\n\r\n $browser";
-		$headers = "From: {$I2_USER->get_tjmail()}\r\n";
-		$headers .= "Reply-To: $to\r\n";
+		$usermail = $I2_USER->mail;
+		if (is_array($usermail)) {
+			$usermail = $usermail[0];
+		}
+		$headers = "From: $usermail\r\n";
+		$headers .= "Reply-To: $usermail\r\n";
 		$headers .= "Return-Path: $to\r\n";
 
 		if (!mail($to,$subj,$mesg,$headers)) {
