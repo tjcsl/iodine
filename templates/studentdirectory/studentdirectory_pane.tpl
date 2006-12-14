@@ -68,12 +68,7 @@ or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexan
 <br />
 <br />
 [<if count($user->aim)>]
-AIM/AOL Screenname(s):
- <ul class="none">
- [<foreach from=$user->aim item=aim>]
-  <li><img src="[<$I2_ROOT>]www/pics/osi/[<$im_status.aim.$aim>].png" /> <a href="aim:goim?screenname=[<$aim>]">[<$aim|escape:'html'>]</a></li>
- [</foreach>]
- </ul>
+	[<include file="studentdirectory/aim.tpl">]
 [</if>]
 [<if count($user->yahoo)>]Yahoo! ID(s):
  <ul class="none">

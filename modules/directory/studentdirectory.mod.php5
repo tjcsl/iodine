@@ -173,19 +173,31 @@ class StudentDirectory implements Module {
 						if(!is_array($aim_accts) && !is_object($aim_accts)) {
 							settype($aim_accts, 'array');
 						}
+						$aim_icon = array();
 						foreach($aim_accts as $aim) {
-							switch($this->im_status('aim', $aim)) {
-							case IM_ONLINE:
-								$im_status['aim'][$aim] = 'online';
-								break;
-							case IM_OFFLINE:
-								$im_status['aim'][$aim] = 'offline';
-								break;
-							case IM_UNKNOWN:
-								$im_status['aim'][$aim] = 'unknown';
-								break;
+							$key=i2config_get("key",NULL,"aim");
+							if ($key === NULL) {
+								d("No AIM Presence key in config file.",4);
+								
+								global $I2_ROOT;
+								$url="$I2_ROOTwww/pics/osi/";
+								switch($this->im_status('aim', $aim)) {
+								case IM_ONLINE:
+									$url .= 'online.png';
+									break;
+								case IM_OFFLINE:
+									$url .= 'offline.png';
+									break;
+								case IM_UNKNOWN:
+									$url .= 'unknown.png';
+									break;
+								}
+							} else {
+								$url="http://api.oscar.aol.com/presence/icon?k=$key&t=$aim";
 							}
+							$aim_icon[] = $url;	
 						}
+						$display->smarty_assign('aim_icon',$aim_icon);
 					}
 					if(count($icq_accts)) {
 						if(!is_array($icq_accts) && !is_object($icq_accts)) {
