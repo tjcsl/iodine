@@ -815,7 +815,7 @@ class Eighth implements Module {
 		else if($this->op == 'commit') {
 			$activity_from = new EighthActivity($this->args['aid_from'], $this->args['bid_from']);
 			$activity_to = new EighthActivity($this->args['aid_to'], $this->args['bid_to']);
-			$activity_to->add_members($activity_from->members);
+			$activity_to->add_members($activity_from->members, TRUE);
 			$activity_from->remove_all();
 			redirect('eighth');
 		}

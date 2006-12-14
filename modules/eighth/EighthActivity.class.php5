@@ -279,8 +279,9 @@ class EighthActivity {
 		$undoquery = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d';
 		$queryarg = array($this->data['aid'], $blockid);
 		$invquery = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
-		while ($userid = $result->fetch_single_value()) {
-			Eighth::push_undoable($undoquery,$queryarg+$userid,$invquery,$queryarg+$userid,'Remove All [student]');
+		foreach($result->fetch_col('userid') as $userid) {
+			d($userid);
+			Eighth::push_undoable($undoquery,$queryarg+array($userid),$invquery,$queryarg+array($userid),'Remove All [student]');
 		}
 		$I2_SQL->query_arr($query, $queryarg);
 		Eighth::end_undo_transaction();
