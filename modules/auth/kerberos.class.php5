@@ -61,9 +61,11 @@ class Kerberos {
 	* @return bool TRUE if the authentication succeeded, FALSE otherwise
 	*/
 	public static function authenticate($user, $password, $realm) {
+		global $I2_LOG;
 		try {
 			$creds = new Kerberos($user, $password, $realm);
 		} catch (I2Exception $e) {
+			$I2_LOG->log_file('Kerberos auth error caught: '.$e->__toString());
 			return FALSE;
 		}
 		return TRUE;

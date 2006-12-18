@@ -172,6 +172,7 @@ class Auth {
 	*		otherwise.
 	*/
 	private static function validate($user,$password) {
+		global $I2_LOG;
 		$auth_method = i2config_get('method','kerberos','auth');
 
 		if( get_i2module($auth_method) === FALSE ) {
@@ -184,6 +185,7 @@ class Auth {
 			$_SESSION['i2_credentials'] = $auth;
 			$_SESSION['i2_credentials_cache'] = $auth->cache();
 		} catch( I2Exception $e ) {
+			$I2_LOG->log_file('Auth validation error caught: '.$e->__toString());
 			return FALSE;
 		}
 
