@@ -175,6 +175,7 @@ or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexan
  </table>
 [</if>]
 [<elseif $info and isset($info.class) and isset($info.students)>]
+<p><a href="[<$I2_ROOT>]studentdirectory/section/[<$info.class->classid>]">Click here to view a list of all sections of [<$info.class->name>].</a></p>
 <p>Students in <a href=[<$I2_ROOT>]studentdirectory/info/[<$info.class->teacher->uid>]>[<$info.class->teacher->name>]</a>'s [<$info.class->name>], period [<$info.class->period>]:</p>
 <table cellspacing="0">
  <thead>
