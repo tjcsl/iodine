@@ -26,7 +26,8 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, "umi.com") ||
 		dnsDomainIs(host, "sciencedirect.com") ||
 		dnsDomainIs(host, "sirs.com") ||
-		dnsDomainIs(host, "hwwilsonweb.com")
+		dnsDomainIs(host, "hwwilsonweb.com") ||
+		dnsDomainIs(host, "worldbookonline.com")
 	)
 		return "PROXY border.tjhsst.edu:8080";
 	else
