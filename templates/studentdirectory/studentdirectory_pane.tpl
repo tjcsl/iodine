@@ -135,10 +135,11 @@ or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexan
  <table cellspacing="0">
   <thead>
    <tr>
-    <th>Period</th>
+    <th>Pd</th>
     <th>Name</th>
-    <th>Room(s)</th>
+    <th>Rm</th>
     <th>Teacher</th>
+    <th>Quarter(s)</td>
    </tr>
   </thead>
   <tbody>
@@ -148,6 +149,7 @@ or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexan
     <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$class->sectionid>]">[<$class->name>]</a></td>
     <td class="directory-table" style="text-align:center;">[<$class->room>]</td>
     <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/info/[<$class->teacher->uid>]">[<$class->teacher->sn>]</a></td>
+    <td class="directory-table">[<$class->term>]</td>
    </tr>
  [</foreach>]
   </tbody>
