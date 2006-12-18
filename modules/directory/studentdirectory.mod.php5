@@ -180,7 +180,7 @@ class StudentDirectory implements Module {
 								d("No AIM Presence key in config file.",4);
 								
 								global $I2_ROOT;
-								$url="$I2_ROOTwww/pics/osi/";
+								$url="{$I2_ROOT}www/pics/osi/";
 								switch($this->im_status('aim', $aim)) {
 								case IM_ONLINE:
 									$url .= 'online.png';
