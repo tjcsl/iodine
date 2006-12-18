@@ -32,7 +32,7 @@
    changing your browser settings every time you need to access the rest of
    the internet. To use it, copy the following URL into the "Proxy
    Autoconfiguration Script" box in your browser's settings:
-   <b>[<$I2_ROOT>]www/border.pac</b> . This is the easiest way to use the TJ
+   <b>[<$I2_ROOT>]www/proxy.pac</b> . This is the easiest way to use the TJ
    proxy server; only continue if this does not work for you.
 </p>
 
