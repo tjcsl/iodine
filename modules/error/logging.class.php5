@@ -49,7 +49,7 @@ class Logging {
 		$this->screen_debug = true;
 		$this->my_email = i2config_get('email', 'iodine-errors@tjhsst.edu', 'logging');
 		$this->log_file_name = i2config_get('debug_log','/tmp/i2-log','logging');
-		$this->log_file = fopen($this->log_file_name,'w');
+		$this->log_file = fopen($this->log_file_name,'a');
 		register_shutdown_function(array($this, 'flush_debug_output'));
 	}
 
