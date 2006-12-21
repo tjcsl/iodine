@@ -89,7 +89,7 @@ class LDAPInterface implements Module {
 	function init_pane() {
 		global $I2_LDAP, $I2_ARGS;
 
-		// Only available to people in the 'admin_mysql' group
+		// Only available to people in the 'admin_ldap' group
 		$ldap_group = new Group('admin_ldap');
 		if(!$ldap_group->has_member()) {
 			return FALSE;
