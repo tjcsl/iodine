@@ -110,6 +110,24 @@ class Events implements Module {
 		return 'Events: Sign Up';
 	}
 
+	public function admin() {
+		global $I2_USER, $I2_ARGS;
+
+		if (isset($I2_ARGS[2])) {
+			d('here');
+			$event = new Event($I2_ARGS[2]);
+
+			if (! $event->user_is_admin()) {
+				$this->template = 'events_error.tpl';
+				return 'Permission denied';
+			}
+
+			$this->template = 'event_single_admin.tpl';
+			$this->template_args['event'] = $event;
+			return 'Event Admin: '.$event->title;
+		}
+	}
+
 	/**
 	 * Verify users' payment
 	 */

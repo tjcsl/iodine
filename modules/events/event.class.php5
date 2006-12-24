@@ -527,6 +527,25 @@ class Event {
 	}
 
 	/**
+	 * Get the users's verifier
+	 *
+	 * @param User $user Defaults to the current user
+	 * @return User $verifier
+	 */
+	public function get_user_verifier(User $user = NULL) {
+		global $I2_USER, $I2_SQL;
+
+		if ($user == NULL) {
+			$user = $I2_USER;
+		}
+		elseif (! $this->user_is_admin()) {
+			throw new I2Exception('You do not have permission to see the payment verifiers for this user');
+		}
+
+		return new User($I2_SQL->query('SELECT vid FROM event_signups WHERE uid=%d AND eid=%d', $user->uid, $this->eid)->fetch_single_value());
+	}
+
+	/**
 	 * Delete the event
 	 */
 	public function del_event() {
