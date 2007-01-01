@@ -87,6 +87,7 @@ class Birthdays implements Module {
 			$person = array(
 				'uid' => $user->uid,
 				'name' => $user->name,
+				'name_comma' => $user->name_comma,
 				'grade' => $user->grade,
 				'age' => $year - ((int)substr($user->birthday, 0, 4))
 			);
@@ -101,8 +102,11 @@ class Birthdays implements Module {
 	}
 
 	private function person_compare($person1, $person2) {
+		//Sort by age, grade, then name_comma.
 		if ($person1['age'] == $person2['age']) {
-			return strcmp($person1['name'], $person2['name']);
+			if($person1['grade'] == $person2['grade'])
+				return strcmp($person1['name_comma'], $person2['name_comma']);
+			return $person2['grade'] - $person1['grade'];
 		}
 		return $person2['age'] - $person1['age'];
 	}
