@@ -964,7 +964,10 @@ class User {
 	* @return int Depending on order, less than 0, 0, or greater than 0.
 	*/
 	public static function name_cmp($user1, $user2) {
-		return strcasecmp($user1->name_comma, $user2->name_comma);
+		//Sort by last name, then first name.
+		if($user1->lname == $user2->lname)
+			return strcasecmp($user1->fname, $user2->fname);
+		return strcasecmp($user1->lname, $user2->lname);
 	}
 
 	/**
