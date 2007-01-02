@@ -4,10 +4,14 @@
 	margin-bottom: 10pt;
 	width: 305px;
 	background-color: #990022;
+	opacity: .7;
+}
+.intrabox:hover {
+	opacity: .90;
 }
 @replace
 .boxheader {
-	color: #[<$I2_USER->boxtitlecolor|default:"87ceeb">];
+	color: #[<$I2_USER->boxtitlecolor|default:"ced26e">];
 	font-weight: bold;
 	background-color: #[<$I2_USER->boxcolor|default:"990022">];
 	border-bottom-style: dotted;
@@ -35,6 +39,10 @@
 	left: 337px;
 	padding: 1px;
 	-moz-border-radius: 0px;
+	opacity: .7;
+}
+.mainbox:hover {
+	opacity: .90;
 }
 @extend
 .activity_cancelled {
