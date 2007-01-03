@@ -73,23 +73,23 @@ class Zimbramail implements Module {
 	function init_pane() {
 		global $I2_USER, $I2_AUTH, $I2_ARGS;
 
-		$base_url = i2config_get('url_prefix', 'https://franklin.tjhsst.edu', 'zimbramail');
+		$base_url = i2config_get('url_prefix', 'https://franklin.tjhsst.edu', 'mail');
 
-		header("Location: $base_url/");
-		return FALSE;
-
-/*		if(isset($I2_ARGS[1])) {
+		if(isset($I2_ARGS[1])) {
 			if($I2_ARGS[1] == 'redirect') {
 
-				$pass = $I2_AUTH->get_user_password();
-		
 				Display::stop_display();
+
+				$account = $I2_USER->get_tjmail();
+				$by = 'name';
+				list($frac, $secs) = explode(' ', microtime());
+				$timestamp = $secs . ((int) ($frac * 1000));
+				$expires = 0;
+				$hmac_data = "$account|$by|$expires|$timestamp";
+				$hmac_key = i2config_get('hmac_key', NULL, 'mail');
+				$preauth = hash_hmac('sha1', $hmac_data, $hmac_key);
 		
-				if(!$pass) {
-					header("Location: $base_url/");
-				} else {
-					header("Location: $base_url/src/redirect.php?login_username={$I2_USER->username}&secretkey=$pass&just_logged_in=1&js_autodetect_results=0");
-				}
+				header("Location: $base_url/service/preauth?account=$account&by=$by&timestamp=$timestamp&expires=$expires&preauth=$preauth");
 				exit();
 			}
 			
@@ -100,8 +100,8 @@ class Zimbramail implements Module {
 		$this->tpl_args['mail_url'] = "$base_url/";
 		$this->tpl = 'iframe.tpl';
 
-		return 'Squirrelmail';
-*/
+		return 'Zimbramail';
+
 	}
 }
 ?>
