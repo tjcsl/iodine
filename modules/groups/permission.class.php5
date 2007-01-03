@@ -146,7 +146,7 @@ class Permission {
 		}
 
 		$I2_SQL->query('DELETE FROM permissions WHERE pid=%d', $this->pid);
-		$I2_SQL->query('DELETE FROM groups_perms WHERE pid=%d', $this->pid);
+		$I2_SQL->query('DELETE FROM groups_user_perms WHERE pid=%d', $this->pid);
 		$I2_SQL->query('DELETE FROM groups_group_perms WHERE pid=%d', $this->pid);
 	}
 

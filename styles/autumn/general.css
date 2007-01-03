@@ -9,15 +9,24 @@ input, select, textarea {
 body {
 	background-color: #660033;
 	background-image: url(www/pics/styles/autumn/fall.jpg);
+	color: #f0e68c;
 }
 
 a {
-	color: #cc6600;
+	color: #ffcc33;
 	text-decoration: none;
 }
 a:visited {
-	color: #cc99cc;
+	color: #ddccbb;
 }
 a:active {
 	color: #ffcc33;
+}
+
+.c1 {
+	background-color: #8f0018;
+}
+
+.c2 {
+	background-color: #ad0036;
 }

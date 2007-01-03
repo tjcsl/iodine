@@ -1449,13 +1449,15 @@ class dataimport implements Module {
 		$I2_SQL->query('DELETE FROM polls');
 		$I2_SQL->query('DELETE FROM poll_votes');
 		$I2_SQL->query('DELETE FROM poll_group_map');
-		$I2_SQL->query('DELETE FROM groups_perms');
+		$I2_SQL->query('DELETE FROM groups_group_perms');
+		$I2_SQL->query('DELETE FROM groups_user_perms');
 		/*
 		** This stuff needs to come last so we retain privs to the bitter end
 		** This still depends on a bit of caching being done...
 		*/
-		$I2_SQL->query('DELETE FROM group_user_map');
-		$I2_SQL->query('DELETE FROM groups');
+		$I2_SQL->query('DELETE FROM groups_dynamic');
+		$I2_SQL->query('DELETE FROM groups_static');
+		$I2_SQL->query('DELETE FROM groups_name');
 	}
 
 	private function clean_eighth_absences() {

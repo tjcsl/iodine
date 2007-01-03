@@ -1,5 +1,26 @@
 @extend
 .title {
-	color: #87ceeb;
+	color: #ffffff;
 	border-bottom: 3px solid #fcc303;
+}
+
+.logo {}
+
+#logotext {
+	position: absolute;
+	top: 20px;
+	left: 30px;
+	color: #FFFFFF;
+	font-family: "Trebuchet MS", Arial, Tahoma, sans-serif;
+	font-weight: bold;
+	font-size: 3.4em;
+	text-decoration: none;
+}
+
+#menu a {
+	color: #FFFFBE;
+}
+
+.blurb a {
+	color: #FFFFBE;
 }
