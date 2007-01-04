@@ -472,6 +472,24 @@ class User {
 		}
 
 		switch ($name) {
+			case 'fname':
+				$this->set('givenName',$val,$ldap);
+				return;
+			case 'mname':
+				$this->set('middlename',$val,$ldap);
+				return;
+			case 'lname':
+				$this->set('sn',$val,$ldap);
+				return;
+			case 'grade':
+				$this->set('graduationYear',self::get_gradyear($val),$ldap);
+				return;
+			case 'sex':
+				$this->set('gender',$val,$ldap);
+				return;
+			case 'bdate':
+				$this->set('birthday', date('Ymd', strtotime($val)), $ldap);
+				return;
 			case 'phone_cell':
 				$this->set('mobile',$val,$ldap);
 				return;
