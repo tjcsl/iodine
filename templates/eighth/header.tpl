@@ -25,7 +25,7 @@
 		</tr>
 		<tr>
 			<td style="text-align: right;">
-				Name/ID: <input type="text" name="lname" />
+				Name/ID: <input type="text" name="name_id" />
 			</td>
 			<td style="width: 120px">
 				<input type="submit" value="View Schedule" style="width: 100%;" tabindex="4" />

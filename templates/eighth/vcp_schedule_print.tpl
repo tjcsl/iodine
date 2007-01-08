@@ -12,7 +12,7 @@
 		<tr style="background-color: [<cycle values="#EEEEFF,#FFFFFF">];">
 			<td style="text-align: center;">[<$activity->block->date|date_format:"%a">]</td>
 			<td style="text-align: center;">[<$activity->block->block>]</td>
-			<td style="text-align: center;">[<$activity->block->date|date_format>]</td>
+			<td style="text-align: center;">[<$activity->block->date|date_format:"%B %e, %Y">]</td>
 			<td style="text-align: center;">[<if in_array(array($activity->aid, $activity->bid), $absences)>]No[<elseif $activity->attendancetaken>]Yes[<else>]---[</if>]</td>
 			<td style="text-align: center;">[<$activity->name_r>] ([<$activity->aid>])</a></td>
 			<td style="text-align: center;">[<$activity->block_sponsors_comma_short>]</td>

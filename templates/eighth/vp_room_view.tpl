@@ -1,5 +1,5 @@
 [<include file="eighth/header.tpl">]
-<span style="font-weight: bold; font-size: 125%;">[<$block->date|date_format>] - [<$block->block>] block</span><br /><br />
+<span style="font-weight: bold; font-size: 125%;">[<$block->date|date_format:"%B %e, %Y">] - [<$block->block>] block</span><br /><br />
 <table style="border: 0px; margin: 0px; padding: 0px; width: 100%;">
 	<tr>
 		[<if isSet($inc.room)>]<th style="padding: 0px 5px; text-align: left;">Location</th>[</if>]

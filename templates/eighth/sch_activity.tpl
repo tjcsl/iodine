@@ -13,18 +13,20 @@ AID: <input type="text" name="aid"/>
 
 <form name="activities" action="[<$I2_ROOT>]eighth/sch_activity/modify/aid/[<$act->aid>]" method="post">
 <div id="eighth_room_pane">
-	<select id="eighth_room_list" name="rooms" size="10" multiple="multiple" onChange="do_action('add_room', 0, this.options[this.selectedIndex]);">
+	<select id="eighth_room_list" name="rooms" size="10" multiple="multiple" onChange="do_action('add_room', 0, this.options[this.selectedIndex]); void(this.selectedIndex=-1);">
 [<foreach from=$rooms item='room'>]
 		<option value="[<$room.rid>]">[<$room.name>]</option>
 [</foreach>]
-	</select>
+	</select><br />
+	<span style="text-decoration: underline; cursor: pointer;" onClick="void(this.parentNode.style.display='none');">Close</span>
 </div>
 <div id="eighth_sponsor_pane">
-	<select id="eighth_sponsor_list" name="sponsors" size="10" multiple="multiple" onChange="do_action('add_sponsor', 0, this.options[this.selectedIndex]);">
+	<select id="eighth_sponsor_list" name="sponsors" size="10" multiple="multiple" onChange="do_action('add_sponsor', 0, this.options[this.selectedIndex]); void(this.selectedIndex=-1);">
 [<foreach from=$sponsors item='sponsor'>]
 	<option value="[<$sponsor.sid>]">[<$sponsor.name_comma>]</option>
 [</foreach>]
-	</select>
+	</select><br />
+	<span style="text-decoration: underline; cursor: pointer;" onClick="void(this.parentNode.style.display='none');">Close</span>
 </div>
 <table cellspacing="0" style="border: 0px; padding: 0px; margin: 0px; width: 100%;">
 	<tr>

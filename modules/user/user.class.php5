@@ -246,7 +246,7 @@ class User {
 			case 'grade':
 				$grade = self::get_grade($this->__get('graduationYear'));
 				if ($grade < 0) {
-					return 'staff';
+					return 8;
 				}
 				return $grade;
 			case 'phone_home':
@@ -970,7 +970,7 @@ class User {
 	*/
 	public static function sort_users($userids) {
 		$users = self::id_to_user($userids);
-		usort($users, array('User', 'name_cmp'));
+		uasort($users, array('User', 'name_cmp'));
 		return $users;
 	}
 

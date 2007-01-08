@@ -63,17 +63,17 @@ class Search implements Module {
 	}
 
 	public function display_pane($disp) {
-			  if (isSet($_SESSION['search_results'])) {
-						 $disp->smarty_assign('info',$_SESSION['search_results']);
-						 $disp->smarty_assign('numresults',count($_SESSION['search_results']));
-						 $disp->smarty_assign('results_destination','studentdirectory/info/');
-						 $disp->smarty_assign('return_destination','search');
-						 $disp->disp('search_results_pane.tpl');
-			  } else {
-				  $disp->smarty_assign('action_name','Search');
-				  $disp->smarty_assign('search_destination','search/results/');
-				  $disp->disp('search_pane.tpl');
-			  }
+		if (isSet($_SESSION['search_results'])) {
+			$disp->smarty_assign('info',$_SESSION['search_results']);
+			$disp->smarty_assign('numresults',count($_SESSION['search_results']));
+			$disp->smarty_assign('results_destination','studentdirectory/info/');
+			$disp->smarty_assign('return_destination','search');
+			$disp->disp('search_results_pane.tpl');
+		} else {
+			$disp->smarty_assign('action_name','Search');
+			$disp->smarty_assign('search_destination','search/results/');
+			$disp->disp('search_pane.tpl');
+		}
 	}
 
 	public function get_name() {

@@ -1,0 +1,56 @@
+\documentclass[landscape,10pt]{report}
+\usepackage{longtable}
+\usepackage{color}
+\usepackage{palatino}
+\usepackage{helvet}
+\usepackage{graphics}
+\usepackage[landscape,pdftex]{geometry}
+\usepackage{multirow}
+\pagestyle{empty}
+\special{landscape}
+\oddsidemargin -0.5in
+\topmargin -1in
+\textwidth 10in
+\textheight 7.5in
+
+\begin{document}
+\begin{longtable}{|c|l|c|c|c|l|l|l|l|l|c|}
+	\hline
+	\bf\Large Space & \multicolumn{1}{c|}{\bf\Large Name} & \bf\Large Grade & \bf\Large Mntr? & \bf\Large Skips & \multicolumn{1}{c|}{\bf\Large Joint With} & \multicolumn{1}{c|}{\bf\Large Plate} & \multicolumn{1}{c|}{\bf\Large Make} & \multicolumn{1}{c|}{\bf\Large Model} & \multicolumn{1}{c|}{\bf\Large Color} & \bf\Large Year \\
+	\hline
+%@?
+foreach($people as $person) {
+	if(count($person['cars']) > 0) {
+		foreach($person['cars'] as $car) {
+			if($car['index'] == 0) {
+@%
+\multirow{%@$person['numcars']@%}{*}{%@($person['assigned'] == '' ? '---' : $person['assigned'])@%} & \multirow{%@$person['numcars']@%}{*}{%@$person['name']@%} & \multirow{%@$person['numcars']@%}{*}{%@$person['grade']@%} & \multirow{%@$person['numcars']@%}{*}{%@$person['mentor']@%} & \multirow{%@$person['numcars']@%}{*}{%@$person['skips']@%} & \multirow{%@$person['numcars']@%}{*}{%@$person['otherdriver']@%}
+%@?
+			} else {
+@%
+& & & & & 
+%@?
+			}
+@%
+ & %@$car['plate']@% & %@$car['make']@% & %@$car['model']@% & %@$car['color']@% & %@$car['year']@% \\
+%@?
+			if($person['numcars'] > 1 && $car['index'] != $person['numcars'] - 1) {
+@%
+		\cline{7-11}
+%@?
+			} else {
+@%
+		\hline
+%@?
+			}
+		}
+	} else {
+@%
+%@($person['assigned'] == '' ? '---' : $person['assigned'])@% & %@$person['name']@% & %@$person['grade']@% & %@$person['mentor']@% & %@$person['skips']@% & %@$person['otherdriver']@% & & & & & \\
+\hline
+%@?
+	}
+}
+@%
+\end{longtable}
+\end{document}

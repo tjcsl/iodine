@@ -8,7 +8,7 @@
 	</tr>
 [<foreach from=$blocks item='block'>]
 	<tr>
-		<td style="padding: 0px 5px;">[<$block.date|date_format:"%A, %b %e, %Y">]</td>
+		<td style="padding: 0px 5px;">[<$block.date|date_format:"%A, %B %e, %Y">]</td>
 		<td style="padding: 0px 5px;">[<$block.block>] block</td>
 		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/ar_block/remove/bid/[<$block.bid>]">Remove</a>
 	</tr>
