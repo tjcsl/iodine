@@ -6,7 +6,7 @@
 [<foreach from=$blocks item='block'>]
 	<tr class="[<cycle values="c1,c2">]"[<if isSet($bid) && $block.bid==$bid>]style="font-weight: bold;"[</if>]>
 		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/[<$field|default:"bid">]/[<$block.bid>][<if isSet($aid)>]/aid/[<$aid>][</if>]">[<$block.date|date_format:"%A">]</a></td>
-		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/[<$field|default:"bid">]/[<$block.bid>]">[<$block.date|date_format>]</a></td>
+		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/[<$field|default:"bid">]/[<$block.bid>]">[<$block.date|date_format:"%B %e, %Y">]</a></td>
 		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/[<$field|default:"bid">]/[<$block.bid>]">[<$block.block>] block</a></td>
 	</tr>
 [</foreach>]

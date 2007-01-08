@@ -297,6 +297,95 @@ class Parking implements Module {
 		$this->template = 'parking_admin.tpl';
 	}
 
+	function print_apps() {
+		global $I2_USER, $I2_SQL;
+
+		if(!$I2_USER->is_group_member('admin_parking')) {
+			redirect('parking');
+		}
+
+		$sortmap = array(	'none' 			=> array('1', 'none (leave last on sorting if used)'),
+					'nameasc' 		=> array('name', 'name, A-Z'),
+					'namedesc' 		=> array('name DESC', 'name, Z-A'),
+					'gradeasc' 		=> array('grade', 'grade, rising juniors first'),
+					'gradedesc' 		=> array('grade DESC', 'grade, rising seniors first'),
+					'skipsasc' 		=> array('skips', '8th period skips, least to most'),
+					'skipsdesc' 		=> array('skips DESC', '8th period skips, most to least'),
+					'mentorshipasc' 	=> array('mentorship', 'mentorship, not first'),
+					'mentorshipdesc' 	=> array('mentorship DESC', 'mentorship, yes first'),
+					'jointdesc' 		=> array('other_driver DESC', 'joint applications, first'),
+					'assignedasc' 		=> array('assigned', 'assigned spot, ascending'),
+					'assigneddesc' 		=> array('assigned DESC', 'assigned spot, descending'),
+					'timeasc' 		=> array('timestamp', 'time submitted, earliest first'),
+					'timedesc' 		=> array('timestamp DESC', 'time submtted, latest first'),
+					'random' 		=> array('RAND()', 'randomize within last category')
+				);
+		$sortarr = array();
+		if(count($sortarr) == 0) {
+			$sorts = $I2_SQL->query('SELECT sort1, sort2, sort3, sort4, sort5 FROM parking_settings')->fetch_array();
+			$sortarr = array(	$sortmap[$sorts['sort1']][0],
+						$sortmap[$sorts['sort2']][0],
+						$sortmap[$sorts['sort3']][0],
+						$sortmap[$sorts['sort4']][0],
+						$sortmap[$sorts['sort5']][0]
+					);
+		}
+
+		// update ALL the eighth period absences, so sorting works on current data...
+		$uids = $I2_SQL->query('SELECT uid FROM parking_apps')->fetch_col('uid');
+		foreach ($uids as $uid) {
+			if($uid == NULL) {
+				continue; // don't need to worry about special_name rows
+			}
+			$I2_SQL->query('UPDATE parking_apps SET skips=%d WHERE uid=%d', count(EighthSchedule::get_absences($uid)), $uid);
+		}
+
+		$people = array();
+		$res = $I2_SQL->query('SELECT uid, name, special_name, mentorship, other_driver, assigned, grade, skips FROM parking_apps ORDER BY '.join(", ", $sortarr));
+		while ($record = $res->fetch_array()) {
+			$person = array();
+
+			if($record['special_name'] != "") {
+				$person['isTeacher'] = TRUE;
+				$person['name'] = $record['special_name'];
+			}
+			else {
+				$user = new User($record['uid']);
+				if($user->objectclass == 'tjhsstTeacher') {
+					$person['isTeacher'] = TRUE;
+				}
+				else {
+					$person['isTeacher'] = FALSE;
+				}
+				$person['name'] = $record['name'];
+			}
+
+			$person['assigned'] = $record['assigned'];
+			$person['id'] = $record['uid'];
+			$person['grade'] = $record['grade'];
+			if($record['mentorship']) {
+				$person['mentor'] = 'Y';
+			}
+			else {
+				$person['mentor'] = 'N';
+			}
+			$person['skips'] = $record['skips'];
+			$person['otherdriver'] = $record['other_driver'];
+			$person['numcars'] = 0;
+			$person['cars'] = array();
+			$car_res = $I2_SQL->query('SELECT plate, make, model, color, year FROM parking_cars WHERE uid=%d', $record['uid']);
+			$n = 0;
+			while ($car = $car_res->fetch_array()) {
+				$person['numcars']++;
+				$car['index'] = $n++;
+				$person['cars'][] = $car;
+			}
+
+			$people[] = $person;
+		}
+		Printing::print_parking($people, 'pdf');
+	}
+
 	/**
 	* Required by the {@link Module} interface.
 	*/

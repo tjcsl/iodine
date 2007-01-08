@@ -47,6 +47,7 @@ Phone number(s):
   [<$user->address3_city>], [<$user->address3_state>] [<$user->address3_zip>]<br />
  [</if>]
 [</if>]
+[<* Disabled to appease the administration. -- AES 6/14/06 *>]
 [<if $user->street && $user->show_map>]
 Get directions:
 [<if $I2_UID != $user->uid>]<a href="http://maps.google.com/maps?f=d&hl=en&saddr=[<$I2_USER->street>], [<$I2_USER->l>], [<$I2_USER->st>] [<$I2_USER->postalCode>]&daddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]">from your home</a>

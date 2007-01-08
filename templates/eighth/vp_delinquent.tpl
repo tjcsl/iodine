@@ -1,22 +1,35 @@
 [<include file="eighth/header.tpl">]
 <div style="font-weight: bold; font-size: 24pt;">Absences [<if isSet($dstart)>]from $dstart to $dend[</if>]</div>
-<br />
-<form method="post" action="[<$I2_ROOT>]eighth/vp_delinquent/sort/" class="boxform">
-<table>
- <tr><td>Minimum number of absences:</td><td><input type="text" name="lower" value="[<$lower>]" /></td><td><input type="checkbox" name="seniors" [<if isset($seniors)>]CHECKED[</if>] /> Seniors</td></tr>
- <tr><td>Maximum number of absences:</td><td><input type="text" name="upper" value="[<$upper>]" /></td><td><input type="checkbox" name="juniors" [<if isset($juniors)>]CHECKED[</if>] /> Juniors</td></tr>
- <tr><td>Start date (YYYY-MM-DD):</td><td><input type="text" name="start" value="[<$start>]" /></td><td><input type="checkbox" name="sophomores" [<if isset($sophomores)>]CHECKED[</if>] /> Sophomores</td></tr>
- <tr><td>End date (YYYY-MM-DD):</td><td><input type="text" name="end" value="[<$end>]" /></td><td><input type="checkbox" name="freshmen" [<if isset($freshmen)>]CHECKED[</if>] /> Freshmen</td></tr>
-</table>
-<select name="sort">
-[<foreach from=$sorts key=sortname item=sortdesc>]
- <option value="[<$sortname>]" [<if $sortname eq $sort>]SELECTED[</if>] />[<$sortdesc>]
-[</foreach>]
-</select>
-<input type="submit" value="Load Page" />
-</form>
-
-<hr />
+<div style="float: right">
+	<form action="[<$I2_ROOT>]eighth/vp_delinquent/sort/" method="GET">
+		<fieldset>
+			<legend>Absences</legend>
+			Lower Limit: <input type="text" name="lower" value="[<$lower>]" /><br />
+			Upper Limit: <input type="text" name="upper" value="[<$upper>]" /><br />
+		</fieldset>
+		<fieldset>
+			<legend>Dates</legend>
+			Start: <input type="text" name="start" value="[<$start>]" /><br />
+			End: <input type="text" name="end" value="[<$end>]" /><br />
+		</fieldset>
+		<fieldset>
+			<legend>Grades</legend>
+				<input type="checkbox" name="seniors" [<if isset($seniors)>]CHECKED[</if>] /> Seniors<br />
+				<input type="checkbox" name="juniors" [<if isset($juniors)>]CHECKED[</if>] /> Juniors<br />
+				<input type="checkbox" name="sophomores" [<if isset($sophomores)>]CHECKED[</if>] /> Sophomores<br />
+				<input type="checkbox" name="freshmen" [<if isset($freshmen)>]CHECKED[</if>] /> Freshmen<br />
+		</fieldset>
+		<fieldset>
+			<legend>Sorts</legend>
+			<select name="sort">
+			[<foreach from=$sorts key=sortname item=sortdesc>]
+				<option value="[<$sortname>]" [<if $sortname eq $sort>]SELECTED[</if>] />[<$sortdesc>]
+			[</foreach>]
+			</select>
+		</fieldset>
+		<input type="submit">
+	</form>
+</div>
 
 [<if isset($show)>]
 

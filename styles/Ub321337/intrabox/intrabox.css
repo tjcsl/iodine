@@ -8,7 +8,7 @@
 }
 .boxheader {
 	background: transparent;
-	color: #[<$I2_USER->boxcolor|default:'008800'>];
+	color: #[<$I2_USER->boxtitlecolor|default:'008800'>];
 	font-weight: bold;
 	border-bottom: 1px dashed #008800;
 }

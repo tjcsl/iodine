@@ -11,7 +11,7 @@ Absence information for <a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$use
 	</tr>
 [<foreach from=$absences item="activity">]
 	<tr style="background-color: [<cycle values="#EEEEFF,#FFFFFF">]">
-		<td style="padding: 0px 10px; text-align: center;">[<$activity->block->date|date_format>]</td>
+		<td style="padding: 0px 10px; text-align: center;">[<$activity->block->date|date_format:"%B %e, %Y">]</td>
 		<td style="padding: 0px 10px; text-align: center;">[<$activity->block->block>] Block</td>
 		<td style="padding: 0px 10px; text-align: center;">[<$activity->name_r>]</td>
 		<td style="padding: 0px 10px; text-align: center;">[<$activity->aid>]</td>

@@ -1,4 +1,5 @@
 <script src="[<$I2_ROOT>]www/js/prefs.js" type="text/javascript" language="javascript"></script>
+<script src="[<$I2_ROOT>]www/js/color_chooser.js" type="text/javascript" language="javascript"></script>
 <form method="post" action="[<$I2_ROOT>]prefs" class="boxform">
 <input type="hidden" name="prefs_form" value="" />
 <strong>Personal Information</strong>

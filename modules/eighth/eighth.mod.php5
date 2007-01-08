@@ -327,7 +327,8 @@ class Eighth implements Module {
 			foreach ($_GET as $key=>$value) {
 				// Strip to the last question mark to determine real key name - I don't know why we have to do this.
 				// It's probably related to the .htaccess file we use.
-				$newkey = substr($key,strrpos($key,'?')+1);
+				$pos = strrpos($key,'?');
+				$newkey = substr($key,($pos === FALSE ? 0 : $pos + 1));
 				// Don't skip the first argument
 				$value = $newkey.'='.$value;
 				$tok = strtok($value,'?');
@@ -700,6 +701,9 @@ class Eighth implements Module {
 				$this->template_args['info'] = Search::get_results();
 				$this->template_args['results_destination'] = 'eighth/amr_group/add_member/gid/'.$this->args['gid'].'/uid/';
 				$this->template_args['return_destination'] = 'eighth/amr_group/view/gid/'.$this->args['gid'];
+				if(count($this->template_args['info']) == 1) {
+					redirect($this->template_args['results_destination'] . $this->template_args['info'][0]->uid);
+				}
 				$membersorted = array();
 				$membersorted = $group->members_obj;
 				usort($membersorted,array('User','name_cmp'));
@@ -746,6 +750,9 @@ class Eighth implements Module {
 					  $this->template_args['results_destination'] = 'eighth/alt_permissions/add_member/aid/'.$this->args['aid'].'/uid/';
 					  $this->template_args['return_destination'] = 'eighth/alt_permissions/view/aid/'.$this->args['aid'];
 					  $this->template_args['info'] = Search::get_results();
+					  if(count($this->template_args['info']) == 1) {
+						  redirect($this->template_args['results_destination'] . $this->template_args['info'][0]->uid);
+					  }
 			} else {
 				$this->template_args['search_destination'] = 'eighth/alt_permissions/view/searchdone/1/aid/'.$this->args['aid'];
 				$this->template_args['action_name'] = 'Add';
@@ -1218,15 +1225,12 @@ class Eighth implements Module {
 				}
 			}
 			if (isSet($this->args['searchdone']) && Search::get_results()) {
-					  $this->template_args['info'] = Search::get_results();
-					  if (count($this->template_args['info']) == 1) {
-								 // 1 Result - do it!
-								 redirect('eighth/res_student/reschedule/bid/'.$this->args['bid'].'/aid/'.$this->args['aid'].'/uid/'
-											.$this->template_args['info'][0]->uid);
-					  }
-					  $this->template_args['results_destination'] = 'eighth/res_student/reschedule/bid/'.$this->args['bid'].'/aid/'
-								 .$this->args['aid'].'/uid/';
+					  $this->template_args['results_destination'] = 'eighth/res_student/reschedule/bid/'.$this->args['bid'].'/aid/'.$this->args['aid'].'/uid/';
 					  $this->template_args['return_destination'] = 'eighth/res_student/user/bid/'.$this->args['bid'].'/aid/'.$this->args['aid'];
+					  $this->template_args['info'] = Search::get_results();
+					  if(count($this->template_args['info']) == 1) {
+						  redirect($this->template_args['results_destination'] . $this->template_args['info'][0]->uid);
+					  }
 			} else {
 				$this->template_args['action_name'] = 'Search';
 				$this->template_args['search_destination'] = 'eighth/res_student/user/searchdone/1/bid/'.$this->args['bid'].'/aid/'.$this->args['aid'];
@@ -1355,7 +1359,7 @@ class Eighth implements Module {
 			if(!empty($this->args['lower']) && ctype_digit($this->args['lower'])) {
 				$lower = $this->args['lower'];
 			}
-			if(!empty($this->args['upper']) && ctype_digit($this->args['upper'])) {
+			if(isset($this->args['upper']) && $this->args['upper'] != '' && ctype_digit($this->args['upper'])) {
 				$upper = $this->args['upper'];
 			}
 			if(!empty($this->args['start'])) {

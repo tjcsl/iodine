@@ -36,7 +36,7 @@ class Display {
 	*
 	* @access private
 	*/
-	private $buffer;
+	public $buffer;
 	
 	/**
 	* Whether to buffer output.
@@ -321,6 +321,7 @@ class Display {
 		
 		if ($this->buffering_on()) {
 			self::$core_display->buffer .= $this->smarty->fetch($tpl); 
+			#die("Got here");
 		} else {
 			$this->smarty->display($tpl);
 		}

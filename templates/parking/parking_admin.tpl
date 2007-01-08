@@ -11,6 +11,8 @@
  </div>
 [</if>]
 
+<div style="float: right; margin-right: 20px;"><a href="[<$I2_ROOT>]parking/print_apps">Print</a></div>
+
 <h3>Parking Application Data Interface</h3><br />
 
 Using this interface, you can:
