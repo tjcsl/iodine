@@ -36,7 +36,6 @@ class LDAP {
 	
 	function __construct($dn=NULL,$pass=NULL,$server=NULL,$simple=FALSE,$proxydn='') {
 		global $I2_USER, $I2_ERR, $I2_AUTH;
-		warn($dn);
 		if ($server !== NULL) {
 			$this->server = $server;
 		} else {
