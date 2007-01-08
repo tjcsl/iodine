@@ -102,6 +102,8 @@ class Kerberos {
 			fclose($pipes[2]);
 			
 			$status = proc_close($process);
+
+			exec('export KRB5CCNAME='.$cache.';/usr/bin/kgetcred ldap/ldap.tjhsst.edu@CSL.TJHSST.EDU');
 			
 			if($status == 0) {
 				d("Kerberos authorized $user@$realm",8);
