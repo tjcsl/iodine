@@ -1,6 +1,6 @@
 \documentclass[landscape,10pt]{report}
 \usepackage{longtable}
-\usepackage{color}
+\usepackage[usenames]{color}
 \usepackage{palatino}
 \usepackage{helvet}
 \usepackage{graphics}
@@ -24,7 +24,48 @@ foreach($people as $person) {
 		foreach($person['cars'] as $car) {
 			if($car['index'] == 0) {
 @%
-\multirow{%@$person['numcars']@%}{*}{%@($person['assigned'] == '' ? '---' : $person['assigned'])@%} & \multirow{%@$person['numcars']@%}{*}{%@$person['name']@%} & \multirow{%@$person['numcars']@%}{*}{%@$person['grade']@%} & \multirow{%@$person['numcars']@%}{*}{%@$person['mentor']@%} & \multirow{%@$person['numcars']@%}{*}{%@$person['skips']@%} & \multirow{%@$person['numcars']@%}{*}{%@$person['otherdriver']@%}
+\multirow{%@$person['numcars']@%}{*}{%@($person['assigned'] == '' ? '---' : $person['assigned'])@%} &
+\multirow{%@$person['numcars']@%}{*}{
+%@?
+		if($person['isTeacher']) {
+@%
+		\color{red}
+%@?
+		}
+@%
+%@$person['name']@%} & \multirow{%@$person['numcars']@%}{*}{
+%@?
+		if($person['isTeacher']) {
+@%
+		\color{red}
+%@?
+		}
+@%
+%@$person['grade']@%} & \multirow{%@$person['numcars']@%}{*}{
+%@?
+		if($person['isTeacher']) {
+@%
+		\color{red}
+%@?
+		}
+@%
+%@$person['mentor']@%} & \multirow{%@$person['numcars']@%}{*}{
+%@?
+		if($person['isTeacher']) {
+@%
+		\color{red}
+%@?
+		}
+@%
+%@$person['skips']@%} & \multirow{%@$person['numcars']@%}{*}{
+%@?
+		if($person['isTeacher']) {
+@%
+		\color{red}
+%@?
+		}
+@%
+%@$person['otherdriver']@%}
 %@?
 			} else {
 @%
@@ -46,7 +87,47 @@ foreach($people as $person) {
 		}
 	} else {
 @%
-%@($person['assigned'] == '' ? '---' : $person['assigned'])@% & %@$person['name']@% & %@$person['grade']@% & %@$person['mentor']@% & %@$person['skips']@% & %@$person['otherdriver']@% & & & & & \\
+%@($person['assigned'] == '' ? '---' : $person['assigned'])@% &
+%@?
+		if($person['isTeacher']) {
+@%
+		\color{red}
+%@?
+		}
+@%
+%@$person['name']@% &
+%@?
+		if($person['isTeacher']) {
+@%
+		\color{red}
+%@?
+		}
+@%
+%@$person['grade']@% &
+%@?
+		if($person['isTeacher']) {
+@%
+		\color{red}
+%@?
+		}
+@%
+%@$person['mentor']@% &
+%@?
+		if($person['isTeacher']) {
+@%
+		\color{red}
+%@?
+		}
+@%
+%@$person['skips']@% &
+%@?
+		if($person['isTeacher']) {
+@%
+		\color{red}
+%@?
+		}
+@%
+%@$person['otherdriver']@% & & & & & \\
 \hline
 %@?
 	}
