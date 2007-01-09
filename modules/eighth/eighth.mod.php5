@@ -1650,10 +1650,10 @@ class Eighth implements Module {
 			else {
 				if (isSet($this->args['fname']) && $this->args['fname']!="")
 				{
-					$this->template_args['users'] = User::search_info("{$this->args['fname']} {$this->args['name_id']}");
+					$this->template_args['users'] = User::search_info("{$this->args['fname']} {$this->args['lname']}");
 				}
 				else {
-					$this->template_args['users'] = User::search_info("{$this->args['name_id']}");
+					$this->template_args['users'] = User::search_info("{$this->args['lname']}");
 				}
 			}
 			if(count($this->template_args['users']) == 1) {
