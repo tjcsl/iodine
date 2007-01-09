@@ -61,7 +61,6 @@ class LDAP {
 			//putenv("KRB5CCNAME={$_ENV['KRB5CCNAME']}");
 			d('KRB5CCNAME for LDAP bind is '.$_ENV['KRB5CCNAME'],8);
 			$this->bind = ldap_sasl_bind($this->conn);
-			#$this->bind = ldap_bind($this->conn,"cn=Benjamin Franklin,dc=tjhsst,dc=edu","7h3yAR3fuZZy");
 
 			/*
 			** This is what stuff would look like for a proxy bind (w/GSSAPI)... But PHP ldap_sasl_bind is badly broken...
