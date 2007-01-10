@@ -8,6 +8,9 @@
 </select>
 <form action="[<$I2_ROOT>]eighth/sch_activity/view/" method="POST">
 AID: <input type="text" name="aid"/>
+<script language="javascript" type="text/javascript">
+	document.scheduleform.aid.focus();
+</script>
 </form>
 </div>
 
