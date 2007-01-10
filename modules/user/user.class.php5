@@ -246,7 +246,7 @@ class User {
 			case 'grade':
 				$grade = self::get_grade($this->__get('graduationYear'));
 				if ($grade < 0) {
-					return 8;
+					return 'staff';
 				}
 				return $grade;
 			case 'phone_home':
