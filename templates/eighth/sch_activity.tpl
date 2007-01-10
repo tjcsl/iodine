@@ -6,10 +6,10 @@
 	<option value="[<$activity->aid>]" [<if $act->aid == $activity->aid>]style="font-size: 18pt; font-weight: bold;" SELECTED[<else>]style="font-size: 10pt; "[</if>]>[<$activity->aid>]: [<$activity->name_r>]</option>
 [</foreach>]
 </select>
-<form action="[<$I2_ROOT>]eighth/sch_activity/view/" method="POST">
+<form name="aidform" action="[<$I2_ROOT>]eighth/sch_activity/view/" method="POST">
 AID: <input type="text" name="aid"/>
 <script language="javascript" type="text/javascript">
-	document.scheduleform.aid.focus();
+	document.aidform.aid.focus();
 </script>
 </form>
 </div>
