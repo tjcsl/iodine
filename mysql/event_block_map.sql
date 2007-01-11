@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS event_block_map;
+CREATE TABLE event_block_map(
+	eid INTEGER UNSIGNED NOT NULL,
+	bid INTEGER UNSIGNED NOT NULL
+);

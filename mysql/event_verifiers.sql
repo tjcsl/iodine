@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS event_verifiers;
+CREATE TABLE event_verifiers(
+	eid INTEGER UNSIGNED NOT NULL,
+	uid INTEGER UNSIGNED NOT NULL
+);
