@@ -347,11 +347,28 @@ class PollQuestion {
 			  $num = $I2_SQL->query('SELECT COUNT(uid) FROM poll_votes WHERE aid=%d',$aid)->fetch_single_value();
 			  return $num?$num:0;
 	}
+
+	/**
+	* Gets the users who voted for this answer
+	*
+	* @return array The {@link User}s who voted
+	 */
+	public static function users_who_answered($aid) {
+		global $I2_SQL;
+		Poll::check_admin();
+		$ret = array();
+		$res = $I2_SQL->query('SELECT uid FROM poll_votes WHERE aid=%d',$aid);
+		foreach($res->fetch_col('uid') as $uid) {
+			$ret[] = new User($uid);
+		}
+		return $ret;
+	}
 	
 	/**
 	* Determines what users voted for the question
 	*
 	* @return array The {@link User}s who voted
+	* @deprec Tentative.  This doesn't seem useful.  All it was ever used for is to count the number of voters, and that was done incorrectly.  Replaced by num_voters().
 	*/
 	public function users_who_voted() {
 		global $I2_SQL;
@@ -366,6 +383,17 @@ class PollQuestion {
 		}
 
 		return $ret;
+	}
+
+	/**
+	* Determinues the number of unique users that voted for this question.
+	*
+	* @return int Count of users who voted
+	*/
+	public function num_voters() {
+		global $I2_SQL;
+		Poll::check_admin();
+		return $I2_SQL->query('SELECT COUNT(DISTINCT uid) FROM poll_votes WHERE aid > %d AND aid < %d', self::lower_bound($this->qid),self::upper_bound($this->qid))->fetch_single_value();
 	}
 
 	/**

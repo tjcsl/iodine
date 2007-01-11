@@ -142,22 +142,69 @@ class Polls implements Module {
 			$question['text'] = $q->question;
 			//$question[$q->type] = TRUE;
 
-			$voters = $q->users_who_voted();
-			$question['voters'] = count($voters);
+			$question['voters'] = $q->num_voters();
 
-			$question['total'] = 0;
+			$question['total']['T'] = 0;
+			$question['total']['9M'] = 0;
+			$question['total']['9F'] = 0;
+			$question['total']['9T'] = 0;
+			$question['total']['10M'] = 0;
+			$question['total']['10F'] = 0;
+			$question['total']['10T'] = 0;
+			$question['total']['11M'] = 0;
+			$question['total']['11F'] = 0;
+			$question['total']['11T'] = 0;
+			$question['total']['12M'] = 0;
+			$question['total']['12F'] = 0;
+			$question['total']['12T'] = 0;
+			$question['total']['staffT'] = 0;
+			$question['total']['M'] = 0;
+			$question['total']['F'] = 0;
 			$question['answers'] = array();
 
 			foreach ($q->answers as $aid => $text) {
-				$answer = array('text' => $text, 'votes' => 0);
+				$answer = array('text' => $text);
+				$answer['votes']['T'] = 0;
 				$num = PollQuestion::get_num_votes($aid);
-				$question['total'] += $num;
-				$answer['votes'] += $num;
-				d($answer['votes'].' votes for aid '.$aid,1);
+				$whoans = PollQuestion::users_who_answered($aid);
+				$question['total']['T'] += $num;
+				//t:total;; 9,10,11,12:grade;; m,f:gender
+				//Do the supertotals
+				$answer['votes']['T'] += $num;
+				d($answer['votes']['T'].' votes for aid '.$aid,1);
 				if ($question['voters'] != 0) {
-					$answer['percent'] = $answer['votes'] / $question['voters'] * 100;
+					$answer['percent']['T'] = sprintf("%.2f",$answer['votes']['T'] / $question['voters'] * 100);
 				} else {
-					$answer['percent'] = 'NA';
+					$answer['percent']['T'] = 'NA';
+				}
+				//Now do ALL the categoricals
+				$answer['votes']['9M'] = 0;
+				$answer['votes']['9F'] = 0;
+				$answer['votes']['9T'] = 0;
+				$answer['votes']['10M'] = 0;
+				$answer['votes']['10F'] = 0;
+				$answer['votes']['10T'] = 0;
+				$answer['votes']['11M'] = 0;
+				$answer['votes']['11F'] = 0;
+				$answer['votes']['11T'] = 0;
+				$answer['votes']['12M'] = 0;
+				$answer['votes']['12F'] = 0;
+				$answer['votes']['12T'] = 0;
+				$answer['votes']['staffT'] = 0;
+				$answer['votes']['M'] = 0;
+				$answer['votes']['F'] = 0;
+				foreach($whoans as $u)
+				{
+					$gr = $u->grade;
+					$gen = $u->gender;
+					$question['total']["{$gr}T"]++;
+					$answer['votes']["{$gr}T"]++;
+					if(empty($gen))
+						continue; //staff has no gender on file
+					$question['total']["{$gr}{$gen}"]++;
+					$question['total']["{$gen}"]++;
+					$answer['votes']["{$gr}{$gen}"]++;
+					$answer['votes']["{$gen}"]++;
 				}
 				$question['answers'][] = $answer;
 			}
