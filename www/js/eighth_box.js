@@ -14,7 +14,6 @@ function eighth_box_options(anchor) {
 	}
 	if (rowIndEighth == null || rowIndEighth != row.rowIndex+1) {
 		row = table.insertRow(row.rowIndex+1);
-		row.insertCell(0).innerHTML = "&nbsp;";
 		cell = row.insertCell(0);
 		cell.id = "eighth_box_options";
 		cell.colSpan = "3";
