@@ -235,7 +235,6 @@ class EighthActivity {
 	*/
 	public function get_members($blockid = NULL) {
 		global $I2_SQL, $I2_USER;
-		$admin = $I2_USER->is_group_member('admin_eighth');
 		if($blockid == NULL) {
 			if($this->data['bid']) {
 					  $blockid = $this->data['bid'];
@@ -246,12 +245,12 @@ class EighthActivity {
 		}
 		$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d', $blockid, $this->data['aid']);
 		$ret = array();
-		// Don't show students who don't want to be found
+		// Only show students who want to be found.
 		while ($row = $res->fetch_array(Result::ASSOC)) {
-				  $user = new User($row['userid']);
-				  if ($admin || !$user->hideeighthself) {
-							 $ret[] = $user->uid;
-				  }
+			$user = new User($row['userid']);
+			if (EighthSchedule::can_view_schedule($user)) {
+				$ret[] = $user->uid;
+			}
 		}
 		return $ret;
 	}

@@ -222,13 +222,18 @@ class EighthSchedule {
 	* @return array An array of ActivityIDs and BlockIDs.
 	*/
 	public static function get_activities($userid, $starting_date = NULL, $number_of_days = 14) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_USER;
 		$user = new User($userid);
-		$userid = $user->uid;
-		if($starting_date == NULL) {
-			$starting_date = date('Y-m-d');
+		// Only show students who want to be found.
+		if(EighthSchedule::can_view_schedule($user))
+		{
+			$userid = $user->uid;
+			if($starting_date == NULL) {
+				$starting_date = date('Y-m-d');
+			}
+			return $I2_SQL->query('SELECT aid,eighth_blocks.bid FROM eighth_activity_map LEFT JOIN eighth_blocks USING (bid) WHERE userid=%d AND date >= %t AND date < ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block', $userid, $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::NUM);
 		}
-		return $I2_SQL->query('SELECT aid,eighth_blocks.bid FROM eighth_activity_map LEFT JOIN eighth_blocks USING (bid) WHERE userid=%d AND date >= %t AND date < ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block', $userid, $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::NUM);
+		return array();  // I guess this person doesn't want to be found.
 	}
 
 	/**
@@ -306,5 +311,27 @@ class EighthSchedule {
 			return FALSE;
 		}
 		return $I2_SQL->query('SELECT NULL FROM eighth_block_map WHERE activityid=%d AND bid=%d', $activityid, $blockid)->more_rows();
+	}
+
+	/**
+	* Determines whether or not the current user can view a specified user's eighth schedule.
+	*
+	* @access public
+	* @param User $user The {@link User} to who we are trying to view.
+	* @return boolean
+	*/
+	public static function can_view_schedule($user) {
+		global $I2_USER;
+		if($I2_USER->is_group_member('admin_eighth') || $I2_USER->grade=='staff')
+			//I am someone who should always see the schedule.
+			return TRUE;
+		if($user->showeighthself && $user->showeighth)
+			//This person both wants to show and has parental permission.
+			return TRUE;
+		if($user->uid == $I2_USER->uid)
+			//It's a me!  Mario!
+			return TRUE;
+		//I've fallen through.
+		return FALSE;
 	}
 }

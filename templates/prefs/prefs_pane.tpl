@@ -138,7 +138,8 @@
 [<*<input type="checkbox" name="showmapself" [<if $prefs.showmapself>]checked="checked"[</if>]/> Show Map Links<br />*>]
 <input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/> Show Pictures<br />
 <input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/> Show Home Telephone Number<br />
-<input type="checkbox" name="showscheduleself" [<if $prefs.showscheduleself>]checked="checked"[</if>]/> Show Schedule<br />
+<input type="checkbox" name="showscheduleself" [<if $prefs.showscheduleself>]checked="checked"[</if>]/> Show Class Schedule<br />
+<input type="checkbox" name="showeighthself" [<if $prefs.showeighthself>]checked="checked"[</if>]/> Show Eighth Period Schedule<br />
 <br />
 <strong>Display Options</strong><br />
 <table>

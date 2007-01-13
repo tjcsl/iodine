@@ -40,7 +40,7 @@ class Prefs implements Module {
 				}
 			}
 
-			foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showmapself','showpictureself') as $pref) {
+			foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showeighthself','showmapself','showpictureself') as $pref) {
 				if (isSet($_REQUEST[$pref])) {
 					$I2_USER->$pref = 'TRUE';
 				} else {
@@ -77,6 +77,7 @@ class Prefs implements Module {
 
 		$this->prefs['showaddressself'] = $I2_USER->showaddressself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showscheduleself'] = $I2_USER->showscheduleself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showeighthself'] = $I2_USER->showeighthself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showpictureself'] = $I2_USER->showpictureself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showbdayself'] = $I2_USER->showbdayself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showmapself'] = $I2_USER->showmapself=='TRUE'?TRUE:FALSE;
