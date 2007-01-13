@@ -17,19 +17,19 @@ function options(anchor, type) {
 			cell.id = "options";
 			cell.colSpan = "4";
 			cell.innerHTML = 
-			"<a href='" + url + "'>Download file</a><br/>" + 
-			"<a href='" + url + "?download=zip'>Download file as ZIP</a><br/>" + 
-			"<a href=\"javascript:rename('" + file + "')\">Rename file</a><br/>" + 
-			"<a href=\"javascript:rmf('" + file + "')\">Delete file</a><br/>";
+			"<a href=\"" + url + "\">Download file</a><br />" + 
+			"<a href=\"" + url + "?download=zip\">Download file as ZIP</a><br />" + 
+			"<a href=\"javascript:rename('" + file + "')\">Rename file</a><br />" + 
+			"<a href=\"javascript:rmf('" + file + "')\">Delete file</a><br />";
 		} else {
 			cell = row.insertCell(-1);
 			cell.id = "options";
 			cell.colSpan = "4";
 			cell.innerHTML = 
-			"<a href='" + url + "/'>Open directory</a><br/>" + 
-			"<a href='" + url + "/?download'>Download directory as ZIP</a><br/>" + 
-			"<a href=\"javascript:rename('" + file + "')\">Rename directory</a><br/>" +
-			"<a href=\"javascript:rmd('" + file + "')\">Delete directory</a><br/>";
+			"<a href=\"" + url + "/\">Open directory</a><br />" + 
+			"<a href=\"" + url + "/?download\">Download directory as ZIP</a><br />" + 
+			"<a href=\"javascript:rename('" + file + "')\">Rename directory</a><br />" +
+			"<a href=\"javascript:rmd('" + file + "')\">Delete directory</a><br />";
 		}
 		rowIndex = row.rowIndex;
 	} else {
