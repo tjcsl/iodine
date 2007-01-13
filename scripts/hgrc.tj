@@ -5,7 +5,7 @@ global = /shared/hg/intranet2
 http = http://iodine.tjhsst.edu/hg
 default = /shared/hg/intranet2
 default-push = /shared/hg/intranet2
-ssh = ssh://<username>@humboldt.tjhsst.edu/intranet2
+ssh = ssh://<username>@iodine.tjhsst.edu/intranet2
 [ui]
 verbose = True
 username=<username>

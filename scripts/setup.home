@@ -2,10 +2,10 @@
 if [[ $1 == "" ]] ; then
 	username=`whoami`
 	echo "Setting you up for work at home as $username."
-	echo "If that's not you, please pass your humboldt account name to the script."
+	echo "If that's not you, please pass your account name to the script."
 else
 	username=$1
-	echo "Setting up with humboldt username $username..."
+	echo "Setting up with username $username..."
 fi
 rm -rf /tmp/i2cache-`whoami`
 mkdir /tmp/i2cache-`whoami`

@@ -3,22 +3,22 @@
 if [[ $1 == "" ]] ; then
 	echo "Sets up a repository for Intranet 2 development"
 	echo "Usage: setup [type] [username]"
-	echo "[type] is one of: home humboldt"
+	echo "[type] is one of: home tj"
 	echo "[username] is optional"
 	echo
-	echo "Assuming [type] is humboldt..."
+	echo "Assuming [type] is tj..."
 	echo
-	arg="humboldt"
+	arg="tj"
 else
 	arg=$1
 fi
 if [[ $arg == "home" ]] ; then
 	./scripts/setup.home $2
 else 
-	if [[ $arg == "humboldt" ]]; then
-		./scripts/setup.humboldt $2				
+	if [[ $arg == "tj" ]]; then
+		./scripts/setup.tj $2				
 	else
-		echo "Type \"$arg\" not recognized; should be either humboldt or home."
+		echo "Type \"$arg\" not recognized; should be either tj or home."
 	fi
 fi
 

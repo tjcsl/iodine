@@ -5,13 +5,11 @@
 
 	RewriteRule ^www/ - [L]
 
-	RewriteRule ^private - [L]
+	RewriteRule ^private/ - [L]
 
-	RewriteRule ^webkdc-service - [L]
+	RewriteRule ^images/ - [L]
 
-	RewriteRule ^webauth-status - [L]
-
-	RewriteRule ^login - [L]
+	RewriteRule ^login/ - [L]
 
 	RewriteRule ^(.*)$ /var/www/iodine/core.php5?$1?%{QUERY_STRING} [L]
 </IfModule>

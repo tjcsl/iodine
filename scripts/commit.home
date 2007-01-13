@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Pushing your changes into the global Iodine source tree..."
 hg commit $*
-hg push ssh://<username>@humboldt.tjhsst.edu//shared/hg/intranet2
+hg push ssh://<username>@iodine.tjhsst.edu//shared/hg/intranet2
 echo "Done.  Now:"
 hg status
