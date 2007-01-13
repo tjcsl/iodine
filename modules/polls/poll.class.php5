@@ -357,7 +357,7 @@ class Poll {
 	public static function all_polls() {
 		global $I2_SQL;
 
-		$pids = $I2_SQL->query('SELECT pid FROM polls')->fetch_all_arrays(Result::ASSOC);
+		$pids = $I2_SQL->query('SELECT pid FROM polls ORDER BY pid DESC')->fetch_all_arrays(Result::ASSOC);
 		$polls = array();
 		foreach ($pids as $row) {
 			$polls[] = new Poll($row['pid']);
