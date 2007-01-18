@@ -18,8 +18,8 @@ function eighth_box_options(anchor) {
 		cell.id = "eighth_box_options";
 		cell.colSpan = "3";
 		cell.innerHTML = 
-		"&nbsp;&nbsp; <a href=\"" + eighthroot + "vcp_schedule/choose/uid/" + uid + "/bids/" + bid + "\">Change activity</a><br />" + 
-		"&nbsp;&nbsp; <a href=\"" + eighthroot + "vcp_schedule/roster/bid/" + bid + "/aid/" + aid + "\">View roster</a><br />";
+		"&nbsp;&nbsp; <a href=\"" + eighthroot + "vcp_schedule/roster/bid/" + bid + "/aid/" + aid + "\">View roster for current activity</a><br />" +
+		"&nbsp;&nbsp; <a href=\"" + eighthroot + "vcp_schedule/choose/uid/" + uid + "/bids/" + bid + "\">Change activity/View all rosters</a><br />";
 		rowIndEighth = row.rowIndex;
 	} else {
 		rowIndEighth = null;
