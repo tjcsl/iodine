@@ -970,7 +970,7 @@ class User {
 	*/
 	public static function sort_users($userids) {
 		$users = self::id_to_user($userids);
-		uasort($users, array('User', 'name_cmp'));
+		usort($users, array('User', 'name_cmp'));
 		return $users;
 	}
 
