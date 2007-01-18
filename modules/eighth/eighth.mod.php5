@@ -1688,16 +1688,18 @@ class Eighth implements Module {
 		else if($this->op == 'choose') {
 			$valids = array();
 			$validdata = array();
-			$this->template_args['bids'] = (is_array($this->args['bids']) ? implode(',', $this->args['bids']) : $this->args['bids']);
 			$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bids'],FALSE);
 			$this->template_args['uid'] = $this->args['uid'];
 			$this->template = 'vcp_schedule_choose.tpl';
 			if(!is_array($this->args['bids'])) {
+				$this->template_args['bids'] = $this->args['bids'];
 				$blockdate = ' for ';
 				$blockdate = $blockdate.$I2_SQL->query('SELECT DATE_FORMAT((SELECT date FROM eighth_blocks WHERE bid=%d), %s)', $this->args['bids'], '%W, %M %d, %Y')->fetch_single_value();
 				$blockdate = $blockdate.', '.$I2_SQL->query('SELECT block FROM eighth_blocks WHERE bid=%d', $this->args['bids'])->fetch_single_value().' Block';
 			}
 			else {
+				$this->template_args['bids'] = implode(',', $this->args['bids']);
+				$this->template_args['manybids'] = TRUE; //Tell the template not to offer "Show Rosters."
 				if(count($this->args['bids']) > 1) {
 					$blockdate = ' for Multiple Blocks';
 				}
@@ -1712,6 +1714,8 @@ class Eighth implements Module {
 			$this->template_args['start_date'] = isset($this->args['start_date']) ? $this->args['start_date'] : NULL;
 		}
 		else if($this->op == 'change') {
+			if(isset($_POST['submit']) && $_POST['submit'] == "View Roster") //Oops.  We don't actually want to change activities, we just want to check an activity roster before signing up for the activity.
+				redirect("eighth/vcp_schedule/roster/bid/{$this->args['bids']}/aid/{$this->args['aid']}");
 			if (isset($this->args['bids']) && isset($this->args['aid'])) {
 				$status = array();
 				$bids = explode(',', $this->args['bids']);

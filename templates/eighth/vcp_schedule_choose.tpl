@@ -17,7 +17,7 @@
         <option value="[<$activity->aid>]"[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"[</if>]>[<$activity->aid>]: [<$activity->name_full_r>]</option>
 [</foreach>] 
 	</select><br />
-	<input type="text" name="aid" id="aid_box" maxlength="4" size="4" /><input type="submit" value="Change" /><br />
+	<input type="text" name="aid" id="aid_box" maxlength="4" size="4" /><input type="submit" name="submit" value="Change" />[<if empty($manybids)>]<input type="submit" name="submit" value="View Roster" />[</if>]<br />
 </form>
 <script language="javascript" type="text/javascript">
 	document.getElementById("aid_box").focus();
