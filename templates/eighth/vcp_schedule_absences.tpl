@@ -1,6 +1,6 @@
 [<include file="eighth/header.tpl">]
 [<php>] $this->_tpl_vars['count'] = count($this->_tpl_vars['absences']); [</php>]
-Absence information for <a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]">[<$user->fullname_comma>] ([<$user->uid>])</a>: [<$count>] absence[<if $count != 1 >]s[</if>]<br /><br />
+Absence information for <a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]">[<$user->fullname_comma>] ([<$user->studentid>])</a>: [<$count>] absence[<if $count != 1 >]s[</if>]<br /><br />
 <table cellspacing="0" cellpadding="0" style="padding: 0; spacing: 0; border: none">
 	<tr>
 		<th style="padding: 0px 10px;">Date</th>

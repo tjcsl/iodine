@@ -23,7 +23,7 @@ Sponsor%@(count($activity->block_sponsors) > 1 ? 's' : '')@%: & %@$activity->blo
 %@?
 foreach($activity->members_obj as $num=>$member) {
 @%
-\hrulefill & %@$member->fullname_comma@% (%@$member->uid@%) & %@$member->grade@% \\
+\hrulefill & %@$member->fullname_comma@% (%@$member->studentid@%) & %@$member->grade@% \\
 %@?
 	if($num % 35 == 0 && $num != 0) {
 @%
