@@ -538,6 +538,7 @@ class GroupSQL extends Group {
 				$ret[] = $group;
 			}
 		}
+		usort($ret, array('Group', 'name_cmp'));
 		return $ret;
 	}
 

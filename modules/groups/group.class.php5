@@ -301,7 +301,9 @@ class Group {
 		d('end static; begin dynamic');
 		$dynamic = Group::get_dynamic_groups($user, $perms);
 		d('end dynamic');
-		return array_merge($static, $dynamic);
+		$concat = array_merge($static, $dynamic);
+		usort($concat, array('Group', 'name_cmp'));
+		return $concat;
 	}
 
 	/**
@@ -438,6 +440,18 @@ class Group {
 		return $I2_AUTH->used_master_password()
 			|| self::admin_all()->has_member($I2_USER)
 			|| self::prefix_admin($groupname, $I2_USER);
+	}
+
+	/**
+	 * Sort groups by name.
+	 * Use this for sorting group arrays that haven't been or can't be easily sorted by the database backend.
+	 *
+	 * @param object $group1 The first group.
+	 * @param object $group2 The second group.
+	 * @return int Depending on order, less than 0, 0, or greater than 0.
+	 */
+	public static function name_cmp($group1, $group2) {
+		return strcasecmp($group1->name, $group2->name);
 	}
 }
 ?>
