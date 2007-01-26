@@ -81,7 +81,7 @@ class Seniors implements Module {
 	private function submit() {
 		global $I2_SQL, $I2_USER;
 
-		if (! $I2_USER->grade == 12) {
+		if ($I2_USER->grade != 12) {
 			redirect('seniors');
 		}
 
