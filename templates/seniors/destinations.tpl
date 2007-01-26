@@ -5,17 +5,17 @@
 [<$num_submitted>] seniors have submitted college plans.<br />
 
 [<if count($seniors) > 0>]
-<table>
+<table cellspacing="0">
 	<tr>
 		<th>Name</th>
 		<th>College</th>
 		<th>Major</th>
 	</tr>
 	[<foreach from=$seniors item=senior>]
-	<tr>
-		<td><a href="[<$I2_ROOT>]studentdirectory/info/[<$senior.user->uid>]">[<$senior.user->name>]</a></td>
-		<td>[<$senior.dest>][<if ! $senior.dest_sure>] (unsure)[</if>]</td>
-		<td>[<$senior.major>][<if ! $senior.major_sure>] (unsure)[</if>]</td>
+	<tr class="[<cycle values="c1,c2">]">
+		<td class="pane"><a href="[<$I2_ROOT>]studentdirectory/info/[<$senior.user->uid>]">[<$senior.user->name>]</a></td>
+		<td class="pane">[<$senior.dest>][<if ! $senior.dest_sure>] (unsure)[</if>]</td>
+		<td class="pane">[<$senior.major>][<if ! $senior.major_sure>] (unsure)[</if>]</td>
 	</tr>
 	[</foreach>]
 </table>
