@@ -17,10 +17,20 @@ mkdir /tmp/i2cache-`whoami`/smarty/templates_c
 chmod -R 777 /tmp/i2cache-`whoami`
 chmod 777 /tmp/i2cache-`whoami`/
 echo "Iodine cache dir /tmp/i2cache-`whoami`/ created and given 777 modifier... be warned."
-cat .htaccess.user | sed "s/<username>/`whoami`/g" | sed "s'<home>'${HOME}'g" > .htaccess
-echo ".htaccess created"
-cat config.user.ini | sed "s/<username>/`whoami`/g" | sed "s'<home>'${HOME}'g" > config.ini
-echo "config.ini created"
+if [ -f .htaccess ]
+then
+	echo "HAHA! I found your htaccess, so I'll leave it alone."
+else
+	cat .htaccess.user | sed "s/<username>/`whoami`/g" | sed "s'<home>'${HOME}'g" > .htaccess
+	echo ".htaccess created"
+fi
+if [ -f config.ini ]
+then
+	echo "I found your config.ini, so I'll leave it alone."
+else
+	cat config.user.ini | sed "s/<username>/`whoami`/g" | sed "s'<home>'${HOME}'g" > config.ini
+	echo "config.ini created"
+fi
 cp scripts/update.tj update
 chmod +x update
 echo "./update created"
