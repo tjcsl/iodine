@@ -39,7 +39,7 @@ chmod +x commit
 echo "./commit created"
 if [ -f ${HOME}/.hgrc ]
 then
-	"You already have an hgrc so I'll not touch it."
+	echo "You already have an hgrc so I'll not touch it."
 else
 	cat scripts/hgrc.tj | sed "s/<username>/`whoami`/g" | sed "s'<home>'${HOME}'g" > ${HOME}/.hgrc
 	echo "~/.hgrc created"

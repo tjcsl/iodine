@@ -19,7 +19,7 @@ chmod 777 /tmp/i2cache-`whoami`/
 echo "Iodine cache dir /tmp/i2cache-`whoami`/ created and given 777 modifier... be warned."
 if [ -f ${HOME}/.hgrc ]
 then
-	"You already have an hgrc so I'll not touch it."
+	echo "You already have an hgrc so I'll not touch it."
 else
 	cat scripts/hgrc.home | sed s/\<username\>/$username/g > ${HOME}/.hgrc
 	echo "~/.hgrc created"
