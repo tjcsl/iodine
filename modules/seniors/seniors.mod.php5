@@ -111,8 +111,8 @@ class Seniors implements Module {
 			$this->template_args['major_sure'] = $row['major_certain'];
 		}
 
-		$this->template_args['colleges'] = $I2_SQL->query('SELECT * FROM CEEBMap')->fetch_all_arrays();
-		$this->template_args['majors'] = $I2_SQL->query('SELECT * FROM MajorMap')->fetch_all_arrays();
+		$this->template_args['colleges'] = $I2_SQL->query('SELECT * FROM CEEBMap ORDER BY CollegeName')->fetch_all_arrays();
+		$this->template_args['majors'] = $I2_SQL->query('SELECT * FROM MajorMap ORDER BY Major')->fetch_all_arrays();
 
 		$this->template = 'submit.tpl';
 
