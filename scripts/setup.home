@@ -17,8 +17,13 @@ mkdir /tmp/i2cache-`whoami`/smarty/templates_c
 chmod -R 777 /tmp/i2cache-`whoami`
 chmod 777 /tmp/i2cache-`whoami`/
 echo "Iodine cache dir /tmp/i2cache-`whoami`/ created and given 777 modifier... be warned."
-cat scripts/hgrc.home | sed s/\<username\>/$username/g > ${HOME}/.hgrc
-echo "~/.hgrc created"
+if [ -f ${HOME}/.hgrc ]
+then
+	"You already have an hgrc so I'll not touch it."
+else
+	cat scripts/hgrc.home | sed s/\<username\>/$username/g > ${HOME}/.hgrc
+	echo "~/.hgrc created"
+fi
 if [ -f config.ini ]
 then
 	echo "I found your config.ini, so I'll leave it alone."

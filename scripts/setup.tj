@@ -37,8 +37,13 @@ echo "./update created"
 cp scripts/commit.tj commit
 chmod +x commit
 echo "./commit created"
-cat scripts/hgrc.tj | sed "s/<username>/`whoami`/g" | sed "s'<home>'${HOME}'g" > ${HOME}/.hgrc
-echo "~/.hgrc created"
+if [ -f ${HOME}/.hgrc ]
+then
+	"You already have an hgrc so I'll not touch it."
+else
+	cat scripts/hgrc.tj | sed "s/<username>/`whoami`/g" | sed "s'<home>'${HOME}'g" > ${HOME}/.hgrc
+	echo "~/.hgrc created"
+fi
 if [ ! -d "$HOME/web-docs/i2" ] ; then
 	ln -s ../intranet2 ${HOME}/web-docs/i2
 	echo "Symlink from ~/web-docs/i2 to ~/intranet2 created"
