@@ -104,24 +104,30 @@ class Filecenter implements Module {
 			$this->template_args['csl_failed_login'] = TRUE;
 		}
 
-		if ($system_type == 'lan') {
+		switch($system_type) {
+		case 'lan':
 			$this->filesystem = new LANFilesystem($_SESSION['i2_username'], $I2_AUTH->get_user_password());
 			$this->template_args['max_file_size'] = 10485760; //10 mb
-		} else if ($system_type == 'portfolio') {
+			break;
+		case 'portfolio':
 			$this->filesystem = new PortfolioFilesystem($_SESSION['i2_username'], $I2_AUTH->get_user_password());
 			$this->template_args['max_file_size'] = 10485760; //FIXME: is 10 mb correct?
-		} else if ($system_type == 'csl') {
+			break;
+		case 'csl':
 			$this->filesystem = new CSLProxy($_SESSION['csl_username'], $_SESSION['csl_password']);
 			if (!$this->filesystem->is_valid()) {
 				$this->template = 'csl_login.tpl';
 				return array('Filecenter','CSL Authentication');
 			}
 			$this->template_args['max_file_size'] = 20971520; //20 mb
-		} else if ($system_type == 'main') {
+			break;
+		case 'main':
 			$this->filesystem = new CSLProxy($_SESSION['i2_username'], $I2_AUTH->get_user_password(),'LOCAL.TJHSST.EDU');
 			$this->template_args['max_file_size'] = 20971520;
-		} else {
+			break;
+		case 'default':
 			throw new I2Exception("Unknown filesystem type $system_type");
+			break;
 		}
 		
 		
