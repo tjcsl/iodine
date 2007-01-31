@@ -4,6 +4,8 @@
 
 <dl>
 
+<strong><span style="color: #FF0000">Most of this page is lies.</span></strong><br /><br />
+
 <dt>Case</dt>
 <dd>
 <p>Matches are CaSe InSeNsItIvE. <tt>daNIel</tt> matches "Daniel" 
