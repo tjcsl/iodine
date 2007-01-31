@@ -6,10 +6,13 @@
  <strong>[<$error>]</strong><br /><br />
 [</foreach>]
 
-[<$poll->introduction|escape:"html">]<br /><br />
 [<if !$avail>]
-<font color="red">This poll is not currently available to you.  You may not have permissions to vote in this poll, the current date and time are not within the polling time window, or this poll has been disabled for other reasons.</font>
+<font color="red">This poll is not currently available to you.  You may not have permissions to vote in this poll, the current date and time are not within the polling time window, or this poll has been disabled for other reasons.</font><br /><br />
+[<elseif $has_voted>]
+<strong><em>Thanks for voting in this poll!  You may change your vote until the poll closes.</em></strong><br /><br />
 [</if>]
+
+[<$poll->introduction|escape:"html">]<br /><br />
 
 <form method="post" action="[<if $avail>][<$I2_ROOT>]polls/vote/[<$poll->pid>][</if>]" class="boxform">
 <input type="hidden" name="polls_vote_form" value="vote">

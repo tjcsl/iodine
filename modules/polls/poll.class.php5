@@ -384,5 +384,19 @@ class Poll {
 
 		return $userpolls;
 	}
+
+	/**
+	* Determines whether or not the user has voted in this poll yet.
+	*
+	* @param Poll $poll The {@link Poll} to check.
+	* @param User $user The {@link User} to check the status of.
+	*/
+	public static function has_voted($p, $u) {
+		global $I2_SQL;
+		$res = $I2_SQL->query('SELECT COUNT(*) FROM poll_votes WHERE uid=%d AND aid>%d AND aid<%d', $u->uid, self::answer_lower_bound($p->pid), self::answer_upper_bound($p->pid))->fetch_single_value();
+		if($res==0)
+			return FALSE;
+		return TRUE;
+	}
 }
 ?>

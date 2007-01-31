@@ -77,6 +77,7 @@ class Polls implements Module {
 
 		$poll = new Poll($I2_ARGS[2]);
 		
+		$this->template_args['has_voted'] = Poll::has_voted($poll, $I2_USER);
 		$this->template_args['avail'] = $poll->user_can_access($I2_USER) ? TRUE : FALSE;
 
 		if (isset($_REQUEST['polls_vote_form'])) {
