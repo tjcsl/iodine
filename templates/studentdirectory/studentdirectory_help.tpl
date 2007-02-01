@@ -4,18 +4,16 @@
 
 <dl>
 
-<strong><span style="color: #FF0000">Most of this page is lies.</span></strong><br /><br />
-
 <dt>Case</dt>
 <dd>
 <p>Matches are CaSe InSeNsItIvE. <tt>daNIel</tt> matches "Daniel" 
 	just as well as <tt>Daniel</tt> does.</p>
 </dd>
 
-<dt>Quotes</dt>
+<dt>Quotations and Spaces</dt>
 <dd>
-<p>Quotes are supported, so to find all the people who live in Great Falls, you can do 
-	<tt>city:"great falls"</tt>.</p>
+<p>Quotations and spaces are not supported. In order to search for multi-word terms that contain one or more spaces, such as everyone who lives in Great Falls, you can replace all of the spaces with *'s. For example: 
+	<tt>city:great*falls</tt> matches "Great Falls".</p>
 </dd>
 
 <dt>Wildcards</dt>
@@ -120,11 +118,9 @@
 
 <dt><tt>AIM</tt></dt>
 <dd>
-<p>Searches by AOL Instant Messenger screen name. Spacing does 
-	not matter for this query. Case insensitivity and wildcards
-	are supported.<br />
-	<tt>AIM:AOLuser</tt>, <tt>AIM:"AOL User"</tt>, and 
-	<tt>AIM:"a o lUsEr"</tt> will all match "AOL User".</p>
+<p>Searches by AOL Instant Messenger screen name. Case insensitivity and
+	wildcards are supported, spaces are not. If searching for a user
+	with a space in their AIM address, use a * in place of all spaces.<br />
 </dd>
 
 </dl>
