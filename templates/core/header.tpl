@@ -20,6 +20,11 @@ IE7_PNG_SUFFIX = ".png";
  [<if $date != "none">]
  	[<if $I2_USER->is_group_member('grade_staff')>]
 		<a href="[<$I2_ROOT>]eighth/vcp_attendance">View Eighth-period Rosters</a>
+		<form action="[<$I2_ROOT>]eighth/vcp_schedule" method="post" name="scheduleform" style="margin: 5px 0px;">
+			<input type="hidden" name="op" value="search" />
+			Name/Student ID: <input type="text" name="name_id" />
+			<input type="submit" value="View Eighth Period Schedule" />
+		</form>
 	[<else>]
 	 	The next 8th period is [<$date>], and you are currently signed up for 
  		[<foreach from=$activities item="activity" name="activities">]
