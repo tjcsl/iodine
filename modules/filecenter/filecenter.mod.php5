@@ -125,7 +125,7 @@ class Filecenter implements Module {
 			$this->filesystem = new CSLProxy($_SESSION['i2_username'], $I2_AUTH->get_user_password(),'LOCAL.TJHSST.EDU');
 			$this->template_args['max_file_size'] = 20971520;
 			break;
-		case 'default':
+		default:
 			throw new I2Exception("Unknown filesystem type $system_type");
 			break;
 		}
