@@ -72,7 +72,12 @@ class Seniors implements Module {
 				$sortdir = 'DESC';
 			}
 		}
-		$this->template_args['sort'] = $I2_ARGS[2];
+		if (isset($I2_ARGS[2])) {
+			$this->template_args['sort'] = $I2_ARGS[2];
+		}
+		else {
+			$this->template_args['sort'] = 'name';
+		}
 		$this->template_args['sortnormal'] = ($sortdir == 'ASC');
 
 		$this->template_args['seniors'] = array();
