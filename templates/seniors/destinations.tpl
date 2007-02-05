@@ -7,9 +7,9 @@
 [<if count($seniors) > 0>]
 <table cellspacing="0">
 	<tr>
-		<th>Name</th>
-		<th>College</th>
-		<th>Major</th>
+		<th><a href="[<$I2_ROOT>]seniors/sort/name/[<if $sort == 'name' && $sortnormal>]1[</if>]">Name</a></th>
+		<th><a href="[<$I2_ROOT>]seniors/sort/college/[<if $sort == 'college' && $sortnormal>]1[</if>]">College</a></th>
+		<th><a href="[<$I2_ROOT>]seniors/sort/major/[<if $sort == 'major' && $sortnormal>]1[</if>]">Major</a></th>
 	</tr>
 	[<foreach from=$seniors item=senior>]
 	<tr class="[<cycle values="c1,c2">]">

@@ -36,7 +36,7 @@ class Seniors implements Module {
 
 		$args = array();
 		if(count($I2_ARGS) <= 1) {
-			return $this->home();
+			return $this->sort();
 		}
 		else {
 			$method = $I2_ARGS[1];
@@ -49,24 +49,48 @@ class Seniors implements Module {
 		return array('Error', 'Error');
 	}
 
-	private function home() {
-		global $I2_SQL, $I2_USER;
+	private function sort() {
+		global $I2_SQL, $I2_USER, $I2_ARGS;
 
 		$this->template = 'destinations.tpl';
 
+		$sort = 'name';
+		$sortdir = 'ASC';
+		if (isset($I2_ARGS[2])) {
+			switch ($I2_ARGS[2]) {
+			case 'name':
+				$sort = 'name';
+				break;
+			case 'college':
+				$sort = 'CollegeName';
+				break;
+			case 'major':
+				$sort = 'MajorMap.Major';
+				break;
+			}
+			if (isset($I2_ARGS[3])) {
+				$sortdir = 'DESC';
+			}
+		}
+		$this->template_args['sort'] = $I2_ARGS[2];
+		$this->template_args['sortnormal'] = ($sortdir == 'ASC');
+
 		$this->template_args['seniors'] = array();
-		$rows = $I2_SQL->query('SELECT * FROM senior_destinations ORDER BY name')->fetch_all_arrays(Result::ASSOC);
+
+		$rows = $I2_SQL->query("SELECT uid, CollegeName, college_certain, MajorMap.Major, major_certain FROM senior_destinations LEFT JOIN CEEBMap USING (CEEB) LEFT JOIN MajorMap ON senior_destinations.Major=MajorMap.MajorID ORDER BY $sort $sortdir")->fetch_all_arrays(Result::ASSOC);
 		foreach ($rows as $row) {
 			$senior = array();
 			$senior['user'] = new $I2_USER($row['uid']);
-			$senior['dest'] = $this->get_college($row['ceeb']);
+			#$senior['dest'] = $this->get_college($row['ceeb']);
+			$senior['dest'] = $row['CollegeName'];
 			$senior['dest_sure'] = $row['college_certain'];
-			$senior['major'] = $this->get_major($row['major']);
+			#$senior['major'] = $this->get_major($row['major']);
+			$senior['major'] = $row['Major'];
 			$senior['major_sure'] = $row['major_certain'];
 			$this->template_args['seniors'][] = $senior;
 		}
 
-		$this->template_args['num_submitted'] = $I2_SQL->query('SELECT COUNT(*) FROM senior_destinations ORDER BY name')->fetch_single_value();
+		$this->template_args['num_submitted'] = $I2_SQL->query('SELECT COUNT(*) FROM senior_destinations')->fetch_single_value();
 
 		if ($I2_USER->grade == 12) {
 			$this->template_args['is_senior'] = 1;
