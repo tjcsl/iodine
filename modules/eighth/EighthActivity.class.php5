@@ -157,7 +157,10 @@ class EighthActivity {
 	public function add_members($userids, $force = FALSE, $blockid = NULL) {
 		Eighth::start_undo_transaction();
 		foreach($userids as $userid) {
-			$this->add_member(new User($userid), $force, $blockid);
+			$ret = $this->add_member(new User($userid), $force, $blockid);
+			if ($ret) {
+				warn("Could not add user #$userid to activity #{$this->data['aid']}");
+			}
 		}
 		Eighth::end_undo_transaction();
 	}
