@@ -70,11 +70,11 @@ function email($array) {
 	$headers .= "Reply-To: $from\r\n";
 	$headers .= "Return-Path: $from\r\n";
 	$mesg = "Hey $name! This is the TJ Intranet wishing you a happy $age birthday! Have a good one!\r\n";
-	$mesg .= "\r\nP.S. Make Intranet Devs happy - Bake them cookies.\r\n\r\n-$from";
+	$mesg .= "\r\nP.S. Make Intranet devs happy -- bake them cookies!\r\n\r\n-$from";
 
 
-	//FIXME
-	$mail = "jboning@gmail.com";
+	////FIXME
+	//$mail = "jboning@gmail.com";
 
 	if (!mail($mail,$subj,$mesg,$headers)) {
 		print "Mail could not be sent to $mail.\n";
