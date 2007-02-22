@@ -54,6 +54,12 @@
 	height: 80px;
 }
 
+@media print {
+#eighth_header_logo {
+	display: none;
+}
+}
+
 #eighth_header_table {
 	padding: 0px;
 	margin: 10px;
