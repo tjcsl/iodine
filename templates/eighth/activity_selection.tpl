@@ -6,10 +6,10 @@
 [</foreach>]
 </select><br />
 <form name="activity_selection_form" action="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">][<if isSet($bid)>]/bid/[<$bid>][</if>]" method="GET">
-	Activity ID: <input type="text" name="aid">
+	Activity ID: <input type="text" name="[<$field|default:"aid">]">
 </form>
 <script language="javascript" type="text/javascript">
-	document.activity_selection_form.aid.focus();
+	document.activity_selection_form.[<$field|default:"aid">].focus();
 </script>
 [<if isset($add) >]
 <br />
