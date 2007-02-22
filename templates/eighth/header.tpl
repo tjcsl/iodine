@@ -19,7 +19,8 @@
 			<td style="text-align: right">
 				<span class="bold" id="eighth_help_text" onclick="show_help(0)">Help</span>
 [<if isset($print_url)>]
-				<a href="[<$I2_ROOT>]eighth/[<$method>]/format/[<$print_url>]"><img src="[<$I2_ROOT>]www/pics/eighth/printer.png" alt="Print" title="Print" style="vertical-align: middle; margin-left: 30px;" /></a>
+				[<*<a href="[<$I2_ROOT>]eighth/[<$method>]/format/[<$print_url>]"><img src="[<$I2_ROOT>]www/pics/eighth/printer.png" alt="Print" title="Print" style="vertical-align: middle; margin-left: 30px;" /></a>*>]
+				<a href="#" onClick="window.print()"><img src="[<$I2_ROOT>]www/pics/eighth/printer.png" alt="Print" title="Print" style="vertical-align: middle; margin-left: 30px;" /></a>
 [</if>]
 			</td>
 		</tr>
