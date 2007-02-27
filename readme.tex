@@ -1,0 +1,654 @@
+\documentclass[11pt,letterpaper]{report}
+\pagestyle{headings}
+
+\author{Bryan Jacobs}
+\title{Intranet 2 Manual}
+\date{January 16, 2007}
+
+\usepackage{listings}
+\usepackage{color}
+
+\hyphenation{PHP HTML Iodine Intranet Apache}
+
+\lstset{
+	language=PHP,
+	basicstyle=\small,
+	keywordstyle=\color{red}\bfseries,
+        commentstyle=\textsl,
+	identifierstyle=\color{blue}\bfseries,
+	stringstyle=\ttfamily,
+	showstringspaces=true,
+	numbers=left,
+	numberstyle=\tiny,
+	stepnumber=1,
+	numbersep=5pt,
+	morekeywords={public,private,class,interface,function,
+		return,static,global,case,switch,throw,new,array}
+}
+\lstloadlanguages{PHP,HTML}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\chapter{Intranet 2 for Users}
+\section{What is Intranet 2?}
+\subsection{What is it?}
+Intranet 2 the second version of a web site which makes life easier for TJ students, teachers, and administrators.  
+It is a central component of the eighth-period system.  Being able to use the Intranet is a valuable
+skill for any TJ student.
+\subsection{Why was it developed?}
+The original Intranet was developed in the age of the dinosaurs (well actually, more like the late '90s) by TJ students.
+It was written to work, plain and simple.  It did work rather well and quickly became an important part of TJ life.
+However, when the original Intranet was written, attention was paid only to getting it to function: the resulting system
+was very difficult to modify.  None of the current TJ students understood its black magic, and it was impossible to add
+any cool new features.  Something had to be done.
+
+A group of enterprising TJ students assembled in the Computer Systems Lab.  Their mission was clear: improve the Intranet.
+They quickly determined that fighting the spaghettilike morass of the current Intranet, rife with statements such as:
+\begin{lstlisting}
+if (is_sysadmin());
+\end{lstlisting}
+The technically inclined reader would note that this code does not, in fact, \emph{do} anything.
+But this is a direct excerpt from the original Intranet code.
+Even worse were sections such as the following, the body of the is\_sysadmin method:
+\begin{lstlisting}
+if ($user=='dtran' || $user=='edanaher' || $user=='agupta') {
+	$showstuff = true;
+} else {
+	$showstuff = false;
+}
+\end{lstlisting}
+So, the Intranet 2 team decided that they would rewrite the Intranet from the ground up, designing it from the very beginning
+to be easy to modify and extend, with clear documentation and sensible coding practices.
+
+\subsection{What can I do with it?}
+With Intranet 2, you can:
+\begin{itemize}
+\item Check your email
+\item Sign up for Eighth period
+\item Look up contact information about TJ students or teachers
+\item Look at class schedules
+\item Vote in polls and elections
+\item Read school news and announcements
+\item Sign up for a parking space (Juniors and Seniors only)
+\item Sign up for the AMC
+\item Anything else that some student decides to make possible!
+\end{itemize}
+\section{Logging in}
+To log in to Intranet 2, point your web browser to https://iodine.tjhsst.edu.  
+The site may also be accessed via intranet.tjhsst.edu.
+\subsection{The beginning of the year}
+At the very start of each school year, all students' passwords are reset.
+You may not log in to the Intranet until you have changed your password through one of the school computers.
+This is to make sure that nobody can log in to the Intranet using your account before you change your password.
+\subsection{Reading the news}
+When you log in you'll be greeted by the latest in interesting news tidbits.  When you're done staring at them,
+click the ``mark as read'' button to make them go away.  If you ever want to see the old news, click, not surprisingly,
+``old news''.
+\section{Configuring Intranet}
+A variety of options are available by clicking on ``preferences'' in the top bar on the 
+Intranet 2 main page (or at /prefs).  To change your options, set the checkboxes and
+dropdowns the way you like and click ``submit''.  
+\subsection{Security}
+There are two layers of security protections in place to hide your information:
+parental permissions and the checkbox-set options on the preferences page.
+Unless you have your parents sign and return the student information waiver you
+receive at the beginning of each school year, a law called FERPA (The Federal
+Education Right to Privacy Act) prohibits the school from displaying your
+information.  So no matter what the settings you put on the preferences page,
+if your parents don't want your phone number on the Intranet it will not be.
+
+If your parents have permitted a piece of information to appear, you still
+have the option to hide it by clearing the checkbox next to it in the preferences
+page and clicking the save button.  Note that there are no options to hide IM
+handles or other such information which you may add to the page - if you don't
+want that shown, just remove it from the Intranet altogether.  The hide/show
+options are only for information which the school will keep on file regardless
+of whether it is displayed on the Intranet.
+
+Note that you may be able to see information about yourself which is not
+available to others, and that under certain circumstances information may
+be disclosed to school staff and administrators.  But students searching
+the directory will not be able to view information you have elected not to
+disclose.
+\subsection{Visual appeal}
+The other set of options on the preferences page is Intranet 2's visual styles.
+Select a style and see how it looks!  Choose whichever one you like and it will
+be saved and shown to you each time you log in.
+\section{Signing up for Eighth Period}
+To sign up for Eighth Period, click on the block for which you have no activity 
+in the Eighth Period Intrabox (or visit /eighth and click on it there).  Then
+select the activity you want and click ``change''.
+\subsection{What to do if you can't sign up for the activity you want}
+You may not be able to sign up for an activity for one or more of the following reasons:
+\begin{description}
+\item[The activity is full]
+	Most activity capacities are flexible.
+	Try asking the Eighth Period Office to allow you to enter the activity anyway.
+\item[Eighth-period signups for today are closed (it's after lunch on the day of the activity)]
+	You need to go to the Eighth Period Office.  But you really should have signed up earlier...
+\item[The activity is cancelled]
+	Tough potatoes.  Find something else to do.
+\item[You have another mandatory activity]
+	If you're locked into a so-called ``sticky'' activity, you don't have a choice for the block.
+	You must go to the mandatory activity.
+\item[You can't find anything you want to sign up for]
+	In the distant past, there was an ``admin study hall'' for students who didn't choose an activity.
+	This no longer exists.  If you do not sign up for an activity you will be treated as having skipped
+	the eighth period block and an absence will be recorded.
+\item[You signed up for a two-block activity]
+	You can't sign up for an activity that fills both blocks and only go to one.
+	The activity is listed as ``both-blocks'' because it requires all the available time.
+\end{description}
+\subsection{Absences}
+Eighth-period absences are a Bad Thing (TM).  You should avoid them because they hurt your chances at a good parking space,
+they affect your ability to sign up for certain popular activities, they make the eighth-period office mad at you, and if
+you get enough of them the school will call your parents.  That's No Fun.  If you do end up with an (undeserved!) absence,
+as will occasionally happen, go to the sponsor of the activity in which you are listed as being delinquent and have them
+sign a paper stating that you were actually present at the block or blocks under dispute.  Bring said paper to the Eighth-Period
+Office and they will remove the absence from your record.  Note that you have \emph{30 days} from the date of the activity to
+resolve the absence or it will become permanent.
+\section{Checking your TJ email}
+I don't know how to write this section for Zimbramail.  Apparently you guys don't use Squirrelmail anymore.  So somebody else write this.
+\section{Using the directory}
+\subsection{Searching}
+Most of the time when you're using the directory you'll just want to find out 
+how to get in touch with one of your classmates.  To do this, search for them.
+The search box in the Directory module will find anyone whose first, last, middle,
+nick, or user name starts with or ends with what you type.  If you enter multiple
+words the results will be people who matched ALL terms.
+
+You may also use the ``Intranet 1'' style of searching.  This is much more powerful
+than the simple Intranet-2-style ``type in their name'' method.  To invoke this method
+of searching, just put a colon anywhere in the search string.  Again, if what you're
+searching for contains a color anywhere, you'll use the old style of lookup.
+
+Intranet 1 searches look like the following queries:
+\begin{itemize}
+	\item grade:11 firstnamesound:alyssa
+	\item first:bob last:jones
+	\item grade$<$10 name:bob
+	\item : grade$>=$11
+	\item town:mclean middle:richie
+\end{itemize}
+The ``sound'' items will return anything that sounds like what you typed, 
+regardless of spelling.  Very handy, eh? Especially try out the ``namesound'' 
+option.
+\subsection{Class info}
+A complete TJ schedule is contained within the directory.  You may navigate
+from any student or teacher's profile to the classes they teach or take,
+and see the lists of students in each one (if they wish to be seen).
+\subsection{Permissions}
+If you want to restrict what information is available to others when they search
+for you, look earlier under ``Configuring Intranet''.  Remember also that
+everyone else has the same options you do.  If they don't want you to know their
+address, you can't.
+\section{Voting}
+Every once in a while somebody will try to establish a government.  Since TJ
+isn't (exactly) a totalitarian regime, that process involves an election.
+The only fair and democratic way to hold an election is by secret ballot, with
+each and every member getting exactly one ballot.  Except the Intranet 2 admins,
+who get roughly ten thousand votes apiece, with the Intranetmaster settling all
+disputes.
+
+No, really, voting on Intranet 2 is a fair affair (hey, assonance!).  You will
+be presented with a link to vote.  Select the choice or choices that you think
+have the best-sounding names, or however else you like to vote, and click the
+little button at the bottom.  Your vote will be recorded.  You will have until
+the polls close to view and/or change your vote at your discretion.  If you have
+any problems voting, contact an Intranet administrator and they will ignore you.
+Or help you, if you bring them cookies.
+\chapter{Intranet 2 for Developers}
+\section{Getting started with Iodine}
+\subsection{Revision control}
+As of \today , Intranet 2 uses the Mercurial revision-control system from http://selenic.com/mercurial.  
+To fetch the Intranet 2 source code, run the following commands:
+\begin{itemize}
+	\item mkdir intranet2
+	\item cd intranet2
+	\item hg init
+	\item hg pull http://iodine.tjhsst.edu/hg
+	\item ./setup tj
+\end{itemize}
+This will fetch a complete copy of the Iodine source code repository, and
+set it up for development.  If you wish to interface with a ``real''
+Iodine database you will need some passwords to replace those in the config.ini
+file.  Ask a systems administrator to set you up a sandbox.
+
+Once you are up and running, making changes to the code, here is how you
+can contribute:
+\begin{itemize}
+	\item hg commit
+	\item hg push
+\end{itemize}
+
+If you get a message about ``creating multiple remote heads'', you have made
+a change against an earlier version of Iodine.  Run an ``hg pull'' to get
+the remote changes, then ``hg update -m'' to combine the other person's
+changes with yours.  Finally, when your working copy looks how you want it
+to, ``hg commit'' and ``hg push'' to send out the final copy into the public
+repository.
+
+Admins should take care to make sure that the hgrc files present in the repo
+and installed by the setup scripts have a correct default-push setting.
+\section{Developing Iodine}
+Intranet 2 is a middle-sized program---this means that unless you've worked on a
+real open-source project before it will seem mind-bogglingly complex.  However,
+great care has been taken to make sure that the code is logically organized
+and broken into bite-sized yummy chunks, ready to be digested by code monkeys.
+\subsection{The application lifecycle}
+The following is a rough trace of the lifecycle of one page request:
+\begin{enumerate}
+	\item The user requests a page using their browser.
+	\item The request is redirected to core.php5.
+	\item The module.map file is loaded and miscellaneous PHP initializers
+		are invoked.  This is the point at which the garbage collection
+		functions are overridden.
+	\item core.php5 decomposes the URL into the \lstinline{$I2_ARGS} variable.
+	\item \lstinline{$I2_ERR} is initialized.
+	\item \lstinline{$I2_LOG} is initialized.
+	\item \lstinline{$I2_SQL} is initialized - a connection is made to the
+		MySQL server at this point.
+	\item \lstinline{$I2_AUTH} is initialized.  Auth first looks to
+		see if the module is 'logout'.  If it is, Auth handles
+		cleaning up anything lying around and logging out the user.
+		Then, the Auth module checks to see if the user is logged in.
+		If they are, we proceed.  If not, the following happens:
+		\begin{itemize}
+			\item If the Apache REMOTE\_USER variable is set, it is
+				accepted.  This means \emph{any} Apache module may
+				be used as Iodine authentication and Iodine will honor
+				it.  Suggested potential modules are mod\_webauthldap
+				and mod\_kerberos.
+			\item If the Iodine session variable i2\_uid is set, the
+				user is authenticated and \lstinline{is_authenticated(})
+				returns \lstinline{TRUE}.
+			\item If the user has sent credentials into the application,
+				they are validated by the auth module specified in
+				the config file (currently, and for the
+				forseeable future, Kerberos).  That auth module
+				performs all necessary steps to confirm that the
+				user identity is valid and to log them in.
+			\item The user is not logged in, so we need to show them
+				the login page.  The background image for login is
+				fetched by Auth (should be moved to Display, really).
+				Then a new Display is created with the special name
+				'login', and it is proceeds to display the login page.
+				The Auth constructor then calls \lstinline{die()}.
+				Execution stops with the user being shown a login page.
+		\end{itemize}
+
+	\item \lstinline{$I2_LDAP} is initialized, and a SASL bind is made to
+		the LDAP server (unless the user used the master password, in
+		which case an admin bind is used).
+	\item \lstinline{$I2_USER} is initialized.  If the user is a member
+		of the admin\_ldap group, the old LDAP bind is discarded
+		for an admin bind.
+	\item \lstinline{$I2_DISP} is initialized.  Smarty is loaded by Display.  The user's
+		style is loaded.
+	\item \lstinline{$I2_AJAX} is initialized.
+	\item If the user requested a module in the URL, that module
+		is set now---otherwise the user's default start page is used.
+		If the module is ajax, the flow of execution halts after
+		returning a response.
+	\item Display's \lstinline{display_loop($module)} method is invoked.  If
+		something has called \lstinline{stop_display()} before this point,
+		execution ends.  Otherwise, the Nags module is given a chance to
+		take over the page.
+	\item Display attempts to load the passed module.  If it fails, it
+		displays an error instead of a page.
+	\item A new Display instance is created for the main module by the core display.
+	\item The module is instantiated.  If it gives an error, display catches it and
+		recovers.
+	
+	\item The module's \lstinline{init_pane()} method is called.  It returns the
+		title which the page should bear, or \lstinline{FALSE} if it should
+		not be displayed to the current user at all.  It may also return
+		a two-element array---the first element is the page title, the second
+		the title of the main pane.
+	\item The module's \lstinline{display_pane()} method is called and passed
+		the earlier-instantiated display object.  The module displays
+		anything which pleases it.
+	\item The Intrabox class' \lstinline{display_boxes} method is invoked by Display.
+		This method loops over the boxes a user wants displayed and calls
+		\lstinline{display_box} for each one.  That, in turn, calls \lstinline{init_box}
+		and then \lstinline{display_box} on each box module.  Note that all the
+		boxes share the core display object.  However, the display object's
+		buffering is turned on and only flushed after each box completes its output,
+		so that unless a module misbehaves by directly manipulating the display object
+		a module throwing an exception will just cause that module to be removed
+		completely without disrupting the page flow.
+\end{enumerate}
+\subsection{Data organization and access}
+There are two primary data storage backends in Iodine: MySQL and LDAP.
+MySQL should be used for everything except contact information and information
+directly associated with a single user, such as their default style.  LDAP
+provides faster read access to this data and the ability to use the school's
+Active Directory servers to store student information, along with the
+guarantee of low-level Access Control Lists guaranteeing that a coder's slip
+won't cause Iodine to leak sensitive information makes LDAP a solid choice
+for directory information.  It also allows the Intranet database to be a
+source of a wide variety of NIS information via nss\_ldap.
+
+When creating a new module, use MySQL as its backend unless a strong
+justification can be made for LDAP.  Place one SQL file containing a
+commented DROP TABLE and CREATE TABLE statement for each table your module
+uses into the mysql/ directory.  Do not omit this step.  A module then handles
+its own MySQL database by invoking the \lstinline{query} method of the \lstinline{$I2_SQL}
+object.  The object returned may be manipulated as any PHP MySQLi-type object,
+via repeated \lstinline{fetch_array} calls, or through a variety of well-documented
+convenience methods.  The object \emph{may not} be held for more than one
+page lifecycle.  It is invalidated when the page display finishes.
+
+All data access should occur during the init phase of the module lifecycle.
+The modules should locally cache the necessary information (or hold the Iodine
+MySQL objects and use them as a cache) so that all that needs to be done in
+the display phase is just that, display.
+
+A module which uses the same information in box form as it does in pane form
+should not collect nor retain two copies of the same info---share!
+\subsection{Coding practices}
+\subsubsection{Documentation}
+Document everything!  The proper standard for comments is the PHPDoc format.  Every file, method, and class should have a comment block.
+Every major variable should also have one.
+
+Single-line comments should look like:
+\begin{lstlisting}
+/*
+** This is a single-line comment following the I2 conventions.
+*/
+\end{lstlisting}
+or just for ease of coding's sake:
+\begin{lstlisting}
+// This comment doesn't follow I2 conventions, but it's acceptable.
+\end{lstlisting}
+Do not use the C-style line comments for lengthy explanations.  They should look like this:
+\begin{lstlisting}
+/*
+** This comment is quite lengthy, and so it should not be contained
+** within a set of C-style //-type comments.  To do so would be awkward.
+** The comment should be broken into lines about every 80 characters, too.
+*/
+\end{lstlisting}
+Important class variables, especially public ones, should be commented like so:
+\begin{lstlisting}
+/**
+ * Defines the package's foo.  Currently defaults to 'bar'.
+ */
+ public static $foo = 'bar';
+\end{lstlisting}
+\emph{ALL} public methods and most other important ones should be documented.
+The general rule is that, if anyone else could ever be reasonably expected to use the method, \emph{or} you
+have to ask yourself whether you should document it, put in a PHPDoc comment like the following:
+\begin{lstlisting}
+/**
+ * The bar function calculates the bar-qwerty index of the thing
+ * on which it is called.
+ *
+ * The bar-qwerty index is a made-up construct created just to
+ * show how the first section of the comment is a short description
+ * while more complicated concepts (like the bar-qwerty index) should
+ * be explained later in PHPDoc's later docblock (here).  Links to other
+ * {@link OtherClass classes} should be here too.
+ *
+ * @access public
+ * @param string $bar A string representing the bar to check.
+ * @param int $qwerty An integer whose value is how qwerty
+ *	the function should be, defaulting to the standard
+ *	qwerty value of 3.
+ * @return bool Whether the function was called at all.
+ */
+public function foo($bar,$qwerty=3) {
+	return TRUE;
+}
+\end{lstlisting}
+And finally, at the start of each file should be a block like the following:
+\begin{lstlisting}
+/**
+* Just contains the definition for the class {@link MyClass}
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2007 The Intranet 2 Development Team
+* @package MyPackage
+* @subpackage ExampleSubPackage
+* @filesource
+*/
+
+/**
+* A demo class to show PHPDoc file and class comments
+* @package MyPackage
+* @subpackage ExampleSubPackage
+* @see OtherRelatedClass
+*/
+class MyPackage {
+\end{lstlisting}
+The file comment must be the first line of PHP in the file.  Do not omit it.  The package and subpackage for the file
+and for the class the file contains should match.
+\subsubsection{Object orientation}
+Every Iodine entity should be a class or interface.  All modifiers should be set using the concept of encapsulation---nothing
+should be made public except via public get/set methods.  It is acceptable to use PHP's magical \_\_get and \_\_set methods to 
+make getters and setters transparent, allowing things like the following code:
+\begin{lstlisting}
+	public function __get($varname) {
+		if ($varname == 'meh') {
+			return $this->foo;
+		}
+	}
+
+	public function bar() {
+		return $this->meh+42;
+	}
+\end{lstlisting}
+Some classes should only be instantiated once per application lifecycle.  
+These include the data accessor classes, the Display class, and so on.  Each of these classes has its own global variable
+prefixed with I2\_.  Please put a \lstinline{global $I2_WHATEVER;}
+at the beginning of the function in which you need to make use of the variable.
+\subsubsection{Error Handling}
+If your function can continue in a reasonable fashion, use the d() method to output a debug message and continue.
+The debugging levels are as follows:
+\begin{enumerate}
+\item Major errors being concealed
+	\begin{itemize}
+		\item Failing to load a template or file
+	\end{itemize}
+\item Minor errors being concealed
+	\begin{itemize}
+		\item Incorrectly formatted queries
+		\item Attempting to set an invalid style
+		\item Having to use the default value of something in an INI file
+	\end{itemize}
+
+If a debug would be level 1 or 2, carefully consider throwing an exception instead of trying to continue.
+	
+\item Strange events which are almost certainly abnormal
+	\begin{itemize}
+		\item Queries returning errors
+	\end{itemize}
+\item Strange events which are probably abnormal
+	\begin{itemize}
+		\item Queries timing out
+		\item Weird combinations of session variables (user but no password, etc)
+	\end{itemize}
+
+Levels 3 and 4 will usually be errors thrown and dropped to debugging by the error handler.
+
+\item Strange events which are not necessarily abnormal
+	\begin{itemize}
+		\item No 8th-period activities in the given future
+	\end{itemize}
+
+Things 5 and above will probably always be logged to a file.
+	
+\item Less frequent, but normal, events
+	\begin{itemize}
+		\item Construction of null objects
+		\item User not having CSL files but attempting to access them anyway
+		\item User's CSL auth failing with their LAN username and password
+	\end{itemize}
+	
+\item Routine module usage and high-volume stuff
+	\begin{itemize}
+		\item LDAP queries
+		\item MySQL queries
+		\item Group-status messages (``user is an XYZ admin'')
+	\end{itemize}
+\item Server connections
+	\begin{itemize}
+		\item LDAP and MySQL connections
+		\item Authentication babble
+	\end{itemize}
+\item Module loading
+	\begin{itemize}
+		\item ``Loading Module XYZ''
+	\end{itemize}
+\end{enumerate}
+If you cannot continue, throw an Exception.  This will be caught by the Iodine
+built-in error handling methods and dealt with.
+\subsection{Smarty TPL}
+Smarty TPL is used to keep apart the way Iodine looks and the way it acts.
+Any and all HTML should be kept in TPL files in a directory corresponding
+to your module.  These should be outputted using Display's \lstinline{disp}
+method, called on the Display object your module is passed.
+\section{What to do if something goes wrong}
+\subsection{Blame LDAP}
+It's probably LDAP's fault.  Make sure that you can access LDAP on the Iodine
+server's command line with these commands:
+\begin{itemize}
+	\item ldapwhoami -x
+	\item kinit
+	\item ldapwhoami
+\end{itemize}
+Next make sure that \lstinline{phpinfo()} displays ``SASL support''.
+\subsection{Blame PHP}
+It's probably PHP's fault.  Do you have a version of PHP with mcrypt and SASL
+support?
+\subsection{Blame MySQL}
+It's probably MySQL's fault.  Is the mysql server up and running?
+\subsection{Blame the users}
+It's probably the luser's fault.  Do they have an IQ above 40?
+\subsection{Blame yourself}
+Only use this debugging technique if all the others fail.
+It is possible that the error is a result of your own coding mistake.
+Now go and fix it.
+\section{Installing Iodine on a new system}
+Iodine requires the following technologies:
+\begin{itemize}
+	\item Apache 2
+	\item PHP5, preferably via mod\_php.
+		PHP must be built with mcrypt, mysql, ldap, and sasl
+		support enabled.  It also needs to support persistent
+		sessions, preferably imap, inifiles, and ctype support.
+		You also almost certainly want ssl and threading
+	\item mod\_rewrite
+	\item Smarty TPL
+	\item Cyrus SASL
+	\item OpenLDAP version 2.2 and up
+	\item Heimdal Kerberos 5 version 0.7.2+
+	\item Squirrelmail (or Zimbramail) for inline email
+	\item \LaTeX for Eighth-Period formatting and display
+	\item OpenAFS or another filesystem for the filecenter module
+\end{itemize}
+To install a new Iodine server:
+\begin{enumerate}
+	\item Install Apache2 and get mod\_php running.  This is easy and
+		very well documented.
+	\item Install a MySQL server.  Create an iodine database, and a
+		user which has full access to that database.  Run each of the
+		MySQL scripts in the mysql/ directory using the MySQL source
+		command after selecting the iodine database.  This will
+		create initial empty tables.  Use the base.sql file after all
+		the others to create the seed data allowing Iodine to start
+		running.  Alternatively, use a dump of the real Iodine
+		database.
+	\item Install a Heimdal Kerberos 5 server.  The steps look
+		something like this to initialize it:
+		\begin{enumerate}
+			\item Install Heimdal
+			\item Edit /etc/krb5.conf and change the default\_realm
+				to WHATEVER.COM, and set up the realms section
+				and domain-realm mapping
+			\item kadmin -l \\
+				kadmin> init WHATEVER.COM \\
+				kadmin> add myuser \\
+				kadmin> add myuser/ldap \\
+				kadmin> add -r ldap/ldap.whatever.com \\
+				kadmin> ext -k /etc/krb5.keytab ldap/ldap.whatever.com
+		\end{enumerate}
+		This places a keytab with the right service principal for the
+		OpenLDAP server you are about to install in the default system keytab.
+	\item Ensure that reverse DNS is working properly
+	\item Install an OpenLDAP server with SASL support.
+		This is the most tricky part of the whole installation.
+		The steps are as follows:
+		\begin{enumerate}
+			\item Install OpenLDAP
+			\item Place the iodine.schema file from /ldap in your
+				/etc/ldap/schema/ directory
+			\item Edit slapd.access to correspond to your new
+				Kerberos realm
+			\item Edit slapd.conf and make the following changes:
+				\begin{itemize}
+					\item Ensure the inetorgperson.schema
+						file is included
+					\item Include the iodine.schema file
+						after it
+					\item schemacheck on
+					\item sasl-host ldap.whatever.com
+					\item sasl-realm WHATEVER.COM
+					\item include slapd.acl
+					\item include slapd.access
+					\item Create the database as in
+						the sample slapd.conf file.
+				\end{itemize}
+			\item Ensure that slapd starts with ``-h ldap://ldap.whatever.com''
+				or use SSL if you have the skill
+			\item Edit /etc/ldap/ldap.conf and set URI ldap://ldap.whatever.com
+			\item Populate the database with base.ldif or a real Iodine dump
+			\item Test by running the following commands:
+				\begin{itemize}
+					\item kinit myuser
+					\item ldapwhoami -x
+					\item ldapwhoami -Y GSSAPI
+				\end{itemize}
+				If the last command does not return
+				uid=myuser,ou=people,dc=tjhsst,dc=edu something is wrong
+		\end{enumerate}
+	\item Install a mail server/client as desired
+	\item Install filesystems as desired
+	\item Configure mod\_php to respond to the .php5 suffix with the
+		following line in httpd.conf:
+		\begin{verbatim}
+			AddType application/x-httpd-php .php5
+		\end{verbatim}
+	\item Copy Iodine to a directory in which your Apache allows
+		overwrites via mod\_rewrite.  Using mod\_userdir is recommended.
+		If you do, you may use ``./setup home'' to make your life much
+		easier
+	\item Copy .htaccess.server to .htaccess and config.server.ini to config.ini
+	\item Edit config.ini so that all paths and most especially www\_root
+		are correct.  Check the MySQL and LDAP server hostnames.
+	\item Profit!
+\end{enumerate}
+\section{Future possibilities}
+\begin{itemize}
+	\item Fix bugs and improve performance.  For example, right now
+		searching triggers one LDAP query per space-delimited
+		part of the query.  This could be combined into one
+		large LDAP query string for a dramatic speed increase.
+	\item Put student directory information into Active Directory
+		and get it out of the Systems Lab's hands once and for all.
+	\item Implement teacher evaluation forms and such using the polls
+		interface.
+	\item Allow more student interactivity in the Intranet---club sites,
+		etc.  Make putting together a club web page possible within
+		the Intranet.
+	\item Let the Computer Team grader and other club-specific apps use
+		the Intranet framework.
+	\item Let teachers post news to their classes.
+	\item Finish what was abortively started: a collaborative due-date-tracking
+		program where students may post when they think an assignment's due.
+	\item A bibtex-based bibliography generator supporting MLA and APA styles.
+		This is easier than you might think.
+	\item Sign up for the next year's classes on the Intranet!
+	\item The list goes on and on\ldots
+\end{itemize}
+\end{document}
