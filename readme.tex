@@ -1,9 +1,9 @@
 \documentclass[11pt,letterpaper]{report}
 \pagestyle{headings}
 
-\author{Bryan Jacobs}
+\author{Bryan Jacobs (with contributions from others)}
 \title{Intranet 2 Manual}
-\date{January 16, 2007}
+\date{Last updated February 27, 2007}
 
 \usepackage{listings}
 \usepackage{color}
@@ -44,11 +44,16 @@ was very difficult to modify.  None of the current TJ students understood its bl
 any cool new features.  Something had to be done.
 
 A group of enterprising TJ students assembled in the Computer Systems Lab.  Their mission was clear: improve the Intranet.
-They quickly determined that fighting the spaghettilike morass of the current Intranet, rife with statements such as:
+They quickly determined that it would be difficult (if not downright impossible) to fight the spaghettilike morass of the
+current Intranet, rife with statements such as:
 \begin{lstlisting}
 if (is_sysadmin());
 \end{lstlisting}
 The technically inclined reader would note that this code does not, in fact, \emph{do} anything.
+However, the technically inclined reader would, in fact, be decieved (don't worry if this is you -- you're in
+good company, and lots of it). This code exists so that if the condition is true,
+neither the following \emph{else if} nor \emph{else if} blocks are executed.
+(If you are crying right now, again, you are in good company).
 But this is a direct excerpt from the original Intranet code.
 Even worse were sections such as the following, the body of the is\_sysadmin method:
 \begin{lstlisting}
@@ -81,6 +86,8 @@ The site may also be accessed via intranet.tjhsst.edu.
 At the very start of each school year, all students' passwords are reset.
 You may not log in to the Intranet until you have changed your password through one of the school computers.
 This is to make sure that nobody can log in to the Intranet using your account before you change your password.
+Note that this means \emph{YOU CAN NEVER RESET YOUR PASSWORD TO YOUR STUDENT ID NUMBER}. If you do, you will be
+unable to log in to the Intranet.
 \subsection{Reading the news}
 When you log in you'll be greeted by the latest in interesting news tidbits.  When you're done staring at them,
 click the ``mark as read'' button to make them go away.  If you ever want to see the old news, click, not surprisingly,
@@ -149,7 +156,9 @@ sign a paper stating that you were actually present at the block or blocks under
 Office and they will remove the absence from your record.  Note that you have \emph{30 days} from the date of the activity to
 resolve the absence or it will become permanent.
 \section{Checking your TJ email}
-I don't know how to write this section for Zimbramail.  Apparently you guys don't use Squirrelmail anymore.  So somebody else write this.
+To access your mail through Intranet2, you first need to go to your preferences, scroll to the bottom, add the ``Your Mail''
+intrabox, and hit ``submit''. Once this is done, a preveiw of your most recent messages should appear somewhere on the left sidebar.
+You can then access your inbox directly (without having to retype your password!) by clicking the ``Read and send messages'' link.
 \section{Using the directory}
 \subsection{Searching}
 Most of the time when you're using the directory you'll just want to find out 
@@ -159,7 +168,7 @@ nick, or user name starts with or ends with what you type.  If you enter multipl
 words the results will be people who matched ALL terms.
 
 You may also use the ``Intranet 1'' style of searching.  This is much more powerful
-than the simple Intranet-2-style ``type in their name'' method.  To invoke this method
+than the simple Intranet2-style ``type in their name'' method.  To invoke this method
 of searching, just put a colon anywhere in the search string.  Again, if what you're
 searching for contains a color anywhere, you'll use the old style of lookup.
 
@@ -524,7 +533,7 @@ support?
 \subsection{Blame MySQL}
 It's probably MySQL's fault.  Is the mysql server up and running?
 \subsection{Blame the users}
-It's probably the luser's fault.  Do they have an IQ above 40?
+It's probably the user's fault.  Do they have an IQ above 40?
 \subsection{Blame yourself}
 Only use this debugging technique if all the others fail.
 It is possible that the error is a result of your own coding mistake.
