@@ -231,6 +231,27 @@ class EighthActivity {
 	}
 
 	/**
+	 * Transfers all members from another activity to this one
+	 *
+	 * @param integer $old_aid The id of the old activity
+	 * @param integer $bid The block id (optional)
+	 */
+	public function transfer_members($old_aid, $bid = NULL) {
+		global $I2_SQL;
+
+		if ($bid == NULL) {
+			if ($this->data['bid']) {
+				$bid = $this->data['bid'];
+			}
+			else {
+				throw new I2Exception('No blockid set to transfer people!');
+			}
+		}
+
+		$I2_SQL->query('UPDATE eighth_activity_map SET aid=%d WHERE aid=%d AND bid=%d', $this->data['aid'], $old_aid, $bid);
+	}
+
+	/**
 	* Gets the members of the activity.
 	*
 	* @access public

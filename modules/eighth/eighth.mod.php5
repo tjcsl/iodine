@@ -820,10 +820,12 @@ class Eighth implements Module {
 			$this->title = 'Confirm Moving Students';
 		}
 		else if($this->op == 'commit') {
-			$activity_from = new EighthActivity($this->args['aid_from'], $this->args['bid_from']);
+			//$activity_from = new EighthActivity($this->args['aid_from'], $this->args['bid_from']);
+			//$activity_to = new EighthActivity($this->args['aid_to'], $this->args['bid_to']);
+			//$activity_to->add_members($activity_from->members, TRUE);
+			//$activity_from->remove_all();
 			$activity_to = new EighthActivity($this->args['aid_to'], $this->args['bid_to']);
-			$activity_to->add_members($activity_from->members, TRUE);
-			$activity_from->remove_all();
+			$activity_to->transfer_members($this->args['aid_from'], $this->args['bid_to']);
 			redirect('eighth');
 		}
 	}
@@ -1611,25 +1613,27 @@ class Eighth implements Module {
 	*/
 	public function rep_schedules() {
 		global $I2_SQL, $I2_LDAP;
-		#throw new I2Exception('Don\'t hit that button!');
+		//throw new I2Exception('Don\'t hit that button!');
+		$alluids = $I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', 'objectClass=tjhsstStudent', 'iodineUidNumber')->fetch_col('iodineUidNumber');
+		$numuids = count($alluids);
 		if ($this->op == '') {
-			$date = date('Y-m-d');
-			$bids = flatten($I2_SQL->query('SELECT bid FROM eighth_blocks WHERE date >= %s', $date)->fetch_all_arrays(MYSQL_NUM));
+			$date = $this->args['start_date'];
+			$bids = $I2_SQL->query('SELECT bid FROM eighth_blocks WHERE date >= %s', $date)->fetch_col('bid');
+			$default_aid = i2config_get('default_aid',999,'eighth');
 			foreach($bids as $bid) {
-				$activity = new EighthActivity(i2config_get('default_aid',999,'eighth'));
-				EighthSchedule::schedule_activity($bid, $activity->aid, $activity->sponsors, $activity->rooms);
-				#$uids = flatten($I2_SQL->query('SELECT uid FROM user WHERE uid NOT IN (SELECT userid FROM eighth_activity_map WHERE bid=%d)', $bid)->fetch_all_arrays(Result::NUM));
-				$alluids = $I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', 'objectClass=tjhsstStudent', 'iodineUidNumber')->fetch_col('iodineUidNumber');
 				$uidstofix = array();
-				foreach ($alluids as $uid) {
-					$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d', $bid);
-					if ($res->num_rows > 0) {
-						$uidstofix[] = $uid;
+				$members = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%s', $bid)->fetch_col('userid');
+				if (count($members) != $numuids) {
+					warn('Found missing members! (blockid ' . $bid . ')');
+					$missing = array_diff($alluids, $members);
+					warn('Missing members: ' . implode(', ', array_values($missing)));
+					//$activity->add_members($missing, true, $bid);
+					foreach ($missing as $uid) {
+						$I2_SQL->query('INSERT INTO eighth_activity_map SET bid=%d, aid=%d, uid=%d', $bid, $default_aid, $uid);
 					}
 				}
-				$activity->add_members($uidstofix, true, $bid);
 			}
-			redirect('eighth');
+			//redirect('eighth');
 		}
 	}
 
