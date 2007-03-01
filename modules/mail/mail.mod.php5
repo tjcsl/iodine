@@ -192,22 +192,32 @@ class Mail implements Module {
 			if(!isset($message->from)) {
 				$message->from = '(no name)';
 			}
-
-			if(strlen($message->subject) > 31) {
-				$message->short_subject = substr($message->subject, 0, 30);
+	
+			//$message->subject = strrev(ltrim(strrev($message->subject)));
+			$message->short_subject = $message->subject;
+			if(strlen($message->short_subject) > 31) {
+				$message->short_subject = substr($message->subject, 0, 29);
 				$message->short_subject .= '...';
 			}
-			else {
-				$message->short_subject = $message->subject;
+			if(strlen($message->short_subject) > 16) {
+				for($k = 0; $k < 16 && $k + 15 < strlen($message->short_subject); $k++) {
+					if(substr_count($message->short_subject," ",$k,$k+15) == 0) {
+						$message->short_subject = substr($message->subject,0,$k+13);
+						$message->short_subject .= '...';	
+					}
+				}
 			}
+			//else if(strlen($message->subject) > 31 && substr_count($message->short_subject," ",15,30) == 0) {
+			//	$message->short_subject = 
+			//}
 
-			if(strlen($message->from) > 16) {
-				$message->short_from = substr($message->from, 0, 15);
+			$message->from = strrev(ltrim(strrev($message->from)));
+			$message->short_from = $message->from;
+			if(strlen($message->short_from) > 16) {
+				$message->short_from = substr($message->short_from, 0, 13);
 				$message->short_from .= '...';
 			}
-			else {
-				$message->short_from = $message->from;
-			}
+			
 		}
 
 		usort($messages, array($this, 'cmp_message'));
