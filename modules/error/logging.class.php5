@@ -162,6 +162,23 @@ class Logging {
 	}
 
 	/**
+	 * Auth logging.
+	 *
+	 * Logs messages to the "log_auth" file.
+	 *
+	 * @param string $msg The message to log.
+	 */
+	function log_auth($msg) {
+		$fname = i2config_get('auth_log');
+
+		if (!$fname || !($fh = fopen($fname, 'a'))) {
+			warn('The iodine authentication log cannot be accessed.');
+		}
+
+		fwrite($fh, $msg."\n");
+	}
+
+	/**
 	* Logs directly to a file
 	*/
 	public function log_file($msg,$level=NULL) {

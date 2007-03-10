@@ -259,8 +259,10 @@ class Auth {
 			if ($ldap->search_one('ou=people,dc=tjhsst,dc=edu', "iodineUid=$user", array('iodineUidNumber'))->fetch_single_value() == NULL) {
 				$modauth_loginfailed = 1;
 				d('Failed, user not found in database. Master passwords are not magical.');
+				self::log_auth($user, 'Master password (nonexistent user)');
 				return FALSE;
 			}
+			self::log_auth($user, 'Master password');
 			return self::SUCCESS_MASTER;
 		}
 
@@ -268,13 +270,16 @@ class Auth {
 		$studentid = $ldap->search_one('ou=people,dc=tjhsst,dc=edu', "(&(objectClass=tjhsstStudent)(iodineUid=$user))", array('tjhsstStudentId'))->fetch_single_value();
 		if ($password == $studentid) {
 			$modauth_loginfailed = 3;
+			self::log_auth($user);
 			return FALSE;
 		}
 		
 		if(self::validate($user,$password)) {
+			self::log_auth($user);
 			return self::SUCCESS;
 		}
 		$modauth_loginfailed = 1;
+		self::log_auth($user);
 		return FALSE;
 	}
 
@@ -289,6 +294,10 @@ class Auth {
 	*/
 	public function login() {
 		global $I2_ARGS, $modauth_loginfailed;
+
+		// the log function uses this to tell if the login was successful
+		// if login fails, something else will set it
+		$modauth_loginfailed = FALSE;
 
 		if(!isSet($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
 			$_SESSION['logout_funcs'] = array();
@@ -454,6 +463,41 @@ class Auth {
 				return 'www/pics/logins/special/'.$occasion['background'];
 			}
 		}
+	}
+
+	/**
+	 * Log the login (attempt)
+	 *
+	 * @param string $username
+	 * @param string $message
+	 */
+	private static function log_auth($user, $message = NULL) {
+		global $I2_LOG, $modauth_loginfailed;
+
+		if ($modauth_loginfailed) {
+			$result = 'FAILURE';
+		}
+		else {
+			$result = 'success';
+		}
+
+		if ($message === NULL) {
+			if ($modauth_loginfailed == 3) {
+				$message = 'StudentID password';
+			}
+		}
+
+		if ($message != '') {
+			$message = ' -- ' . $message;
+		}
+
+		$I2_LOG->log_auth(
+			'[' . date('d/M/Y:H:i:s O') . '] ' .
+			$_SERVER['REMOTE_ADDR'] . ' - ' .
+			$result . ' - ' .
+			$user .
+			$message
+		);
 	}
 }
 
