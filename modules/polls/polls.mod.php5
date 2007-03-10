@@ -66,7 +66,7 @@ class Polls implements Module {
 	* Where a user votes
 	*/
 	function vote() {
-		global $I2_USER, $I2_ARGS;
+		global $I2_USER, $I2_ARGS, $I2_SQL;
 
 		if (! isset($I2_ARGS[2])) {
 			$this->home();
@@ -83,48 +83,63 @@ class Polls implements Module {
 		if (isset($_REQUEST['polls_vote_form'])) {
 			foreach ($poll->questions as $question) {
 				$answer = 0;
-				if ($question->maxvotes == 1) {
+				//if ($question->maxvotes == 1) {
+				if ($question->answertype == 'radio') {
 					if (isSet($_REQUEST[$question->qid])) {
 						$question->record_vote($_REQUEST[$question->qid]);
 					}
 				}
 				else {
-					// Perform deletions before addition to ensure we stay below maxvotes if possible
+					// Just kidding //Perform deletions before addition to ensure we stay below maxvotes if possible
 					$add = array();
-					foreach ($question->answers as $aid => $ans) {
-						$vote = isSet($_REQUEST[$aid])?$_REQUEST[$aid]:FALSE;
-						if ($vote) {
-							$add[$aid] = $vote;
+					$delete = array();
+					if(count($question->answers) != 0) {
+						foreach ($question->answers as $aid => $ans) {
+							$vote = isSet($_REQUEST[$aid])?$_REQUEST[$aid]:FALSE;
+							if ($vote) {
+								$add[$aid] = $vote;
+							}
+							$delete[] = $aid;
+							//$question->delete_vote($aid);
 						}
-						$question->delete_vote($aid);
 					}
 
 					if ($question->maxvotes != 0 && count($add) > $question->maxvotes) {
 						$this->template_args['errors'][] = "Oops! You tried to vote for too many options on question #{$question->readable_qid}!";
 						continue;
 					}
-
+					//search and destroy
+					if (count($add) == 0 && Poll::has_voted($poll, $I2_USER)) {
+						$res = $I2_SQL->query("SELECT aid FROM poll_votes WHERE uid='%d' AND aid LIKE '%d%'", $I2_USER->uid, $question->qid);
+						foreach($res as $row) {
+							$delete[] = $row['aid'];
+							//warn($row['aid']);
+						}
+					}
+					foreach ($delete as $delete_me) {
+						$question->delete_vote($delete_me);	
+					}
 					foreach ($add as $aid=>$vote) {
-						//if ($question->type == 'approval') {
+						if ($question->answertype != 'freeresponse') {
 							// Don't record text for voting questions
 							$vote = NULL;
-						//}
+						}
 						$question->record_vote($aid, $vote);
 					}
 				}
 			}
+			$this->template = 'polls_voted.tpl';
 		}
-		
+		else {
 		$this->template = 'polls_vote.tpl';
+		}
 		$this->template_args['poll'] = $poll;
 	}
-
 	/**
 	* Poll results viewing
 	*/
 	function results() {
-		global $I2_USER, $I2_ARGS;
-
+		global $I2_USER, $I2_ARGS, $I2_SQL;
 		if (! $I2_USER->is_group_member('admin_polls')) {
 			$this->home();
 			return;
@@ -137,11 +152,39 @@ class Polls implements Module {
 		
 		$poll = new Poll($I2_ARGS[2]);
 		$this->template_args['pollname'] = $poll->name;
+		
+		//Display freeresponse results
+		if ( isset($I2_ARGS[3])) {
+			$votes = array();
+			$res = $I2_SQL->query("SELECT * FROM poll_votes WHERE aid=%s AND answer IS NOT NULL", "{$I2_ARGS[3]}001");
+			$question = $I2_SQL->query("SELECT question FROM poll_questions WHERE qid='%d'", $I2_ARGS[3])->fetch_single_value();
+			foreach($res as $row) { 
+				$vote = array();
+				$user = new User($row['uid']);
+				$vote['uid'] = $user->name; 
+			        $vote['vote'] = $row['answer'];
+				$votes[] = $vote;
+			}
+			$this->template_args['votes'] = $votes;
+			$this->template_args['question'] = $question;
+			$this->template = 'polls_results_freeresponse.tpl';
+			return;
+		}
 		$this->template_args['questions'] = array();
+
 		foreach ($poll->questions as $q) {
 			$question = array();
+			$question['qid'] = $q->qid; 
 			$question['text'] = $q->question;
 			//$question[$q->type] = TRUE;
+			$question['answertype'] = $q->answertype;
+			$question['r_qid'] = $q->r_qid;
+			if($q->answers == NULL) {
+				if($q->answertype == 'freeresponse') {
+					$this->template_args['questions'][] = $question;
+				}
+				continue;
+			}
 
 			$question['voters'] = $q->num_voters();
 
@@ -163,6 +206,7 @@ class Polls implements Module {
 			$question['total']['F'] = 0;
 			$question['answers'] = array();
 
+				
 			foreach ($q->answers as $aid => $text) {
 				$answer = array('text' => $text);
 				$answer['votes']['T'] = 0;
@@ -208,6 +252,7 @@ class Polls implements Module {
 					$answer['votes']["{$gen}"]++;
 				}
 				$question['answers'][] = $answer;
+			
 			}
 			$this->template_args['questions'][] = $question;
 		}
@@ -256,9 +301,14 @@ class Polls implements Module {
 			}
 			elseif ($_REQUEST['poll_add_form'] == 'question') {
 				$poll = new Poll($I2_ARGS[2]);
-				$poll->add_question($_REQUEST['question'], $_REQUEST['maxvotes'], explode("\r\n\r\n", trim($_REQUEST['answers'])));
-				$pid = $I2_ARGS[2];
-				redirect("polls/edit/$pid");
+				if ($_REQUEST['answertype'] == 'freeresponse') {
+					$maxvotes = 1;
+				} else {
+					$maxvotes = 0;
+				}
+				$poll->add_question($_REQUEST['question'], $_REQUEST['answertype'], $maxvotes, NULL);
+				//$poll->add_question($_REQUEST['question'], $_REQUEST['maxvotes'], explode("\r\n\r\n", 		$pid = $I2_ARGS[2]));
+				redirect("polls/edit/{$I2_ARGS[2]}");
 			}
 
 		}
@@ -276,6 +326,7 @@ class Polls implements Module {
 			$this->template_args['pid'] = $I2_ARGS[2];
 		}
 		else {
+			warn('polls/edit/'.$I2_ARGS[2].'/'.$I2_ARGS[3]);
 			$this->template = 'polls_add.tpl';
 		}
 	}
@@ -319,10 +370,14 @@ class Polls implements Module {
 				$poll->set_end_datetime($_REQUEST['enddt']);
 			}
 			if ($_REQUEST['poll_edit_form'] == 'question') {
-				$question = new PollQuestion($I2_ARGS[2], $_REQUEST['qid']);
+				//$question = new PollQuestion($I2_ARGS[2], $_REQUEST['qid']);
+				$question = new PollQuestion($_REQUEST['qid']);
 				$question->set_question($_REQUEST['question']);
-				$question->set_maxvotes($_REQUEST['maxvotes']);
-				$question->set_answers(explode("\r\n\r\n", trim($_REQUEST['answers'])));
+				if($question->answertype == 'checkbox') {
+					$question->set_maxvotes($_REQUEST['maxvotes']);
+				}
+				//$question->set_answertype($_REQUEST['answertype']);
+				//$question->set_answers(explode("\r\n\r\n", trim($_REQUEST['answers'])));
 			}
 		}
 		if (isset($I2_ARGS[4])) {

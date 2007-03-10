@@ -23,7 +23,7 @@ class PollQuestion {
 
 	private $myanswers;
 
-	private $mytype;
+	private $myanswertype;
 
 	public function __get($var) {
 		global $I2_SQL;
@@ -42,8 +42,8 @@ class PollQuestion {
 			return $this->myquestion;
 		case 'answers':
 			return $this->myanswers;
-		//case 'type':
-		//	return $this->mytype;
+		case 'answertype':
+			return $this->myanswertype;
 		default:
 			throw new I2Exception("Invalid variable $var attempted to be accessed in PollQuestion");
 		}
@@ -65,8 +65,7 @@ class PollQuestion {
 		$info = $I2_SQL->query('SELECT maxvotes, question, answertype FROM poll_questions WHERE qid=%d', $qid)->fetch_array(Result::ASSOC);
 
 		$this->myqid = $qid;
-		//$this->mytype = $info['answertype'];
-
+		$this->myanswertype = $info['answertype'];
 		$this->mymaxvotes = $info['maxvotes'];
 		$this->myquestion = $info['question'];
 		
@@ -161,6 +160,14 @@ class PollQuestion {
 		Poll::check_admin();
 
 		return $I2_SQL->query('UPDATE poll_questions SET maxvotes=%d WHERE qid=%d', $maxvotes, $this->qid);
+	}
+	
+	public function set_answertype($answertype) {
+		global $I2_SQL;
+
+		Poll::check_admin();
+
+		return $I2_SQL->query('UPDATE poll_questions SET answertype=%s WHERE qid=%d', $answertype, $this->qid);
 	}
 
 	/**
@@ -275,7 +282,7 @@ class PollQuestion {
 			throw new I2Exception("Invalid answer value $answer attempted to be recorded in PollQuestion");
 		}
 
-		if ($this->maxvotes == 1) {
+		if ($this->maxvotes == 1 || $this->myanswertype == 'radio') {
 				  // Delete previous votes
 				  $I2_SQL->query('DELETE FROM poll_votes WHERE aid >= %d AND aid < %d AND uid=%d',self::lower_bound($this->myqid),self::upper_bound($this->myqid),$user->uid);
 		}
@@ -315,7 +322,6 @@ class PollQuestion {
 	*/
 	public function user_voted_for($aid, $user=NULL) {
 		global $I2_USER, $I2_SQL, $I2_LOG;
-
 		if (!$user) {
 			$user = $I2_USER;
 		}
@@ -324,7 +330,7 @@ class PollQuestion {
 				  Poll::check_admin();
 		}
 
-//		if ($this->type == 'approval' || $this->type == 'standard') {
+		if ($this->answertype == 'checkbox' || $this->answertype == 'radio') {
 			// We need to translate the value into TRUE or FALSE
 			$res = $I2_SQL->query('SELECT COUNT(aid) FROM poll_votes WHERE aid=%d AND uid=%d', $aid, $user->uid)->fetch_single_value();
 			if ($res > 1) {
@@ -332,7 +338,7 @@ class PollQuestion {
 				throw new I2Exception('VOTING FRAUD!  User: '.$user.' Answer: '.$aid.'.  Detected and logged.');
 			}
 			return ($res == 0)?FALSE:TRUE;
-//		}
+		}
 		$res = $I2_SQL->query('SELECT answer FROM poll_votes WHERE aid=%d AND uid=%d', $aid, $user->uid)->fetch_single_value();
 		return $res;
 	}
@@ -439,7 +445,10 @@ class PollQuestion {
 	* @param int $maxvotes The maximum number of options for which a user may vote
 	* @param array $answers The answers a user may choose
 	*/
-	public static function new_question($pid, $question, $maxvotes, $answers) {
+	//public static function new_question($pid, $question, $maxvotes, $answers) {
+	//	new_question($pid, $question, 'checkbox', $maxvotes, $answers);
+	//}
+	public static function new_question($pid, $question, $answertype, $maxvotes, $answers=NULL) {
 		global $I2_SQL;
 
 		Poll::check_admin();
@@ -447,16 +456,18 @@ class PollQuestion {
 		$qid = $I2_SQL->query('SELECT MAX(qid) FROM poll_questions WHERE qid > %d AND qid < %d ORDER BY qid DESC', Poll::lower_bound($pid), Poll::upper_bound($pid))->fetch_single_value();
 
 		if (!$qid) {
-				  $qid = Poll::lower_bound($pid)+1;
+			$qid = Poll::lower_bound($pid)+1;
 		} else {
-				  $qid += 1;
+			$qid += 1;
 		}
 
-		$I2_SQL->query('INSERT INTO poll_questions SET qid=%d, question=%s, maxvotes=%d', $qid, $question, $maxvotes);
+		$I2_SQL->query('INSERT INTO poll_questions SET qid=%d, question=%s, answertype=%s, maxvotes=%d', $qid, $question, $answertype, $maxvotes);
 		$aid = self::lower_bound($qid) + 1;
-		foreach ($answers as $answer) {
-			$I2_SQL->query('INSERT INTO poll_answers SET aid=%d, answer=%s', $aid, $answer);
-			$aid++;
+		if($answers != NULL) {
+			foreach ($answers as $answer) {
+				$I2_SQL->query('INSERT INTO poll_answers SET aid=%d, answer=%s', $aid, $answer);
+				$aid++;
+			}
 		}
 	}
 

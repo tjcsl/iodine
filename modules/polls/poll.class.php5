@@ -228,9 +228,13 @@ class Poll {
 	* plurality voting
 	* @param array $answers The answers a user may choose from
 	*/
-	public function add_question($question, $maxvotes, $answers) {
+	//public function add_question($question, $maxvotes, $answers) {
+	//	add_question($question, 'checkbox', $maxvotes, $answers);
+	//}
+	
+	public function add_question($question, $answertype, $maxvotes, $answers) {
 		self::check_admin();
-		$this->myquestions[] = PollQuestion::new_question($this->pid, $question, $maxvotes, $answers);
+		$this->myquestions[] = PollQuestion::new_question($this->pid, $question, $answertype, $maxvotes, $answers);
 	}
 
 	/**

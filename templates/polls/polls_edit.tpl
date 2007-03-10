@@ -45,13 +45,14 @@ Introduction:<br />
 
 Questions:<br />
 [<foreach from=$poll->questions item=question>]
- [<$question->qid>]. [<$question->question>] ([<if $question->maxvotes == 0>]No vote limit[<else>]Pick [<$question->maxvotes>][</if>]) (<a href="[<$I2_ROOT>]polls/edit/[<$poll->pid>]/[<$question->qid>]">edit</a>) (<a href="[<$I2_ROOT>]polls/delete/[<$poll->pid>]/[<$question->qid>]">delete</a>)<br />
+ [<$question->r_qid>]. [<$question->question>] (qid:[<$question->qid>])(type:[<$question->answertype>])[<if $question->answertype == 'checkbox'>]([<if $question->maxvotes == 0>]No vote limit[<else>]Pick [<$question->maxvotes>][</if>])[</if>] (<a href="[<$I2_ROOT>]polls/edit/[<$poll->pid>]/[<$question->qid>]">edit</a>) (<a href="[<$I2_ROOT>]polls/delete/[<$poll->pid>]/[<$question->qid>]">delete</a>)<br />
+[<if $question->answertype != 'freeresponse'>]
  <ul>
  [<foreach from=$question->answers item=answer>]
   <li>[<$answer>]</li>
  [</foreach>]
  </ul>
  <br />
+[</if>]
 [</foreach>]
-
 <a href="[<$I2_ROOT>]polls/add/[<$poll->pid>]">Add a question</a>
