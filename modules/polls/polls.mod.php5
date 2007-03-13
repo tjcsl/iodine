@@ -326,7 +326,6 @@ class Polls implements Module {
 			$this->template_args['pid'] = $I2_ARGS[2];
 		}
 		else {
-			warn('polls/edit/'.$I2_ARGS[2].'/'.$I2_ARGS[3]);
 			$this->template = 'polls_add.tpl';
 		}
 	}
