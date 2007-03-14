@@ -5,5 +5,5 @@
 [<$question>]<br /><br />
 
 [<foreach from=$votes item=vote>]
- [<$vote.uid>]:<br />[<$vote.vote>]<br /><br />
+ <!--[<$vote.uid>]:<br />-->[<$vote.vote>]<br /><br />
 [</foreach>]

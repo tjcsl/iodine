@@ -89,6 +89,13 @@ class Polls implements Module {
 						$question->record_vote($_REQUEST[$question->qid]);
 					}
 				}
+				else if ($question->answertype == 'freeresponse') {
+					$aid = "{$question->qid}001";
+					$question->delete_vote($aid);
+					if (isSet($_REQUEST[$question->qid]) && $_REQUEST[$question->qid] != "") {
+						$question->record_vote($aid, $_REQUEST[$question->qid]);
+					}
+				}
 				else {
 					// Just kidding //Perform deletions before addition to ensure we stay below maxvotes if possible
 					$add = array();

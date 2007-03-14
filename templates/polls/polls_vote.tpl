@@ -17,7 +17,7 @@
 <form method="post" action="[<if $avail>][<$I2_ROOT>]polls/vote/[<$poll->pid>][</if>]" class="boxform">
 <input type="hidden" name="polls_vote_form" value="vote">
 [<foreach from=$poll->questions item=question>]
- [<if count($question->answers) != 0>]
+ [<if count($question->answers) != 0 || $question->answertype == 'freeresponse'>]
   <b>[<$question->r_qid>].</b> [<$question->question>]<br />
   [<if $question->answertype == 'checkbox'>]
    [<if $question->maxvotes == 0>]
@@ -25,22 +25,22 @@
    [<else>]
     You may select [<$question->maxvotes>] option[<if $question->maxvotes != 1>]s[</if>].<br />
    [</if>]
-  [</if>] 
-  [<if $question->answertype == 'radio'>]
-   <input type="radio" name="[<$question->qid>]" value="[<$question->qid>]000" [<if $question->user_voted_for(0)>]CHECKED [</if>]/>Clear Vote<br />
-   [<foreach from=$question->answers key=aid item=answer>]
-    <input type="radio" name="[<$question->qid>]" value="[<$aid>]" [<if $question->user_voted_for($aid)>]CHECKED [</if>]/>[<$answer>]<br />
-   [</foreach>]
-  [<elseif $question->answertype == 'checkbox'>]
-   [<foreach from=$question->answers key=aid item=answer>]
-    <input type="checkbox" name="[<$aid>]" [<if $question->user_voted_for($aid)>]CHECKED [</if>]/>[<$answer>]<br />
-   [</foreach>]
-  [<elseif $question->answertype == 'freeresponse'>]
-   [<assign var="aid" value="`$question->qid`001">]
-   <textarea rows="5" cols="80" name="[<$question->qid>]001">[<$question->user_voted_for($aid)>]</textarea><br />
   [</if>]
-  <br />
  [</if>]
+ [<if $question->answertype == 'radio'>]
+  <input type="radio" name="[<$question->qid>]" value="[<$question->qid>]000" [<if $question->user_voted_for(0)>]CHECKED [</if>]/>Clear Vote<br />
+  [<foreach from=$question->answers key=aid item=answer>]
+   <input type="radio" name="[<$question->qid>]" value="[<$aid>]" [<if $question->user_voted_for($aid)>]CHECKED [</if>]/>[<$answer>]<br />
+  [</foreach>]
+ [<elseif $question->answertype == 'checkbox'>]
+  [<foreach from=$question->answers key=aid item=answer>]
+   <input type="checkbox" name="[<$aid>]" [<if $question->user_voted_for($aid)>]CHECKED [</if>]/>[<$answer>]<br />
+  [</foreach>]
+ [<elseif $question->answertype == 'freeresponse'>]
+  [<assign var="aid" value="`$question->qid`001">]
+  <textarea rows="5" cols="80" name="[<$question->qid>]">[<$question->user_voted_for($aid)>]</textarea><br />
+ [</if>]
+  <br />
 [</foreach>]
 [<if $avail>]
  <input type="submit" value="Vote" name="vote" />
