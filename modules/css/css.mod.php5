@@ -204,7 +204,7 @@ class CSS implements Module {
 			
 			if (preg_match_all('/\@(.*?)\s/s', $keys, $modifiers) > 0) {
 				foreach ($modifiers[1] as $modifier) {
-					if ($modifier == 'extend') {
+					if ($modifier == 'extend' || $modifier == 'media' || $modifier == 'import' || $modifier == 'charset' || $modifier == 'page' ) {
 						$replace = FALSE;
 					} else if ($modifier == 'replace') {
 						$replace  = TRUE;
