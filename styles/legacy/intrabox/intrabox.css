@@ -1,4 +1,4 @@
-@extend
+`extend
 .boxheader {
 	[<if $I2_USER->boxtitlecolor>]color: #[<$I2_USER->boxtitlecolor>];[</if>]
 	background-color: #[<$I2_USER->boxcolor|default:'000000'>];

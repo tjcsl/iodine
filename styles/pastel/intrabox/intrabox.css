@@ -1,8 +1,8 @@
-@extend
+`extend
 .boxes {
 	width: 305px;
 }
-@extend
+`extend
 .intrabox {
 	border: #CCDDFF 2px solid;
 	margin-bottom: 10pt;
@@ -10,7 +10,7 @@
 	width: 305px;
 	-moz-border-radius: 10px;
 }
-@extend
+`extend
 .boxheader {
 	color: #[<$I2_USER->boxtitlecolor|default:'FFFFFF'>];
 	font-weight: bold;
@@ -23,7 +23,7 @@
 	font-size: 14px;
 	height: 17px;
 }
-@extend
+`extend
 .boxbuttons {
 	margin-top: 2px;
 	margin-right: 10px;
@@ -32,19 +32,19 @@
 	margin: 4px;
 	color: #006666;
 }
-@extend
+`extend
 .boxform {
 	margin: 5px 4px;
 	color: #6666FF;
 }
-@extend
+`extend
 .mainbox {
 	left: 337px;
 	border: #CCDDFF 2px solid;
 	background-color: #FFFFDD;
 	-moz-border-radius: 10px;
 }
-@extend
+`extend
 .activity_cancelled {
 	background-color: #FFCCFF;
 }

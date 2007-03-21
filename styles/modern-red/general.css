@@ -1,8 +1,8 @@
-@extend
+`extend
 a {
 	color: #C31F0D;
 }
-@extend
+`extend
 a:visited {
 	color: #F72710;
 }

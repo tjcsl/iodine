@@ -18,13 +18,13 @@
 	font-family: Verdana, Arial, sans-serif;
 }
 
-@extend
+`extend
 .boxcontent {
 	margin-left: 10px;
 	margin-top: 2px;
 }
 
-@extend
+`extend
 .mainbox, .mainbox_noheader {
 	background-color: #fff;
 	border: none;

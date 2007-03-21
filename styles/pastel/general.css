@@ -9,7 +9,7 @@ td, th {
 	color: #999999;
 }
 
-@extend
+`extend
 body {
 	background-color: #CCDDFF;
 	color: #FFFFFF;

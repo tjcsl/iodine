@@ -1,20 +1,20 @@
-@extend
+`extend
 .logo {
 	top: 0px;
 	left: 0px;
 	background: url(/www/pics/newlogo.png) no-repeat;	
 }
-@extend
+`extend
 .title {
 	color: #ffffff;
 	border-bottom: 2px solid #ffffff;
 }
-@extend
+`extend
 .date {
 	color: white;
 	top: 23px;
 }
-@extend
+`extend
 .blurb {
 	color: white;
 }

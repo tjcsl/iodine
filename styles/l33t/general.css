@@ -1,13 +1,13 @@
-@extend
+`extend
 form, div, p, span, td, th, i {
 	font-family: courier, helvetica, verdana, sans-serif;
 }
-@extend
+`extend
 body {
 	font-family: courier, helvetica, verdana, sans-serif;
 	background: #000000;
 }
-@extend
+`extend
 a {
 	color: #009900;
 }

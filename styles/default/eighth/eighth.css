@@ -54,11 +54,14 @@
 	height: 80px;
 }
 
-@media print {
+/** CSS's parser is horribly broken.
+ * DO NOT, I repeat, DO NOT uncomment this until it is fixed.
+ */
+/*@media print {
 #eighth_header_logo {
 	display: none;
 }
-}
+}*/
 
 #eighth_header_table {
 	padding: 0px;

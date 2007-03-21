@@ -1,21 +1,21 @@
-@extend
+`extend
 .intrabox {
 	background: #f3a8e2;
 	border: none;
 }
-@extend
+`extend
 .boxheader {
 	color: #[<$I2_USER->boxtitlecolor|default:'336699'>];
 	background-color: #[<$I2_USER->boxcolor|default:'f3a8e2'>];
 	border-left: 4px solid #[<$I2_USER->boxcolor|default:'f3a8e2'>];
 	border-right: 4px solid #[<$I2_USER->boxcolor|default:'f3a8e2'>];
 }
-@extend
+`extend
 .mainbox {
 	background-color: #f3a8e2;
 	border: none;
 }
-@extend
+`extend
 .activity_cancelled {
 	background-color: #ff00c0;
 }

@@ -1,24 +1,24 @@
-@extend
+`extend
 .intrabox {
 	background-color: #660000;
 	color: #FFCC00;
 	opacity: .75;
 }
 
-@extend
+`extend
 .boxheader {
 	background-color: #[<$I2_USER->boxcolor|default:'330000'>];
 	color: #[<$I2_USER->boxtitlecolor|default:"FF9933">];
 }
 
-@extend
+`extend
 .mainbox {
 	background-color: #660000;
 	color: #FFCC00;
 	opacity: .75;
 }
 
-@extend
+`extend
 .boxcontent {
 	color: #FFFF33;
 }

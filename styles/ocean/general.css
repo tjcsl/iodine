@@ -5,7 +5,7 @@ input, select, textarea {
 	border-color: #00FFFF;
 }
 
-@extend
+`extend
 body {
 	background-color: #00EEDD;
 	background-image: url(www/pics/styles/ocean/shell.jpg);

@@ -1,15 +1,15 @@
-@extend
+`extend
 .logo {
 	top: 0px;
 	left: 0px;
 	background: url(/www/pics/newlogo.png) no-repeat;
 }
-@extend
+`extend
 .title {
 	color: #FFFFFF;
 	border-bottom-color: #FFFFFF;
 }
-@extend
+`extend
 .header {
 	color: #FFFFFF;
 }
@@ -19,7 +19,7 @@
 .header a:visited {
 	color: #FFFFFF;
 }
-@extend
+`extend
 .date {
 	color: #FFFFFF;
 }

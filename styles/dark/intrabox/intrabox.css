@@ -1,4 +1,4 @@
-@extend
+`extend
 .intrabox {
 	background: black;
 }
@@ -21,11 +21,11 @@
 .rmbutton {
 	background: url(/www/pics/close.gif) center no-repeat;
 }
-@extend
+`extend
 .boxcontent {
 	color: white;
 }
-@extend
+`extend
 .boxform {
 	color: white;
 }

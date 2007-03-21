@@ -19,20 +19,20 @@
 	border-bottom-color: #fcc303;
 	padding: 0px 4px;
 }
-@extend
+`extend
 .boxbuttons {
 	margin-top: 1px;
 	margin-right: 6px;
 }
-@extend
+`extend
 .boxcontent {
 	color: #ffffff;
 }
-@extend
+`extend
 .boxform {
 	color: #ffffff;
 }
-@extend
+`extend
 .mainbox {
 	border: #fcc303 thick ridge;
 	background-color: #990022;
@@ -44,7 +44,7 @@
 .mainbox:hover {
 	opacity: .90;
 }
-@extend
+`extend
 .activity_cancelled {
 	background-color: #cc6600;
 }

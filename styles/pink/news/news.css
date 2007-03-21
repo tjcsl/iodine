@@ -1,9 +1,9 @@
-@extend
+`extend
 .newstitle {
 	border: none;
 }
 
-@extend
+`extend
 .newsitem {
 	border-top: dotted 1px gray;
 }

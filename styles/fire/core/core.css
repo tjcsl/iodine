@@ -1,35 +1,35 @@
-@extend
+`extend
 .header {
 	color: #FFFF00;
 }
 
-@extend
+`extend
 .title {
 	color: #FFFF00;
 	border-bottom-color: #FFFF00;
 }
 
-@extend
+`extend
 .date {
 	color: #FFFF00;
 }
 
-@extend
+`extend
 .date a {
 	color: #FFFF00;
 }
 
-@extend
+`extend
 .date a:visited {
 	color: #FFFF00;
 }
 
-@extend
+`extend
 .date a:hover {
 	color: #FF6600;
 }
 
-@extend
+`extend
 .date a:active {
 	color: #FF0000;
 }

@@ -1,26 +1,26 @@
-@extend
+`extend
 body {
 	background-color: #FFFF00;
 	background-image: url(www/pics/styles/sunset/background.png);
 	background-repeat: repeat-x;
 }
 
-@extend
+`extend
 a {
 	color: #660066;
 }
 
-@extend
+`extend
 a:visited {
 	color: #660066;
 }
 
-@extend
+`extend
 a:hover, a:active {
 	color: #CC0066;
 }
 
-@extend
+`extend
 input, select, textarea {
 	background-color: #FF3366;
 	border: 1px solid #660066;

@@ -202,7 +202,7 @@ class CSS implements Module {
 			
 			list($keys, $values) = explode('{', $rule);
 			
-			if (preg_match_all('/\@(.*?)\s/s', $keys, $modifiers) > 0) {
+			if (preg_match_all('/\`(.*?)\s/s', $keys, $modifiers) > 0) {
 				foreach ($modifiers[1] as $modifier) {
 					if ($modifier == 'extend') {
 						$replace = FALSE;
@@ -212,7 +212,7 @@ class CSS implements Module {
 						$this->warnings[] = "Unknown modifier $modifier in $path";
 					}
 				}
-				$keys = preg_replace('/\@.*?\s/s', '', $keys);
+				$keys = preg_replace('/\`.*?\s/s', '', $keys);
 			}
 
 			$selectors = array_map('trim', explode(',', $keys));

@@ -5,7 +5,7 @@ input, select, textarea {
 	border-color: #fcc303;
 }
 
-@extend
+`extend
 body {
 	background-color: #660033;
 	background-image: url(www/pics/styles/autumn/fall.jpg);

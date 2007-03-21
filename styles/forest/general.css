@@ -1,9 +1,9 @@
-@extend
+`extend
 body {
 	background-color: #275715;
 	background-image: url(www/pics/styles/forest/rainforest.jpg);
 }
-@extend
+`extend
 a {
 	color: #41240d;
 }
