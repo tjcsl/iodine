@@ -53,3 +53,34 @@ table.results tfoot td {
 table.results thead img {
 	padding: 0px 5%;
 }
+
+
+/* Free response selectors. */
+div.poll_freeresponse {
+	position: relative; /* Make this a containing block. */
+	width: auto;
+	padding-left: 5.5em;
+	margin-bottom: 2px;
+	white-space: pre-wrap;
+	border: 1px dashed #999;
+}
+
+div.hidden {
+	display: none;
+}
+
+div.poll_freeresponse span {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	display: block;
+	font-style: italic;
+}
+
+h4 {
+	font-weight: bold;
+}
+
+select {
+	vertical-align: middle;
+}

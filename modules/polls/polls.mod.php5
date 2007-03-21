@@ -50,7 +50,8 @@ class Polls implements Module {
 	}
 
 	/**
-	* The main page
+	 * The main page (default).
+	 * This page displays the list of polls to which the user has access.
 	*/
 	function home() {
 		global $I2_USER;
@@ -169,7 +170,13 @@ class Polls implements Module {
 				$vote = array();
 				$user = new User($row['uid']);
 				$vote['uid'] = $user->name; 
-			        $vote['vote'] = $row['answer'];
+				$vote['vote'] = $row['answer'];
+				if ($user->grade === 'staff') {
+					$vote['grade'] = 'Teacher';
+				} else {
+					$vote['grade'] = $user->grade . 'th grader';
+				}
+				$vote['numgrade'] = $user->grade;
 				$votes[] = $vote;
 			}
 			$this->template_args['votes'] = $votes;
