@@ -29,6 +29,13 @@ class CSS implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
+	function init_box() {
+		return FALSE;
+	}
+
+	/**
+	* Required by the {@link Module} interface.
+	*/
 	function display_box($disp) {
 		return FALSE;
 	}
@@ -61,13 +68,6 @@ class CSS implements Module {
 	*/
 	function get_name() {
 		return 'css';
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return FALSE;
 	}
 
 	/**

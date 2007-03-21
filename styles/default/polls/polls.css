@@ -21,6 +21,7 @@ table.results tbody th + td,
 table.results tfoot th + td {
 	border-right-style: hidden;
 }
+
 /* Hacky, but E:last-child is not supported by IE, as it is a CSS3 specifier
 (FF/Opera support it). Remove the next rule and the first selector of the
 one thereafter when browsers regularly support :last-child
