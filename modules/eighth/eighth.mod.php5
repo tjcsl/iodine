@@ -666,7 +666,8 @@ class Eighth implements Module {
 			redirect("eighth/amr_group/added/gid/$gid");
 		}
 		else if($this->op == 'modify') {
-			Group::set_group_name($this->args['gid'],$this->args['name']);
+			$grp = new Group($this->args['gid']);
+			$grp->set_group_name("eighth_".$_REQUEST['name']);
 			redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
 		}
 		else if($this->op == 'remove') {
