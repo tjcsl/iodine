@@ -23,7 +23,7 @@
 	\end{tabular} \\
 \end{raggedleft}
 \begin{center}
-{\bf\large %@$activity->name_full_r@%} \\
+{\bf\large %@preg_replace('/\s\s+/', ' ', $activity->name_full_r)@%} \\
 %@count($activity->members)@% Students \\
 \end{center}
 \begin{tabular*}{6 in}{cl@{\extracolsep{\fill}}c}
