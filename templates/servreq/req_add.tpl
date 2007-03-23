@@ -22,7 +22,7 @@
 			<select name="app">
 				<option value=0 />N/A
 				[<foreach from=$approvers item=person>]
-				<option value=[<$person->uid>] />[<$person->name>]
+				<option value=[<$person->id>] />[<$person->name>]
 				[</foreach>]
 			</select>
 		</td>

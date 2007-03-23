@@ -7,7 +7,7 @@
 			<th align="center">Type</th>
 			<th align="center">Status</th>
 		</tr>
-		[<foreach from=$admreqs item=req>]
+		[<foreach from=$myreqs item=req>]
 			<tr class="[<cycle values="c1,c2">]">
 				<td class="req_box">[<$req->reqdate|date_format:"%m/%d/%y">]</td>
 				<td class="req_box" style="width:10em;">[<$req->type>]</td>
@@ -16,8 +16,11 @@
 		[</foreach>]
 	</tbody>
 	</table>
+[<else>]
+	<p align='center'><b>You Have No Active Requests</b></p>
 [</if>]
 [<if count($admreqs) > 0>]
+	<hr>
 	<p align='center'><b>Requests Awaiting Action:</b></p>
 	<table cellspacing="0">
 	<tbody style="text-align:left;">
@@ -36,3 +39,4 @@
 	</tbody>
 	</table>
 [</if>]
+<p align='left'><b><a href="[<$I2_ROOT>]servreq/add">Submit New Request</a></b></p>

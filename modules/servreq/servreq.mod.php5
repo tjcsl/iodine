@@ -56,6 +56,15 @@ class ServReq implements Module {
 		switch($I2_ARGS[1]) {
 
 			case 'add':
+				$group = new Group(8); //all staff
+				$this->template_args['approvers'] = array();
+				$users = $group->members_obj_sorted;
+				foreach($users as $person){
+					$person_array = array();
+					$person_array['name'] = $person->name;
+					$person_array['uid'] = $person->uid;
+					$this->template_args['approvers'][] = $person_array;
+				}
 				$this->template = 'req_add.tpl';
 				
 			case 'edit':
@@ -70,7 +79,7 @@ class ServReq implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
-		global $I2_ARGS;
+		$display->disp($this->template,$this->template_args);
 	}
 	
 	/**
@@ -80,6 +89,7 @@ class ServReq implements Module {
 		global $I2_SQL,$I2_USER;
 		
 		$this->box_args['myreqs'] = $I2_SQL->query('SELECT * FROM servreq WHERE uid=%d', $I2_USER->uid);
+		$this->box_args['admreqs'] = $I2_SQL->query('SELECT * FROM servreq WHERE admid=%d', $I2_USER->uid);
 		$this->box_args['appreqs'] = $I2_SQL->query('SELECT * FROM servreq WHERE appid=%d', $I2_USER->uid);
 		return 'Service Requests';
 	}
