@@ -221,6 +221,17 @@ class GroupSQL extends Group {
 
 	}
 
+	public function remove_dynamic_rules() {
+		global $I2_SQL, $I2_USER;
+		if ( 	self::admin_all()->has_member($I2_USER) ||
+			$this->has_permission($I2_USER, new Permission(Group::PERM_REMOVE))
+		) {
+			return $I2_SQL->query('DELETE FROM groups_dynamic WHERE gid=%d', $this->gid);
+		} else {
+			throw new I2Exception('You are not authorized to remove users from groups!');
+		}
+	}
+
 	public function grant_permission($subject, Permission $perm) {
 		global $I2_SQL, $I2_USER;
 

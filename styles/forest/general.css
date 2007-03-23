@@ -1,11 +1,11 @@
-`extend
+@extend {
 body {
 	background-color: #275715;
 	background-image: url(www/pics/styles/forest/rainforest.jpg);
 }
-`extend
 a {
 	color: #41240d;
+}
 }
 a:visited {
 	color: #41240d;

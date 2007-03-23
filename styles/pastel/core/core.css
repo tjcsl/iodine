@@ -1,18 +1,16 @@
-`extend
+@extend {
 .logo {
 	top: 0px;
 	left: 0px;
 	background: url(www/pics/newlogo.png) no-repeat;
 }
 
-`extend
 .header {
 	left: 300px;
 }
 
-
-`extend
 .title {
 	color: #FFFFFF;
 	border-bottom: 3px solid #FFFFFF;
+}
 }

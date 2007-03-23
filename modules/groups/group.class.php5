@@ -151,7 +151,22 @@ class Group {
 	* Removes all users from this group.
 	*/
 	public function remove_all_members() {
-		return $this->wrap->remove_all_members();
+		$this->remove_static_members();
+		$this->remove_dynamic_rules();
+	}
+
+	/**
+	 * Removes all static members from this group
+	 */
+	public function remove_static_members() {
+		return $this->wrap->remove_static_members();
+	}
+
+	/**
+	* Removes dynamic rules for this group.
+	*/
+	public function remove_dynamic_rules() {
+		return $this->wrap->remove_dynamic_rules();
 	}
 
 	/**

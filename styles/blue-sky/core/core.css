@@ -27,7 +27,8 @@
 	color: white;
 }
 
-`extend
+@extend {
 .date {
 	color: white;
+}
 }

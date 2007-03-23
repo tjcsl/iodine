@@ -14,8 +14,9 @@
 	line-height: 1em;
 }
 
-`extend
+@extend {
 .newsgroups {
 	float: right;
 	margin-right: 5px;
+}
 }

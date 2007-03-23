@@ -1,15 +1,14 @@
-`extend
+@extend {
 .intrabox, .mainbox {
 	background: #275715;
 }
-`extend
 .boxheader {
 	[<if $I2_USER->boxtitlecolor>]color: #[<$I2_USER->boxtitlecolor>];[</if>]
 	background-color: #[<$I2_USER->boxcolor|default:'41240d'>];
 	border-left: 4px solid #[<$I2_USER->boxcolor|default:'41240d'>];
 	border-right: 4px solid #[<$I2_USER->boxcolor|default:'41240d'>];
 }
-`extend
 .activity_cancelled {
 	background-color: #41240d;
+}
 }

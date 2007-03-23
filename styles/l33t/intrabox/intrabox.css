@@ -1,18 +1,15 @@
-`extend
+@extend {
 .boxes {
 	width: 320px;
 }
-`extend
 .boxes_noheader {
 	width: 320px;
 }
-`extend
 .intrabox {
 	border: solid 1px #999999;
 	background: #000000;
 	width: 320px;
 }
-`extend
 .boxheader {
 	[<if $I2_USER->boxtitlecolor>]color: #[<$I2_USER->boxtitlecolor>];[</if>]
 	background-color: #[<$I2_USER->boxcolor|default:'000000'>];
@@ -20,6 +17,7 @@
 	border-right: #[<$I2_USER->boxcolor|default:'000000'>];
 	margin-left: 4px;
 	margin-right: 4px;
+}
 }
 .upbutton {
 	background: url(/www/pics/up.gif) center no-repeat;
@@ -33,20 +31,18 @@
 .rmbutton {
 	background: url(/www/pics/close.gif) center no-repeat;
 }
-`extend
+@extend {
 .boxcontent {
 	color: #ffffff;
 }
-`extend
 .boxform {
 	color: #ffffff;
 }
-`extend
 .mainbox {
 	margin-left: 20px;
 	border: solid 1px #999999;
 }
-`extend
 .activity_cancelled {
 	background-color: #006600;
+}
 }

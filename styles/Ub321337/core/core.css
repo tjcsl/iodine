@@ -1,8 +1,7 @@
-`extend
+@extend {
 .logo {
 	background: url(/www/pics/1337logo.gif) 9px 9px no-repeat;	
 }
-`extend
 .title {
 	font-size: 10pt;
 	color: #008800;
@@ -10,8 +9,8 @@
 	border-bottom-color: #008800;
 	border-bottom-width: 1px;
 }
-`extend
 .date {
 	color: #008800;
 	top: 20px;
+}
 }

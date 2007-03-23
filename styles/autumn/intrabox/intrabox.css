@@ -1,4 +1,3 @@
-@replace
 .intrabox {
 	border: #fcc303 thick ridge;
 	margin-bottom: 10pt;
@@ -9,7 +8,6 @@
 .intrabox:hover {
 	opacity: .90;
 }
-@replace
 .boxheader {
 	color: #[<$I2_USER->boxtitlecolor|default:"ced26e">];
 	font-weight: bold;
@@ -19,20 +17,17 @@
 	border-bottom-color: #fcc303;
 	padding: 0px 4px;
 }
-`extend
+@extend {
 .boxbuttons {
 	margin-top: 1px;
 	margin-right: 6px;
 }
-`extend
 .boxcontent {
 	color: #ffffff;
 }
-`extend
 .boxform {
 	color: #ffffff;
 }
-`extend
 .mainbox {
 	border: #fcc303 thick ridge;
 	background-color: #990022;
@@ -41,10 +36,10 @@
 	-moz-border-radius: 0px;
 	opacity: .7;
 }
-.mainbox:hover {
-	opacity: .90;
-}
-`extend
 .activity_cancelled {
 	background-color: #cc6600;
+}
+}
+.mainbox:hover {
+	opacity: .90;
 }

@@ -1,16 +1,15 @@
-`extend
+@extend {
 .logo {
 	top: 0px;
 	left: 0px;
 	background: url(www/pics/newlogo.png) no-repeat;
 }
-`extend
 .title {
 	color: #f3a8e2;
 	width: 100%;
 	border-bottom: 1px solid #f3a8e2;
 }
-`extend
 .date {
 	color: #f3a8e2;
+}
 }

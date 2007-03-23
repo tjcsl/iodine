@@ -1,6 +1,11 @@
 [<include file="eighth/header.tpl">]
 <table><tr><td>
-<br /><b>[<$group->name|replace:'eighth_':''>]</b><br /><br />
+<br />
+<form method="post" action="[<$I2_ROOT>]eighth/amr_group/modify/gid/[<$group->gid>]">
+<input type="text" name="name" size="25" value="[<$group->name|replace:'eighth_':''>]" />
+<input type="submit" value="Change group name" />
+</form>
+<br />
 [<if count($group->members) > 0>]
 <table cellspacing="0" style="border: 0px; margin: 0px; padding: 0px;">
 	<tr>

@@ -18,17 +18,17 @@
 	font-family: Verdana, Arial, sans-serif;
 }
 
-`extend
+@extend {
 .boxcontent {
 	margin-left: 10px;
 	margin-top: 2px;
 }
 
-`extend
 .mainbox, .mainbox_noheader {
 	background-color: #fff;
 	border: none;
 	border-right: 0.18em solid #4284B5;
 	border-bottom: 0.16em solid #4284B5;
 	margin-bottom: 10pt;
+}
 }

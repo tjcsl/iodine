@@ -189,10 +189,34 @@ class CSS implements Module {
 		
 		$filename = basename($path);
 
-		/* remove comments */
-		$contents = preg_replace("/\/\*.*?\*\//s", '', $contents);
+		$parser = new CSSParser($contents);
 
-		$rules = array_map('trim', explode('}', $contents));
+		/*foreach ($parser->rulesets as $selector=>$rule) {
+			if (substr($selector, 0, 1) != '@') {
+				$r = new CSSRule($filename);
+				foreach ($rule as $property=>$value) {
+					$r->set_property($property, $value);
+				}
+				while (($index = $parser->findString($selector, ',')) > 0) {
+					$r->add_selector(trim(substr($selector, 0, $index), ' '));
+					$selector = trim(substr($selector,$index+1));
+				}
+				$r->add_selector($selector);
+				$this->style_sheet->replace_rule($r);
+			}
+		}*/
+		$this->parse_ruleset($parser->rulesets, true, $filename);
+
+		/* remove comments */
+		//$contents = preg_replace("/\/\*.*?\*\//s", '', $contents);
+
+		/* OLD CSS PARSER.
+		 * BROKEN PIECE OF CRAP.
+		 * DO NOT USE.
+		 * CURSE AT BRJ.
+		 * DOES NOT RECOGNIZE ANYTHING CALLED '@media'
+		 */
+		/*$rules = array_map('trim', explode('}', $contents));
 		foreach ($rules as $rule) {
 			if ($rule == '') {
 				continue;
@@ -204,7 +228,7 @@ class CSS implements Module {
 			
 			if (preg_match_all('/\`(.*?)\s/s', $keys, $modifiers) > 0) {
 				foreach ($modifiers[1] as $modifier) {
-					if ($modifier == 'extend') {
+					if ($modifier == 'extend' || $modifier == 'media' || $modifier == 'import' || $modifier == 'charset' || $modifier == 'page' ) {
 						$replace = FALSE;
 					} else if ($modifier == 'replace') {
 						$replace  = TRUE;
@@ -242,6 +266,31 @@ class CSS implements Module {
 				$this->style_sheet->replace_rule($rule);
 			} else {
 				$this->style_sheet->extend_rule($rule);
+			}
+		}*/
+	}
+
+	private function parse_ruleset($ruleset, $replace, $filename) {
+		foreach ($ruleset as $selector=>$rule) {
+			if (substr($selector, 0, 1) != '@') {
+				$r = new CSSRule($filename);
+				foreach ($rule as $property=>$value) {
+					$r->set_property($property, $value);
+				}
+				while (($index = CSSParser::findString($selector, ',')) > 0) {
+					$r->add_selector(trim(substr($selector, 0, $index), ' '));
+					$selector = trim(substr($selector,$index+1));
+				}
+				$r->add_selector($selector);
+				if ($replace) {
+					$this->style_sheet->replace_rule($r);
+				} else {
+					$this->style_sheet->extend_rule($r);
+				}
+			} else if ($selector == '@extend') {
+				$this->parse_ruleset($rule, false, $filename);
+			} else {
+				$this->warnings[] = 'Recieved '.$selector.'; don\'t know what to do with it.';
 			}
 		}
 	}
