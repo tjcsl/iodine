@@ -1,14 +1,25 @@
 <?php
 /**
- * Parses a string of CSS to return proper stuff.
+ * Parses a string of CSS to return a nested array of rulesets.
+ * This module will work with most legal CSS, except it will not honor
+ * misplacement of <tt>!important</tt> rules and might not accept missing
+ * semicolons. It does however, accept missing close braces.
+ * @author	Joshua Cranmer <jcranmer@tjhsst.edu>
+ * @copyright	2007 The Intranet 2 Development Team
+ * @package	modules
+ * @subpackage	CSS
  */
 class CSSParser {
 	public $rulesets;
 	private $css;
+
+	/**
+	 * Reads and parses the given CSS string.
+	 */
 	public function __construct($css) {
 		// Get rid of comments
 		$css = preg_replace("/\/\*.*?\*\//s", '', $css);
-		// Get rid of CDO/CDC
+		// Get rid of CDO/CDC (read CSS &#167; 4 for more information). 
 		$css = preg_replace('/<!--|-->/', '', $css);
 		// Collapse all whitespace
 		$css = preg_replace("/[ \t\r\n\f]+/", ' ', $css);
@@ -41,6 +52,14 @@ class CSSParser {
 		return $ruleset;
 	}
 
+	/**
+	 *  Returns the first instance of the string that is not quoted.
+	 *  Examples:<br>
+	 *     <tt>findString('test {', '{')</tt> returns 5.<br>
+	 *     <tt>findString('not here', '{')</tt> returns -1.<br>
+	 *     <tt>findString('" { } " {', '{')</tt> returns 8.<br>
+	 *     <tt>findString('"\"{\"{" {', '{')</tt> returns 9.<br>
+	 */
 	static function findString($css, $s) {
 		$pos = 0;
 		$inString = false;

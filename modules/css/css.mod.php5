@@ -53,6 +53,7 @@ class CSS implements Module {
 		//echo $this->css_text;
 		echo "/* Server-Cache: {$this->style_cache} */\n";
 		echo "/* Client-Cached: {$this->date} */\n";
+		
 		$disp->clear_buffer();
 		$text = $disp->fetch($this->style_cache,array(),FALSE);
 		//TODO: cache to stop extra Smarty runs?
@@ -103,7 +104,6 @@ class CSS implements Module {
 			foreach ($this->warnings as $message) {
 				$contents .= "/* WARNING: $message */\n";
 			}
-			
 			$contents .= $this->style_sheet->__toString();
 			file_put_contents($style_cache, $contents);
 		}
@@ -191,86 +191,10 @@ class CSS implements Module {
 
 		$parser = new CSSParser($contents);
 
-		/*foreach ($parser->rulesets as $selector=>$rule) {
-			if (substr($selector, 0, 1) != '@') {
-				$r = new CSSRule($filename);
-				foreach ($rule as $property=>$value) {
-					$r->set_property($property, $value);
-				}
-				while (($index = $parser->findString($selector, ',')) > 0) {
-					$r->add_selector(trim(substr($selector, 0, $index), ' '));
-					$selector = trim(substr($selector,$index+1));
-				}
-				$r->add_selector($selector);
-				$this->style_sheet->replace_rule($r);
-			}
-		}*/
-		$this->parse_ruleset($parser->rulesets, true, $filename);
-
-		/* remove comments */
-		//$contents = preg_replace("/\/\*.*?\*\//s", '', $contents);
-
-		/* OLD CSS PARSER.
-		 * BROKEN PIECE OF CRAP.
-		 * DO NOT USE.
-		 * CURSE AT BRJ.
-		 * DOES NOT RECOGNIZE ANYTHING CALLED '@media'
-		 */
-		/*$rules = array_map('trim', explode('}', $contents));
-		foreach ($rules as $rule) {
-			if ($rule == '') {
-				continue;
-			}
-
-			$replace = TRUE;
-			
-			list($keys, $values) = explode('{', $rule);
-			
-			if (preg_match_all('/\`(.*?)\s/s', $keys, $modifiers) > 0) {
-				foreach ($modifiers[1] as $modifier) {
-					if ($modifier == 'extend' || $modifier == 'media' || $modifier == 'import' || $modifier == 'charset' || $modifier == 'page' ) {
-						$replace = FALSE;
-					} else if ($modifier == 'replace') {
-						$replace  = TRUE;
-					} else {
-						$this->warnings[] = "Unknown modifier $modifier in $path";
-					}
-				}
-				$keys = preg_replace('/\`.*?\s/s', '', $keys);
-			}
-
-			$selectors = array_map('trim', explode(',', $keys));
-			$properties = array_map('trim', explode(';', $values));
-
-			$rule = new CSSRule($filename);
-			
-			foreach ($properties as $property) {
-				if ($property == '') {
-					continue;
-				}
-
-				$colonpos = strpos($property,':');
-				$key = trim(substr($property,0,$colonpos));
-				$value = trim(substr($property,$colonpos+1));
-				$rule->set_property($key, $value);
-			}
-
-			foreach ($selectors as $selector) {
-				if ($selector == '') {
-					continue;
-				}
-				$rule->add_selector($selector);
-			}
-
-			if ($replace) {
-				$this->style_sheet->replace_rule($rule);
-			} else {
-				$this->style_sheet->extend_rule($rule);
-			}
-		}*/
+		$this->parse_ruleset($parser->rulesets, true, $filename, new CSSBlock());
 	}
 
-	private function parse_ruleset($ruleset, $replace, $filename) {
+	private function parse_ruleset($ruleset, $replace, $filename, $set) {
 		foreach ($ruleset as $selector=>$rule) {
 			if (substr($selector, 0, 1) != '@') {
 				$r = new CSSRule($filename);
@@ -283,14 +207,19 @@ class CSS implements Module {
 				}
 				$r->add_selector($selector);
 				if ($replace) {
-					$this->style_sheet->replace_rule($r);
+					$this->style_sheet->replace_rule($r, $set);
 				} else {
-					$this->style_sheet->extend_rule($r);
+					$this->style_sheet->extend_rule($r, $set);
 				}
 			} else if ($selector == '@extend') {
-				$this->parse_ruleset($rule, false, $filename);
+				$this->parse_ruleset($rule, false, $filename, $set);
 			} else {
-				$this->warnings[] = 'Recieved '.$selector.'; don\'t know what to do with it.';
+				// The rule will look like '@media page'
+				// I'd work on this, but the stylesheets aren't set up to handle this...
+				//$this->warnings[] = 'Recieved '.$selector.'; don\'t know what to do with it.';
+				$newset = new CSSBlock($selector, $set);
+				$set->add_ruleset($newset);
+				$this->parse_ruleset($rule, $replace, $filename, $newset);
 			}
 		}
 	}

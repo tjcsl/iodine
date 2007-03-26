@@ -34,6 +34,17 @@ class CSSFile {
 		}
 	}
 
+	public function add_ruleset(CSSBlock $rule) {
+		$this->rules[] = $rule;
+	}
+
+	public function remove_ruleset(CSSBlock $rule) {
+		foreach ($this->rules as $key => $value) {
+			if ($value == $rule) {
+				unset($this->rules[$key]);
+			}
+		}
+	}
 	public function __toString() {
 		$str = "/* $this->name */\n";
 		foreach ($this->rules as $rule) {
