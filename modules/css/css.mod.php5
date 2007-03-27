@@ -132,6 +132,9 @@ class CSS implements Module {
 		return 'css';
 	}
 
+	/**
+	 * Returns an array of all the styles that the CSS module recognizes.
+	 */
 	public static function get_available_styles() {
 		$styles = array();
 
@@ -187,17 +190,17 @@ class CSS implements Module {
 			throw new I2Exception("Could not read contents of $path");
 		}
 		
-		$filename = basename($path);
-
+		$this->style_sheet->newFile();
 		$parser = new CSSParser($contents);
+		$parser = $parser->parsed();
 
-		$this->parse_ruleset($parser->rulesets, true, $filename, new CSSBlock());
+		$this->parse_ruleset($parser, true, new CSSBlock());
 	}
 
-	private function parse_ruleset($ruleset, $replace, $filename, $set) {
+	private function parse_ruleset($ruleset, $replace, $set) {
 		foreach ($ruleset as $selector=>$rule) {
 			if (substr($selector, 0, 1) != '@') {
-				$r = new CSSRule($filename);
+				$r = new CSSRule();
 				foreach ($rule as $property=>$value) {
 					$r->set_property($property, $value);
 				}
@@ -212,14 +215,10 @@ class CSS implements Module {
 					$this->style_sheet->extend_rule($r, $set);
 				}
 			} else if ($selector == '@extend') {
-				$this->parse_ruleset($rule, false, $filename, $set);
+				$this->parse_ruleset($rule, false, $set);
 			} else {
-				// The rule will look like '@media page'
-				// I'd work on this, but the stylesheets aren't set up to handle this...
-				//$this->warnings[] = 'Recieved '.$selector.'; don\'t know what to do with it.';
 				$newset = new CSSBlock($selector, $set);
-				$set->add_ruleset($newset);
-				$this->parse_ruleset($rule, $replace, $filename, $newset);
+				$this->parse_ruleset($rule, $replace, $newset);
 			}
 		}
 	}

@@ -15,10 +15,20 @@
 class StyleSheet {
 
 	private $rulesets = array();
+	private $currentAdd = array();
+
+	public function newFile() {
+		$currentAdd = array();
+	}
 	public function replace_rule(CSSRule $rule, CSSBlock $ruleset) {
 		$set =& $this->get_ruleset($ruleset);
 		foreach ($rule->get_selectors() as $selector) {
-			$set[$selector] = $rule->get_properties();
+			if (in_array($selector, $this->currentAdd))
+				$set[$selector] = array_merge($set[$selector], 
+					$rule->get_properties());
+			else
+				$set[$selector] = $rule->get_properties();
+			$this->currentAdd[] = $set[$selector];
 		}	
 	}
 
@@ -28,8 +38,10 @@ class StyleSheet {
 			if (!array_key_exists($selector, $set))
 				$set[$selector] = $rule->get_properties();
 			else {
-				$set[$selector] = array_merge($set[$selector], $rule->get_properties());
+				$set[$selector] = array_merge($set[$selector],
+					$rule->get_properties());
 			}
+			$this->currentAdd[] = $set[$selector];
 		}
 	}
 
@@ -51,7 +63,8 @@ class StyleSheet {
 		$str = '';
 		foreach ($ruleset as $key => $value) {
 			if (substr($key, 0, 1) == '@')
-				$str .= $key . " {\n" . $this->print_ruleset($value) . "}\n\n";
+				$str .= $key . " {\n" .
+					$this->print_ruleset($value) . "}\n\n";
 			else {
 				$str .= $key . " {";
 				foreach ($value as $property => $datum) {

@@ -10,7 +10,7 @@
  * @subpackage	CSS
  */
 class CSSParser {
-	public $rulesets;
+	private $rulesets;
 	private $css;
 
 	/**
@@ -30,6 +30,14 @@ class CSSParser {
 		unset ($this->css);
 	}
 
+	/**
+	 * Returns an array of the parsed CSS.
+	 * Each key represents either a selector or a @-rule that has the same
+	 * members through recursive tree hiearchy.
+	 */
+	public function parsed() {
+		return $this->rulesets;
+	}
 	private function readRuleset() {
 		$ruleset = array();
 		while (substr($this->css, 0, 1) != '}' && strlen($this->css) > 0) {
