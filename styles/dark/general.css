@@ -1,6 +1,7 @@
-@extend
+@extend {
 body {
 	background: #000000;
+}
 }
 a {
 	color: white;

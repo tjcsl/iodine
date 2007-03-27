@@ -1,6 +1,13 @@
-@extend
+@extend {
 .intrabox {
 	background: black;
+}
+.boxcontent {
+	color: white;
+}
+.boxform {
+	color: white;
+}
 }
 .boxheader {
 	color: #[<$I2_USER->boxtitlecolor|default:"FFFFFF">];
@@ -20,12 +27,4 @@
 }
 .rmbutton {
 	background: url(/www/pics/close.gif) center no-repeat;
-}
-@extend
-.boxcontent {
-	color: white;
-}
-@extend
-.boxform {
-	color: white;
 }

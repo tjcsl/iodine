@@ -1,9 +1,9 @@
-@extend
+@extend {
 .title {
 	color: #ffffff;
 	border-bottom: 3px solid #fcc303;
 }
-
+}
 .logo {}
 
 #logotext {

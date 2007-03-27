@@ -9,12 +9,12 @@ td, th {
 	color: #999999;
 }
 
-@extend
+@extend {
 body {
 	background-color: #CCDDFF;
 	color: #FFFFFF;
 }
-
+}
 a {
 	color: #999999;
 	text-decoration: none;

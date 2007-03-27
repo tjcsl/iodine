@@ -5,3 +5,5 @@
 ^update$
 ^commit$
 ^test$
+^convert$
+^modules/css/oldcss/

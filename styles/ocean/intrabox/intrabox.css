@@ -1,8 +1,7 @@
-@extend
+@extend {
 .boxes {
 	width: 305px;
 }
-@extend
 .intrabox {
 	border: #009999 2px solid;
 	margin-bottom: 10pt;
@@ -11,10 +10,11 @@
 	-moz-border-radius: 10px;
 	opacity: .5;
 }
+}
 .intrabox:hover {
 	opacity: .75;
 }
-@extend
+@extend {
 .boxheader {
 	color: #[<$I2_USER->boxtitlecolor|default:'FFFFFF'>];
 	font-weight: bold;
@@ -30,22 +30,18 @@
 	margin-right: -2px;
 	margin-top: -2px;
 }
-@extend
 .boxbuttons {
 	margin-top: -2px;
 	margin-right: 8px;
 }
-@extend
 .boxcontent {
 	margin: 4px;
 	color: #006666;
 }
-@extend
 .boxform {
 	margin: 5px 4px;
 	color: #6666FF;
 }
-@extend
 .mainbox {
 	left: 337px;
 	border: #009999 2px solid;
@@ -53,25 +49,24 @@
 	-moz-border-radius: 10px;
 	opacity: .5;
 }
+}
 .mainbox:hover {
 	opacity: .75;
 }
-@extend
+@extend {
 .activity_cancelled {
 	background-color: #006699;
 }
-@extend
 .mainbox_noheader {
 	border: #009999 2px solid;
 	-moz-border-radius: 10px;
 }
-@extend
 .mainbox_noheader_nointraboxes {
 	border: #009999 2px solid;
 	-moz-border-radius: 10px;
 }
-@extend
 .mainbox_nointraboxes {
 	border: #009999 2px solid;
 	-moz-border-radius: 10px;
+}
 }

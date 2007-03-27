@@ -1,20 +1,18 @@
-@extend
+@extend {
 .intrabox {
 	border: none;
 }
 
-@extend
 .boxheader {
 	background-color: #[<$I2_USER->boxcolor|default:'660066'>];
 	color: #[<$I2_USER->boxtitlecolor|default:'FF99FF'>];
 }
 
-@extend
 .mainbox, .mainbox_noheader {
 	border: none;
 }
 
-@extend
 .boxcontent {
 	color: #660066;
+}
 }

@@ -14,78 +14,83 @@
 */
 class StyleSheet {
 
-	private $files = array();
+	private $rulesets = array();
+	//private $currentAdd = array();
 
-	private $selectors = array();
-	
-	public function replace_rule(CSSRule $rule) {
+	/**
+	 * Tells the class that a new CSS file is being parsed.
+	 * The purpose of knowing this is to avoid overwriting when a selector
+	 * is used with two different rules in the same file.
+	 */
+	public function newFile() {
+	//	$this->currentAdd = array();
+	}
+
+	/**
+	 * Adds a rule (potentially replacing it) to the stylesheet within the
+	 * given ruleset.
+	 */
+	public function replace_rule(CSSRule $rule, CSSBlock $ruleset) {
+		$set =& $this->get_ruleset($ruleset);
 		foreach ($rule->get_selectors() as $selector) {
-			if (isset($this->selectors[$selector])) {
-				$old_rule = $this->selectors[$selector];
-				$old_rule->remove_selector($selector);
-				if ($old_rule->is_empty()) {
-					$this->files[$old_rule->get_filename()]->remove_rule($old_rule);
-				}
-			}
-			$this->selectors[$selector] = $rule;
-		}
-		$this->add_rule_to_file($rule);
+		//	if (in_array($selector, $this->currentAdd))
+		//		$set[$selector] = array_merge($set[$selector], 
+		//			$rule->get_properties());
+		//	else
+				$set[$selector] = $rule->get_properties();
+		//	$this->currentAdd[] = $selector;
+		}	
 	}
 
-	public function extend_rule(CSSRule $rule) {
-		$selectors = $rule->get_selectors();
-		$trues = array_fill(0,  sizeof($selectors), TRUE);
-		$remaining = array_combine($selectors, $trues);
-		
-		foreach ($selectors as $selector) {
-			//Ignore any rules we have already dealt with
-			if (!$remaining[$selector]) {
-				continue;
+	/**
+	 * Adds a rule (appending if necessary) to the stylesheet within the
+	 * given ruleset.
+	 */
+	public function extend_rule(CSSRule $rule, CSSBlock $ruleset) {
+		$set =& $this->get_ruleset($ruleset);
+		foreach ($rule->get_selectors() as $selector) {
+			if (!array_key_exists($selector, $set))
+				$set[$selector] = $rule->get_properties();
+			else {
+				$set[$selector] = array_merge($set[$selector],
+					$rule->get_properties());
 			}
-			
-			//Extend previously defined selectors
-			if (isset($this->selectors[$selector])) {
-				$old_rule = $this->selectors[$selector];
-				$matching = array_intersect($selectors, $old_rule->get_selectors());
-				$old_rule->remove_selectors($matching);
-				if ($old_rule->is_empty()) {
-					$this->files[$old_rule->get_filename()]->remove_rule($old_rule);
-				}
-				//Create a new rule based on the old rule
-				$new_rule = new CSSRule($rule->get_filename());
-				$new_rule->add_selectors($matching);
-				$new_rule->set_properties($old_rule->get_properties());
-				$new_rule->set_properties($rule->get_properties());
-				$this->add_rule_to_file($new_rule);
-				foreach ($matching as $match) {
-					$this->selectors[$match] = $new_rule;
-					$remaining[$match] = FALSE;
-				}
-			}
-		}
-
-		//Add any rules that were not previously defined
-		$remaining = array_filter($remaining);
-		if (count($remaining) > 0) {
-			$rule->set_selectors(array_keys($remaining));
-			$this->add_rule_to_file($rule);
+		//	$this->currentAdd[] = $selector;
 		}
 	}
 
-	private function add_rule_to_file(CSSRule $rule) {
-		$filename = $rule->get_filename();
-		//Create a CSSFile for this rule if one does not already exist
-		if (!isset($this->files[$filename])) {
-			$this->files[$filename] = new CSSFile($filename);
+	private function &get_ruleset($ruleset) {
+		if ($ruleset->get_parent() == NULL) {
+			return $this->rulesets;
+		} else {
+			$arr =& $this->get_ruleset($ruleset->get_parent());
+			if (!isset($arr[$ruleset->get_name()]))
+				$arr[$ruleset->get_name()] = array();
+			return $arr[$ruleset->get_name()];
 		}
-		//Add this rule to its CSSFile
-		$this->files[$filename]->add_rule($rule);
 	}
-	
+
+	/**
+	 * Returns a proper CSS file that has all of the rules within the
+	 * stylesheet.
+	 */
 	public function __toString() {
+		return $this->print_ruleset($this->rulesets);
+	}
+
+	private function print_ruleset($ruleset) {
 		$str = '';
-		foreach ($this->files as $file) {
-			$str .= $file->__toString();
+		foreach ($ruleset as $key => $value) {
+			if (substr($key, 0, 1) == '@')
+				$str .= $key . " {\n" .
+					$this->print_ruleset($value) . "}\n\n";
+			else {
+				$str .= $key . " {";
+				foreach ($value as $property => $datum) {
+					$str .= "\n\t$property: $datum;";
+				}
+				$str .= "\n}\n\n";
+			}
 		}
 		return $str;
 	}

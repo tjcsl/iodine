@@ -1,10 +1,9 @@
-@extend
+@extend {
 .logo {
 	top: 0px;
 	left: 0px;
 	background: url(www/pics/newlogo.png) no-repeat;
 }
-@extend
 .title {
 	font-size: 18pt;
 	color: #006699;
@@ -13,12 +12,12 @@
 	margin-left: -10px;
 	padding-left: 10px;
 }
-@extend
 .date {
 	margin-top: 5px;
 	top: 25px;
 	color: #006699;
 	font-weight: bold;
+}
 }
 .header a {
 	color: #006699;

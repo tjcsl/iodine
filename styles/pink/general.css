@@ -1,10 +1,10 @@
-@extend
+@extend {
 body {
 	background: #950875;	
 }
-@extend
 a {
 	color: #ff00c0;
+}
 }
 a:visited {
 	color: #ff00c0;

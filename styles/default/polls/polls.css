@@ -1,0 +1,93 @@
+/* These provide the major lines. */
+table.results {
+	border-collapse: collapse;
+}
+table.results col {
+	border-width: 1px;
+	border-color: black;
+	border-style: solid;
+}
+table.results col.l {
+	border-left-width: 3px;
+}
+table.results th, table.results td {
+	padding: 2px 3px;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	border-width: 1px;
+	border-style: solid;
+}
+table.results tbody th + td,
+table.results tfoot th + td {
+	border-right-style: hidden;
+}
+
+/* Hacky, but E:last-child is not supported by IE, as it is a CSS3 specifier
+(FF/Opera support it). Remove the next rule and the first selector of the
+one thereafter when browsers regularly support :last-child
+In addition, the child selector prevents IE6 from gumming up. */
+table.results thead tr:first-child th {
+	border-bottom-width: 1px;
+}
+table.results thead tr > th,
+table.results thead tr:first-child th:first-child, 
+table.results thead tr::last-child th {
+	border-bottom-width: 3px;
+}
+table.results tfoot tr * {
+	border-top-width: 3px;
+}
+
+/* Format the left column. */
+table.results tbody th,
+table.results tfoot th {
+	font-weight: inherit;
+	text-align: left;
+}
+
+/* Make results easy to read. */
+table.results tbody td,
+table.results tfoot td {
+	text-align: right;
+}
+
+table.results thead img {
+	padding: 0px 5%;
+}
+
+
+/* Free response selectors. */
+div.poll_freeresponse {
+	position: relative; /* Make this a containing block. */
+	width: auto;
+	padding-left: 5.5em;
+	margin-bottom: 2px;
+	white-space: pre-wrap;
+	border: 1px dashed #999;
+}
+
+div.hidden {
+	display: none;
+}
+
+div.poll_freeresponse span {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	display: block;
+	font-style: italic;
+}
+
+h4 {
+	font-weight: bold;
+}
+
+@media print {
+	div#polls_header {
+		display: none;
+	}
+}
+
+/*div.poll_freeresponse {
+	background-color: #abcdef;
+}*/

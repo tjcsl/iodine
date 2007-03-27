@@ -1,7 +1,8 @@
-@extend
+@extend {
 .boxheader {
 	[<if $I2_USER->boxtitlecolor>]color: #[<$I2_USER->boxtitlecolor>];[</if>]
 	background-color: #[<$I2_USER->boxcolor|default:'000000'>];
 	border-left: 4px solid #[<$I2_USER->boxcolor|default:'000000'>];
 	border-right: 4px solid #[<$I2_USER->boxcolor|default:'000000'>];
+}
 }

@@ -1,4 +1,4 @@
-@extend
+@extend {
 .intrabox {
 	background: transparent;
 	border: dashed #008800 1px;
@@ -12,50 +12,40 @@
 	font-weight: bold;
 	border-bottom: 1px dashed #008800;
 }
-@extend
 .boxbuttons {
 	margin-top: -4px;
 }
-@extend
 .upbutton {
 	background: url(/www/pics/styles/Ub321337/l33tup.gif) center no-repeat;
 }
-@extend
 .dnbutton {
 	background: url(/www/pics/styles/Ub321337/l33tdn.gif) center no-repeat;
 }
-@extend
 .mnbutton {
 	background: url(/www/pics/styles/Ub321337/l33tmin.gif) center no-repeat;
 }
-@extend
 .rmbutton {
 	background: url(/www/pics/styles/Ub321337/l33tclose.gif) center no-repeat;
 }
-@extend
 .boxcontent {
 	color: #008800;
 }
-@extend
 .boxform {
 	color: #008800;
 }
-@extend
 .mainbox {
 	margin-left: 20px;
 	padding: 2pt;
 	border: 1px dashed #008800
 }
-@extend
 .activity_cancelled {
 	background-color: #008800;
 	color: #000000;
 }
-@extend
 .activity_cancelled td {
 	color: #000000;
 }
-@extend
 .activity_cancelled td a {
 	color: #000000;
+}
 }

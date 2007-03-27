@@ -1,10 +1,10 @@
-@extend
+@extend {
 .newsitem {
 	font-family: courier, helvetica, verdana, sans-serif;
 }
-@extend
 .newstitle {
 	font-family: courier, helvetica, verdana, sans-serif;
+}
 }
 
 .newsgroups {

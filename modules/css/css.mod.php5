@@ -29,6 +29,13 @@ class CSS implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
+	function init_box() {
+		return FALSE;
+	}
+
+	/**
+	* Required by the {@link Module} interface.
+	*/
 	function display_box($disp) {
 		return FALSE;
 	}
@@ -46,6 +53,7 @@ class CSS implements Module {
 		//echo $this->css_text;
 		echo "/* Server-Cache: {$this->style_cache} */\n";
 		echo "/* Client-Cached: {$this->date} */\n";
+		
 		$disp->clear_buffer();
 		$text = $disp->fetch($this->style_cache,array(),FALSE);
 		//TODO: cache to stop extra Smarty runs?
@@ -61,13 +69,6 @@ class CSS implements Module {
 	*/
 	function get_name() {
 		return 'css';
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return FALSE;
 	}
 
 	/**
@@ -103,7 +104,6 @@ class CSS implements Module {
 			foreach ($this->warnings as $message) {
 				$contents .= "/* WARNING: $message */\n";
 			}
-			
 			$contents .= $this->style_sheet->__toString();
 			file_put_contents($style_cache, $contents);
 		}
@@ -132,6 +132,9 @@ class CSS implements Module {
 		return 'css';
 	}
 
+	/**
+	 * Returns an array of all the styles that the CSS module recognizes.
+	 */
 	public static function get_available_styles() {
 		$styles = array();
 
@@ -187,61 +190,35 @@ class CSS implements Module {
 			throw new I2Exception("Could not read contents of $path");
 		}
 		
-		$filename = basename($path);
+		$this->style_sheet->newFile();
+		$parser = new CSSParser($contents);
+		$parser = $parser->parsed();
 
-		/* remove comments */
-		$contents = preg_replace("/\/\*.*?\*\//s", '', $contents);
+		$this->parse_ruleset($parser, true, new CSSBlock());
+	}
 
-		$rules = array_map('trim', explode('}', $contents));
-		foreach ($rules as $rule) {
-			if ($rule == '') {
-				continue;
-			}
-
-			$replace = TRUE;
-			
-			list($keys, $values) = explode('{', $rule);
-			
-			if (preg_match_all('/\@(.*?)\s/s', $keys, $modifiers) > 0) {
-				foreach ($modifiers[1] as $modifier) {
-					if ($modifier == 'extend' || $modifier == 'media' || $modifier == 'import' || $modifier == 'charset' || $modifier == 'page' ) {
-						$replace = FALSE;
-					} else if ($modifier == 'replace') {
-						$replace  = TRUE;
-					} else {
-						$this->warnings[] = "Unknown modifier $modifier in $path";
-					}
+	private function parse_ruleset($ruleset, $replace, $set) {
+		foreach ($ruleset as $selector=>$rule) {
+			if (substr($selector, 0, 1) != '@') {
+				$r = new CSSRule();
+				foreach ($rule as $property=>$value) {
+					$r->set_property($property, $value);
 				}
-				$keys = preg_replace('/\@.*?\s/s', '', $keys);
-			}
-
-			$selectors = array_map('trim', explode(',', $keys));
-			$properties = array_map('trim', explode(';', $values));
-
-			$rule = new CSSRule($filename);
-			
-			foreach ($properties as $property) {
-				if ($property == '') {
-					continue;
+				while (($index = CSSParser::findString($selector, ',')) > 0) {
+					$r->add_selector(trim(substr($selector, 0, $index), ' '));
+					$selector = trim(substr($selector,$index+1));
 				}
-
-				$colonpos = strpos($property,':');
-				$key = trim(substr($property,0,$colonpos));
-				$value = trim(substr($property,$colonpos+1));
-				$rule->set_property($key, $value);
-			}
-
-			foreach ($selectors as $selector) {
-				if ($selector == '') {
-					continue;
+				$r->add_selector($selector);
+				if ($replace) {
+					$this->style_sheet->replace_rule($r, $set);
+				} else {
+					$this->style_sheet->extend_rule($r, $set);
 				}
-				$rule->add_selector($selector);
-			}
-
-			if ($replace) {
-				$this->style_sheet->replace_rule($rule);
+			} else if ($selector == '@extend') {
+				$this->parse_ruleset($rule, false, $set);
 			} else {
-				$this->style_sheet->extend_rule($rule);
+				$newset = new CSSBlock($selector, $set);
+				$this->parse_ruleset($rule, $replace, $newset);
 			}
 		}
 	}

@@ -18,14 +18,13 @@
 	font-family: Verdana, Arial, sans-serif;
 }
 
-@extend
+@extend {
 .boxcontent {
 	margin-left: 10px;
 	margin-top: 2px;
 	margin-bottom: 3px;
 }
 
-@extend
 .mainbox, .mainbox_noheader {
 	background-color: #fff;
 	border: none;
@@ -33,4 +32,5 @@
         border-bottom: 0.16em solid #49B10D;
         border-left: 0.10em solid #49B10D;
 	margin-bottom: 10pt;
+}
 }

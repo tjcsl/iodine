@@ -1,9 +1,8 @@
-@extend
+@extend {
 a {
 	color: #38890A;
 }
-@extend
 a:visited {
 	color: #4AB50D;
 }
-	
+}

@@ -1,14 +1,17 @@
-@extend
+@extend {
 body {
 	font-family: courier, helvetica, verdana, sans-serif;
 	color: #008800;
 	background-color: #000000;
 	/*cursor: url(www/pics/l33tcursor.cur);*/
 }
-@extend
 form, div, p, span, td, th, i {
 	font-family:  courier, helvetica, verdana, sans-serif;
 	color: #008800;
+}
+a {
+	color: #009900;
+}
 }
 
 input {
@@ -49,10 +52,6 @@ textarea {
 }
 .c2 {
 	background: #006600;
-}
-@extend
-a {
-	color: #009900;
 }
 a:visited {
 	color: #007700;
