@@ -31,7 +31,7 @@ table.results thead tr:first-child th {
 }
 table.results thead tr > th,
 table.results thead tr:first-child th:first-child, 
-table.results thead tr:last-child th {
+table.results thead tr::last-child th {
 	border-bottom-width: 3px;
 }
 table.results tfoot tr * {
@@ -82,6 +82,12 @@ h4 {
 	font-weight: bold;
 }
 
-select {
-	vertical-align: middle;
+@media print {
+	div#polls_header {
+		display: none;
+	}
 }
+
+/*div.poll_freeresponse {
+	background-color: #abcdef;
+}*/

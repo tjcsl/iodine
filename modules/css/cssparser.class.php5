@@ -15,6 +15,7 @@ class CSSParser {
 
 	/**
 	 * Reads and parses the given CSS string.
+	 * @param string $css legal css string.
 	 */
 	public function __construct($css) {
 		// Get rid of comments
@@ -34,10 +35,24 @@ class CSSParser {
 	 * Returns an array of the parsed CSS.
 	 * Each key represents either a selector or a @-rule that has the same
 	 * members through recursive tree hiearchy.
+	 * For example:
+	 * Array (
+	 *    [table#foo] => Array (
+	 *         [display] => none,
+	 *         [padding] => 1px
+	 *    )
+	 *    [@media print] => Array (
+	 *         [foo] => Array (
+	 *             [color] => #abcdef;
+	 *         )
+	 *    )
+	 * )
+	 * @return array 
 	 */
 	public function parsed() {
 		return $this->rulesets;
 	}
+
 	private function readRuleset() {
 		$ruleset = array();
 		while (substr($this->css, 0, 1) != '}' && strlen($this->css) > 0) {

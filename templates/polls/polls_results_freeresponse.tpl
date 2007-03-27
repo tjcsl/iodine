@@ -32,17 +32,18 @@ function hide(value) {
 }
 // -->
 </script>
-
+<div id="polls_header">
 <a href="[<$I2_ROOT>]polls/admin">Polls Admin</a><br /><br />
 
-Show responses by&nbsp;
+Show responses by: (use Ctrl-click to select multiple responses) <br>
 <select onchange="hideAll(this);" size="5" multiple="multiple">
 	<option value="9" selected="selected">9th graders</option>
 	<option value="10" selected="selected">10th graders</option>
 	<option value="11" selected="selected">11th graders</option>
 	<option value="12" selected="selected">12th graders</option>
 	<option value="staff" selected="selected">Teachers</option>
-</select>.
+</select>
+</div>
 <h4>[<$pollname>]</h4><br />
 
 [<$question>]<br /><br />

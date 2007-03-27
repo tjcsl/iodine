@@ -15,23 +15,37 @@
 class StyleSheet {
 
 	private $rulesets = array();
-	private $currentAdd = array();
+	//private $currentAdd = array();
 
+	/**
+	 * Tells the class that a new CSS file is being parsed.
+	 * The purpose of knowing this is to avoid overwriting when a selector
+	 * is used with two different rules in the same file.
+	 */
 	public function newFile() {
-		$currentAdd = array();
+	//	$this->currentAdd = array();
 	}
+
+	/**
+	 * Adds a rule (potentially replacing it) to the stylesheet within the
+	 * given ruleset.
+	 */
 	public function replace_rule(CSSRule $rule, CSSBlock $ruleset) {
 		$set =& $this->get_ruleset($ruleset);
 		foreach ($rule->get_selectors() as $selector) {
-			if (in_array($selector, $this->currentAdd))
-				$set[$selector] = array_merge($set[$selector], 
-					$rule->get_properties());
-			else
+		//	if (in_array($selector, $this->currentAdd))
+		//		$set[$selector] = array_merge($set[$selector], 
+		//			$rule->get_properties());
+		//	else
 				$set[$selector] = $rule->get_properties();
-			$this->currentAdd[] = $set[$selector];
+		//	$this->currentAdd[] = $selector;
 		}	
 	}
 
+	/**
+	 * Adds a rule (appending if necessary) to the stylesheet within the
+	 * given ruleset.
+	 */
 	public function extend_rule(CSSRule $rule, CSSBlock $ruleset) {
 		$set =& $this->get_ruleset($ruleset);
 		foreach ($rule->get_selectors() as $selector) {
@@ -41,7 +55,7 @@ class StyleSheet {
 				$set[$selector] = array_merge($set[$selector],
 					$rule->get_properties());
 			}
-			$this->currentAdd[] = $set[$selector];
+		//	$this->currentAdd[] = $selector;
 		}
 	}
 
@@ -55,6 +69,11 @@ class StyleSheet {
 			return $arr[$ruleset->get_name()];
 		}
 	}
+
+	/**
+	 * Returns a proper CSS file that has all of the rules within the
+	 * stylesheet.
+	 */
 	public function __toString() {
 		return $this->print_ruleset($this->rulesets);
 	}
