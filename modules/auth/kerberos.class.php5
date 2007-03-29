@@ -48,7 +48,7 @@ class Kerberos {
 	* Destroys the Kerberos tokens associated with this Kerberos object.
 	*/
 	public static function destroy($cache) {
-		exec('kdestroy -c '.$cache);
+		exec('kdestroy -c '.$cache->cache);
 	}
 
 	/**
