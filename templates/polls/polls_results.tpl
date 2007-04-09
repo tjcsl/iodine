@@ -1,29 +1,13 @@
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/sort.js"></script>
 <script type="text/javascript">
 <!--
-function value(row) {
-	var cell = row.cells.item(value.index);
-	return parseInt(cell.firstChild.nodeValue);
-}
-function compare(row1, row2) {
-	return (value(row1)-value(row2))*value.direction;
-}
-
 function sort(table, direction) {
 	var cell = table.parentNode;
-	value.direction = direction;
 	table = cell.parentNode.parentNode.parentNode;
-	var body = table.tBodies.item(0);
-	var rows = new Array(body.rows.length);
-	for (var i=0;i < body.rows.length; i++) {
-		rows[i] = body.rows.item(i);
-	}
-	value.index = cell.cellIndex*3-1;
-	if (value.index == 2)
-		value.index = 1;
-	rows.sort(compare);
-	for (var i=0;i<rows.length;i++) {
-		body.appendChild(rows[i]);
-	}
+	index = cell.cellIndex*3-1;
+	if (index == 2)
+		index = 1;
+	sortTable(table, index, direction);
 }
 // -->
 </script>

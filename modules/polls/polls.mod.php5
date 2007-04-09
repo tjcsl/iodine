@@ -27,6 +27,8 @@ class Polls implements Module {
 
 	private $template_args = array();
 
+	private static $permitted = array("home", "vote");
+
 	/**
 	* Required by the {@link Module} interface.
 	*/
@@ -38,6 +40,9 @@ class Polls implements Module {
 		}
 
 		$method = $I2_ARGS[1];
+		if (! $I2_USER->is_group_member('admin_polls') && !in_array($method, Polls::$permitted)) {
+			$method = "home";
+		}
 		if (method_exists($this, $method)) {
 			$this->$method();
 			$this->template_args['method'] = $method;
@@ -57,7 +62,23 @@ class Polls implements Module {
 		global $I2_USER;
 
 		$this->template = 'polls_pane.tpl';
-		$this->template_args['polls'] = Poll::get_user_polls($I2_USER);
+		//$this->template_args['polls'] = Poll::get_user_polls($I2_USER);
+		$polls = Poll::all_polls();
+		$open = array();
+		$finished = array();
+		$unstarted = array();
+		$time = time();
+		foreach ($polls as $poll) {
+			if (strtotime($poll->startdt) > $time)
+				$unstarted[] = $poll;
+			else if (strtotime($poll->enddt) > $time)
+				$open[] = $poll;
+			else
+				$finished[] = $poll;
+		}
+		$this->template_args['finished'] = $finished;
+		$this->template_args['unstarted'] = $unstarted;
+		$this->template_args['open'] = $open;
 		if ($I2_USER->is_group_member('admin_polls')) {
 			$this->template_args['admin'] = 1;
 		}
@@ -148,10 +169,10 @@ class Polls implements Module {
 	*/
 	function results() {
 		global $I2_USER, $I2_ARGS, $I2_SQL;
-		if (! $I2_USER->is_group_member('admin_polls')) {
+		/*if (! $I2_USER->is_group_member('admin_polls')) {
 			$this->home();
 			return;
-		}
+		}*/
 
 		if (! isset($I2_ARGS[2])) {
 			$this->home();
@@ -279,13 +300,14 @@ class Polls implements Module {
 	function admin() {
 		global $I2_USER, $I2_ARGS;
 
-		if (! $I2_USER->is_group_member('admin_polls')) {
+		/*if (! $I2_USER->is_group_member('admin_polls')) {
 			$this->home();
 			return;
 		}
 
 		$this->template = 'polls_admin.tpl';
-		$this->template_args['polls'] = Poll::all_polls();
+		$this->template_args['polls'] = Poll::all_polls();*/
+		$this->home();
 	}
 	
 	/**
@@ -294,10 +316,10 @@ class Polls implements Module {
 	function add() {
 		global $I2_USER, $I2_ARGS;
 
-		if (! $I2_USER->is_group_member('admin_polls')) {
+		/*if (! $I2_USER->is_group_member('admin_polls')) {
 			$this->home();
 			return;
-		}
+		}*/
 
 		$this->template_args['groups'] = Group::get_all_groups();
 
@@ -352,10 +374,10 @@ class Polls implements Module {
 
 		$this->template_args['groups'] = Group::get_all_groups();
 
-		if (! $I2_USER->is_group_member('admin_polls')) {
+		/*if (! $I2_USER->is_group_member('admin_polls')) {
 			$this->home();
 			return;
-		}
+		}*/
 
 		if (! isset($I2_ARGS[2])) {
 			$this->admin();
@@ -418,10 +440,10 @@ class Polls implements Module {
 	function delete() {
 		global $I2_USER, $I2_ARGS;
 
-		if (! $I2_USER->is_group_member('admin_polls')) {
+		/*if (! $I2_USER->is_group_member('admin_polls')) {
 			$this->home();
 			return;
-		}
+		}*/
 
 		if (! isset($I2_ARGS[2])) {
 			$this->admin();

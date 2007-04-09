@@ -1,3 +1,15 @@
+/* Used in polls_home.tpl */
+table.polls td {
+	padding: 0px 5px;
+}
+
+table.polls th {
+	padding-left: 1em;
+	font-weight: normal;
+	text-align: left;
+}
+
+/* Used in polls_results.tpl */
 /* These provide the major lines. */
 table.results {
 	border-collapse: collapse;
@@ -56,14 +68,18 @@ table.results thead img {
 }
 
 
-/* Free response selectors. */
+/* Used in polls_results_freeresponse.tpl */
 div.poll_freeresponse {
 	position: relative; /* Make this a containing block. */
+	display: block;
 	width: auto;
 	padding-left: 5.5em;
 	margin-bottom: 2px;
 	white-space: pre-wrap;
+	white-space: -moz-pre-wrap;
 	border: 1px dashed #999;
+	/* Broken in IE/FF. Needs to work. */
+	page-break-inside: avoid;
 }
 
 div.hidden {
@@ -86,8 +102,10 @@ h4 {
 	div#polls_header {
 		display: none;
 	}
+	div.poll_freesponse {
+		border-top: none;
+		border-left: none;
+		border-right: none;
+		border-bottom: 1px solid #999;
+	}
 }
-
-/*div.poll_freeresponse {
-	background-color: #abcdef;
-}*/

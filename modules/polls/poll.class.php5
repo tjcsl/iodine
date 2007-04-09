@@ -27,6 +27,10 @@ class Poll {
 
 	private $mygroups;
 
+	/**
+	 * Vars this can get:
+	 * pid, name, visible, startdt, enddt, myintroduction, mygroups, groupnames, groupids
+	 */
 	public function __get($var) {
 		global $I2_SQL;
 		switch($var) {
