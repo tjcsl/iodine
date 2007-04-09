@@ -217,6 +217,8 @@ class Mail implements Module {
 				$message->short_from = substr($message->short_from, 0, 13);
 				$message->short_from .= '...';
 			}
+			$message->short_from = htmlspecialchars($message->short_from);
+			$message->short_subject = htmlspecialchars($message->short_subject);
 			
 		}
 
