@@ -47,7 +47,7 @@ class Printing {
 		exec("cd /tmp; latex {$temp}");
 		exec("cd /tmp; dvips {$temp}.dvi -t letter" . ($landscape ? ' -t landscape' : ''));
 		//$ftpconn = ftp_connect('198.38.28.59');
-		$ftpconn = ftp_connect('198.38.28.23');
+		$ftpconn = ftp_connect(i2config_get('printer_ip', NULL, 'eighth'));
 		ftp_login($ftpconn, 'anonymous', '');
 		ftp_chdir($ftpconn, 'PORT1');
 		ftp_put($ftpconn, "{$temp}.ps", "{$temp}.ps", FTP_BINARY);
