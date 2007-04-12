@@ -8,3 +8,4 @@
 <a href="http://postman.tjhsst.edu/">Postman (calendar)</a><br />
 <a href="[<$I2_ROOT>]groups/">Groups</a><br />
 <a href="[<$I2_ROOT>]polls/">Polls</a><br />
+<a href="[<$I2_ROOT>]bugzilla/">Report a bug (Intranet or the CSL)</a><br />
