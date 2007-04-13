@@ -6,6 +6,9 @@
 	margin-bottom: 10pt;
 	width: 320px;
 }
+div.mainbox {
+	left: 342px;
+}
 .boxheader {
 	background: transparent;
 	color: #[<$I2_USER->boxtitlecolor|default:'008800'>];
