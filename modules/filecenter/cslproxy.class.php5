@@ -34,6 +34,7 @@ class CSLProxy {
 //It is safe to uncomment the if statement once we have unified logins functioning.  This will allow us to properly use both CSL and NetWare migration in one session.
 		$this->kerberos_cache = $_SESSION['krb_csl_ticket'];
 		$this->valid = TRUE;
+		$this->kerberos_realm = $realm;
 	}
 
 	/**
