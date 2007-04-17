@@ -35,16 +35,18 @@ class MySQLInterface implements Module {
 	*/
 	function display_pane($disp) {
 		$header_data = NULL;
-		if($this->query_data != NULL) {
-			$header_data = array();
-			foreach($this->query_data as $dat) {
-				foreach($dat as $key=>$unused) {
-					if(!is_int($key))
-						$header_data[] = $key;
+		if(!is_string($this->query_data)) {
+			if($this->query_data != NULL) {
+				$header_data = array();
+				foreach($this->query_data as $dat) {
+					foreach($dat as $key=>$unused) {
+						if(!is_int($key))
+							$header_data[] = $key;
+					}
+					break;
 				}
-				break;
+				$this->query_data->rewind();
 			}
-			$this->query_data->rewind();
 		}
 		$disp->disp('mysqlinterface_pane.tpl', array( 'query_data' => $this->query_data, 'header_data' => $header_data, 'query' => $this->query));
 	}
