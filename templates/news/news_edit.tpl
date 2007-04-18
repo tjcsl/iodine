@@ -6,6 +6,7 @@ Yours news post has been changed.<br />
 <form action="[<$I2_SELF>]" method="POST">
  <input type="hidden" name="edit_form" value="1" />
  Title: <input type="text" name="edit_title" value="[<$newsitem->title>]" size="30" /><br />
+ Expiration date: <input type="text" name="edit_expire" size="30" value="[<$newsitem->expire>]"/><br />
  <table id="groups_table" cellpadding="0">
   <tr>
    <td>Groups:</td>

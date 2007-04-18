@@ -89,9 +89,10 @@ class News implements Module {
 				if( isset($_REQUEST['add_form'])) {
 					$title = $_REQUEST['add_title'];
 					$text = $_REQUEST['add_text'];
+					$expire = $_REQUEST['add_expire'];
 					$groups = Group::generate($_REQUEST['add_groups']);
 
-					if(Newsitem::post_item($I2_USER, $title, $text, $groups)) {
+					if(Newsitem::post_item($I2_USER, $title, $text, $groups, $expire)) {
 						$this->template_args['added'] = 1;
 					}
 					else {
@@ -130,8 +131,9 @@ class News implements Module {
 				if( isset($_REQUEST['edit_form']) ) {
 					$title = $_REQUEST['edit_title'];
 					$text = $_REQUEST['edit_text'];
+					$expire = $_REQUEST['edit_expire'];
 					$groups = Group::generate($_REQUEST['add_groups']);
-					$item->edit($title, $text, $groups);
+					$item->edit($title, $text, $groups,$expire);
 					$this->template_args['edited'] = 1;
 				}
 
@@ -175,8 +177,10 @@ class News implements Module {
 					return array('Delete News Post', 'Confirm News Post Delete');
 				}
 				
-			case 'archive';
+			case 'archive':
 				return self::display_news(true,'Old News Posts');
+			case 'all':
+				return self::display_news(true,'Archived News Posts', true);
 
 			case 'show':
 				$this->template = 'news_show.tpl';
@@ -269,14 +273,14 @@ class News implements Module {
 	function get_name() {
 		return 'News';
 	}
-	function display_news($archive = false,$title='Recent News Posts') {	
+	function display_news($archive = false,$title='Recent News Posts',$expired = false) {	
 		$this->template = 'news_pane.tpl';
 		$I2_ARGS[1] = '';
 
 		$this->template_args['stories'] = array();
 
 		if( $this->stories === NULL) {
-			$this->stories = Newsitem::get_all_items();
+			$this->stories = Newsitem::get_all_items($expired);
 		}
 
 		foreach($this->stories as $story) {

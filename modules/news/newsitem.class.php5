@@ -71,7 +71,8 @@ class NewsItem {
 			case 'title':
 			case 'authorID':
 			case 'posted':
-				$res = $I2_SQL->query('SELECT `title`,`authorID`,`posted` FROM news WHERE `id` = %d', $this->mynid);
+			case 'expire':
+				$res = $I2_SQL->query('SELECT `title`,`authorID`,`posted`,`expire` FROM news WHERE `id` = %d', $this->mynid);
 				if($res->num_rows() < 1) {
 					throw new I2Exception('Invalid NID accessed: '.$this->mynid);
 				}
@@ -79,6 +80,9 @@ class NewsItem {
 				$this->info['title'] = $row['title'];
 				$this->info['authorID'] = $row['authorID'];
 				$this->info['posted'] = $row['posted'];
+				if ($row['expire'] == NULL)
+					$row['expire'] = '';
+				$this->info['expire'] = $row['expire'];
 				break;
 
 			case 'groups':
@@ -151,10 +155,12 @@ class NewsItem {
 	 * @access public
 	 * @return array An array of all Newsitems.
 	 */
-	public static function get_all_items() {
+	public static function get_all_items($expired = false) {
 		global $I2_SQL;
 		$items = array();
-		foreach($I2_SQL->query('SELECT id FROM news ORDER BY posted DESC')->fetch_all_single_values() as $nid) {
+		$qstring = 'SELECT id FROM news ' . ($expired ? '' : 'WHERE expire > NOW() OR expire IS NULL ') .
+			'ORDER BY posted DESC';
+		foreach($I2_SQL->query($qstring)->fetch_all_single_values() as $nid) {
 			$item = new Newsitem($nid);
 			if ($item->readable()) {
 				$items[] = $item;
@@ -195,7 +201,7 @@ class NewsItem {
 	 * @param string $text The content of the news post.
 	 * @param string $group
 	 */
-	public static function post_item($author, $title, $text, $groups) {
+	public static function post_item($author, $title, $text, $groups, $expire) {
 		global $I2_SQL,$I2_USER;
 
 		$newsadm = new Group('admin_news');
@@ -208,8 +214,7 @@ class NewsItem {
 		}
 
 		$text = self::clean_text($text);
-
-		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP', $author->uid, $title, $text);
+		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP, expire=%s', $author->uid, $title, $text, $expire);
 
 		$nid = $I2_SQL->query('SELECT LAST_INSERT_ID()')->fetch_single_value();
 		
@@ -293,7 +298,7 @@ class NewsItem {
 	 * @param string $text The new content for the news post.
 	 * @param string $groupnames The new comma-seperated list of groups.
 	 */
-	public function edit($title, $text, $groups) {
+	public function edit($title, $text, $groups, $expire) {
 		global $I2_SQL,$I2_USER;
 
 		$text = self::clean_text($text);
@@ -307,7 +312,7 @@ class NewsItem {
 			}
 		}
 
-		$I2_SQL->query('UPDATE news SET title=%s, text=%s WHERE id=%d', $title, $text, $this->mynid);
+		$I2_SQL->query('UPDATE news SET title=%s, text=%s, expire=%s WHERE id=%d', $title, $text, $expire, $this->mynid);
 
 		// flush the group mappings for this post and recreate them entirely
 		$I2_SQL->query('DELETE FROM news_group_map WHERE nid=%d', $this->mynid);
