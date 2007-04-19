@@ -1,7 +1,10 @@
 [<include file="eighth/header.tpl">]
+<table><tr><td>
 [<include file="eighth/include_list_open.tpl">]
-[<include file="eighth/activity_selection.tpl">]
+[<include file="eighth/activity_selection.tpl" op='view' bid=$block->bid field='aid'>]
+[<include file="eighth/block_selection.tpl" header="FALSE" title='' method='vcp_attendance' op='view' field='bid' bid=$block->bid>]
 [<include file="eighth/include_list_close.tpl">]
+</td><td style="vertical-align: top;">
 <span style="font-family: courier;">
 Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<$act->block->date|date_format>], [<$act->block->block>] block<br />
 Room(s):&nbsp;&nbsp;&nbsp;&nbsp;[<$act->block_rooms_comma>]<br />
@@ -26,6 +29,7 @@ Sponsor(s):&nbsp;[<$act->block_sponsors_comma>]<br />
 	</table><br />
 	<input type="submit" value="Update" />
 </form>
+</td></tr></table>
 <script language="javascript" type="text/javascript">
 	var frm = document.vcp_attendance_form;
 	function CA() {
@@ -53,6 +57,6 @@ Sponsor(s):&nbsp;[<$act->block_sponsors_comma>]<br />
 				if(e.checked) TO++;
 			}
 		}
-		frm.selectall.value = (TO == TB ? "Deelect All" : "Select All");
+		frm.selectall.value = (TO == TB ? "Deselect All" : "Select All");
 	}
 </script>

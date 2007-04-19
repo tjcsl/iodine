@@ -2,7 +2,7 @@
 <table><tr><td>
 [<include file="eighth/include_list_open.tpl">]
 [<include file="eighth/activity_selection.tpl" op='user' bid=$block->bid field='aid'>]
-[<include file="eighth/block_selection.tpl" header="FALSE" title='' method='res_student' op='activity' field='bid' bid=$block->bid>]
+[<include file="eighth/block_selection.tpl" header="FALSE" title='' method='res_student' op='user' field='bid' bid=$block->bid>]
 [<include file="eighth/include_list_close.tpl">]
 </td><td style="vertical-align: top;">
 [<if isSet($lastuser)>]<b>Rescheduled [<$lastuser->fullname>]</b>[</if>]

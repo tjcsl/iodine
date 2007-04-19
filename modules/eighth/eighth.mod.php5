@@ -1267,8 +1267,11 @@ class Eighth implements Module {
 			$this->template_args['op'] = "view/bid/{$this->args['bid']}";
 		}
 		else if($this->op == 'view') {
+			$this->setup_block_selection();
 			$this->template = 'vcp_attendance.tpl';
 			$this->template_args['op'] = "view/bid/{$this->args['bid']}";
+			$this->template_args['block'] = new EighthBlock($this->args['bid']);
+			$this->template_args['aid'] = $this->args['aid'];
 			$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bid']);
 			$this->template_args['act'] = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->template_args['absentees'] = EighthSchedule::get_absentees($this->args['bid'], $this->args['aid']);
