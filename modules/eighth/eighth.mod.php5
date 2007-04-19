@@ -1863,6 +1863,52 @@ class Eighth implements Module {
 			}
 		}
 	}
+
+	public function export_csv() {
+		global $I2_SQL;
+		if ($this->op == '')
+			$this->op = 'select';
+		if ($this->op == 'select') {
+			$this->setup_block_selection();
+		} else if ($this->op == 'view') {
+			$bid = $this->args['bid'];
+			/* We want all rooms where room name starts with Out of Building (ignore case, trim); */
+			$aids = $I2_SQL->query('SELECT activityid FROM eighth_block_map LEFT JOIN eighth_rooms ON rooms=rid' .
+				' WHERE bid=%d AND LEFT(LTRIM(LOWER(eighth_rooms.name)),15)="out of building"',$bid)->fetch_all_arrays();
+			$activities = array();
+			foreach ($aids as $aid) {
+				$activity = new EighthActivity($aid[0], $bid);
+				if (strncasecmp($activity->name,'z',1) != 0)
+					$activities[] = $activity;
+			}
+			$this->template = 'export_csv.tpl';
+			$this->template_args['bid'] = $bid;
+			$this->template_args['activities'] = $activities;
+			$this->title = 'Out of Building students';
+		} else if ($this->op == 'export') {
+			$bid = $this->args['bid'];
+			/* We want all rooms where room name starts with Out of Building (ignore case, trim); */
+			$aids = $I2_SQL->query('SELECT activityid FROM eighth_block_map LEFT JOIN eighth_rooms ON rooms=rid' .
+				' WHERE bid=%d AND LEFT(LTRIM(LOWER(eighth_rooms.name)),15)="out of building"',$bid)->fetch_all_arrays();
+			$activities = array();
+			foreach ($aids as $aid) {
+				$activity = new EighthActivity($aid[0], $bid);
+				if (strncasecmp($activity->name,'z',1) != 0)
+					$activities[] = $activity;
+			}
+			Display::stop_display();
+			header('Pragma: ');
+			header('Content-type: text/csv');
+			$datestr = date('Y-m-d-His');
+			header("Content-Disposition: attachment; filename=\"EighthOutOfBuild-$datestr.csv\"");
+			print "Name,Activity,Block\r\n";
+			foreach ($activities as $activity) {
+				foreach ($activity->members_obj as $member)
+					print $member->name . ',' . $activity->name . ',' . $activity->block->block . "\r\n";
+			}
+			return;
+		}
+	}
 }
 
 ?>

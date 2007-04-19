@@ -1,4 +1,4 @@
-[<* A 'TODO' next to an item means it's not quite done yet (Hopefully including what needs to be done as well) *>]
+[<* A 'TODO' next to an item means it is not quite done yet (Hopefully including what needs to be done as well) *>]
 [<* A 'P+' next to an item means it prints fully *>]
 [<* A 'P-' next to an item means it prints somewhat *>]
 
@@ -50,6 +50,7 @@
 				<li>[<* TODO: Needs to pull users from LDAP, not MySQL *>]<a href="[<$I2_ROOT>]eighth/rep_schedules">Repair broken schedules</a></li>
 				[<* This is pointless for now, but is good to keep around *>]
 				[<* <li><a href="[<$I2_ROOT>]eighth/set_printer">Set printer</a></li> *>]
+				<li><a href="[<$I2_ROOT>]eighth/export_csv">Export out of school schedules</a></li>
 			</ol>
 		</td>
 	</tr>
