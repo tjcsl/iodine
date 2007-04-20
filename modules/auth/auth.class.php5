@@ -326,6 +326,7 @@ class Auth {
 				$_SESSION['i2_login_time'] = time();
 				
 				session_regenerate_id(TRUE);
+				setcookie('PHPSESSID', '', 1, '/', '.tjhsst.edu'); /* Should fix accursed login bug */
 
 				redirect(implode('/', $I2_ARGS));
 				return TRUE; //never reached
