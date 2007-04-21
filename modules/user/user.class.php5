@@ -1010,6 +1010,15 @@ class User {
 		return ($priority[$photo1] < $priority[$photo2]) ? -1 : 1;
 	}
 
+	/**
+	* Determine if today is the user's birthday.
+	* 
+	* @return boolean Whether or not it is the user's birthday.
+	*/
+	public function borntoday() {
+		return date('md', time()) == date('md',strtotime($this->__get('bdate')));
+	}
+
 }
 
 ?>
