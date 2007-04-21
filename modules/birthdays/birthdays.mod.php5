@@ -75,13 +75,13 @@ class Birthdays implements Module {
 	}
 
 	private function get_birthdays($timestamp) {
-		global $I2_LDAP;
+		$tmp_ldap = LDAP::get_simple_bind( i2config_get('authuser_dn','cn=authuser,dc=tjhsst,dc=edu','auth'), i2config_get('authuser_passwd',NULL,'auth') );
 		
 		$date = '*' . date('md', $timestamp);
 		$year = (int)date('Y', $timestamp);
 
 		$people = array();
-		$result = $I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', "(birthday=$date)", 'iodineUidNumber');
+		$result = $tmp_ldap->search('ou=people,dc=tjhsst,dc=edu', "(birthday=$date)", 'iodineUidNumber');
 		while ($uid = $result->fetch_single_value()) {
 			$user = new User((int)$uid);
 			$person = array(
