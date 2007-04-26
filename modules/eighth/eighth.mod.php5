@@ -1276,6 +1276,7 @@ class Eighth implements Module {
 			$this->template_args['act'] = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->template_args['absentees'] = EighthSchedule::get_absentees($this->args['bid'], $this->args['aid']);
 			$this->template_args['print_url'] = "bid/{$this->args['bid']}/aid/{$this->args['aid']}";
+			$this->template_args['is_admin'] = self::is_admin();
 			$this->title = 'View Attendance';
 		}
 		else if($this->op == 'update') {

@@ -12,7 +12,7 @@ Sponsor(s):&nbsp;[<$act->block_sponsors_comma>]<br />
 </span>
 <br />
 <form name="vcp_attendance_form" action="[<$I2_ROOT>]eighth/vcp_attendance/update/bid/[<$act->bid>]/aid/[<$act->aid>]" method="post">
-	<input type="button" value="Select All" onclick="CA();" name="selectall" /> <input type="submit" value="Update" /><br />
+	<input type="button" value="Select All" onclick="CA();" name="selectall" /> [<if $is_admin>]<input type="submit" value="Update" />[</if>]<br />
 	<table cellspacing="0" style="border: 0px; margin: 0px; padding: 0px;">
 		<tr>
 			<th>Absent</th>
@@ -27,7 +27,7 @@ Sponsor(s):&nbsp;[<$act->block_sponsors_comma>]<br />
 		</tr>
 [</foreach>]
 	</table><br />
-	<input type="submit" value="Update" />
+	[<if $is_admin>]<input type="submit" value="Update" />[</if>]
 </form>
 </td></tr></table>
 <script language="javascript" type="text/javascript">
