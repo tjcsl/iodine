@@ -1865,10 +1865,14 @@ class Eighth implements Module {
 		}
 	}
 
+	/**
+	 * Exports a list of all students who will be out of the building.
+	 */
 	public function export_csv() {
 		global $I2_SQL;
 		if ($this->op == '')
 			$this->op = 'select';
+		// TODO: Make this export all blocks for a given day, instead of a per-block basis.
 		if ($this->op == 'select') {
 			$this->setup_block_selection();
 		} else if ($this->op == 'view') {
@@ -1879,6 +1883,7 @@ class Eighth implements Module {
 			$activities = array();
 			foreach ($aids as $aid) {
 				$activity = new EighthActivity($aid[0], $bid);
+				// Ignore the excused absence, etc.
 				if (strncasecmp($activity->name,'z',1) != 0)
 					$activities[] = $activity;
 			}
@@ -1894,6 +1899,7 @@ class Eighth implements Module {
 			$activities = array();
 			foreach ($aids as $aid) {
 				$activity = new EighthActivity($aid[0], $bid);
+				// Ignore the excused absence, etc.
 				if (strncasecmp($activity->name,'z',1) != 0)
 					$activities[] = $activity;
 			}
@@ -1905,7 +1911,7 @@ class Eighth implements Module {
 			print "Name,Activity,Block\r\n";
 			foreach ($activities as $activity) {
 				foreach ($activity->members_obj as $member)
-					print $member->name . ',' . $activity->name . ',' . $activity->block->block . "\r\n";
+					print '"' . $member->name_comma . '",' . $activity->name . ',' . $activity->block->block . "\r\n";
 			}
 			return;
 		}
