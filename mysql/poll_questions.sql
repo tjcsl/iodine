@@ -4,7 +4,7 @@ CREATE TABLE poll_questions (
 		  qid INT(11) UNSIGNED NOT NULL,
 		  PRIMARY KEY(qid),
 		  maxvotes INT(10) UNSIGNED NOT NULL DEFAULT 0,
-		  answertype ENUM('standard','approval','freeresponse','essay') NOT NULL DEFAULT 'standard',
+		  answertype ENUM('standard','approval','freeresponse','essay', 'split_approval') NOT NULL DEFAULT 'standard',
 		  answerlimit MEDIUMINT(8) UNSIGNED DEFAULT 0,
 		  question TEXT NOT NULL DEFAULT ''
 );

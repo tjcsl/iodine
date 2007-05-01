@@ -19,12 +19,15 @@
 [<foreach from=$poll->questions item=question>]
  [<if count($question->answers) != 0 || $question->answertype == 'freeresponse'>]
   <b>[<$question->r_qid>].</b> [<$question->question>]<br />
-  [<if $question->answertype == 'checkbox'>]
+  [<if $question->answertype == 'checkbox' || $question->answertype == 'split_approval'>]
    [<if $question->maxvotes == 0>]
-    You may select as many options as you wish.<br />
+    You may select as many options as you wish.
    [<else>]
-    You may select [<$question->maxvotes>] option[<if $question->maxvotes != 1>]s[</if>].<br />
+    You may select [<$question->maxvotes>] option[<if $question->maxvotes != 1>]s[</if>].
    [</if>]
+   [<if $question->answertype == 'split_approval'>]
+    Your vote will be split up between the number of responses you see.
+   [</if>]<br />
   [</if>]
  [</if>]
  [<if $question->answertype == 'radio'>]
@@ -32,7 +35,7 @@
   [<foreach from=$question->answers key=aid item=answer>]
    <input type="radio" name="[<$question->qid>]" value="[<$aid>]" [<if $question->user_voted_for($aid)>]CHECKED [</if>]/>[<$answer>]<br />
   [</foreach>]
- [<elseif $question->answertype == 'checkbox'>]
+ [<elseif $question->answertype == 'checkbox' || $question->answertype == 'split_approval'>]
   [<foreach from=$question->answers key=aid item=answer>]
    <input type="checkbox" name="[<$aid>]" [<if $question->user_voted_for($aid)>]CHECKED [</if>]/>[<$answer>]<br />
   [</foreach>]

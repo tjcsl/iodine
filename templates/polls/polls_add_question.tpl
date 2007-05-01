@@ -4,9 +4,10 @@
 <input type="hidden" name="poll_add_form" value="question" />
 Question: <input type="text" name="question" value="" /><br />
 Type: <select name=answertype> 
-	<option> Checkbox 
-	<option> Radio
-	<option value='freeresponse'> Free Response 
+	<option>Checkbox</option>
+	<option value='split_approval'>Split-Vote Approval</option>
+	<option>Radio</option>
+	<option value='freeresponse'>Free Response</option>
 	</select><br />
 <!-- Max Votes (0 for unlimited): <input type="text" name="maxvotes" value="" /><br /> 
 <textarea rows="5" cols="50" name="answers"></textarea><br /> -->

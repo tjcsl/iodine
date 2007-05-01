@@ -240,6 +240,62 @@ class Polls implements Module {
 			$question['total']['M'] = 0;
 			$question['total']['F'] = 0;
 			$question['answers'] = array();
+			if ($q->answertype == 'split_approval') {
+				$qid = $q->qid;
+				$people = $q->users_who_voted();
+				$answers = $q->get_answers();
+				$responses = array();
+				foreach ($answers as $aid => $answer) {
+					$responses[$aid] = array();
+					$responses[$aid]['text'] = $answer;
+					$responses[$aid]['votes'] = array();
+					$responses[$aid]['votes']['9M'] = 0;
+					$responses[$aid]['votes']['9F'] = 0;
+					$responses[$aid]['votes']['9T'] = 0;
+					$responses[$aid]['votes']['10M'] = 0;
+					$responses[$aid]['votes']['10F'] = 0;
+					$responses[$aid]['votes']['10T'] = 0;
+					$responses[$aid]['votes']['11M'] = 0;
+					$responses[$aid]['votes']['11F'] = 0;
+					$responses[$aid]['votes']['11T'] = 0;
+					$responses[$aid]['votes']['12M'] = 0;
+					$responses[$aid]['votes']['12F'] = 0;
+					$responses[$aid]['votes']['12T'] = 0;
+					$responses[$aid]['votes']['staffT'] = 0;
+					$responses[$aid]['votes']['T'] = 0;
+					$responses[$aid]['votes']['M'] = 0;
+					$responses[$aid]['votes']['F'] = 0;
+				}
+				foreach ($people as $user) {
+					$votes = $I2_SQL->query('SELECT * from poll_votes WHERE uid = %d AND aid > %d AND aid < %d', $user->uid,
+						PollQuestion::lower_bound($qid), PollQuestion::upper_bound($qid))->fetch_all_arrays();
+					$pervote = 1.0 / count($votes);
+					$gr = $user->grade;
+					$gen = $user->gender;
+					foreach($votes as $vote) {
+						$aid = $vote['aid'];
+						$responses[$aid]['votes']['T'] += $pervote;
+						$question['total']['T'] += $pervote;
+						$question['total']["{$gr}T"] += $pervote;
+						$responses[$aid]['votes']["{$gr}T"] += $pervote;
+						if(empty($gen))
+							continue; //staff has no gender on file
+						$question['total']["{$gr}{$gen}"] += $pervote;
+						$question['total']["{$gen}"] += $pervote;
+						$responses[$aid]['votes']["{$gr}{$gen}"] += $pervote;
+						$responses[$aid]['votes']["{$gen}"] += $pervote;
+					}	
+				}
+				foreach ($responses as $aid => $response) {
+					if ($question['total']['T'] == 0)
+						$responses[$aid]['percent']['T'] == "0.00";
+					else
+						$responses[$aid]['percent']['T'] = sprintf("%.2f",$response['votes']['T'] / $question['total']['T'] * 100);
+				}
+				$question['answers'] = $responses;
+				$this->template_args['questions'][] = $question;
+				continue;
+			}
 
 				
 			foreach ($q->answers as $aid => $text) {

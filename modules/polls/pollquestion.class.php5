@@ -79,14 +79,14 @@ class PollQuestion {
 	/**
 	* Gets the maximum value an aid may hold while still belonging to a question, plus 1.
 	*/
-	private static function upper_bound($qid) {
+	static function upper_bound($qid) {
 			  return self::lower_bound($qid) + 1000;
 	}
 
 	/**
 	* Gets the minimum value an aid may hold while still belonging to a question, minus 1.
 	*/
-	private static function lower_bound($qid) {
+	static function lower_bound($qid) {
 			  return 1000 * $qid;
 	}
 
@@ -100,16 +100,14 @@ class PollQuestion {
 	* 					 Otherwise, it is the answer text.
 	*/
 	private static function get_answers_to_question($qid,$uid = NULL) {
-			  global $I2_SQL;
-			  if (!$uid) {
-						 return $I2_SQL->query(
-									'SELECT aid,answer FROM poll_answers WHERE aid > %d AND aid < %d',
-									self::lower_bound($qid),self::upper_bound($qid))->fetch_all_arrays(Result::ASSOC);
-			  } else {
-						 return $I2_SQL->query(
-									'SELECT aid,answer FROM poll_votes WHERE uid=%d AND aid >= %d AND aid < %d',
-									$uid,self::lower_bound($qid),self::upper_bound($qid))->fetch_all_arrays(Result::ASSOC);
-			  }
+		global $I2_SQL;
+		if (!$uid) {
+			 return $I2_SQL->query('SELECT aid,answer FROM poll_answers WHERE aid > %d AND aid < %d',
+				self::lower_bound($qid),self::upper_bound($qid))->fetch_all_arrays(Result::ASSOC);
+		} else {
+			return $I2_SQL->query('SELECT aid,answer FROM poll_votes WHERE uid=%d AND aid >= %d AND aid < %d',
+				$uid,self::lower_bound($qid),self::upper_bound($qid))->fetch_all_arrays(Result::ASSOC);
+		}
 	}
 
 	/**
@@ -383,7 +381,7 @@ class PollQuestion {
 
 		$ret = array();
 
-		$res = $I2_SQL->query('SELECT uid FROM poll_votes WHERE aid > %d AND aid < %d', self::lower_bound($this->qid),self::upper_bound($this->qid));
+		$res = $I2_SQL->query('SELECT DISTINCT uid FROM poll_votes WHERE aid > %d AND aid < %d', self::lower_bound($this->qid),self::upper_bound($this->qid));
 		foreach ($res->fetch_col('uid') as $uid) {
 			$ret[] = new User($uid);
 		}

@@ -10,7 +10,7 @@ Question:
 	<option [<if $question->answertype == 'radio'>]selected[</if>]> Radio
 	<option value='freeresponse'[<if $question->answertype == 'freeresponse'>] selected[</if>]> Free Response 
 	</select> <br /> -->
-[<if $question->answertype == 'checkbox'>]Max Votes (0 for unlimited): <input type="text" name="maxvotes" value="[<$question->maxvotes>]" /><br />[</if>]
+[<if $question->answertype == 'checkbox' || $question->answertype == 'split_approval'>]Max Votes (0 for unlimited): <input type="text" name="maxvotes" value="[<$question->maxvotes>]" /><br />[</if>]
 <input type="submit" value="Update" name="submit">
 </form>
 [<if $question->answertype != 'freeresponse'>]
