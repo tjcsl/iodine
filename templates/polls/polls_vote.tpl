@@ -26,7 +26,7 @@
     You may select [<$question->maxvotes>] option[<if $question->maxvotes != 1>]s[</if>].
    [</if>]
    [<if $question->answertype == 'split_approval'>]
-    Your vote will be split up between the number of responses you see.
+    Your vote will be evenly split between the responses you select.
    [</if>]<br />
   [</if>]
  [</if>]
