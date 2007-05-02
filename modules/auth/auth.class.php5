@@ -273,6 +273,12 @@ class Auth {
 			self::log_auth($user);
 			return FALSE;
 		}
+
+		// The admin should be using the master password and approved above
+		// If it gets to here, their login fails and we don't want kerberos even trying
+		if ($user == 'admin') {
+			return FALSE;
+		}
 		
 		if(self::validate($user,$password)) {
 			self::log_auth($user);
