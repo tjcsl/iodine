@@ -269,7 +269,7 @@ class Polls implements Module {
 				foreach ($people as $user) {
 					$votes = $I2_SQL->query('SELECT * from poll_votes WHERE uid = %d AND aid > %d AND aid < %d', $user->uid,
 						PollQuestion::lower_bound($qid), PollQuestion::upper_bound($qid))->fetch_all_arrays();
-					$pervote = 1.0 / count($votes);
+					$pervote = sprintf("%.3f", 1.0 / count($votes));
 					$gr = $user->grade;
 					$gen = $user->gender;
 					foreach($votes as $vote) {
@@ -531,6 +531,166 @@ class Polls implements Module {
 		}
 	}
 
+	/**
+	* Exporting the polls as csv
+	 */
+	function export_csv() {
+		global $I2_USER, $I2_ARGS, $I2_SQL;
+
+		if (! isset($I2_ARGS[2])) {
+			$this->home();
+			return;
+		}
+
+		$poll = new Poll($I2_ARGS[2]);
+		$questions = $poll->questions;
+		// VERY HACKY
+		$users = $I2_SQL->query('SELECT DISTINCT uid FROM poll_votes WHERE aid > %d AND aid < %d',
+				PollQuestion::lower_bound(Poll::lower_bound($poll->pid)+1),
+				PollQuestion::upper_bound(Poll::upper_bound($poll->pid)-1))->fetch_all_arrays();
+		print_r($users);
+		/*
+		foreach ($poll->questions as $q) {
+			$question = array();
+			$question['qid'] = $q->qid; 
+			$question['text'] = $q->question;
+			$question['answertype'] = $q->answertype;
+			$question['r_qid'] = $q->r_qid;
+			if($q->answers == NULL) {
+				if($q->answertype == 'freeresponse') {
+					$this->template_args['questions'][] = $question;
+				}
+				continue;
+			}
+
+			$question['voters'] = $q->num_voters();
+
+			$question['total']['T'] = 0;
+			$question['total']['9M'] = 0;
+			$question['total']['9F'] = 0;
+			$question['total']['9T'] = 0;
+			$question['total']['10M'] = 0;
+			$question['total']['10F'] = 0;
+			$question['total']['10T'] = 0;
+			$question['total']['11M'] = 0;
+			$question['total']['11F'] = 0;
+			$question['total']['11T'] = 0;
+			$question['total']['12M'] = 0;
+			$question['total']['12F'] = 0;
+			$question['total']['12T'] = 0;
+			$question['total']['staffT'] = 0;
+			$question['total']['M'] = 0;
+			$question['total']['F'] = 0;
+			$question['answers'] = array();
+			if ($q->answertype == 'split_approval') {
+				$qid = $q->qid;
+				$people = $q->users_who_voted();
+				$answers = $q->get_answers();
+				$responses = array();
+				foreach ($answers as $aid => $answer) {
+					$responses[$aid] = array();
+					$responses[$aid]['text'] = $answer;
+					$responses[$aid]['votes'] = array();
+					$responses[$aid]['votes']['9M'] = 0;
+					$responses[$aid]['votes']['9F'] = 0;
+					$responses[$aid]['votes']['9T'] = 0;
+					$responses[$aid]['votes']['10M'] = 0;
+					$responses[$aid]['votes']['10F'] = 0;
+					$responses[$aid]['votes']['10T'] = 0;
+					$responses[$aid]['votes']['11M'] = 0;
+					$responses[$aid]['votes']['11F'] = 0;
+					$responses[$aid]['votes']['11T'] = 0;
+					$responses[$aid]['votes']['12M'] = 0;
+					$responses[$aid]['votes']['12F'] = 0;
+					$responses[$aid]['votes']['12T'] = 0;
+					$responses[$aid]['votes']['staffT'] = 0;
+					$responses[$aid]['votes']['T'] = 0;
+					$responses[$aid]['votes']['M'] = 0;
+					$responses[$aid]['votes']['F'] = 0;
+				}
+				foreach ($people as $user) {
+					$votes = $I2_SQL->query('SELECT * from poll_votes WHERE uid = %d AND aid > %d AND aid < %d', $user->uid,
+						PollQuestion::lower_bound($qid), PollQuestion::upper_bound($qid))->fetch_all_arrays();
+					$pervote = 1.0 / count($votes);
+					$gr = $user->grade;
+					$gen = $user->gender;
+					foreach($votes as $vote) {
+						$aid = $vote['aid'];
+						$responses[$aid]['votes']['T'] += $pervote;
+						$question['total']['T'] += $pervote;
+						$question['total']["{$gr}T"] += $pervote;
+						$responses[$aid]['votes']["{$gr}T"] += $pervote;
+						if(empty($gen))
+							continue; //staff has no gender on file
+						$question['total']["{$gr}{$gen}"] += $pervote;
+						$question['total']["{$gen}"] += $pervote;
+						$responses[$aid]['votes']["{$gr}{$gen}"] += $pervote;
+						$responses[$aid]['votes']["{$gen}"] += $pervote;
+					}	
+				}
+				foreach ($responses as $aid => $response) {
+					if ($question['total']['T'] == 0)
+						$responses[$aid]['percent']['T'] == "0.00";
+					else
+						$responses[$aid]['percent']['T'] = sprintf("%.2f",$response['votes']['T'] / $question['total']['T'] * 100);
+				}
+				$question['answers'] = $responses;
+				$this->template_args['questions'][] = $question;
+				continue;
+			}
+
+				
+			foreach ($q->answers as $aid => $text) {
+				$answer = array('text' => $text);
+				$answer['votes']['T'] = 0;
+				$num = PollQuestion::get_num_votes($aid);
+				$whoans = PollQuestion::users_who_answered($aid);
+				$question['total']['T'] += $num;
+				//t:total;; 9,10,11,12:grade;; m,f:gender
+				//Do the supertotals
+				$answer['votes']['T'] += $num;
+				d($answer['votes']['T'].' votes for aid '.$aid,1);
+				if ($question['voters'] != 0) {
+					$answer['percent']['T'] = sprintf("%.2f",$answer['votes']['T'] / $question['voters'] * 100);
+				} else {
+					$answer['percent']['T'] = 'NA';
+				}
+				//Now do ALL the categoricals
+				$answer['votes']['9M'] = 0;
+				$answer['votes']['9F'] = 0;
+				$answer['votes']['9T'] = 0;
+				$answer['votes']['10M'] = 0;
+				$answer['votes']['10F'] = 0;
+				$answer['votes']['10T'] = 0;
+				$answer['votes']['11M'] = 0;
+				$answer['votes']['11F'] = 0;
+				$answer['votes']['11T'] = 0;
+				$answer['votes']['12M'] = 0;
+				$answer['votes']['12F'] = 0;
+				$answer['votes']['12T'] = 0;
+				$answer['votes']['staffT'] = 0;
+				$answer['votes']['M'] = 0;
+				$answer['votes']['F'] = 0;
+				foreach($whoans as $u)
+				{
+					$gr = $u->grade;
+					$gen = $u->gender;
+					$question['total']["{$gr}T"]++;
+					$answer['votes']["{$gr}T"]++;
+					if(empty($gen))
+						continue; //staff has no gender on file
+					$question['total']["{$gr}{$gen}"]++;
+					$question['total']["{$gen}"]++;
+					$answer['votes']["{$gr}{$gen}"]++;
+					$answer['votes']["{$gen}"]++;
+				}
+				$question['answers'][] = $answer;
+			
+			}
+			$this->template_args['questions'][] = $question;
+		}
+		$this->template = 'polls_results.tpl';*/
+	}
 	/**
 	* Required by the {@link Module} interface.
 	*/
