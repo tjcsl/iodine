@@ -280,6 +280,10 @@ class Display {
 			$this->smarty->assign($var,$value);
 		}
 	}
+	
+	public function smarty_register_function($name, $call = NULL) {
+		$this->smarty->register_function($name, ($call == NULL ? $name : $call));
+	}
 
 	/**
 	* Assigns all I2 variables which we want available in all templates.
