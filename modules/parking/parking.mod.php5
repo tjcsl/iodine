@@ -173,7 +173,7 @@ class Parking implements Module {
 					'skipsdesc' 		=> array('skips DESC', '8th period skips, most to least'),
 					'mentorshipasc' 	=> array('mentorship', 'mentorship, not first'),
 					'mentorshipdesc' 	=> array('mentorship DESC', 'mentorship, yes first'),
-					'jointdesc' 		=> array('other_driver DESC', 'joint applications, first'),
+					'jointdesc' 		=> array('(other_driver="")', 'joint applications, first'),
 					'assignedasc' 		=> array('assigned', 'assigned spot, ascending'),
 					'assigneddesc' 		=> array('assigned DESC', 'assigned spot, descending'),
 					'timeasc' 		=> array('timestamp', 'time submitted, earliest first'),
