@@ -169,10 +169,6 @@ class Polls implements Module {
 	*/
 	function results() {
 		global $I2_USER, $I2_ARGS, $I2_SQL;
-		/*if (! $I2_USER->is_group_member('admin_polls')) {
-			$this->home();
-			return;
-		}*/
 
 		if (! isset($I2_ARGS[2])) {
 			$this->home();
@@ -356,13 +352,6 @@ class Polls implements Module {
 	function admin() {
 		global $I2_USER, $I2_ARGS;
 
-		/*if (! $I2_USER->is_group_member('admin_polls')) {
-			$this->home();
-			return;
-		}
-
-		$this->template = 'polls_admin.tpl';
-		$this->template_args['polls'] = Poll::all_polls();*/
 		$this->home();
 	}
 	
@@ -436,7 +425,7 @@ class Polls implements Module {
 		}*/
 
 		if (! isset($I2_ARGS[2])) {
-			$this->admin();
+			$this->home();
 			return;
 		}
 		$this->template_args['pid'] = $I2_ARGS[2];
@@ -502,7 +491,7 @@ class Polls implements Module {
 		}*/
 
 		if (! isset($I2_ARGS[2])) {
-			$this->admin();
+			$this->home();
 		}
 
 		if (isset($_REQUEST['polls_delete_form'])) {
