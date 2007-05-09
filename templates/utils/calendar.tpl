@@ -4,7 +4,8 @@ USAGE: include file='utils/calendar.tpl' post_var='var'
 'var' should be replaced with the expected variable of the form.
 'var'_mon, 'var'_year, 'var'_day, 'var'_hour, 'var'_min, 'var'_sec are all reserved by this template.
 *>]
-<input type="hidden" name="[<$post_var>]" />
+<input type="hidden" name="[<$post_var>]" value="3000-01-01 00:00:00"/>
+<input type="checkbox" name="[<$post_var>]_allow" checked="checked" onchange="disable(this);"/>
 <select id="[<$post_var>]_mon">
   <option value="0">Month</option>
   <option value="1">Jan</option>
@@ -17,81 +18,53 @@ USAGE: include file='utils/calendar.tpl' post_var='var'
   <option value="8">Aug</option>
   <option value="9">Sep</option>
   <option value="10">Oct</option>
-  <option value="11">Nev</option>
+  <option value="11">Nov</option>
   <option value="12">Dec</option>
 </select>
 <select id="[<$post_var>]_day">
   <option value="0">Day</option>
-  <option>1</option>
-  <option>2</option>
-  <option>3</option>
-  <option>4</option>
-  <option>5</option>
-  <option>6</option>
-  <option>7</option>
-  <option>8</option>
-  <option>9</option>
-  <option>10</option>
-  <option>11</option>
-  <option>12</option>
-  <option>13</option>
-  <option>14</option>
-  <option>15</option>
-  <option>16</option>
-  <option>17</option>
-  <option>18</option>
-  <option>19</option>
-  <option>20</option>
-  <option>21</option>
-  <option>22</option>
-  <option>23</option>
-  <option>24</option>
-  <option>25</option>
-  <option>26</option>
-  <option>27</option>
-  <option>28</option>
-  <option>29</option>
-  <option>30</option>
-  <option>31</option>
+[<php>]
+  for ($i=1;$i<=31;$i++) {
+    echo "<option value=\"$i\">$i</option>\n";
+  }
+[</php>]
 </select>
+[<php>]
+	$today = getdate();
+	if ($today['mon'] < 6) {
+		$year2 = $today['year'];
+		$year1 = $year2-1;
+	} else {
+		$year1 = $today['year'];
+		$year2 = $year1+1;
+	}
+	$this->assign('y1',$year1);
+	$this->assign('y2',$year2);
+[</php>]
 <select id="[<$post_var>]_year">
   <option value="0">Year</option>
+  <option value="[<$y1>]">[<$y1>]</option>
+  <option value="[<$y2>]">[<$y2>]</option>
 </select>
 <script type="text/javascript">
 [<* This code will select the last year, the current year, and next year for year *>]
-var sel = document.getElementById("[<$post_var>]_year");
-var now = new Date();
-if (now.getMonth() < 6) {
-	var year = document.createElement("option");
-	year.value = now.getFullYear()-1;
-	year.text = year.value;
-	sel.add(year, null);
-}
-year = document.createElement("option");
-year.value = now.getFullYear();
-year.text = year.value;
-sel.add(year, null);
-if (now.getMonth() >= 6) {
-	year = document.createElement("option");
-	year.value = now.getFullYear()+1;
-	year.text = year.value;
-	sel.add(year, null);
-}
-
-[<* Now we add the code to validate and submission information. *>]
-var form = sel.form;
+var form = document.getElementById("[<$post_var>]_year").form;
 function submit_form_[<$post_var>]() {
 	var supra = form.elements.namedItem("[<$post_var>]");
 	var month = form.elements.namedItem("[<$post_var>]_mon").value;
 	var year = form.elements.namedItem("[<$post_var>]_year").value;
 	var day = form.elements.namedItem("[<$post_var>]_day").value;
-	if (!validate_[<$post_var>](month, year, day)) {
-		alert("The date is not a legal date.");
-		return false;
+	if (form.elements.namedItem("[<$post_var>]_mon").disabled) {
+		supra.value = '3000-01-01';
+	} else {
+		if (!validate_[<$post_var>](month, year, day)) {
+			alert("The date is not a legal date.");
+			return false;
+		}
+		month = month < 10 ? '0'+month : month;
+		day = day < 10 ? '0'+day : day;
+		supra.value = year+'-'+month+'-'+day;
 	}
-	month = month < 10 ? '0'+month : month;
-	day = day < 10 ? '0'+day : day;
-	supra.value = year+'-'+month+'-'+day;
 }
 function validate_[<$post_var>](month, year, day) {
 	var leap = false;
@@ -109,4 +82,14 @@ function validate_[<$post_var>](month, year, day) {
 	return true;
 }
 form.onsubmit = submit_form_[<$post_var>];
+
+function disable(checkbox) {
+	var form = checkbox.form;
+	var month = form.elements.namedItem("[<$post_var>]_mon");
+	var year = form.elements.namedItem("[<$post_var>]_year");
+	var day = form.elements.namedItem("[<$post_var>]_day");
+	month.disabled = !checkbox.checked;
+	year.disabled = !checkbox.checked;
+	day.disabled = !checkbox.checked;
+}
 </script>
