@@ -30,10 +30,15 @@ function hide(value) {
 		}
 	}
 }
+
+if (navigator.userAgent.indexOf("MSIE") > 0) {
+	// IE does not properly parse the padding edge
+	document.styleSheets[0].addRule("div.poll_freeresponse span","left:-5.5em;");
+}
 // -->
 </script>
 <div id="polls_header">
-<a href="[<$I2_ROOT>]polls/admin">Polls Admin</a><br /><br />
+<a href="[<$I2_ROOT>]polls/home">Polls Home</a><br /><br />
 
 Show responses by: (use Ctrl-click to select multiple responses) <br>
 <select onchange="hideAll(this);" size="5" multiple="multiple">
