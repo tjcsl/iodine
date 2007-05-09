@@ -1,5 +1,5 @@
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/news_groups.js"></script>
-<a href="[<$I2_ROOT>]polls/admin">Polls Admin</a><br /><br />
+<a href="[<$I2_ROOT>]polls">Polls Home</a><br /><br />
 
 <form method="post" action="[<$I2_ROOT>]polls/edit/[<$poll->pid>]" class="boxform">
 <input type="hidden" name="poll_edit_form" value="poll" />

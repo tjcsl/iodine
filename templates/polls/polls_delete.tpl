@@ -1,4 +1,4 @@
-<a href="[<$I2_ROOT>]polls/admin">Polls Admin</a><br /><br />
+<a href="[<$I2_ROOT>]polls">Polls Home</a><br /><br />
 [<if isset($deleted)>]
  The poll has been deleted.
 [<else>]

@@ -11,7 +11,7 @@ function sort(table, direction) {
 }
 // -->
 </script>
-<a href="[<$I2_ROOT>]polls/admin">Polls Admin</a><br /><br />
+<a href="[<$I2_ROOT>]polls">Polls Home</a><br /><br />
 
 <b>[<$pollname>]</b><br /><br />
 
