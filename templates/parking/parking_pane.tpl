@@ -5,19 +5,24 @@ Parking applicants,<br /><br />
 Complete the following online application no
 later than [<$deadline>].
 In addition to completing this online component, <b>there is a paper application available from Mr. McCormick at the Security Office that must be filled out and returned by the same date.
-Students failing to apply online during the designated "online application period" will be allocated AFTER all other spaces have been assigned, if any are available.</b>
+Students failing to apply online during the designated "online application period" will be allocated a parking space AFTER all other spaces have been assigned, if any are available.</b>
 Do not include payment with the application; payment is due in the fall when you pick up your parking permit.
-You must also plan to have your driver's license by September 1, 2006 and have no more than 11 eighth period unexcused absences to be eligible.
+You must also plan to have your driver's license by September 1, 2006 and have no more than 11 eighth period unexcused absences to be eligible. <b> You must have no outstanding debts to TJHSST.</b>
 </p>
 <p>
-The application considers the following criteria in assigning spots:<br />
-<ul>
-<li>Mentorship participation (this guarantees you a spot but does not give you spot preference)</li>
-<li>Grade level (seniors over juniors)</li>
-<li>Joint applications (joint over non-joint)</li>
-<li>Number of 8th period unexcused absences over the past year (considered in groups: fewer than 3; 4-5; 6-10; 11)</li>
-<li>No outstanding debts to TJHSST</li>
-</ul>
+Based on the number of student applications received, the following prioritized criteria will be used for allocating student parking spaces:<br />
+<ol>
+<li>Senior-Senior or Senior-Junior (Joint Application) -- Each student must have 0 to 3 Eighth Period Unexcused Absences</li>
+<li>Seniors with less than 5 Eighth Period Unexcused Absences</li>
+<li>Seniors with 6 to 10 Eighth Period Unexcused Absences</li>
+<li>Seniors with no more than 11 Eighth Period Unexcused Absences</li>
+<li>Junior-Junior (Joint Application)</li>
+<li>Juniors with less than 5 Eighth Period Unexcused Absences</li>
+<li>Juniors with 6 to 10 Eighth Period Unexcused Absences</li>
+<li>Juniors with no more than 11 Eighth Period Unexcused Absences</li>
+<li>Students failing to apply online during the designated "online application period" will be allocated a parking space AFTER all other spaces have been assigned, if any are available.</li>
+<li>Parking spaces will be assigned <b>randomly</b> within the above listed priorities.</li>
+</ol>
 </p>
 
 <p>
