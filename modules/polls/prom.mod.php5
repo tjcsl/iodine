@@ -75,21 +75,66 @@ class Prom implements Module {
 	* @abstract
 	*/
 	function init_pane() {
-		global $I2_USER,$I2_SQL;
-		throw new I2Exception('Prom registration is temporarily disabled.  It will return soon.');
-		if (!$I2_USER->grade == 12) {
-			throw new I2Exception('Only seniors may register for the SENIOR prom!');
-		}
-		if (isSet($_POST['firstpdteacher'])) {
-			if ($_POST['attending'] == 1) {
-                		$going = 1;
-        		} else {
-               			$going = 0;
-        		}
-			$I2_SQL->query('REPLACE INTO prom SET uid=%d,dateschool=%s,attending=%d,teacher=%s,room=%s,datename=%s',$I2_USER->uid,$_POST['dateschool'],$going,$_POST['firstpdteacher'],$_POST['firstpdroom'],$_POST['datename']);
-			$group = new Group('prom_registered_2006');
-			$group->add_user_force($I2_USER);
-			redirect();
+		global $I2_USER,$I2_SQL, $I2_ARGS;
+		//if ($I2_USER->grade != 12) {
+		//	throw new I2Exception('Only seniors may register for the SENIOR prom!');
+		//}
+		if (count($_POST) > 0) {
+			$ticket = 0;
+			if ($_POST['attending'] == 0) {
+				$I2_SQL->query('REPLACE INTO prom SET uid=%d,going=0',$I2_USER->uid);
+				$ticket = 0;
+			} else if ($_POST['nosenior'] == 1) {
+				$I2_SQL->query('REPLACE INTO prom SET uid=%d,going=1,datefrom=\'TJ\','.
+					'datename=%s,dategrade=%d',$I2_USER->uid,$_POST['datename'],$_POST['dategrade']);
+				$ticket = 2;
+			} else if ($_POST['notj'] == 1) {
+				$I2_SQL->query('REPLACE INTO prom SET uid=%d,going=1,datefrom=\'FCPS\',datename=%s,'.
+					'dategrade=%d,dateother=%s',$I2_USER->uid,$_POST['date2name'],
+					$_POST['date2grade'],$_POST['date2school']);
+				$ticket = 3;
+			} else if ($_POST['nosch'] == 1) {
+				$I2_SQL->query('REPLACE INTO prom SET uid=%d,going=1,datefrom=\'other\',datename=%s,'.
+					'dateother=%s',$I2_USER->uid,$_POST['date3name'],$_POST['date3desc']);
+				$ticket = 3;
+			} else {
+				$I2_SQL->query('REPLACE INTO prom SET uid=%d,going=1,datefrom=NULL',$I2_USER->uid);
+				$ticket = 1;
+			}
+			$this->template_args['ticket'] = $ticket;
+			$this->template = 'prom_thanx.tpl';
+		} else if ($I2_ARGS[1] == 'admin') {
+			if (!$I2_USER->is_group_member('admin_prom')) {
+				throw new I2Exception('You are not authorized to view this page!');
+			}
+			$this->template = 'prom_admin.tpl';
+			$tout = $I2_SQL->query('SELECT * FROM prom ORDER BY going, datefrom')->fetch_all_arrays();
+			$notgoing = array();
+			$nodate = array();
+			$tjdate = array();
+			$fcpsdate = array();
+			$fardate = array();
+			foreach ($tout as $someone) {
+				$u = new User($someone['uid']);
+				$name = $u->name;
+				if (!$someone['going']) {
+					$notgoing[] = $name;
+				} else if ($someone['datefrom'] == 'TJ') {
+					$tjdate[] = array('name' => $name, 'date' => $someone['datename'], 'grade' => $someone['dategrade']); 
+				} else if ($someone['datefrom'] == 'FCPS') {
+					$fcpsdate[] = array('name' => $name, 'date' => $someone['datename'], 'grade' => $someone['dategrade'], 'school' => $someone['dateother']); 
+				} else if ($someone['datefrom'] == 'other') {
+					$fardate[] = array('name' => $name, 'date' => $someone['datename'], 'desc' => $someone['dateother']); 
+				} else {
+					$nodate[] = $name;
+				}
+			}
+			$this->template_args['notgoing'] = $notgoing;
+			$this->template_args['nodate'] = $nodate;
+			$this->template_args['tjdate'] = $tjdate;
+			$this->template_args['fcpsdate'] = $fcpsdate;
+			$this->template_args['fardate'] = $fardate;
+			return 'Prom Admin';
 		}
 		return 'Prom Registration';
 	}
