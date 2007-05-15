@@ -20,14 +20,14 @@
 [</foreach>]
 </table><br /><br />
 Other seniors attending:<br />
-<ol>
+<ul>
 [<foreach from=$nodate item=p>]
   <li>[<$p>]</li>
 [</foreach>]
-</ol><br /><br />
+</ul><br /><br />
 Seniors not attending:<br />
-<ol>
+<ul>
 [<foreach from=$notgoing item=p>]
   <li>[<$p>]</li>
 [</foreach>]
-</ol>
+</ul>

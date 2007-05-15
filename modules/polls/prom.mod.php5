@@ -76,9 +76,11 @@ class Prom implements Module {
 	*/
 	function init_pane() {
 		global $I2_USER,$I2_SQL, $I2_ARGS;
-		//if ($I2_USER->grade != 12) {
-		//	throw new I2Exception('Only seniors may register for the SENIOR prom!');
-		//}
+		if ($I2_USER->grade != 12) {
+			throw new I2Exception('Only seniors may register for the SENIOR prom!');
+		}
+		if (!isset($I2_ARGS[1]))
+			$I2_ARGS[1] = 'home';
 		if (count($_POST) > 0) {
 			$ticket = 0;
 			if ($_POST['attending'] == 0) {
