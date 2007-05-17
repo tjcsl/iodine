@@ -1,5 +1,5 @@
 [<include file="eighth/header.tpl">]
-<table><tr><td>
+<table><tr><td style="vertical-align: top;">
 [<include file="eighth/include_list_open.tpl">]
 [<include file="eighth/activity_selection.tpl" op='view' bid=$block->bid field='aid'>]
 [<include file="eighth/block_selection.tpl" header="FALSE" title='' method='vcp_attendance' op='view' field='bid' bid=$block->bid>]
