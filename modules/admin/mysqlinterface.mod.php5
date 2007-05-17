@@ -96,14 +96,17 @@ class MySQLInterface implements Module {
 		
 		if( isset($_POST['mysqlinterface_submit']) && $_POST['mysqlinterface_submit'] && $_POST['mysqlinterface_query']) {
 			$this->query = $_POST['mysqlinterface_query'];
+			
 			try {
 				$this->query_data = $I2_SQL->query($this->query);
 			} catch (I2Exception $e) {
-				$this->query_data = 'MySQL error: '.$e->get_message();
+				if (strstr($e->get_message(),'MySQL error') == 0)
+					$this->query_data = $e->get_message();
+				else
+					$this->query_data = 'MySQL error: '.$e->get_message();
 			}
 		}
 		return 'MySQL Admin Interface';
 	}
-	
 }
 ?>
