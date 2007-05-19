@@ -8,6 +8,7 @@ CREATE TABLE parking_apps(
 	special_name VARCHAR(30),
 	mentorship TINYINT(1),
 	other_driver VARCHAR(30),
+	other_driver_skips MEDIUMINT NOT NULL,
 	assigned INT(11),
 	skips MEDIUMINT, 
 	grade INT,

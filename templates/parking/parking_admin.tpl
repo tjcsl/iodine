@@ -66,18 +66,18 @@ Some features to come include searching by field.<br /><br />
  </select><br />
  <input type="submit" value="Sort">
 </form>
+Note: For joint applications, the number of 8th period skips is the sum of the two people's skips.
 <table>
  <tr>
-  <th>Space</th>
+  <th>Spot</th>
   <th>Name</th>
-  <th>Grade</th>
-  <th>Mntr?</th>
-  <th>Skips</th>
+  <th>Yr</th>
+  <th>Mntr</th>
+  <th>8th</th>
   <th>Joint With</th>
   <th>Plate</th>
   <th>Make</th>
   <th>Model</th>
-  <th>Color</th>
   <th>Year</th>
  </tr>
  [<foreach from=$people item=person>]
@@ -92,12 +92,11 @@ Some features to come include searching by field.<br /><br />
      <td rowspan="[<$person.numcars>]" style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.grade>]</td>
      <td rowspan="[<$person.numcars>]" style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.mentor>]</td>
      <td rowspan="[<$person.numcars>]" style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.skips>]</td>
-     <td rowspan="[<$person.numcars>]" style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.otherdriver>]</td>
+     <td rowspan="[<$person.numcars>]" style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<if isset($person.otherdriver)>]<a href="#[<$person.otherdriver->uid>]">[<$person.otherdriver->name>]</a>[</if>]</td>
     [</if>]
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$car.plate>]</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$car.make>]</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$car.model>]</td>
-    <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$car.color>]</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$car.year>]</td>
    </tr>
   [<foreachelse>]
@@ -110,8 +109,7 @@ Some features to come include searching by field.<br /><br />
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.grade>]</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.mentor>]</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.skips>]</td>
-    <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.otherdriver>]</td>
-    <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">&nbsp;</td>
+    <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<if isset($person.otherdriver)>]<a href="#[<$person.otherdriver->uid>]">[<$person.otherdriver->name>]</a>[</if>]</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">&nbsp;</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">&nbsp;</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">&nbsp;</td>

@@ -16,7 +16,7 @@
 \begin{document}
 \begin{longtable}{|c|l|c|c|c|l|l|l|l|l|c|}
 	\hline
-	\bf\Large Space & \multicolumn{1}{c|}{\bf\Large Name} & \bf\Large Grade & \bf\Large Mntr? & \bf\Large Skips & \multicolumn{1}{c|}{\bf\Large Joint With} & \multicolumn{1}{c|}{\bf\Large Plate} & \multicolumn{1}{c|}{\bf\Large Make} & \multicolumn{1}{c|}{\bf\Large Model} & \multicolumn{1}{c|}{\bf\Large Color} & \bf\Large Year \\
+	\bf\Large Space & \multicolumn{1}{c|}{\bf\Large Name} & \bf\Large Grade & \bf\Large Mntr? & \bf\Large Skips & \multicolumn{1}{c|}{\bf\Large Joint With} & \multicolumn{1}{c|}{\bf\Large Plate} & \multicolumn{1}{c|}{\bf\Large Make} & \multicolumn{1}{c|}{\bf\Large Model} & \bf\Large Year \\
 	\hline
 %@?
 foreach($people as $person) {
@@ -73,7 +73,7 @@ foreach($people as $person) {
 %@?
 			}
 @%
- & %@$car['plate']@% & %@$car['make']@% & %@$car['model']@% & %@$car['color']@% & %@$car['year']@% \\
+ & %@$car['plate']@% & %@$car['make']@% & %@$car['model']@% & %@$car['year']@% \\
 %@?
 			if($person['numcars'] > 1 && $car['index'] != $person['numcars'] - 1) {
 @%

@@ -7,6 +7,5 @@ CREATE TABLE parking_cars(
 	plate VARCHAR(10),
 	make VARCHAR(20),
 	model VARCHAR(20),
-	color VARCHAR(10),
 	year SMALLINT(4) UNSIGNED
 );
