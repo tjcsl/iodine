@@ -34,6 +34,12 @@
 	[<else>]
 		[<include file="search/search_pane.tpl">]
 	[</if>]
+	<br />
+	<form method="post" action="[<$I2_ROOT>]eighth/amr_group/add_members/gid/[<$group->gid>]" enctype="multipart/form-data">
+		<input type="hidden" name="MAX_FILE_SIZE" value="30000" />
+		Text file: <input type="file" name="textfile" size="20px" /><br />
+		<input type="submit" value="Add multiple" />
+	</form>
 	</fieldset>
 </td></tr>
 </table>

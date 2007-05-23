@@ -727,7 +727,25 @@ class Eighth implements Module {
 			redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
 		}
 		else if($this->op == 'add_members') {
-			// TODO: Work on adding multiple members
+			if (!isset($_FILES['textfile'])) {
+				redirect("eighth/amr_group/view/gid/{$this->args['gid']}/");
+			}
+			$file = $_FILES['textfile'];
+			$fname = $file['tmp_name'];
+			
+			$group = new Group($this->args['gid']);
+
+			$fd = fopen($fname, 'r');
+			while (!feof($fd)) {
+				$id = trim(fgets($fd));
+				if (strlen($id) == 0)
+					continue;
+				$thing = User::studentid_to_uid($id);
+				if (!$thing) $thing = $id;
+				$group->add_user(new User($thing));
+			}
+			fclose($fd);
+			redirect("eighth/amr_group/view/gid/{$this->args['gid']}/");
 		}
 	}
 	

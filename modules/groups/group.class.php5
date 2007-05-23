@@ -133,6 +133,7 @@ class Group {
 	/**
 	* Adds a user to this group.
 	*
+	* BUG: This function does not actually accept UID's.
 	* @param User $user Either the {@link User} object or the UID of the user you want to add to this group.
 	*/
 	public function add_user(User $user) {
