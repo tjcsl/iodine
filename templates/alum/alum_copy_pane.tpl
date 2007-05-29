@@ -25,8 +25,8 @@ function sendPass(){
 	return False;
 }
 </script>
-<form onSubmit="sendPass();">
+<form>
 Old Password <input type="password" id="pass1" /><br/>
 New Password <input type="password" id="pass2" /><br/>
 Type Again <input type="password" id="pass3" /><br/>
-<input type="submit" value="Get an Alumni Account">
+<input type="submit" onClick="sendPass();" value="Get an Alumni Account"></form>
