@@ -22,9 +22,11 @@ function sendPass(){
 		}
 	};
 	http.send('oldpass='+oldpass+'&newpass='+newpass);
+	return False;
 }
 </script>
+<form onSubmit="sendPass();">
 Old Password <input type="password" id="pass1" /><br/>
 New Password <input type="password" id="pass2" /><br/>
 Type Again <input type="password" id="pass3" /><br/>
-<input type="button" onClick="sendPass();">Get an Alumni Account</input>
+<input type="submit" value="Get an Alumni Account">
