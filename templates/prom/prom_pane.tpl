@@ -30,7 +30,7 @@ Please follow these instructions in order to guarantee yourself a prom ticket as
 	Description: <input type="text" name="date3desc" /><br />
 	NOTE: Please also print out <a href="http://leadership.tjhsst.edu/2007/Prom%20guest%20form%202007.doc">this form</a> and give it to your date.  They must follow the instructions stated at the bottom: simply fill out the appropriate contact information and bring appropriate ID.</p>
 	
-	<p>Permission forms MUST be turned in with $75 for the non-TJ senior ticket in order for them to be properly processed.<br />
+	<p>Permission forms MUST be turned in with $50 for the non-TJ senior ticket in order for them to be properly processed.<br />
 	Forms are due <b>Friday, June 1, 2007</b> to the box outside room 205.<br /><br />
 	Questions?  Contact <a href="mailto:robert.svestka@gmail.com">Robert Svestka</a>, <a href="mailto:e_hillenbrand07@yahoo.com">Emily Hillenbrand</a>, or <a href="mailto:the.amz@gmail.com">Amy Friedlander</a>.</p>
         <p><input name="Submit" type="submit" value="Submit" /></p>
