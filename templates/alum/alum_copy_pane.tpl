@@ -5,8 +5,13 @@ function sendPass(){
 	var oldpass = document.getElementById("pass1").value;
 	var newpass = document.getElementById("pass2").value;
 	var verpass = document.getElementById("pass3").value;
+	var email = document.getElementById("email").value;
 	if(newpass != verpass){
 		alert("You messed up; try typing your new password again so both boxes match.");
+		return;
+	}
+	if(email.indexOf("@tjhsst")!=-1){
+		alert("You must supply a non-TJ e-mail address.");
 		return;
 	}
 	http.open('POST', alum_page, true);
@@ -21,12 +26,11 @@ function sendPass(){
 			}
 		}
 	};
-	http.send('oldpass='+oldpass+'&newpass='+newpass);
-	return False;
+	http.send('oldpass='+oldpass+'&newpass='+newpass+'&email='+email);
 }
 </script>
-<form>
 Old Password <input type="password" id="pass1" /><br/>
 New Password <input type="password" id="pass2" /><br/>
 Type Again <input type="password" id="pass3" /><br/>
-<input type="submit" onClick="sendPass();" value="Get an Alumni Account"></form>
+Non-TJ E-mail <input type="text" id="email" /><br/>
+<input type="submit" onClick="sendPass();" value="Get an Alumni Account">
