@@ -67,6 +67,13 @@ or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexan
 	[<mailto address=$email encode="hex">]
 	[</foreach>]
 <br />
+[<if $user->grade != 'staff'>]
+[<if $I2_USER->grade == 'staff'>]
+<br />
+To view this user's portfolio click <a href="http://shares.tjhsst.edu/PORTFOLIO/[<$user->graduationyear>]/[<$user->iodineuid>]/">here</a>.
+<br />
+[</if>]
+[</if>]
 <br />
 [<if count($user->aim)>]
 	[<include file="studentdirectory/aim.tpl">]
