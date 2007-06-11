@@ -6,6 +6,7 @@
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
 <link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
+<base href="[<$I2_ROOT>]" />
 <!--[if lt IE 7]>
 <script type="text/javascript">
 IE7_PNG_SUFFIX = ".png";

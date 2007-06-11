@@ -153,6 +153,9 @@ function doMove() {
 	return el;
 }*/
 
-document.onmousedown = doDown;
-document.onmouseup   = doUp;
-document.onmousemove = doMove;
+// The purpose for using onload is to prevent spurious events before the page is finished loading
+document.onload = function() {
+	document.onmousedown = doDown;
+	document.onmouseup   = doUp;
+	document.onmousemove = doMove;
+}
