@@ -14,9 +14,9 @@
 \textheight 7.5in
 
 \begin{document}
-\begin{longtable}{|c|l|c|c|c|l|l|l|l|l|c|}
+\begin{longtable}{|c|l|c|c|l|l|l|l|c|}
 	\hline
-	\bf\Large Space & \multicolumn{1}{c|}{\bf\Large Name} & \bf\Large Grade & \bf\Large Mntr? & \bf\Large Skips & \multicolumn{1}{c|}{\bf\Large Joint With} & \multicolumn{1}{c|}{\bf\Large Plate} & \multicolumn{1}{c|}{\bf\Large Make} & \multicolumn{1}{c|}{\bf\Large Model} & \bf\Large Year \\
+	\bf\Large Space & \multicolumn{1}{c|}{\bf\Large Name} & \bf\Large Gr & \bf\Large 8th & \multicolumn{1}{c|}{\bf\Large Plate} & \multicolumn{1}{c|}{\bf\Large Make} & \multicolumn{1}{c|}{\bf\Large Model} & \bf\Large Year \\
 	\hline
 %@?
 foreach($people as $person) {
@@ -49,27 +49,11 @@ foreach($people as $person) {
 %@?
 		}
 @%
-%@$person['mentor']@%} & \multirow{%@$person['numcars']@%}{*}{
-%@?
-		if($person['isTeacher']) {
-@%
-		\color{red}
-%@?
-		}
-@%
-%@$person['skips']@%} & \multirow{%@$person['numcars']@%}{*}{
-%@?
-		if($person['isTeacher']) {
-@%
-		\color{red}
-%@?
-		}
-@%
-%@$person['otherdriver']@%}
+%@$person['skips']@%}
 %@?
 			} else {
 @%
-& & & & & 
+& & & 
 %@?
 			}
 @%
@@ -77,7 +61,7 @@ foreach($people as $person) {
 %@?
 			if($person['numcars'] > 1 && $car['index'] != $person['numcars'] - 1) {
 @%
-		\cline{7-11}
+		\cline{5-9}
 %@?
 			} else {
 @%
@@ -111,23 +95,7 @@ foreach($people as $person) {
 %@?
 		}
 @%
-%@$person['mentor']@% &
-%@?
-		if($person['isTeacher']) {
-@%
-		\color{red}
-%@?
-		}
-@%
-%@$person['skips']@% &
-%@?
-		if($person['isTeacher']) {
-@%
-		\color{red}
-%@?
-		}
-@%
-%@$person['otherdriver']@% & & & & & \\
+%@$person['skips']@% & & & & \\
 \hline
 %@?
 	}

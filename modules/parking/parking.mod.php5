@@ -36,6 +36,18 @@ class Parking implements Module {
 	private $message;
 
 	/**
+	 * WARNING: HACKY. HACKY. HACKY. BAD.
+	 * The mysql query to select apps, correctly sorted, since I can't think
+	 * of a good way to flexibly do this.
+	 * BAD. BAD. BAD. HACKY.
+	 */
+	private $query = 'SELECT uid, name, special_name, mentorship, other_driver, assigned, grade, (skips + other_driver_skips) AS totalskips,
+			(skips <= 3 AND other_driver_skips <= 3) as s1, (skips < 6 AND other_driver_skips < 6) as s2,
+			(skips < 11 AND other_driver_skips < 11) as s3, (skips < 12 AND other_driver_skips < 12) as s4
+			FROM parking_apps WHERE uid IS NOT NULL
+			ORDER BY grade DESC, (other_driver!="") DESC, s1 DESC, s2 DESC, s3 DESC, s4 DESC, RAND();';
+
+	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
@@ -311,13 +323,20 @@ class Parking implements Module {
 		}
 
 		$this->template_args['people'] = array();
+		$driveruids = array();
 		//$res = $I2_SQL->query('SELECT assigned FROM parking_apps ORDER BY '.join(", ", $sortarr));
 		//while ($record = $res->fetch_array()) {
 		//	print_r($record);
 		//}
 		//die();
-		$res = $I2_SQL->query('SELECT uid, name, special_name, mentorship, other_driver, assigned, grade, (skips + other_driver_skips) AS skips, CAST(assigned AS UNSIGNED INTEGER) AS assigned_sort FROM parking_apps ORDER BY '.join(", ", $sortarr));
+		//$res = $I2_SQL->query('SELECT uid, name, special_name, mentorship, other_driver, assigned, grade, (skips + other_driver_skips) AS skips, CAST(assigned AS UNSIGNED INTEGER) AS assigned_sort FROM parking_apps ORDER BY '.join(", ", $sortarr));
+		$res = $I2_SQL->query($this->query);
 		while ($record = $res->fetch_array()) {
+			if (in_array($record['uid'], $driveruids)) {
+				// joint app, caught on partner's go-around
+				continue;
+			}
+
 			$person = array();
 
 			if($record['special_name'] != "") {
@@ -332,7 +351,15 @@ class Parking implements Module {
 				else {
 					$person['isTeacher'] = FALSE;
 				}
-				$person['name'] = $record['name'];
+				if ($record['other_driver']) {
+					$otherdriver = new User($record['other_driver']);
+					$person['name'] = $record['name'] . ' AND ' . $otherdriver->name_comma;
+					$driveruids[] = $record['uid'];
+					$driveruids[] = $otherdriver->uid;
+				}
+				else {
+					$person['name'] = $record['name'];
+				}
 			}
 
 			$person['assigned'] = $record['assigned'];
@@ -346,7 +373,7 @@ class Parking implements Module {
 			else {
 				$person['mentor'] = 'N';
 			}
-			$person['skips'] = $record['skips'];
+			$person['skips'] = $record['totalskips'];
 			if (!empty($record['other_driver']) && is_numeric($record['other_driver'])) {
 				$person['otherdriver'] = new User($record['other_driver']);
 			}
@@ -354,6 +381,12 @@ class Parking implements Module {
 			$person['cars'] = array();
 			$car_res = $I2_SQL->query('SELECT plate, make, model, year FROM parking_cars WHERE uid=%d', $record['uid']);
 			$n = 0;
+			while ($car = $car_res->fetch_array()) {
+				$person['numcars']++;
+				$car['index'] = $n++;
+				$person['cars'][] = $car;
+			}
+			$car_res = $I2_SQL->query('SELECT plate, make, model, year FROM parking_cars WHERE uid=%d', $record['other_driver']);
 			while ($car = $car_res->fetch_array()) {
 				$person['numcars']++;
 				$car['index'] = $n++;
@@ -413,7 +446,7 @@ class Parking implements Module {
 		}
 
 		$people = array();
-		$res = $I2_SQL->query('SELECT uid, name, special_name, mentorship, other_driver, assigned, grade, (skips + other_driver_skips) AS skips, CAST(assigned AS UNSIGNED INTEGER) AS assigned_sort FROM parking_apps ORDER BY '.join(", ", $sortarr));
+		$res = $I2_SQL->query($this->query);
 		while ($record = $res->fetch_array()) {
 			$person = array();
 
@@ -429,7 +462,15 @@ class Parking implements Module {
 				else {
 					$person['isTeacher'] = FALSE;
 				}
-				$person['name'] = $record['name'];
+				if ($record['other_driver']) {
+					$otherdriver = new User($record['other_driver']);
+					$person['name'] = $record['name'] . ' AND ' . $otherdriver->name_comma;
+					$driveruids[] = $record['uid'];
+					$driveruids[] = $otherdriver->uid;
+				}
+				else {
+					$person['name'] = $record['name'];
+				}
 			}
 
 			$person['assigned'] = $record['assigned'];
@@ -441,7 +482,7 @@ class Parking implements Module {
 			else {
 				$person['mentor'] = 'N';
 			}
-			$person['skips'] = $record['skips'];
+			$person['skips'] = $record['totalskips'];
 			if (!empty($record['other_driver']) && is_numeric($record['other_driver'])) {
 				$user = new User($record['other_driver']);
 				$person['otherdriver'] = $user->name;
@@ -450,6 +491,12 @@ class Parking implements Module {
 			$person['cars'] = array();
 			$car_res = $I2_SQL->query('SELECT plate, make, model, year FROM parking_cars WHERE uid=%d', $record['uid']);
 			$n = 0;
+			while ($car = $car_res->fetch_array()) {
+				$person['numcars']++;
+				$car['index'] = $n++;
+				$person['cars'][] = $car;
+			}
+			$car_res = $I2_SQL->query('SELECT plate, make, model, year FROM parking_cars WHERE uid=%d', $record['other_driver']);
 			while ($car = $car_res->fetch_array()) {
 				$person['numcars']++;
 				$car['index'] = $n++;

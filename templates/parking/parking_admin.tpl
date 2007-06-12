@@ -32,40 +32,41 @@ Some features to come include searching by field.<br /><br />
  <input type="text" name="deadline" value="[<$deadline>]" />
  <input type="submit" value="Update deadline" />
 </form><br /><br />
-<form action="[<$I2_ROOT>]parking/admin" method="post" class="boxform">
- <input type="hidden" name="parking_admin_form" value="sort" />
- Priority 1:
- <select name="sort1">
-  [<foreach from=$options key=name item=option>]
-   <option value="[<$name>]" [<if $sort_selected.1 == $name>]SELECTED[</if>]>[<$option.1>]</option>
-  [</foreach>]
- </select><br />
- Priority 2:
- <select name="sort2">
-  [<foreach from=$options key=name item=option>]
-   <option value="[<$name>]" [<if $sort_selected.2 == $name>]SELECTED[</if>]>[<$option.1>]</option>
-  [</foreach>]
- </select><br />
- Priority 3:
- <select name="sort3">
-  [<foreach from=$options key=name item=option>]
-   <option value="[<$name>]" [<if $sort_selected.3 == $name>]SELECTED[</if>]>[<$option.1>]</option>
-  [</foreach>]
- </select><br />
- Priority 4:
- <select name="sort4">
-  [<foreach from=$options key=name item=option>]
-   <option value="[<$name>]" [<if $sort_selected.4 == $name>]SELECTED[</if>]>[<$option.1>]</option>
-  [</foreach>]
- </select><br />
- Priority 5:
- <select name="sort5">
-  [<foreach from=$options key=name item=option>]
-   <option value="[<$name>]" [<if $sort_selected.5 == $name>]SELECTED[</if>]>[<$option.1>]</option>
-  [</foreach>]
- </select><br />
- <input type="submit" value="Sort">
-</form>
+[<*<form action="[<$I2_ROOT>]parking/admin" method="post" class="boxform">
+* <input type="hidden" name="parking_admin_form" value="sort" />
+* Priority 1:
+* <select name="sort1">
+*  [<foreach from=$options key=name item=option>]
+*   <option value="[<$name>]" [<if $sort_selected.1 == $name>]SELECTED[</if>]>[<$option.1>]</option>
+*  [</foreach>]
+* </select><br />
+* Priority 2:
+* <select name="sort2">
+*  [<foreach from=$options key=name item=option>]
+*   <option value="[<$name>]" [<if $sort_selected.2 == $name>]SELECTED[</if>]>[<$option.1>]</option>
+*  [</foreach>]
+* </select><br />
+* Priority 3:
+* <select name="sort3">
+*  [<foreach from=$options key=name item=option>]
+*   <option value="[<$name>]" [<if $sort_selected.3 == $name>]SELECTED[</if>]>[<$option.1>]</option>
+*  [</foreach>]
+* </select><br />
+* Priority 4:
+* <select name="sort4">
+*  [<foreach from=$options key=name item=option>]
+*   <option value="[<$name>]" [<if $sort_selected.4 == $name>]SELECTED[</if>]>[<$option.1>]</option>
+*  [</foreach>]
+* </select><br />
+* Priority 5:
+* <select name="sort5">
+*  [<foreach from=$options key=name item=option>]
+*   <option value="[<$name>]" [<if $sort_selected.5 == $name>]SELECTED[</if>]>[<$option.1>]</option>
+*  [</foreach>]
+* </select><br />
+* <input type="submit" value="Sort">
+*</form>
+*>]
 Note: For joint applications, the number of 8th period skips is the sum of the two people's skips.
 <table>
  <tr>
@@ -74,7 +75,6 @@ Note: For joint applications, the number of 8th period skips is the sum of the t
   <th>Yr</th>
   <th>Mntr</th>
   <th>8th</th>
-  <th>Joint With</th>
   <th>Plate</th>
   <th>Make</th>
   <th>Model</th>
@@ -92,7 +92,6 @@ Note: For joint applications, the number of 8th period skips is the sum of the t
      <td rowspan="[<$person.numcars>]" style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.grade>]</td>
      <td rowspan="[<$person.numcars>]" style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.mentor>]</td>
      <td rowspan="[<$person.numcars>]" style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.skips>]</td>
-     <td rowspan="[<$person.numcars>]" style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<if isset($person.otherdriver)>]<a href="#[<$person.otherdriver->uid>]">[<$person.otherdriver->name>]</a>[</if>]</td>
     [</if>]
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$car.plate>]</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$car.make>]</td>
@@ -109,7 +108,6 @@ Note: For joint applications, the number of 8th period skips is the sum of the t
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.grade>]</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.mentor>]</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.skips>]</td>
-    <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<if isset($person.otherdriver)>]<a href="#[<$person.otherdriver->uid>]">[<$person.otherdriver->name>]</a>[</if>]</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">&nbsp;</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">&nbsp;</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">&nbsp;</td>
