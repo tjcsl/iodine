@@ -285,6 +285,9 @@ class Parking implements Module {
 				}
 				else {
 					$I2_SQL->query('UPDATE parking_apps SET assigned=%s WHERE uid=%d', $_REQUEST['spot'], $_REQUEST['person_id']);
+					if ($other = $I2_SQL->query('SELECT other_driver FROM parking_apps WHERE uid=%d', $_REQUEST['person_id'])->fetch_single_value()) {
+						$I2_SQL->query('UPDATE parking_apps SET assigned=%s WHERE uid=%d', $_REQUEST['spot'], $other);
+					}
 				}
 			}
 		}
