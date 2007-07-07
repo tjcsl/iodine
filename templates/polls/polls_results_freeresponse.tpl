@@ -49,7 +49,7 @@ Show responses by: (use Ctrl-click to select multiple responses) <br>
 	<option value="staff" selected="selected">Teachers</option>
 </select>
 </div>
-<h4>[<$pollname>]</h4><br />
+<h4>[<$poll->name>]</h4><br />
 
 [<$question>]<br /><br />
 

@@ -1,69 +1,89 @@
 <?php
 /**
-* Just contains the definition for the class {@link Polls}.
-* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
-* @copyright 2005 The Intranet 2 Development Team
-* @package modules
-* @subpackage Polls
-* @filesource
-*/
+ * The polls module file.
+ * @author Joshua Cranmer <jcranmer@tjhsst.edu>
+ * @copyright 2007 The Intranet 2 Development Team
+ * @package modules
+ * @subpackage Polls
+ * @filesource
+ */
 
 /**
-* The module that runs polls and voting.
-* @package modules
-* @subpackage Polls
-*/
+ * The polls module itself.
+ * After eighth period and news, this is probably the most important module.
+ * @package modules
+ * @subpackage Polls
+ */
 class Polls implements Module {
 
-	/**
-	* The display object to use
-	*/
-	private $display;
-
-	/**
-	* Template for the specified action
-	*/
+	/** The template to use. */
 	private $template;
-
+	/** Arguments for said template. */
 	private $template_args = array();
 
-	private static $permitted = array("home", "vote");
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
 	function init_pane() {
 		global $I2_USER, $I2_ARGS;
 
-		if (count($I2_ARGS) <= 1) {
+		if (count($I2_ARGS) <= 1)
 			$I2_ARGS[1] = 'home';
-		}
 
 		$method = $I2_ARGS[1];
-		if (! $I2_USER->is_group_member('admin_polls') && !in_array($method, Polls::$permitted)) {
-			$method = "home";
-		}
+
 		if (method_exists($this, $method)) {
+			if (isset($I2_ARGS[2])) {
+				if (!Poll::can_do($I2_ARGS[2], $method)) {
+					redirect('polls');
+				}
+			} else {
+				if (!Poll::can_do(0, $method)) {
+					redirect('polls');
+				}
+			}
 			$this->$method();
-			$this->template_args['method'] = $method;
 			return 'Polls: ' . ucwords(strtr($method, '_', ' '));
-		}
-		else {
+		} else {
 			redirect('polls');
 		}
-		return array('Error', 'Error');
+	}
+
+	function display_pane($display) {
+		$display->disp($this->template, $this->template_args);
 	}
 
 	/**
-	 * The main page (default).
-	 * This page displays the list of polls to which the user has access.
-	*/
+	 * Initializes the intranet box.
+	 * Currently is not used.
+	 */
+	function init_box() {
+		return FALSE;
+	}
+
+	/**
+	 * Displays the intranet box.
+	 * Currently is not used.
+	 */
+	function display_box($display) {
+	}
+
+	/**
+	 * Returns the name.
+	 */
+	function get_name() {
+		return 'I2 Polls';
+	}
+
+	function is_intrabox() {
+		return false;
+	}
+
+	/////////////
+	// METHODS //
+	/////////////
+	
 	function home() {
 		global $I2_USER;
 
-		$this->template = 'polls_pane.tpl';
-		//$this->template_args['polls'] = Poll::get_user_polls($I2_USER);
-		$polls = Poll::all_polls();
+		$polls = Poll::accessible_polls();
 		$open = array();
 		$finished = array();
 		$unstarted = array();
@@ -82,413 +102,116 @@ class Polls implements Module {
 		if ($I2_USER->is_group_member('admin_polls')) {
 			$this->template_args['admin'] = 1;
 		}
+		$this->template = 'polls_home.tpl';
 	}
 
-	/**
-	* Where a user votes
-	*/
-	function vote() {
-		global $I2_USER, $I2_ARGS, $I2_SQL;
-
-		if (! isset($I2_ARGS[2])) {
-			$this->home();
-			return;
-		}
-
-		$this->template_args['errors'] = array();
-
-		$poll = new Poll($I2_ARGS[2]);
-		
-		$this->template_args['has_voted'] = Poll::has_voted($poll, $I2_USER);
-		$this->template_args['avail'] = $poll->user_can_access($I2_USER) ? TRUE : FALSE;
-
-		if (isset($_REQUEST['polls_vote_form'])) {
-			foreach ($poll->questions as $question) {
-				$answer = 0;
-				//if ($question->maxvotes == 1) {
-				if ($question->answertype == 'radio') {
-					if (isSet($_REQUEST[$question->qid])) {
-						$question->record_vote($_REQUEST[$question->qid]);
-					}
-				}
-				else if ($question->answertype == 'freeresponse') {
-					$aid = "{$question->qid}001";
-					$question->delete_vote($aid);
-					if (isSet($_REQUEST[$question->qid]) && $_REQUEST[$question->qid] != "") {
-						$question->record_vote($aid, $_REQUEST[$question->qid]);
-					}
-				}
-				else {
-					// Just kidding //Perform deletions before addition to ensure we stay below maxvotes if possible
-					$add = array();
-					$delete = array();
-					if(count($question->answers) != 0) {
-						foreach ($question->answers as $aid => $ans) {
-							$vote = isSet($_REQUEST[$aid])?$_REQUEST[$aid]:FALSE;
-							if ($vote) {
-								$add[$aid] = $vote;
-							}
-							$delete[] = $aid;
-							//$question->delete_vote($aid);
-						}
-					}
-
-					if ($question->maxvotes != 0 && count($add) > $question->maxvotes) {
-						$this->template_args['errors'][] = "Oops! You tried to vote for too many options on question #{$question->readable_qid}!";
-						continue;
-					}
-					//search and destroy
-					if (count($add) == 0 && Poll::has_voted($poll, $I2_USER)) {
-						$res = $I2_SQL->query("SELECT aid FROM poll_votes WHERE uid='%d' AND aid LIKE '%d%'", $I2_USER->uid, $question->qid);
-						foreach($res as $row) {
-							$delete[] = $row['aid'];
-							//warn($row['aid']);
-						}
-					}
-					foreach ($delete as $delete_me) {
-						$question->delete_vote($delete_me);	
-					}
-					foreach ($add as $aid=>$vote) {
-						if ($question->answertype != 'freeresponse') {
-							// Don't record text for voting questions
-							$vote = NULL;
-						}
-						$question->record_vote($aid, $vote);
-					}
-				}
-			}
-			$this->template = 'polls_voted.tpl';
-		}
-		else {
-		$this->template = 'polls_vote.tpl';
-		}
-		$this->template_args['poll'] = $poll;
-	}
-	/**
-	* Poll results viewing
-	*/
-	function results() {
-		global $I2_USER, $I2_ARGS, $I2_SQL;
-
-		if (! isset($I2_ARGS[2])) {
-			$this->home();
-			return;
-		}
-		
-		$poll = new Poll($I2_ARGS[2]);
-		$this->template_args['pollname'] = $poll->name;
-		
-		//Display freeresponse results
-		if ( isset($I2_ARGS[3])) {
-			$votes = array();
-			$res = $I2_SQL->query("SELECT * FROM poll_votes WHERE aid=%s AND answer IS NOT NULL", "{$I2_ARGS[3]}001");
-			$question = $I2_SQL->query("SELECT question FROM poll_questions WHERE qid='%d'", $I2_ARGS[3])->fetch_single_value();
-			foreach($res as $row) { 
-				$vote = array();
-				$user = new User($row['uid']);
-				$vote['uid'] = $user->name; 
-				$vote['vote'] = $row['answer'];
-				if ($user->grade === 'staff') {
-					$vote['grade'] = 'Teacher';
-				} else {
-					$vote['grade'] = $user->grade . 'th grader';
-				}
-				$vote['numgrade'] = $user->grade;
-				$votes[] = $vote;
-			}
-			$this->template_args['votes'] = $votes;
-			$this->template_args['question'] = $question;
-			$this->template = 'polls_results_freeresponse.tpl';
-			return;
-		}
-		$this->template_args['questions'] = array();
-
-		foreach ($poll->questions as $q) {
-			$question = array();
-			$question['qid'] = $q->qid; 
-			$question['text'] = $q->question;
-			//$question[$q->type] = TRUE;
-			$question['answertype'] = $q->answertype;
-			$question['r_qid'] = $q->r_qid;
-			if($q->answers == NULL) {
-				if($q->answertype == 'freeresponse') {
-					$this->template_args['questions'][] = $question;
-				}
-				continue;
-			}
-
-			$question['voters'] = $q->num_voters();
-
-			$question['total']['T'] = 0;
-			$question['total']['9M'] = 0;
-			$question['total']['9F'] = 0;
-			$question['total']['9T'] = 0;
-			$question['total']['10M'] = 0;
-			$question['total']['10F'] = 0;
-			$question['total']['10T'] = 0;
-			$question['total']['11M'] = 0;
-			$question['total']['11F'] = 0;
-			$question['total']['11T'] = 0;
-			$question['total']['12M'] = 0;
-			$question['total']['12F'] = 0;
-			$question['total']['12T'] = 0;
-			$question['total']['staffT'] = 0;
-			$question['total']['M'] = 0;
-			$question['total']['F'] = 0;
-			$question['answers'] = array();
-			if ($q->answertype == 'split_approval') {
-				$qid = $q->qid;
-				$people = $q->users_who_voted();
-				$answers = $q->get_answers();
-				$responses = array();
-				foreach ($answers as $aid => $answer) {
-					$responses[$aid] = array();
-					$responses[$aid]['text'] = $answer;
-					$responses[$aid]['votes'] = array();
-					$responses[$aid]['votes']['9M'] = 0;
-					$responses[$aid]['votes']['9F'] = 0;
-					$responses[$aid]['votes']['9T'] = 0;
-					$responses[$aid]['votes']['10M'] = 0;
-					$responses[$aid]['votes']['10F'] = 0;
-					$responses[$aid]['votes']['10T'] = 0;
-					$responses[$aid]['votes']['11M'] = 0;
-					$responses[$aid]['votes']['11F'] = 0;
-					$responses[$aid]['votes']['11T'] = 0;
-					$responses[$aid]['votes']['12M'] = 0;
-					$responses[$aid]['votes']['12F'] = 0;
-					$responses[$aid]['votes']['12T'] = 0;
-					$responses[$aid]['votes']['staffT'] = 0;
-					$responses[$aid]['votes']['T'] = 0;
-					$responses[$aid]['votes']['M'] = 0;
-					$responses[$aid]['votes']['F'] = 0;
-				}
-				foreach ($people as $user) {
-					$votes = $I2_SQL->query('SELECT * from poll_votes WHERE uid = %d AND aid > %d AND aid < %d', $user->uid,
-						PollQuestion::lower_bound($qid), PollQuestion::upper_bound($qid))->fetch_all_arrays();
-					$pervote = sprintf("%.3f", 1.0 / count($votes));
-					$gr = $user->grade;
-					$gen = $user->gender;
-					foreach($votes as $vote) {
-						$aid = $vote['aid'];
-						$responses[$aid]['votes']['T'] += $pervote;
-						$question['total']['T'] += $pervote;
-						$question['total']["{$gr}T"] += $pervote;
-						$responses[$aid]['votes']["{$gr}T"] += $pervote;
-						if(empty($gen))
-							continue; //staff has no gender on file
-						$question['total']["{$gr}{$gen}"] += $pervote;
-						$question['total']["{$gen}"] += $pervote;
-						$responses[$aid]['votes']["{$gr}{$gen}"] += $pervote;
-						$responses[$aid]['votes']["{$gen}"] += $pervote;
-					}	
-				}
-				foreach ($responses as $aid => $response) {
-					if ($question['total']['T'] == 0)
-						$responses[$aid]['percent']['T'] == "0.00";
-					else
-						$responses[$aid]['percent']['T'] = sprintf("%.2f",$response['votes']['T'] / $question['total']['T'] * 100);
-				}
-				$question['answers'] = $responses;
-				$this->template_args['questions'][] = $question;
-				continue;
-			}
-
-				
-			foreach ($q->answers as $aid => $text) {
-				$answer = array('text' => $text);
-				$answer['votes']['T'] = 0;
-				$num = PollQuestion::get_num_votes($aid);
-				$whoans = PollQuestion::users_who_answered($aid);
-				$question['total']['T'] += $num;
-				//t:total;; 9,10,11,12:grade;; m,f:gender
-				//Do the supertotals
-				$answer['votes']['T'] += $num;
-				d($answer['votes']['T'].' votes for aid '.$aid,1);
-				if ($question['voters'] != 0) {
-					$answer['percent']['T'] = sprintf("%.2f",$answer['votes']['T'] / $question['voters'] * 100);
-				} else {
-					$answer['percent']['T'] = 'NA';
-				}
-				//Now do ALL the categoricals
-				$answer['votes']['9M'] = 0;
-				$answer['votes']['9F'] = 0;
-				$answer['votes']['9T'] = 0;
-				$answer['votes']['10M'] = 0;
-				$answer['votes']['10F'] = 0;
-				$answer['votes']['10T'] = 0;
-				$answer['votes']['11M'] = 0;
-				$answer['votes']['11F'] = 0;
-				$answer['votes']['11T'] = 0;
-				$answer['votes']['12M'] = 0;
-				$answer['votes']['12F'] = 0;
-				$answer['votes']['12T'] = 0;
-				$answer['votes']['staffT'] = 0;
-				$answer['votes']['M'] = 0;
-				$answer['votes']['F'] = 0;
-				foreach($whoans as $u)
-				{
-					$gr = $u->grade;
-					$gen = $u->gender;
-					$question['total']["{$gr}T"]++;
-					$answer['votes']["{$gr}T"]++;
-					if(empty($gen))
-						continue; //staff has no gender on file
-					$question['total']["{$gr}{$gen}"]++;
-					$question['total']["{$gen}"]++;
-					$answer['votes']["{$gr}{$gen}"]++;
-					$answer['votes']["{$gen}"]++;
-				}
-				$question['answers'][] = $answer;
-			
-			}
-			$this->template_args['questions'][] = $question;
-		}
-		$this->template = 'polls_results.tpl';
-	}
-
-	/**
-	* The main admin interface
-	*/
-	function admin() {
-		global $I2_USER, $I2_ARGS;
-
-		$this->home();
-	}
-	
-	/**
-	* The interface to add poll and questions
-	*/
 	function add() {
 		global $I2_USER, $I2_ARGS;
-
-		/*if (! $I2_USER->is_group_member('admin_polls')) {
-			$this->home();
-			return;
-		}*/
-
+	
 		$this->template_args['groups'] = Group::get_all_groups();
+		if (count($_POST) > 0) {
+			print_r($_POST);
+			$name = $_POST['name'];
+			$begin = $_POST['startdt'];
+			$end = $_POST['enddt'];
+			$blurb = $_POST['intro'];
+			$on = isset($_POST['visible']) && $_POST['visible'] == 'on' ? 1 : 0;
 
-		if (isset($_REQUEST['poll_add_form'])) {
-			if ($_REQUEST['poll_add_form'] == 'poll') {
-				$poll = Poll::add_poll($_REQUEST['name'], $_REQUEST['intro']);
-				if (isset($_REQUEST['visible'])) {
-					$poll->set_visibility(TRUE);
-				}
-				$poll->set_groups(Group::generate($_REQUEST['add_groups']));
-				$poll->set_start_datetime($_REQUEST['startdt']);
-				$poll->set_end_datetime($_REQUEST['enddt']);
-				$pid = $poll->pid;
-				redirect("polls/edit/$pid");
-			}
-			elseif ($_REQUEST['poll_add_form'] == 'question') {
-				$poll = new Poll($I2_ARGS[2]);
-				if ($_REQUEST['answertype'] == 'freeresponse') {
-					$maxvotes = 1;
-				} else {
-					$maxvotes = 0;
-				}
-				$poll->add_question($_REQUEST['question'], $_REQUEST['answertype'], $maxvotes, NULL);
-				//$poll->add_question($_REQUEST['question'], $_REQUEST['maxvotes'], explode("\r\n\r\n", 		$pid = $I2_ARGS[2]));
-				redirect("polls/edit/{$I2_ARGS[2]}");
-			}
+			$poll = Poll::add_poll($name, $blurb, $begin, $end, $on);
 
-		}
-		if (isSet($I2_ARGS[3])) {
-			if (isSet($_REQUEST['answer'])) {
-					  PollQuestion::add_answer_to_question($I2_ARGS[3],$_REQUEST['answer']);
-					  redirect('polls/edit/'.$I2_ARGS[2].'/'.$I2_ARGS[3]);
+			$_POST['groups'] = array_unique($_POST['groups']);
+			foreach ($_POST['groups'] as $group) {
+				$poll->add_group_id($group);
 			}
-			$this->template = 'polls_add_answer.tpl';
-			$this->template_args['pid'] = $I2_ARGS[2];
-			$this->template_args['qid'] = $I2_ARGS[3];
-			$this->template_args['question'] = new PollQuestion($this->template_args['qid']);
-		} elseif (isset($I2_ARGS[2])) {
-			$this->template = 'polls_add_question.tpl';
-			$this->template_args['pid'] = $I2_ARGS[2];
-		}
-		else {
+			$_POST = array(); // Unset post vars
+			$I2_ARGS[2] = $poll->pid;
+			$this->edit();
+		} else {
 			$this->template = 'polls_add.tpl';
 		}
 	}
 
 	/**
-	* The poll editing interface
-	*/
+	 * The method that handles editing of polls.
+	 * $I2_ARGS[2] represents the poll to edit (like most of the other methods),
+	 * however $I2_ARGS[3] is special. If $I2_ARGS[3] exists, then it represents a
+	 * non-javascript environment and performs special functions (either inserting
+	 * dummy values or deleting questions/answers/etc.)
+	 */
 	function edit() {
 		global $I2_USER, $I2_ARGS;
-
+		$poll = new Poll($I2_ARGS[2]);
+		if (isset($I2_ARGS[3])) {
+			// $I2_ARGS[3] represents a non-javascript environment
+			// Therefore, we perform actions based on its value
+		}
+		if (isset($_POST['poll_edit_form'])) {
+			// Firefox doesn't seem to send the value if a checkbox exists.
+			$on = isset($_POST['visible']) && $_POST['visible'] == 'on' ? 1 : 0;
+			$poll->edit_poll($_POST['name'],$_POST['intro'], $_POST['startdt'],$_POST['enddt'],$on);
+			$seen = array();
+			foreach($_POST['question'] as $id) {
+				$name = $_POST["q_{$id}_name"];
+				$type = $_POST["q_{$id}_type"];
+				$maxv = $_POST["q_{$id}_lim"];
+				if ($maxv == '')
+					$maxv = 0;
+				if (isset($poll->questions[$id])) {
+					$poll->questions[$id]->edit_question($name,$type,$maxv);
+				} else {
+					$poll->add_question($name,$type,$maxv, $id);
+				}
+				$seen[] = $id;
+				if (isset($_POST['a_'.$id])) {
+					$a_seen = array();
+					$q = $poll->questions[$id];
+					foreach($_POST['a_'.$id] as $aid) {
+						if (isset($q->answers[$aid])) {
+							$q->edit_answer($_POST['a_'.$id.'_'.$aid], $aid);
+						} else {
+							$q->add_answer($_POST["a_{$id}_{$aid}"], $aid);
+						}
+						$a_seen[] = $aid;
+					}
+					$as = $q->answers;
+					foreach ($as as $a => $dummy) {
+						if (!in_array($a,$a_seen))
+							$q->delete_answer($a);
+					}
+				}
+			}
+			$qs = $poll->questions;
+			foreach ($qs as $q) {
+				if (!in_array($q->qid,$seen)) {
+					$poll->delete_question($q->qid);
+				}
+			}
+			$seen = array();
+			$_POST['groups'] = array_unique($_POST['groups']);
+			foreach ($_POST['groups'] as $g) {
+				if (!isset($poll->groups[$g])) {
+					$poll->add_group_id($g,array(TRUE,FALSE,FALSE));
+				}
+				$seen[] = $g;
+			}
+			$gs = $poll->groups;
+			foreach ($gs as $gid => $perms) {
+				if (!in_array($gid, $seen)) {
+					$poll->remove_group_id($gid);
+				}
+			}
+		}
+		$this->template = 'polls_edit.tpl';
+		$this->template_args['poll'] = $poll;
+		$this->template_args['types'] = PollQuestion::get_answer_types();
 		$this->template_args['groups'] = Group::get_all_groups();
-
-		/*if (! $I2_USER->is_group_member('admin_polls')) {
-			$this->home();
-			return;
-		}*/
-
-		if (! isset($I2_ARGS[2])) {
-			$this->home();
-			return;
-		}
-		$this->template_args['pid'] = $I2_ARGS[2];
-
-		if (isSet($I2_ARGS[3])) {
-				  $this->template_args['qid'] = $I2_ARGS[3];
-		}
-
-		if (isset($_REQUEST['poll_edit_form'])) {
-			if ($_REQUEST['poll_edit_form'] == 'poll') {
-				$poll = new Poll($I2_ARGS[2]);
-				$poll->set_name($_REQUEST['name']);
-				if (isset($_REQUEST['visible'])) {
-					$poll->set_visibility(1);
-				}
-				else {
-					$poll->set_visibility(0);
-				}
-				$poll->set_introduction($_REQUEST['intro']);
-				$poll->set_groups(Group::generate($_REQUEST['add_groups']));
-				$poll->set_start_datetime($_REQUEST['startdt']);
-				$poll->set_end_datetime($_REQUEST['enddt']);
-			}
-			if ($_REQUEST['poll_edit_form'] == 'question') {
-				//$question = new PollQuestion($I2_ARGS[2], $_REQUEST['qid']);
-				$question = new PollQuestion($_REQUEST['qid']);
-				$question->set_question($_REQUEST['question']);
-				if($question->answertype == 'checkbox') {
-					$question->set_maxvotes($_REQUEST['maxvotes']);
-				}
-				//$question->set_answertype($_REQUEST['answertype']);
-				//$question->set_answers(explode("\r\n\r\n", trim($_REQUEST['answers'])));
-			}
-		}
-		if (isset($I2_ARGS[4])) {
-		   if (isSet($_REQUEST['answer'])) {
-					  PollQuestion::change_answer($I2_ARGS[4],$_REQUEST['answer']);
-					  redirect('polls/edit/'.$I2_ARGS[2].'/'.$I2_ARGS[3]);
-			}
-			$this->template_args['aid'] = $I2_ARGS[4];
-			$this->template = 'polls_edit_answer.tpl';
-			$this->template_args['question'] = new PollQuestion($I2_ARGS[3]);
-			$this->template_args['answer'] = PollQuestion::get_answer_text($this->template_args['aid']);
-		} elseif (isset($I2_ARGS[3])) {
-			$this->template = 'polls_edit_question.tpl';
-			$this->template_args['question'] = new PollQuestion($I2_ARGS[3]);
-		}
-		else {
-			$this->template = 'polls_edit.tpl';
-			$this->template_args['poll'] = new Poll($I2_ARGS[2]);
-		}
 	}
 
 	/**
-	* The poll deleting interface
-	*/
+	 * The method that handles deletion of polls.
+	 */
 	function delete() {
 		global $I2_USER, $I2_ARGS;
-
-		/*if (! $I2_USER->is_group_member('admin_polls')) {
-			$this->home();
-			return;
-		}*/
 
 		if (! isset($I2_ARGS[2])) {
 			$this->home();
@@ -499,29 +222,142 @@ class Polls implements Module {
 				Poll::delete_poll($I2_ARGS[2]);
 				$this->template_args['deleted'] = TRUE;
 			}
-			if ($_REQUEST['polls_delete_form'] == 'delete_question') {
-				$poll = new Poll($I2_ARGS[2]);
-				$poll->delete_question($I2_ARGS[3]);
-				$this->template_args['deleted'] = TRUE;
-			}
-			if ($_REQUEST['polls_delete_form'] == 'delete_answer') {
-				PollQuestion::delete_answer($I2_ARGS[4]);
-				$this->template_args['deleted'] = TRUE;
-			}
 		}
-		if (isset($I2_ARGS[4])) {
-			$this->template = 'polls_delete_answer.tpl';
-		}
-		elseif (isset($I2_ARGS[3])) {
-			$this->template = 'polls_delete_question.tpl';
-		}
-		else {
-			$this->template = 'polls_delete.tpl';
-		}
+		$this->template = 'polls_delete.tpl';
 	}
 
 	/**
-	* Exporting the polls as csv
+	 * The method that handles the actual voting in polls.
+	 * This method directly makes one MySQL call: the caching of the grade
+	 * and gender so it isn't repeated in every question.
+	 */
+	function vote() {
+		global $I2_ARGS, $I2_USER, $I2_SQL;
+		if (!isset($I2_ARGS[2])) {
+			$this->home();
+			return;
+		}
+		
+		$poll = new Poll($I2_ARGS[2]);
+		if (isset($_POST['polls_vote_form'])) {
+			$grade = $I2_USER->grade;
+			$gender = $I2_USER->gender;
+			$uid = $I2_USER->uid;
+			$qs = $poll->questions;
+			foreach ($qs as $q) {
+				$q->delete_vote($uid);
+				if (isset($_POST[$q->qid])) {
+					if ($q->answertype == 'free_response' &&
+						strlen($_POST[$q->qid]) == 0)
+						continue;
+					$q->vote($_POST[$q->qid],$uid);
+				}
+			}
+			$I2_SQL->query('UPDATE poll_votes SET grade=%s,gender=%s WHERE uid=%d',$grade,$gender,$uid);
+			$this->template = 'polls_voted.tpl';
+			return;
+		}
+		$this->template_args['poll'] = $poll;
+		$this->template_args['avail'] = $poll->in_session();
+		$this->template_args['has_voted'] = $I2_SQL->query('SELECT COUNT(*) FROM poll_votes WHERE pid=%d AND uid=%d',$poll->pid,$I2_USER->uid)->fetch_single_value() > 0;
+		$this->template = 'polls_vote.tpl';
+	}
+
+	/**
+	 * The method that returns the results of the poll.
+	 * I know that the code looks ugly, but most of it is due to the fact
+	 * that there are so many aggregate data values to compute.
+	 */
+	function results() {
+		global $I2_ARGS;
+
+		if (!isset($I2_ARGS[2])) {
+			$this->home();
+			return;
+		}
+
+		$poll = new Poll($I2_ARGS[2]);
+
+		if (isset($I2_ARGS[3])) {
+			$I2_ARGS[3] = substr($I2_ARGS[3],1);
+			$question = $poll->questions[$I2_ARGS[3]];
+
+			$this->template_args['poll'] = $poll;
+			$this->template_args['question'] = $question->question;
+			$this->template_args['votes'] = $question->get_all_votes();
+			$this->template = 'polls_results_freeresponse.tpl';
+			return;
+		}
+		$qs = array();
+		$questions = $poll->questions;
+		foreach($questions as $question) {
+			$q = array();
+			$q['answertype'] = $question->answertype;
+			$q['text'] = $question->question;
+			$q['qid'] = $question->qid;
+
+			$q['total'] = array();
+			$q['total']['T'] = 0;
+			$q['total']['M'] = 0;
+			$q['total']['F'] = 0;
+			foreach (array(9,10,11,12) as $g) {
+				$q['total'][$g.'T'] = 0;
+				$q['total'][$g.'M'] = 0;
+				$q['total'][$g.'F'] = 0;
+			}
+			$q['total']['staffT'] = 0;
+			$q['answers'] = array();
+			$as = $question->answers;
+			foreach ($as as $aid => $text) {
+				$ans = array();
+				$ans['text'] = $text;
+
+				$ans['votes'] = array();
+				$ans['votes']['T'] = 0;
+				$ans['votes']['M'] = 0;
+				$ans['votes']['F'] = 0;
+				foreach (array(9,10,11,12) as $g) {
+					$ans['votes'][$g.'M'] = $question->num_who_vote($aid,$g,'M');
+					$ans['votes'][$g.'F'] = $question->num_who_vote($aid,$g,'F');
+					$ans['votes'][$g.'T'] = $ans['votes'][$g.'M']+$ans['votes'][$g.'F'];
+					$ans['votes']['T'] += $ans['votes'][$g.'T'];
+					$ans['votes']['M'] += $ans['votes'][$g.'M'];
+					$ans['votes']['F'] += $ans['votes'][$g.'F'];
+					$q['total'][$g.'T'] += $ans['votes'][$g.'T'];
+					$q['total'][$g.'M'] += $ans['votes'][$g.'M'];
+					$q['total'][$g.'F'] += $ans['votes'][$g.'F'];
+				}
+				$ans['votes']['staffT'] = $question->num_who_vote($aid,'STAFF',NULL);
+				$ans['votes']['T'] += $ans['votes']['staffT'];
+				$ans['percent'] = "NA";
+				$q['total']['staffT'] += $ans['votes']['staffT'];
+				$q['total']['M'] += $ans['votes']['M'];
+				$q['total']['F'] += $ans['votes']['F'];
+				$q['total']['T'] += $ans['votes']['T'];
+				$q['answers'][] = $ans;
+			}
+			$q['voters'] = $question->num_who_voted();
+			foreach ($q['answers'] as $key => $response) {
+				if ($q['voters'] == 0)
+					if ($q['answertype'] == 'standard')
+						$q['answers'][$key]['percent'] = "NA";
+					else
+						$q['answers'][$key]['percent'] == "0.00";
+				else 
+					$q['answers'][$key]['percent'] = sprintf("%.2f",$response['votes']['T'] / $q['voters'] * 100);
+			}
+			$qs[] = $q;
+		}
+		$this->template_args['questions'] = $qs;
+		$this->template_args['poll'] = $poll;
+		$this->template = 'polls_results.tpl';
+	}
+
+	/**
+	 * The method that exports a CSV datafile of poll results.
+	 * Currently it only accepts standard poll questions and does no
+	 * advanced CSV matching (i.e. double quoting of quote marks). This
+	 * also contains a hacky MySQL call.
 	 */
 	function export_csv() {
 		global $I2_USER, $I2_ARGS, $I2_SQL;
@@ -537,15 +373,12 @@ class Polls implements Module {
 
 		$poll = new Poll($I2_ARGS[2]);
 		$questions = $poll->questions;
-		// VERY HACKY
-		$users = $I2_SQL->query('SELECT DISTINCT uid FROM poll_votes WHERE aid > %d AND aid < %d',
-				PollQuestion::lower_bound(Poll::lower_bound($poll->pid)+1),
-				PollQuestion::upper_bound(Poll::upper_bound($poll->pid)-1))->fetch_all_arrays();
+		$users = $I2_SQL->query('SELECT DISTINCT uid FROM poll_votes WHERE pid = %d',
+			$I2_ARGS[2])->fetch_all_single_values();
 
 		$list = array();
 		foreach ($poll->questions as $q) {
 			switch($q->answertype) {
-			case 'radio':
 			case 'standard':
 				$list[$q->qid] = '"'.$q->question.'"';
 			}
@@ -553,65 +386,20 @@ class Polls implements Module {
 
 		echo implode(',',$list)."\r\n"; // Print out the header
 		$newlist = array();
-		foreach ($list as $qid=>$question) {
-			$q = new PollQuestion($qid);
-			$newlist[$qid] = array($q, $q->get_answers());
+		foreach ($list as $qid=>$text) {
+			$q = $poll->questions[$qid];
+			$newlist[$qid] = array($q, $q->answers);
 		}
 		$list = $newlist;
 
 		foreach ($users as $user) {
-			$user = $user[0];
 			$responses = array();
 			foreach ($list as $qid => $info) {
-				$answers = array_keys($info[0]->get_answers($user));
-				$responses[] = '"'.$info[1][$answers[0]].'"';
+				$answer = $info[0]->get_response($user);
+				$responses[] = '"'.$info[1][$answer].'"';
 			}
 			echo implode(',',$responses)."\r\n";
 		}
 	}
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function display_pane($display) {
-		global $I2_SQL, $I2_USER, $I2_ARGS;
-		if (isset($I2_ARGS[2])) {
-			$this->template_args['pid'] = $I2_ARGS[2];
-		}
-		if (isset($I2_ARGS[3])) {
-			$this->template_args['qid'] = $I2_ARGS[3];
-		}
-		if (isset($I2_ARGS[4])) {
-			$this->template_args['aid'] = $I2_ARGS[4];
-		}
-		$display->disp($this->template, $this->template_args);
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return FALSE;
-	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function display_box($display) {
-	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function get_name() {
-		return 'Voting Booth';
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function is_intrabox() {
-		return FALSE;
-	}
 }
-
 ?>

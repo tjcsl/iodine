@@ -13,12 +13,12 @@ function sort(table, direction) {
 </script>
 <a href="[<$I2_ROOT>]polls">Polls Home</a><br /><br />
 
-<b>[<$pollname>]</b><br /><br />
-
+<b>[<$poll->name>]</b><br /><br />
+<ol class="poll_questions">
 [<foreach from=$questions item=question>]
- [<$question.r_qid>].
- [<if $question['answertype'] == 'freeresponse'>]
-  <a href="[<$I2_ROOT>]polls/results/[<$pid>]/[<$question.qid>]">[<$question.text>]</a><br /><br /><br />
+ <li>
+ [<if $question.answertype == 'free_response'>]
+  <a href="[<$I2_ROOT>]polls/results/[<$poll->pid>]/_[<$question.qid>]">[<$question.text>]</a><br />
  [<else>]
   [<$question.text>]<br />
   <table class="results">
@@ -49,7 +49,7 @@ function sort(table, direction) {
    [<foreach from=$question.answers item=answer>]
     <tr>
      <th>[<$answer.text>]</th>
-     <td>[<$answer.votes.T>]</td><td>([<$answer.percent.T>]%)</td><td>[<$answer.votes.M>]</td><td>[<$answer.votes.F>]</td>
+     <td>[<$answer.votes.T>]</td><td>([<$answer.percent>]%)</td><td>[<$answer.votes.M>]</td><td>[<$answer.votes.F>]</td>
      <td>[<$answer.votes.9T>]</td><td>[<$answer.votes.9M>]</td><td>[<$answer.votes.9F>]</td>
      <td>[<$answer.votes.10T>]</td><td>[<$answer.votes.10M>]</td><td>[<$answer.votes.10F>]</td>
      <td>[<$answer.votes.11T>]</td><td>[<$answer.votes.11M>]</td><td>[<$answer.votes.11F>]</td>
@@ -69,7 +69,11 @@ function sort(table, direction) {
    </tr>
   </tfoot>
   </table>
-  [<if $question.voters == 1>]1 person[<else>][<$question.voters>] people[</if>] voted on this question.<br />
-  [<if isset($question.approval)>]Note: The percentages do not sum to 100% because this is an approval question.[</if>]<br /><br />
+  [<if $question.answertype == 'approval'>][<* Ironically, split-vote DOES sum to 100% *>]
+    <span class="note">Note: The percentages do not sum to 100% because this is an approval question.</span><br />
+  [</if>]
  [</if>]
+ [<if $question.voters == 1>]1 person[<else>][<$question.voters>] people[</if>] voted on this question.<br />
+ </li>
 [</foreach>]
+</ol>

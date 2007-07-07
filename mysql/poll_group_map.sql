@@ -1,6 +1,0 @@
-DROP TABLE IF EXISTS poll_group_map;
-CREATE TABLE poll_group_map (
-	pid MEDIUMINT(8) UNSIGNED NOT NULL,
-	gid MEDIUMINT(8) NOT NULL,
-	PRIMARY KEY(pid,gid)
-);

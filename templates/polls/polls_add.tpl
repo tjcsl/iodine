@@ -2,16 +2,15 @@
 <a href="[<$I2_ROOT>]polls">Polls Home</a><br /><br />
 
 <form method="post" action="[<$I2_ROOT>]polls/add" class="boxform">
-<input type="hidden" name="poll_add_form" value="poll" />
-Name: <input type="text" name="name" value="" /><br />
+Name: <input type="text" name="name" value="" maxlength="128" /><br />
 Start date/time:<input type="text" name="startdt" value="YYYY-MM-DD HH:MM:SS" /><br />
 End date/time:<input type="text" name="enddt" value="YYYY-MM-DD HH:MM:SS" /><br />
-<input type="checkbox" name="visible" />Is Visible<br />
+<input type="checkbox" name="visible" /> Visible<br />
 <table id="groups_table" cellpadding="0">
  <tr>
   <td>Groups:</td>
   <td>
-   <select id="groups" class="groups_list" name="add_groups[]">
+   <select id="groups" class="groups_list" name="groups[]">
     [<foreach from=$groups item=group>]
      <option value="[<$group->gid>]">[<$group->name>]</option>
     [</foreach>]

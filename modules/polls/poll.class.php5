@@ -1,312 +1,78 @@
 <?php
 /**
-* Just contains the definition for the class {@link Poll}.
-* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
-* @copyright 2005 The Intranet 2 Development Team
+* The poll class file.
+* @author Joshua Cranmer <jcranmer@tjhsst.edu>
+* @copyright 2007 The Intranet 2 Development Team
 * @package modules
 * @subpackage Polls
 * @filesource
 */
 
 /**
-* The class that keeps track of a poll
+* The class that represents a poll.
 * @package modules
 * @subpackage Polls
 */
 class Poll {
+	private $poll_id;
+	private $title;
 
-	private $mypid;
-	private $myname;
+	private $begin;
+	private $end;
 
-	private $myvisibility;
-	private $mystartdt;
-	private $myenddt;
+	private $blurb;
+	private $visibility;
 
-	private $myintroduction;
-	private $myquestions;
-
-	private $mygroups;
+	private $qs = array();
+	private $gs = array();
 
 	/**
 	 * Vars this can get:
-	 * pid, name, visible, startdt, enddt, myintroduction, mygroups, groupnames, groupids
+	 * pid, name, visible, startdt, enddt, introduction, groups, questions
 	 */
 	public function __get($var) {
 		global $I2_SQL;
 		switch($var) {
 			case 'pid':
-				return $this->mypid;
+				return $this->poll_id;
 			case 'name':
-				return $this->myname;
-			case 'visible':
-				return $this->myvisibility;
+				return $this->title;
 			case 'startdt':
-				return $this->mystartdt;
+				return $this->begin;
 			case 'enddt':
-				return $this->myenddt;
+				return $this->end;
 			case 'introduction':
-				return $this->myintroduction;
+				return $this->blurb;
 			case 'questions':
-				return $this->myquestions;
+				return $this->qs;
+			case 'visible':
+				return $this->visibility;
 			case 'groups':
-				return $this->mygroups;
-			case 'groupnames':
-				$groupnames = array();
-				foreach ($this->mygroups as $grp) {
-					$groupnames[] = $grp->name;
-				}
-				return $groupnames;
-			case 'groupids':
-				$groupids = array();
-				foreach ($this->mygroups as $grp) {
-					$groupids[] = $grp->gid;
-				}
-				return $groupids;
+				return $this->gs;
 		}
 	}
 
 	public function __construct($pid) {
 		global $I2_SQL,$I2_LOG;
 
-		//$I2_LOG->log_file($pid);
+		$pollinfo = $I2_SQL->query('SELECT name, introduction, startdt, enddt, visible FROM polls WHERE pid=%d', $pid)->fetch_array(Result::ASSOC);
 
-		$pollinfo = $I2_SQL->query('SELECT name, introduction, visible, startdt, enddt FROM polls WHERE pid=%d', $pid)->fetch_array(Result::ASSOC);
+		$this->poll_id = $pid;
+		$this->title = $pollinfo['name'];
+		$this->blurb = $pollinfo['introduction'];
+		$this->begin = $pollinfo['startdt'];
+		$this->end = $pollinfo['enddt'];
+		$this->visibility = $pollinfo['visible'] == 1 ? true : false;
 
-		$this->mypid = $pid;
-		$this->myname = $pollinfo['name'];
-		$this->myvisibility = $pollinfo['visible'];
-		$this->myintroduction = $pollinfo['introduction'];
-		$this->mystartdt = $pollinfo['startdt'];
-		$this->myenddt = $pollinfo['enddt'];
-
-		$this->myquestions = array();
-		$res = $I2_SQL->query('SELECT qid FROM poll_questions WHERE qid > %d AND qid < %d ORDER BY qid ASC', self::lower_bound($pid), self::upper_bound($pid))->fetch_all_arrays(Result::ASSOC);
-		foreach($res as $row) {
-			//$I2_LOG->log_file($row['qid']);
-			$this->myquestions[] = new PollQuestion($row['qid']);
+		$qs = $I2_SQL->query('SELECT qid FROM poll_questions WHERE pid=%d',$pid)->fetch_all_single_values();
+		foreach ($qs as $q) {
+			$this->qs[$q] = new PollQuestion($pid, $q);
 		}
 
-		//$I2_LOG->log_file('done');
-		
-		$this->mygroups = array();
-		foreach ($I2_SQL->query('SELECT gid FROM poll_group_map WHERE pid=%d', $pid) as $gid) {
-			$this->mygroups[] = new Group($gid['gid']);
+		$gs = $I2_SQL->query('SELECT * FROM poll_permissions WHERE pid=%d',$pid)->fetch_all_arrays();
+		foreach ($gs as $g) {
+			$this->gs[$g['gid']] = array($g['vote'],$g['modify'],$g['results']);
 		}
-	}
-
-	/**
-	* Gets the maximum possible value a qid may have while still pertaining to a poll, plus one
-	*/
-	public static function upper_bound($pid) {
-			  return self::lower_bound($pid)+1000;
-	}
-
-	/**
-	* Gets the minimum possible value a qid may have while still pertaining to a poll, minus one
-	*/
-	public static function lower_bound($pid) {
-			  return $pid*1000;
-	}
-
-	public static function check_admin() {
-			  global $I2_USER;
-			  if (!$I2_USER->is_group_member('admin_polls')) {
-						 throw new I2Exception('You are not a polls admin!');
-			  }
-	}
-
-	/**
-	* Sets the name of this poll.
-	*
-	* @param string $name The new name of the poll.
-	*/
-	public function set_name($name) {
-		global $I2_SQL;
-
-		self::check_admin();
-
-		$this->myname = $name;
-
-		$I2_SQL->query('UPDATE polls SET name=%s WHERE pid=%d', $name, $this->mypid);
-	}
-
-	/**
-	* Sets the introduction to this poll.
-	*
-	* @param string $intro The new introduction to the poll.
-	*/
-	public function set_introduction($intro) {
-		global $I2_SQL;
-
-		self::check_admin();
-
-		$this->myintroduction = $intro;
-
-		$I2_SQL->query('UPDATE polls SET introduction=%s WHERE pid=%d', $intro, $this->mypid);
-	}
-	
-	/**
-	* Sets whether a poll is visible to the general Intranet public.
-	*
-	* @param boolean $isVisible How the visibility of the poll will be set.
-	*/
-	public function set_visibility($isVisible) {
-		global $I2_SQL;
-
-		self::check_admin();
-
-		$this->myvisibility = $isVisible;
-
-		$I2_SQL->query('UPDATE polls SET visible=%s WHERE pid=%d', $isVisible, $this->mypid);
-	}
-
-	/**
-	* Sets the groups that can vote in this poll.
-	*
-	* @param array $gids The ID numbers of the groups that can vote
-	*/
-	public function set_groups($grps) {
-		global $I2_SQL;
-
-		self::check_admin();
-
-		$this->groups = array();
-		$I2_SQL->query('DELETE FROM poll_group_map WHERE pid=%d', $this->pid);
-
-		foreach ($grps as $grp) {
-			$this->groups[] = $grp;
-			$this->add_group($grp);
-		}
-	}
-
-	/**
-	* Adds a group to the poll.
-	*/
-	public function add_group($grp) {
-		global $I2_SQL;
-		self::check_admin();
-		$I2_SQL->query('INSERT INTO poll_group_map (gid,pid) VALUES(%d,%d)',$grp->gid,$this->pid);
-	}
-
-	/**
-	* Removes a group from the poll.
-	*/
-	public function remove_group($gid) {
-		global $I2_SQL;
-		self::check_admin();
-		$I2_SQL->query('DELETE FROM poll_group_map WHERE gid=%d AND pid=%d',$gid,$this->pid);
-	}
-
-	/**
-	* Sets the time voting begins
-	*
-	* @param string $dt The date/time, in format YYYY-MM-DD HH:MM:SS
-	*/
-	public function set_start_datetime($dt) {
-		global $I2_SQL;
-
-		self::check_admin();
-		$this->mystartdt = $dt;
-		$I2_SQL->query('UPDATE polls SET startdt=%s WHERE pid=%d', $dt, $this->pid);
-	}
-
-	/**
-	* Sets the time voting ends
-	*
-	* @param string $dt The date/time, in format YYYY-MM-DD HH:MM:SS
-	*/
-	public function set_end_datetime($dt) {
-	   global $I2_SQL;
-		self::check_admin();
-		
-		$this->myenddt = $dt;
-		$I2_SQL->query('UPDATE polls SET enddt=%s WHERE pid=%d', $dt, $this->pid);
-	}
-
-	/**
-	* Adds a question to a poll.
-	*
-	* @param string $question The question text to add
-	* @param int $maxvotes The number of answers a user can pick in
-	* approval voting; 0 for unlimited approval voting, 1 for normal
-	* plurality voting
-	* @param array $answers The answers a user may choose from
-	*/
-	//public function add_question($question, $maxvotes, $answers) {
-	//	add_question($question, 'checkbox', $maxvotes, $answers);
-	//}
-	
-	public function add_question($question, $answertype, $maxvotes, $answers) {
-		self::check_admin();
-		$this->myquestions[] = PollQuestion::new_question($this->pid, $question, $answertype, $maxvotes, $answers);
-	}
-
-	/**
-	* Deletes a question from this poll
-	*
-	* @param int $qid The ID of the question to delete
-	*/
-	public function delete_question($qid) {
-		self::check_admin();
-		for ($k = 0; $k < count($this->questions); $k++) {
-			if ($this->questions[$k]->qid == $qid) {
-				array_splice($this->questions, $k, 1);
-				PollQuestion::delete_question($qid);
-				break;
-			}
-		}
-	}
-
-
-	/**
-	* Determines whether a user can access this poll
-	*
-	* Finds a user's access based on start and end date/times, poll groups, and visibility.
-	*
-	* @param User $user The user; defaults to the current user
-	*/
-	public function user_can_access($user=NULL) {
-		global $I2_USER;
-
-		if (!$user) {
-			$user = $I2_USER;
-		}
-
-		if ($user->is_group_member('admin_polls')) {
-			return TRUE;
-		}
-
-		// poll visibility
-		if ($this->visible == FALSE) {
-			return FALSE;
-		}
-
-		// within time range
-		$timestamp = time();
-		$pollstart = strtotime($this->mystartdt);
-		if ($timestamp < $pollstart) {
-			return FALSE;
-		}
-		$pollend = strtotime($this->myenddt);
-		if ($timestamp > $pollend) {
-			return FALSE;
-		}
-
-		// groups
-		if (count($this->mygroups) == 0) {
-			// no groups, so everyone has access
-			return TRUE;
-		}
-		else {
-			//groups; find if user is in any of them
-			foreach ($this->groupnames as $group) {
-				if ($user->is_group_member($group)) {
-					return TRUE;
-				}
-			}
-		}
-
-		return FALSE;
 	}
 
 	/**
@@ -317,94 +83,134 @@ class Poll {
 	*
 	* @return Poll The new poll
 	*/
-	public static function add_poll($name, $intro) {
+	public static function add_poll($name, $intro, $begin, $end, $visible) {
 		global $I2_SQL;
 
-		self::check_admin();
-
-		$pid = $I2_SQL->query('INSERT INTO polls SET name=%s, introduction=%s', $name, $intro)->get_insert_id();
+		$pid = $I2_SQL->query('INSERT INTO polls SET name=%s, introduction=%s, startdt=%s, enddt=%s, visible=%d',
+			$name, $intro, $begin, $end, $visible)->get_insert_id();
 
 		return new Poll($pid);
 	}
 
-	/**
-	* Returns the maximum number an answer may have while belonging to this poll, plus one.
-	*/
-	public static function answer_upper_bound($pid) {
-			  return self::answer_lower_bound($pid)+1000000;
+	public function edit_poll($name, $intro, $begin, $end, $visible) {
+		global $I2_SQL;
+		$I2_SQL->query('UPDATE polls SET name=%s, introduction=%s, startdt=%s, enddt=%s, visible=%d WHERE pid=%d',
+			$name, $intro, $begin, $end, $visible, $this->poll_id);
+		$this->title = $name;
+		$this->blurb = $intro;
+		$this->startdt = $begin;
+		$this->enddt = $end;
+		$this->visibility = $visible;
 	}
 
-	/**
-	* Returns the minimum number an answer may have while belonging to this poll, minus one.
-	*/
-	public static function answer_lower_bound($pid) {
-			  return 1000000*$pid;
-	}
-	/**
-	* Deletes a poll.
-	*
-	* @param integer $pid The id of the poll to remove
-	*/
 	public static function delete_poll($pid) {
 		global $I2_SQL;
 
-		self::check_admin();
-
 		$I2_SQL->query('DELETE FROM polls WHERE pid=%d', $pid);
-		$I2_SQL->query('DELETE FROM poll_questions WHERE qid > %d AND qid < %d', self::lower_bound($pid), self::upper_bound($pid));
-		$I2_SQL->query('DELETE FROM poll_answers WHERE aid >= %d AND aid < %d', self::answer_lower_bound($pid), self::answer_upper_bound($pid));
-		$I2_SQL->query('DELETE FROM poll_votes WHERE aid >= %d AND aid < %d', self::answer_lower_bound($pid), self::answer_upper_bound($pid));
-		$I2_SQL->query('DELETE FROM poll_group_map WHERE pid=%d', $pid);
+		$I2_SQL->query('DELETE FROM poll_questions WHERE pid=%d', $pid);
+		$I2_SQL->query('DELETE FROM poll_permissions WHERE pid=%d', $pid);
+		$I2_SQL->query('DELETE FROM poll_responses WHERE pid=%d', $pid);
+		$I2_SQL->query('DELETE FROM poll_votes WHERE pid=%d', $pid);
 	}
 
-	/**
-	* Gets all existant polls
-	*
-	* @return array An array of Poll objects
-	*/
 	public static function all_polls() {
 		global $I2_SQL;
 
-		$pids = $I2_SQL->query('SELECT pid FROM polls ORDER BY pid DESC')->fetch_all_arrays(Result::ASSOC);
+		$pids = $I2_SQL->query('SELECT pid FROM polls ORDER BY pid DESC')->fetch_all_single_values();
 		$polls = array();
-		foreach ($pids as $row) {
-			$polls[] = new Poll($row['pid']);
+		foreach ($pids as $pid) {
+			$polls[] = new Poll($pid);
 		}
-
 		return $polls;
 	}
 
-	/**
-	* Gets all polls a user has access to
-	*
-	* @param User $user The {@link User} to get polls for.
-	* @return array The Polls the user has access to.
-	*/
-	public static function get_user_polls($user) {
-		$all = Poll::all_polls();
-		$userpolls = array();
+	public static function accessible_polls() {
+		global $I2_USER;
 
-		foreach ($all as $poll) {
-			if ($poll->user_can_access()) {
-				$userpolls[] = $poll;
-			}
+		$polls = Poll::all_polls();
+		foreach ($polls as $p) {
+			if ($p->can_see())
+				$out[] = $p;
 		}
-
-		return $userpolls;
+		return $out;
 	}
 
-	/**
-	* Determines whether or not the user has voted in this poll yet.
-	*
-	* @param Poll $poll The {@link Poll} to check.
-	* @param User $user The {@link User} to check the status of.
-	*/
-	public static function has_voted($p, $u) {
+	public function can_see() {
+		global $I2_USER;
+
+		$ugroups = Group::get_user_groups($I2_USER);
+		foreach ($ugroups as $g) {
+			if (isset($this->gs[$g->gid]))
+				return TRUE;
+		}
+		return FALSE;
+	}
+
+	public function add_question($name, $type, $maxvotes, $qid = NULL) {
 		global $I2_SQL;
-		$res = $I2_SQL->query('SELECT COUNT(*) FROM poll_votes WHERE uid=%d AND aid>%d AND aid<%d', $u->uid, self::answer_lower_bound($p->pid), self::answer_upper_bound($p->pid))->fetch_single_value();
-		if($res==0)
-			return FALSE;
-		return TRUE;
+		$q = PollQuestion::new_question($this->poll_id,$name,$type,$maxvotes,$qid);
+		$this->qs[$q->qid] = $q;
+	}
+
+	public function delete_question($qid) {
+		global $I2_SQL;
+		$I2_SQL->query('DELETE FROM poll_questions WHERE pid=%d AND qid=%d', $this->poll_id,$qid);
+		unset($this->qs[$qid]);
+	}
+
+	public function add_group_id($gid, $perm) {
+		global $I2_SQL;
+
+		$I2_SQL->query('INSERT INTO poll_permissions SET pid=%d,gid=%d', $this->poll_id,$gid);
+		$this->gs[$gid] = array(TRUE,FALSE,FALSE);
+	}
+
+	public function remove_group_id($gid) {
+		global $I2_SQL;
+
+		$I2_SQL->query('DELETE FROM poll_permissions WHERE pid=%d AND gid=%d',$this->poll_id,$gid);
+		unset($this->gs[$gid]);
+	}
+
+	public static function can_do($pid, $action) {
+		global $I2_USER, $I2_SQL;
+
+		if ($I2_USER->is_group_member('admin_polls')) {
+			return TRUE; // polls admins are implicitly omnipotent
+		}
+
+		switch ($action) {
+		case 'home':
+			return TRUE; // Anyone can view the home
+		case 'add':
+			return FALSE; // Non-omnipotent beings can't add anything
+		case 'vote':
+			$action = 0;
+			break;
+		case 'edit':
+		case 'delete':
+			$action = 1;
+			break;
+		case 'results':
+		case 'export_csv':
+			$action = 2;
+			break;
+		default:
+			throw new I2_Exception("Illegal action $action for polls permissions!");
+		}
+		$groups = $I2_SQL->query('SELECT * FROM poll_permissions WHERE pid=%d',$pid)->fetch_all_arrays();
+		$ugroups = Group::get_user_groups($I2_USER);
+		foreach ($groups as $g) {
+			if ($g[$action]) {
+				if (in_array(new Group($g['gid']),$ugroups))
+					return TRUE;
+			}
+		}
+		return FALSE;
+	}
+
+	public function in_session() {
+		return strtotime($this->begin) < time() && strtotime($this->end) > time();
 	}
 }
 ?>

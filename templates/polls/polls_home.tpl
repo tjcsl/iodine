@@ -1,4 +1,6 @@
-[<if isset($admin)>]<a href="[<$I2_ROOT>]polls/add">Add a new poll</a>[</if>]
+[<if isset($admin)>]
+<a href="[<$I2_ROOT>]polls/add">Add a new poll</a>
+[</if>]
 <br /><br />
 <table class="polls">
   <tr><td colspan="5"><b>Open Polls</b></td></tr>

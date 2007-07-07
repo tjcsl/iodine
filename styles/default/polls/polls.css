@@ -12,6 +12,7 @@ table.polls th {
 /* Used in polls_results.tpl */
 /* These provide the major lines. */
 table.results {
+	margin: 3px 0em;
 	border-collapse: collapse;
 }
 table.results col {
@@ -108,4 +109,14 @@ h4 {
 		border-right: none;
 		border-bottom: 1px solid #999;
 	}
+}
+
+/* Format the display.*/
+ol.poll_questions {
+	position: relative;
+	padding-left: 1.5em;
+}
+
+ol.poll_questions > li {
+	padding-bottom: 1em;
 }

@@ -15,25 +15,18 @@
 */
 class PollQuestion {
 
+	private $mypid;
 	private $myqid;
-	
 	private $mymaxvotes;
-
 	private $myquestion;
-
 	private $myanswers;
-
 	private $myanswertype;
 
 	public function __get($var) {
 		global $I2_SQL;
 		switch($var) {
-		case 'r_qid':
-		case 'readable_qid':
-			return $this->myqid % 1000;
-		case 'mypid':
 		case 'pid':
-			return (int)floor($this->myqid/1000);
+			return $this->mypid;
 		case 'qid':
 			return $this->myqid;
 		case 'maxvotes':
@@ -49,387 +42,26 @@ class PollQuestion {
 		}
 	}
 
-	public static function to_qid($pid, $qnum) {
-			  return 1000*$pid+$qnum;
-	}
-
-	public function __construct($qid) {
+	public function __construct($pid, $qid) {
 		global $I2_SQL, $I2_LOG;
 		
-		//$qid = self::to_qid($pid,$qnum);
+		//if (! self::question_exists($qid)) {
+		//	throw new I2Exception("Invalid PollQuestion attempted to be created with qid $qid");
+		//}
 
-		if (! self::question_exists($qid)) {
-			throw new I2Exception("Invalid PollQuestion attempted to be created with qid $qid");
-		}
-
-		$info = $I2_SQL->query('SELECT maxvotes, question, answertype FROM poll_questions WHERE qid=%d', $qid)->fetch_array(Result::ASSOC);
+		$info = $I2_SQL->query('SELECT maxvotes, question, answertype FROM poll_questions WHERE pid=%d AND qid=%d', $pid, $qid)->fetch_array(Result::ASSOC);
 
 		$this->myqid = $qid;
+		$this->mypid = $pid;
 		$this->myanswertype = $info['answertype'];
 		$this->mymaxvotes = $info['maxvotes'];
 		$this->myquestion = $info['question'];
-		
-		$res = self::get_answers_to_question($qid);
-		
-		foreach ($res as $row) {
-			$this->myanswers[$row['aid']] = $row['answer'];
+
+		$as = $I2_SQL->query('SELECT aid, answer FROM poll_responses WHERE pid=%d AND qid=%d', $pid,$qid)->fetch_all_arrays();
+		$this->myanswers = array();
+		foreach ($as as $answer) {
+			$this->myanswers[$answer['aid']] = $answer['answer'];
 		}
-	}
-
-	/**
-	* Gets the maximum value an aid may hold while still belonging to a question, plus 1.
-	*/
-	static function upper_bound($qid) {
-			  return self::lower_bound($qid) + 1000;
-	}
-
-	/**
-	* Gets the minimum value an aid may hold while still belonging to a question, minus 1.
-	*/
-	static function lower_bound($qid) {
-			  return 1000 * $qid;
-	}
-
-	/**
-	* Gets the answers to a given question, or the answers given by a particular user to a particular question.
-	*
-	* @param int $qid The questionID in question (heh)
-	* @param int $uid An optional userid
-	* @return array An array of associative arrays with keys 'aid' and 'answer'.
-	* 					 If the user is specified, the value of each 'answer' is (one of) THEIR answers.
-	* 					 Otherwise, it is the answer text.
-	*/
-	private static function get_answers_to_question($qid,$uid = NULL) {
-		global $I2_SQL;
-		if (!$uid) {
-			 return $I2_SQL->query('SELECT aid,answer FROM poll_answers WHERE aid > %d AND aid < %d',
-				self::lower_bound($qid),self::upper_bound($qid))->fetch_all_arrays(Result::ASSOC);
-		} else {
-			return $I2_SQL->query('SELECT aid,answer FROM poll_votes WHERE uid=%d AND aid >= %d AND aid < %d',
-				$uid,self::lower_bound($qid),self::upper_bound($qid))->fetch_all_arrays(Result::ASSOC);
-		}
-	}
-
-	/**
-	* Gets this question's answers.
-	*
-	* @param int $uid An optional uid: if set, all answers returned are arrays of votes made by the given user.
-	* @return array An associative array, keyed by aid.
-	*/
-	public function get_answers($uid=NULL) {
-			  if ($uid == NULL) {
-						 return $this->myanswers;
-			  } else {
-						 Poll::check_admin();
-						 $ret = array();
-						 $res = self::get_answers_to_question($this->qid,$uid);
-						 foreach ($res as $row) {
-									if (!isSet($res[$row['aid']])) {
-											  $ret[$row['aid']] = array();
-									}
-									$ret[$row['aid']][] = $row['answer'];
-						 }
-						 return $ret;
-			  }
-	}
-
-
-	/**
-	* Set the question
-	*
-	* @param string $q The question
-	*/
-	public function set_question($q) {
-		global $I2_SQL;
-
-		Poll::check_admin();
-
-		return $I2_SQL->query('UPDATE poll_questions SET question=%s WHERE qid=%d', $q, $this->qid);
-	}
-
-	/**
-	* Set the max number of votes
-	*
-	* @param int $maxvotes The maximum number of allowed votes
-	*/
-	public function set_maxvotes($maxvotes) {
-		global $I2_SQL;
-
-		Poll::check_admin();
-
-		return $I2_SQL->query('UPDATE poll_questions SET maxvotes=%d WHERE qid=%d', $maxvotes, $this->qid);
-	}
-	
-	public function set_answertype($answertype) {
-		global $I2_SQL;
-
-		Poll::check_admin();
-
-		return $I2_SQL->query('UPDATE poll_questions SET answertype=%s WHERE qid=%d', $answertype, $this->qid);
-	}
-
-	/**
-	* Gets the text of an answer
-	*
-	* @param int $aid The answerid
-	* @return string The answer's text
-	*/
-	public static function get_answer_text($aid) {
-			  global $I2_SQL;
-			  return $I2_SQL->query('SELECT answer FROM poll_answers WHERE aid=%d',$aid)->fetch_single_value();
-	}
-
-	/**
-	* Set the answers
-	*
-	* @param array $answers The options from which a voter can choose
-	*/
-	public function set_answers($answers) {
-		global $I2_SQL;
-
-		Poll::check_admin();
-
-		$I2_SQL->query('DELETE FROM poll_answers WHERE aid > %d AND aid < %d', self::lower_bound($this->qid), self::upper_bound($this->qid));
-		$this->answers = array();
-		$ct = self::lower_bound($this->qid)+1;
-		foreach ($answers as $answer) {
-			$I2_SQL->query('INSERT INTO poll_answers SET aid=%d, answer=%s', $ct, $answer);
-			$ct++;
-			$this->answers[] = $answer;
-		}
-	}
-
-	public static function first_unused_aid($qid) {
-			  global $I2_SQL;
-			  $res = $I2_SQL->query('SELECT MAX(aid) FROM poll_answers WHERE aid > %d AND aid < %d',self::lower_bound($qid),self::upper_bound($qid))->fetch_single_value();
-			  if ($res >= self::upper_bound($qid)) {
-						 throw new I2Exception('Too many answers to question!');
-			  }
-			  if (!$res) {
-						 $res = self::lower_bound($qid)+1;
-			  } else {
-						 $res += 1;
-			  }
-			  return $res;
-	}
-
-	/**
-	* Adds an answer to a question
-	*/
-	public static function add_answer_to_question($qid, $answertext) {
-			  global $I2_SQL;
-			  Poll::check_admin();
-			  $aid = self::first_unused_aid($qid);
-			  $I2_SQL->query('INSERT INTO poll_answers SET aid=%d,answer=%s',$aid,$answertext);
-	}
-
-	public function add_answer($answertext) {
-			  return self::add_answer_to_question($this->myqid,$answertext);
-	}
-
-	/**
-	* Changes an answer's text
-	*/
-	public static function change_answer($aid,$newtext) {
-			  global $I2_SQL;
-			  Poll::check_admin();
-			  $I2_SQL->query('UPDATE poll_answers SET answer=%s WHERE aid=%d',$newtext,$aid);
-	}
-
-	/**
-	* Returns whether the given answerid refers to this question
-	*
-	* @param int $aid The answerid in question
-	* @return bool TRUE if the answer pertains to the question
-	*/
-	public function is_answer($aid) {
-			  return $aid >= self::lower_bound($this->qid) && $aid < self::upper_bound($this->qid);
-	}
-
-	/**
-	* Vote for the question
-	*
-	* @param int $answer The answerid (should be pollid+000 for freeresponse/text)
-	* @param string $answertext The text of the user's answer (optional)
-	* @param User $user The user voting; defaults to the current user
-	*/
-	public function record_vote($answer, $answertext=NULL, $user=NULL) {
-		global $I2_USER, $I2_SQL, $I2_LOG;
-
-		d('Voting for '.$answer,4);
-
-		if (!$user) {
-			$user = $I2_USER;
-		}
-
-		/*$user = new User($user);
-		if ($user->uid != $I2_USER->uid) {
-				  Poll::check_admin();
-		}*/
-
-		$mypoll = new Poll($this->mypid);
-		
-		//$I2_LOG->log_file('User '.$I2_USER->uid.' voting: poll '.$this->mypid.' : '.$mypoll->name);
-		d('User '.$I2_USER->uid.' voting: q#'.$this->myqid.' poll '.$this->mypid.' : '.$mypoll->name,4);
-
-		if (!$mypoll->user_can_access()) {
-				  Poll::check_admin();
-		}
-
-		if (! is_numeric($answer)) {
-			throw new I2Exception("Invalid answer value $answer attempted to be recorded in PollQuestion");
-		}
-
-		if ($this->maxvotes == 1 || $this->myanswertype == 'radio') {
-				  // Delete previous votes
-				  $I2_SQL->query('DELETE FROM poll_votes WHERE aid >= %d AND aid < %d AND uid=%d',self::lower_bound($this->myqid),self::upper_bound($this->myqid),$user->uid);
-		}
-
-		$numvotes = $I2_SQL->query('SELECT COUNT(*) FROM poll_votes WHERE aid >= %d AND aid < %d AND uid=%d', self::lower_bound($this->myqid), self::upper_bound($this->myqid), $user->uid)->fetch_single_value();
-
-		if ($this->maxvotes == 0 || $numvotes < $this->maxvotes) {
-				  // user may still vote here; create a new vote
-			$I2_SQL->query('REPLACE INTO poll_votes SET answer=%s, aid=%d, uid=%d', $answertext, $answer, $user->uid);
-		}
-		else  {
-			throw new I2Exception('You have attempted to vote too many times for one question!');
-		}
-	}
-
-	/**
-	* Removes a user's vote.
-	*/
-	public function delete_vote($aid, $user=NULL) {
-			  global $I2_USER,$I2_SQL;
-			  if (!$user) {
-						 $user = $I2_USER;
-			  }
-			  $user = new User($user);
-			  if ($user->uid != $I2_USER->uid) {
-						 Poll::check_admin();
-			  }
-			  return $I2_SQL->query('DELETE FROM poll_votes WHERE aid=%d AND uid=%d',$aid,$user->uid);
-	}
-
-	/**
-	* Determine if a user voted for a particular answer
-	*
-	* @param int $aid The ID number of the answer
-	* @param User $user The user (defaults to the current user)
-	* @return mixed The user's answer if they voted for the choice (and it's freeresponse/essay), or FALSE
-	*/
-	public function user_voted_for($aid, $user=NULL) {
-		global $I2_USER, $I2_SQL, $I2_LOG;
-		if (!$user) {
-			$user = $I2_USER;
-		}
-
-		if ($user->uid != $I2_USER->uid) {
-				  Poll::check_admin();
-		}
-
-		if ($this->answertype == 'checkbox' || $this->answertype == 'radio') {
-			// We need to translate the value into TRUE or FALSE
-			$res = $I2_SQL->query('SELECT COUNT(aid) FROM poll_votes WHERE aid=%d AND uid=%d', $aid, $user->uid)->fetch_single_value();
-			if ($res > 1) {
-				$I2_LOG->log_file('VOTING FRAUD!  User: '.$user.' Answer: '.$aid.'.  Detected and logged.');
-				throw new I2Exception('VOTING FRAUD!  User: '.$user.' Answer: '.$aid.'.  Detected and logged.');
-			}
-			return ($res == 0)?FALSE:TRUE;
-		}
-		$res = $I2_SQL->query('SELECT answer FROM poll_votes WHERE aid=%d AND uid=%d', $aid, $user->uid)->fetch_single_value();
-		return $res;
-	}
-
-
-	/**
-	* Gets the number of votes for a particular answer
-	*/
-	public static function get_num_votes($aid) {
-			  global $I2_SQL;
-			  Poll::check_admin();
-			  $num = $I2_SQL->query('SELECT COUNT(uid) FROM poll_votes WHERE aid=%d',$aid)->fetch_single_value();
-			  return $num?$num:0;
-	}
-
-	/**
-	* Gets the users who voted for this answer
-	*
-	* @return array The {@link User}s who voted
-	 */
-	public static function users_who_answered($aid) {
-		global $I2_SQL;
-		Poll::check_admin();
-		$ret = array();
-		$res = $I2_SQL->query('SELECT uid FROM poll_votes WHERE aid=%d',$aid);
-		foreach($res->fetch_col('uid') as $uid) {
-			$ret[] = new User($uid);
-		}
-		return $ret;
-	}
-	
-	/**
-	* Determines what users voted for the question
-	*
-	* @return array The {@link User}s who voted
-	* @deprec Tentative.  This doesn't seem useful.  All it was ever used for is to count the number of voters, and that was done incorrectly.  Replaced by num_voters().
-	*/
-	public function users_who_voted() {
-		global $I2_SQL;
-
-		Poll::check_admin();
-
-		$ret = array();
-
-		$res = $I2_SQL->query('SELECT DISTINCT uid FROM poll_votes WHERE aid > %d AND aid < %d', self::lower_bound($this->qid),self::upper_bound($this->qid));
-		foreach ($res->fetch_col('uid') as $uid) {
-			$ret[] = new User($uid);
-		}
-
-		return $ret;
-	}
-
-	/**
-	* Determinues the number of unique users that voted for this question.
-	*
-	* @return int Count of users who voted
-	*/
-	public function num_voters() {
-		global $I2_SQL;
-		Poll::check_admin();
-		return $I2_SQL->query('SELECT COUNT(DISTINCT uid) FROM poll_votes WHERE aid > %d AND aid < %d', self::lower_bound($this->qid),self::upper_bound($this->qid))->fetch_single_value();
-	}
-
-	/**
-	* Gets the first aid for this question which is not already in use.
-	*/
-	public function first_available_aid() {
-			  global $I2_SQL;
-			  $max = $I2_SQL->query('SELECT MAX(aid) FROM poll_answers WHERE aid >= %d AND aid < %d',self::lower_bound($this->qid),self::upper_bound($this->qid))->fetch_single_value();
-			  if ($max >= self::upper_bound($this->qid)) {
-						 throw new I2Exception('Too many questions in one poll!');
-			  }
-			  if (!$max) {
-						 return self::lower_bound($this->qid)+1;
-			  }
-			  return $max+1;
-	}
-
-	/**
-	* Determine whether a poll question exists
-	*
-	* @param int $qid The ID number of the question
-	*
-	* @return boolean True if the question exists
-	*/
-	public static function question_exists($qid) {
-		global $I2_SQL;
-
-		if ($I2_SQL->query('SELECT COUNT(*) FROM poll_questions WHERE qid=%d', $qid)->fetch_single_value() == 0) {
-			return FALSE;
-		}
-
-		return TRUE;
 	}
 
 	/**
@@ -441,40 +73,28 @@ class PollQuestion {
 	* @param int $pid The ID number of the poll
 	* @param string $question The question text
 	* @param int $maxvotes The maximum number of options for which a user may vote
-	* @param array $answers The answers a user may choose
+	* @param array $qid The qid to specifically request (or NULL if you don't care)
 	*/
-	//public static function new_question($pid, $question, $maxvotes, $answers) {
-	//	new_question($pid, $question, 'checkbox', $maxvotes, $answers);
-	//}
-	public static function new_question($pid, $question, $answertype, $maxvotes, $answers=NULL) {
+	public static function new_question($pid, $question, $answertype, $maxvotes, $qid=NULL) {
 		global $I2_SQL;
 
-		Poll::check_admin();
-
-		$qid = $I2_SQL->query('SELECT MAX(qid) FROM poll_questions WHERE qid > %d AND qid < %d ORDER BY qid DESC', Poll::lower_bound($pid), Poll::upper_bound($pid))->fetch_single_value();
-
-		if (!$qid) {
-			$qid = Poll::lower_bound($pid)+1;
-		} else {
-			$qid += 1;
+		if ($qid == NULL) {
+			$qid = $I2_SQL->query('SELECT MAX(qid) FROM poll_questions WHERE pid=%d',$pid)->fetch_single_value();
+			if ($qid === NULL)
+				$qid = 0;
+			else
+				$qid += 1;
 		}
 
-		$I2_SQL->query('INSERT INTO poll_questions SET qid=%d, question=%s, answertype=%s, maxvotes=%d', $qid, $question, $answertype, $maxvotes);
-		$aid = self::lower_bound($qid) + 1;
-		if($answers != NULL) {
-			foreach ($answers as $answer) {
-				$I2_SQL->query('INSERT INTO poll_answers SET aid=%d, answer=%s', $aid, $answer);
-				$aid++;
-			}
-		}
+		$I2_SQL->query('INSERT INTO poll_questions SET pid=%d, qid=%d, question=%s, answertype=%s, maxvotes=%d', $pid, $qid, $question, $answertype, $maxvotes);
+		return new PollQuestion($pid,$qid);
 	}
 
-	public static function delete_answer($aid) {
+	public function edit_question($text, $answertype, $maxvotes) {
 		global $I2_SQL;
-		Poll::check_admin();
-		$I2_SQL->query('DELETE FROM poll_answers WHERE aid=%d',$aid);
-	}
 
+		$I2_SQL->query('UPDATE poll_questions SET question=%s, answertype=%s, maxvotes=%d WHERE pid=%d AND qid=%d', $text, $answertype, $maxvotes, $this->mypid, $this->myqid);
+	}
 	/**
 	* Deletes a question in the database
 	*
@@ -486,11 +106,168 @@ class PollQuestion {
 	public static function delete_question($qid) {
 		global $I2_SQL;
 
-		Poll::check_admin();
-
 		$I2_SQL->query('DELETE FROM poll_questions WHERE qid=%d', $qid);
 		$I2_SQL->query('DELETE FROM poll_answers WHERE aid > %d AND aid < %d', self::lower_bound($qid), self::upper_bound($qid));
 		$I2_SQL->query('DELETE FROM poll_votes WHERE aid >= %d AND aid < %d', self::lower_bound($qid), self::upper_bound($qid));
+	}
+
+
+	public function add_answer($text, $aid=NULL) {
+		global $I2_SQL;
+		if ($aid === NULL) {
+			$aid = $I2_SQL->query('SELECT MAX(aid) FROM poll_responses WHERE pid=%d AND qid=%d',$this->mypid,$this->myqid)->fetch_single_value();
+			if ($aid === NULL)
+				$aid = 0;
+			else
+				$aid += 1;
+		}
+
+		$I2_SQL->query('INSERT INTO poll_responses SET pid=%d, qid=%d, aid=%d, answer=%s',$this->mypid,$this->myqid,$aid,$text);
+		$this->myanswers[$aid] = $text;
+	}
+
+	public function edit_answer($text, $aid) {
+		global $I2_SQL;
+
+		$I2_SQL->query('UPDATE poll_responses SET answer=%s WHERE pid=%d AND qid=%d AND aid=%d',$text,$this->mypid,$this->myqid,$aid);
+		$this->myanswers[$aid] = $text;
+	}
+
+	public function delete_answer($aid) {
+		global $I2_SQL;
+		
+		$I2_SQL->query('DELETE FROM poll_responses WHERE pid=%d AND qid=%d AND aid=%d',$this->mypid,$this->myqid,$aid);
+		unset($this->myanswers[$aid]);
+	}
+
+	/**
+	 * Returns a list of all possible answer types.
+	 *
+	 * The format of this list is an array where the keys are the MySQL entries and the values are the
+	 * beautified versions for output.
+	 */
+	public static function get_answer_types() {
+		global $I2_SQL;
+		$en = $I2_SQL->query('SHOW COLUMNS FROM poll_questions LIKE \'answertype\'')->fetch_array();
+		$en = substr($en['Type'],6,-2);
+		$en = explode("','", $en);
+		$res = array();
+		foreach ($en as $type) {
+			$res[$type] = ucfirst(str_replace('_',' ',$type));
+		}
+		return $res;
+	}
+
+
+	public function user_voted_for($aid) {
+		global $I2_SQL, $I2_USER;
+		return $I2_SQL->query('SELECT COUNT(*) FROM poll_votes WHERE pid=%d AND qid=%d AND aid=%d AND uid=%d',$this->mypid,$this->myqid,$aid,$I2_USER->uid)->fetch_single_value() > 0;
+	}
+
+	public function get_response($uid = NULL) {
+		global $I2_SQL, $I2_USER;
+		if ($uid === NULL)
+			$uid = $I2_USER->uid;
+		if ($this->myanswertype == 'free_response')
+			return $I2_SQL->query('SELECT written FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d',$this->mypid,$this->myqid,$uid)->fetch_single_value();
+		else if ($this->myanswertype == 'standard')
+			return $I2_SQL->query('SELECT aid FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d',$this->mypid,$this->myqid,$uid)->fetch_single_value();
+	}
+
+	public function delete_vote($uid = NULL) {
+		global $I2_SQL, $I2_USER;
+
+		if ($uid === NULL)
+			$uid = $I2_USER->uid;
+		$exists = $I2_SQL->query('SELECT COUNT(*) FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d',
+			$this->mypid,$this->myqid,$uid)->fetch_single_value() > 0;
+		if ($exists)
+			$I2_SQL->query('DELETE FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d',
+				$this->mypid,$this->myqid,$uid);
+	}
+
+	public function vote($post, $uid = NULL) {
+		global $I2_SQL, $I2_USER;
+
+		if ($uid === NULL)
+			$uid = $I2_USER->uid;
+		switch ($this->myanswertype) {
+		case 'free_response':
+			$I2_SQL->query('INSERT INTO poll_votes SET pid=%d,qid=%d,uid=%d,written=%s',
+				$this->mypid, $this->myqid, $uid, $post);
+			break;
+		case 'standard':
+			$I2_SQL->query('INSERT INTO poll_votes SET pid=%d,qid=%d,uid=%d,aid=%d',
+				$this->mypid, $this->myqid, $uid, $post);
+			break;
+		case 'approval':
+		case 'split_approval':
+			foreach ($post as $aid)
+				$I2_SQL->query('INSERT INTO poll_votes SET pid=%d,qid=%d,uid=%d,aid=%d',
+					$this->mypid, $this->myqid, $uid, $aid);
+		}
+	}
+
+	private $num_cache = NULL;
+	/**
+	 * This function returns the number of votes for a particular answer
+	 * based on the grade and gender.
+	 */
+	public function num_who_vote($aid, $grade, $gender) {
+		global $I2_SQL;
+
+		$gender = ($gender===NULL?'':" AND gender='$gender'");
+		switch ($this->myanswertype) {
+		case 'standard':
+		case 'approval':
+			return $I2_SQL->query('SELECT COUNT(*) FROM poll_votes '
+				.'WHERE pid=%d AND qid=%d AND aid=%d AND '.
+				'grade=%s'.$gender, $this->mypid, $this->myqid,
+				$aid, $grade)->fetch_single_value();
+		case 'split_approval':
+			if ($this->num_cache === NULL) {
+				$temp = $I2_SQL->query('SELECT uid, 1/COUNT(aid)'.
+					'FROM poll_votes WHERE pid=%d AND qid=%d'.
+					' GROUP BY uid',$this->mypid,
+					$this->myqid)->fetch_all_arrays();
+				$this->num_cache = array();
+				foreach ($temp as $row)
+					$this->num_cache[$row[0]] = $row[1];
+			}
+			$res = $I2_SQL->query('SELECT uid FROM poll_votes WHERE pid=%d AND qid=%d AND aid=%d '.
+				'AND grade=%s'.$gender ,$this->mypid, $this->myqid, $aid, $grade)->fetch_all_single_values();
+			$sum = 0;
+			foreach ($res as $p)
+				$sum += $this->num_cache[$p];
+			if ($sum == 0)
+				return 0;
+			return sprintf("%.3f",$sum);
+		}
+	}
+
+	public function num_who_voted() {
+		global $I2_SQL;
+
+		return $I2_SQL->query('SELECT COUNT(DISTINCT uid) FROM poll_votes WHERE pid=%d AND qid=%d',$this->mypid,$this->myqid)->fetch_single_value();
+	}
+
+	public function get_all_votes() {
+		global $I2_SQL;
+
+		$votes = array();
+		$res = $I2_SQL->query('SELECT written AS answer, LOWER(grade) AS grade FROM poll_votes WHERE pid=%d AND qid=%d AND written IS NOT NULL',$this->mypid,$this->myqid)->fetch_all_arrays();
+		foreach ($res as $r) {
+			$vote = array();
+			$vote['vote'] = $r['answer'];
+			if ($r['grade'] == 'staff') {
+				$vote['grade'] = 'Teacher';
+			} else {
+				$vote['grade'] = $r['grade'] . 'th grader';
+			}
+			$vote['numgrade'] = $r['grade'];
+			$votes[] = $vote;
+		}
+		return $votes;
 	}
 }
 ?>

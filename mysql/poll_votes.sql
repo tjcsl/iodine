@@ -1,8 +1,11 @@
 DROP TABLE IF EXISTS poll_votes;
 CREATE TABLE poll_votes (
+		  pid MEDIUMINT(8) UNSIGNED NOT NULL,
+		  qid TINYINT(4) UNSIGNED NOT NULL,
+		  aid SMALLINT(4) UNSIGNED NOT NULL,
 		  uid MEDIUMINT(8) UNSIGNED DEFAULT 0,
-		  /* This may be either a valid aid or a qid followed by 000 (for free-response/essay questions)*/
-		  aid BIGINT(14) UNSIGNED DEFAULT 0,
-		  PRIMARY KEY(uid,aid),
-		  answer MEDIUMTEXT DEFAULT ''
+		  PRIMARY KEY(pid,qid,aid,uid),
+		  grade ENUM('9','10','11','12','STAFF') NOT NULL,
+		  gender ENUM('M','F') DEFAULT NULL,
+		  written MEDIUMTEXT DEFAULT NULL
 );
