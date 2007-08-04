@@ -18,18 +18,19 @@ function options(anchor, type) {
 		if (type == 'file') {
 			cell.innerHTML = 
 			"<a href=\"" + url + "\">Download file</a><br />" + 
-			"<a href=\"" + url + "?download=zip\">Download file as ZIP</a><br />" + 
+			"<a href=\"" + url + "?download=zip\">Download file as ZIP</a> (NOTE: This will not work for files over 100 MB in size)<br />" +
 			"<a href=\"javascript:rename('" + file + "')\">Rename file</a><br />" + 
 			"<a href=\"javascript:rmf('" + file + "')\">Delete file</a><br />";
 		} else if (type == 'dir') {
 			cell.innerHTML = 
 			"<a href=\"" + url + "/\">Open directory</a><br />" + 
-			"<a href=\"" + url + "/?download\">Download directory as ZIP</a><br />" + 
+			"<a href=\"" + url + "/?download\">Download directory as ZIP</a> (NOTE: The ZIP will not include any individual files over 100 MB in size)<br />" +
 			"<a href=\"javascript:rename('" + file + "')\">Rename directory</a><br />" +
 			"<a href=\"javascript:rmd('" + file + "')\">Delete directory</a><br />";
 		} else if (type == 'cur') {
 			cell.innerHTML = 
-			"<a href=\"?download\">Download directory as ZIP</a><br />";
+			"<a href=\"?download\">Download directory as ZIP</a><br />" +
+			"NOTE: The ZIP will not include any individual files over 100 MB in size";
 		}
 		rowIndex = row.rowIndex;
 	} else {

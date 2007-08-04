@@ -141,30 +141,60 @@ abstract class Filesystem {
 		}
 	}
 
-	//TODO: prevent zipping HUGE files!
-	public function zip_dir($dirpath, $zippath) {
+	public function zip_dir($dirpath, $zippath, $origpath=NULL) {
 		$dirpath = $this->convert_path($dirpath);
-		$descriptors = array(
-			0 => array('file', '/dev/null', 'w'), 
-			1 => array('file', '/dev/null', 'w'), 
-			2 => array('file', '/dev/null', 'w')
-		);
+		
+		if ($origpath == NULL) {
+			$origpath = $dirpath;
+		}
 
-		$process = proc_open("zip $zippath -r .", $descriptors, $pipes, $dirpath);
-		$code = proc_close($process);
+		$dir = opendir($dirpath);
+		while (FALSE !== ($file = readdir($dir))) {
+			if ($file == '.' || $file == '..') {
+				continue;
+			}
+			$i2file = new I2File($dirpath, $file);
+			if ($i2file->is_directory()) {
+				$subdirpath = substr($i2file->get_absolute_path(), strlen($this->root_dir));
+				$this->zip_dir($subdirpath, $zippath, $origpath);
+			}
+			else {
+				$descriptors = array(
+					0 => array('file', '/dev/null', 'w'), 
+					1 => array('file', '/dev/null', 'w'), 
+					2 => array('file', '/dev/null', 'w')
+				);
 
-		if ($code !== 0) {
-			throw new I2Exception("Zip exited with error code $code");
+				$filepath = $i2file->get_absolute_path();
+				$filepath = substr($filepath, strlen($origpath)+1);
+				if ($i2file->get_size() < i2config_get('max_zip_filesize', 104857600, 'filecenter')) {
+					$process = proc_open("zip $zippath $filepath", $descriptors, $pipes, $origpath);
+					$code = proc_close($process);
+
+					if ($code !== 0) {
+						throw new I2Exception("Zip exited with error code $code");
+					}
+				}
+			}
 		}
 	}
 
 	public function zip_file($filepath, $zippath) {
-		$filepath = escapeshellarg($this->convert_path($filepath));
+		$filepath = $this->convert_path($filepath);
 		
-		exec("zip $zippath -j $filepath", $output, $code);
-	
-		if ($code !== 0) {
-			throw new I2Exception("Zip exited with error code $code");
+		$file = new I2File(dirname($filepath), basename($filepath));
+		$max_filesize = i2config_get('max_zip_filesize', 104857600, 'filecenter');
+		if ($file->get_size() < $max_filesize) {
+			$filepath = escapeshellarg($filepath);
+			exec("zip $zippath -j $filepath", $output, $code);
+		
+			if ($code !== 0) {
+				throw new I2Exception("Zip exited with error code $code");
+			}
+		}
+		else {
+			$max_filesize_MB = $max_filesize / pow(2,20);
+			throw new I2Exception("File too big to zip: over $max_filesize_MB MB!");
 		}
 	}
 
