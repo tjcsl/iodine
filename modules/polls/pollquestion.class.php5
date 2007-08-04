@@ -22,6 +22,10 @@ class PollQuestion {
 	private $myanswers;
 	private $myanswertype;
 
+	/**
+	 * The magic get function.
+	 * Returns possible pid, qid, question, answers, and answertype.
+	 */
 	public function __get($var) {
 		global $I2_SQL;
 		switch($var) {
@@ -42,6 +46,11 @@ class PollQuestion {
 		}
 	}
 
+	/**
+	 * Constructs a new PollQuestion with the given pid and qid.
+	 *
+	 * Note that this does not modify the database.
+	 */
 	public function __construct($pid, $qid) {
 		global $I2_SQL, $I2_LOG;
 		
@@ -72,8 +81,9 @@ class PollQuestion {
 	*
 	* @param int $pid The ID number of the poll
 	* @param string $question The question text
-	* @param int $maxvotes The maximum number of options for which a user may vote
-	* @param array $qid The qid to specifically request (or NULL if you don't care)
+	* @param string $answertype The type of the question
+	* @param int $maxvotes The maximum number of options one can vote for
+	* @param int $qid The qid to specifically request (NULL => don't care)
 	*/
 	public static function new_question($pid, $question, $answertype, $maxvotes, $qid=NULL) {
 		global $I2_SQL;
@@ -95,22 +105,6 @@ class PollQuestion {
 
 		$I2_SQL->query('UPDATE poll_questions SET question=%s, answertype=%s, maxvotes=%d WHERE pid=%d AND qid=%d', $text, $answertype, $maxvotes, $this->mypid, $this->myqid);
 	}
-	/**
-	* Deletes a question in the database
-	*
-	* This deletes a question from the database; it does NOT remove it from any pre-existing {@link Poll}
-	* objects. Usually the {@link Poll} delete_question method, which calls this, should be used instead.
-	*
-	* @param int $qid The ID number of the question
-	*/
-	public static function delete_question($qid) {
-		global $I2_SQL;
-
-		$I2_SQL->query('DELETE FROM poll_questions WHERE qid=%d', $qid);
-		$I2_SQL->query('DELETE FROM poll_answers WHERE aid > %d AND aid < %d', self::lower_bound($qid), self::upper_bound($qid));
-		$I2_SQL->query('DELETE FROM poll_votes WHERE aid >= %d AND aid < %d', self::lower_bound($qid), self::upper_bound($qid));
-	}
-
 
 	public function add_answer($text, $aid=NULL) {
 		global $I2_SQL;
