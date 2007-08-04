@@ -65,8 +65,10 @@ class EighthActivity {
 	*/
 	public function add_member(User $user, $force = FALSE, $blockid = NULL) {
 		global $I2_SQL,$I2_USER,$I2_LOG;
+
 		$userid = $user->uid;
 		$admin = Eighth::is_admin();
+
 		/*
 		** Users need to be able to add themselves to an activity
 		*/
@@ -79,6 +81,7 @@ class EighthActivity {
 		if($blockid == NULL) {
 			$blockid = $this->data['bid'];
 		}
+
 		$ret = 0;
 		$capacity = $this->__get('capacity');
 		if($capacity != -1 && $this->__get('member_count') >= $capacity) {
@@ -90,37 +93,69 @@ class EighthActivity {
 		if($this->data['restricted'] && !in_array($userid, $this->get_restricted_members())) {
 			$ret |= EighthActivity::PERMISSIONS;
 		}
-		if ($this->block->locked) {
-				  $ret |= EighthActivity::LOCKED;
-		}
-		$otheractivityid = EighthSchedule::get_activities_by_block($userid, $blockid);
-		if ($otheractivityid == $this->data['aid']) {
-				  // The user is already in this activity
-				  return;
-		}
-		$otheractivity = new EighthActivity($otheractivityid);
-		if ($otheractivity && $otheractivity->sticky) {
-				$ret |= EighthActivity::STICKY;
-		}
-		if ($otheractivity && $otheractivityid == $this->data['aid'] && $this->oneaday) {
-			$ret |= EighthActivity::ONEADAY;
-		}
 		if ($this->presign && $this->block && time() < strtotime($this->block->date)-60*60*24*2) {
 			$ret |= EighthActivity::PRESIGN;
 		}
 		if (time() > strtotime($this->block->date)+60*60*24) {
 			$ret |= EighthActivity::PAST;
 		}
-		if(!$ret || $force) {
+		if ($this->block->locked) {
+			$ret |= EighthActivity::LOCKED;
+		}
+
+		$oldaid = EighthSchedule::get_activities_by_block($userid, $blockid);
+		$oldact = new EighthActivity($oldaid, $blockid);
+		if ($oldaid == $this->data['aid']) {
+			// The user is already in this activity
+			return;
+		}
+		if ($oldact && $oldact->sticky) {
+			$ret |= EighthActivity::STICKY;
+		}
+		
+		$dayacts = EighthSchedule::get_activities($I2_USER->uid, $this->data['block']->date, 1);
+		foreach ($dayacts as $act) {
+			// find one that's not this block
+			if ($act[1] != $blockid) {
+				$otheract = new EighthActivity($act[0], $act[1]);
+			}
+		}
+		if ($otheract && $otheract->aid == $this->data['aid'] && $this->oneaday) {
+			$ret |= EighthActivity::ONEADAY;
+			print "oneaday\n";
+		}
+		$signup_bothblocks = 0;
+		if ($otheract && $this->bothblocks && $otheract->aid != $this->data['aid']) {
+			// just flag it, we'll sign them up later
+			$signup_bothblocks = 1;
+		}
+		if ($oldact && $otheract && $oldact->bothblocks && $otheract->bothblocks) {
+			// have to take them out of the other block
+			$signup_bothblocks = -1;
+		}
+
+		if (!$ret || $force) {
 			$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES (%d,%d,%d)';
 			$args = array($this->data['aid'],$blockid,$userid);
 			$result = $I2_SQL->query_arr($query, $args);
-			if (!$otheractivityid) {
+			
+			// now deal with bothblocks
+			if ($signup_bothblocks == 1) {
+				$this->add_member($user, $force, $otheract->bid);
+			}
+			else if ($signup_bothblocks == -1) {
+				$defaid = i2config_get('default_aid', 999, 'eighth');
+				$defact = new EighthActivity($defaid, $otheract->bid);
+				$defact->add_member($user, $force);
+				//EighthActivity::add_member_to_activity($defaid, $user, $force, $otheract->bid);
+			}
+
+			if (!$oldaid) {
 				$inverse = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d';
 				$invargs = $args;
 			} else {
 				$inverse = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
-				$invargs = array($otheractivityid,$blockid,$userid);
+				$invargs = array($oldaid,$blockid,$userid);
 			}
 			//$I2_LOG->log_file('Changing activity');
 			Eighth::push_undoable($query,$args,$inverse,$invargs,'User Schedule Change');
@@ -128,6 +163,7 @@ class EighthActivity {
 				$ret = -1;
 			}
 		}
+
 		if (isSet($this->data['member_count'])) {
 			$this->data['member_count']++;
 		}
