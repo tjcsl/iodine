@@ -644,6 +644,7 @@ class EighthActivity {
 		$query = 'DELETE FROM eighth_activities WHERE aid=%d';
 		$queryarg = array($activityid);
 		$I2_SQL->query_arr($query,$queryarg);
+		$I2_SQL->query('DELETE FROM eighth_block_map WHERE activityid=%d', $activityid);
 		$I2_SQL->query('INSERT INTO eighth_activity_id_holes SET aid=%d', $activityid);
 		$people = $I2_SQL->query('SELECT bid,userid FROM eighth_activity_map WHERE aid=%d',$activityid);
 		$defaid = i2config_get('default_aid',999,'eighth');
