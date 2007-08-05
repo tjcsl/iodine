@@ -129,7 +129,7 @@ class EighthActivity {
 			// just flag it, we'll sign them up later
 			$signup_bothblocks = 1;
 		}
-		if ($oldact && $otheract && $oldact->bothblocks && $otheract->bothblocks) {
+		else if ($oldact && $otheract && $oldact->bothblocks && $otheract->bothblocks) {
 			// have to take them out of the other block
 			$signup_bothblocks = -1;
 		}
