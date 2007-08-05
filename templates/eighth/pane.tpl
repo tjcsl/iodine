@@ -48,9 +48,8 @@
 				<li><a href="[<$I2_ROOT>]eighth/chg_start"><b>Change starting date</b></a></li>
 				<li><a href="[<$I2_ROOT>]eighth/ar_block#add">Add or remove 8th period block from system</a></li>
 				<li>[<* TODO: Needs to pull users from LDAP, not MySQL *>]<a href="[<$I2_ROOT>]eighth/rep_schedules">Repair broken schedules</a></li>
-				[<* This is pointless for now, but is good to keep around *>]
-				[<* <li><a href="[<$I2_ROOT>]eighth/set_printer">Set printer</a></li> *>]
 				<li><a href="[<$I2_ROOT>]eighth/export_csv">Export out of school schedules</a></li>
+				<li><a href="[<$I2_ROOT>]eighth/edit_printers">Edit printer settings</a></li>
 			</ol>
 		</td>
 	</tr>

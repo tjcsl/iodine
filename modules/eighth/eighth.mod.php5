@@ -1946,6 +1946,37 @@ class Eighth implements Module {
 			return;
 		}
 	}
+
+	/**
+	 * Edit printing settings.
+	 */
+	public function edit_printers() {
+		global $I2_SQL;
+		if ($this->op == '') {
+			$this->template = 'edit_printers.tpl';
+			$this->template_args['printers'] = $I2_SQL->query('SELECT * FROM eighth_printers ORDER BY name')->fetch_all_arrays(Result::ASSOC);
+		}
+		if ($this->op == 'choose') {
+			$I2_SQL->query('UPDATE eighth_printers SET is_selected=0');
+			$I2_SQL->query('UPDATE eighth_printers SET is_selected=1 WHERE id=%d', $this->args['printer']);
+			redirect('eighth/edit_printers');
+		}
+		if ($this->op == 'delete') {
+			$I2_SQL->query('DELETE FROM eighth_printers WHERE id=%d', $this->args['printer']);
+			redirect('eighth/edit_printers');
+		}
+		if ($this->op == 'add') {
+			$I2_SQL->query('INSERT INTO eighth_printers SET ip=%s, name=%s, is_selected=0', trim($this->args['ip']), $this->args['name']);
+			redirect('eighth/edit_printers');
+		}
+	}
+
+	/**
+	 * Get the printer IP.
+	 */
+	public function printer_ip() {
+		return $I2_SQL->query('SELECT ip FROM eighth_printers WHERE is_selected=1')->fetch_single_value();
+	}
 }
 
 ?>

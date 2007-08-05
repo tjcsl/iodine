@@ -196,7 +196,7 @@ class EighthPrint {
 		file_put_contents($temp, $output);
 		exec("cd /tmp; latex {$temp}");
 		exec("cd /tmp; dvips {$temp}.dvi -t letter" . ($landscape ? ' -t landscape' : ''));
-		$ftpconn = ftp_connect(i2config_get('printer_ip', NULL, 'eighth'));
+		$ftpconn = ftp_connect(Eighth::printer_ip());
 		ftp_login($ftpconn, 'anonymous', '');
 		ftp_chdir($ftpconn, 'PORT1');
 		ftp_put($ftpconn, "{$temp}.ps", "{$temp}.ps", FTP_BINARY);
