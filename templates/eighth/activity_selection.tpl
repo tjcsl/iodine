@@ -14,8 +14,15 @@
 [<if isset($add) >]
 <br />
 <br />
+<span style="font-weight: bold; font-size: 125%;">[<$add_title|default:"">]</span><br />
 <form action="[<$I2_ROOT>]eighth/[<$method>]/add" method="post">
 	Name: <input type="text" name="name" /><br />
+	Activity ID: <select name="aid">
+		<option value="auto">Automatically select a new ID number</option>
+		[<foreach from=$add_aids item=aid>]
+		<option value="[<$aid>]">[<$aid>]</option>
+		[</foreach>]
+	</select>
 	<input type="submit" value="Add" />
 </form>
 [</if>]

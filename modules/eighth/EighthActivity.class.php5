@@ -35,6 +35,9 @@ class EighthActivity {
 	*/
 	public function __construct($activityid, $blockid = NULL) {
 		global $I2_SQL;
+		if (! self::activity_exists($activityid)) {
+			throw new I2Exception('Tried to create a nonexistent EighthActivity object!');
+		}
 		if ($activityid != NULL && $activityid != '') {
 			$this->data = $I2_SQL->query('SELECT * FROM eighth_activities WHERE aid=%d', $activityid)->fetch_array(Result::ASSOC);
 			$this->data['sponsors'] = (!empty($this->data['sponsors']) ? explode(',', $this->data['sponsors']) : array());
@@ -48,6 +51,18 @@ class EighthActivity {
 				$this->data['block'] = new EighthBlock($blockid);
 			}
 		}
+	}
+
+	/**
+	 * Check whether an activity exists.
+	 *
+	 * @access public
+	 * @param int $aid The activity ID.
+	 * @return boolean
+	 */
+	public static function activity_exists($aid) {
+		global $I2_SQL;
+		return $I2_SQL->query('SELECT COUNT(*) FROM eighth_activities WHERE aid=%d', $aid)->fetch_single_value();
 	}
 
 	public static function add_member_to_activity($aid, User $user, $force = FALSE, $blockid = NULL) {
@@ -563,6 +578,17 @@ class EighthActivity {
 	}
 
 	/**
+	 * Gets the activity IDs of any activities that have been deleted.
+	 *
+	 * @access public
+	 * @return array An array of all deleted aids.
+	 */
+	public static function get_unused_aids() {
+		global $I2_SQL;
+		return $I2_SQL->query('SELECT aid FROM eighth_activity_id_holes')->fetch_col('aid');
+	}
+
+	/**
 	* Adds an activity to the list.
 	*
 	* @access public
@@ -614,16 +640,11 @@ class EighthActivity {
 	public static function remove_activity($activityid) {
 		global $I2_SQL;
 		Eighth::check_admin();
-		Eighth::start_undo_transaction();
 		$old = $I2_SQL->query('SELECT * FROM eighth_activities WHERE aid=%d', $activityid)->fetch_array(Result::ASSOC);
 		$query = 'DELETE FROM eighth_activities WHERE aid=%d';
 		$queryarg = array($activityid);
 		$I2_SQL->query_arr($query,$queryarg);
-		$invquery = "REPLACE INTO eighth_activities 
-				(name,sponsors,rooms,description,restricted,sticky,bothblocks,presign,aid) 
-				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d,%d)";
-		$invarg = array($old['name'],$old['sponsors'],$old['rooms'],$old['description'],$old['restricted'],$old['sticky'],$old['bothblocks'],$old['presign'],$old['aid']);
-		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Delete Activity');
+		$I2_SQL->query('INSERT INTO eighth_activity_id_holes SET aid=%d', $activityid);
 		$people = $I2_SQL->query('SELECT bid,userid FROM eighth_activity_map WHERE aid=%d',$activityid);
 		$defaid = i2config_get('default_aid',999,'eighth');
 		/*
@@ -633,10 +654,7 @@ class EighthActivity {
 			$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
 			$queryarg = array($defaid,$row['bid'],$row['userid']);
 			$I2_SQL->query_arr($query,$queryarg);
-			$invarg = array($activityid,$row['bid'],$row['userid']);
-			Eighth::push_undoable($query,$queryarg,$query,$invarg,'Delete Activity [displace student]');
 		}
-		Eighth::end_undo_transaction();
 	}
 
 	/**

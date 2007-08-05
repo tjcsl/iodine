@@ -491,12 +491,14 @@ class Eighth implements Module {
 	* if you want the full list.
 	* @param string $title The title for the activity list.
 	*/
-	private function setup_activity_selection($add = FALSE, $blockid = NULL, $restricted = FALSE, $field = 'aid', $title = 'Select an activity:') {
+	private function setup_activity_selection($add = FALSE, $blockid = NULL, $restricted = FALSE, $field = 'aid', $title = 'Select an activity:', $addtitle = 'Add an activity:') {
 		$activities = EighthActivity::get_all_activities($blockid, $restricted);
 		$this->template = 'activity_selection.tpl';
 		$this->template_args['activities'] = $activities;
 		if($add) {
 			$this->template_args['add'] = TRUE;
+			$this->template_args['add_title'] = $addtitle;
+			$this->template_args['add_aids'] = EighthActivity::get_unused_aids();
 		}
 		$this->template_args['title'] = $title;
 		$this->template_args['field'] = $field;
@@ -866,7 +868,11 @@ class Eighth implements Module {
 			$this->title = 'View Activities';
 		}
 		else if($this->op == 'add') {
-			$aid = EighthActivity::add_activity($this->args['name']);
+			$newid = NULL;
+			if ($this->args['aid'] != 'auto' && ! EighthActivity::activity_exists($this->args['aid'])) {
+				$newid = $this->args['aid'];
+			}
+			$aid = EighthActivity::add_activity($this->args['name'], array(), array(), '', FALSE, FALSE, FALSE, FALSE, $newid);
 			redirect("eighth/amr_activity/view/aid/{$aid}");
 		}
 		else if($this->op == 'modify') {
@@ -886,8 +892,14 @@ class Eighth implements Module {
 			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
 		else if($this->op == 'remove') {
-			EighthActivity::remove_activity($this->args['aid']);
-			redirect('eighth');
+			if (! empty($this->args['sure'])) {
+				EighthActivity::remove_activity($this->args['aid']);
+				redirect('eighth');
+			}
+			else {
+				$this->template = 'remove_activity_confirm.tpl';
+				$this->template_args['activity'] = new EighthActivity($this->args['aid']);
+			}
 		}
 		else if($this->op == 'select_sponsor') {
 			$this->setup_sponsor_selection();
