@@ -137,7 +137,7 @@ To view this user's portfolio click <a href="http://shares.tjhsst.edu/PORTFOLIO/
 [<if $user->locker>]Locker Number: [<$user->locker|escape:'html'>]<br />[</if>]
 </td></tr></table>
 
-[<if $schedule && count($schedule) > 0 >]
+[<if false && $schedule && count($schedule) > 0 >]
 <div style="float: left; margin-right: 50px;">
  <br /><span class="bold">Classes:</span><br />
  <table cellspacing="0">
