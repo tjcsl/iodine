@@ -119,11 +119,16 @@ class EighthActivity {
 		}
 
 		$oldaid = EighthSchedule::get_activities_by_block($userid, $blockid);
-		$oldact = new EighthActivity($oldaid, $blockid);
 		if ($oldaid == $this->data['aid']) {
 			// The user is already in this activity
 			return;
 		}
+		if (self::activity_exists($oldaid)) {
+			$oldact = new EighthActivity($oldaid, $blockid);
+		} else {
+			$oldact = FALSE;
+		}
+		
 		if ($oldact && $oldact->sticky) {
 			$ret |= EighthActivity::STICKY;
 		}
