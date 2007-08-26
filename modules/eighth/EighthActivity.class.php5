@@ -623,6 +623,7 @@ class EighthActivity {
 			$newid = $result->get_insert_id();
 			$invarg = array($newid);
 			Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Create Activity');
+			return $result->get_insert_id();
 		} else {
 			$old = $I2_SQL->query('SELECT * FROM eighth_activities WHERE aid=%d',$aid)->fetch_array(Result::ASSOC);
 			$query = "REPLACE INTO eighth_activities 
@@ -630,10 +631,11 @@ class EighthActivity {
 				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d,%d,%d)";
 			$queryarg = array($name, $sponsors, $rooms, $description, ($restricted?1:0),($sticky?1:0),($bothblocks?1:0),($presign?1:0),$aid,($special?1:0));
 			$result = $I2_SQL->query_arr($query,$queryarg);
+			$I2_SQL->query('DELETE FROM eighth_activity_id_holes WHERE aid=%d', $aid);
 			$invarg = array($old['name'],$old['sponsors'],$old['rooms'],$old['description'],$old['restricted'],$old['sticky'],$old['bothblocks'],$old['presign'],$old['aid'],$old['special']);
 			Eighth::push_undoable($query,$queryarg,$query,$invarg);
+			return $aid;
 		}
-		return $result->get_insert_id();
 	}
 
 	/**
