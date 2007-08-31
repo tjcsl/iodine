@@ -57,7 +57,8 @@ or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexan
 <br />
 [</if>]
 <br />
-[<mailto address=$user->tjmail encode="hex" text="E-mail">] address(es): 
+[<if $user->mail>]
+E-mail address(es): 
 [<foreach from=$user->mail item="email" name="emails">]
 	[<if $smarty.foreach.emails.last and not $smarty.foreach.emails.first>]
 		and
@@ -67,6 +68,7 @@ or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexan
 	[<mailto address=$email encode="hex">]
 	[</foreach>]
 <br />
+[</if>]
 [<if $user->grade != 'staff'>]
 [<if $I2_USER->grade == 'staff'>]
 <br />
