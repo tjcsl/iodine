@@ -174,11 +174,11 @@ class StudentDirectory implements Module {
 							settype($aim_accts, 'array');
 						}
 						$aim_icon = array();
+						$key = i2config_get("key", NULL, "aim");
+						if ($key === NULL)
+							d("No AIM Presence key in config file.",4);
 						foreach($aim_accts as $aim) {
-							$key=i2config_get("key",NULL,"aim");
 							if ($key === NULL) {
-								d("No AIM Presence key in config file.",4);
-								
 								global $I2_ROOT;
 								$url="{$I2_ROOT}www/pics/osi/";
 								switch($this->im_status('aim', $aim)) {
