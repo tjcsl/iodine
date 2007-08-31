@@ -67,7 +67,7 @@ class StudentDirectory implements Module {
 					redirect();
 				}
 				$sec = Schedule::section($I2_ARGS[2]);
-				$this->information = array('class'=>$sec,'students'=>$sec->get_students());
+				$this->information = array('class'=>$sec,'students'=>$sec->get_students(),'aimkey'=>i2config_get("key", NULL, "aim"));
 				return "Students in {$sec->name}, Period {$sec->period}";
 				break;
 			case 'section':

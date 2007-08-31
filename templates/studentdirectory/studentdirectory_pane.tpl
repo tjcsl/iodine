@@ -190,6 +190,9 @@ To view this user's portfolio click <a href="http://shares.tjhsst.edu/PORTFOLIO/
   <tr>
    <th>Name</th>
    <th>Email</th>
+   [<if $info.aimkey>]
+   <th>AIM Status</th>
+   [</if>]
   </tr>
  </thead>
 [<foreach from=$info.students item=student>]
@@ -204,9 +207,16 @@ To view this user's portfolio click <a href="http://shares.tjhsst.edu/PORTFOLIO/
 			[<assign var="mail" value=$student->mail.0>]
 		[</if>]
 		[<mailto address=$mail encode="hex">]
-	  </td>
     [<else>]
      &nbsp;
+    [</if>]
+    </td>
+    [<if $info.aimkey>]
+    <td class="directory-table">
+    [<foreach from=$student->aim item=username key=k>]
+    <img src="http://api.oscar.aol.com/presence/icon?k=[<$info.aimkey>]&t=[<$username>]" /> <a href="aim:goim?screenname=[<$username>]">[<$username|escape:'html'>]</a>
+    [</foreach>]
+    </td>
     [</if>]
   </tr>
  </tbody>
