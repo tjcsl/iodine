@@ -21,6 +21,12 @@ class Suggestion implements Module {
 	public function init_pane() {
 		global $I2_USER;
 		
+		$usermail = $I2_USER->mail;
+		if (is_array($usermail)) {
+			$usermail = $usermail[0];
+		}
+		$this->template_args['usermail'] = $usermail;
+
 		if (!(isset($_REQUEST['submit_form']) && isset($_REQUEST['submit_box']))) {
 			return 'Suggestion';
 		}
@@ -34,10 +40,6 @@ class Suggestion implements Module {
 		$subj = "Suggestion from {$I2_USER->fullname}";
 		$browser = $_SERVER['HTTP_USER_AGENT'];
 		$mesg .= "\r\n\r\n $browser";
-		$usermail = $I2_USER->mail;
-		if (is_array($usermail)) {
-			$usermail = $usermail[0];
-		}
 		$headers = "From: $usermail\r\n";
 		$headers .= "Reply-To: $usermail\r\n";
 		$headers .= "Return-Path: $to\r\n";
