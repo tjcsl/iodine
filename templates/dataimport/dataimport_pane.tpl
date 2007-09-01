@@ -1,15 +1,35 @@
+Database update procedure:
+<ol>
+	<li>Back up the database, just to be safe.</li>
+	<li>If it's the beginning of the year, you will need to press the "It's the beginning of the year!" button. This will ensure that students' entries in LDAP are correctly set for the beginning of the year -- privacy permissions are set correctly and eighth office comments are cleared.</li>
+	<li>If it's the beginning of the year, you will also need to clear eighth period absences using the appropriate button.</li>
+	<li>Set the path to the "Student Data" file. Note that this is the location of the file on the server, and the file must be readable by www-data. This is the "INTRANET.***" file in the SASI dump.</li>
+	<li>Set the LDAP Admin password. It's the one in the config file.</li>
+	<li>Click "Do Student Import". This will get rid of students that no longer exist, create database entries for new students, and bring existing students up to date. Note that this can take a significant amount of time (on the order of half an hour) if the script needs to delete a lot of old users.</li>
+	<li>Set the "Student Schedule" and "Course Information" files. Again, you need to enter the locations of the files on the server.</li>
+	<li>Click "Import Schedule Data". This takes ~5 minutes.</li>
+</ol>
 [<if isSet($userdata)>]
-	[<*
+	[<*'
 	[<foreach from=$userdata item=row>]
 		[<foreach from=$row key=key item=value>]
 			[<$key>] = [<$value>]
 		[</foreach>]
 		<br />
 	[</foreach>]
-	*>]
+	'*>]
 [<else>]
+	[<if $startyear>]
+		It's the beginning of year! <a href="[<$I2_ROOT>]dataimport/unset_startyear">UNSET</a>
+	[<else>]
+		<form action="[<$I2_ROOT>]dataimport/start_year" method="post">
+			<input type="hidden" name="start_year" value="1" />
+			<input type="submit" value="This is the initial data import of the year!"/><br/>
+		</form>
+	[</if>]
+	<br /><br />
 	[<if $userfile>]
-		Student data file <a href="[<$I2_ROOT>]dataimport/unset_student">SET</a>
+		Student data file <a href="[<$I2_ROOT>]dataimport/unset_user">SET</a>
 	[<else>]
 		<form action="[<$I2_ROOT>]dataimport/userdata" method="post">
 			<table>
@@ -34,12 +54,15 @@
 		</form>
 	[</if>]
 	<br /><br />
+	[<* disabled'
 	<form action="[<$I2_ROOT>]dataimport/teachersponsors" method="post">
 		<input type="hidden" name="doit" value="1"/>
 		<input type="submit" value="Make all teachers into Eighth-Period sponsors"/><br/>
 	</form>
 	<br /><br/>
+	'*>]
 	[<if $admin_pass>]
+		[<* disabled'
 		<form action="[<$I2_ROOT>]dataimport/clean" method="post">
 			<input type="hidden" name="doit" value="1"/>
 			<input type="submit" value="Clean the entire database"/><br/>
@@ -65,12 +88,20 @@
 			<input type="submit" value="Delete assorted data"/><br/>
 		</form>
 		<br /><br/>
+		'*>]
 		[<* This is dangerous, so it is disabled'
 		<form action="[<$I2_ROOT>]dataimport/fixit" method="post">
 			<input type="hidden" name="doit" value="1"/>
 			<input type="submit" value="Ensure the database is usable"/><br/>
 		</form>
 		<br /><br/>'*>]
+	[</if>]
+	[<if $startyear>]
+		<form action="[<$I2_ROOT>]dataimport/absences" method="post">
+			<input type="hidden" name="doit" value="1"/>
+			<input type="submit" value="Clear eighth period absences"/><br />
+		</form>
+		<br /><br />
 	[</if>]
 	[<if $userfile && $admin_pass>]
 		<form action="[<$I2_ROOT>]dataimport/students" method="post">
@@ -99,7 +130,7 @@
 			<input type="submit" value="FIX INTRANET" style="font-style: bold; font-size: 40pt; color: red;"/><br/>
 		</form>
 	<br /><br />
-	[</if>
+	[</if>]
 [<if $intranet_pass>]
 		<form action="[<$I2_ROOT>]dataimport/eighth_permissions" method="post">
 			<input type="hidden" name="doit" value="1"/>
@@ -159,6 +190,7 @@
 	[<else>]
 		Student Schedule Information <a href="[<$I2_ROOT>]dataimport/unset_schedule">SET</a><br />
 	[</if>]
+	[<*'
 	[<if !$intranet_pass>]
 		<form action="[<$I2_ROOT>]dataimport" method="post">
 		<table>
@@ -172,4 +204,5 @@
 	[<else>]
 		Intranet MySQL Information <a href="[<$I2_ROOT>]dataimport/unset_intranet">SET</a>
 	[</if>]
+	'*>]
 [</if>]

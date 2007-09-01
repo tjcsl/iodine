@@ -33,6 +33,8 @@ class dataimport implements Module {
 	private $schedulefile;
 	private $classfile;
 
+	private $startyear;
+
 	/**
 	* SASI Student dump - intranet.##a
 	*/
@@ -73,7 +75,7 @@ class dataimport implements Module {
 		/*
 		** First pass through teacher.##a file
 		*/
-		$file = fopen($filename,'r');
+		$file = @fopen($filename,'r');
 		
 		d("Importing data from teacher data file $filename...",6);
 		
@@ -193,7 +195,7 @@ class dataimport implements Module {
 
 		d("Importing data from staff data file: $teachersfiletwo...", 3);
 
-		$file = fopen($teachersfiletwo,'r');
+		$file = @fopen($teachersfiletwo,'r');
 
 		$validteachers = array();
 
@@ -295,164 +297,16 @@ class dataimport implements Module {
 	}
 
 	/** 
-	* Import student data from a SASI dump file (intranet.##a) into LDAP
-	* DEPRECATED: use import_student_data to do this more intelligently
-	*/
-	private function import_student_data_dep($do_old_intranet=TRUE, $studentidonly = FALSE) {
-		global $I2_LOG;	
-		
-		$ldap = LDAP::get_admin_bind($this->admin_pass);
-		
-		$oldsql = NULL;
-		
-		if ($do_old_intranet) {
-			$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);	
-		}
-
-		$filename = $this->userfile;
-		$file = @fopen($filename, 'r');
-
-		d("Importing data from user data file $filename...",6);
-
-		$line = null;
-
-		$this->usertable = array();
-
-		$numlines = 0;
-
-		while (list($username, 
-					$StudentID, 
-					$Lastname, 
-					$Firstname, 
-					$Middlename, 
-					$Grade, 
-					$Sex, 
-					$Birthdate, 
-					$Homephone, 
-					$Address, 
-					$City, 
-					$State, 
-					$Zip, 
-					$Couns,
-					$Nickname
-				) = fgetcsv($file)) {
-			if ($studentidonly && $studentidonly != $StudentID) {
-					  $this->num++;
-					  continue;
-			}
-			$student = array(
-					'username' => substr($username,1),
-					'studentid' => $StudentID, 
-					'lname' => $Lastname,
-					'fname' => $Firstname, 
-					'mname' => $Middlename, 
-					'grade' => $Grade, 
-					'sex' => $Sex, 
-					'bdate' => $Birthdate, 
-					'phone_home' => $Homephone, 
-					'address' => $Address, 
-					'city' => $City, 
-					'state' => $State, 
-					'zip' => $Zip, 
-					'counselor' => $Couns,
-					'nick' => $Nickname
-					);
-			if ($do_old_intranet) {
-				$res = $oldsql->query('SELECT Lastnamesound,Firstnamesound FROM StudentInfo WHERE StudentID=%d',$StudentID)->fetch_array(Result::ASSOC);
-				$student['soundexlast'] = $res['Lastnamesound'];
-				$student['soundexfirst'] = $res['Firstnamesound'];
-				$otherres = $oldsql->query('SELECT * FROM StudentMiscInfo WHERE StudentID=%d',$StudentID);
-				$otherres = $otherres->fetch_array(Result::ASSOC);
-				if ($otherres['ICQ']) {
-					$student['icq'] = $otherres['ICQ'];
-				}
-				if ($otherres['AIM']) {
-					$student['aim'] = $otherres['AIM'];
-				}
-				if ($otherres['MSN']) {
-					$student['msn'] = $otherres['MSN'];
-				}
-				if ($otherres['Jabber']) {
-					$student['jabber'] = $otherres['Jabber'];
-				}
-				if ($otherres['Yahoo']) {
-					$student['yahoo'] = $otherres['Yahoo'];
-				}
-				if ($otherres['AllowSchedule']) {
-					$student['showscheduleself'] = 'TRUE';
-				} else {
-					$student['showscheduleself'] = 'FALSE';
-				}
-				if ($otherres['AllowBirthday']) {
-					$student['showbdayself'] = 'TRUE';
-				} else {
-					$student['showbdayself'] = 'FALSE';
-				}
-				if ($otherres['AllowMap']) {
-					$student['showmapself'] = 'TRUE';
-				} else {
-					$student['showmapself'] = 'FALSE';
-				}
-				if ($otherres['AllowAddress']) {
-					$student['showaddressself'] = 'TRUE';
-				} else {
-					$student['showaddressself'] = 'FALSE';
-				}
-				if ($otherres['AllowPhone']) {
-					$student['showphoneself'] = 'TRUE';
-				} else {
-					$student['showphoneself'] = 'FALSE';
-				}
-				if ($otherres['AllowPicture']) {
-					$student['showpictureself'] = 'TRUE';
-				} else {
-					$student['showpictureself'] = 'FALSE';
-				}
-				if ($otherres['Locker']) {
-					$student['locker'] = $otherres['Locker'];
-				}
-				$student['mobile'] = $otherres['CellPhone'];
-				$student['mail'] = $otherres['Email'];
-
-				/*
-				** Get and add privacy info
-				*/
-				$res = $oldsql->query('SELECT * FROM StudentPrivacyInfo WHERE StudentID=%d',$StudentID)->fetch_array(Result::ASSOC);
-				$student['showpictures'] = $res['Picture']==1?'TRUE':'FALSE';
-				$student['showschedule'] = $res['Schedule']==1?'TRUE':'FALSE';
-				$student['showbirthday'] = $res['Birthday']==1?'TRUE':'FALSE';
-				$student['showphone'] = $res['Phone']==1?'TRUE':'FALSE';
-				$student['showaddress'] = $res['Address']==1?'TRUE':'FALSE';
-				$student['showmap'] = $res['Map']==1?'TRUE':'FALSE';
-
-			}
-			if ($student) {
-				$this->usertable[] = $student;
-				$numlines++;
-				if ($numlines % 100 == 0) {
-					$I2_LOG->log_file("-$numlines-");
-				}
-			}
-		}
-		d("$numlines users imported.",6);
-	
-		/*
-		** This line is needed b/c the create_user method uses $this->boxes and friends
-		*/
-		$this->init_desired_boxes();
-	
-		foreach ($this->usertable as $user) {
-			$this->create_user_depr($user,$ldap);
-		}
-	}
-
-	/** 
 	* Update student data from a SASI dump file (intranet.##a) into LDAP
 	*/
 	private function import_student_data($studentidonly = FALSE) {
 		global $I2_LOG;	
 		
 		$ldap = LDAP::get_admin_bind($this->admin_pass);
+
+		$oldusers = $ldap->search(LDAP::get_user_dn(), 'objectClass=tjhsstStudent', 'iodineUid')->fetch_col('iodineUid');
+
+		$newusers = array();
 		
 		$filename = $this->userfile;
 		$file = @fopen($filename, 'r');
@@ -479,12 +333,14 @@ class dataimport implements Module {
 					$State, 
 					$Zip, 
 					$Couns,
-					$Nickname
+					$Nickname,
+					$Locker
 				) = fgetcsv($file)) {
 			if ($studentidonly && $studentidonly != $StudentID) {
 					  $this->num++;
 					  continue;
 			}
+			$newusers[] = strtolower($username);
 			$student = array(
 					'username' => $username,
 					'studentid' => $StudentID, 
@@ -500,7 +356,8 @@ class dataimport implements Module {
 					'state' => $State, 
 					'zip' => $Zip, 
 					'counselor' => $Couns,
-					'nick' => $Nickname
+					'nick' => $Nickname,
+					'locker' => $Locker
 					);
 			if ($student) {
 				$this->usertable[] = $student;
@@ -511,6 +368,12 @@ class dataimport implements Module {
 			}
 		}
 		d("$numlines users read from SASI dump file.",6);
+
+		$toremove = array_diff($oldusers, $newusers);
+		d('Removing '.count($toremove).' old users.', 5);
+		foreach ($toremove as $olduser) {
+			$this->del_user($olduser,$ldap);
+		}
 	
 		/*
 		** This line is needed b/c the create_user method uses $this->boxes and friends
@@ -521,16 +384,14 @@ class dataimport implements Module {
 			$username = $user['username'];
 			$res = $ldap->search('ou=people,dc=tjhsst,dc=edu', "iodineUid=$username");
 			if ($res->num_rows() - 1 > 1) {
-				d("PROBLEM! More than one user found with iodineUid $username...");
+				warn("PROBLEM! More than one user found with iodineUid $username...");
 			}
-			else if ($res->num_rows() - 1 > 0) {
-				//d("Would modify existing user $username");
-				$this->update_user($user,$ldap);
-			}
-			else {
-				//d("Would create new user $username");
+			else if ($res->num_rows() - 1 == 0) {
+				d("creating new user $username...", 7);
 				$this->create_user($user,$ldap);
 			}
+			d("adding info to user $username...", 7);
+			$this->update_user($user,$ldap);
 		}
 	}
 
@@ -626,86 +487,6 @@ class dataimport implements Module {
 
 	/**
 	* Adds a new user from the given data
-	* DEPRECATED: use create_user instead.
-	*/
-	private function create_user_depr($user,$ldap=NULL) {
-		global $I2_LDAP,$I2_SQL;
-		if (!$ldap) {
-			$ldap = $I2_LDAP;
-		}
-		$usernew = array();
-		$usernew['objectClass'] = 'tjhsstStudent';
-		$usernew['graduationYear'] = (-1*($user['grade']-12))+i2config_get('senior_gradyear',date('Y'),'user');
-		$usernew['cn'] = $user['fname'].' '.$user['lname'];
-		$usernew['sn'] = $user['lname'];
-		$usernew['tjhsstStudentId'] = $user['studentid'];
-		$usernew['iodineUid'] = strtolower($user['username']);
-		$usernew['postalCode'] = $user['zip'];
-		$usernew['counselor'] = $user['counselor'];
-		$usernew['st'] = $user['state'];
-		$usernew['l'] = $user['city'];
-		$usernew['homePhone'] = $user['phone_home'];
-		$usernew['birthday'] = $user['bdate'];
-		$usernew['street'] = $user['address'];
-		$usernew['givenName'] = $user['fname'];
-		$usernew['nickName'] = $user['nick'];
-		if ($user['mname'] != '') {
-			$usernew['displayName'] = $user['fname'].' '.$user['mname'].' '.$user['lname'];
-		} else {
-			$usernew['displayName'] = $user['fname'].' '.$user['lname'];
-		}
-		$usernew['gender'] = $user['sex'];
-		$usernew['mobile'] = $user['mobile'];
-		if (isSet($user['locker'])) {
-			$usernew['locker'] = $user['locker'];
-		}
-		$usernew['mail'] = $user['mail'];
-		$usernew['soundexfirst'] = $user['soundexfirst'];
-		$usernew['soundexlast'] = $user['soundexlast'];
-		if (isSet($user['aim'])) {
-			$usernew['aim'] = $user['aim'];
-		}
-		if (isSet($user['jabber'])) {
-			$usernew['jabber'] = $user['jabber'];
-		}
-		if (isSet($user['msn'])) {
-			$usernew['msn'] = $user['msn'];
-		}
-		if (isSet($user['icq'])) {
-			$usernew['icq'] = $user['icq'];
-		}
-		$usernew['showpictures'] = $user['showpictures'];
-		$usernew['showaddress'] = $user['showaddress'];
-		$usernew['showmap'] = $user['showmap'];
-		$usernew['showschedule'] = $user['showschedule'];
-		$usernew['showphone'] = $user['showphone'];
-		$usernew['showbirthday'] = $user['showbirthday'];
-		$usernew['showphoneself'] = $user['showphoneself'];
-		$usernew['showmapself'] = $user['showmapself'];
-		$usernew['showscheduleself'] = $user['showscheduleself'];
-		$usernew['showaddressself'] = $user['showaddressself'];
-		$usernew['showpictureself'] = $user['showpictureself'];
-		$usernew['showbdayself'] = $user['showbdayself'];
-		$usernew['title'] = ($user['sex']=='M')?'Mr.':'Ms.';
-		$usernew['middlename'] = $user['mname'];
-		$usernew['style'] = 'default';
-		$usernew['header'] = 'TRUE';
-		$res = $ldap->search('ou=people,dc=tjhsst,dc=edu', 'objectClass=tjhsstStudent', array('iodineUidNumber'));
-		$usernew['iodineUidNumber'] = max($res->fetch_col('iodineUidNumber')) + 1;
-		$usernew['startpage'] = 'news';
-		$usernew['chrome'] = 'TRUE';
-		$dn = "iodineUid={$usernew['iodineUid']},ou=people";
-
-		d("Creating user \"{$usernew['iodineUid']}\"...",5);
-		$ldap->add($dn,$usernew);
-		$box_order = 1;
-		foreach ($this->boxids as $boxid=>$name) {
-			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid,box_order) VALUES(%d,%d,%d)',$usernum,$boxid,$box_order++);
-		}
-	}
-
-	/**
-	* Adds a new user from the given data
 	*/
 	private function create_user($user,$ldap=NULL) {
 		global $I2_LDAP,$I2_SQL;
@@ -714,32 +495,18 @@ class dataimport implements Module {
 		}
 		$usernew = array();
 		$usernew['objectClass'] = 'tjhsstStudent';
-		$usernew['graduationYear'] = (-1*($user['grade']-12))+i2config_get('senior_gradyear',date('Y'),'user');
+		$usernew['graduationYear'] = (12-$user['grade'])+i2config_get('senior_gradyear',date('Y'),'user');
+		$usernew['iodineUid'] = strtolower($user['username']);
 		$usernew['cn'] = $user['fname'].' '.$user['lname'];
 		$usernew['sn'] = $user['lname'];
 		$usernew['tjhsstStudentId'] = $user['studentid'];
-		$usernew['iodineUid'] = strtolower($user['username']);
-		$usernew['postalCode'] = $user['zip'];
-		if ($user['counselor']) {
-			$usernew['counselor'] = $user['counselor'];
-		}
-		$usernew['st'] = $user['state'];
-		$usernew['l'] = $user['city'];
-		if ($user['phone_home']) {
-			$usernew['homePhone'] = $user['phone_home'];
-		}
-		$usernew['birthday'] = $user['bdate'];
-		$usernew['street'] = $user['address'];
-		$usernew['givenName'] = $user['fname'];
-		if ($user['nick']) {
-			$usernew['nickName'] = $user['nick'];
-		}
-		if ($user['mname'] != '') {
-			$usernew['displayName'] = $user['fname'].' '.$user['mname'].' '.$user['lname'];
-		} else {
-			$usernew['displayName'] = $user['fname'].' '.$user['lname'];
-		}
-		$usernew['gender'] = $user['sex'];
+		$res = $ldap->search('ou=people,dc=tjhsst,dc=edu', 'objectClass=tjhsstStudent', array('iodineUidNumber'));
+		$usernew['iodineUidNumber'] = max($res->fetch_col('iodineUidNumber'))+1;
+		$usernew['style'] = 'default';
+		$usernew['header'] = 'TRUE';
+		$usernew['chrome'] = 'TRUE';
+		$usernew['startpage'] = 'news';
+
 		$usernew['showpictures'] = 'FALSE';
 		$usernew['showaddress'] = 'FALSE';
 		$usernew['showmap'] = 'FALSE';
@@ -754,19 +521,10 @@ class dataimport implements Module {
 		$usernew['showpictureself'] = 'TRUE';
 		$usernew['showbdayself'] = 'TRUE';
 		$usernew['showeighthself'] = 'TRUE';
-		$usernew['title'] = ($user['sex']=='M')?'Mr.':'Ms.';
-		if ($user['mname']) {
-			$usernew['middlename'] = $user['mname'];
-		}
-		$usernew['style'] = 'default';
-		$usernew['header'] = 'TRUE';
-		$res = $ldap->search('ou=people,dc=tjhsst,dc=edu', 'objectClass=tjhsstStudent', array('iodineUidNumber'));
-		$usernew['iodineUidNumber'] = max($res->fetch_col('iodineUidNumber'))+1;
-		$usernew['startpage'] = 'news';
-		$usernew['chrome'] = 'TRUE';
+
 		$dn = "iodineUid={$usernew['iodineUid']},ou=people,dc=tjhsst,dc=edu";
 
-		d("Creating user \"{$usernew['iodineUid']}\"...",5);
+		d("Creating user \"{$usernew['iodineUid']}\"...",7);
 		$ldap->add($dn,$usernew);
 		$box_order = 1;
 		foreach ($this->boxids as $boxid=>$name) {
@@ -776,7 +534,6 @@ class dataimport implements Module {
 
 	/**
 	* Updates a user's info from the given data
-	* Commented lines are info that shouldn't ever need updating
 	*/
 	private function update_user($user,$ldap=NULL) {
 		global $I2_LDAP,$I2_SQL;
@@ -784,12 +541,8 @@ class dataimport implements Module {
 			$ldap = $I2_LDAP;
 		}
 		$usernew = array();
-		//$usernew['objectClass'] = 'tjhsstStudent';
-		$usernew['graduationYear'] = (-1*($user['grade']-12))+i2config_get('senior_gradyear',date('Y'),'user');
 		$usernew['cn'] = $user['fname'].' '.$user['lname'];
 		$usernew['sn'] = $user['lname'];
-		//$usernew['tjhsstStudentId'] = $user['studentid'];
-		//$usernew['iodineUid'] = strtolower($user['username']);
 		$usernew['postalCode'] = $user['zip'];
 		if ($user['counselor']) {
 			$usernew['counselor'] = $user['counselor'];
@@ -811,35 +564,74 @@ class dataimport implements Module {
 			$usernew['displayName'] = $user['fname'].' '.$user['lname'];
 		}
 		$usernew['gender'] = $user['sex'];
-		/*$usernew['showpictures'] = FALSE;
-		$usernew['showaddress'] = FALSE;
-		$usernew['showmap'] = FALSE;
-		$usernew['showschedule'] = FALSE;
-		$usernew['showphone'] = FALSE;
-		$usernew['showbirthday'] = FALSE;
-		$usernew['showeighth'] = FALSE;
-		$usernew['showphoneself'] = TRUE;
-		$usernew['showmapself'] = TRUE;
-		$usernew['showscheduleself'] = TRUE;
-		$usernew['showaddressself'] = TRUE;
-		$usernew['showpictureself'] = TRUE;
-		$usernew['showbdayself'] = TRUE;
-		$usernew['showeighthself'] = TRUE;*/
+		if (!empty($this->startyear)) {
+			$usernew['showpictures'] = 'FALSE';
+			$usernew['showaddress'] = 'FALSE';
+			$usernew['showmap'] = 'FALSE';
+			$usernew['showschedule'] = 'FALSE';
+			$usernew['showphone'] = 'FALSE';
+			$usernew['showbirthday'] = 'FALSE';
+			$usernew['showeighth'] = 'FALSE';
+			$usernew['showphoneself'] = 'TRUE';
+			$usernew['showmapself'] = 'TRUE';
+			$usernew['showscheduleself'] = 'TRUE';
+			$usernew['showaddressself'] = 'TRUE';
+			$usernew['showpictureself'] = 'TRUE';
+			$usernew['showbdayself'] = 'TRUE';
+			$usernew['showeighthself'] = 'TRUE';
+			$usernew['eighthoffice-comments'] = '';
+		}
 		$usernew['title'] = ($user['sex']=='M')?'Mr.':'Ms.';
 		if ($user['mname']) {
 			$usernew['middlename'] = $user['mname'];
 		}
-		//$usernew['style'] = 'default';
-		//$usernew['header'] = 'TRUE';
-		//$usernum = $this->num;
-		//$this->num = $this->num + 1;
-		//$usernew['iodineUidNumber'] = $usernum;
-		//$usernew['startpage'] = 'news';
-		//$usernew['chrome'] = 'TRUE';
+		$usernew['locker'] = $user['locker'];
+
 		$dn = "iodineUid={$user['username']},ou=people,dc=tjhsst,dc=edu";
 
-		d("Updating user \"{$user['username']}\"...",5);
+		d("Updating user \"{$user['username']}\"...",7);
+		//warn(print_r($usernew, 1));
 		$ldap->modify_object($dn,$usernew);
+	}
+
+	private function del_user($user, $ldap=NULL) {
+		global $I2_SQL, $I2_LDAP;
+
+		if ($ldap == NULL) {
+			$ldap = $I2_LDAP;
+		}
+
+		$sqltables = array('alum'	=> 'id',
+			'aphorisms'		=> 'uid',
+			'calculators'		=> 'uid',
+			'eighth_absentees'	=> 'userid',
+			'eighth_activity_map'	=> 'userid',
+			'event_admins'		=> 'uid',
+			'event_signups'		=> 'uid',
+			'event_verifiers'	=> 'uid',
+			'groups_static'		=> 'uid',
+			'groups_user_perms'	=> 'uid',
+			'intrabox_map'		=> 'uid',
+			'news_read_map'		=> 'uid',
+			'news'			=> 'authorID',
+			'parking_apps'		=> 'uid',
+			'parking_cars'		=> 'uid',
+			'poll_votes'		=> 'uid',
+			'prom'			=> 'uid',
+			'scratchpad'		=> 'uid',
+			'servreq'		=> 'uid'
+		);
+
+		d("deleting user $user", 7);
+		$uid = $ldap->search(LDAP::get_user_dn(), "iodineUid=$user", 'iodineUidNumber')->fetch_single_value();
+		d("(uidnumber $uid)", 7);
+		if ($uid) {
+			foreach ($sqltables as $table => $col) {
+				$I2_SQL->query('DELETE FROM %c WHERE %c=%d', $table, $col, $uid);
+			}
+		}
+		d("deleting_recursive: ".LDAP::get_user_dn($user).", 'objectClass=*'", 7);
+		$ldap->delete_recursive(LDAP::get_user_dn($user), 'objectClass=*');
 	}
 
 	private function import_eighth_data() {
@@ -1221,9 +1013,9 @@ class dataimport implements Module {
 		** First create classes
 		*/
 		$classfile = $this->classfile;
-		d("Reading from class file: $classfile...");
+		d("Reading from class file: $classfile...", 6);
 		$file = @fopen($classfile,'r');
-		while (list($sectionid,$period,$uhhotherperiod,$courselen,$othercourselen,$otherothercourselen,$teacherid,$room,$class) = fgetcsv($file)) {
+		while (list($sectionid,$periodstart,$periodend,$courselen,$othercourselen,$otherothercourselen,$teacherid,$room,$class) = fgetcsv($file)) {
 			list($classid,) = explode('-',$sectionid);
 			$semesterno = $courselen[1];
 
@@ -1238,11 +1030,10 @@ class dataimport implements Module {
 			$sponsor = new User($sponsordn);
 			
 			$sponsordn = LDAP::get_user_dn($sponsor->username);
-			//$I2_LOG->log_file(print_r($sponsordn,1));
 
 			$newclass = array(
 				'objectClass' => 'tjhsstClass',
-				'tjhsstClassId' => $classid,
+				'tjhsstClassId' => (int)$classid,
 				'tjhsstSectionId' => $sectionid,
 				'courselength' => $courselen=='YR'?4:($courselen[0]=='S'?2:1),
 				'quarternumber' => $courselen=='YR'?array(1,2,3,4):($courselen[0]=='S'?($semesterno==1?array(1,2):array(3,4)):$semesterno),
@@ -1250,15 +1041,8 @@ class dataimport implements Module {
 				'year' => i2config_get('senior_gradyear',date('Y'),'user'),
 				'cn' => $class,
 				'sponsorDn' => $sponsordn,
-				'classPeriod' => (int)$period,
+				'classPeriod' => range((int)$periodstart,(int)$periodend),
 			);
-			/*if (isSet($students[$sectionid])) {
-				$newclass['enrolledStudent'] = $students[$sectionid];
-			}*/
-			//$I2_LOG->log_file('Creating section '.$sectionid.' ('.$class.' period '.$period.') taught by '.$sponsordn.' in '.$room);
-			// Create the course
-			//$I2_LOG->log_file('dn: '.LDAP::get_schedule_dn($sectionid).' === '.print_r($newclass,1));
-			//$ldap->delete(LDAP::get_schedule_dn($sectionid));
 			$ldap->add(LDAP::get_schedule_dn($sectionid),$newclass);
 		}
 		fclose($file);
@@ -1268,23 +1052,22 @@ class dataimport implements Module {
 		*/
 		$students = array();
 		$schedulefile = $this->schedulefile;
-		d("Reading from schedule file: $schedulefile...");
+		d("Reading from schedule file: $schedulefile...", 6);
 		$studentcoursefile = @fopen($schedulefile,'r');
 		while (list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename, $teacherid, $teachername, $term, $room) = fgetcsv($studentcoursefile)) {
-			$uid = User::studentid_to_uid($studentid);
-			if (!$uid) {
-				$I2_LOG->log_file('Invalid/unknown studentID '.$studentid);
-				continue;
-			}
-			//$I2_LOG->log_file('StudentID '.$studentid.' enrolled in section '.$sectionone);
-			$user = new User($uid);
-			$studentdn = LDAP::get_user_dn($user->username);
 			$class = $ldap->search(LDAP::get_schedule_dn(),"tjhsstSectionId=$sectionone",array('tjhsstSectionId'))->fetch_single_value();
 			if (!$class) {
 				$I2_LOG->log_file('Invalid SectionID '.$sectionone.' for studentid '.$studentid);
 				continue;
 			}
+
 			$classdn = LDAP::get_schedule_dn($class);
+			if (! User::studentid_to_uid($studentid)) {
+				warn("Nonexistent student with id $studentid in schedule file!");
+				continue;
+			}
+			$studentdn = LDAP::get_user_dn($studentid);
+
 			if (!isSet($students[$studentdn])) {
 				$students[$studentdn] = array();
 			}
@@ -1293,10 +1076,8 @@ class dataimport implements Module {
 		fclose($studentcoursefile);
 
 		foreach ($students as $studentdn=>$classdns) {
-				  //$I2_LOG->log_file($studentdn.': '.print_r($classdns,1));
 				  $ldap->modify_val($studentdn,'enrolledClass',$classdns);
 		}
-
 	}
 
 	private function fix_broken_user($studentid) {
@@ -1487,7 +1268,9 @@ class dataimport implements Module {
 	/**
 	* Delete student schedules
 	*
-	* @todo Write this
+	* Actually, this only deletes courses in LDAP. It's assumed that this will be
+	* used in combination with import_schedules, so student-course mappings will
+	* be overwritten in that stage.
 	*/
 	private function clean_schedules($ldap=NULL) {
 		global $I2_SQL,$I2_LDAP;
@@ -1838,6 +1621,9 @@ class dataimport implements Module {
 		if (!$I2_USER->is_group_member('admin_all')) {
 			return FALSE;
 		}
+		if (isSet($_REQUEST['start_year'])) {
+			$_SESSION['start_year'] = 1;
+		}
 		if (isSet($_REQUEST['admin_pass'])) {
 			$_SESSION['ldap_admin_pass'] = $_REQUEST['admin_pass'];
 		}
@@ -1851,6 +1637,9 @@ class dataimport implements Module {
 			$_SESSION['intranet_server'] = $_REQUEST['intranet_server'];
 			$_SESSION['intranet_db'] = $_REQUEST['intranet_db'];
 			$_SESSION['intranet_user'] = $_REQUEST['intranet_user'];
+		}
+		if (isSet($_SESSION['start_year'])) {
+			$this->startyear = $_SESSION['start_year'];
 		}
 		if (isSet($_SESSION['ldap_admin_pass'])) {
 			$this->admin_pass = $_SESSION['ldap_admin_pass'];
@@ -1890,6 +1679,10 @@ class dataimport implements Module {
 		}
 		if (isSet($_SESSION['stafffile'])) {
 			$this->stafffile = $_SESSION['stafffile'];
+		}
+		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_startyear') {
+			unset($_SESSION['startyear']);
+			$this->startyear = 0;
 		}
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_pass') {
 			unset($_SESSION['ldap_admin_pass']);
@@ -2023,6 +1816,7 @@ class dataimport implements Module {
 
 	public function display_pane($disp) {
 		$disp->disp('dataimport_pane.tpl',array(
+				'startyear' => $this->startyear,
 				'userdata' => $this->usertable, 
 				'admin_pass' => isSet($this->admin_pass)?TRUE:FALSE,
 				'intranet_pass' => isSet($this->intranet_pass)?TRUE:FALSE,
