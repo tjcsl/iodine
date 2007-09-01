@@ -19,7 +19,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td>Alternate Email(s):</td>
+		<td>E-mail address(es):</td>
 		<td>
 [<foreach from=$I2_USER->mail item=email name=mail_loop>]
 			<input class="pref_preference_input" type="text" name="pref_mail[]" value="[<$email|escape:'html'>]" />[<if $smarty.foreach.mail_loop.first>]<a href="#" onClick="add_field('mail', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('mail', this);">Remove</a>[</if>][<if !$smarty.foreach.mail_loop.last>]<br />[</if>]
