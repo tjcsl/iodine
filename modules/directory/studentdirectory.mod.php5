@@ -34,7 +34,7 @@ class StudentDirectory implements Module {
 
 		$mode = i2config_get('mode','full','roster');
 		if ($mode != 'full') {
-			if ($I2_ARGS[1] == 'roster' || $I2_ARGS[1] == 'classes')
+			if (in_array($I2_ARGS[1],array('roster','class','section')))
 				redirect();
 		}
 		
