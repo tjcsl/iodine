@@ -118,10 +118,6 @@
 [</foreach>]
 		</td>
 	</tr>
-	<tr>
-		<td>Locker:</td>
-		<td><input type="text" name="pref_locker" value="[<$I2_USER->locker|escape:'html'>]"/></td>
-	</tr>
 </table>
 <br />
 <strong><a href="[<$I2_ROOT>]calc">Calculator Registration</a></strong>
