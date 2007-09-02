@@ -31,6 +31,11 @@ class StudentDirectory implements Module {
 			$this->information = 'help';
 			return array('Directory Help', 'Searching Help');
 		}
+		$mode = i2config_get('mode','full','roster');
+		if ($mode != 'full') {
+			if ($I2_ARGS[1] == 'roster' || $I2_ARGS[1] == 'classes')
+				redirect();
+		}
 		
 		switch($I2_ARGS[1]) {
 			//Get info about someone or something
@@ -255,7 +260,12 @@ class StudentDirectory implements Module {
 					}
 					$eighth = EighthActivity::id_to_activity(EighthSchedule::get_activities($this->user->uid));
 				}
-				$display->disp('studentdirectory_pane.tpl',array('info' => $this->information, 'schedule' => $sched, 'user' => $this->user, 'eighth' => $eighth, 'im_status' => $im_status, 'homecoming_may_vote' => Homecoming::user_may_vote($this->user), 'is_admin' => Group::admin_all()->has_member($this->user)));
+				$display->disp('studentdirectory_pane.tpl',array('info' => $this->information,
+					'schedule' => $sched, 'user' => $this->user, 'eighth' => $eighth,
+					'im_status' => $im_status,
+					'homecoming_may_vote' => Homecoming::user_may_vote($this->user),
+					'is_admin' => Group::admin_all()->has_member($this->user),
+					'mode' => i2config_get('mode','full','roster')));
 		}
 	}
 	

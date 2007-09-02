@@ -139,7 +139,8 @@ To view this user's portfolio click <a href="http://shares.tjhsst.edu/PORTFOLIO/
 [<if $user->locker>]Locker Number: [<$user->locker|escape:'html'>]<br />[</if>]
 </td></tr></table>
 
-[<if false && $schedule && count($schedule) > 0 >]
+[<if $mode != 'off' && $schedule && count($schedule) > 0 >]
+[<if ($mode == 'skeletal' && $user->grade != 'staff') || $mode == 'full' >]
 <div style="float: left; margin-right: 50px;">
  <br /><span class="bold">Classes:</span><br />
  <table cellspacing="0">
@@ -148,11 +149,14 @@ To view this user's portfolio click <a href="http://shares.tjhsst.edu/PORTFOLIO/
     <th>Pd</th>
     <th>Name</th>
     <th>Rm</th>
+    [<if $mode == 'full'>]
     <th>Teacher</th>
+    [</if>]
     <th>Quarter(s)</td>
    </tr>
   </thead>
   <tbody>
+ [<if $mode == 'full'>]
  [<foreach from=$schedule item=class>]
    <tr class="[<cycle values="c1,c2">]">
     <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$class->sectionid>]">[<$class->period>]</a></td>
@@ -162,9 +166,20 @@ To view this user's portfolio click <a href="http://shares.tjhsst.edu/PORTFOLIO/
     <td class="directory-table">[<$class->term>]</td>
    </tr>
  [</foreach>]
+ [<else>]
+ [<foreach from=$schedule item=class>]
+   <tr class="[<cycle values="c1,c2">]">
+    <td class="directory-table">[<$class->period>]</td>
+    <td class="directory-table">[<$class->name>]</td>
+    <td class="directory-table" style="text-align:center;">[<$class->room>]</td>
+    <td class="directory-table">[<$class->term>]</td>
+   </tr>
+ [</foreach>]
+ [</if>]
   </tbody>
  </table>
 </div>
+[</if>]
 [</if>]
 
 [<if $eighth>]
