@@ -50,13 +50,13 @@ class StudentDirectory implements Module {
 				return array('Pictures: '.$user->fname.' '.$user->lname, $user->fname.' '.$user->lname);
 			case 'search':
 				if( !isSet($_REQUEST['studentdirectory_query']) || $_REQUEST['studentdirectory_query'] == '') {
-					$this->information = 'help';
+					$this->template = 'studentdirectory_help.tpl';
 					return array('Directory Help', 'Searching Help');
 				} else {
 					$info = $I2_USER->search_info($_REQUEST['studentdirectory_query']);
 					
 					if( count($info) == 1 ) {
-						redirect('studentdirectory/info/'.$this->information[0]->uid);
+						redirect('studentdirectory/info/'.$info[0]->uid);
 					} 
 					$this->template_args['info'] = $info;
 					$this->template = 'search.tpl';
@@ -237,7 +237,6 @@ class StudentDirectory implements Module {
 				$this->template_args['mode'] = i2config_get('mode','full','roster');
 				return array('Directory: '.$user->fname.' '.$user->lname, $user->fname.' '.$user->lname);
 			default:
-				$this->information = FALSE;
 				return array('Error', 'Error: User does not exist');
 				
 		}
