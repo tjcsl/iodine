@@ -16,9 +16,8 @@
 */
 class StudentDirectory implements Module {
 	
-	private $information;
-	private $user = NULL;
-	private $classes;
+	private $template;
+	private $template_args = array();
 
 	/**
 	* Required by the {@link Module} interface.
@@ -27,10 +26,12 @@ class StudentDirectory implements Module {
 		global $I2_SQL,$I2_ARGS,$I2_USER;
 
 		$this->user = NULL;
+
 		if( ! isset($I2_ARGS[1]) ) {
-			$this->information = 'help';
+			$this->template = 'studentdirectory_help.tpl';
 			return array('Directory Help', 'Searching Help');
 		}
+
 		$mode = i2config_get('mode','full','roster');
 		if ($mode != 'full') {
 			if ($I2_ARGS[1] == 'roster' || $I2_ARGS[1] == 'classes')
@@ -38,32 +39,27 @@ class StudentDirectory implements Module {
 		}
 		
 		switch($I2_ARGS[1]) {
-			//Get info about someone or something
-			case 'info':
-				try {
-					$this->user = isset($I2_ARGS[2]) ? new User($I2_ARGS[2]) : $I2_USER;
-				} catch(I2Exception $e) {
-					return array('Error', 'Error: User does not exist');
-				}
-				return array('Directory: '.$this->user->fname.' '.$this->user->lname, $this->user->fname.' '.$this->user->lname);
 			case 'pictures':
 				try {
-					$this->user = isset($I2_ARGS[2]) ? new User($I2_ARGS[2]) : $I2_USER;
+					$user = isset($I2_ARGS[2]) ? new User($I2_ARGS[2]) : $I2_USER;
 				} catch (I2Exception $e) {
 					return array('Error', 'Error: User does not exist');
 				}
-				$this->information = "pictures";
-				return array('Pictures: '.$this->user->fname.' '.$this->user->lname, $this->user->fname.' '.$this->user->lname);
+				$this->template = 'pictures.tpl';
+				$this->tempate_args['user'] = $user;
+				return array('Pictures: '.$user->fname.' '.$user->lname, $user->fname.' '.$user->lname);
 			case 'search':
 				if( !isSet($_REQUEST['studentdirectory_query']) || $_REQUEST['studentdirectory_query'] == '') {
 					$this->information = 'help';
 					return array('Directory Help', 'Searching Help');
 				} else {
-					$this->information = $I2_USER->search_info($_REQUEST['studentdirectory_query']);
+					$info = $I2_USER->search_info($_REQUEST['studentdirectory_query']);
 					
-					if( count($this->information) == 1 ) {
+					if( count($info) == 1 ) {
 						redirect('studentdirectory/info/'.$this->information[0]->uid);
-					}
+					} 
+					$this->template_args['info'] = $info;
+					$this->template = 'search.tpl';
 					return array('Directory search results for "'.$_REQUEST['studentdirectory_query'].'"', 'Search results for "'.$_REQUEST['studentdirectory_query'].'"');
 				}
 				break;
@@ -72,9 +68,9 @@ class StudentDirectory implements Module {
 					redirect();
 				}
 				$sec = Schedule::section($I2_ARGS[2]);
-				$this->information = array('class'=>$sec,'students'=>$sec->get_students(),'aimkey'=>i2config_get("key", NULL, "aim"));
+				$this->template = 'class.tpl';
+				$this->template_args = array('class'=>$sec,'students'=>$sec->get_students(),'aimkey'=>i2config_get("key", NULL, "aim"));
 				return "Students in {$sec->name}, Period {$sec->period}";
-				break;
 			case 'section':
 				if (isSet($I2_ARGS[2])) {
 					$classid = $I2_ARGS[2];
@@ -82,43 +78,164 @@ class StudentDirectory implements Module {
 					$classid = NULL;
 				}
 				$sectionids = Schedule::sections($classid);
-				$this->classes = array();
+				$classes = array();
 				foreach ($sectionids as $sectionid) {
 					$sec = Schedule::section($sectionid);
-					$this->classes[] = array('class'=>$sec);
+					$classes[] = array('class'=>$sec);
 				}
-				usort($this->classes,array($this,'teacherperiodsort'));
-				$classname = $this->classes[0]['class']->name;
-				$this->information = 'classes';
+				usort($classes,array($this,'teacherperiodsort'));
+				$classname = $classes[0]['class']->name;
+				$this->template = 'classes.tpl';
+				$this->template_args['classes'] = $classes;
 				return "Sections of $classname";
 			case 'roster':
 				$sectionids = Schedule::roster();
-				$this->classes = array();
+				$classes = array();
 				foreach ($sectionids as $sectionid) {
 					$sec = Schedule::section($sectionid);
-					$this->classes[] = $sec;
+					$classes[] = $sec;
 				}
 				$I2_ARGS[2] = (isset($I2_ARGS[2]) ? $I2_ARGS[2] : '');
 				switch (strtolower($I2_ARGS[2])) {
 				case 'teacher':
-					@usort($this->classes, array('StudentDirectory', 'sort_teacher'));
+					@usort($classes, array('StudentDirectory', 'sort_teacher'));
 					break;
 				case 'period':
-					@usort($this->classes, array('StudentDirectory', 'sort_period'));
+					@usort($classes, array('StudentDirectory', 'sort_period'));
 					break;
 				case 'room':
-					@usort($this->classes, array('StudentDirectory', 'sort_room'));
+					@usort($classes, array('StudentDirectory', 'sort_room'));
 					break;
 				case 'term':
-					@usort($this->classes, array('StudentDirectory', 'sort_term'));
+					@usort($classes, array('StudentDirectory', 'sort_term'));
 					break;
 				case 'name':
 				default:
-					@usort($this->classes, array('StudentDirectory', 'sort_name'));
+					@usort($classes, array('StudentDirectory', 'sort_name'));
 					break;
 				}
-				$this->information = 'roster';
+				$this->template = 'roster.tpl';
+				$this->template_args['courses'] = $classes;
 				return "School Roster: All Classes";
+			//Get info about someone or something
+			case 'info':
+				try {
+					$user = isset($I2_ARGS[2]) ? new User($I2_ARGS[2]) : $I2_USER;
+				} catch(I2Exception $e) {
+					$this->template = 'nouser.tpl';
+					return array('Error', 'Error: User does not exist');
+				}
+
+				try {
+					$sched = $user->schedule();
+					if (!$sched->current()) {
+						$sched = NULL;
+					}
+				} catch( I2Exception $e) {
+					$sched = NULL;
+				}
+
+				$im_status = array();
+				$aim_accts = $user->aim;
+				$icq_accts = $user->icq;
+				$jabber_accts = $user->jabber;
+				$yahoo_accts = $user->yahoo;
+				if(count($aim_accts)) {
+					if(!is_array($aim_accts) && !is_object($aim_accts)) {
+						settype($aim_accts, 'array');
+					}
+					$aim_icon = array();
+					$key = i2config_get("key", NULL, "aim");
+					if ($key === NULL)
+						d("No AIM Presence key in config file.",4);
+					foreach($aim_accts as $aim) {
+						if ($key === NULL) {
+							global $I2_ROOT;
+							$url="{$I2_ROOT}www/pics/osi/";
+							switch($this->im_status('aim', $aim)) {
+							case IM_ONLINE:
+								$url .= 'online.png';
+								break;
+							case IM_OFFLINE:
+								$url .= 'offline.png';
+								break;
+							case IM_UNKNOWN:
+								$url .= 'unknown.png';
+								break;
+							}
+						} else {
+							$url="http://api.oscar.aol.com/presence/icon?k=$key&t=$aim";
+						}
+						$aim_icon[] = $url;	
+					}
+					$this->template_args['aim_icon'] = $aim_icon;
+				}
+				if(count($icq_accts)) {
+					if(!is_array($icq_accts) && !is_object($icq_accts)) {
+						settype($icq_accts, 'array');
+					}
+					foreach($icq_accts as $icq) {
+						switch($this->im_status('icq', $icq)) {
+						case IM_ONLINE:
+							$im_status['icq'][$icq] = 'online';
+							break;
+						case IM_OFFLINE:
+							$im_status['icq'][$icq] = 'offline';
+							break;
+						case IM_UNKNOWN:
+							$im_status['icq'][$icq] = 'unknown';
+							break;
+						}
+					}
+				}
+				if(count($jabber_accts)) {
+					if(!is_array($jabber_accts) && !is_object($jabber_accts)) {
+						settype($jabber_accts, 'array');
+					}
+					foreach($jabber_accts as $jabber) {
+						switch($this->im_status('jabber', $jabber)) {
+						case IM_ONLINE:
+							$im_status['jabber'][$jabber] = 'online';
+							break;
+						case IM_OFFLINE:
+							$im_status['jabber'][$jabber] = 'offline';
+							break;
+						case IM_UNKNOWN:
+							$im_status['jabber'][$jabber] = 'unknown';
+							break;
+						}
+					}
+				}
+				if(count($yahoo_accts)) {
+					if(!is_array($yahoo_accts) && !is_object($yahoo_accts)) {
+						settype($yahoo_accts, 'array');
+					}
+					foreach($yahoo_accts as $yahoo) {
+						switch($this->im_status('yahoo', $yahoo)) {
+						case IM_ONLINE:
+							$im_status['yahoo'][$yahoo] = 'online';
+							break;
+						case IM_OFFLINE:
+							$im_status['yahoo'][$yahoo] = 'offline';
+							break;
+						case IM_UNKNOWN:
+							$im_status['yahoo'][$yahoo] = 'unknown';
+							break;
+						}
+					}
+				}
+
+				$eighth = EighthActivity::id_to_activity(EighthSchedule::get_activities($user->uid));
+
+				$this->template = 'studentdirectory_pane.tpl';
+				$this->template_args['schedule'] = $sched;
+				$this->template_args['user'] = $user;
+				$this->template_args['eighth'] = $eighth;
+				$this->template_args['im_status'] = $im_status;
+				$this->template_args['homecoming_may_vote'] = Homecoming::user_may_vote($user);
+				$this->template_args['is_admin'] = Group::admin_all()->has_member($user);
+				$this->template_args['mode'] = i2config_get('mode','full','roster');
+				return array('Directory: '.$user->fname.' '.$user->lname, $user->fname.' '.$user->lname);
 			default:
 				$this->information = FALSE;
 				return array('Error', 'Error: User does not exist');
@@ -138,135 +255,7 @@ class StudentDirectory implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
-		$eighth = NULL;
-		$im_status = NULL;
-		switch($this->information) {
-			case 'help':
-				$display->disp('studentdirectory_help.tpl');
-				break;
-			case 'classes':
-				$display->smarty_assign('classes',$this->classes);
-				$display->disp('classes.tpl');
-				break;
-			case 'roster':
-				$display->disp('roster.tpl',array('courses' => $this->classes));
-				break;
-			case 'pictures':
-				d($this->user->name, 1);
-				$display->disp('pictures.tpl',array('user' => $this->user));
-				break;
-			default:
-				if($this->user !== NULL) {
-					try {
-						$sched = $this->user->schedule();
-						if (!$sched->current()) {
-							$sched = NULL;
-						}
-					} catch( I2Exception $e) {
-						$sched = NULL;
-					}
-				} else {
-					$sched = NULL;
-				}
-				if ($this->user !== NULL) {
-					$im_status = array();
-					$aim_accts = $this->user->aim;
-					$icq_accts = $this->user->icq;
-					$jabber_accts = $this->user->jabber;
-					$yahoo_accts = $this->user->yahoo;
-					if(count($aim_accts)) {
-						if(!is_array($aim_accts) && !is_object($aim_accts)) {
-							settype($aim_accts, 'array');
-						}
-						$aim_icon = array();
-						$key = i2config_get("key", NULL, "aim");
-						if ($key === NULL)
-							d("No AIM Presence key in config file.",4);
-						foreach($aim_accts as $aim) {
-							if ($key === NULL) {
-								global $I2_ROOT;
-								$url="{$I2_ROOT}www/pics/osi/";
-								switch($this->im_status('aim', $aim)) {
-								case IM_ONLINE:
-									$url .= 'online.png';
-									break;
-								case IM_OFFLINE:
-									$url .= 'offline.png';
-									break;
-								case IM_UNKNOWN:
-									$url .= 'unknown.png';
-									break;
-								}
-							} else {
-								$url="http://api.oscar.aol.com/presence/icon?k=$key&t=$aim";
-							}
-							$aim_icon[] = $url;	
-						}
-						$display->smarty_assign('aim_icon',$aim_icon);
-					}
-					if(count($icq_accts)) {
-						if(!is_array($icq_accts) && !is_object($icq_accts)) {
-							settype($icq_accts, 'array');
-						}
-						foreach($icq_accts as $icq) {
-							switch($this->im_status('icq', $icq)) {
-							case IM_ONLINE:
-								$im_status['icq'][$icq] = 'online';
-								break;
-							case IM_OFFLINE:
-								$im_status['icq'][$icq] = 'offline';
-								break;
-							case IM_UNKNOWN:
-								$im_status['icq'][$icq] = 'unknown';
-								break;
-							}
-						}
-					}
-					if(count($jabber_accts)) {
-						if(!is_array($jabber_accts) && !is_object($jabber_accts)) {
-							settype($jabber_accts, 'array');
-						}
-						foreach($jabber_accts as $jabber) {
-							switch($this->im_status('jabber', $jabber)) {
-							case IM_ONLINE:
-								$im_status['jabber'][$jabber] = 'online';
-								break;
-							case IM_OFFLINE:
-								$im_status['jabber'][$jabber] = 'offline';
-								break;
-							case IM_UNKNOWN:
-								$im_status['jabber'][$jabber] = 'unknown';
-								break;
-							}
-						}
-					}
-					if(count($yahoo_accts)) {
-						if(!is_array($yahoo_accts) && !is_object($yahoo_accts)) {
-							settype($yahoo_accts, 'array');
-						}
-						foreach($yahoo_accts as $yahoo) {
-							switch($this->im_status('yahoo', $yahoo)) {
-							case IM_ONLINE:
-								$im_status['yahoo'][$yahoo] = 'online';
-								break;
-							case IM_OFFLINE:
-								$im_status['yahoo'][$yahoo] = 'offline';
-								break;
-							case IM_UNKNOWN:
-								$im_status['yahoo'][$yahoo] = 'unknown';
-								break;
-							}
-						}
-					}
-					$eighth = EighthActivity::id_to_activity(EighthSchedule::get_activities($this->user->uid));
-				}
-				$display->disp('studentdirectory_pane.tpl',array('info' => $this->information,
-					'schedule' => $sched, 'user' => $this->user, 'eighth' => $eighth,
-					'im_status' => $im_status,
-					'homecoming_may_vote' => Homecoming::user_may_vote($this->user),
-					'is_admin' => Group::admin_all()->has_member($this->user),
-					'mode' => i2config_get('mode','full','roster')));
-		}
+		$display->disp($this->template, $this->template_args);
 	}
 	
 	/**

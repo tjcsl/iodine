@@ -1,9 +1,3 @@
-[<if $info === FALSE and not $user>]
-
-
-The specified user does not exist. Either you mistyped a URL, or something in Intranet is broken.
-[</if>]
-[<if $user && $user->fname>]
 [<if $user->uid == $I2_USER->uid>]
 <strong>This is YOUR info page.  All of your information will ALWAYS be visible to you.</strong><br />
 In order to choose what info can be seen by OTHER users, please setup your <a href="[<$I2_ROOT>]prefs">preferences</a>.<br /><br />
@@ -198,69 +192,4 @@ To view this user's portfolio click <a href="http://shares.tjhsst.edu/PORTFOLIO/
   </tr>
  [</foreach>]
  </table>
-[</if>]
-[<elseif $info and isset($info.class) and isset($info.students)>]
-<p><a href="[<$I2_ROOT>]studentdirectory/section/[<$info.class->classid>]">Click here to view a list of all sections of [<$info.class->name>].</a></p>
-<p>Students in <a href=[<$I2_ROOT>]studentdirectory/info/[<$info.class->teacher->uid>]>[<$info.class->teacher->name>]</a>'s [<$info.class->name>], period [<$info.class->period>]:</p>
-<table cellspacing="0">
- <thead>
-  <tr>
-   <th>Name</th>
-   <th>Email</th>
-   [<if $info.aimkey>]
-   <th>AIM Status</th>
-   [</if>]
-  </tr>
- </thead>
-[<foreach from=$info.students item=student>]
- <tbody>
-  <tr class="[<cycle values="c1,c2">]">
-   <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/info/[<$student->uid>]">[<$student->fullname_comma>] ([<$student->grade>])</a></td>
-   <td class="directory-table">
-    [<if count($student->mail)>]
-	  	[<if count($student->mail) == 1>]
-			[<assign var="mail" value=$student->mail>]
-		[<else>]
-			[<assign var="mail" value=$student->mail.0>]
-		[</if>]
-		[<mailto address=$mail encode="hex">]
-    [<else>]
-     &nbsp;
-    [</if>]
-    </td>
-    [<if $info.aimkey>]
-    <td class="directory-table">
-    [<foreach from=$student->aim item=username key=k>]
-    <img src="http://api.oscar.aol.com/presence/icon?k=[<$info.aimkey>]&t=[<$username>]" /> <a href="aim:goim?screenname=[<$username>]">[<$username|escape:'html'>]</a>
-    [</foreach>]
-    </td>
-    [</if>]
-  </tr>
- </tbody>
-[</foreach>]
-</table>
-<br />
-Other classes taught by [<$info.class->teacher->name>]:
-<table cellspacing="0">
- <thead>
-  <th>Period</th>
-  <th>Name</th>
-  <th>Room(s)</th>
-  <th>Quarter(s)</th>
- </thead>
- <tbody>
- [<foreach from=$info.class->other_classes() item=otherclass>]
-  <tr class="[<cycle values="c1,c2">]">
-   <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$otherclass->sectionid>]">[<$otherclass->period>]</a></td>
-   <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$otherclass->sectionid>]">[<$otherclass->name>]</a></td>
-   <td class="directory-table">[<$otherclass->room>]</td>
-   <td class="directory-table">[<$otherclass->term>]</td>
-  </tr>
- [</foreach>]
- </tbody>
-</table>
-[<elseif $info>]
-[<include file="search/search_results_pane.tpl" results_destination="StudentDirectory/info/">]
-[<else>]
-There were no results matching your query.
 [</if>]
