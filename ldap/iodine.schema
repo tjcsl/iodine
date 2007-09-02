@@ -87,7 +87,7 @@ attributetype ( i2Attr:4
 	)
 
 attributetype ( i2Attr:5
-	NAME ('perm-showpictures' 'showpictures' 'showpicture')
+	NAME ('perm-showpictures' 'perm-showpicture' 'showpictures' 'showpicture')
 	DESC 'Whether the pictures should be visible to others'
 	EQUALITY booleanMatch
 	SYNTAX boolSyntax
@@ -137,7 +137,6 @@ attributetype ( i2Attr:11
 	NAME ('sponsorDn' 'sponsor' 'teacher')
 	DESC 'The DN of the teacher(s) sponsoring an activity'
 	EQUALITY distinguishedNameMatch
-	ORDERING caseExactOrderingMatch
 	SYNTAX dnSyntax
 	)
 
@@ -160,6 +159,7 @@ attributetype ( i2Attr:14
 	NAME ('iodineUid' 'i2uid' 'lanuid' 'schooluid' 'localuid')
 	DESC 'A log-in username'
 	EQUALITY caseIgnoreMatch
+	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX stringSyntax
 	SINGLE-VALUE
 	)
@@ -326,7 +326,7 @@ attributetype ( i2Attr:37
 	DESC 'AIM/AOL Screenname'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax{256}
+	SYNTAX stringSyntax
 	)
 
 attributetype ( i2Attr:38
@@ -334,7 +334,7 @@ attributetype ( i2Attr:38
 	DESC 'Yahoo! ID'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax{256}
+	SYNTAX stringSyntax
 	)
 	
 attributetype ( i2Attr:39
@@ -342,7 +342,7 @@ attributetype ( i2Attr:39
 	DESC 'MSN Username'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax{256}
+	SYNTAX stringSyntax
 	)
 	
 attributetype ( i2Attr:40
@@ -350,7 +350,7 @@ attributetype ( i2Attr:40
 	DESC 'Jabber Username'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax{256}
+	SYNTAX stringSyntax
 	)
 	
 attributetype ( i2Attr:41
@@ -358,7 +358,7 @@ attributetype ( i2Attr:41
 	DESC 'ICQ Number'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax{256}
+	SYNTAX stringSyntax
 	)
 	
 attributetype ( i2Attr:42
@@ -366,14 +366,14 @@ attributetype ( i2Attr:42
 	DESC 'Google Talk'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax{256}
+	SYNTAX stringSyntax
 	)
 
 attributetype ( i2Attr:43
 	NAME ('webpage' 'website')
 	DESC 'The website of a user'
 	EQUALITY caseIgnoreMatch
-	SYNTAX stringSyntax{256}
+	SYNTAX stringSyntax
 	)
 
 attributetype ( i2Attr:44
@@ -506,7 +506,7 @@ attributetype ( i2Attr:61
 	DESC 'XFire handle'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax{256}
+	SYNTAX stringSyntax
 	)
 
 #attributetype ( i2Attr:62
@@ -541,8 +541,8 @@ attributetype ( i2Attr:65
 attributetype ( i2Attr:66
 	NAME ('preferredPhoto')
 	DESC 'The preferred photo of a user'
-	EQUALITY distinguishedNameMatch
-	SYNTAX dnSyntax
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
 	SINGLE-VALUE
 	)
 
@@ -558,12 +558,11 @@ attributetype ( i2Attr:68
 	NAME ('enrolledclass')
 	DESC 'The DN of a class a student is enrolled in'
 	EQUALITY distinguishedNameMatch
-	ORDERING caseExactOrderingMatch
 	SYNTAX dnSyntax
 	)
 
 attributetype ( i2Attr:69
-	NAME ('perm-hideeighth-self' 'hideeighthself')
+	NAME ('perm-showeighth-self' 'showeighthself')
 	DESC 'Whether the user wants their eighth-period presence shown'
 	EQUALITY booleanMatch
 	SYNTAX boolSyntax
@@ -575,7 +574,7 @@ attributetype ( i2Attr:70
 	DESC 'A skype handle'
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
-	SYNTAX stringSyntax{256}
+	SYNTAX stringSyntax
 	)
 
 attributetype ( i2Attr:71
@@ -592,6 +591,29 @@ attributetype ( i2Attr:72
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubStringsMatch
 	SYNTAX stringSyntax{6}
+	)
+
+attributetype ( i2Attr:73
+	NAME ('perm-showeighth' 'showeighth')
+	DESC 'Whether the users eighth-period presence may be shown'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:74
+	NAME ('is-admin' 'admin-all')
+	DESC 'Whether the user has full administrative access'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+
+attributetype ( i2Attr:75
+	NAME ('afsid')
+	DESC 'AFS ID'
+	EQUALITY integerMatch
+	SYNTAX integerSyntax
 	)
 
 objectclass ( i2OC:1
@@ -616,13 +638,14 @@ objectclass ( i2OC:1
 		perm-showbirthday $
 		perm-showschedule $
 		perm-showmap $
+		perm-showeighth $
 		perm-showpictures-self $
 		perm-showaddress-self $
 		perm-showtelephone-self $
 		perm-showbirthday-self $
 		perm-showschedule-self $
 		perm-showmap-self $
-		perm-hideeighth-self $
+		perm-showeighth-self $
 		displayName $
 		middlename $
 		nickname $
@@ -641,7 +664,12 @@ objectclass ( i2OC:1
 		comments $
 		preferredPhoto $
 		enrolledclass $
-		mailMessages
+		mailMessages $
+		gidNumber $
+		afsid $
+		homeDirectory $
+		loginShell $
+		is-admin
 	)
 	)
 
@@ -679,7 +707,12 @@ objectclass ( i2OC:2
 		metaphonefirst $
 		aim $ msn $ xfire $ yahoo $ googleTalk $ icq $ jabber $ xfire $ skype $
 		preferredPhoto $
-		mailMessages
+		mailMessages $
+		gidNumber $
+		afsid $
+		homeDirectory $
+		loginShell $
+		is-admin
 	)
 	)
 
