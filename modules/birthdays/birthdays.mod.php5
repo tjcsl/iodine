@@ -23,6 +23,8 @@ class Birthdays implements Module {
 
 	private $template_args = array();
 
+	private $tmp_ldap;
+
 	function init_box() {
 		global $I2_ROOT;
 
@@ -30,6 +32,7 @@ class Birthdays implements Module {
 		$mytime = getdate(time());
 
 		if(!($this->birthdays = $this->get_cache($mytime))) {
+			$this->tmp_ldap = LDAP::get_simple_bind( i2config_get('authuser_dn','cn=authuser,dc=tjhsst,dc=edu','auth'), i2config_get('authuser_passwd',NULL,'auth') );
 			$this->birthdays = $this->get_birthdays(time());
 			$this->store_cache($this->birthdays,$mytime);
 		}
@@ -42,7 +45,7 @@ class Birthdays implements Module {
 	}
 	
 	function init_pane() {
-		global $I2_ARGS;
+		global $I2_ARGS, $I2_LDAP;
 		
 		if (isset($_POST['date'])) {
 			redirect('birthdays/' . str_replace('.', '/', $_POST['date']));
@@ -56,6 +59,9 @@ class Birthdays implements Module {
 		}
 
 		$birthdays = array();
+
+		$this->tmp_ldap = $I2_LDAP;
+
 		for($i = -3; $i <= 3; $i+=1) {
 			$timestamp = $time + ($i * Birthdays::DAY);
 			$birthday = array();
@@ -75,13 +81,11 @@ class Birthdays implements Module {
 	}
 
 	private function get_birthdays($timestamp) {
-		$tmp_ldap = LDAP::get_simple_bind( i2config_get('authuser_dn','cn=authuser,dc=tjhsst,dc=edu','auth'), i2config_get('authuser_passwd',NULL,'auth') );
-		
 		$date = '*' . date('md', $timestamp);
 		$year = (int)date('Y', $timestamp);
 
 		$people = array();
-		$result = $tmp_ldap->search('ou=people,dc=tjhsst,dc=edu', "(birthday=$date)", 'iodineUidNumber');
+		$result = $this->tmp_ldap->search('ou=people,dc=tjhsst,dc=edu', "(birthday=$date)", 'iodineUidNumber');
 		while ($uid = $result->fetch_single_value()) {
 			$user = new User((int)$uid);
 			$person = array(
