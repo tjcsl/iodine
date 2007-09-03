@@ -46,7 +46,7 @@ class StudentDirectory implements Module {
 					return array('Error', 'Error: User does not exist');
 				}
 				$this->template = 'pictures.tpl';
-				$this->tempate_args['user'] = $user;
+				$this->template_args['user'] = $user;
 				return array('Pictures: '.$user->fname.' '.$user->lname, $user->fname.' '.$user->lname);
 			case 'search':
 				if( !isSet($_REQUEST['studentdirectory_query']) || $_REQUEST['studentdirectory_query'] == '') {
