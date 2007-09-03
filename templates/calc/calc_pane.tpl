@@ -5,15 +5,18 @@ If you have more than one calculator, only enter information for one calculator 
 <form method="post" action="[<$I2_ROOT>]calc" class="boxform">
 <input type="hidden" name="calc_form" value="add" />
 <table border="0"><tr><td>
-<strong>Serial number:</strong> (the digits up to, but excluding, the first letter) on the back of your calculator.<br />
+<strong>Serial number:</strong><br />
+Look on the back of your calculator.<br />
+Enter the numbers up to, but excluding, the first letter.<br />
 <input type="text" name="sn" maxlength="10" style="width:150px" value="" />
 </td></tr>
 <tr><td>
-<strong>ID number:</strong> Turn on your calculator.<br />
+<strong>ID number:</strong><br />
+Turn on your calculator.<br />
 <em>TI-83/84:</em> Press [2nd], then [+] for the memory menu.  Press [1] for "About".<br />
 <em>TI-89/92/Voyage 200:</em> From the HOME screen, press [F1] to open the "Tools" menu.  Enter "A" or scroll down to "A:About".<br />
 Enter the 14-digit ID, without the dashes.<br />
-To see an image of how to identify your calculator ID, go to the TI website (NOTE: you are leaving TJ webspace): <a href="http://education.ti.com/educationportal/sites/US/nonProductSingle/find_productid.html">http://education.ti.com/educationportal/sites/US/nonProductSingle/find_productid.html</a>
+To see an image of how to identify your calculator ID, go to the TI website (NOTE: you are leaving TJ webspace): <a href="http://education.ti.com/educationportal/sites/US/nonProductSingle/find_productid.html">http://education.ti.com/educationportal/sites/US/nonProductSingle/find_productid.html</a><br />
 <input type="text" name="id" maxlength="14" style="width:150px" value="" />
 </td></tr>
 <tr><td>
