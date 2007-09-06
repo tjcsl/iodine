@@ -80,154 +80,166 @@ class Eighth implements Module {
 	*/
 	private $safe_modules = array('vcp_schedule');
 
+	/**
+	* Array to mark the beginning of an undo or redo transaction.
+	*/
+	private static $start_undo = array(NULL, NULL, NULL, NULL, 'TRANSACTION_START');
+	
+	/**
+	* Array to mark the end of an undo or redo transaction.
+	*/
+	private static $end_undo = array(NULL, NULL, NULL, NULL, 'TRANSACTION_END');
+	
 	function __construct() {
 		self::init_undo();
 	}
 
-	private static function undo() {
-		if (count(self::$undo) == 0) {
-			/*
-			** Nothing to undo
-			*/
-			return FALSE;
+	private function view_undoredo_stack() {
+		if (count(self::$undo) + count(self::$redo) == 0) {
+			redirect('eighth');
 		}
-		$undoandredo = array_pop(self::$undo);
-		//array_pop($_SESSION['eighth_redo']);
-		self::undo_exec($undoandredo[0],$undoandredo[1]);
-		array_push(self::$redo,$undoandredo);
-		//array_push($_SESSION['eighth_redo'],$undoandredo);
+		$this->template = 'view_undoredo.tpl';
+		$undo = str_replace("\n","<br/>",print_r(self::$undo,TRUE));
+		$redo = str_replace("\n","<br/>",print_r(self::$redo,TRUE));
+		$this->template_args['undo'] = $undo;
+		$this->template_args['redo'] = $redo;
+	}
+	private static function fix_undoredo_stack($stack) {	
+		if ($stack == NULL || count($stack) == 0) {
+			return array();
+		}
+		$start = TRUE;
+		$end = FALSE;
+		$action = FALSE;
+
+		$new_stack = array(self::$start_undo);
+		foreach ($stack as $k) {
+			//No reason for nulls
+			if($k == NULL) {
+				continue;
+			} 
+			//Found undo_start, but already started
+			else if($k == self::$start_undo && $start) {
+				continue;
+			} 
+			//Found undo end, but already ended
+			else if($k == self::$end_undo && $end) {
+				continue;
+			} 
+			//Found undo end, but no action yet taken
+			else if($k == self::$end_undo && !$action) {
+				continue;
+			} 
+			//Probably should add k to new_stack
+			else {
+				//Start a new transaction
+				if($end && !$start) {
+					if ($k != self::$start_undo && $k != self::$end_undo) {
+						array_push($new_stack, self::$start_undo);
+						array_push($new_stack, $k);
+						$start = TRUE;
+						$end = FALSE;
+						$action = TRUE;
+					} else {
+						continue;
+					}
+				}
+				//Add an action or predefined ending
+				else {
+					array_push($new_stack, $k);
+					if ($k == self::$end_undo) {
+						$start = FALSE;
+						$end = TRUE;
+						$action = FALSE;
+					} else {
+						$start = FALSE;
+						$end = FALSE;
+						$action = TRUE;
+					}
+				}
+			}
+		}
+		if (!$end) {
+			array_push($new_stack, self::$end_undo);
+		}
+	}
+	
+	private static function undo($action) {
+		return $undoandredo;
 	}
 
 	/**
 	* Helper for undo() and redo(), which are rather similiar.
 	*/
-	private static function undo_exec($query,$args) {
+	private static function undoredo_exec($query,$args) {
 		global $I2_SQL, $I2_LOG;
 		//$I2_LOG->log_file('UNDO/REDO: "'.query.'" -> '.print_r($args,1),6);
 		$I2_SQL->query_arr($query,$args);
 	}
 
-	public static function redo_transaction() {
-		$name = self::get_redo_name();
-		if ($name != 'TRANSACTION_END') {
-			// Last action was a single-action transaction
-			self::redo();
-			return;
-		}
-		self::start_undo_transaction();
-		array_pop(self::$redo);
-		//array_pop($_SESSION['eighth_redo']);
-		$openct = 1;
-		while ($name) {
-			  $name = self::get_redo_name();
-			  if (!$name) {
-						 break;
-			  }
-			if ($name == 'TRANSACTION_START') {
-				$openct--;
-				array_pop(self::$redo);
-				continue;
-			}
-			if ($name == 'TRANSACTION_END') {
-				$openct++;
-				array_pop(self::$redo);
-				continue;
-			}
-			if ($openct == 0) {
-				// We found a matched pair of transaction markers, break
-				break;
-			}
-			self::redo();
-		}
-		if (count(self::$redo) > 0) {
-			array_pop(self::$redo);
-			//array_pop($_SESSION['eighth_redo']);
-		}
-		self::end_undo_transaction();
-	}
-	
 	public static function undo_transaction() {
-		$name = self::get_undo_name();
-		while ($name == 'TRANSACTION_START') {
-			//The stack is messed up
-			array_pop(self::$undo);
-			$name = self::get_undo_name();
-		}
-		if ($name != 'TRANSACTION_END') {
-			// Last action was a single-action transaction
-			self::undo();
+		/*
+		 * Uncomment if the stack gets dirty and throws errors.
+		 * Better yet, figure out why the stack is getting dirty
+		 * and fix that instead.
+		 */	
+		//self::fix_undoredo_stack(self::$undo);
+		
+		if (count(self::$undo) == 0) {
 			return;
 		}
-		if (!$name) {
-			return;
+		array_pop(self::$undo); // drop the end_undo
+		
+		$redo_queue = array(self::$end_undo);
+		do {
+			$action = array_pop(self::$undo);
+			$redo_queue[] = $action;
+			if($action != self::$start_undo) {
+				self::undoredo_exec($action[0],$action[1]);
+			}
+		} while ($action != self::$start_undo);
+		//self::$redo += array_reverse($redo_queue);
+		foreach (array_reverse($redo_queue) as $k) {
+			self::$redo[] = $k;
 		}
-		self::start_redo_transaction();
-		array_pop(self::$undo); // drop the transaction_end
-		//array_pop($_SESSION['eighth_undo']);
-
-		$openct = 1;
-		while ($name) {
-			$name = self::get_undo_name();
-			if (!$name) {
-				break;
-			}
-			if ($name == 'TRANSACTION_START') {
-					  $openct--;
-					  array_pop(self::$undo);
-					  continue;
-			}
-			if ($name == 'TRANSACTION_END') {
-					  $openct++;
-					  array_pop(self::$undo);
-					  continue;
-			}
-			if ($openct == 0) {
-					  // We found a matched pair of transaction markers, break
-					  break;
-			}
-			self::undo();
-		}
-		$name = self::get_undo_name();
-		if ($name == 'TRANSACTION_START') {
-			//pop off the TRANSACTION_START
-			array_pop(self::$undo);
-			//array_pop($_SESSION['eighth_undo']);
-		}
-		self::end_redo_transaction();
 	}
 
-	public static function start_undo_transaction() {
-		array_push(self::$undo,array('TRANSACTIONSTART -',NULL,'TRANSACTIONSTART -',NULL,'TRANSACTION_START'));
-		//array_push($_SESSION['eighth_undo'],array(NULL,NULL,NULL,NULL,'TRANSACTION_START'));
+	public static function redo_transaction() {
+		//self::fix_undoredo_stack(self::$redo);
+		
+		if (count(self::$redo) == 0) {
+			return;
+		}
+		array_pop(self::$redo); 
+		
+		$undo_queue = array(self::$end_undo);
+		do {
+			$action = array_pop(self::$redo);
+			$undo_queue[] = $action;
+			if($action != self::$start_undo) {
+				self::undoredo_exec($action[2],$action[3]);
+			}
+		} while ($action != self::$start_undo);
+		//self::$undo += array_reverse($undo_queue);
+		foreach (array_reverse($undo_queue) as $k) {
+			self::$undo[] = $k;
+		}
+	}
+
+	private static function start_undo_transaction() {
+		array_push(self::$undo, self::$start_undo);
 	}
 	
 	private static function start_redo_transaction() {
-		array_push(self::$redo,array('TRANSACTIONSTART -',NULL,'TRANSACTIONSTART -',NULL,'TRANSACTION_START'));
-		//array_push($_SESSION['eighth_redo'],array(NULL,NULL,NULL,NULL,'TRANSACTION_START'));
+		array_push(self::$redo, self::$start_undo);
 	}
 	
-	public static function end_undo_transaction() {
-		array_push(self::$undo,array('TRANSACTIONEND -',NULL,'TRANSACTIONEND -',NULL,'TRANSACTION_END'));
-		//array_push($_SESSION['eighth_undo'],array(NULL,NULL,NULL,NULL,'TRANSACTION_END'));
+	private static function end_undo_transaction() {
+		array_push(self::$undo, self::$end_undo);
 	}
 
 	private static function end_redo_transaction() {
-		array_push(self::$redo,array('TRANSACTIONEND -',NULL,'TRANSACTIONEND -',NULL,'TRANSACTION_END'));
-		//array_push($_SESSION['eighth_redo'],array(NULL,NULL,NULL,NULL,'TRANSACTION_END'));
-	}
-
-	private static function redo() {
-		if (count(self::$redo) == 0) {
-			/*
-			** Nothing to redo
-			*/
-			return FALSE;
-		}
-		$undoandredo = array_pop(self::$redo);
-		//array_pop($_SESSION['eighth_redo']);
-		self::undo_exec($undoandredo[2],$undoandredo[3]);
-		array_push(self::$undo,$undoandredo);
-		//array_push($_SESSION['eighth_undo'],$undoandredo);
+		array_push(self::$redo, self::$end_undo);
 	}
 
 	public static function init_undo() {
@@ -272,30 +284,21 @@ class Eighth implements Module {
 		//array_push($_SESSION['eighth_undo'],$undo);
 	}
 
-	public static function get_undo_name($descend = FALSE) {
-		$ct = count(self::$undo);
-		if ($ct < 1) {
-			return FALSE;
+	private static function get_undoredo_name($stack) {
+		foreach(array_reverse($stack) as $k) {
+			if ($k != self::$start_undo && $k != self::$end_undo) {
+				return $k[4];
+			}
 		}
-		$name = self::$undo[$ct-1][4];
-		while ($descend && $name == 'TRANSACTION_END') {
-			$ct--;
-			$name = self::$undo[$ct-1][4];
-		}
-		return $name;
+		return FALSE;
 	}
 
-	public static function get_redo_name($descend = FALSE) {
-		$ct = count(self::$redo);
-		if ($ct < 1) {
-			return FALSE;
-		}
-		$name = self::$redo[$ct-1][4];
-		while ($descend && $name == 'TRANSACTION_END') {
-			$ct--;
-			$name = self::$redo[$ct-1][4];
-		}
-		return $name;
+	public static function get_undo_name() {
+		return self::get_undoredo_name(self::$undo);
+	}
+	
+	public static function get_redo_name() {
+		return self::get_undoredo_name(self::$redo);
 	}
 
 	/**
@@ -376,8 +379,8 @@ class Eighth implements Module {
 		}
 		$argstr = implode('/', array_slice($I2_ARGS,1));
 		$this->template_args['argstr'] = $argstr;
-		$this->template_args['last_undo'] = self::get_undo_name(TRUE);
-		$this->template_args['last_redo'] = self::get_redo_name(TRUE);
+		$this->template_args['last_undo'] = self::get_undo_name();
+		$this->template_args['last_redo'] = self::get_redo_name();
 		if (isSet($_SESSION['eighth']['start_date'])) {
 			$this->template_args['startdate'] = $_SESSION['eighth']['start_date'];
 		}
@@ -612,7 +615,11 @@ class Eighth implements Module {
 		else if($this->op == 'commit') {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$group = new Group($this->args['gid']);
+			
+			self::start_undo_transaction();
 			$activity->add_members($group->members, TRUE);
+			self::end_undo_transaction();
+			
 			redirect('eighth');
 		}
 	}
@@ -621,7 +628,7 @@ class Eighth implements Module {
 	* Clears the undo and redo stacks
 	*
 	*/
-	public static function clear_stack() {
+	public static function clear_undoredo_stack() {
 		$_SESSION['eighth_undo'] = array();
 		self::$undo = array();
 		$_SESSION['eighth_redo'] = array();
@@ -629,19 +636,23 @@ class Eighth implements Module {
 	}
 
 	private function undoit() {
-			  global $I2_ARGS;
-			  if ($this->op == 'undo') {
-						 self::undo_transaction();
-			  } elseif ($this->op == 'redo') {
-						 self::redo_transaction();
-			  } elseif ($this->op == 'clear') {
-						 self::clear_stack();
-			  } else {
-						 redirect('eighth');
-			  }
-			 // Circumvent $args because it turns the path into an associative array
-			 $str = implode('/',array_slice($I2_ARGS,3));
-			 redirect('eighth/'.$str);
+		global $I2_ARGS;
+		if ($this->op == 'view') {
+			$this->view_undoredo_stack();
+		} else {
+			if ($this->op == 'undo') {
+				self::undo_transaction();
+			} elseif ($this->op == 'redo') {
+				self::redo_transaction();
+			} elseif ($this->op == 'clear') {
+				self::clear_undoredo_stack();
+			} else {
+				redirect('eighth');
+			}
+			// Circumvent $args because it turns the path into an associative array
+			$str = implode('/',array_slice($I2_ARGS,3));
+			redirect('eighth/'.$str);
+		}
 	}
 
 	public static function sort_by_name($one,$two) {
@@ -780,26 +791,34 @@ class Eighth implements Module {
 			}
 			$this->title = 'Alter Permissions to Restricted Activities';
 		}
-		else if($this->op == 'add_group') {
-			$activity = new EighthActivity($this->args['aid']);
-			$group = new Group($this->args['gid']);
-			$activity->add_restricted_members($group->members);
-			redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
-		}
-		else if($this->op == 'add_member') {
-			$activity = new EighthActivity($this->args['aid']);
-			$activity->add_restricted_member(new User($this->args['uid']));
-			redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
-		}
-		else if($this->op == 'remove_member') {
-			$activity = new EighthActivity($this->args['aid']);
-			$activity->remove_restricted_member(new User($this->args['uid']));
-			redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
-		}
-		else if($this->op == 'remove_all') {
-			$activity = new EighthActivity($this->args['aid']);
-			$activity->remove_restricted_all();
-			redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
+		else {
+			self::start_undo_transaction();
+			if($this->op == 'add_group') {
+				$activity = new EighthActivity($this->args['aid']);
+				$group = new Group($this->args['gid']);
+				$activity->add_restricted_members($group->members);
+	
+				redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
+			}
+			else if($this->op == 'add_member') {
+				$activity = new EighthActivity($this->args['aid']);
+				$activity->add_restricted_member(new User($this->args['uid']));
+			
+				redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
+			}
+			else if($this->op == 'remove_member') {
+				$activity = new EighthActivity($this->args['aid']);
+				$activity->remove_restricted_member(new User($this->args['uid']));
+				
+				redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
+			}
+			else if($this->op == 'remove_all') {
+				$activity = new EighthActivity($this->args['aid']);
+				$activity->remove_restricted_all();
+
+				redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
+			}
+			self::end_undo_transaction();
 		}
 	}
 
@@ -846,7 +865,9 @@ class Eighth implements Module {
 			//$activity_to->add_members($activity_from->members, TRUE);
 			//$activity_from->remove_all();
 			$activity_to = new EighthActivity($this->args['aid_to'], $this->args['bid_to']);
+			self::start_undo_transaction();
 			$activity_to->transfer_members($this->args['aid_from'], $this->args['bid_to']);
+			self::end_undo_transaction();
 			redirect('eighth');
 		}
 	}
@@ -872,12 +893,14 @@ class Eighth implements Module {
 			if ($this->args['aid'] != 'auto' && ! EighthActivity::activity_exists($this->args['aid'])) {
 				$newid = $this->args['aid'];
 			}
+			self::start_undo_transaction();
 			$aid = EighthActivity::add_activity($this->args['name'], array(), array(), '', FALSE, FALSE, FALSE, FALSE, $newid);
+			self::end_undo_transaction();
 			redirect("eighth/amr_activity/view/aid/{$aid}");
 		}
 		else if($this->op == 'modify') {
 			$activity = new EighthActivity($this->args['aid']);
-			Eighth::start_undo_transaction();
+			self::start_undo_transaction();
 			$activity->name = $this->args['name'];
 			$activity->sponsors = $this->args['sponsors'];
 			$activity->rooms = $this->args['rooms'];
@@ -888,12 +911,14 @@ class Eighth implements Module {
 			$activity->bothblocks = ($this->args['bothblocks'] == 'on');
 			$activity->sticky = ($this->args['sticky'] == 'on');
 			$activity->special = ($this->args['special'] == 'on');
-			Eighth::end_undo_transaction();
+			self::end_undo_transaction();
 			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
 		else if($this->op == 'remove') {
 			if (! empty($this->args['sure'])) {
+				self::start_undo_transaction();
 				EighthActivity::remove_activity($this->args['aid']);
+				self::end_undo_transaction();
 				redirect('eighth');
 			}
 			else {
@@ -907,12 +932,16 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'add_sponsor') {
 			$activity = new EighthActivity($this->args['aid']);
+			self::start_undo_transaction();
 			$activity->add_sponsor($this->args['sid']);
+			self::end_undo_transaction();
 			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
 		else if($this->op == 'remove_sponsor') {
 			$activity = new EighthActivity($this->args['aid']);
+			self::start_undo_transaction();
 			$activity->remove_sponsor($this->args['sid']);
+			self::end_undo_transaction();
 			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
 		else if($this->op == 'select_room') {
@@ -921,15 +950,19 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'add_room') {
 			$activity = new EighthActivity($this->args['aid']);
+			self::start_undo_transaction();
 			$activity->add_room($this->args['rid']);
+			self::end_undo_transaction();
 			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
 		else if($this->op == 'remove_room') {
 			$activity = new EighthActivity($this->args['aid']);
+			self::start_undo_transaction();
 			$activity->remove_room($this->args['rid']);
+			self::end_undo_transaction();
 			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		} else {
-				  redirect('eighth');
+			redirect('eighth');
 		}
 	}
 
@@ -956,18 +989,23 @@ class Eighth implements Module {
 			if (!isSet($this->args['capacity']) || !$this->args['capacity'] || !is_numeric($this->args['capacity'])) {
 				$this->args['capacity'] = -1;
 			}
+			self::start_undo_transaction();
 			$rid = EighthRoom::add_room($this->args['name'], $this->args['capacity']);
+			self::end_undo_transaction();
 			//redirect("eighth/amr_room/view/rid/{$rid}");
 			redirect("eighth/amr_room/select/rid/$rid");
 		}
 		else if($this->op == 'modify') {
+			self::start_undo_transaction();
 			if ($this->args['modify_or_remove'] == 'modify') {
 				$room = new EighthRoom($this->args['rid']);
 				$room->name = $this->args['name'];
 				$room->capacity = $this->args['capacity'];
+				self::end_undo_transaction();
 				redirect("eighth/amr_room/view/rid/{$this->args['rid']}");
 			} else if ($this->args['modify_or_remove'] == 'remove') {
 				EighthRoom::remove_room($this->args['rid']);
+				self::end_undo_transaction();
 				redirect('eighth/amr_room');
 			}
 		}
@@ -990,17 +1028,23 @@ class Eighth implements Module {
 			$this->title = 'View Sponsors';
 		}
 		else if($this->op == 'add') {
+			self::start_undo_transaction();
 			$sid = EighthSponsor::add_sponsor($this->args['fname'], $this->args['lname']);
+			self::end_undo_transaction();
 			redirect('eighth/amr_sponsor');
 		}
 		else if($this->op == 'modify') {
 			$sponsor = new EighthSponsor($this->args['sid']);
+			self::start_undo_transaction();
 			$sponsor->fname = $this->args['fname'];
 			$sponsor->lname = $this->args['lname'];
+			self::end_undo_transaction();
 			redirect('eighth/amr_sponsor');
 		}
 		else if($this->op == 'remove') {
+			self::start_undo_transaction();
 			EighthSponsor::remove_sponsor($this->args['sid']);
+			self::end_undo_transaction();
 			redirect('eighth/amr_sponsor');
 		}
 	}
@@ -1035,7 +1079,7 @@ class Eighth implements Module {
 			$this->title = 'Schedule an Activity (' . $this->template_args['act']->name_r  . ')';
 		}
 		else if($this->op == 'modify') {
-			Eighth::start_undo_transaction();
+			self::start_undo_transaction();
 			foreach($this->args['modify'] as $bid) {
 				if($this->args['activity_status'][$bid] == 'UNSCHEDULED') {
 					EighthSchedule::unschedule_activity($bid, $this->args['aid']);
@@ -1063,7 +1107,7 @@ class Eighth implements Module {
 					EighthActivity::cancel($bid, $this->args['aid']);
 				}
 			}
-			Eighth::end_undo_transaction();
+			self::end_undo_transaction();
 			redirect("eighth/sch_activity/view/aid/{$this->args['aid']}");
 		}
 	}
@@ -1160,9 +1204,11 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'update') {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
+			self::start_undo_transaction();
 			$activity->comment = $this->args['comment'];
 			$activity->advertisement = $this->args['advertisement'];
 			$activity->cancelled = ($this->args['cancelled'] == "on");
+			self::end_undo_transaction();
 			//redirect("eighth/cancel_activity/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
 			redirect("eighth/cancel_activity/activity/bid/{$this->args['bid']}");
 		}
@@ -1272,10 +1318,12 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'reschedule') {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
-			Eighth::start_undo_transaction();
+			
+			self::start_undo_transaction();
 			EighthSchedule::remove_absentee($this->args['bid'],$this->args['uid']);
 			$activity->add_member(new User($this->args['uid']),TRUE);
-			Eighth::end_undo_transaction();
+			self::end_undo_transaction();
+			
 			redirect("eighth/res_student/user/rescheduled/{$this->args['uid']}/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
 		}
 	}
@@ -1312,6 +1360,7 @@ class Eighth implements Module {
 		else if($this->op == 'update') {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$members = $activity->members;
+			self::start_undo_transaction();
 			foreach($members as $member) {
 				if(isSet($this->args['absentees']) && is_array($this->args['absentees']) && in_array($member, $this->args['absentees'])) {
 					EighthSchedule::add_absentee($this->args['bid'], $member);
@@ -1321,6 +1370,7 @@ class Eighth implements Module {
 				}
 			}
 			$activity->attendancetaken = TRUE;
+			self::end_undo_transaction();
 			redirect("eighth/vcp_attendance/activity/bid/{$this->args['bid']}");
 		}
 		else if($this->op == 'format') {
@@ -1360,10 +1410,14 @@ class Eighth implements Module {
 		}
 		else if($this->op == "mark_absent") {
 			$user = new User($this->args['uid']);
+			self::start_undo_transaction();
 			EighthSchedule::add_absentee($this->args['bid'], $user->uid);
+			self::end_undo_transaction();
 			redirect('eighth/ent_attendance/user/bid/'.$this->args['bid'].'/lastuid/'.$user->uid);
 		} else if ($this->op == 'unmark_absent') {
+			self::start_undo_transaction();
 			EighthSchedule::remove_absentee($this->args['bid'], $this->args['uid']);
+			self::end_undo_transaction();
 			redirect('eighth/ent_attendance/user/bid/'.$this->args['bid']);
 		}
 	}
@@ -1552,12 +1606,16 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'lock') {
 			$block = new EighthBlock($this->args['bid']);
+			self::start_undo_transaction();
 			$block->locked = TRUE;
+			self::end_undo_transaction();
 			redirect('eighth/fin_schedules');
 		}
 	 	else if($this->op == 'unlock') {
 			$block = new EighthBlock($this->args['bid']);
+			self::start_undo_transaction();
 			$block->locked = FALSE;
+			self::end_undo_transaction();
 			redirect('eighth/fin_schedules');
 		}
 	}
@@ -1623,13 +1681,17 @@ class Eighth implements Module {
 			$this->title = 'Add/Remove Block';
 		}
 		else if($this->op == 'add') {
+			self::start_undo_transaction();
 			foreach($this->args['blocks'] as $block) {
 				EighthBlock::add_block("{$this->args['Year']}-{$this->args['Month']}-{$this->args['Day']}", $block);
 			}
+			self::end_undo_transaction();
 			redirect('eighth/ar_block#add');
 		}
 		else if($this->op == 'remove') {
+			self::start_undo_transaction();
 			EighthBlock::remove_block($this->args['bid']);
+			self::end_undo_transaction();
 			redirect('eighth/ar_block#add');
 		}
 	}
@@ -1761,7 +1823,11 @@ class Eighth implements Module {
 				foreach($bids as $bid) {
 					if(EighthSchedule::is_activity_valid($this->args['aid'], $bid)) {
 						$activity = new EighthActivity($this->args['aid'], $bid);
+						
+						self::start_undo_transaction();
 						$ret = $activity->add_member(new User($this->args['uid']), isset($this->args['force']));
+						self::end_undo_transaction();
+						
 						$act_status = array();
 						if($ret & EighthActivity::CANCELLED) {
 							$act_status['cancelled'] = TRUE;
@@ -1826,7 +1892,9 @@ class Eighth implements Module {
 			$this->template = 'vcp_schedule_absences.tpl';
 		}
 		else if($this->op == 'remove_absence') {
+			self::start_undo_transaction();
 			EighthSchedule::remove_absentee($this->args['bid'], $this->args['uid']);
+			self::end_undo_transaction();
 			redirect('eighth/vcp_schedule/absences/uid/'.$this->args['uid']);
 		}
 	}

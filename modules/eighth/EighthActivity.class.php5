@@ -211,14 +211,14 @@ class EighthActivity {
 	* @param int $blockid The block ID to add them to.
 	*/
 	public function add_members($userids, $force = FALSE, $blockid = NULL) {
-		Eighth::start_undo_transaction();
+		//Eighth::start_undo_transaction();
 		foreach($userids as $userid) {
 			$ret = $this->add_member(new User($userid), $force, $blockid);
 			if ($ret) {
 				warn("Could not add user #$userid to activity #{$this->data['aid']}");
 			}
 		}
-		Eighth::end_undo_transaction();
+		//Eighth::end_undo_transaction();
 	}
 
 	public static function remove_member_from_activity($aid, User $user, $blockid = NULL) {
@@ -279,11 +279,11 @@ class EighthActivity {
 	* @param int $blockid The block ID to remove them from.
 	*/
 	public function remove_members($userids, $blockid = NULL) {
-		Eighth::start_undo_transaction();
+		//Eighth::start_undo_transaction();
 		foreach($userids as $userid) {
 			$this->remove_member(new User($userid), $blockid);
 		}
-		Eighth::end_undo_transaction();
+		//Eighth::end_undo_transaction();
 	}
 
 	/**
@@ -353,7 +353,7 @@ class EighthActivity {
 			$blockid = $this->data['bid'];
 		}
 		$result = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE aid=%d AND bid=%d', $this->data['aid'], $blockid);
-		Eighth::start_undo_transaction();
+		//Eighth::start_undo_transaction();
 		$query = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d';
 		$undoquery = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d';
 		$queryarg = array($this->data['aid'], $blockid);
@@ -363,7 +363,7 @@ class EighthActivity {
 			Eighth::push_undoable($undoquery,$queryarg+array($userid),$invquery,$queryarg+array($userid),'Remove All [student]');
 		}
 		$I2_SQL->query_arr($query, $queryarg);
-		Eighth::end_undo_transaction();
+		//Eighth::end_undo_transaction();
 	}
 
 	public static function add_restricted_member_to_activity($aid, User $user) {
@@ -399,11 +399,11 @@ class EighthActivity {
 	* @param array $userids The students' user objects or IDs.
 	*/
 	public function add_restricted_members($users) {
-		Eighth::start_undo_transaction();
+		//Eighth::start_undo_transaction();
 		foreach($users as $user) {
 			$this->add_restricted_member(new User($user));
 		}
-		Eighth::end_undo_transaction();
+		//Eighth::end_undo_transaction();
 	}
 
 	public static function remove_restricted_member_from_activity($aid, User $user) {
@@ -439,11 +439,11 @@ class EighthActivity {
 	* @param array $users The students' user objects.
 	*/
 	public function remove_restricted_members($users) {
-		EighthActivity::start_undo_transaction();
+		//Eighth::start_undo_transaction();
 		foreach($users as $user) {
 			$this->remove_restricted_member(new User($user));
 		}
-		EighthActivity::end_undo_transaction();
+		//Eighth::end_undo_transaction();
 	}
 
 	public static function remove_restricted_all_from_activity($aid) {
@@ -459,7 +459,7 @@ class EighthActivity {
 	public function remove_restricted_all() {
 		global $I2_SQL;
 		Eighth::check_admin();
-		Eighth::start_undo_transaction();
+		//Eighth::start_undo_transaction();
 		$old = $I2_SQL->query('SELECT userid FROM eighth_activity_permissions WHERE aid=%d',$this->data['aid']);
 		$query = 'DELETE FROM eighth_activity_permissions WHERE aid=%d';
 		$queryarg = array($this->data['aid']);
@@ -470,7 +470,7 @@ class EighthActivity {
 			$invargs = array($this->data['aid'],$userid);
 			Eighth::push_undoable($userq,$invargs,$invuserq,$invargs,'Remove All From Restricted Activity');
 		}
-		Eighth::end_undo_transaction();
+		//Eighth::end_undo_transaction();
 	}
 
 	/**

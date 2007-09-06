@@ -67,7 +67,7 @@
 		</tr>
 		<tr>
 			<td>Counselor</td>
-			<td><input type="text" name="eighth_user_data[counselor]" value="[<$user->counselor>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
+			<td><input type="text" name="eighth_user_data[counselor_name]" value="[<$user->counselor_name>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
 		<tr>
 			<td>Locker</td>
 			<td><input type="text" name="eighth_user_data[locker]" value="[<$user->locker>]" style="border: 1px dotted #000000; padding: 2px;" /></td>

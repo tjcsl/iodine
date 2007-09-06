@@ -473,6 +473,14 @@ class User {
 		}
 
 		switch ($name) {
+			case 'counselor_name':
+				$couns = $ldap->search_one('ou=people,dc=tjhsst,dc=edu',
+					"(&(objectclass=tjhsstTeacher)(sn=$val))",
+					array('iodineuidnumber'))->fetch_single_value();
+				if($couns) {
+					$this->set('counselor',$couns,$ldap);
+				}
+				return;
 			case 'fname':
 				$this->set('givenName',$val,$ldap);
 				return;

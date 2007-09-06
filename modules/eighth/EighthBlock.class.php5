@@ -48,7 +48,7 @@ class EighthBlock {
 			return $res;
 		}
 		Eighth::check_admin();
-		Eighth::start_undo_transaction();
+		//Eighth::start_undo_transaction();
 		$query = 'INSERT INTO eighth_blocks (date,block) VALUES (%t,%s)';
 		$queryarg = array($date,$block);
 		$result = $I2_SQL->query_arr($query, $queryarg);
@@ -69,7 +69,7 @@ class EighthBlock {
 			$activity->add_members($uids, TRUE);
 		}
 
-		Eighth::end_undo_transaction();
+		//Eighth::end_undo_transaction();
 		return $bid;
 	}
 

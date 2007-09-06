@@ -213,7 +213,7 @@ class EighthRoom {
 				  return;
 		}
 
-		Eighth::start_undo_transaction();
+		//Eighth::start_undo_transaction();
 		// Get rid of all block references to the room
 		
 		$res = $I2_SQL->query("SELECT bid,activityid,rooms FROM eighth_block_map WHERE rooms LIKE '%%?%'");
@@ -256,7 +256,7 @@ class EighthRoom {
 		$invquery = 'REPLACE INTO eighth_rooms (rid,name,capacity) VALUES (%d,%s,%d)';
 		$invarg = array($old['rid'],$old['name'],$old['capacity']);
 		Eighth::push_undoable($rquery,$queryarg,$invquery,$invarg,'Remove Room');
-		Eighth::end_undo_transaction();
+		//Eighth::end_undo_transaction();
 	}
 
 	/**

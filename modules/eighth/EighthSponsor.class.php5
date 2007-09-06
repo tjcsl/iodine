@@ -174,7 +174,7 @@ class EighthSponsor {
 				  d('Tried to delete nonexistant sponsor '.$sponsorid,5);
 				  return;
 		}
-		Eighth::start_undo_transaction();
+		//Eighth::start_undo_transaction();
 		// TODO: Delete from the sponsor map and everything else as well
 		// Get all activities which are sponsored by this person
 		// And remove them from the sponsor list
@@ -199,7 +199,7 @@ class EighthSponsor {
 		$invquery = 'REPLACE INTO eighth_sponsors (fname,lname,sid) VALUES(%s,%s,%d)';
 		$invarg = array($old['fname'],$old['lname'],$sponsorid);
 		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Remove Sponsor');
-		Eighth::end_undo_transaction();
+		//Eighth::end_undo_transaction();
 	}
 
 	/**
