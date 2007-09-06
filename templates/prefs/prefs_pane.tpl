@@ -129,6 +129,7 @@
 [</foreach>]
 <br />
 <strong>Privacy Options</strong><br />
+<em>If your parent did not give permission on the "Intranet Posting Agreement" form to show specific personal information, other students will not be able to see it even if you enable it here.</em><br />
 <input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/> Show Address<br />
 <input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/> Show Birthday<br />
 [<*<input type="checkbox" name="showmapself" [<if $prefs.showmapself>]checked="checked"[</if>]/> Show Map Links<br />*>]
@@ -136,6 +137,7 @@
 <input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/> Show Home Telephone Number<br />
 <input type="checkbox" name="showscheduleself" [<if $prefs.showscheduleself>]checked="checked"[</if>]/> Show Class Schedule<br />
 <input type="checkbox" name="showeighthself" [<if $prefs.showeighthself>]checked="checked"[</if>]/> Show Eighth Period Schedule<br />
+<input type="checkbox" disabled /> Show Locker Number (coming soon)<br />
 <br />
 <strong>Display Options</strong><br />
 <table>
