@@ -1,12 +1,14 @@
 <a href="[<$I2_ROOT>]info/eighth">Back to Eighth Period Info home</a>
+
+
+<h1>How to Clear an Absence</h1>
+
 <ul>
-   <li>Sign on to your Intranet Account.</li>
-   <li>Click on <b>Full Schedule</b> in the Eighth Period box.</li>
-   <li>Under the words Your Eighth Period Schedule click on the number of absences.</li>
-   <li>Print the page.</li>
-   <li>Write your name on the top of the page.</li>
-   <li>Take the page to the teacher/sponsor of the activity that you actually attended and ask them to sign next to the date and activity, verifying that you were indeed there.</li>
-   <li>Deliver your signed page to the 8th Period office  room 236 wk.</li>
-   <li>Your absence will be removed within a few days.</li>
+  <li>Sign on to your Intranet Account.</li>
+  <li>Under the words "8th period: today's date" you will see how many times you have been absent.</li>
+  <li>Click on that number and you will see exactly which dates and blocks that you were marked absent.</li>
+  <li>Print the page.</li>
+  <li>Bring the page to the 8th Period office - room 236 wk - for attendance verification.  A member of the 8th period staff will check the appropriate attendance roster to confirm attendance.</li>
+  <li>If you know you forgot to sign in, take it to the teacher of that activity and ask the teacher to sign the sheet saying that you were indeed present.</li>
+  <li>Stay current with your 8th period attendance record.  An absence can only be cleared within 30 days of the date of the absence.</li>
 </ul>
-Stay current with your 8th period attendance record.  An absence can only be cleared within <b>30 days</b> of the date of the absence.
