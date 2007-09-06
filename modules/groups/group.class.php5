@@ -110,6 +110,24 @@ class Group {
 	public function get_static_members() {
 		return $this->wrap->get_static_members();
 	}
+
+	/**
+	* Gets all the dynamic members in this group. PHP rules not applicable!
+	*
+	* @return Array An array of UIDs.
+	*/
+	public function get_dynamic_members() {
+		return $this->wrap->get_dynamic_members();
+	}
+
+	/**
+	* Gets ALL of the members of this group, for real this time.
+	*
+	* @return Array An array of UIDs
+	*/
+	public function get_all_members() {
+		return array_unique(array_merge($this->get_static_members, $this->get_dynamic_members));
+	}
 	
 	/**
 	* Gets all groups at once, or all groups with a certain prefix.

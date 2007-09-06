@@ -99,7 +99,7 @@ class GroupSQL extends Group {
 			case 'description':
 				return $I2_SQL->query('SELECT description FROM groups_name WHERE gid=%d', $this->__get('gid'))->fetch_single_value();
 			case 'members':
-				$this->info[$var] = $this->get_static_members();
+				$this->info[$var] = array_unique(array_merge($this->get_static_members(), $this->get_dynamic_members()));
 				break;
 			case 'members_obj':
 				return User::id_to_user($this->__get('members'));
@@ -123,6 +123,27 @@ class GroupSQL extends Group {
 	public function get_static_members() {
 		global $I2_SQL;
 		return flatten($I2_SQL->query('SELECT uid FROM groups_static WHERE gid=%d',$this->gid)->fetch_all_arrays(Result::NUM));
+	}
+
+	public function get_dynamic_members() {
+		global $I2_SQL, $I2_LDAP;
+		$res = $I2_SQL->query('SELECT dbtype, query FROM groups_dynamic WHERE gid=%d', $this->gid);
+		$members = array();
+		foreach ($res as $row) {
+			switch ($row['dbtype']) {
+			case 'LDAP':
+				$rulemembers = $I2_LDAP->search(LDAP::get_user_dn(),$row['query'],array('iodineUidNumber'))->fetch_col('iodineUidNumber');
+				$newmembers = array_diff($rulemembers, $members);
+				$members = array_merge($members, $newmembers);
+				break;
+			case 'MYSQL':
+				$rulemembers = $I2_SQL->query($row['query'])->fetch_col(0);
+				$newmembers = array_diff($rulemembers, $members);
+				$members = array_merge($members, $newmembers);
+				break;
+			}
+		}
+		return $members;
 	}
 
 	public static function get_all_groups($module = NULL) {
