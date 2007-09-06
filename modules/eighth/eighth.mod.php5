@@ -1774,6 +1774,13 @@ class Eighth implements Module {
 			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($this->args['uid'], $this->args['start_date']));
 			$this->template_args['absences'] = EighthSchedule::get_absences($this->args['uid']);
 			$this->template_args['absence_count'] = count($this->template_args['absences']);
+			try {
+				$ta = $user->schedule()->last()->name;
+				$this->template_args['ta'] = $ta;
+			} catch (I2Exception $e) {
+				$ta = NULL;
+			}	
+			
 			$this->template = 'vcp_schedule_view.tpl';
 			$this->title = 'View Schedule';
 		}

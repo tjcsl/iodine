@@ -33,7 +33,7 @@
 		<a href="[<$I2_ROOT>]eighth/vcp_schedule/absences/uid/[<$user->uid>]" style="font-weight: bold; font-size: 14pt;">[<$absence_count>] absence[<if $absence_count != 1>]s[</if>]</a><br />
 		<a href="[<$I2_ROOT>]eighth/view/student/uid/[<$user->uid>]">Edit Student</a><br />
 	</div>
-	<b>Counselor: [<$user->counselor_name>], TA: </b><br />
+	<b>Counselor: [<$user->counselor_name>][<if isset($ta)>], TA: [<$ta>][</if>]</b><br />
 	<span style="color: #FF0000; font-weight: bold;">Comments: [<if isSet($comments) && $comments != "">][<$comments>][<else>]none[</if>]</span><br />
 	<a href="[<$I2_ROOT>]eighth/view/comments/uid/[<$user->uid>]">Edit Comments</a><br />
 	<br /><br />

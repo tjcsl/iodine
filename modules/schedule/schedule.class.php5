@@ -189,6 +189,11 @@ class Schedule implements Iterator {
 		return new SectionLDAP($this->sections[$this->index]);
 	}
 
+	public function last() {
+		$this->index = count($this->sections) - 1;
+		return $this->current();
+	}
+	
 	public function valid() {
 		return $this->current() !== FALSE;
 	}
