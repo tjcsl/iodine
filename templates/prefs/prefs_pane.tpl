@@ -122,6 +122,7 @@
 <br />
 <strong><a href="[<$I2_ROOT>]calc">Calculator Registration</a></strong>
 <br /><br />
+[<if $I2_USER->grade != "staff">]
 <strong>Preferred Picture</strong><br />
 <input type="radio" name="pref_preferredPhoto" value="AUTO" [<if $prefs.preferredPhoto == "AUTO">]checked="checked"[</if>]/>Auto-select the most recent photo<br />
 [<foreach from=$photonames key=photo item=text>]
@@ -139,6 +140,7 @@
 <input type="checkbox" name="showeighthself" [<if $prefs.showeighthself>]checked="checked"[</if>]/> Show Eighth Period Schedule<br />
 <input type="checkbox" disabled /> Show Locker Number (coming soon)<br />
 <br />
+[</if>]
 <strong>Display Options</strong><br />
 <table>
 <tr>
