@@ -1714,7 +1714,7 @@ class Eighth implements Module {
 		$alluids = $I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', 'objectClass=tjhsstStudent', 'iodineUidNumber')->fetch_col('iodineUidNumber');
 		$numuids = count($alluids);
 		if ($this->op == '') {
-			$date = $this->args['start_date'];
+			$date = (isset($this->args['startdate']) ? $this->args['startdate'] : date('Y-m-d'));
 			$bids = $I2_SQL->query('SELECT bid FROM eighth_blocks WHERE date >= %s', $date)->fetch_col('bid');
 			$default_aid = i2config_get('default_aid',999,'eighth');
 			foreach($bids as $bid) {
@@ -1726,7 +1726,7 @@ class Eighth implements Module {
 					warn('Missing members: ' . implode(', ', array_values($missing)));
 					//$activity->add_members($missing, true, $bid);
 					foreach ($missing as $uid) {
-						$I2_SQL->query('INSERT INTO eighth_activity_map SET bid=%d, aid=%d, uid=%d', $bid, $default_aid, $uid);
+						$I2_SQL->query('INSERT INTO eighth_activity_map SET bid=%d, aid=%d, userid=%d', $bid, $default_aid, $uid);
 					}
 				}
 			}
