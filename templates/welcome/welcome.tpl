@@ -20,6 +20,18 @@ A feature that some students find useful is the e-mail forwarding feature.  The 
 <strong>Reading announcements</strong><br />
 [<if $I2_USER->grade != "staff">]Please read the announcements that are posted regularly on Intranet!  They are posted because they contain some sort of information that is important to some extent.  Also, we advise that when you have finished reading a news item,[<else>]We recommend that after reading a news item on Intranet,[</if>] you "Mark as Read" to prevent your news page from growing horrendously long.<br /><br />
 The TJ Intranet is student-written and student-run.  It is continually being improved, and there are always bugs that are being ironed out.  If you run into a problem or want to give comments or suggestions, feel free to use our suggestion box.<br /><br />
+[<if $I2_USER->grade == "staff">]
+<strong>Polls</strong><br />
+From time to time, Intranet posts survey polls.  Most of these polls are also available for staff to vote in.  Please feel free to participate if you see a poll that interests you.<br /><br />
+<strong>Directory access and student privacy</strong><br />
+As a member of the TJ faculty, you have been given access to all student information regardless of their privacy settings.  Please be aware of this fact and do not allow students to use your Intranet account to access the directory.<br /><br />
+<strong>Identifying lost calculators</strong><br />
+If you find a lost calculator and are unable to identify who the owner is, Intranet has a database of calculators that students voluntarily registered their calculator(s) in.  To search this database, click on the "Identify lost calculator" link in the "Useful Links" intrabox.<br /><br />
+[</if>]
+[<if $I2_USER->grade != "staff">]
+<strong>Calculator registration</strong><br />
+If you own a TI calculator that you bring to TJ, you may want to register it in Intranet.  By registering, you enable teachers and administrators to identify you as the owner of your calculator in the event you lose it.  You may register calculators on the "Preferences" page.<br /><br />
+[</if>]
 You are encouraged to explore the Intranet to become familiar with the various features that it has.<br /><br />
 Thanks for reading and have a great year!<br />
 Where do you want to go first?<br />
