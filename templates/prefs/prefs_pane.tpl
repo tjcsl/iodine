@@ -124,6 +124,7 @@
 <br /><br />
 [<if $I2_USER->grade != "staff">]
 <strong>Preferred Picture</strong><br />
+<em>Since the eighth period office and TJ faculty can always see your pictures, it is recommended that you choose your preferred picture even if you disable "Show Pictures" below.</em><br />
 <input type="radio" name="pref_preferredPhoto" value="AUTO" [<if $prefs.preferredPhoto == "AUTO">]checked="checked"[</if>]/>Auto-select the most recent photo<br />
 [<foreach from=$photonames key=photo item=text>]
 <input type="radio" name="pref_preferredPhoto" value="[<$photo>]" [<if $prefs.preferredPhoto == $photo>]checked="checked"[</if>]/>[<$text>] photo<br />
@@ -131,6 +132,7 @@
 <br />
 <strong>Privacy Options</strong><br />
 <em>If your parent did not give permission on the "Intranet Posting Agreement" form to show specific personal information, other students will not be able to see it even if you enable it here.</em><br />
+<em>Note that all TJ staff can always view all of this information.</em><br />
 <input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/> Show Address<br />
 <input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/> Show Birthday<br />
 [<*<input type="checkbox" name="showmapself" [<if $prefs.showmapself>]checked="checked"[</if>]/> Show Map Links<br />*>]
