@@ -1317,14 +1317,19 @@ class Eighth implements Module {
 			$this->title = 'Reschedule a Student';
 		}
 		else if($this->op == 'reschedule') {
-			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
-			
-			self::start_undo_transaction();
-			EighthSchedule::remove_absentee($this->args['bid'],$this->args['uid']);
-			$activity->add_member(new User($this->args['uid']),TRUE);
-			self::end_undo_transaction();
-			
-			redirect("eighth/res_student/user/rescheduled/{$this->args['uid']}/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
+			$user = new User($this->args['uid']);
+			$rescheduled = ($user->objectClass == "tjhsstStudent");
+			if ($rescheduled) {
+				$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
+					
+				self::start_undo_transaction();
+				EighthSchedule::remove_absentee($this->args['bid'],$this->args['uid']);
+				$activity->add_member($user,TRUE);
+				self::end_undo_transaction();
+			}		
+			redirect("eighth/res_student/user/" 
+				. ($rescheduled ? "rescheduled/{$this->args['uid']}/" : "") 
+				. "bid/{$this->args['bid']}/aid/{$this->args['aid']}");
 		}
 	}
 
