@@ -2,7 +2,6 @@
 <a href="[<$I2_ROOT>]info/resources">Online Research Resources</a><br />
 <a href="http://academics.tjhsst.edu/careercenter/">College &amp; Career Center</a><br />
 [<if $I2_USER->objectclass == 'tjhsstTeacher' || $I2_USER->is_group_member('admin_calc')>]<a href="[<$I2_ROOT>]findcalc">Identify Lost Calculator</a><br />[</if>]
-<a href="[<$I2_ROOT>]info/eighth">Eighth Period Info</a><br />
 [<php>]
 $this->assign('mode',i2config_get('mode','full','roster'));
 [</php>]
