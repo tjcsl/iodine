@@ -35,5 +35,6 @@ If you own a TI calculator that you bring to TJ, you may want to register it in 
 You are encouraged to explore the Intranet to become familiar with the various features that it has.<br /><br />
 Thanks for reading and have a great year!<br />
 Where do you want to go first?<br />
-<input type="submit" name="news" value="Home (News)"><input type="submit" name="prefs" value="Preferences">
+[<* Actually, I would style these as input[type="submit"], but IE6 does not recognize that style... *>]
+<input type="submit" name="news" value="Home (News)" class="submit" /><input type="submit" name="prefs" value="Preferences" class="submit" />
 </form>

@@ -1,0 +1,6 @@
+input.submit {
+	color: blue;
+	background-color: transparent;
+	cursor: pointer;
+	border: none;
+}
