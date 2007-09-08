@@ -73,18 +73,25 @@ class Bugzilla implements Module {
 	function init_pane() {
 		global $I2_USER, $I2_AUTH, $I2_ARGS;
 
-		$bug_server = i2config_get('bugzilla_server', 'bugs.tjhsst.edu', 'bugzilla');
+		$bug_server = i2config_get('bugzilla_server', 'mysql.tjhsst.edu', 'bugzilla');
 		$bug_db = i2config_get('bugzilla_db', 'bugs', 'bugzilla');
 		$bug_user = i2config_get('bugzilla_user', 'bugs', 'bugzilla');
 		$bug_pass = i2config_get('bugzilla_pass', 'sgub', 'bugzilla');
 		$bug_url = i2config_get('bugzilla_url', 'https://bugs.tjhsst.edu/', 'bugzilla');
 		$bug_expire = i2config_get('bugzilla_expire', 'Fri, 01-Jan-2038 00:00:00 GMT', 'bugzilla');
+		$cryptpassword = i2config_get('cryptpassword', 'aJ7qujwxlkuac', 'bugzilla');
 		$otherSQL = new MySQL($bug_server, $bug_db, $bug_user, $bug_pass);
 
 		$res = $otherSQL->query('SELECT userid FROM profiles WHERE login_name=%s', $I2_USER->iodineUid . '@tjhsst.edu');
 		if ($res->num_rows() == 0) {
-			$otherSQL->query('INSERT INTO profiles SET login_name=%s, cryptpassword=%s, realname=%s, mybugslink=1, refreshed_when=NOW()', $I2_USER->iodineUid . '@tjhsst.edu', 'aJ7qujwxlkuac', $I2_USER->fullname_comma);
-			$res = $otherSQL->query('SELECT userid FROM profiles WHERE login_name=%s', $I2_USER->iodineUid . '@tjhsst.edu');
+			$otherSQL->query(
+				'INSERT INTO profiles SET login_name=%s, cryptpassword=%s, realname=%s', 
+				$I2_USER->iodineUid . '@tjhsst.edu', 
+				$cryptpassword, 
+				$I2_USER->fullname_comma);
+			$res = $otherSQL->query(
+				'SELECT userid FROM profiles WHERE login_name=%s', 
+				$I2_USER->iodineUid . '@tjhsst.edu');
 		}
 		$userid = $res->fetch_single_value();
 
@@ -92,9 +99,15 @@ class Bugzilla implements Module {
 
 		do {
 			$logincookie = substr(tempname(),0,10);
-		} while($otherSQL->query('SELECT userid FROM logincookies WHERE cookie=%s', $logincookie)->num_rows() > 0);
+		} while($otherSQL->query(
+			'SELECT userid FROM logincookies WHERE cookie=%s', 
+				$logincookie)->num_rows() > 0);
 
-		$otherSQL->query('INSERT INTO logincookies (cookie, userid, ipaddr, lastused) VALUES (%s, %s, %s, NOW())', $logincookie, $userid, $ipaddy);
+		$otherSQL->query(
+			'INSERT INTO logincookies (cookie, userid, ipaddr, lastused) VALUES (%s, %s, %s, NOW())', 
+			$logincookie, 
+			$userid, 
+			$ipaddy);
 		setcookie("Bugzilla_login", $userid , strtotime($bug_expire), '/', '.tjhsst.edu');
 		setcookie("Bugzilla_logincookie", $logincookie , strtotime($bug_expire), '/', '.tjhsst.edu');
 		header("Location: $bug_url");
