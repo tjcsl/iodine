@@ -48,6 +48,10 @@ class Schedule implements Iterator {
 				foreach ($res as $classdn) {
 					  $this->sections[] = $this->ldap->search_base($classdn,array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDn','tjhsstClassId'))->fetch_array(Result::ASSOC);
 				}
+				foreach ($this->sections as &$sec) {
+					if(is_array($sec['classPeriod']))
+						$sec['classPeriod']=$sec['classPeriod'][0];
+				}
 				$this->index = 0;
 			}
 		}
