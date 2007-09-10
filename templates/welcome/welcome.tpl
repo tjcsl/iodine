@@ -19,7 +19,6 @@ All students at TJHSST are assigned their own e-mail address.  Your TJ e-mail ad
 A feature that some students find useful is the e-mail forwarding feature.  The mail system that we use allows you to setup your TJ e-mail to forward to another e-mail address that you may have.  This gives you the benefit of combining your TJ and non-TJ mail together while giving some people only your TJ address.  This is not configured through Intranet; see the Options page after logging in to TJ webmail.<br /><br />[</if>]
 <strong>Reading announcements</strong><br />
 [<if $I2_USER->grade != "staff">]Please read the announcements that are posted regularly on Intranet!  They are posted because they contain some sort of information that is important to some extent.  Also, we advise that when you have finished reading a news item,[<else>]We recommend that after reading a news item on Intranet,[</if>] you "Mark as Read" to prevent your news page from growing horrendously long.<br /><br />
-The TJ Intranet is student-written and student-run.  It is continually being improved, and there are always bugs that are being ironed out.  If you run into a problem or want to give comments or suggestions, feel free to use our suggestion box.<br /><br />
 [<if $I2_USER->grade == "staff">]
 <strong>Polls</strong><br />
 From time to time, Intranet posts survey polls.  Most of these polls are also available for staff to vote in.  Please feel free to participate if you see a poll that interests you.<br /><br />
@@ -32,6 +31,7 @@ If you find a lost calculator and are unable to identify who the owner is, Intra
 <strong>Calculator registration</strong><br />
 If you own a TI calculator that you bring to TJ, you may want to register it in Intranet.  By registering, you enable teachers and administrators to identify you as the owner of your calculator in the event you lose it.  You may register calculators on the "Preferences" page.<br /><br />
 [</if>]
+The TJ Intranet is student-written and student-run.  It is continually being improved, and there are always bugs that are being ironed out.  If you run into a problem or want to give comments or suggestions, feel free to use our suggestion box.<br /><br />
 You are encouraged to explore the Intranet to become familiar with the various features that it has.<br /><br />
 Thanks for reading and have a great year!<br />
 Where do you want to go first?<br />
