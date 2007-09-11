@@ -19,6 +19,7 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, "epnet.com") ||
 		dnsDomainIs(host, "galegroup.com") ||
 		dnsDomainIs(host, "grolier.com") ||
+		dnsDomainIs(host, "jstor.org") ||
 		dnsDomainIs(host, "web.lexis-nexis.com") ||
 		dnsDomainIs(host, "litfinder.com") ||
 		dnsDomainIs(host, "noodletools.com") ||
