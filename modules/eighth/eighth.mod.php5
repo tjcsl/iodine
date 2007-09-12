@@ -1781,7 +1781,7 @@ class Eighth implements Module {
 			$this->template_args['absence_count'] = count($this->template_args['absences']);
 			
 			try {
-				$this->template_args['ta'] = $user->schedule()->last()->teacher->sn;
+				//$this->template_args['ta'] = $user->schedule()->last()->teacher->sn;
 			} catch (I2Exception $e) {
 				//There is something wrong with the schedule or teacher.	
 			}	

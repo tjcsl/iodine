@@ -133,6 +133,7 @@ class EighthActivity {
 			$ret |= EighthActivity::STICKY;
 		}
 		
+		$otheract = FALSE;
 		$dayacts = EighthSchedule::get_activities($I2_USER->uid, $this->data['block']->date, 1);
 		foreach ($dayacts as $act) {
 			// find one that's not this block

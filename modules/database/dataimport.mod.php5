@@ -619,6 +619,7 @@ class dataimport implements Module {
 			'poll_votes'		=> 'uid',
 			'prom'			=> 'uid',
 			'scratchpad'		=> 'uid',
+			'senior_destinations'	=> 'uid',
 			'servreq'		=> 'uid'
 		);
 
