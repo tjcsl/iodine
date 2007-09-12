@@ -465,7 +465,7 @@ class dataimport implements Module {
 		$newteach['style'] = 'default';
 		$newteach['header'] = 'TRUE';
 		$newteach['chrome'] = 'TRUE';
-		$newteach['startpage'] = 'news';
+		$newteach['startpage'] = 'welcome';
 		$dn = "iodineUid={$newteach['iodineUid']},ou=people,dc=tjhsst,dc=edu";
 		
 		d("Creating teacher \"{$newteach['iodineUid']}\"...",5);
@@ -505,7 +505,7 @@ class dataimport implements Module {
 		$usernew['style'] = 'default';
 		$usernew['header'] = 'TRUE';
 		$usernew['chrome'] = 'TRUE';
-		$usernew['startpage'] = 'news';
+		$usernew['startpage'] = 'welcome';
 
 		$usernew['showpictures'] = 'FALSE';
 		$usernew['showaddress'] = 'FALSE';
