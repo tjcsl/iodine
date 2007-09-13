@@ -206,7 +206,9 @@ class IntraBox {
 	*/
 	public static function get_all_boxes() {
 		global $I2_SQL;
-		return flatten($I2_SQL->query('SELECT name FROM intrabox;')->fetch_all_arrays(Result::NUM));
+		return flatten($I2_SQL->query('SELECT name,gid FROM intrabox
+			LEFT JOIN intrabox_group_map USING (boxid)
+			WHERE gid IN (NULL,%D);',self::get_all_groups())->fetch_all_arrays(Result::NUM));
 	}
 
 	/**
@@ -286,14 +288,14 @@ class IntraBox {
 			if (count($ids) == 0) {
 				return $I2_SQL->query('
 				SELECT DISTINCT intrabox.boxid AS boxid, intrabox.display_name AS display_name
-				FROM intrabox LEFT JOIN intrabox_map USING (boxid)
-				ORDER BY intrabox.display_name;');
+				FROM intrabox LEFT JOIN intrabox_group_map USING (boxid)
+				WHERE gid IN (%D) OR gid IS NULL ORDER BY intrabox.display_name;', self::get_all_groups());
 			}
 			return $I2_SQL->query('
 			SELECT DISTINCT intrabox.boxid AS boxid, intrabox.display_name AS display_name
-			FROM intrabox LEFT JOIN intrabox_map USING (boxid)
-			WHERE intrabox.boxid NOT IN (%D)
-			ORDER BY intrabox.display_name;', $ids);
+			FROM intrabox LEFT JOIN intrabox_map USING (boxid) LEFT JOIN intrabox_group_map USING (boxid)
+			WHERE intrabox.boxid NOT IN (%D) AND (gid IN (%D) OR gid IS NULL)
+			ORDER BY intrabox.display_name;', $ids, self::get_all_groups());
 		}
 		else {
 			throw new I2Exception('Invalid parameter passed to Intrabox::get_boxes_info()');
@@ -310,7 +312,18 @@ class IntraBox {
 			$count++;
 		}
 	}
-	
+
+	private static $groups = NULL;
+	private static function get_all_groups() {
+		global $I2_USER;
+		if (self::$groups === NULL) {
+			self::$groups = array();
+			foreach (Group::get_user_groups($I2_USER) as $g)
+				self::$groups[] = $g->gid;
+			d(print_r(self::$groups,TRUE),1);
+		}
+		return self::$groups;
+	}	
 }
 
 ?>
