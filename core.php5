@@ -193,7 +193,7 @@ try {
 		$I2_ARGS[0] :
 		($I2_USER->startpage ?
 			$I2_USER->startpage :
-			i2config_get('startmodule','news','core')
+			i2config_get('startmodule','welcome','core')
 		)
 	);
 	if(strtolower($module) == 'ajax') {
