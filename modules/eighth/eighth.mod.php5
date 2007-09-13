@@ -2054,7 +2054,7 @@ class Eighth implements Module {
 	/**
 	 * Get the printer IP.
 	 */
-	public function printer_ip() {
+	public static function printer_ip() {
 		global $I2_SQL;
 		return $I2_SQL->query('SELECT ip FROM eighth_printers WHERE is_selected=1')->fetch_single_value();
 	}
