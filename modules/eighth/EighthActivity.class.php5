@@ -45,6 +45,8 @@ class EighthActivity {
 			$this->data['aid'] = $activityid;
 			if($blockid) {
 				$additional = $I2_SQL->query('SELECT bid,sponsors AS block_sponsors,rooms AS block_rooms,cancelled,comment,advertisement,attendancetaken FROM eighth_block_map WHERE bid=%d AND activityid=%d', $blockid, $activityid)->fetch_array(MYSQL_ASSOC);
+				if(!$additional)
+					throw new I2Exception('Activity does not exist for this block!');
 				$this->data = array_merge($this->data, $additional);
 				$this->data['block_sponsors'] = (!empty($this->data['block_sponsors']) ? explode(',', $this->data['block_sponsors']) : array());
 				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(',', $this->data['block_rooms']) : array());

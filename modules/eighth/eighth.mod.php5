@@ -1291,7 +1291,7 @@ class Eighth implements Module {
 			$this->template_args['block'] = new EighthBlock($this->args['bid']);
 			$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bid']);
 			$this->template_args['op'] = "user";
-			$this->template_args['act'] = new EighthActivity($this->args['aid']);
+			$this->template_args['act'] = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->template_args['bid'] = $this->args['bid'];
 			$this->template_args['aid'] = $this->args['aid'];
 			if (isSet($this->args['rescheduled'])) {
