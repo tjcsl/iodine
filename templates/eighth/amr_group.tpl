@@ -14,6 +14,7 @@
 		<th style="padding: 0px 5px; text-align: left;">Grade</th>
 		<td><a href="[<$I2_ROOT>]eighth/amr_group/remove_all/gid/[<$group->gid>]">Remove all</a></td>
 	</tr>
+	<tr><td colspan="4">&nbsp;</td></tr>
 [<foreach from=$membersorted item='member'>]
 	<tr>
 		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$member->uid>]">[<$member->name_comma>]</a></td>
