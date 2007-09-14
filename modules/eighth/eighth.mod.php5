@@ -610,7 +610,14 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'group') {
 			$this->setup_group_selection();
-			$this->template_args['op'] = "commit/bid/{$this->args['bid']}/aid/{$this->args['aid']}";
+			$this->template_args['op'] = "confirm/bid/{$this->args['bid']}/aid/{$this->args['aid']}";
+		}
+		else if($this->op == 'confirm') {
+			$this->template = 'reg_group.tpl';
+			$this->template_args['op'] = "commit/bid/{$this->args['bid']}/aid/{$this->args['aid']}/gid/{$this->args['gid']}";
+			$this->template_args['group'] = new Group($this->args['gid']);
+			$this->template_args['activity'] = new EighthActivity($this->args['aid'], $this->args['bid']);
+			$this->title = 'Confirm Registering a Group of Students';
 		}
 		else if($this->op == 'commit') {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
