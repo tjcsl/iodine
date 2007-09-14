@@ -29,7 +29,7 @@
   [</if>]
  [</if>]
  [<if $q->answertype == 'standard'>]
-  <input type="radio" name="[<$q->qid>]" value="-1" [<if $q->user_voted_for(0)>]checked="checked" [</if>]/>Clear Vote<br />
+  <input type="radio" name="[<$q->qid>]" value="-1" [<if $q->user_voted_for(0)>]checked="checked" [</if>]/><em>Clear Vote</em><br />
   [<foreach from=$q->answers key=aid item=answer>]
    <input type="radio" name="[<$q->qid>]" value="[<$aid>]" [<if $q->user_voted_for($aid)>]checked="checked" [</if>]/>[<$answer>]<br />
   [</foreach>]
