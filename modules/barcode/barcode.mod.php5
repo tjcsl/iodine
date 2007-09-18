@@ -28,8 +28,10 @@ class Barcode implements Module {
 		global $I2_ARGS;
 		Display::stop_display();
 
+		$width = isset($I2_ARGS[3]) ? $I2_ARGS[3] : 400;
+		$height = isset($I2_ARGS[4]) ? $I2_ARGS[4] : 60;
+		$out = Barcode::gen_barcode($I2_ARGS[1], $I2_ARGS[2], $width, $height);
 		header("Content-type: image/jpeg");
-		$out = Barcode::gen_barcode($I2_ARGS[1], $I2_ARGS[2]);
 		ImageJPEG ($out, "", 100);
 	}
 	
@@ -45,10 +47,7 @@ class Barcode implements Module {
 		return "";
 	}
 
-	static function gen_barcode($str, $text = 1) {
-		$width = 400;
-		$height = 60;
-		
+	static function gen_barcode($str, $text, $width, $height) {
 		$im = ImageCreate ($width, $height)
 			or die ("Cannot Initialize new GD image stream");
 		$White = ImageColorAllocate ($im, 255, 255, 255);
