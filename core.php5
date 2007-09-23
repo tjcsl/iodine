@@ -17,7 +17,7 @@ include('functions.inc.php5');
 *
 * Don't increment this until we have something runnable.
 */
-define('I2_VERSION', 0.9);
+define('I2_VERSION', 0.91);
 
 /**
 * The path to the master Iodine configuration file.
@@ -94,7 +94,7 @@ try {
 		$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
 		$args = substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index);
 		foreach(explode('/', $args) as $arg) {
-			if($arg) {
+			if(strlen($arg) != 0) {
 				$I2_ARGS[] = $arg;
 			}
 		}
