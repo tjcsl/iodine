@@ -131,7 +131,6 @@ class Polls implements Module {
 	
 		$this->template_args['groups'] = Group::get_all_groups();
 		if (count($_POST) > 0) {
-			print_r($_POST);
 			$name = $_POST['name'];
 			$begin = $_POST['startdt'];
 			$end = $_POST['enddt'];
