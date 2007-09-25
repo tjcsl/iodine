@@ -226,8 +226,8 @@ class Auth {
 		/*
 		** Try to get rid of Kerberos credentials
 		*/
-		if (isSet($_SESSION['i2_credentials'])) {
-			Kerberos::destroy($_SESSION['i2_credentials']);
+		if (isSet($_SESSION['i2_credentials_cache'])) {
+			Kerberos::destroy($_SESSION['i2_credentials_cache']);
 		} else {
 			`kdestroy`;
 		}
