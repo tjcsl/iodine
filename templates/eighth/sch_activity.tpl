@@ -55,28 +55,28 @@ AID: <input type="text" name="aid"/>
 		<td class="eighth_sch_activity_datecell[<if !$activity.scheduled>]_unscheduled[</if>]">
 			[<$activity.block.date|date_format:"%a">] [<$activity.block.block>], [<$activity.block.date|date_format:"%m/%d/%y">]
 [<if $activity.scheduled>]
-			<br /><a id="unschedule_[<$activity.block.bid>]" onclick="do_action('unschedule', '[<$activity.block.bid>]');" href="#[<$activity.block.bid>]" class="eighth_sch_activity_unschedule">Unschedule</a>&nbsp;&nbsp;<a id="cancel_[<$activity.block.bid>]" onclick="do_action('cancel', '[<$activity.block.bid>]');" href="#[<$activity.block.bid>]" class="eighth_sch_activity_cancel">[<if $activity.cancelled>]Uncancel[<else>]Cancel[</if>]</a>
+			<br /><a id="unschedule_[<$activity.block.bid>]" onclick="return do_action('unschedule', '[<$activity.block.bid>]');" href="#[<$activity.block.bid>]" class="eighth_sch_activity_unschedule">Unschedule</a>&nbsp;&nbsp;<a id="cancel_[<$activity.block.bid>]" onclick="return do_action('cancel', '[<$activity.block.bid>]');" href="#[<$activity.block.bid>]" class="eighth_sch_activity_cancel">[<if $activity.cancelled>]Uncancel[<else>]Cancel[</if>]</a>
 [</if>]
 		</td>
 		<td class="eighth_sch_activity_listcell">
 			<div id="div_room_list_[<$activity.block.bid>]" class="eighth_room_list">
 [<if $activity.scheduled>]
 	[<foreach from=$activity.rooms_obj item=room>]
-				[<$room->name>] <a href="#[<$activity.block.bid>]" onClick="do_action('remove_room', '[<$activity.block.bid>]', '[<$room->rid>]', event)">Remove</a><br />
+				[<$room->name>] <a href="#[<$activity.block.bid>]" onClick="return do_action('remove_room', '[<$activity.block.bid>]', '[<$room->rid>]', event)">Remove</a><br />
 	[</foreach>]
 [</if>]
 			</div>
 			<input type="hidden" name="room_list[[<$activity.block.bid>]]" value="[<if $activity.scheduled>][<$activity.rooms>][</if>]" id="room_list_[<$activity.block.bid>]" />
 		</td>
 		<td style="text-align: left;">
-			<a href="#[<$activity.block.bid>]" onClick="do_action('view_rooms', '[<$activity.block.bid>]', new Array([<$activity.rooms_array>]), event);">Add Room</a><br />
-			<a href="#[<$activity.block.bid>]" onClick="do_action('set_default_rooms', '[<$activity.block.bid>]', new Array(new Array([<$activity.rooms_array>]), new Array([<$activity.rooms_name_array>])));">Set to Default Room(s)</a>
+			<a href="#[<$activity.block.bid>]" onClick="return do_action('view_rooms', '[<$activity.block.bid>]', new Array([<$activity.rooms_array>]), event);">Add Room</a><br />
+			<a href="#[<$activity.block.bid>]" onClick="return do_action('set_default_rooms', '[<$activity.block.bid>]', new Array(new Array([<$activity.rooms_array>]), new Array([<$activity.rooms_name_array>])));">Set to Default Room(s)</a>
 		</td>
 		<td class="eighth_sch_activity_listcell">
 			<div id="div_sponsor_list_[<$activity.block.bid>]" class="eighth_sponsor_list">
 [<if $activity.scheduled>]
 	[<foreach from=$activity.sponsors_obj item=sponsor>]
-				[<$sponsor->name_comma>] <a href="#[<$activity.block.bid>]" onClick="do_action('remove_sponsor', '[<$activity.block.bid>]', '[<$sponsor->sid>]', event)">Remove</a><br />
+				[<$sponsor->name_comma>] <a href="#[<$activity.block.bid>]" onClick="return do_action('remove_sponsor', '[<$activity.block.bid>]', '[<$sponsor->sid>]', event)">Remove</a><br />
 	[</foreach>]
 [</if>]
 			</div>
@@ -84,13 +84,13 @@ AID: <input type="text" name="aid"/>
 			<input type="hidden" id="activity_status_[<$activity.block.bid>]" name="activity_status[[<$activity.block.bid>]]" value="[<if $activity.scheduled && $activity.cancelled>]CANCELLED[<else>]SCHEDULED[</if>]" />
 		</td>
 		<td style="text-align: left;">
-			<a href="#[<$activity.block.bid>]" onClick="do_action('view_sponsors', '[<$activity.block.bid>]', new Array([<$activity.sponsors_array>]), event);">Add Sponsor</a><br />
-			<a href="#[<$activity.block.bid>]" onClick="do_action('set_default_sponsors', '[<$activity.block.bid>]', new Array(new Array([<$activity.sponsors_array>]), new Array([<$activity.sponsors_name_array>])));">Set to Default Sponsor(s)</a>
+			<a href="#[<$activity.block.bid>]" onClick="return do_action('view_sponsors', '[<$activity.block.bid>]', new Array([<$activity.sponsors_array>]), event);">Add Sponsor</a><br />
+			<a href="#[<$activity.block.bid>]" onClick="return do_action('set_default_sponsors', '[<$activity.block.bid>]', new Array(new Array([<$activity.sponsors_array>]), new Array([<$activity.sponsors_name_array>])));">Set to Default Sponsor(s)</a>
 		</td>
 		<td style="padding: 5px;">
 			<textarea name="comments[[<$activity.block.bid>]]" id="comment_[<$activity.block.bid>]" readonly="readonly" class="eighth_sch_activity_commentcell" rows="1">[<if isset($activity.comment) >][<$activity.comment|escape:"html">][</if>]</textarea>
 		</td>
-		<td style="text-align: center;"><img src="[<$I2_ROOT>]www/pics/eighth/notepad.gif" alt="Add Comment" title="Add Comment" onMouseDown="show_comment_dialog(event, [<$activity.block.bid>])" class="eighth_sch_activity_comment"><a href="#[<$activity.block.bid>]" class="eighth_sch_activity_propagate" onClick="do_action('propagate', [<$activity.block.bid>]);">&uarr;&nbsp;Propagate&nbsp;&darr;</a>
+		<td style="text-align: center;"><img src="[<$I2_ROOT>]www/pics/eighth/notepad.gif" alt="Add Comment" title="Add Comment" onMouseDown="show_comment_dialog(event, [<$activity.block.bid>])" class="eighth_sch_activity_comment"><a href="#[<$activity.block.bid>]" class="eighth_sch_activity_propagate" onClick="return do_action('propagate', [<$activity.block.bid>]);">&uarr;&nbsp;Propagate&nbsp;&darr;</a>
 		</td>
 		<td>
 			<input type="submit" value="Save" />

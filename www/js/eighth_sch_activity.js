@@ -222,6 +222,7 @@ function do_action(action, bid, data, e) {
 			}
 		}
 	}
+	return false;
 }
 function CA() {
     var trk = 0;
