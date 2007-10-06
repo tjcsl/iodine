@@ -95,7 +95,7 @@ class Homecoming implements Module {
 	 * @return boolean True if now is in the correct time range, and the votee
 	 * is in the same grade as the user
 	 */
-	public function user_may_vote(User $votee = NULL) {
+	public static function user_may_vote(User $votee = NULL) {
 		global $I2_USER;
 		
 		// People are always in the same grade as themselves, so this just tests for correct time
