@@ -1,7 +1,7 @@
 .newsitem {
 	font-family: arial, helvetica, verdana, sans-serif;
 	font-size: 10pt;
-	margin-bottom: 10pt;
+	padding: 2px;
 	border-left: dotted 1px gray;
 	border-right: dotted 1px gray;
 	border-bottom: dotted 1px gray;
@@ -11,17 +11,29 @@
 	font-family: arial, helvetica, verdana, sans-serif;
 	font-size: 12pt;
 	font-weight: bold;
+	margin-top: 4pt;
+	padding: 2px;
 	border: solid 1px gray;
 }
 
 .newsposted {
+	font-size: 9pt;
+	margin-left: 1px;
+	margin-top: 6pt;
 	font-style: italic;
 }
 
 .newsgroups {
 	font-size: 8pt;
-	font-style: italic;
-	color: gray;
+	margin-bottom: 4px;
+	color: #696969;
+}
+
+.newsoptions {
+	font-size: 12pt;
+	float: right;
+	margin-top: -22px;
+	margin-right: 2px;
 }
 
 #news_add_text {

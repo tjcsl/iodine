@@ -1,12 +1,11 @@
 .newsitem {
 	font-family: arial, helvetica, verdana, sans-serif;
 	font-size: 10pt;
-	margin-top: -15px;
 	margin-bottom: 10pt;
 }
 
 .newstitle {
-	margin-top: 10pt;
+	margin-top: 6pt;
 	font-size: 1.3em;
 	font-family: "Trebuchet MS", Arial, sans-serif;
 	color: #FF6300;
@@ -15,8 +14,8 @@
 }
 
 @extend {
-.newsgroups {
-	float: right;
-	margin-right: 5px;
+.newsoptions {
+	margin-top: -19px;
+	font-weight: bold;
 }
 }
