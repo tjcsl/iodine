@@ -334,7 +334,12 @@ class Auth {
 				session_regenerate_id(TRUE);
 				setcookie('PHPSESSID', '', 1, '/', '.tjhsst.edu'); /* Should fix accursed login bug */
 
-				redirect(implode('/', $I2_ARGS));
+				$redir="";
+				if(isset($_SERVER['REDIRECT_QUERY_STRING'])) {
+					$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
+					$redir = substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index);
+				}
+				redirect($redir);
 				return TRUE; //never reached
 			} else {
 				// Attempted login failed

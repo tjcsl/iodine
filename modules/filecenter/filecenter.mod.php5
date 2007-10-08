@@ -41,11 +41,11 @@ class Filecenter implements Module {
 	private $show_hidden_files;
 	
 	/**
-	* Allows you to reference a student by grade name (is that the term?)
+	* Allows you to reference a student by class standing.
 	*
-	* This is specific for tj01.
+	* Warning: This may not work for all shares.
 	*/
-	private static $tj01_grade = array(
+	private static $standing = array(
 		'12' => 'senior',
 		'11' => 'junior',
 		'10' => 'sophomore',
@@ -73,6 +73,11 @@ class Filecenter implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
+		//Make sure the address ends in a trailing slash.
+		$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
+		if(substr($_SERVER['REDIRECT_QUERY_STRING'], $index-1, 1) != "/")
+			redirect(substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index) . "/");
+
 		global $I2_USER, $I2_ARGS, $I2_QUERY, $I2_SQL, $I2_LOG, $I2_AUTH;
 
 		$system_type = $I2_ARGS[1];
@@ -244,7 +249,7 @@ class Filecenter implements Module {
 		}
 		d('grade: ' . $I2_USER->grade);
 		if ($I2_USER->grade != "staff") {
-			$this->box_args['tj01path'] = 'students/' . self::$tj01_grade[$I2_USER->grade] . '/' . $_SESSION['i2_username'];
+			$this->box_args['tj01path'] = 'students/' . self::$standing[$I2_USER->grade] . '/' . $_SESSION['i2_username'];
 		}
 
 		return 'Filecenter';
