@@ -1,3 +1,4 @@
+<script type="text/javascript" src="https://iodine.tjhsst.edu/~wyang/i2/www/js/news.js"></script>
 [<if $newsadmin || $maypost>]
 	<a href="[<$I2_ROOT>]news/add">Post a news article</a><br/>
 [</if>]

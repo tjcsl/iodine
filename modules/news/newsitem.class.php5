@@ -468,5 +468,21 @@ class NewsItem {
 		return true;
 	}
 
+	/**
+	 * Determine whether or not this post is collapsed by a user.
+	 *
+	 * Returns whether a user (the current user) has collapsed this
+	 * news item.
+	 *
+	 * @access public
+	 */
+	public function shaded() {
+		global $I2_SQL,$I2_USER;
+		$res = $I2_SQL->query('SELECT COUNT(*) FROM news_shaded_map WHERE uid=%d AND nid=%d', $I2_USER->uid, $this->mynid)->fetch_single_value();
+		if($res == 0)
+			return false;
+		return true;
+	}
+
 }
 ?>

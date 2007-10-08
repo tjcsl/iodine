@@ -69,7 +69,7 @@ class News implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_SQL,$I2_ARGS,$I2_USER;
+		global $I2_SQL,$I2_ARGS,$I2_USER,$I2_ROOT;
 
 		if( ! isset($I2_ARGS[1]) ) {
 			$I2_ARGS[1] = '';
@@ -221,6 +221,16 @@ class News implements Module {
 
 				$item->mark_as_unread();
 		 		return self::display_news(true,'Old News Posts');
+
+			case 'shade':
+				$nid = $I2_ARGS[2];
+				$closed = $I2_SQL->query('SELECT COUNT(*) FROM news_shaded_map WHERE uid=%d AND nid=%d;', $I2_USER->uid, $nid)->fetch_single_value();
+				if($closed)
+					$I2_SQL->query('DELETE FROM news_shaded_map WHERE uid=%d AND nid=%d;', $I2_USER->uid, $nid);
+				else
+					$I2_SQL->query('INSERT INTO news_shaded_map SET uid=%d, nid=%d;', $I2_USER->uid, $nid);
+				// Redirect to the page the user was just viewing.
+				redirect(str_replace($I2_ROOT,'',$_SERVER['HTTP_REFERER']));
 
 	   		default:
 				return self::display_news(false);
