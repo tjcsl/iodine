@@ -15,7 +15,8 @@
 
 @extend {
 .newsoptions {
-	margin-top: -19px;
-	font-weight: bold;
+	font-size: 1.3em;
+	margin-top: 0px;
+	padding: 0px;
 }
 }

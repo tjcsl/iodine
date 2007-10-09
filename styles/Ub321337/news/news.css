@@ -20,9 +20,9 @@
 	font-style: italic;
 	color: #008800;
 }
-
 @extend {
 .newsoptions {
-	margin-top: -15px;
+	padding: 0px;
+	margin-top: 0px;
 }
 }

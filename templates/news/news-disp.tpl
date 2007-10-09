@@ -1,6 +1,5 @@
 
  <a name="newspost[<$story->id>]"></a>
- <div class="newstitle" onDblClick="doNewsShade([<$story->nid>])">[<$story->title>] 
  <div class="newsoptions">
  <a href="[<$I2_ROOT>]news/shade/[<$story->id>]" onclick="return doNewsShade([<$story->nid>])" id="shadelink_[<$story->nid>]">[<if $story->shaded()>]Expand[<else>]Collapse[</if>]</a> - 
  [<if !$story->has_been_read()>]
@@ -9,6 +8,7 @@
  	<a href="[<$I2_ROOT>]news/unread/[<$story->id>]">Mark unread</a>
  [</if>]
  </div>
+ <div class="newstitle" onDblClick="doNewsShade([<$story->nid>])">[<$story->title>] 
  </div>
  <div class="newsitem">
  <div class="newsgroups">
