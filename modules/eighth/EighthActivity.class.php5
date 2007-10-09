@@ -126,7 +126,12 @@ class EighthActivity {
 			return;
 		}
 		if (self::activity_exists($oldaid)) {
-			$oldact = new EighthActivity($oldaid, $blockid);
+			try {
+				$oldact = new EighthActivity($oldaid, $blockid);
+			} catch (I2Exception $e) {
+				warn($e);
+				$oldact = FALSE;
+			}
 		} else {
 			$oldact = FALSE;
 		}
