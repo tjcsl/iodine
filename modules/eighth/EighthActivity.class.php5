@@ -44,13 +44,13 @@ class EighthActivity {
 			$this->data['rooms'] = (!empty($this->data['rooms']) ? explode(',', $this->data['rooms']) : array());
 			$this->data['aid'] = $activityid;
 			if($blockid) {
+				$this->data['block'] = new EighthBlock($blockid);
 				$additional = $I2_SQL->query('SELECT bid,sponsors AS block_sponsors,rooms AS block_rooms,cancelled,comment,advertisement,attendancetaken FROM eighth_block_map WHERE bid=%d AND activityid=%d', $blockid, $activityid)->fetch_array(MYSQL_ASSOC);
 				if(!$additional)
-					throw new I2Exception("Activity $activityid does not exist for block $blockid!");
+					throw new I2Exception("Activity $activityid does not exist for block $blockid ({$this->data['block']->date}, {$this->data['block']->block} block)!");
 				$this->data = array_merge($this->data, $additional);
 				$this->data['block_sponsors'] = (!empty($this->data['block_sponsors']) ? explode(',', $this->data['block_sponsors']) : array());
 				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(',', $this->data['block_rooms']) : array());
-				$this->data['block'] = new EighthBlock($blockid);
 			}
 		}
 	}
