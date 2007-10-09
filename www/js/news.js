@@ -11,11 +11,11 @@ function doNewsShade(nid) {
 	} else {
 		shadelink.innerHTML= "Expand";
 	}
-	newsSendReq("news/shade/" + nid);
+	newsSendReq("shade/" + nid);
 	return false;
 }
 function newsSendReq(info) {
-	http.open('GET', info);
+	http.open('GET', news_root + info);
 	http.onreadystatechange = newsHandleResponse;
 	http.send(null);
 }
