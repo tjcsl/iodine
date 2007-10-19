@@ -32,7 +32,7 @@ Check if Present & Student Name (ID) & Grade \\
 \hline
 %@end header
 %@begin row
-\hrulefill & %@$member->name_comma@% (%@$member->studentid@%) & %@$member->grade@% \\
+\hrulefill & %@$member->name_comma@% (%@$member->iodineUidNumber@%) & %@$member->grade@% \\
 %@end row
 %@begin firstfooter
 \end{tabular*} \\

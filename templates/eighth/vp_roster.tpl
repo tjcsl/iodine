@@ -9,7 +9,7 @@ Sponsor(s):&nbsp;[<$activity->block_sponsors_comma>]<br />
 [<if $activity->advertisement>]Special Info: [<$activity->advertisement>]<br />[</if>]
 
 [<foreach from=$activity->members_obj item=member>]
-________ [<$member->name_comma>] ([<$member->tjhsstStudentId>]) - [<$member->grade>]<br />
+________ [<$member->name_comma>] ([<$member->iodineUidNumber>]) - [<$member->grade>]<br />
 [</foreach>]
 <br />
 [<$activity->member_count>] student[<if $activity->member_count != 1>]s[</if>] signed up <br />
