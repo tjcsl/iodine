@@ -73,12 +73,16 @@ class Filecenter implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		//Make sure the address ends in a trailing slash.
-		$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
-		if(substr($_SERVER['REDIRECT_QUERY_STRING'], $index-1, 1) != "/")
-			redirect(substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index) . "/");
-
 		global $I2_USER, $I2_ARGS, $I2_QUERY, $I2_SQL, $I2_LOG, $I2_AUTH;
+
+		//Make sure the address ends in a trailing slash.
+		//...but only if first arg isn't cslauth.  Yes this is hackish. --wyang
+		if($I2_ARGS[1] != "cslauth")
+		{
+			$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
+			if(substr($_SERVER['REDIRECT_QUERY_STRING'], $index-1, 1) != "/")
+				redirect(substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index) . "/");
+		}
 
 		$system_type = $I2_ARGS[1];
 		
