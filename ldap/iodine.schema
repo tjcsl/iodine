@@ -617,7 +617,7 @@ attributetype ( i2Attr:75
 	)
 
 objectclass ( i2OC:1
-	NAME ('tjhsstStudent' 'iodineStudent')
+	NAME 'tjhsstStudent'
 	SUP inetOrgPerson STRUCTURAL
 	MUST (
 		graduationYear $
@@ -674,7 +674,7 @@ objectclass ( i2OC:1
 	)
 
 objectclass ( i2OC:2
-	NAME ('tjhsstTeacher' 'iodineTeacher' 'tjhsstStaff' 'tjhsstFaculty')
+	NAME 'tjhsstTeacher'
 	SUP inetOrgPerson STRUCTURAL
 	MUST (
 		cn $
@@ -717,7 +717,7 @@ objectclass ( i2OC:2
 	)
 
 objectclass ( i2OC:4
-	NAME ('tjhsstClass' 'tjhsstCourse')
+	NAME 'tjhsstClass'
 	MUST (
 		tjhsstClassId $
 		tjhsstSectionId $
@@ -754,7 +754,7 @@ objectclass ( i2OC:8
 	)
 
 objectclass ( i2OC:9
-	NAME ('tjhsstRoom')
+	NAME 'tjhsstRoom'
 	MUST (
 		roomNumber
 	)
@@ -766,7 +766,7 @@ objectclass ( i2OC:9
 	)
 
 objectclass ( i2OC:10
-	NAME ('tjhsstYear' 'year' 'y')
+	NAME 'tjhsstYear'
 	MUST (
 		year
 	)
@@ -816,12 +816,12 @@ objectclass ( i2OC:17
 	)
 
 objectclass ( i2OC:18
-	NAME ('tjhsstCounselor' 'iodineCounselor')
+	NAME 'tjhsstCounselor'
 	SUP tjhsstTeacher STRUCTURAL
 	)
 
 objectclass ( i2OC:19
-	NAME ('machineUser' 'fakeUser' 'iodineUser')
+	NAME 'fakeUser'
 	MUST (
 		iodineUid
 	)
@@ -839,7 +839,7 @@ objectclass ( i2OC:19
 	)
 
 objectclass ( i2OC:20
-	NAME ('iodineGroup')
+	NAME 'iodineGroup'
 	MUST (
 		cn
 	)
@@ -852,7 +852,7 @@ objectclass ( i2OC:20
 	)
 
 objectclass ( i2OC:21
-	NAME ('iodinePhoto')
+	NAME 'iodinePhoto'
 	MUST (
 		jpegPhoto $
 		cn
