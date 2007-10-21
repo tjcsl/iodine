@@ -60,7 +60,7 @@ class LDAP {
 			//$_ENV['KRB5CCNAME'] = $I2_AUTH->cache();
 			//putenv("KRB5CCNAME={$_ENV['KRB5CCNAME']}");
 			d('KRB5CCNAME for LDAP bind is '.$_ENV['KRB5CCNAME'],8);
-			$this->bind = ldap_sasl_bind($this->conn);
+			$this->bind = ldap_sasl_bind($this->conn,'','','GSSAPI');
 
 			/*
 			** This is what stuff would look like for a proxy bind (w/GSSAPI)... But PHP ldap_sasl_bind is badly broken...
@@ -128,7 +128,7 @@ class LDAP {
 	*/ 
 	private function rebind($conn,$url) {
 		$this->conn_options($conn);
-		$bind = ldap_sasl_bind($conn);
+		$bind = ldap_sasl_bind($conn,'','','GSSAPI');
 		$this->conns[] = $conn;
 		if (!$bind) {
 			$I2_ERR->nonfatal_error("Unable to bind to LDAP server chasing referral to \"$url\"!");
