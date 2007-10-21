@@ -28,28 +28,11 @@ objectIdentifier i2Attr					i2OID:1
 objectIdentifier i2OC					i2OID:2
 
 # And a few handy shortcuts for syntaxes, etc.
-objectIdentifier audioSyntax			1.3.6.1.4.1.1466.115.121.1.4
-objectIdentifier binarySyntax			1.3.6.1.4.1.1466.115.121.1.5
-objectIdentifier bitStringSyntax		1.3.6.1.4.1.1466.115.121.1.6
 objectIdentifier boolSyntax				1.3.6.1.4.1.1466.115.121.1.7
-objectIdentifier certificateSyntax		1.3.6.1.4.1.1466.115.121.1.8
-objectIdentifier certificateListSyntax	1.3.6.1.4.1.1466.115.121.1.9
-objectIdentifier certificatePairSyntax	1.3.6.1.4.1.1466.115.121.1.10
-objectIdentifier countrySyntax			1.3.6.1.4.1.1466.115.121.1.11
 objectIdentifier dnSyntax				1.3.6.1.4.1.1466.115.121.1.12
 objectIdentifier stringSyntax			1.3.6.1.4.1.1466.115.121.1.15
-objectIdentifier faxSyntax				1.3.6.1.4.1.1466.115.121.1.22
-objectIdentifier timeSyntax				1.3.6.1.4.1.1466.115.121.1.24
-objectIdentifier ia5Syntax				1.3.6.1.4.1.1466.115.121.1.26
 objectIdentifier integerSyntax			1.3.6.1.4.1.1466.115.121.1.27
 objectIdentifier jpegSyntax				1.3.6.1.4.1.1466.115.121.1.28
-objectIdentifier nameSyntax				1.3.6.1.4.1.1466.115.121.1.34
-objectIdentifier numericStringSyntax	1.3.6.1.4.1.1466.115.121.1.36
-objectIdentifier octetStringSyntax		1.3.6.1.4.1.1466.115.121.1.36
-objectIdentifier addressSyntax			1.3.6.1.4.1.1466.115.121.1.41
-objectIdentifier telephoneSyntax		1.3.6.1.4.1.1466.115.121.1.50
-#objectIdentifier classPeriodSyntax		####
-#objectIdentifier dateSyntax			####
 
 # Define syntaxes
 
@@ -267,7 +250,7 @@ attributetype ( i2Attr:30
 	DESC 'The birthday of a person'
 	EQUALITY numericStringMatch
 	SUBSTR numericStringSubstringsMatch
-	SYNTAX numericStringSyntax
+	SYNTAX integerSyntax
 	SINGLE-VALUE
 	)
 
