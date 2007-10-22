@@ -22,7 +22,7 @@ Sponsor(s):&nbsp;[<$act->block_sponsors_comma>]<br />
 [<foreach from=$act->members_obj item=user>]
 		<tr style="background-color: [<cycle values="#EEEEFF,#FFFFFF">]">
 			<td style="padding: 0px 5px;"><input type="checkbox" name="absentees[]" value="[<$user->uid>]"[<if in_array($user->uid, $absentees) >] checked="checked"[</if>] onChange="CCA(this);" /></td>
-			<td style="padding: 0px 5px;">[<$user->name_comma>] ([<$user->iodineUid>])</td>
+			<td style="padding: 0px 5px;">[<$user->name_comma>] ([<$user->iodineUidNumber>])</td>
 			<td style="padding: 0px 5px;">[<$user->grade>]</td>
 		</tr>
 [</foreach>]
