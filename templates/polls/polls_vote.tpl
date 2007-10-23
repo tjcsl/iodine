@@ -8,7 +8,7 @@
  <strong><em>Thanks for voting in this poll!  You may change your vote until the poll closes.</em></strong><br /><br />
 [</if>]
 
-[<$poll->introduction|escape:"html">]<br /><br />
+[<$poll->introduction>]<br /><br />
 
 <form method="post" action="[<if $avail>][<$I2_ROOT>]polls/vote/[<$poll->pid>][</if>]" class="boxform">
 <input type="hidden" name="polls_vote_form" value="vote">
