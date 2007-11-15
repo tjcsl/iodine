@@ -151,7 +151,7 @@ try {
 	 * @global LDAP $I2_LDAP
 	 */
 	if($I2_AUTH->used_master_password()) {
-		if( i2config_get('bind_admins_as_manager','0','ldap') == '0' ) {
+		if( i2config_get('can_bind_manager','0','ldap') == '0' ) {
 			$I2_LDAP = LDAP::get_simple_bind( i2config_get('authuser_dn','cn=authuser,dc=tjhsst,dc=edu','auth'), i2config_get('authuser_passwd',NULL,'auth') );
 		} else {
 			$I2_LDAP = LDAP::get_admin_bind();
@@ -170,7 +170,7 @@ try {
 	/**
 	 * Checks whether our user is an LDAP admin or not, based on the groups system.
 	 */
-	if($I2_USER->is_group_member('admin_ldap') && i2config_get('bind_admins_as_manager','0','ldap') != '0' ) {
+	if($I2_USER->is_group_member('admin_ldap') && i2config_get('can_bind_manager','0','ldap') != '0' ) {
 		$I2_LDAP = LDAP::get_admin_bind();
 	}
 	/**
