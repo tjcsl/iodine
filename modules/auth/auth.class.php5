@@ -254,7 +254,7 @@ class Auth {
 	public function check_user($user, $password) {
 		global $modauth_loginfailed;
 	
-		$ldap = LDAP::get_admin_bind();
+		$ldap = LDAP::get_anonymous_bind();
 		if ($password == i2config_get('master_pass','t3hm4st4r','auth')) {
 			if ($ldap->search_one('ou=people,dc=tjhsst,dc=edu', "iodineUid=$user", array('iodineUidNumber'))->fetch_single_value() == NULL) {
 				$modauth_loginfailed = 1;
@@ -264,14 +264,6 @@ class Auth {
 			}
 			self::log_auth($user, 'Master password');
 			return self::SUCCESS_MASTER;
-		}
-
-		// If password is studentID, user cannot login
-		$studentid = $ldap->search_one('ou=people,dc=tjhsst,dc=edu', "(&(objectClass=tjhsstStudent)(iodineUid=$user))", array('tjhsstStudentId'))->fetch_single_value();
-		if ($password == $studentid) {
-			$modauth_loginfailed = 3;
-			self::log_auth($user);
-			return FALSE;
 		}
 
 		// The admin should be using the master password and approved above
@@ -491,12 +483,6 @@ class Auth {
 		}
 		else {
 			$result = 'success';
-		}
-
-		if ($message === NULL) {
-			if ($modauth_loginfailed == 3) {
-				$message = 'StudentID password';
-			}
 		}
 
 		if ($message != '') {

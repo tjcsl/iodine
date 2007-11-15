@@ -17,7 +17,7 @@ include('functions.inc.php5');
 *
 * Don't increment this until we have something runnable.
 */
-define('I2_VERSION', 0.91);
+define('I2_VERSION', 0.92);
 
 /**
 * The path to the master Iodine configuration file.
@@ -151,9 +151,12 @@ try {
 	 * @global LDAP $I2_LDAP
 	 */
 	if($I2_AUTH->used_master_password()) {
-		$I2_LDAP = LDAP::get_admin_bind();
-	}
-	else {
+		if( i2config_get('bind_admins_as_manager','0','ldap') == '0' ) {
+			$I2_LDAP = LDAP::get_simple_bind( i2config_get('authuser_dn','cn=authuser,dc=tjhsst,dc=edu','auth'), i2config_get('authuser_passwd',NULL,'auth') );
+		} else {
+			$I2_LDAP = LDAP::get_admin_bind();
+		}
+	} else {
 		$I2_LDAP = LDAP::get_user_bind();
 	}
 	/**
@@ -167,7 +170,7 @@ try {
 	/**
 	 * Checks whether our user is an LDAP admin or not, based on the groups system.
 	 */
-	if($I2_USER->is_group_member('admin_ldap')) {
+	if($I2_USER->is_group_member('admin_ldap') && i2config_get('bind_admins_as_manager','0','ldap') != '0' ) {
 		$I2_LDAP = LDAP::get_admin_bind();
 	}
 	/**
