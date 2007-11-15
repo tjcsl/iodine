@@ -173,6 +173,7 @@ class Logging {
 
 		if (!$fname || !($fh = fopen($fname, 'a'))) {
 			warn('The iodine authentication log cannot be accessed.');
+			return;
 		}
 
 		fwrite($fh, $msg."\n");
