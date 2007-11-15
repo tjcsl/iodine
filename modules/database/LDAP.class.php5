@@ -34,7 +34,7 @@ class LDAP {
 	
 	private $conns = array();
 	
-	function __construct($dn=NULL,$pass=NULL,$server=NULL,$simple=FALSE,$proxydn='') {
+	function __construct($dn=NULL,$pass=NULL,$server=NULL,$gssapi=FALSE,$proxydn='') {
 		global $I2_USER, $I2_ERR, $I2_AUTH;
 		if ($server !== NULL) {
 			$this->server = $server;
@@ -53,7 +53,7 @@ class LDAP {
 		
 		d("Connecting to LDAP server {$this->server}...",8);
 		$this->conn = $this->connect();
-		if (!$simple) {
+		if ($gssapi) {
 			/*
 			** GSSAPI bind - ignores $dn and $pass!
 			*/
@@ -141,7 +141,7 @@ class LDAP {
 
 	public static function get_user_bind($server = NULL) {
 		//All values except server ignored
-		return new LDAP('','pwd',$server,FALSE);
+		return new LDAP('','pwd',$server,TRUE);
 	}
 
 	/**
@@ -155,7 +155,7 @@ class LDAP {
 	}
 
 	public static function get_simple_bind($userdn,$pass,$server=NULL) {
-		return new LDAP($userdn,$pass,$server,TRUE);	
+		return new LDAP($userdn,$pass,$server);	
 	}
 
 	public function search_base($dn=NULL,$attributes='*',$bind=NULL) {
