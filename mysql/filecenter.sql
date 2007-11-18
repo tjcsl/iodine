@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS filecenter;
+CREATE TABLE filecenter (
+	fsid MEDIUMINT UNSIGNED NOT NULL,
+	KEY(fsid),
+	short VARCHAR(255) NOT NULL,
+	class VARCHAR(255) NOT NULL,
+	opts TEXT NOT NULL,
+	max_file_size BIGINT NOT NULL DEFAULT '20971520',
+	path_ex TEXT NOT NULL DEFAULT '',
+	desc TEXT NOT NULL
+);
