@@ -1343,7 +1343,7 @@ class dataimport implements Module {
 		/*
 		** Make the SQL database presentable
 		*/
-		$essentialgroups = array('admin_all','admin_mysql','admin_ldap','admin_groups','admin_news','admin_eighth');
+		$essentialgroups = array('admin_all','admin_mysql','admin_groups','admin_news','admin_eighth');
 		foreach ($essentialgroups as $groupname) {
 			$I2_SQL->query('INSERT INTO groups (name) VALUES (%s)',$groupname);
 		}

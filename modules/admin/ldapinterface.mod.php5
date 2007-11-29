@@ -87,11 +87,10 @@ class LDAPInterface implements Module {
 	* @abstract
 	*/
 	function init_pane() {
-		global $I2_LDAP, $I2_ARGS;
+		global $I2_LDAP, $I2_ARGS, $I2_USER;
 
-		// Only available to people in the 'admin_ldap' group
-		$ldap_group = new Group('admin_ldap');
-		if(!$ldap_group->has_member()) {
+		// Only available to people with LDAP admin privs
+		if (! $I2_USER->is_ldap_admin()) {
 			return FALSE;
 		}
 		

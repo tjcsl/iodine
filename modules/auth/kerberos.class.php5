@@ -13,35 +13,58 @@
 * @package core
 * @subpackage Auth
 */
-class Kerberos {
+class Kerberos implements AuthType {
 	private $cache;
-	/**
-	* The Kerberos class constructor. Throws an I2Exception on failed login.
-	*/
-	public function __construct($user, $password, $realm=NULL) {
-		if( $realm === NULL ) {
-			$realm = i2config_get('default_realm','LOCAL.TJHSST.EDU','kerberos');
+	private $realm;
+
+	public function __construct($realm=NULL) {
+		$this->realm = $realm;
+		if ($this->realm == NULL) {
+			$this->realm = i2config_get('default_realm','LOCAL.TJHSST.EDU','kerberos');
 		}
-
-		$this->cache = self::get_ticket($user, $password, $realm);
-
-		if(!$this->cache) {
-			throw new I2Exception("Kerberos login for $user@$realm failed.");
-		}
-
-		$_SESSION['logout_funcs'][] = array(
-						array('Kerberos', 'destroy'),
-						array($this->cache)
-					);
+		$this->cache = NULL;
 	}
 
 	/**
-	* Returns the path to the current Kerberos cache.
-	*
-	* @return string The path to the cache.
+	* The login method required by the {@link AuthType} interface
 	*/
-	public function cache() {
-		return $this->cache;
+	public function login($user, $pass, $realm=NULL) {
+		if ($realm === NULL) {
+			$realm = $this->realm;
+		}
+
+		$this->cache = self::get_ticket($user, $pass, $realm);
+
+		if(!$this->cache) {
+			return FALSE;
+		}
+		else {
+			$_SESSION['logout_funcs'][] = array(
+							array('Kerberos', 'destroy'),
+							array($this->cache)
+						);
+			return TRUE;
+		}
+	}
+
+	/**
+	* The reload method required by the {@link AuthType} interface
+	*/
+	public function reload() {
+		$cache = $this->cache;
+		d("Setting KRB5CCNAME to $cache",8);
+		putenv("KRB5CCNAME=$cache");
+		$_ENV['KRB5CCNAME'] = $cache;
+	}
+
+	/**
+	* The ldap-getting method required by the (@link AuthType) interface
+	*
+	* @return LDAP An LDAP object representing a GSSAPI bind.
+	*/
+	public function get_ldap_bind() {
+		// Get a GSSAPI bind
+		return LDAP::get_gssapi_bind();
 	}
 
 	/**
@@ -49,26 +72,6 @@ class Kerberos {
 	*/
 	public static function destroy($cache) {
 		exec('kdestroy -c '.$cache);
-	}
-
-	/**
-	* Checks to see if $password is a valid password for $user, for realm
-	* $realm.
-	*
-	* @param string $user The user to authenticate.
-	* @param string $password The user's password to check.
-	* @param string $realm The realm to authenticate to.
-	* @return bool TRUE if the authentication succeeded, FALSE otherwise
-	*/
-	public static function authenticate($user, $password, $realm) {
-		global $I2_LOG;
-		try {
-			$creds = new Kerberos($user, $password, $realm);
-		} catch (I2Exception $e) {
-			$I2_LOG->log_file('Kerberos auth error caught: '.$e->__toString());
-			return FALSE;
-		}
-		return TRUE;
 	}
 
 	/**
@@ -81,7 +84,7 @@ class Kerberos {
 	* @return mixed	A string representing the absolute path to the cache
 	*		file on a successful authentication, FALSE otherwise.
 	*/
-	public static function get_ticket($user, $password, $realm) {
+	private static function get_ticket($user, $password, $realm) {
 		// Generates a cache name in the form /tmp/iodine-krb5-<randomstring>, where <randomstring> is 16 chars long
 		$cache = tempname('/tmp/iodine-krb5-');
 

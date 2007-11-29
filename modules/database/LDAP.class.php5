@@ -27,6 +27,7 @@ class LDAP {
 	private $dnbase;
 	private static $ou_bases = array();
 	private $bind;
+	private $bindtype;
 	private $conn;
 	private $server;
 	private $sizelimit;
@@ -72,7 +73,7 @@ class LDAP {
 			/*
 			** Simple bind
 			*/
-			$this->bind = ldap_bind($this->conn,$dn,$pass);
+			$this->bind = @ldap_bind($this->conn,$dn,$pass);
 			d("Bound to LDAP simply as $dn",8);
 		} else {
 			/*
@@ -82,13 +83,14 @@ class LDAP {
 			d('Bound to LDAP anonymously',8);
 		}
 		/*
-		** These errors are nonfatal so they don't bring down the whole application beyond any hope of a fix.
+		** These errors aren't nonfatal, so they might bring down the
+		** whole application beyond any hope of a fix.
 		*/
 		if (!$this->conn) {
-			$I2_ERR->nonfatal_error('Unable to connect to LDAP server!');
+			throw new I2Exception('Unable to connect to LDAP server!');
 		}
 		if (!$this->bind) {
-			$I2_ERR->nonfatal_error('Unable to bind to LDAP server!');
+			throw new I2Exception('Unable to bind to LDAP server!');
 		}
 	}
 
@@ -139,23 +141,43 @@ class LDAP {
 		return new LDAP();
 	}
 
+	/**
+	* Asks auth for an appropriate user bind
+	*/
 	public static function get_user_bind($server = NULL) {
-		//All values except server ignored
-		return new LDAP('','pwd',$server,TRUE);
+		global $I2_AUTH;
+		return $I2_AUTH->get_ldap_bind();
+	}
+
+	/**
+	* Gets a GSSAPI bind
+	*/
+	public static function get_gssapi_bind($server = NULL) {
+		return new LDAP('','',$server,TRUE);
 	}
 
 	/**
 	* Gets an administrative simple bind.
 	*/
-	public static function get_admin_bind($pass=NULL) {
-		if ($pass === NULL) {
-			$pass = i2config_get('admin_pw','ld4pp4ss','ldap');
-		}
-		return self::get_simple_bind(i2config_get('admin_dn','cn=Manager,dc=tjhsst,dc=edu','ldap'),$pass);
+	public static function get_admin_bind($pass) {
+		$dn = i2config_get('admin_dn','cn=Manager,dc=tjhsst,dc=edu','ldap');
+		return self::get_simple_bind($dn,$pass);
+	}
+
+	/**
+	* Gets a simple bind as a generic authuser.
+	*/
+	public static function get_generic_bind() {
+		$dn = i2config_get('authuser_dn',NULL,'ldap');
+		$pass = i2config_get('authuser_passwd',NULL,'ldap');
+		return self::get_simple_bind($dn,$pass);
 	}
 
 	public static function get_simple_bind($userdn,$pass,$server=NULL) {
 		return new LDAP($userdn,$pass,$server);	
+	}
+
+	public function has_admin_privs() {
 	}
 
 	public function search_base($dn=NULL,$attributes='*',$bind=NULL) {

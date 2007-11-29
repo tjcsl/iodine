@@ -547,22 +547,6 @@ class User {
 					}
 				}
 				break;
-			case 'preferredPhoto':
-				$legal_photos = array(
-					'freshmanPhoto',
-					'freshmanphoto',
-					'sophomorePhoto',
-					'sophomorephoto',
-					'juniorPhoto',
-					'juniorphoto',
-					'seniorPhoto',
-					'seniorphoto',
-					'AUTO'
-				);
-				if (!in_array($value, $legal_photos)) {
-					throw new I2Exception("Illegal photo name: $value");
-				}
-				break;
 		}
 		
 		$ldap->modify_val(LDAP::get_user_dn($this),$name,$val);
@@ -655,6 +639,18 @@ class User {
 		$group = new Group($groupname);
 		return $group->has_member($this);
 	}	
+
+	/**
+	* Checks whether a user is an LDAP admin.
+	*
+	* Works by checking for the is-admin attribute in LDAP, since that's
+	* how the LDAP dynamic admin group works.
+	*
+	* @return bool Whether the user has admin priviledges in LDAP or not
+	*/
+	public function is_ldap_admin() {
+		return $this->__get('is-admin')=='TRUE';
+	}
 
 	/**
 	* Provides legacy Intranet 1 powersearching.

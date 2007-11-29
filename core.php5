@@ -119,6 +119,7 @@ try {
 	 * @global Error $I2_ERR
 	 */
 	$I2_ERR = new Error();
+
 	/**
 	 * The global logging mechanism.
 	 *
@@ -127,6 +128,7 @@ try {
 	 * @global Logging $I2_LOG
 	 */
 	$I2_LOG = new Logging();
+
 	/**
 	 * The global SQL mechanism.
 	 *
@@ -135,6 +137,7 @@ try {
 	 * @global MySQL $I2_SQL
 	 */
 	$I2_SQL = new MySQL();
+
 	/**
 	 * The global authentication mechanism.
 	 *
@@ -143,6 +146,7 @@ try {
 	 * @global Auth $I2_AUTH
 	 */
 	$I2_AUTH = new Auth();
+
 	/**
 	 * The global LDAP mechanism.
 	 *
@@ -150,15 +154,8 @@ try {
 	 *
 	 * @global LDAP $I2_LDAP
 	 */
-	if($I2_AUTH->used_master_password()) {
-		if( i2config_get('can_bind_manager','0','ldap') == '0' ) {
-			$I2_LDAP = LDAP::get_simple_bind( i2config_get('authuser_dn','cn=authuser,dc=tjhsst,dc=edu','auth'), i2config_get('authuser_passwd',NULL,'auth') );
-		} else {
-			$I2_LDAP = LDAP::get_admin_bind();
-		}
-	} else {
-		$I2_LDAP = LDAP::get_user_bind();
-	}
+	$I2_LDAP = LDAP::get_user_bind();
+
 	/**
 	 * The global user info mechanism.
 	 *
@@ -167,12 +164,7 @@ try {
 	 * @global User $I2_USER
 	 */
 	$I2_USER = new User();
-	/**
-	 * Checks whether our user is an LDAP admin or not, based on the groups system.
-	 */
-	if($I2_USER->is_group_member('admin_ldap') && i2config_get('can_bind_manager','0','ldap') != '0' ) {
-		$I2_LDAP = LDAP::get_admin_bind();
-	}
+
 	/**
 	 * The global display mechanism.
 	 *
@@ -181,6 +173,7 @@ try {
 	 * @global Display $I2_DISP
 	 */
 	$I2_DISP = new Display();
+
 	/**
 	 * The control mechanism for all Asynchonous Javascript and XML.
 	 *

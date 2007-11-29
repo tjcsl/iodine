@@ -98,11 +98,13 @@ class Mail implements Module {
 	}
 	
 	function init_box() {
-		// TEMPORARY HACK: because mail happens to be dead right now,
-		// we don't even want to try loading it.
-		//return FALSE;
+		global $I2_USER, $I2_AUTH;
 
-		global $I2_USER;
+		// only for regular users (the master password won't work!)
+		if ($I2_AUTH->get_auth_method() != 'kerberos') {
+			return FALSE;
+		}
+
 		// Mailboxes are students only
 		if ($I2_USER->is_group_member('grade_staff')) {
 			return FALSE;

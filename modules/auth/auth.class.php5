@@ -14,14 +14,6 @@
 * @subpackage Auth
 */
 class Auth {
-	/**
-	* Represents a standard successful login.
-	*/
-	const SUCCESS = 1;
-	/**
-	* Represents a successful login using the Iodine master password.
-	*/
-	const SUCCESS_MASTER = 2;
 
 	/**
 	* Whether encryption of the user's password in $_SESSION is enabled.
@@ -39,9 +31,9 @@ class Auth {
 	private $cache;
 
 	/**
-	* The master password was used to log in
+	* What auth mechanism was used to login
 	*/
-	private $is_master;
+	private $auth_type;
 
 	/**
 	* The Auth class constructor.
@@ -109,30 +101,19 @@ class Auth {
 			//$_SESSION['i2_uid'] = $_SERVER['WEBAUTH_LDAP_IODINEUIDNUMBER'];
 			d('Kerberos pre-auth succeeded for principal '.$_SERVER['REMOTE_USER'],8);
 			$this->cache = getenv('KRB5CCNAME');
-			$_SESSION['i2_credentials_cache'] = $this->cache;
 			return TRUE;
 		}
 		/*
-		** Iodine proprietary authentication
+		** Iodine proprietary authentication (of all kinds)
 		*/
 		if (	isset($_SESSION['i2_uid']) 
 			&& isset($_SESSION['i2_login_time'])) {
 
-			/*
-			** Make Kerberos credentials available for the duration of the request
-			*/
-			if (isSet($_SESSION['i2_credentials_cache'])) {
-				$cache = $_SESSION['i2_credentials_cache'];
-				$this->cache = $cache;
-				d("Setting KRB5CCNAME to $cache",8);
-				putenv("KRB5CCNAME=$cache");
-				$_ENV['KRB5CCNAME'] = $cache;
-			} else {
-				//We're iodine-authed without kerberos ... so we must be the master!
-				$this->is_master = TRUE;
-			}
+			$this->auth_type = $_SESSION['auth_type'];
+			$this->auth = $_SESSION['auth'];
+			$this->auth->reload();
 			
-			if( self::should_autologout($_SESSION['i2_login_time']) && !$this->used_master_password()) {
+			if (self::should_autologout($_SESSION['i2_login_time'])) {
 				$this->log_out();
 				return FALSE;
 			}
@@ -157,14 +138,13 @@ class Auth {
 	* Low-level check of a username against a password.
 	*
 	* This will check if $password is valid for user $user, using
-	* whatever authentication method specified in config.ini under the
+	* the authentication method(s) specified in config.ini under the
 	* 'Auth' section.
 	*
-	* The authentication method specified in config.ini is the name of a
-	* class. To log in a user, a new object of that class will be
-	* instantiated. Two parameters will be passed to the constructor,
-	* which are the same parameters passed to this method. It must throw an
-	* {@link I2Exception} if the password is not valid.
+	* The config.ini file contains a 'methods =' directive, which should
+	* give a comma-seperated list of authentication methods. Each method
+	* must be the name of a class implelementing the AuthType interface.
+	* The methods will be tried in the order listed until one succeeds.
 	*
 	* @param string $user The username to log in.
 	* @param string $password The password to use.
@@ -173,23 +153,24 @@ class Auth {
 	*/
 	private static function validate($user,$password) {
 		global $I2_LOG;
-		$auth_method = i2config_get('method','kerberos','auth');
+		$auth_methods = explode(',', i2config_get('methods',NULL,'auth'));
 
-		if( get_i2module($auth_method) === FALSE ) {
-			throw new I2Exception(
-				'Internal error: Unimplemented authentication method '.$auth_method.' specified in the Iodine configuration.');
+		foreach ($auth_methods as $auth_method) {
+			if( get_i2module($auth_method) === FALSE ) {
+				throw new I2Exception(
+					'Internal error: Unimplemented authentication method '.$auth_method.' specified in the Iodine configuration.');
+			}
+
+			$auth = new $auth_method();
+			if ($auth->login($user, $password)) {
+				$_SESSION['auth_type'] = $auth_method;
+				$_SESSION['auth'] = $auth;
+				self::log_auth($user, TRUE, $auth_method);
+				return TRUE;
+			}
 		}
 
-		try {
-			$auth = new $auth_method($user, $password);
-			$_SESSION['i2_credentials'] = $auth;
-			$_SESSION['i2_credentials_cache'] = $auth->cache();
-		} catch( I2Exception $e ) {
-			$I2_LOG->log_file('Auth validation error caught: '.$e->__toString());
-			return FALSE;
-		}
-
-		return TRUE;
+		self::log_auth($user, FALSE, 'overall'); return FALSE;
 	}
 
 	/**
@@ -223,14 +204,6 @@ class Auth {
 				$I2_LOG->log_file('Invalid callback in the logout_funcs SESSION array, skipping it. Callback: '.print_r($callback,TRUE));
 			}
 		}
-		/*
-		** Try to get rid of Kerberos credentials
-		*/
-		if (isSet($_SESSION['i2_credentials_cache'])) {
-			Kerberos::destroy($_SESSION['i2_credentials_cache']);
-		} else {
-			`kdestroy`;
-		}
 		
 		session_destroy();
 		unset($_SESSION);
@@ -247,24 +220,10 @@ class Auth {
 	*
 	* @param string $user The username of the user you want to check
 	* @param string $password The user's password
-	* @return bool	Auth::SUCCESS_MASTER if the person passed the master
-	*		password, Auth::SUCCESS if the person's actual password
-	*		was passwrd, FALSE otherwise.
+	* @return bool	TRUE, FALSE otherwise.
 	*/
 	public function check_user($user, $password) {
 		global $modauth_loginfailed;
-	
-		$ldap = LDAP::get_anonymous_bind();
-		if ($password == i2config_get('master_pass','t3hm4st4r','auth')) {
-			if ($ldap->search_one('ou=people,dc=tjhsst,dc=edu', "iodineUid=$user", array('iodineUidNumber'))->fetch_single_value() == NULL) {
-				$modauth_loginfailed = 1;
-				d('Failed, user not found in database. Master passwords are not magical.');
-				self::log_auth($user, 'Master password (nonexistent user)');
-				return FALSE;
-			}
-			self::log_auth($user, 'Master password');
-			return self::SUCCESS_MASTER;
-		}
 
 		// The admin should be using the master password and approved above
 		// If it gets to here, their login fails and we don't want kerberos even trying
@@ -273,12 +232,25 @@ class Auth {
 		}
 		
 		if(self::validate($user,$password)) {
-			self::log_auth($user);
-			return self::SUCCESS;
+			return TRUE;
 		}
+
 		$modauth_loginfailed = 1;
-		self::log_auth($user);
 		return FALSE;
+	}
+
+	/**
+	* Get an appropriate LDAP bind
+	*
+	* Asks the auth method that the user was logged in with to get the
+	* correct bind from LDAP. This is because the bind is dependant on the
+	* auth method; for example, Kerberos will get a bind using GSSAPI,
+	* while the master password will get a simple bind.
+	*
+	* @return LDAP An LDAP object representing an appropriate LDAP bind
+	*/
+	public function get_ldap_bind() {
+		return $this->auth->get_ldap_bind();
 	}
 
 	/**
@@ -311,7 +283,7 @@ class Auth {
 				//$_SERVER['REMOTE_USER'] = $_REQUEST['login_username'];
 					
 				// Do not cache the password if the master password was used.
-				if($check_result != self::SUCCESS_MASTER) {
+				if($this->auth_type != 'master') {
 					$this->cache_password($_REQUEST['login_password']);
 				}
 				else {
@@ -407,10 +379,12 @@ class Auth {
 	}
 
 	/**
-	* Returs whether the user logged in with the master password
+	* Gets the method used to log in
+	*
+	* @return string The auth method used
 	*/
-	public function used_master_password() {
-		return $this->is_master;
+	public function get_auth_method() {
+		return $this->auth_type;
 	}
 
 	/**
@@ -475,26 +449,22 @@ class Auth {
 	 * @param string $username
 	 * @param string $message
 	 */
-	private static function log_auth($user, $message = NULL) {
-		global $I2_LOG, $modauth_loginfailed;
+	private static function log_auth($user, $success, $method) {
+		global $I2_LOG;
 
-		if ($modauth_loginfailed) {
-			$result = 'FAILURE';
-		}
-		else {
+		if ($success) {
 			$result = 'success';
 		}
-
-		if ($message != '') {
-			$message = ' -- ' . $message;
+		else {
+			$result = 'FAILURE';
 		}
 
 		$I2_LOG->log_auth(
 			'[' . date('d/M/Y:H:i:s O') . '] ' .
 			$_SERVER['REMOTE_ADDR'] . ' - ' .
 			$result . ' - ' .
-			$user .
-			$message
+			$user . ' -- ' .
+			$method
 		);
 	}
 }

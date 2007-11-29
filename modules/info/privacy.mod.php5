@@ -43,7 +43,7 @@ class Privacy implements Module {
 			Search::clear_results();
 			//redirect('privacy/'.$user->uid);
 		}
-		if ($I2_AUTH->used_master_password()) {
+		if ($I2_USER->is_ldap_admin()) {
 			$this->template = 'master.tpl';
 			if (isSet($I2_ARGS[1])) {
 				$this->template_args['user'] = new User($I2_ARGS[1]);

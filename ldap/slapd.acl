@@ -1,99 +1,117 @@
+###
+# General stuff
+###
+
+# admins can do anything!
+access to *
+	by group/groupOfURLs/memberURL.base="cn=admins,dc=tjhsst,dc=edu" write
+	by * break
+
 # Make sure authing to a password is allowed
 access to attrs=userPassword
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
 	by anonymous auth
 	by * none
 
-# Let people delete entries from their user objects
-#access to dn.regex=iodineUid=[^,]+,ou=people,dc=tjhsst,dc=edu
-#	attrs=children
-#	by self write
+# no one (except admins) can adjust adminship
+access to attrs=is-admin
+	by * read
 
-# Nobody should be able to read studentIds except admins and teachers
+# teachers can read anything
+access to *
+	by group/groupOfURLs/memberURL.base="cn=teachers,dc=tjhsst,dc=edu" read
+	by * break
+
+# no one can read studentids
 access to attrs=tjhsstStudentId
-	by self read
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
-	by group="cn=Teachers,ou=people,dc=tjhsst,dc=edu" read
 	by * none
 
+# general user-readable data
+access to attrs=cn,sn,givenName,soundexFirst,soundexLast,displayName,mname,nickname,sex,title,graduationYear,tjhsstClassId,tjhsstSectionId,quarter,periodNumber,sponsorDn
+	by users read
+	by * none
+
+
+###
+# User preferences and permissions
+###
+
 # Allow users to change their own prefs
-access to attrs=startpage,style,header
+access to attrs=startpage,style,header,boxcolor,boxtitlecolor
 	by self write
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
-	by group="cn=Teachers,ou=people,dc=tjhsst,dc=edu" read
 	by * read
 
 # Let users set the (inherited) permissions bits of their own pictures
 access to dn.regex="^.*,iodineUid=([^,]+),ou=people,dc=tjhsst,dc=edu$"
 		attrs=showpictureself
 	by dn.exact,expand="iodineUid=$1,ou=people,dc=tjhsst,dc=edu" write
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
-	by group="cn=Teachers,ou=people,dc=tjhsst,dc=edu" read
 	by * read continue
 
 # Allow users to set their own permissions bits
 access to attrs=perm-showtelephone-self,perm-showbirthday-self,perm-showaddress-self,perm-showmap-self,perm-showpictures-self,perm-showschedule-self,showphoneself,showscheduleself,showbdayself,showaddressself,showmapself,showpictureself
 	by self write
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
-	by group="cn=Teachers,ou=people,dc=tjhsst,dc=edu" read
 	by * read
 
 # ... but not the parental ones
 access to attrs=perm-showtelephone,perm-showbirthday,perm-showaddress,perm-showmap,perm-showpictures,perm-showschedule
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
-	by group="cn=Teachers,ou=people,dc=tjhsst,dc=edu" read
 	by * read
 
-# Restrict reading of restricted info to admins only
-access to filter="(|(perm-showtelephone-self=FALSE)(perm-showtelephone=FALSE))"
-		attrs=homePhone
-	by self read
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
-	by group="cn=Teachers,ou=people,dc=tjhsst,dc=edu" read
-	by * none
 
-# Let only a class' teacher see it
-access to filter="(|(perm-showschedule-self=FALSE)(perm-showschedule=FALSE))"
-		attrs=enrolledclass
-	by self read
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
-	by group="cn=Teachers,ou=people,dc=tjhsst,dc=edu" read
-	by * none
+###
+# Users have access to their own restricted data
+###
 
-access to filter="(|(perm-showpictures-self=FALSE)(perm-showpictures=FALSE))"
-		attrs=preferredPhoto
+access to attrs=homePhone,enrolledClass,counselor,street,birthday,st,street,l,postalCode,postalAddress,c,locker
+	by self read
+	by * none break
+
+access to attrs=preferredPhoto
 	by self write
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
-	by group="cn=Teachers,ou=people,dc=tjhsst,dc=edu" read
+	by * none break
+
+access to dn.regex="^.*,iodineUid=([^,]+),ou=people,dc=tjhsst,dc=edu$"
+		attrs=jpegPhoto
+	by self.level{-1} read
+	by * none break
+
+
+###
+# Restricted data
+###
+
+access to filter="(&(perm-showtelephone-self=TRUE)(perm-showtelephone=TRUE))"
+		attrs=homePhone
+	by users read
+	by * none
+
+access to filter="(&(perm-showschedule-self=TRUE)(perm-showschedule=TRUE))"
+		attrs=enrolledclass,counselor
+	by users read
+	by * none
+
+access to filter="(&(perm-showpictures-self=TRUE)(perm-showpictures=TRUE))"
+		attrs=preferredPhoto
 	by users read
 	by * none
 
 access to dn.regex="^.*,iodineUid=([^,]+),ou=people,dc=tjhsst,dc=edu$"
-		filter="(|(perm-showpictures-self=FALSE)(perm-showpictures=FALSE))"
+		filter="(&(perm-showpictures-self=TRUE)(perm-showpictures=TRUE))"
 		attrs=jpegPhoto
-	by self.level{-1} read
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
-	by group="cn=Teachers,ou=people,dc=tjhsst,dc=edu" read
+	by users read
 	by * none
 
-access to filter="(|(perm-showbirthday-self=FALSE)(perm-showbirthday=FALSE))"
+access to filter="(&(perm-showbirthday-self=TRUE)(perm-showbirthday=TRUE))"
 		attrs=bday
-	by self read
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
-	by group="cn=Teachers,ou=people,dc=tjhsst,dc=edu" read
+	by users read
 	by * none
 
-access to filter="(|(perm-showaddress-self=FALSE)(perm-showaddress=FALSE))"
+access to filter="(&(perm-showaddress-self=TRUE)(perm-showaddress=TRUE))"
 		attrs=st,street,l,postalCode,postalAddress,c
-	by self read
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
-	by group="cn=Teachers,ou=people,dc=tjhsst,dc=edu" read
+	by users read
 	by * none
 
-access to attrs=locker
-	by self read
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
-	by group="cn=Teachers,ou=people,dc=tjhsst,dc=edu" read
+access to filter="(&(perm-showlocker-self=TRUE)(perm-showlocker=TRUE))"
+		attrs=locker
+	by users read
 	by * none
 
 #access to filter="(|(perm-showpicture-self=FALSE)(perm-showpicture=FALSE))"
@@ -103,23 +121,16 @@ access to attrs=locker
 #	by * none
 
 # Changeable student info
-access to attrs=mobile,aim,msn,icq,googletalk,yahoo,telephoneNumber,webpage,jabber,mail,xfire,children,skype,boxcolor,boxtitlecolor
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
+access to attrs=mobile,aim,msn,icq,googletalk,yahoo,telephoneNumber,webpage,jabber,mail,xfire,children,skype
 	by self write
-	by group="cn=Teachers,ou=people,dc=tjhsst,dc=edu" read
 	by users read
 	by * none
 
-
-# Ensure all sensitive info is kept to authorized users, no matter what
-access to attrs=l,postalcode,postaladdress,homePhone,homePostalAddress,street,st,locker,counselor,cn,sn,givenName,soundexFirst,soundexLast,displayName,mname,nickname,birthday,sex,title,graduationYear,jpegPhoto,enrolledClass,tjhsstClassId,tjhsstSectionId,quarter,periodNumber,sponsorDn
-	by dn.regex="uid=[^,]+/ldap,dc=tjhsst,dc=edu" write
-	by group="cn=Teachers,ou=people,dc=tjhsst,dc=edu" read
-	by users read
+# Block access to sensitive info unless it was explicitly allowed above
+access to attrs=homePhone,enrolledClass,counselor,street,preferredPhoto,jpegPhoto,birthday,st,street,l,postalCode,postalAddress,c,locker
 	by * none
 
 # Catch-all clause
 access to *
-	by dn.regex="uid=.+/ldap,dc=tjhsst,dc=edu" write
 	by self write
 	by * read

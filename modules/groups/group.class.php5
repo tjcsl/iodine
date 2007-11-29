@@ -51,7 +51,6 @@ class Group {
 	private static $all = NULL;
 	private static $admin_all = NULL;
 	private static $admin_eighth = NULL;
-	private static $admin_ldap = NULL;
 	private static $admin_mysql = NULL;
 
 	/**
@@ -78,13 +77,6 @@ class Group {
 			self::$admin_eighth = new Group('admin_eighth');
 		}
 		return self::$admin_eighth;
-	}
-
-	public static function admin_ldap() {
-		if (self::$admin_ldap === NULL) {
-			self::$admin_ldap = new Group('admin_ldap');
-		}
-		return self::$admin_ldap;
 	}
 
 	public static function admin_mysql() {
@@ -471,7 +463,7 @@ class Group {
 	public static function user_can_create($groupname = NULL) {
 		global $I2_AUTH, $I2_USER;
 
-		return $I2_AUTH->used_master_password()
+		return $I2_AUTH->get_auth_method() == 'master'
 			|| self::admin_all()->has_member($I2_USER)
 			|| self::prefix_admin($groupname, $I2_USER);
 	}
