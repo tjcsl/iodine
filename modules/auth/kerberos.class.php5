@@ -58,6 +58,15 @@ class Kerberos implements AuthType {
 	}
 
 	/**
+	* Returns the path to the current Kerberos cache.
+	*
+	* @return string The path to the cache.
+	*/
+	public function cache() {
+		return $this->cache;
+	}
+
+	/**
 	* The ldap-getting method required by the (@link AuthType) interface
 	*
 	* @return LDAP An LDAP object representing a GSSAPI bind.

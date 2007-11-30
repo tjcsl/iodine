@@ -22,9 +22,9 @@ class CSLProxy {
 		if ($realm==FALSE) { $realm=i2config_get('afs_realm','CSL.TJHSST.EDU','kerberos'); }
 //		if (!isset($_SESSION['krb_csl_ticket'])) {
 			d("Getting $realm kerberos ticket",6);
-			try {
-				$kerberos = new Kerberos($user, $pass, $realm);
-			} catch (I2Exception $e) {
+			$kerberos = new Kerberos($realm);
+			if($kerberos->login($user, $pass) === FALSE)
+			{
 				//The user's CSL username doesn't match their normal username: we should prompt for a different username/password.
 				$this->valid = FALSE;
 				return;
