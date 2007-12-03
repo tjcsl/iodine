@@ -289,6 +289,17 @@ class Polls implements Module {
 			foreach ($qs as $q) {
 				$q->delete_vote($uid);
 				if (isset($_POST[$q->qid])) {
+					if ($q->maxvotes > 0 && count($_POST[$q->qid]) > $q->maxvotes) {
+						$i = 0;
+						$arr = array();
+						foreach ($ans as $key=>$val) {
+							if ($i == $q->maxvotes)
+								break;
+							$arr[$key] = $val;
+							$i += 1;
+						}
+						$_POST[$q->qid] = $ans;
+					}
 					if ($q->answertype == 'free_response' &&
 						strlen($_POST[$q->qid]) == 0)
 						continue;
