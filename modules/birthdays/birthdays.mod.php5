@@ -32,7 +32,7 @@ class Birthdays implements Module {
 		$mytime = getdate(time());
 
 		if(!($this->birthdays = $this->get_cache($mytime))) {
-			$this->tmp_ldap = LDAP::get_simple_bind( i2config_get('authuser_dn','cn=authuser,dc=tjhsst,dc=edu','auth'), i2config_get('authuser_passwd',NULL,'auth') );
+			$this->tmp_ldap = LDAP::get_simple_bind( i2config_get('authuser_dn','cn=authuser,dc=tjhsst,dc=edu','ldap'), i2config_get('authuser_passwd',NULL,'ldap') );
 			$this->birthdays = $this->get_birthdays(time());
 			$this->store_cache($this->birthdays,$mytime);
 		}
