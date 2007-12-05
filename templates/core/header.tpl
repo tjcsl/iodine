@@ -34,7 +34,7 @@ IE7_PNG_SUFFIX = ".png";
 			[<elseif not $smarty.foreach.activities.first>]
 				,
 			[</if>]
-			<a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$I2_USER->uid>]/bids/[<$activity->bid>]">[<$activity->name_friendly>]</a>[</foreach>].
+			<a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$I2_USER->uid>]/bids/[<$activity->bid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>[</foreach>].
 	[</if>]
  [</if>]
  </div>

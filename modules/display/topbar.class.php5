@@ -20,7 +20,7 @@ class TopBar {
 			$date = EighthSchedule::get_next_date();
 			$arr = array();
 			if($date) {
-			        $activities = EighthActivity::id_to_activity(EighthSchedule::get_activities($I2_USER->uid, $date, 1));
+			        $activities = EighthActivity::id_to_activity(EighthSchedule::get_activities($I2_USER->uid, $date, 1), FALSE);
 				$dates = array($date => date("n/j/Y", @strtotime($date)), date('Y-m-d') => 'today', date('Y-m-d', time() + 3600 * 24) => 'tomorrow', '' => 'none');
 				if (isSet($activities)) {
 					$arr['activities'] = $activities;

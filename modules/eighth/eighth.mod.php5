@@ -398,7 +398,7 @@ class Eighth implements Module {
 		$this->admin = self::is_admin();
 		$this->template_args['eighth_admin'] = $this->admin;
 		if($date) {
-			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($I2_USER->uid, $date, 1));
+			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($I2_USER->uid, $date, 1), FALSE);
 		}
 		else {
 			$this->template_args['activities'] = array();
@@ -1783,7 +1783,7 @@ class Eighth implements Module {
 			$user = new User($this->args['uid']);
 			$this->template_args['user'] = $user;
 			$this->template_args['comments'] = $user->comments;
-			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($this->args['uid'], $this->args['start_date']));
+			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($this->args['uid'], $this->args['start_date']), FALSE);
 			$this->template_args['absences'] = EighthSchedule::get_absences($this->args['uid']);
 			$this->template_args['absence_count'] = count($this->template_args['absences']);
 			

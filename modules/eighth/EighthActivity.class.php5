@@ -33,8 +33,19 @@ class EighthActivity {
 	* @param int $activityid The activity ID.
 	* @param int $blockid The block ID for an activity, NULL in general.
 	*/
-	public function __construct($activityid, $blockid = NULL) {
+	public function __construct($activityid, $blockid = NULL, $special = NULL) {
 		global $I2_SQL;
+		if ($special == "CANCELLED") {
+			$tmp = new EighthActivity($activityid);
+			$this->data['name'] = $tmp->name;
+			$this->data['cancelled'] = TRUE;
+			$this->data['bothblocks'] = FALSE;
+			$this->data['sticky'] = FALSE;
+			$this->data['aid'] = $activityid;
+			$this->data['bid'] = $blockid;
+			$this->data['block'] = new EighthBlock($blockid);
+			return;
+		}
 		if (! self::activity_exists($activityid)) {
 			throw new I2Exception('Tried to create a nonexistent EighthActivity object!');
 		}
@@ -924,11 +935,16 @@ class EighthActivity {
 	* @access public
 	* @param int $activityids The activity IDs.
 	*/
-	public static function id_to_activity($activityids) {
+	public static function id_to_activity($activityids, $exceptionsok = TRUE) {
 		$ret = array();
 		foreach($activityids as $activityid) {
 			if(is_array($activityid)) {
-				$ret[] = new EighthActivity($activityid[0], $activityid[1]);
+				if($exceptionsok || EighthSchedule::is_activity_valid($activityid[0], $activityid[1]))
+					$ret[] = new EighthActivity($activityid[0], $activityid[1]);
+				else {
+					d("Activity $activityid[0] not scheduled for block $activityid[1], returning EighthActivity object with CANCELLED handler.");
+					$ret[] = new EighthActivity($activityid[0], $activityid[1], "CANCELLED");
+				}
 			}
 			else {
 				$ret[] = new EighthActivity($activityid);
