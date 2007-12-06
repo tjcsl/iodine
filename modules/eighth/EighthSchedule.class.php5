@@ -192,7 +192,9 @@ class EighthSchedule {
 		if ($user->uid != $I2_USER->uid) {
 			//Eighth::check_admin();
 			if (!($I2_USER->is_group_member('grade_staff') || $I2_USER->is_group_member('admin_eighth'))) {
-				throw new I2Exception('Unauththorized request for absence information!');
+				//throw new I2Exception('Unauthorized request for absence information!');
+				//Fail silently so students may also use vcp_schedule interface to view other students schedules, but still within the user's privacy settings.
+				return array();
 			}
 		}
 		return $I2_SQL->query('SELECT aid,eighth_activity_map.bid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) LEFT JOIN eighth_blocks USING (bid) WHERE eighth_absentees.userid=%d ORDER BY date,block', $userid)->fetch_all_arrays(Result::NUM);
