@@ -24,7 +24,7 @@ class SectionLDAP implements Section {
 		$this->info['sectionid'] = $data['tjhsstSectionId'];
 		$this->info['classid'] = $data['tjhsstClassId'];
 		$this->info['quarters'] = $data['quarterNumber'];
-		$this->info['room'] = $data['roomNumber'];
+		$this->info['room'] = $data['roomNumber'] ? $data['roomNumber'] : "";
 		$this->info['name'] = $data['cn'];
 		$this->info['period'] = $data['classPeriod'];
 
@@ -51,7 +51,10 @@ class SectionLDAP implements Section {
 			return $this->get_students();
 		}
 		if ($var == 'term') {
-			return @implode(', ', $this->info['quarters']);
+			if(is_array($this->info['period']))
+				return @implode(', ', $this->info['quarters']);
+			else
+				return $this->info['quarters'];
 		}
 		if ($var == 'periods') {
 			if(is_array($this->info['period']))
