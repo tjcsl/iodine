@@ -155,7 +155,7 @@ To view this user's portfolio click <a href="http://shares.tjhsst.edu/PORTFOLIO/
  [<if $mode == 'full'>]
  [<foreach from=$schedule item=class>]
    <tr class="[<cycle values="c1,c2">]">
-    <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$class->sectionid>]">[<$class->period>]</a></td>
+    <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$class->sectionid>]">[<$class->periods>]</a></td>
     <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$class->sectionid>]">[<$class->name>]</a></td>
     <td class="directory-table" style="text-align:center;">[<$class->room>]</td>
     <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/info/[<$class->teacher->uid>]">[<$class->teacher->sn>]</a></td>

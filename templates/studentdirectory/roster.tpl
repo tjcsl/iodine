@@ -11,7 +11,7 @@ This lists all the classes available during the school year. You may sort by cli
 <tr class="[<cycle values="c1,c2">]">
   <td><a href="[<$I2_ROOT>]studentdirectory/class/[<$course->sectionid>]">[<$course->name>]</a></td>
   <td><a href="[<$I2_ROOT>]studentdirectory/info/[<$course->teacher->iodineUidNumber>]">[<$course->teacher->name_comma>]</a></td>
-  <td>[<$course->period>]</td>
+  <td>[<$course->periods>]</td>
   <td>[<$course->room>]</td>
   <td>[<$course->term>]</td>
 </tr>

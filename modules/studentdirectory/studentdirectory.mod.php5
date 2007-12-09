@@ -395,7 +395,11 @@ class StudentDirectory implements Module {
 	}
 
 	public static function sort_period($a, $b) {
-		return strcmp($a->period, $b->period);
+		$tem = strcmp($a->period, $b->period);
+		if($tem == 0)
+			//sub-sort by term
+			return sort_term($a, $b);
+		return $tem;
 	}
 
 	public static function sort_room($a, $b) {

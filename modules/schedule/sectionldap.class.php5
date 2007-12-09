@@ -53,6 +53,12 @@ class SectionLDAP implements Section {
 		if ($var == 'term') {
 			return @implode(', ', $this->info['quarters']);
 		}
+		if ($var == 'periods') {
+			if(is_array($this->info['period']))
+				return @implode(', ', $this->info['period']);
+			else
+				return $this->info['period'];
+		}
 		if(isset($this->info[$var])) {
 			return $this->info[$var];
 		}

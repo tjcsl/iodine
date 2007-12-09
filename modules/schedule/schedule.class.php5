@@ -48,10 +48,6 @@ class Schedule implements Iterator {
 				foreach ($res as $classdn) {
 					  $this->sections[] = $this->ldap->search_base($classdn,array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDn','tjhsstClassId'))->fetch_array(Result::ASSOC);
 				}
-				foreach ($this->sections as &$sec) {
-					if(is_array($sec['classPeriod']))
-						$sec['classPeriod']=$sec['classPeriod'][0];
-				}
 				$this->index = 0;
 			}
 		}
@@ -59,7 +55,10 @@ class Schedule implements Iterator {
 	}
 
 	private function periodsort($one, $two) {
-			  return $one['classPeriod']-$two['classPeriod'];
+		if($one['classPeriod'][0] == $two['classPeriod'][0])
+			//sub-sort by term
+			return $one['quarterNumber'][0]-$two['quarterNumber'][1];
+		return $one['classPeriod'][0]-$two['classPeriod'][0];
 	}
 
 	public function set_ldap($ldap) {

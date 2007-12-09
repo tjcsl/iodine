@@ -49,7 +49,7 @@ Other classes taught by [<$class->teacher->name>]:
  <tbody>
  [<foreach from=$class->other_classes() item=otherclass>]
   <tr class="[<cycle values="c1,c2">]">
-   <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$otherclass->sectionid>]">[<$otherclass->period>]</a></td>
+   <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$otherclass->sectionid>]">[<$otherclass->periods>]</a></td>
    <td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/class/[<$otherclass->sectionid>]">[<$otherclass->name>]</a></td>
    <td class="directory-table">[<$otherclass->room>]</td>
    <td class="directory-table">[<$otherclass->term>]</td>
