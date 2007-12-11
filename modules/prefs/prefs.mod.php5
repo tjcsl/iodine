@@ -40,7 +40,7 @@ class Prefs implements Module {
 				}
 			}
 
-			foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showeighthself','showmapself','showpictureself') as $pref) {
+			foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showeighthself','showmapself','showpictureself','showlockerself') as $pref) {
 				if (isSet($_REQUEST[$pref])) {
 					$I2_USER->$pref = 'TRUE';
 				} else {
@@ -76,12 +76,21 @@ class Prefs implements Module {
 		}
 
 		$this->prefs['showaddressself'] = $I2_USER->showaddressself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showaddress'] = $I2_USER->showaddress=='TRUE'?TRUE:FALSE;
 		$this->prefs['showscheduleself'] = $I2_USER->showscheduleself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showschedule'] = $I2_USER->showschedule=='TRUE'?TRUE:FALSE;
 		$this->prefs['showeighthself'] = $I2_USER->showeighthself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showeighth'] = $I2_USER->showeighth=='TRUE'?TRUE:FALSE;
 		$this->prefs['showpictureself'] = $I2_USER->showpictureself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showpicture'] = $I2_USER->showpicture=='TRUE'?TRUE:FALSE;
 		$this->prefs['showbdayself'] = $I2_USER->showbdayself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showbday'] = $I2_USER->showbday=='TRUE'?TRUE:FALSE;
 		$this->prefs['showmapself'] = $I2_USER->showmapself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showmap'] = $I2_USER->showmap=='TRUE'?TRUE:FALSE;
 		$this->prefs['showphoneself'] = $I2_USER->showphoneself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showphone'] = $I2_USER->showphone=='TRUE'?TRUE:FALSE;
+		$this->prefs['showlockerself'] = $I2_USER->showlockerself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showlocker'] = $I2_USER->showlocker=='TRUE'?TRUE:FALSE;
 
 		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED)->fetch_all_arrays(Result::ASSOC);
 		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED)->fetch_all_arrays(Result::ASSOC);

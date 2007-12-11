@@ -131,16 +131,19 @@
 [</foreach>]
 <br />
 <strong>Privacy Options</strong><br />
-<em>If your parent did not give permission on the "Intranet Posting Agreement" form to show specific personal information, other students will not be able to see it even if you enable it here.</em><br />
+<em>If your parent did not give permission on the "Intranet Posting Agreement" form to show specific personal information, other students will not be able to see that information regardless of your personal settings.</em><br />
 <em>Note that all TJ staff can always view all of this information.</em><br />
-<input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/> Show Address<br />
-<input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/> Show Birthday<br />
-[<*<input type="checkbox" name="showmapself" [<if $prefs.showmapself>]checked="checked"[</if>]/> Show Map Links<br />*>]
-<input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/> Show Pictures<br />
-<input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/> Show Home Telephone Number<br />
-<input type="checkbox" name="showscheduleself" [<if $prefs.showscheduleself>]checked="checked"[</if>]/> Show Class Schedule<br />
-<input type="checkbox" name="showeighthself" [<if $prefs.showeighthself>]checked="checked"[</if>]/> Show Eighth Period Schedule<br />
-<input type="checkbox" disabled /> Show Locker Number (coming soon)<br />
+<table style="text-align: center;" cellpadding="1" cellspacing="0">
+<tr><td style="padding: 0ex .5ex; text-decoration: underline;">Parent</td><td style="padding: 0ex 2ex; text-decoration: underline;">You</td><td></td></tr>
+<tr><td><input type="checkbox" name="showaddress" [<if $prefs.showaddress>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Address</td></tr>
+<tr><td><input type="checkbox" name="showbday" [<if $prefs.showbday>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Birthday</td></tr>
+[<*<tr><td><input type="checkbox" name="showmap" [<if $prefs.showmap>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showmapself" [<if $prefs.showmapself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Map Links</td></tr>*>]
+<tr><td><input type="checkbox" name="showpicture" [<if $prefs.showpicture>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Pictures</td></tr>
+<tr><td><input type="checkbox" name="showphone" [<if $prefs.showphone>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Home Telephone Number</td></tr>
+<tr><td><input type="checkbox" name="showschedule" [<if $prefs.showschedule>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showscheduleself" [<if $prefs.showscheduleself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Class Schedule</td></tr>
+<tr><td><input type="checkbox" name="showeighth" [<if $prefs.showeighth>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showeighthself" [<if $prefs.showeighthself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Eighth Period Schedule</td></tr>
+<tr><td><input type="checkbox" name="showlocker" [<if $prefs.showlocker>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showlockerself" [<if $prefs.showlockerself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Locker Number</td></tr>
+</table>
 <br />
 [</if>]
 <strong>Display Options</strong><br />
