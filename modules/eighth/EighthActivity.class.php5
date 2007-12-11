@@ -156,7 +156,11 @@ class EighthActivity {
 		foreach ($dayacts as $act) {
 			// find one that's not this block
 			if ($act[1] != $blockid) {
-				$otheract = new EighthActivity($act[0], $act[1]);
+				try {
+					$otheract = new EighthActivity($act[0], $act[1]);
+				} catch (I2Exception $e) {
+					warn($e);
+				}
 			}
 		}
 		if ($otheract && $otheract->aid == $this->data['aid'] && $this->oneaday) {
