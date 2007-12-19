@@ -24,7 +24,7 @@ class SectionLDAP implements Section {
 		$this->info['sectionid'] = $data['tjhsstSectionId'];
 		$this->info['classid'] = $data['tjhsstClassId'];
 		$this->info['quarters'] = $data['quarterNumber'];
-		$this->info['room'] = $data['roomNumber'] ? $data['roomNumber'] : "";
+		$this->info['room'] = isset($data['roomNumber']) ? $data['roomNumber'] : "";
 		$this->info['name'] = $data['cn'];
 		$this->info['period'] = $data['classPeriod'];
 
