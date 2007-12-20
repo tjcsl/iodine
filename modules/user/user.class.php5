@@ -687,7 +687,8 @@ class User {
 						 'telephone' => 'homephone',
 						 'address' => 'street',
 						 'zip' => 'postalcode',
-						 'grade' => 'graduationYear'
+						 'grade' => 'graduationYear',
+			  			 'email' => 'mail'
 			  );
 
 			  $soundexed = array(
