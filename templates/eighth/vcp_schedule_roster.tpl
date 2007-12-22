@@ -14,12 +14,23 @@ Date: <b>[<$activity->block->date|date_format:"%A, %B %e %Y">]</b> Block <b>[<$a
 	<tr>
 		<th>Name</th>
 		<th>Grade</th>
+		<th>E-mail</th>
 [<* Insert more personal information *>]
 	</tr>
 [<foreach from=$activity->members_obj item="member">]
 	<tr class="[<cycle values="c1,c2">]">
-		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]studentdirectory/info/[<$member->uid>]">[<$member->name_comma>]</a></td>
-		<td style="padding: 0px 5px;">[<$member->grade>]</td>
+		<td class="directory-table"><a href="[<$I2_ROOT>]studentdirectory/info/[<$member->uid>]">[<$member->name_comma>]</a></td>
+		<td class="directory-table">[<$member->grade>]</td>
+		<td class="directory-table">
+			[<if count($member->mail)>]
+				[<if count($member->mail) == 1>]
+					[<assign var="mail" value=$member->mail>]
+				[<else>]
+					[<assign var="mail" value=$member->mail.0>]
+				[</if>]
+				[<mailto address=$mail encode="hex">]
+			[<else>]&nbsp;[</if>]
+		</td>
 	</tr>
 [</foreach>]
 </table><br />
