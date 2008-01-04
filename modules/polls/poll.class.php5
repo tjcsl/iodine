@@ -246,7 +246,7 @@ class Poll {
 	 * @param integer gid The group id
 	 * @param array perm An array of permissions stipulated above.
 	 */
-	public function add_group_id($gid, $perm) {
+	public function add_group_id($gid, $perm = array(TRUE,FALSE,FALSE)) {
 		global $I2_SQL;
 
 		$I2_SQL->query('INSERT INTO poll_permissions SET pid=%d,gid=%d',
