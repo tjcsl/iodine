@@ -90,6 +90,11 @@ class Eighth implements Module {
 	*/
 	private static $end_undo = array(NULL, NULL, NULL, NULL, 'TRANSACTION_END');
 	
+	/**
+	* Maximum length of undo stack
+	*/
+	private static $max_undo = 10;
+	
 	function __construct() {
 		self::init_undo();
 	}
@@ -118,7 +123,7 @@ class Eighth implements Module {
 			if($k == NULL) {
 				continue;
 			} 
-			//Found undo_start, but already started
+			//Found undo start, but already started
 			else if($k == self::$start_undo && $start) {
 				continue;
 			} 
@@ -228,6 +233,15 @@ class Eighth implements Module {
 
 	private static function start_undo_transaction() {
 		array_push(self::$undo, self::$start_undo);
+		
+		self::$redo = array();
+	
+		while(count(array_keys(self::$undo, self::$end_undo)) >= self::$max_undo) {
+			do {
+				$k = array_shift(self::$undo);
+			}
+			while($k != self::$end_undo);
+		}	
 	}
 	
 	private static function start_redo_transaction() {
