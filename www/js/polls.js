@@ -112,7 +112,7 @@ function addAnswer(event) {
 	var id = list.childNodes.length-1;
 	var q = list.parentNode.parentNode.previousSibling.firstChild.firstChild.nodeValue;
 	if (id != 0) {
-		var temp = list.childNodes.item(id-1);
+		var temp = list.childNodes.item(id);
 		if (temp.lastChild.nodeType == 3)
 			temp = temp.lastChild.previousSibling
 		else
@@ -128,7 +128,7 @@ function addAnswer(event) {
 	input = document.createElement("input");
 	input.name = "a_"+q+"_"+id;
 	item.appendChild(input);
-	list.insertBefore(item,cell.parentNode);
+	list.appendChild(item);
 }
 
 function deleteAnswer(event) {

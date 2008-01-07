@@ -41,6 +41,7 @@ Introduction:<br />
 <textarea rows="2" cols="50" name="intro">[<$poll->introduction>]</textarea><br /><br />
 
 Questions:<br />
+<a onclick="addQuestion(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/addq">Add a question</a><br />
 <table id="poll_question_list">
 <thead>
   <tr><th>Id</th><th>Question</th><th>Type</th><th>Vote limit</th></tr>
@@ -56,16 +57,15 @@ Questions:<br />
   <td><input name="q_[<$q->qid>]_lim" maxlength="3" size="3" value="[<$q->maxvotes>]" /></td>
   <td><a href="[<$I2_ROOT>]polls/edit/[<$pid>]/delq/[<$q->qid>]"><img src="[<$I2_ROOT>]www/pics/close.gif" onclick="deleteRow(event)"/></a></td>
   </tr><tr><td colspan=4">
-    <ul>[<foreach from=$q->answers item=ans key=aid>]<li>
+    <ul><li>
+      <a href="[<$I2_ROOT>]polls/edit/[<$pid>]/adda/[<$q->qid>]" onclick="addAnswer(event)">Add an answer choice</a>
+    </li>[<foreach from=$q->answers item=ans key=aid>]<li>
       <input type="hidden" name="a_[<$q->qid>][]" value="[<$aid>]" />
       <a href="[<$I2_ROOT>]polls/edit/[<$pid>]/dela/[<$q->qid>]/[<$aid>]" onclick="deleteAnswer(event)">Delete</a>&nbsp;&nbsp;&nbsp;<textarea name="a_[<$q->qid>]_[<$aid>]">[<$ans>]</textarea>
-    </li>[</foreach>]<li>
-      <a href="[<$I2_ROOT>]polls/edit/[<$pid>]/adda/[<$q->qid>]" onclick="addAnswer(event)">Add an answer choice</a>
-    </li></ul>
+    </li>[</foreach>]</ul>
   </td></tr>
 [</foreach>]
 </tbody>
 </table>
-<a onclick="addQuestion(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/addq">Add a question</a><br />
 <input type="submit" value="Update" name="submit" />
 </form>
