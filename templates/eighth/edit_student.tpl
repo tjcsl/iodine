@@ -23,7 +23,7 @@
 			<td><input type="text" name="eighth_user_data[lname]" value="[<$user->lname>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
 		</tr>
 		<tr>
-			<td>Suffix</td>
+			<td>Title</td>
 			<td><input type="text" name="eighth_user_data[title]" value="[<$user->title>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
 		</tr>
 		<tr>
