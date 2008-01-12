@@ -57,7 +57,7 @@ class Schedule implements Iterator {
 	private function periodsort($one, $two) {
 		if($one['classPeriod'][0] == $two['classPeriod'][0])
 			//sub-sort by term
-			return $one['quarterNumber'][0]-$two['quarterNumber'][1];
+			return $one['quarterNumber'][0]-$two['quarterNumber'][0];
 		return $one['classPeriod'][0]-$two['classPeriod'][0];
 	}
 
