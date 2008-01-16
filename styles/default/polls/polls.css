@@ -9,6 +9,22 @@ table.polls th {
 	text-align: left;
 }
 
+/* Used in polls_edit.tpl */
+table#groups_table th, table#groups_table td {
+	padding: 0px 3px;
+}
+
+table#groups_table td select#groups {
+	display: none;
+}
+
+/* Hack: a generic td syntax followed by a td:nth-child(2) should be used;
+ * nth-child find littles use.
+ * IE6 has no hope for supporting this, but it's not a big deal. */
+table#groups_table td + td + td {
+	text-align: center;
+}
+
 /* Used in polls_results.tpl */
 /* These provide the major lines. */
 table.results {

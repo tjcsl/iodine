@@ -10,35 +10,62 @@ Start date/time:<input type="text" name="startdt" value="[<$poll->startdt>]" /><
 End date/time:<input type="text" name="enddt" value="[<$poll->enddt>]" /><br />
 <input type="checkbox" name="visible" [<if $poll->visible>]checked="checked" [</if>]/> Visible<br />
 <table id="groups_table" cellpadding="0">
- <tr>
-  <td>Groups:</td>
-  <td>
-  [<if count($poll->groups) == 0>]
-    <select id="groups" class="groups_list" name="groups[]">
-    [<foreach from=$groups item=group>]
-     <option value="[<$group->gid>]">[<$group->name>]</option>
-    [</foreach>]
-    </select>
-    </td><td>&nbsp;</td>
-    </tr><tr><td>&nbsp;</td><td>
-  [<else>]
-    [<foreach from=$poll->groups key=gid item=perms>]
-      <select id="groups" class="groups_list" name="groups[]">
-      [<foreach from=$groups item=g>]
-        <option value="[<$g->gid>]"[<if $g->gid == $gid>] selected="selected"[</if>]>[<$g->name>]</option>
-      [</foreach>]
-      </select>
-    </td><td><a onclick="deleteGroup(event)" href="">remove</a></td>
-    </tr><tr>
-    <td>&nbsp;</td><td>
-    [</foreach>]
-  [</if>]
-  <a href="#" onclick="addGroup(); return false">Add another group</a></td>
-  <td>&nbsp;</td>
- </tr>
+<thead>
+  <tr>
+    <td></td>
+    <th>Group</th>
+    <th>Vote?</th>
+    <th>Modify?</th>
+    <th>View results?</th>
+  </tr>
+</thead>
+<tbody><tr>
+    <td>Groups:</td>
+    <td>admin_polls<select id="groups">
+[<foreach from=$groups item=group>]
+      <option value="[<$group->gid>]">[<$group->name>]</option>
+[</foreach>]
+    </td>
+    <td><input type="checkbox" disabled="disabled" checked="checked" /></td>
+    <td><input type="checkbox" disabled="disabled" checked="checked" /></td>
+    <td><input type="checkbox" disabled="disabled" checked="checked" /></td>
+  </tr><tr>
+[<if count($poll->groups) == 0>]
+    <td><input type="hidden" name="groups[]" value="0" /></td>
+    <td><select class="groups_list" name="group_gids[0]">
+ [<foreach from=$groups item=group>]
+      <option value="[<$group->gid>]">[<$group->name>]</option>
+ [</foreach>]
+    </select></td>
+    <td><input type="checkbox" name="vote[0]" /></td>
+    <td><input type="checkbox" name="modify[0]" /></td>
+    <td><input type="checkbox" name="results[0]" /></td>
+    <td><a onclick="deleteGroup(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/delg/-1">remove</a></td>
+  </tr><tr>
+[<else>]
+ [<assign var='index' value=0 >]
+ [<foreach from=$poll->groups key=gid item=perms>]
+    <td><input type="hidden" name="groups[]" value="[<$index>]" /></td>
+    <td><select class="groups_list" name="group_gids[[<$index>]]">
+  [<foreach from=$groups item=g>]
+      <option value="[<$g->gid>]"[<if $g->gid == $gid>] selected="selected"[</if>]>[<$g->name>]</option>
+  [</foreach>]
+    </select></td>
+    <td><input type="checkbox" name="vote[[<$index>]]" [<if $perms[0] == 1>]checked="checked"[</if>] /></td>
+    <td><input type="checkbox" name="modify[[<$index>]]" [<if $perms[1] == 1>]checked="checked"[</if>] /></td>
+    <td><input type="checkbox" name="results[[<$index>]]" [<if $perms[2] == 1>]checked="checked"[</if>] /></td>
+    <td><a onclick="deleteGroup(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/delg/[<$gid>]">remove</a></td>
+  </tr><tr>
+  [<assign var='index' value=`$index+1`>]
+ [</foreach>]
+[</if>]
+  <td></td>
+  <td><a href="[<$I2_ROOT>]polls/edit/[<$pid>]/addg" onclick="addGroup(event)">Add another group</a></td>
+  <td></td>
+ </tr></tbody>
 </table>
 Introduction:<br />
-<textarea rows="2" cols="50" name="intro">[<$poll->introduction>]</textarea><br /><br />
+<textarea rows="5" cols="50" name="intro">[<$poll->introduction>]</textarea><br /><br />
 
 Questions:<br />
 <a onclick="addQuestion(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/addq">Add a question</a><br />
@@ -61,9 +88,10 @@ Questions:<br />
       <a href="[<$I2_ROOT>]polls/edit/[<$pid>]/adda/[<$q->qid>]" onclick="addAnswer(event)">Add an answer choice</a>
     </li>[<foreach from=$q->answers item=ans key=aid>]<li>
       <input type="hidden" name="a_[<$q->qid>][]" value="[<$aid>]" />
-      <a href="[<$I2_ROOT>]polls/edit/[<$pid>]/dela/[<$q->qid>]/[<$aid>]" onclick="deleteAnswer(event)">Delete</a>&nbsp;&nbsp;&nbsp;<textarea name="a_[<$q->qid>]_[<$aid>]">[<$ans>]</textarea>
+      <a href="[<$I2_ROOT>]polls/edit/[<$pid>]/dela/[<$q->qid>]/[<$aid>]" onclick="deleteAnswer(event)">Delete</a>&nbsp;&nbsp;&nbsp;<input name="a_[<$q->qid>]_[<$aid>]" value="[<$ans>]" /></textarea>
     </li>[</foreach>]</ul>
-  </td></tr>
+  </td>
+  </tr>
 [</foreach>]
 </tbody>
 </table>

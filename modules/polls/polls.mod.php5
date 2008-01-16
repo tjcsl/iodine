@@ -180,10 +180,19 @@ class Polls implements Module {
 				$poll->questions[$I2_ARGS[4]]->delete_answer(
 					$I2_ARGS[5]);
 				break;
+			case 'addg':
+				$groups = Group::get_all_groups();
+				$poll->add_group_id(-1);
+				break;
+			case 'delg':
+				// -1 id means no groups actually exist
+				if ($I2_ARGS[4] != -1) {
+					$poll->remove_group_id($gid);
+				}
+				break;
 			}
 		}
 		if (isset($_POST['poll_edit_form'])) {
-			// FF doesn't seem to send stuff for unchecked cb's
 			$on = isset($_POST['visible']) &&
 				$_POST['visible'] == 'on' ? 1 : 0;
 			$poll->edit_poll($_POST['name'],$_POST['intro'],
@@ -228,20 +237,34 @@ class Polls implements Module {
 					$poll->delete_question($q->qid);
 				}
 			}
+
+			if (!array_key_exists('groups', $_POST)) {
+				// Someone deleted all the groups.
+				// We'll just fake that something exists
+				$_POST['groups'] = array();
+			}
 			$seen = array();
-			$_POST['groups'] = array_unique($_POST['groups']);
-			foreach ($_POST['groups'] as $g) {
-				if (!isset($poll->groups[$g])) {
-					$poll->add_group_id($g,
-						array(TRUE,FALSE,FALSE));
+			$gs = $poll->groups;
+			foreach ($_POST['groups'] as $key => $id) {
+				$g = $_POST['group_gids'][$id];
+				if (isset($gs[$g])) {
+					$poll->edit_group_id($g, array(
+						isset($_POST['vote'][$id])?1:0,
+						isset($_POST['modify'][$id])?1:0,
+						isset($_POST['results'][$id])?1:0
+						));
+				} else {
+					$poll->add_group_id($g,	array(
+						isset($_POST['vote'][$id])?1:0,
+						isset($_POST['modify'][$id])?1:0,
+						isset($_POST['results'][$id])?1:0
+						));
 				}
 				$seen[] = $g;
 			}
-			$gs = $poll->groups;
 			foreach ($gs as $gid => $perms) {
-				if (!in_array($gid, $seen)) {
+				if (!in_array($gid, $seen))
 					$poll->remove_group_id($gid);
-				}
 			}
 		}
 		$this->template = 'polls_edit.tpl';

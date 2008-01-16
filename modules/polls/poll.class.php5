@@ -240,7 +240,7 @@ class Poll {
 	 * Adds the group id with the given permissions.
 	 *
 	 * The permissions is an array of booleans, with the first index the
-	 * <kbd>vote</kbd> permission, followed by <kbd>edit</kbd> and
+	 * <kbd>vote</kbd> permission, followed by <kbd>modify</kbd> and
 	 * <kbd>results</kbd>.
 	 *
 	 * @param integer gid The group id
@@ -249,8 +249,10 @@ class Poll {
 	public function add_group_id($gid, $perm = array(TRUE,FALSE,FALSE)) {
 		global $I2_SQL;
 
-		$I2_SQL->query('INSERT INTO poll_permissions SET pid=%d,gid=%d',
-			$this->poll_id,$gid);
+		if ($gid != -1)
+			$I2_SQL->query('INSERT INTO poll_permissions SET pid=%d, '.
+				'gid=%d, vote=%d, modify=%d, results=%d ',
+				$this->poll_id,$gid, $perm[0], $perm[1], $perm[2]);
 		$this->gs[$gid] = $perm;
 	}
 
@@ -258,7 +260,7 @@ class Poll {
 	 * Edits the group id with the given permissions.
 	 *
 	 * The permissions is an array of booleans, with the first index the
-	 * <kbd>vote</kbd> permission, followed by <kbd>edit</kbd> and
+	 * <kbd>vote</kbd> permission, followed by <kbd>modify</kbd> and
 	 * <kbd>results</kbd>.
 	 *
 	 * @param integer gid The group id
@@ -267,8 +269,9 @@ class Poll {
 	public function edit_group_id($gid, $perm) {
 		global $I2_SQL;
 
-		$I2_SQL->query('Update poll_permissions SET pid=%d WHERE gid=%d',
-			$this->poll_id,$gid);
+		$I2_SQL->query('UPDATE poll_permissions SET vote=%d, modify=%d'.
+		       ', results=%d WHERE pid=%d AND gid=%d',
+			$perm[0], $perm[1], $perm[2], $this->poll_id, $gid);
 		$this->gs[$gid] = $perm;
 	}
 
