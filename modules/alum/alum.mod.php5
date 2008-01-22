@@ -82,7 +82,7 @@ class Alum implements Module {
 				if($numrows==0){
 
 					$arr=$I2_LDAP->search_base(LDAP::get_user_dn($I2_USER))->fetch_all_arrays(Result::ASSOC);	
-					$fp = fsockopen("ssl://alumni.tjtech.org", 443, $errno, $errstr);
+					$fp = fsockopen("ssl://beta.tjhsstalumni.org", 443, $errno, $errstr);
 					if (!$fp) {
 						$I2_LOG->log_error("$errstr ($errno)");
 					} else {
@@ -148,7 +148,7 @@ class Alum implements Module {
 						$I2_LOG->log_error(print_r($arr2,true));
 						//a=hi&b=foo
 						$http_out  = "POST /trans/index.php HTTP/1.0\r\n";
-						$http_out .= "Host: alumni.tjtech.org\r\n";
+						$http_out .= "Host: beta.tjhsstalumni.org\r\n";
 						$http_out .= "User-Agent: iodineiscool \r\n";
 						$http_out .= "Content-Type: application/x-www-form-urlencoded\r\n";
 						$http_out .= 'Content-Length: ' . strlen($data) . "\r\n";
