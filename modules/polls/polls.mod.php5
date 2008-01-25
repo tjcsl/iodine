@@ -475,8 +475,9 @@ class Polls implements Module {
 		$list = array();
 		foreach ($poll->questions as $q) {
 			switch($q->answertype) {
+			case 'free_response':
 			case 'standard':
-				$list[$q->qid] = '"'.$q->question.'"';
+			      $list[$q->qid] = '"'.$q->question.'"';
 			}
 		}
 
@@ -492,7 +493,13 @@ class Polls implements Module {
 			$responses = array();
 			foreach ($list as $qid => $info) {
 				$answer = $info[0]->get_response($user);
-				$responses[] = '"'.$info[1][$answer].'"';
+				switch($info[0]->answertype) {
+					case 'free_response':
+						$responses[] = '"'.$answer.'"';
+						break;
+					default:
+						$responses[] = '"'.$info[1][$answer].'"';
+				}
 			}
 			echo implode(',',$responses)."\r\n";
 		}
