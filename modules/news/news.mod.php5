@@ -256,7 +256,7 @@ class News implements Module {
 	function init_box() {
 		if( $this->stories === NULL ) {
 			global $I2_SQL;
-			$this->stories = Newsitem::get_all_items();
+			$this->stories = Newsitem::get_all_items(false);
 		}
 		foreach($this->stories as $story) {
 			if (!$story->has_been_read() && $story->readable()) {
