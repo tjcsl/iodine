@@ -22,6 +22,19 @@
 			}
 			frm.selectall.checked=(TO==TB)?true:false;
 		}
+		// check to make sure some boxes are checked before 'change selected' takes effect
+		function validateSelected() {
+			var anySelected = false;
+			for(var i = 0; i < frm.elements.length; i++) {
+				var e = frm.elements[i];
+				if((e.name != 'selectall') && (e.type == 'checkbox') && (e.checked)) {
+					anySelected = true;
+					break;
+				}
+			}
+			if(!anySelected) alert('Please select one or more blocks to change.');
+			return anySelected;
+		}
 	// -->
 </script>
 
@@ -38,7 +51,7 @@
 	<a href="[<$I2_ROOT>]eighth/view/comments/uid/[<$user->uid>]">Edit Comments</a><br />
 	<br /><br />
 [</if>]
-	<form name="activities" action="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>][<if $start_date != NULL>]/start_date/[<$start_date|date_format:"%Y-%m-%d">][</if>]" method="post">
+	<form name="activities" action="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>][<if $start_date != NULL>]/start_date/[<$start_date|date_format:"%Y-%m-%d">][</if>]" method="post" onsubmit="return validateSelected()">
 	<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; border: 0px; width: 100%; clear: left;">
 	<tr>
 	<td style="text-align: left;"><input type="button" value="&lt; Back Two Weeks" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]'" /></td>
