@@ -1,4 +1,4 @@
-<p style="margin-top:6px;"><b>Birthdays today</b><br />
+<p style="margin-top:6px;"><b>Today's birthdays</b><br />
 
 [<if count($today) > 0 >]
 
@@ -25,7 +25,7 @@ No birthdays today.
 
 [</if>]
 </p>
-<p><b>Birthdays tomorrow:</b><br />
+<p><b>Tomorrow's birthdays</b><br />
 [<if count($tomorrow) > 0 >]
 
 <table id="birthdays_tom">
@@ -47,7 +47,7 @@ No birthdays today.
 
 [<else>]
 
-No birthdays today.
+No birthdays tomorrow.
 
 [</if>]
 </p>

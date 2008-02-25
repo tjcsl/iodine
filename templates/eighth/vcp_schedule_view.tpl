@@ -41,7 +41,7 @@
 [<if $I2_USER->is_group_member('admin_eighth')>]
 	[<include file="eighth/header.tpl">]
 	<a href="[<$I2_ROOT>]pictures/[<$user->uid>]"><img src="[<$I2_ROOT>]pictures/[<$user->uid>]" vspace="2" width="86" height="114" style="float: left; margin: 10px;"/></a></td>
-	<h2>[<$user->name_comma>] ([<$user->tjhsstStudentId>], [<$user->grade>][<if $user->grade != 'staff' >]th[</if>])</h2>
+	<h2>[<$user->name_comma>] ([<$user->grade>][<if $user->grade != 'staff' >]th[</if>])</h2>
 	<div style="float: right; margin: 10px;">
 		<a href="[<$I2_ROOT>]eighth/vcp_schedule/absences/uid/[<$user->uid>]" style="font-weight: bold; font-size: 14pt;">[<$absence_count>] absence[<if $absence_count != 1>]s[</if>]</a><br />
 		<a href="[<$I2_ROOT>]eighth/view/student/uid/[<$user->uid>]">Edit Student</a><br />
