@@ -19,7 +19,8 @@ class Birthdays implements Module {
 
 	const DAY = 86400;
 
-	private $birthdays;
+	private $birthdays_today;
+	private $birthdays_tomorrow;
 
 	private $template_args = array();
 
@@ -31,17 +32,18 @@ class Birthdays implements Module {
 		$this->cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'birthdays.cache';
 		$mytime = getdate(time());
 
-		if(!($this->birthdays = $this->get_cache($mytime))) {
+		if(!(list($this->birthdays_today, $this->birthdays_tomorrow) = $this->get_cache($mytime))) {
 			$this->tmp_ldap = LDAP::get_simple_bind( i2config_get('authuser_dn','cn=authuser,dc=tjhsst,dc=edu','ldap'), i2config_get('authuser_passwd',NULL,'ldap') );
-			$this->birthdays = $this->get_birthdays(time());
-			$this->store_cache($this->birthdays,$mytime);
+			$this->birthdays_today = $this->get_birthdays(time());
+			$this->birthdays_tomorrow = $this->get_birthdays(time() + 86400);
+			$this->store_cache($this->birthdays_today, $this->birthdays_tomorrow, $mytime);
 		}
 		
-		return 'Today\'s Birthdays';
+		return 'Birthdays';
 	}
 	
 	function display_box($disp) {
-		$disp->disp('birthdays_box.tpl', array('birthdays' => $this->birthdays));
+		$disp->disp('birthdays_box.tpl', array('today' => $this->birthdays_today, 'tomorrow' => $this->birthdays_tomorrow));
 	}
 	
 	function init_pane() {
@@ -123,15 +125,16 @@ class Birthdays implements Module {
 		$cache = unserialize($contents);
 		
 		if($cache['mday'] == $mytime['mday'] && $cache['mon'] == $mytime['mon']) {
-			return $cache['bdays'];
+			return array($cache['bdays'], $cache['bdays_tom']);
 		}
 		return FALSE;
 		
 	}
 
-	private function store_cache($birthdays,$mytime) {
+	private function store_cache($today,$tomorrow,$mytime) {
 		$store = array(
-			'bdays' => $birthdays,
+			'bdays' => $today,
+			'bdays_tom' => $tomorrow,
 			'mday' => $mytime['mday'],
 			'mon' => $mytime['mon']
 		);
