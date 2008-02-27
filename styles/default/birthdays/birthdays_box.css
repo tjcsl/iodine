@@ -16,6 +16,24 @@ table#birthdays th#name {
 	width: 50%;
 }
 
+table#birthdays_tom {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+table#birthdays_tom td {
+	padding: 0px;
+}
+
+table#birthdays_tom th {
+	text-align: left;
+	width: 25%;
+}
+
+table#birthdays_tom th#name {
+	width: 50%;
+}
+
 div#morebirthdays {
 	font-style: italic;
 	text-indent: 5px;
