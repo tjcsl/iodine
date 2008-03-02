@@ -1,6 +1,7 @@
 table#birthdays {
 	border-collapse: collapse;
 	width: 100%;
+	margin: 1px 0px;
 }
 
 table#birthdays td {
@@ -19,6 +20,8 @@ table#birthdays th#name {
 table#birthdays_tom {
 	border-collapse: collapse;
 	width: 100%;
+	margin-top: 1px;
+	margin-bottom: 2px;
 }
 
 table#birthdays_tom td {

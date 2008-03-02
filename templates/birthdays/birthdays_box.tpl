@@ -1,11 +1,10 @@
-<p style="margin-top:6px;"><b>Today's birthdays</b><br />
 
 [<if count($today) > 0 >]
 
 <table id="birthdays">
 <tbody>
 	<tr>
-		<th id="name">Name</th>
+		<th id="name">Today</th>
 		<th id="grade">Grade</th>
 		<th id="age">Age</th>
 	</tr>
@@ -24,14 +23,12 @@
 No birthdays today.
 
 [</if>]
-</p>
-<p><b>Tomorrow's birthdays</b><br />
 [<if count($tomorrow) > 0 >]
 
 <table id="birthdays_tom">
 <tbody>
 	<tr>
-		<th id="name">Name</th>
+		<th id="name">Tomorrow</th>
 		<th id="grade">Grade</th>
 		<th id="age">Age</th>
 	</tr>
@@ -50,5 +47,4 @@ No birthdays today.
 No birthdays tomorrow.
 
 [</if>]
-</p>
 <div id="morebirthdays"><a href="[<$I2_ROOT>]birthdays/">More birthdays</a></div>
