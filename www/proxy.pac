@@ -12,11 +12,15 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, "abc-clio.com") ||
 		dnsDomainIs(host, "accessscience.com") ||
 		dnsDomainIs(host, "america.eb.com") ||
+		dnsDomainIs(host, "world.eb.com") ||
+		dnsDomainIs(host, "spanish.eb.com") ||
+		dnsDomainIs(host, "mwu.eb.com") ||
 		dnsDomainIs(host, "library.cqpress.com") ||
 		dnsDomainIs(host, "library2.cqpress.com") ||
 		dnsDomainIs(host, "earthscape.org") ||
 		dnsDomainIs(host, "ebscohost.com") ||
 		dnsDomainIs(host, "epnet.com") ||
+		dnsDomainIs(host, "ehrafworldcultures.yale.edu") ||
 		dnsDomainIs(host, "galegroup.com") ||
 		dnsDomainIs(host, "grolier.com") ||
 		dnsDomainIs(host, "jstor.org") ||
