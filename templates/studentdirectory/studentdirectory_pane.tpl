@@ -5,7 +5,7 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
 <strong>As a member of the TJ faculty, you are permitted to see all information, regardless of privacy settings.  Please be aware of this.</strong><br /><br />
 [</if>]
 [<if $is_admin>]
-<strong>This student is an Intranet Administrator, please contact him/her with any problems you encounter.</strong><br /><br />
+<strong>This person is an Intranet Administrator, please contact him/her with any problems you encounter.</strong><br /><br />
 [</if>]
 <table>
 <tr>
