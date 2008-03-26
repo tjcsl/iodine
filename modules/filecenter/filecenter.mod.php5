@@ -135,7 +135,8 @@ class Filecenter implements Module {
 			$this->template_args['max_file_size'] = 20971520;
 			break;
 		default:
-			throw new I2Exception("Unknown filesystem type $system_type");
+			$this->filesystem = 'listing';
+			return array('Filecenter', 'Filecenter options');
 			break;
 		}
 		
@@ -196,7 +197,22 @@ class Filecenter implements Module {
 	function display_pane($display) {
 		global $I2_SQL, $I2_USER;
 
-		if ($this->filesystem->is_valid()) {
+		// if the user didn't choose a filesystem
+		if($this->filesystem == 'listing') {
+			$this->template_args['i2_username'] = $_SESSION['i2_username'];
+			$this->template_args['grad_year'] = $I2_USER->grad_year;
+			if (isSet($_SESSION['csl_username'])) {
+				$this->template_args['csl_username'] = $_SESSION['csl_username'];
+			}
+			else {
+				$this->template_args['csl_username'] = $_SESSION['i2_username'];
+			}
+			if ($I2_USER->grade != "staff") {
+				$this->template_args['tj01path'] = 'students/' . self::$standing[$I2_USER->grade] . '/' . $_SESSION['i2_username'];
+			}
+			$this->template = 'filecenter_box.tpl';
+		}
+		elseif ($this->filesystem->is_valid()) {
 			$dirs = array();
 			$files = array();
 			
