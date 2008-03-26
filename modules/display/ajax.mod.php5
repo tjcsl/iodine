@@ -9,9 +9,13 @@
 * @subpackage Display
 */
 class Ajax {
+	/**
+	 * What does this do?!?!?!???
+	 * Somone please document....
+	 **/
 	function returnResponse($module) {
-		/*global $I2_SQL, $I2_ARGS;
-		if($module == "intrabox") {
+		global $I2_SQL, $I2_ARGS, $I2_LDAP;
+		/*if($module == "intrabox") {
 			$uid = $I2_ARGS[2];
 			$boxes = explode(",", strtr($I2_ARGS[3], array("intrabox_" => "")));
 			if($boxes[1] == "") {
@@ -30,6 +34,40 @@ class Ajax {
 			}
 			echo implode(",", flatten($I2_SQL->query("SELECT name FROM intrabox LEFT JOIN intrabox_map USING (boxid) WHERE uid=%d ORDER BY box_order ASC", $uid)->fetch_all_arrays(MYSQL_NUM)));
 		}*/
+		if($module == 'webpage_title') {
+			if(!($row = $I2_LDAP->search_base(LDAP::get_user_dn($I2_ARGS[2]), 'webpage')))
+				return NULL;
+			$url = $row->fetch_single_value();
+
+			if($handle = fopen($url, 'rb')) {
+				$title = '';
+
+				$text = '';
+				while(TRUE) {
+					// fread()'s maximum number of bytes at a time is 8192.
+					$text .= fread($handle, 8192);
+					if(feof($handle))
+						break;
+				}
+				fclose($handle);
+
+				$matches = array();
+				preg_match('/<title>(.*)<\/title>/', $text, &$matches);
+				if(isset($matches[1]))
+					$title =  $matches[1];
+				else
+					$title = $url;
+				// now replace the <script> tags
+				$title = strip_tags(preg_replace('/<script.*>.*<\/script>/', '', $title));
+				echo $title . "\n\n\n";
+				exit;
+				return $title;
+			}
+			else {
+				echo $url;
+				return $url;
+			}
+		}
 	}
 }
 ?>

@@ -128,9 +128,19 @@ To view this user's portfolio click <a href="http://shares.tjhsst.edu/PORTFOLIO/
 [<if count($user->webpage)>]Webpage(s):
  <ul>
  [<foreach from=$user->webpage item=webpage>]
-  <li><a href="[<$webpage|escape:'html'>]">[<$webpage>]</a></li>
+  <li><a href="[<$webpage|escape:'html'>]" id="webpage_display">[<$webpage>]</a></li>
  [</foreach>]
  </ul>
+ <script src="https://iodine.tjhsst.edu/www/js/ajax.js"></script>
+ <script>
+ http = createRequestObject();
+ http.onreadystatechange = function(aEvt) {
+        if(http.readyState == 4 && http.status == 200) {
+                document.getElementById('webpage_display').innerHTML = http.responseText.split('\n')[0];
+        }
+ };
+ sendReq(http, 'webpage_title/[<$user->username>]');
+</script>
 [</if>]
 [<if $user->locker>]Locker Number: [<$user->locker|escape:'html'>]<br />[</if>]
 </td></tr></table>

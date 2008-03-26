@@ -355,6 +355,7 @@ class User {
 					return NULL;
 				}
 				return $row->fetch_single_value()=='TRUE'?TRUE:FALSE;
+				break;
 		}
 		
 		//Check which table the information is in
