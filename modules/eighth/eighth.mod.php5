@@ -1048,23 +1048,14 @@ class Eighth implements Module {
 			$this->template_args['sponsor'] = new EighthSponsor($this->args['sid']);
 			$this->title = 'View Sponsors';
 		}
-		else if($this->op == 'add') {
+		else if($this->op == 'submit') {
+			$sid = $this->args['sid']; //either FALSE or an sid num
 			self::start_undo_transaction();
-			$sid = EighthSponsor::add_sponsor($this->args['fname'], $this->args['lname']);
-			self::end_undo_transaction();
-			redirect('eighth/amr_sponsor');
-		}
-		else if($this->op == 'modify') {
-			$sponsor = new EighthSponsor($this->args['sid']);
-			self::start_undo_transaction();
-			$sponsor->fname = $this->args['fname'];
-			$sponsor->lname = $this->args['lname'];
-			self::end_undo_transaction();
-			redirect('eighth/amr_sponsor');
-		}
-		else if($this->op == 'remove') {
-			self::start_undo_transaction();
-			EighthSponsor::remove_sponsor($this->args['sid']);
+			if($this->args['is_remove']) {
+				EighthSponsor::remove_sponsor($sid);
+			} else {
+				EighthSponsor::add_sponsor($this->args['fname'], $this->args['lname'], $this->args['pickup'], $sid);
+			}
 			self::end_undo_transaction();
 			redirect('eighth/amr_sponsor');
 		}
@@ -1848,8 +1839,10 @@ class Eighth implements Module {
 			$this->template_args['start_date'] = isset($this->args['start_date']) ? $this->args['start_date'] : NULL;
 		}
 		else if($this->op == 'change') {
-			if(isset($_POST['submit']) && $_POST['submit'] == "View Roster") //Oops.  We don't actually want to change activities, we just want to check an activity roster before signing up for the activity.
+			if(isset($_POST['submit']) && $_POST['submit'] == "View Roster") {
+				//We don't actually want to change activities, we just want to check an activity roster before signing up for the activity.
 				redirect("eighth/vcp_schedule/roster/bid/{$this->args['bids']}/aid/{$this->args['aid']}");
+			}
 			if (isset($this->args['bids']) && isset($this->args['aid'])) {
 				$status = array();
 				$bids = explode(',', $this->args['bids']);
