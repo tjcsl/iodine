@@ -77,14 +77,14 @@ class Filecenter implements Module {
 
 		//Make sure the address ends in a trailing slash.
 		//...but only if first arg isn't cslauth.  Yes this is hackish. --wyang
-		if($I2_ARGS[1] != "cslauth")
+		if(isSet($I2_ARGS[1]) && $I2_ARGS[1] != "cslauth")
 		{
 			$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
 			if(substr($_SERVER['REDIRECT_QUERY_STRING'], $index-1, 1) != "/")
 				redirect(substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index) . "/");
 		}
 
-		$system_type = $I2_ARGS[1];
+		$system_type = isSet($I2_ARGS[1]) ? $I2_ARGS[1] : 'undefined';
 		
 		if (!isset($_SESSION['csl_show_hidden_files'])) {
 			$_SESSION['csl_show_hidden_files'] = FALSE;
@@ -106,10 +106,12 @@ class Filecenter implements Module {
 			$_SESSION['csl_username'] = $_REQUEST['user'];
 			$_SESSION['csl_password'] = $_REQUEST['password'];
 			redirect('filecenter/csl/user/'.$_SESSION['csl_username'].'/');
-		} else if (!isSet($_SESSION['csl_username'])) {
+		}
+		else if (!isSet($_SESSION['csl_username'])) {
 			$_SESSION['csl_username'] = $_SESSION['i2_username'];
 			$_SESSION['csl_password'] = $I2_AUTH->get_user_password();
-		} else {
+		}
+		else {
 			$this->template_args['csl_failed_login'] = TRUE;
 		}
 
@@ -134,6 +136,7 @@ class Filecenter implements Module {
 			$this->filesystem = new CSLProxy($_SESSION['i2_username'], $I2_AUTH->get_user_password(),'LOCAL.TJHSST.EDU');
 			$this->template_args['max_file_size'] = 20971520;
 			break;
+		case 'undefined':
 		default:
 			$this->filesystem = 'listing';
 			return array('Filecenter', 'Filecenter options');
