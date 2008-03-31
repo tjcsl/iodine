@@ -596,6 +596,11 @@ class Eighth implements Module {
 		$this->template_args['title'] = $title;
 		$this->template_args['user'] = $user;
 		$this->template_args['args'] = "";
+		$formats = array("pdf" => "PDF", "ps" => "PostScript", "dvi" => "DVI");
+		if(!$user) {
+			$formats = array("print" => "Print") + $formats + array("tex" => "LaTeX", "rtf" => "RTF");
+		}	
+		$this->template_args['formats'] = $formats;
 		foreach($args as $key=>$value) {
 			$this->template_args['args'] .= "/{$key}/{$value}";
 		}
@@ -949,6 +954,7 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'select_sponsor') {
 			$this->setup_sponsor_selection();
+			$this->template = 'sponsor_selection.tpl';
 			$this->template_args['op'] = "add_sponsor/aid/{$this->args['aid']}";
 		}
 		else if($this->op == 'add_sponsor') {
@@ -1041,12 +1047,8 @@ class Eighth implements Module {
 	*/
 	private function amr_sponsor() {
 		if($this->op == '') {
-			$this->setup_sponsor_selection(true);
-		}
-		else if($this->op == 'view') {
+			$this->setup_sponsor_selection(false);
 			$this->template = 'amr_sponsor.tpl';
-			$this->template_args['sponsor'] = new EighthSponsor($this->args['sid']);
-			$this->title = 'View Sponsors';
 		}
 		else if($this->op == 'submit') {
 			$sid = $this->args['sid']; //either FALSE or an sid num
@@ -1648,9 +1650,6 @@ class Eighth implements Module {
 		if($this->op == '') {
 			$this->template_args['op'] = 'format';
 			$this->setup_block_selection();
-		}
-		else if($this->op == 'confirm') {
-
 		}
 		else if($this->op == 'format') {
 			$this->setup_format_selection('prn_attendance', 'Activity Rosters', array('bid' => $this->args['bid']));
