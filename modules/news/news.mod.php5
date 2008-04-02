@@ -53,7 +53,6 @@ class News implements Module {
 	 */
 	private $maypost;
 	
-	private static $translate = TRUE;
 	private function set_news_admin() {	
 		global $I2_USER;
 		$this->newsadmin = $I2_USER->is_group_member('admin_news');
@@ -233,10 +232,7 @@ class News implements Module {
 				// Redirect to the page the user was just viewing.
 				redirect(str_replace($I2_ROOT,'',$_SERVER['HTTP_REFERER']));
 
-	   		case 'translate':
-				self::$translate = FALSE;
-				return self::display_news(false);
-			default:
+	   		default:
 				return self::display_news(false);
 		}
 		//should not happen
@@ -287,93 +283,6 @@ class News implements Module {
 	function get_name() {
 		return 'News';
 	}
-	public static function igpayatinlay($text) {
-		$string = stripslashes(trim($text));
-		$string = ereg_replace("\r\n|\n|\r", " ", $string);
-		$pig_latin_string = "";
-		$disallowed_punctuation = '& @ # $ % ^ * ( ) _ - + = { } [ ] | < > / ~ ` " \ \'';
-		$disallowed_string = split(" ", $disallowed_punctuation);
-		foreach ($disallowed_string as $disallowed_value) {
-			if (strchr($string, $disallowed_value)) {
-				$string = (str_replace($disallowed_value, "", $string));
-			}
-		}
-		$string = split(" ", $string);
-		foreach ($string as $value) {
-			$word1 = substr_replace($value, "", 0, 1);
-			$word2 = substr_replace($value, "", 1);
-			if (is_numeric($value)) {
-				$translation = $value;
-			} else {
-				$translation = (strtolower($word1.$word2."ay"));
-			}
-			if (eregi("[aeiou]", $word2)) {
-				$translation = (strtolower($value."yay"));
-			}
-			if (ereg("[[:upper:]]", $word2)) {
-				$translation = ucfirst($translation);
-			}
-			$allowed_punctuation = ". ? ! , ; :";
-			$string2 = split(" ", $allowed_punctuation);
-			foreach ($string2 as $value2) {
-				if (strchr($translation, $value2)) {
-					$translation = (str_replace($value2, "", $translation)).$value2;
-				}
-			}
-			$pig_latin_string .= $translation." ";
-		}
-		return (trim($pig_latin_string));		
-	}
-	public static function flip($string) {
-		$flip_table = array(
-			'a' => '&#0592',
-			'b' => 'q',
-			'c' => '&#0596', //open o -- from pne
-			'd' => 'p',
-			'e' => '&#0477',
-			'f' => '&#0607', //from pne
-			'g' => '&#0387',
-			'h' => '&#0613',
-			'i' => '&#0305', //from pne
-			'j' => '&#0638',
-			'k' => '&#0670',
-			'm' => '&#0623',
-			'n' => 'u',
-			'p' => 'd',
-			'q' => 'b',
-			'r' => '&#0633',
-			't' => '&#0647',
-			'u' => 'n',
-			'v' => '&#0652',
-			'w' => '&#0653',
-			'y' => '&#0654',
-			'.' => '&#0729',
-			'[' => ']',
-			'(' => ')',
-			')' => '(',
-			'{' => '}',
-			'}' => '{',
-			'?' => '&#0191', //from pne
-			'!' => '&#0161',
-			"\'" => ',',
-			"/" => "\\",
-			"\\" => "/",
-			'<' => '>',
-			'>' => '<',
-			'_' => '&#8254',
-			';' => '&#1563',
-			'\r' => '\n');
-		$string = strrev(strtolower($string));
-		$newstring = "";
-		for($k=0; $k<strlen($string); $k++) {
-			if(in_array($string[$k], array_keys($flip_table))) {
-				$newstring .= $flip_table[$string[$k]];
-			} else {
-				$newstring .= $string[$k];
-			}
-		}	
-		return $newstring;
-	}
 	function display_news($archive = false,$title='Recent News Posts',$expired = false) {	
 		$this->template = 'news_pane.tpl';
 		$I2_ARGS[1] = '';
@@ -386,13 +295,8 @@ class News implements Module {
 
 		foreach($this->stories as $story) {
 			if (($archive || !$story->has_been_read()) && $story->readable()) {
-				if(self::$translate) {
-					$story->text = self::igpayatinlay($story->text);
-					$story->title = self::flip($story->title);
-				} else {
-					//$story->text = stripslashes($story->text);	  
-					$story->title = stripslashes($story->title);
-				}
+				//$story->text = stripslashes($story->text);	  
+				$story->title = stripslashes($story->title);
 				$this->template_args['stories'][] = $story;
 			}
 		}

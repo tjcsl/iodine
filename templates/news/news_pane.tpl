@@ -3,8 +3,6 @@
 	news_root = '[<$I2_ROOT>]news/';
 </script>
 
-<strong><a href="[<$I2_ROOT>]news/translate">Translate to English</a></strong><br />
-
 [<if $newsadmin || $maypost>]
 	<a href="[<$I2_ROOT>]news/add">Post a news article</a><br/>
 [</if>]
