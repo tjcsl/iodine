@@ -782,6 +782,13 @@ class EighthActivity {
 						$temp_sponsors[] =  $sponsor->lname . ($sponsor->fname ? ', ' . substr($sponsor->fname, 0, 1) . '.' : '');
 					}
 					return implode(', ', $temp_sponsors);
+				case 'pickups_comma':
+					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
+					$temp_pickups = array();
+					foreach($sponsors as $sponsor) {
+						$temp_pickups[] = $sponsor->pickup;
+					}
+					return implode(', ', array_unique($temp_pickups));
 				case 'rooms_comma':
 					$rooms = EighthRoom::id_to_room($this->data['rooms']);
 					$temp_rooms = array();
