@@ -41,7 +41,7 @@ For additions to this roster, please call extension 5046, 5076, or 5078.
 
 Please underline or highlight the names and ID numbers of the students who are NO-SHOWS.
 
-{\bf\large{Return ALL PASSES with the roster.}}      {Roster pickup location: %@$activity->pickups_comma@%}
+{\bf\large{Return ALL PASSES with the roster.}}{     Roster pickup location: %@$activity->pickups_comma@%}
 
 Thank you!
 
