@@ -186,7 +186,7 @@ class EighthPrint {
 	}
 	public static function sort_by_pickup_then_sponsor($act1, $act2) {
 		$cmp = strcasecmp($act1->pickups_comma, $act2->pickups_comma);
-		return $cmp ? $cmp : sort_by_sponsor($act1, $act2);
+		return $cmp ? $cmp : self::sort_by_sponsor($act1, $act2);
 	}
 
 	/**
