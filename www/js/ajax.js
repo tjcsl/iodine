@@ -12,7 +12,7 @@ function createRequestObject() {
 	return ro;
 }
 function sendReq(http, info) {
-	http.open('GET', '/~bthood/i2/ajax/' + info);
+	http.open('GET', '/ajax/' + info);
 	http.send(null);
 }
 
