@@ -50,6 +50,8 @@
 	<span style="color: #FF0000; font-weight: bold;">Comments: [<if isSet($comments) && $comments != "">][<$comments>][<else>]none[</if>]</span><br />
 	<a href="[<$I2_ROOT>]eighth/view/comments/uid/[<$user->uid>]">Edit Comments</a><br />
 	<br /><br />
+[<else>]
+	[<if $I2_USER->uid != $user->uid>]<h2>Schedule for [<$user->name>]</h2>[</if>]
 [</if>]
 	<form name="activities" action="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>][<if $start_date != NULL>]/start_date/[<$start_date|date_format:"%Y-%m-%d">][</if>]" method="post" onsubmit="return validateSelected()">
 	<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; border: 0px; width: 100%; clear: left;">
