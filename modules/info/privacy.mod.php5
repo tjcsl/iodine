@@ -30,8 +30,8 @@ class Privacy implements Module {
 		if (isSet($_REQUEST['update'])) {
 			$user = new User($_REQUEST['uid']);
 			$prefs = array(
-				'showaddressself','showphoneself','showbdayself','showscheduleself','showpictureself','showeighthself',
-				'showaddress','showphone','showbdate','showschedule','showpictures','showeighth'
+				'showaddressself','showphoneself','showbdayself','showscheduleself','showpictureself','showlockerself','showeighthself',
+				'showaddress','showphone','showbdate','showschedule','showpictures','showlocker','showeighth'
 			);
 			foreach ($prefs as $pref) {
 				if (isSet($_REQUEST['perm_'.$pref])) {

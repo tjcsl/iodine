@@ -1,8 +1,8 @@
 <b><a href="[<$I2_ROOT>]StudentDirectory/info/[<$user->uid>]">[<$user->fullname_comma>]</a></b><br /><br />
 
 <script type="text/javascript">
-var parent_boxes = new Array("perm_showaddress", "perm_showphone", "perm_showbdate", "perm_showpictures", "perm_showschedule", "perm_showeighth");
-var self_boxes = new Array("perm_showaddressself", "perm_showphoneself", "perm_showbdayself", "perm_showpictureself", "perm_showscheduleself", "perm_showeighthself");
+var parent_boxes = new Array("perm_showaddress", "perm_showphone", "perm_showbdate", "perm_showpictures", "perm_showschedule", "perm_showeighth", "perm_showlocker");
+var self_boxes = new Array("perm_showaddressself", "perm_showphoneself", "perm_showbdayself", "perm_showpictureself", "perm_showscheduleself", "perm_showeighthself", "perm_showlockerself");
 
 function toggle_parent(currstate) {
 	for (var i in parent_boxes) {
@@ -55,6 +55,11 @@ function toggle_self(currstate) {
 	<th>Eighth Period Schedule</th>
 	<td><input name="perm_showeighthself" type="checkbox" [<if $user->showeighthself>]checked="checked"[</if>]/></td>
 	<td><input name="perm_showeighth" type="checkbox" [<if $user->showeighth>]checked="checked"[</if>]/></td>
+</tr>
+<tr>
+	<th>Locker Number</th>
+	<td><input name=perm_showlockerself" type="checkbox" [<if $user->showlockerself>]checked="checked"[</if>]/></td>
+	<td><input name=perm_showlocker" type="checkbox" [<if $user->showlocker>]checked="checked"[</if>]/></td>
 </tr>
 </table>
 <input type="hidden" name="update" value="1"/>
