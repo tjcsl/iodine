@@ -8,8 +8,7 @@
  	<a href="[<$I2_ROOT>]news/unread/[<$story->id>]">Mark unread</a>
  [</if>]
  </div>
- <div class="newstitle" onDblClick="doNewsShade([<$story->nid>])">[<$story->title>] 
- </div>
+ <div class="newstitle" onDblClick="doNewsShade([<$story->nid>])">[<if !$story->visible>]*HIDDEN* [</if>][<$story->title>]</div>
  <div class="newsitem">
  <div class="newsgroups">
  [<if $story->editable()>]

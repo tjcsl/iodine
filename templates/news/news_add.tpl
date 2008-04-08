@@ -13,6 +13,7 @@
   <input type="hidden" name="add_form" value="1" />
   Title: <input type="text" name="add_title" size="30" /><br/>
   Expiration date: [<include file='utils/calendar.tpl' post_var='add_expire'>]<br />
+  Visible: <input type="checkbox" name="add_visible" checked="checked">
   <table id="groups_table" cellpadding="0">
    <tr>
     <td>Groups:</td>

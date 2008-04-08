@@ -87,12 +87,13 @@ class News implements Module {
 				$this->template = 'news_add.tpl';
 				
 				if( isset($_REQUEST['add_form'])) {
-					$title = $_REQUEST['add_title'];
-					$text = $_REQUEST['add_text'];
+					$title = stripslashes($_REQUEST['add_title']);
+					$text = stripslashes($_REQUEST['add_text']);
 					$expire = $_REQUEST['add_expire'];
+					$visible = isSet($_REQUEST['add_visible']) ? 1 : 0;
 					$groups = Group::generate($_REQUEST['add_groups']);
 
-					if(Newsitem::post_item($I2_USER, $title, $text, $groups, $expire)) {
+					if(Newsitem::post_item($I2_USER, $title, $text, $groups, $expire, $visible)) {
 						$this->template_args['added'] = 1;
 					}
 					else {
@@ -129,11 +130,13 @@ class News implements Module {
 				}
 
 				if( isset($_REQUEST['edit_form']) ) {
-					$title = $_REQUEST['edit_title'];
-					$text = $_REQUEST['edit_text'];
+					$title = stripslashes($_REQUEST['edit_title']);
+					$text = stripslashes($_REQUEST['edit_text']);
 					$expire = $_REQUEST['edit_expire'];
+					$visible = isSet($_REQUEST['edit_visible']) ? 1 : 0;
 					$groups = Group::generate($_REQUEST['add_groups']);
-					$item->edit($title, $text, $groups,$expire);
+					$item->edit($title, $text, $groups,$expire,$visible);
+					$item = new Newsitem($I2_ARGS[2], TRUE);
 					$this->template_args['edited'] = 1;
 				}
 
@@ -145,7 +148,7 @@ class News implements Module {
 					$this->template_args['groups'] = Group::get_user_groups($I2_USER, new Permission(News::PERM_POST));
 				}
 
-				$item->title = stripslashes($item->title);
+				//$item->title = stripslashes($item->title);
 				//$item->text = stripslashes($item->text);
 				$item->text = htmlspecialchars_decode($item->text);
 				$item->text = preg_replace('/<br\\s*?\/??>/i', "\n", $item->text);

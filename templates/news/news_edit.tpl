@@ -7,6 +7,7 @@ Yours news post has been changed.<br />
  <input type="hidden" name="edit_form" value="1" />
  Title: <input type="text" name="edit_title" value="[<$newsitem->title>]" size="30" /><br />
  Expiration date: <input type="text" name="edit_expire" size="30" value="[<$newsitem->expire>]"/><br />
+ Visible: <input type="checkbox" name="edit_visible"[<if $newsitem->visible>]checked="checked"[</if>] /><br />
  <table id="groups_table" cellpadding="0">
   <tr>
    <td>Groups:</td>

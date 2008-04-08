@@ -72,7 +72,8 @@ class NewsItem {
 			case 'authorID':
 			case 'posted':
 			case 'expire':
-				$res = $I2_SQL->query('SELECT `title`,`authorID`,`posted`,`expire` FROM news WHERE `id` = %d', $this->mynid);
+			case 'visible':
+				$res = $I2_SQL->query('SELECT `title`,`authorID`,`posted`,`expire`, `visible` FROM news WHERE `id` = %d', $this->mynid);
 				if($res->num_rows() < 1) {
 					throw new I2Exception('Invalid NID accessed: '.$this->mynid);
 				}
@@ -83,6 +84,7 @@ class NewsItem {
 				if ($row['expire'] == NULL)
 					$row['expire'] = '';
 				$this->info['expire'] = $row['expire'];
+				$this->info['visible'] = $row['visible'];
 				break;
 
 			case 'groups':
@@ -136,10 +138,10 @@ class NewsItem {
 	 * @access public
 	 * @param int $nid The id of the requested news item.
 	 */
-	public function __construct($nid) {
+	public function __construct($nid, $refetch = FALSE) {
 		$this->mynid = $nid;
 
-		if(isset(self::$unfetched[$nid])) {
+		if(isset(self::$unfetched[$nid]) && !$refetch) {
 			$this->info = &self::$unfetched[$nid]->info;
 		} else {
 			self::$unfetched[$nid] = $this;
@@ -201,7 +203,7 @@ class NewsItem {
 	 * @param string $text The content of the news post.
 	 * @param string $group
 	 */
-	public static function post_item($author, $title, $text, $groups, $expire) {
+	public static function post_item($author, $title, $text, $groups, $expire, $visible) {
 		global $I2_SQL,$I2_USER;
 
 		$newsadm = new Group('admin_news');
@@ -214,7 +216,7 @@ class NewsItem {
 		}
 
 		$text = self::clean_text($text);
-		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP, expire=%s', $author->uid, $title, $text, $expire);
+		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP, expire=%s, visible=%d', $author->uid, $title, $text, $expire, $visible);
 
 		$nid = $I2_SQL->query('SELECT LAST_INSERT_ID()')->fetch_single_value();
 		
@@ -298,7 +300,7 @@ class NewsItem {
 	 * @param string $text The new content for the news post.
 	 * @param string $groupnames The new comma-seperated list of groups.
 	 */
-	public function edit($title, $text, $groups, $expire) {
+	public function edit($title, $text, $groups, $expire, $visible) {
 		global $I2_SQL,$I2_USER;
 
 		$text = self::clean_text($text);
@@ -312,7 +314,7 @@ class NewsItem {
 			}
 		}
 
-		$I2_SQL->query('UPDATE news SET title=%s, text=%s, expire=%s WHERE id=%d', $title, $text, $expire, $this->mynid);
+		$I2_SQL->query('UPDATE news SET title=%s, text=%s, expire=%s, visible=%d WHERE id=%d', $title, $text, $expire, $visible, $this->mynid);
 
 		// flush the group mappings for this post and recreate them entirely
 		$I2_SQL->query('DELETE FROM news_group_map WHERE nid=%d', $this->mynid);
@@ -355,7 +357,9 @@ class NewsItem {
 			// news admins can read anything
 			return TRUE;
 		}
-
+		if(!$this->visible) {
+			return FALSE;
+		}
 		foreach($groups as $group) {
 			if($group->has_member($user)) {
 				return TRUE;
