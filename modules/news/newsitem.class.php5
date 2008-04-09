@@ -73,20 +73,6 @@ class NewsItem {
 			case 'posted':
 			case 'expire':
 			case 'visible':
-				$res = $I2_SQL->query('SELECT `title`,`authorID`,`posted`,`expire`, `visible` FROM news WHERE `id` = %d', $this->mynid);
-				if($res->num_rows() < 1) {
-					throw new I2Exception('Invalid NID accessed: '.$this->mynid);
-				}
-				$row = $res->fetch_array(Result::ASSOC);
-				$this->info['title'] = $row['title'];
-				$this->info['authorID'] = $row['authorID'];
-				$this->info['posted'] = $row['posted'];
-				if ($row['expire'] == NULL)
-					$row['expire'] = '';
-				$this->info['expire'] = $row['expire'];
-				$this->info['visible'] = $row['visible'];
-				break;
-
 			case 'groups':
 			case 'read':
 				self::fetch_data();
@@ -94,6 +80,7 @@ class NewsItem {
 		}
 
 		if(!isset($this->info[$var])) {
+			
 			throw new I2Exception('Invalid attribute passed to Newsitem::__get(): '.$var.', or invalid NID: '.$this->mynid);
 		}
 
@@ -109,11 +96,11 @@ class NewsItem {
 		if(count(self::$unfetched) < 1) {
 			return;
 		}
-
 		// Fetches the groups to which the item was posted
 		foreach(self::$unfetched as $item) {
 			$item->info['groups'] = array();
 		}
+
 		foreach($I2_SQL->query('SELECT `nid`,`gid` FROM news_group_map WHERE `nid` IN (%D)', array_keys(self::$unfetched)) as $row) {
 			$item = self::$unfetched[$row['nid']];
 			$item->info['groups'][] = new Group($row['gid']);
@@ -127,6 +114,15 @@ class NewsItem {
 			self::$unfetched[$row['nid']]->info['read'] = TRUE;
 		}
 
+		foreach($I2_SQL->query('SELECT `id`,`title`,`authorID`,`posted`,`expire`, `visible` FROM news WHERE `id` IN (%D)', array_keys(self::$unfetched)) as $row) {
+			$item = self::$unfetched[$row['id']];
+			$item->info['title'] = $row['title'];
+			$item->info['authorID'] = $row['authorID'];
+			$item->info['posted'] = $row['posted'];
+			$item->info['expire'] = $row['expire'] === NULL ? '' : $row['expire'];
+			$item->info['visible'] = $row['visible'];
+		}
+		
 		self::$unfetched = array();
 	}
 
@@ -159,16 +155,19 @@ class NewsItem {
 	 */
 	public static function get_all_items($expired = false) {
 		global $I2_SQL;
-		$items = array();
+		$allitems = array();
+		$myitems = array();
 		$qstring = 'SELECT id FROM news ' . ($expired ? '' : 'WHERE expire > NOW() OR expire IS NULL ') .
 			'ORDER BY posted DESC';
 		foreach($I2_SQL->query($qstring)->fetch_all_single_values() as $nid) {
-			$item = new Newsitem($nid);
+			$allitems[] = new Newsitem($nid);
+		}
+		foreach($allitems as $item) {
 			if ($item->readable()) {
-				$items[] = $item;
+				$myitems[] = $item;
 			}
 		}
-		return $items;
+		return $myitems;
 	}
 
 	/**

@@ -21,6 +21,8 @@ class Permission {
 
 	private static $pid_map;
 	private static $name_map;
+	
+	private static $perm_cache;
 
 	/**
 	 * Helper method to generate PID/name maps
@@ -46,22 +48,31 @@ class Permission {
 		if (self::$pid_map === NULL) {
 			self::gen_maps();
 		}
+		
+		if (isSet(self::$perm_cache[$perm])) {
+			$copyme = self::$perm_cache[$perm];
+			$this->pid = $copyme->pid;
+			$this->name = $copyme->name;
+			$this->desc = $copyme->desc;
+		} else {
+			if (isset(self::$name_map[$perm])) {
+				// Passed PID
+				$this->pid = $perm;
+				$this->name = self::$name_map[$perm];
+				$this->desc = $I2_SQL->query('SELECT description FROM permissions WHERE pid=%d', $perm)->fetch_single_value();
+			}
+			elseif (isset(self::$pid_map[$perm])) {
+				// Passed permission name
+				$perm = strtoupper($perm);
+				$this->name = $perm;
+				$this->pid = self::$pid_map[$perm];
+				$this->desc = $I2_SQL->query('SELECT description FROM permissions WHERE name=%s', $perm)->fetch_single_value();
+			}
+			else {
+				throw new I2Exception("Nonexistant Permission $perm given to the Permission constructor");
+			}
 
-		if (isset(self::$name_map[$perm])) {
-			// Passed PID
-			$this->pid = $perm;
-			$this->name = self::$name_map[$perm];
-			$this->desc = $I2_SQL->query('SELECT description FROM permissions WHERE pid=%d', $perm)->fetch_single_value();
-		}
-		elseif (isset(self::$pid_map[$perm])) {
-			// Passed permission name
-			$perm = strtoupper($perm);
-			$this->name = $perm;
-			$this->pid = self::$pid_map[$perm];
-			$this->desc = $I2_SQL->query('SELECT description FROM permissions WHERE name=%s', $perm)->fetch_single_value();
-		}
-		else {
-			throw new I2Exception("Nonexistant Permission $perm given to the Permission constructor");
+			self::$perm_cache[$perm] = $this;
 		}
 	}
 
