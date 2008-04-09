@@ -8,6 +8,7 @@ CREATE TABLE news(
 	/*revised TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,	*//*Date revised*/
 	posted TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,	/*Date posted*/
 	expire DATETIME NULL DEFAULT NULL,	/* The time the news item expires */
+	visible TINYINT(1) UNSIGNED NOT NULL DEFAULT 1, /* visibility of the story */
 	gid MEDIUMINT,
    KEY(posted)
 );
