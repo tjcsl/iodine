@@ -41,7 +41,7 @@ class Permission {
 	/**
 	 * The constructor
 	 */
-	public function __construct($perm) {
+	private function __construct($perm) {
 		global $I2_SQL;
 
 		// Generate the PID/name maps if they do not exist
@@ -49,30 +49,31 @@ class Permission {
 			self::gen_maps();
 		}
 		
-		if (isSet(self::$perm_cache[$perm])) {
-			$copyme = self::$perm_cache[$perm];
-			$this->pid = $copyme->pid;
-			$this->name = $copyme->name;
-			$this->desc = $copyme->desc;
-		} else {
-			if (isset(self::$name_map[$perm])) {
-				// Passed PID
-				$this->pid = $perm;
-				$this->name = self::$name_map[$perm];
-				$this->desc = $I2_SQL->query('SELECT description FROM permissions WHERE pid=%d', $perm)->fetch_single_value();
-			}
-			elseif (isset(self::$pid_map[$perm])) {
-				// Passed permission name
-				$perm = strtoupper($perm);
-				$this->name = $perm;
-				$this->pid = self::$pid_map[$perm];
-				$this->desc = $I2_SQL->query('SELECT description FROM permissions WHERE name=%s', $perm)->fetch_single_value();
-			}
-			else {
-				throw new I2Exception("Nonexistant Permission $perm given to the Permission constructor");
-			}
+		if (isset(self::$name_map[$perm])) {
+			// Passed PID
+			$this->pid = $perm;
+			$this->name = self::$name_map[$perm];
+			$this->desc = $I2_SQL->query('SELECT description FROM permissions WHERE pid=%d', $perm)->fetch_single_value();
+		}
+		elseif (isset(self::$pid_map[$perm])) {
+			// Passed permission name
+			$perm = strtoupper($perm);
+			$this->name = $perm;
+			$this->pid = self::$pid_map[$perm];
+			$this->desc = $I2_SQL->query('SELECT description FROM permissions WHERE name=%s', $perm)->fetch_single_value();
+		}
+		else {
+			throw new I2Exception("Nonexistant Permission $perm given to the Permission constructor");
+		}
 
-			self::$perm_cache[$perm] = $this;
+		self::$perm_cache[$perm] = $this;
+	}
+	
+	public static function getPermission($perm) {
+		if (isSet(self::$perm_cache[$perm])) {
+			return self::$perm_cache[$perm];
+		} else {
+			return new Permission($perm);
 		}
 	}
 
@@ -92,7 +93,7 @@ class Permission {
 		}
 
 		$res = $I2_SQL->query('INSERT INTO permissions (name, description) VALUES (%s, %s)', strtoupper($perm), $desc);
-		return new Permission($res->get_insert_id());
+		return self::getPermission($res->get_insert_id());
 	}
 
 	/**
@@ -108,7 +109,7 @@ class Permission {
 		$ret = array();
 		foreach (self::$pid_map as $name=>$pid) {
 			d($pid);
-			$ret[] = new Permission($pid);
+			$ret[] = self::getPermission($pid);
 		}
 		return $ret;
 	}

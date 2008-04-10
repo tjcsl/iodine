@@ -208,7 +208,7 @@ class NewsItem {
 		$newsadm = new Group('admin_news');
 		if(!$newsadm->has_member()) {
 			foreach($groups as $group) {
-				if(!$group->has_permission($I2_USER,new Permission(News::PERM_POST))) {
+				if(!$group->has_permission($I2_USER,Permission::getPermission(News::PERM_POST))) {
 					throw new I2Exception("You do not have permission to post to the group {$group->name}");
 				}
 			}
@@ -252,7 +252,7 @@ class NewsItem {
 			}
 			foreach($groups as $group)
 			{
-				if(!$group->has_permission($I2_USER,new Permission(News::PERM_POST))) {
+				if(!$group->has_permission($I2_USER,Permission::getPermission(News::PERM_POST))) {
 					throw new I2Exception("You do not have permission to delete news for the group {$group->name}");
 				}
 			}
@@ -307,7 +307,7 @@ class NewsItem {
 		$newsadm = new Group('admin_news');
 		if(!$newsadm->has_member()) {
 			foreach($groups as $group) {
-				if(!$group->has_permission($I2_USER,new Permission(News::PERM_POST))) {
+				if(!$group->has_permission($I2_USER,Permission::getPermission(News::PERM_POST))) {
 					throw new I2Exception("You do not have permission to edit news for the group {$group->name}");
 				}
 			}
@@ -463,7 +463,7 @@ class NewsItem {
 		}
 
 		foreach ($this->__get('groups') as $group) {
-			if (! $group->has_permission($user, new Permission(News::PERM_POST))) {
+			if (! $group->has_permission($user, Permission::getPermission(News::PERM_POST))) {
 				return false;
 			}
 		}

@@ -61,7 +61,7 @@ class News implements Module {
 		}	
 
 		d('setting maypost');
-		$this->maypost = count(Group::get_user_groups($I2_USER, new Permission(News::PERM_POST))) > 0;
+		$this->maypost = count(Group::get_user_groups($I2_USER, Permission::getPermission(News::PERM_POST))) > 0;
 		d('done setting maypost');
 	}
 	
@@ -108,7 +108,7 @@ class News implements Module {
 				}
 				else {
 					d('getting user groups with PERM_POST');
-					$this->template_args['groups'] = Group::get_user_groups($I2_USER, new Permission(News::PERM_POST));
+					$this->template_args['groups'] = Group::get_user_groups($I2_USER, Permission::getPermission(News::PERM_POST));
 					d('done getting user groups with PERM_POST');
 				}
 				return array('Post News', 'Add a news article');
@@ -145,7 +145,7 @@ class News implements Module {
 					$this->template_args['groups'] = Group::get_all_groups();
 				}
 				else {
-					$this->template_args['groups'] = Group::get_user_groups($I2_USER, new Permission(News::PERM_POST));
+					$this->template_args['groups'] = Group::get_user_groups($I2_USER, Permission::getPermission(News::PERM_POST));
 				}
 
 				//$item->title = stripslashes($item->title);

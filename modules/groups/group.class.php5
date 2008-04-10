@@ -368,7 +368,7 @@ class Group {
 	* @return bool TRUE if the user is an administrator of the group, FALSE otherwise.
 	*/
 	public function is_admin(User $user) {
-		if($this->has_permission($user, new Permission(Group::PERM_ADMIN))) {
+		if($this->has_permission($user, Permission::getPermission(Group::PERM_ADMIN))) {
 			return TRUE;
 		}
 
@@ -380,7 +380,7 @@ class Group {
 		// prefix admins get admin access to groups with their prefix
 		if(self::prefix($this->name)
 			&& Permission::perm_exists(self::PERM_ADMIN_PREFIX . self::prefix($this->name))
-			&& Group::all()->has_permission($user, new Permission(self::PERM_ADMIN_PREFIX . self::prefix($this->name)))) {
+			&& Group::all()->has_permission($user, Permission::getPermission(self::PERM_ADMIN_PREFIX . self::prefix($this->name)))) {
 			return TRUE;
 		}
 
@@ -435,7 +435,7 @@ class Group {
 			return FALSE;
 		}
 
-		if(Group::all()->has_permission($user, new Permission(Group::PERM_ADMIN_PREFIX . Group::prefix($name)))) {
+		if(Group::all()->has_permission($user, Permission::getPermission(Group::PERM_ADMIN_PREFIX . Group::prefix($name)))) {
 			return TRUE;
 		}
 		return FALSE;

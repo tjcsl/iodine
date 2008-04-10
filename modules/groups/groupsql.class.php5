@@ -176,10 +176,10 @@ class GroupSQL extends Group {
 			self::admin_all()->has_member($I2_USER) ||
 
 			// People can add themselves if they have the Group::PERM_JOIN permission
-			($I2_USER->uid == $user->uid && $this->has_permission($user, new Permission(Group::PERM_JOIN))) ||
+			($I2_USER->uid == $user->uid && $this->has_permission($user, Permission::getPermission(Group::PERM_JOIN))) ||
 
 			// People with the Group::PERM_ADD permission can add people
-			$this->has_permission($I2_USER, new Permission(Group::PERM_ADD))
+			$this->has_permission($I2_USER, Permission::getPermission(Group::PERM_ADD))
 		) {
 
 			// Only insert member into the cache if the cache has been fetched
@@ -205,10 +205,10 @@ class GroupSQL extends Group {
 			self::admin_all()->has_member($I2_USER) ||
 
 			// People can remove themselves if they can add themselves, as well
-			($I2_USER->uid == $user->uid && $this->has_permission($user, new Permission(Group::PERM_JOIN))) ||
+			($I2_USER->uid == $user->uid && $this->has_permission($user, Permission::getPermission(Group::PERM_JOIN))) ||
 
 			// People with the Group::PERM_REMOVE permission can remove people
-			$this->has_permission($I2_USER, new Permission(Group::PERM_REMOVE))
+			$this->has_permission($I2_USER, Permission::getPermission(Group::PERM_REMOVE))
 		) {
 
 			// Delete user from member cache if the cache has been fetched
@@ -228,7 +228,7 @@ class GroupSQL extends Group {
 			self::admin_all()->has_member($I2_USER) ||
 
 			// People with the Group::PERM_REMOVE permission can remove people
-			$this->has_permission($I2_USER, new Permission(Group::PERM_REMOVE))
+			$this->has_permission($I2_USER, Permission::getPermission(Group::PERM_REMOVE))
 		) {
 			
 			// Delete member cache if it has been fetched
@@ -245,7 +245,7 @@ class GroupSQL extends Group {
 	public function remove_dynamic_rules() {
 		global $I2_SQL, $I2_USER;
 		if ( 	self::admin_all()->has_member($I2_USER) ||
-			$this->has_permission($I2_USER, new Permission(Group::PERM_REMOVE))
+			$this->has_permission($I2_USER, Permission::getPermission(Group::PERM_REMOVE))
 		) {
 			return $I2_SQL->query('DELETE FROM groups_dynamic WHERE gid=%d', $this->gid);
 		} else {
@@ -259,7 +259,7 @@ class GroupSQL extends Group {
 		// Check authorization
 		if(	// Admins can add permissions to anyone
 			!self::admin_all()->has_member($I2_USER) &&
-			!$this->has_permission($I2_USER, new Permission(Group::PERM_ADMIN))
+			!$this->has_permission($I2_USER, Permission::getPermission(Group::PERM_ADMIN))
 		) {
 			throw new I2Exception('You are not authorized to grant permissions in this group!');
 		}
@@ -281,7 +281,7 @@ class GroupSQL extends Group {
 		// Check authorization
 		if(	// Admins can revoke permissions from anyone
 			!self::admin_all()->has_member($I2_USER) &&
-			!$this->has_permission($I2_USER, new Permission(Group::PERM_ADMIN))
+			!$this->has_permission($I2_USER, Permission::getPermission(Group::PERM_ADMIN))
 		) {
 			throw new I2Exception('You are not authorized to revoke permissions in this group!');
 		}
@@ -310,7 +310,7 @@ class GroupSQL extends Group {
 
 		$ret = array();
 		foreach ($pids as $pid) {
-			$ret[] = new Permission($pid);
+			$ret[] = Permission::getPermission($pid);
 		}
 		return $ret;
 	}
@@ -320,7 +320,7 @@ class GroupSQL extends Group {
 
 		$pid = $perm->pid;
 
-		$adminperm = new Permission(Group::PERM_ADMIN);
+		$adminperm = Permission::getPermission(Group::PERM_ADMIN);
 		$adminpid = $adminperm->pid;
 
 		if($subject instanceof User) {
@@ -331,7 +331,7 @@ class GroupSQL extends Group {
 
 			// prefix admins have all permissions
 			if (Group::prefix($this->name) && Permission::perm_exists(Group::PERM_ADMIN_PREFIX . Group::prefix($this->name))) {
-				$perm = new Permission(Group::PERM_ADMIN_PREFIX . Group::prefix($this->name));
+				$perm = Permission::getPermission(Group::PERM_ADMIN_PREFIX . Group::prefix($this->name));
 				$res = $I2_SQL->query('SELECT count(*) FROM groups_user_perms WHERE uid=%d AND gid=%d AND pid=%d', $subject->uid, Group::all()->gid, $perm->pid);
 				if ($res->fetch_single_value() > 0) {
 					return TRUE;
@@ -410,7 +410,7 @@ class GroupSQL extends Group {
 	public function groups_with_perm($pid = NULL) {
 		global $I2_SQL;
 
-		$adminperm = new Permission(Group::PERM_ADMIN);
+		$adminperm = Permission::getPermission(Group::PERM_ADMIN);
 		$adminpid = $adminperm->pid;
 
 		if($pid) {
