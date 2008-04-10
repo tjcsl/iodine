@@ -41,10 +41,8 @@ class Prefs implements Module {
 			}
 
 			foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showeighthself','showmapself','showpictureself','showlockerself') as $pref) {
-				if (isSet($_REQUEST[$pref])) {
-					$I2_USER->$pref = 'TRUE';
-				} else {
-					$I2_USER->$pref = 'FALSE';
+				if ($I2_USER->grade != 'staff') {
+					$I2_USER->$pref = isSet($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';
 				}
 			}
 

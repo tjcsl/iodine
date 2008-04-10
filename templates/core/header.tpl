@@ -6,12 +6,12 @@
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
 <link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
-<!--[if lt IE 7]>
+[<*[if lt IE 7]>
 <script type="text/javascript">
 IE7_PNG_SUFFIX = ".png";
 </script>
 <script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
-<![endif]-->
+<![endif]*>]
 </head>
 <body>
 <div class="logo"><a href="[<$I2_ROOT>]"><span id="logotext">Intranet 2</span></a></div>
@@ -21,10 +21,11 @@ IE7_PNG_SUFFIX = ".png";
  [<if $date != "none">]
  	[<if $I2_USER->is_group_member('grade_staff')>]
 		<a href="[<$I2_ROOT>]eighth/vcp_attendance">View Eighth-period Rosters</a>
-		<form action="[<$I2_ROOT>]eighth/vcp_schedule" method="post" name="scheduleform" style="margin: 5px 0px;">
+		<form action="[<$I2_ROOT>]eighth/vcp_schedule" method="post" name="scheduleform" id="form" style="margin: 5px 0px;">
 			<input type="hidden" name="op" value="search" />
-			Name/Student ID: <input type="text" name="name_id" />
+			Name/Student ID: <input type="text" name="name_id" id="query"/>
 			<input type="submit" value="View Eighth Period Schedule" />
+			<input type="submit" value="Search Student Directory" onclick="document.getElementById('form').action='[<$I2_ROOT>]StudentDirectory/search/';document.getElementById('query').name='studentdirectory_query';"/>
 		</form>
 	[<else>]
 	 	The next 8th period is [<$date>], and you are currently signed up for 
