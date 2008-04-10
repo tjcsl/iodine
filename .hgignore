@@ -1,4 +1,3 @@
-(^|/)CVS($|/)
 (^|/)\.hg($|/)
 (^|/)\.htaccess$
 (^|/)config\.ini$
@@ -6,4 +5,4 @@
 ^commit$
 ^test$
 ^convert$
-^modules/css/oldcss/
+^runtime/

@@ -40,11 +40,6 @@ class User {
 	private $username;
 
 	/**
-	* The admin_all group, cached for convenience
-	*/
-	private static $admin_all_group;
-
-	/**
 	* The User class constructor.
 	*
 	* This takes the UID of the user as an argument. If the uid is not
