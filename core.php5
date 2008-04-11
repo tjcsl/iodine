@@ -28,8 +28,12 @@ define('CONFIG_FILENAME', 'config.ini');
 * A few helpful globals, which need to be generated, so they cannot simply be define()'d.
 */
 $I2_SELF = $_SERVER['REDIRECT_URL'];
+$I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
+
+/*
 //'core.php5' is nine letters
 $I2_ROOT = isSet($_SERVER['HTTPS'])?'https://':'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,-9);
+*/
 
 /**
 * If this line is not present, it generates a lot of warning messages in recent
