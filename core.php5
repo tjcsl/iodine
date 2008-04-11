@@ -10,7 +10,7 @@
 /**
 * General functions.
 */
-include('functions.inc.php5');
+require('functions.inc.php5');
 
 /**
 * The current version of Iodine running.
@@ -27,8 +27,9 @@ define('CONFIG_FILENAME', 'config.ini');
 /**
 * A few helpful globals, which need to be generated, so they cannot simply be define()'d.
 */
-$I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
 $I2_SELF = $_SERVER['REDIRECT_URL'];
+//'core.php5' is nine letters
+$I2_ROOT = isSet($_SERVER['HTTPS'])?'https://':'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,-9);
 
 /**
 * If this line is not present, it generates a lot of warning messages in recent
@@ -39,7 +40,7 @@ if(version_compare(PHP_VERSION, '5.1.0', '>')) {
 }
 
 /*
-The actual config file in CVS is config.user.ini and config.server.ini
+The actual config file in HG is config.user.ini and config.server.ini
 When you check out intranet2 to run it from your personal space, run
 setup. Do _NOT_ add config.ini to HG, as it's different for
 everyone. Edit config.server.ini to edit the server (production) config.
@@ -184,14 +185,15 @@ try {
 	/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here) */
 
 	// Starts with whatever module the user specified, otherwise
-	// default to 'news'
-	$module = (isset($I2_ARGS[0]) ?
-		$I2_ARGS[0] :
-		($I2_USER->startpage ?
-			$I2_USER->startpage :
-			i2config_get('startmodule','welcome','core')
-		)
-	);
+	// default to 'welcome'
+	if(isSet($I2_ARGS[0])) {
+		$module = $I2_ARGS[0];
+	} elseif(isSet($I2_USER->startpage)) {
+		$module = $I2_USER->startpage;
+	} else {
+		$module = i2config_get('startmodule','welcome','core');
+	}
+
 	if(strtolower($module) == 'ajax') {
 		$I2_AJAX->returnResponse($I2_ARGS[1]);
 	}

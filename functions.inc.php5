@@ -29,6 +29,10 @@ function d($text, $level = 9) {
 	}
 }
 
+function d_r($obj, $level = 9) {
+	d(print_r($obj, 1), $level);
+}
+
 /**
 * A quick function call for issuing a warning.
 *
@@ -41,6 +45,10 @@ function d($text, $level = 9) {
 function warn($msg) {
 	global $I2_ERR;
 	$I2_ERR->nonfatal_error($msg);
+}
+
+function warn_r($obj) {
+	warn(print_r($obj, 1));
 }
 
 /**
