@@ -8,7 +8,6 @@
 class Suggestion implements Module {
 
 	private $template_args = array();
-	private $text;
 
 	public function init_box() {
 		return FALSE;
@@ -44,24 +43,12 @@ class Suggestion implements Module {
 		$headers .= "Reply-To: $usermail\r\n";
 		$headers .= "Return-Path: $to\r\n";
 
-		if (!mail($to,$subj,$mesg,$headers)) {
-			$this->template_args['message'] = 'There was a problem submitting your suggestion. Please contact the Intranet Developers for assistance.';
-			//warn("Error sending your suggestion.");
-		} else {
-			$this->template_args['message'] = 'Your suggestion has been submitted. Thank you for your input.';
-			//d("Message sent sucessfully.");
-		}
-		
+		$this->template_args['mailed'] = mail($to,$subj,$mesg,$headers);
 		return 'Suggestion';
 	}
 	
 	function display_pane($disp) { 
-		if(!(isset($this->template_args['message']))) {
-			$disp->disp('suggestion_pane.tpl', $this->template_args);
-			return;
-		}
-		$disp->smarty_assign('message',$this->template_args['message']);
-		$disp->disp('suggestion_result.tpl', $this->template_args);	
+		$disp->disp('suggestion_pane.tpl', $this->template_args);
 	}
 
 	function get_name() {
