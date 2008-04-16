@@ -95,5 +95,6 @@ Questions:<br />
 [</foreach>]
 </tbody>
 </table>
+<a onclick="addQuestion(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/addq">Add a question</a><br /><br />
 <input type="submit" value="Update" name="submit" />
 </form>
