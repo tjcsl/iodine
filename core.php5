@@ -190,9 +190,10 @@ try {
 
 	// Starts with whatever module the user specified, otherwise
 	// default to 'welcome'
+	$module = "";
 	if(isSet($I2_ARGS[0])) {
 		$module = $I2_ARGS[0];
-	} elseif(isSet($I2_USER->startpage)) {
+	} elseif($I2_USER->startpage) {
 		$module = $I2_USER->startpage;
 	} else {
 		$module = i2config_get('startmodule','welcome','core');
