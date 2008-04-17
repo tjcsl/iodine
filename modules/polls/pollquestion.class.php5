@@ -191,8 +191,10 @@ class PollQuestion {
 				$this->mypid, $this->myqid, $uid, $post);
 			break;
 		case 'standard':
-			$I2_SQL->query('INSERT INTO poll_votes SET pid=%d,qid=%d,uid=%d,aid=%d',
-				$this->mypid, $this->myqid, $uid, $post);
+			if($post >= 0) {
+				$I2_SQL->query('INSERT INTO poll_votes SET pid=%d,qid=%d,uid=%d,aid=%d',
+					$this->mypid, $this->myqid, $uid, $post);
+			}
 			break;
 		case 'approval':
 		case 'split_approval':
