@@ -53,7 +53,7 @@ Activity selections are expected to be made by the end of lunch on the day of th
 <p><ul>
     Because 8th period is part of the school day the school must account for the whereabouts of each student during this time. Attendance is recorded for each activity.</li>
 
-    After each set of 3 unexcused 8th period absences, students will be assigned to the Lost and Found Club.  Once students are assigned to the club, they will have 1 day to fix any mistaken unexcused absence with their teacher(s).  If the absences are not excused, then the student will be assigned to a double block of Lost and Found quiet study hall (no talking, eating, or sleeping).  Students may not be excused from Lost and Found Club for any reason.  Failure to show up for the whole period will result in a Saturday detention where students will spend time improving the school grounds.</li>
+    After each set of 3 unexcused 8th period absences, students will be assigned to the Lost and Found Club.  Once students are assigned to the club, they will have 2 weeks to fix any mistaken unexcused absence with their teacher(s).  If the absences are not excused, then the student will be assigned to a double block of Lost and Found quiet study hall (no talking, eating, or sleeping).  Students may not be excused from Lost and Found Club for any reason.  Failure to show up for the whole period will result in a Saturday detention where students will spend time improving the school grounds.</li>
 
     See How to Clear an Absence if you feel there is an error in your attendance record.</li>
 </p></ul>
