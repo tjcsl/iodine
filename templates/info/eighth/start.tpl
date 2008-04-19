@@ -17,7 +17,7 @@ To start a club or new organization which will meet during 8th period or after s
       <li>All new club/activity applications must be submitted by Oct. 31.</li>
 </ul>
 
-Once the application is returned to the 8th period office, the application follows this path for approval:
+Once the application is returned to the Activities Office, the application follows this path for approval:
 
 <ul>
       <li>Director of Student Activities</li>
