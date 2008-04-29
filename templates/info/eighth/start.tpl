@@ -6,7 +6,7 @@
 To start a club or new organization which will meet during 8th period or after school you must follow these guidelines: 
 
 <ul>
-      <li>Check in the Activities Office by the main gym with the Assistant Director of Student Activities (David Gardziel for 2007-08) to determine if a club similar to the idea you have in mind, has been previously approved.</li>
+      <li>Check in the Activities Office by the main gym with the Assistant Director of Student Activities (David Gardziel for 2007-08) to determine if a club similar to the idea you have in mind has been previously approved.</li>
 
       <li>If no existing club fits your criteria, then request the appropriate forms from Mr. Gardziel. The forms will be sent to you via e-mail.</li>
       
