@@ -152,7 +152,7 @@ class EighthActivity {
 		}
 		
 		$otheract = FALSE;
-		$dayacts = EighthSchedule::get_activities($I2_USER->uid, $this->data['block']->date, 1);
+		$dayacts = EighthSchedule::get_activities($user->uid, $this->data['block']->date, 1);
 		foreach ($dayacts as $act) {
 			// find one that's not this block
 			if ($act[1] != $blockid) {
