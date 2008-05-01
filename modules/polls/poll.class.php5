@@ -322,16 +322,15 @@ class Poll {
 			return TRUE; // Anyone can view the home
 		case 'add':
 			return FALSE; // Mere mortals can't add anything
-		case 'vote':
-			$action = 0;
-			break;
 		case 'edit':
 		case 'delete':
-			$action = 1;
+			$action = 'modify';
 			break;
-		case 'results':
 		case 'export_csv':
-			$action = 2;
+			$action = 'results';
+			break;
+		case 'vote':
+		case 'results':
 			break;
 		default:
 			throw new I2_Exception('Illegal action '.
@@ -341,6 +340,7 @@ class Poll {
 			'pid=%d',$pid)->fetch_all_arrays();
 		$ugroups = Group::get_user_groups($I2_USER);
 		foreach ($groups as $g) {
+			warn_r($g);
 			if ($g[$action]) {
 				if (in_array(new Group($g['gid']),$ugroups))
 					return TRUE;
