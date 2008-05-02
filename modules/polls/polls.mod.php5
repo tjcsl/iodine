@@ -187,7 +187,7 @@ class Polls implements Module {
 			case 'delg':
 				// -1 id means no groups actually exist
 				if ($I2_ARGS[4] != -1) {
-					$poll->remove_group_id($gid);
+					$poll->remove_group_id($I2_ARGS[4]);
 				}
 				break;
 			}
