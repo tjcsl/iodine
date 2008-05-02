@@ -340,7 +340,6 @@ class Poll {
 			'pid=%d',$pid)->fetch_all_arrays();
 		$ugroups = Group::get_user_groups($I2_USER);
 		foreach ($groups as $g) {
-			warn_r($g);
 			if ($g[$action]) {
 				if (in_array(new Group($g['gid']),$ugroups))
 					return TRUE;
