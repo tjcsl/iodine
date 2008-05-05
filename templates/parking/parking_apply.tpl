@@ -32,9 +32,27 @@
  </tr>
 
  [<if $submitdate>]
+ [<foreach from=$potential_partners item=pot_part>]
+  [<if empty($otherdriver) || $otherdriver->uid != $pot_part->uid>]
+   <tr>
+     <td>&nbsp;</td><td>[<$pot_part->name>] has requested you as a parking partner. <a href="[<$I2_ROOT>]parking/partner/select/[<$pot_part->uid>]">Approve request</a></td>
+   </tr>
+  [</if>]
+ [</foreach>]
  <tr>
   <td align="right">Partner (for joint application):</td>
-  <td>[<if !empty($otherdriver)>][<$otherdriver->name>][<else>]You do not have a parking partner.[</if>] <a href="[<$I2_ROOT>]parking/partner">Change your parking partner</a></td>
+  <td>
+   [<if !empty($otherdriver)>]
+    [<if $otherdriver_od == $I2_USER->uid>]
+     You are partnered with [<$otherdriver->name>].
+    [<else>]
+     You have requested [<$otherdriver->name>] as your parking partner.
+    [</if>]
+    <a href="[<$I2_ROOT>]parking/partner">Change</a> or <a href="[<$I2_ROOT>]parking/partner/remove">remove</a> your parking partner
+   [<else>]
+    You do not have a parking partner. <a href="[<$I2_ROOT>]parking/partner">Request a partner</a>
+   [</if>]
+  </td>
  </tr>
  [<else>]
  <tr>

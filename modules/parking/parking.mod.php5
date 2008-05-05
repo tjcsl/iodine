@@ -41,11 +41,14 @@ class Parking implements Module {
 	 * of a good way to flexibly do this.
 	 * BAD. BAD. BAD. HACKY.
 	 */
-	private $query = 'SELECT uid, name, special_name, mentorship, other_driver, assigned, grade, (skips + other_driver_skips) AS totalskips,
-			(skips <= 3 AND other_driver_skips <= 3) as s1, (skips < 6 AND other_driver_skips < 6) as s2,
-			(skips < 11 AND other_driver_skips < 11) as s3, (skips < 12 AND other_driver_skips < 12) as s4
+	private $query = 'SELECT *,
+			(skips + other_driver_skips * other_driver_approved) AS totalskips,
+			(skips <= 3 AND other_driver_skips * other_driver_approved <= 3) as s1,
+			(skips < 6 AND other_driver_skips * other_driver_approved < 6) as s2,
+			(skips < 11 AND other_driver_skips * other_driver_approved < 11) as s3,
+			(skips < 12 AND other_driver_skips * other_driver_approved < 12) as s4
 			FROM parking_apps WHERE uid IS NOT NULL
-			ORDER BY grade DESC, (other_driver!="") DESC, s1 DESC, s2 DESC, s3 DESC, s4 DESC, RAND();';
+			ORDER BY grade DESC, other_driver_approved DESC, s1 DESC, s2 DESC, s3 DESC, s4 DESC, RAND();';
 
 	/**
 	* Required by the {@link Module} interface.
@@ -156,11 +159,12 @@ class Parking implements Module {
 
 		if($I2_SQL->query('SELECT COUNT(*) FROM parking_apps WHERE uid=%d', $I2_USER->uid)->fetch_single_value() != 0) {
 
-			$app = $I2_SQL->query('SELECT timestamp, mentorship, other_driver FROM parking_apps WHERE uid=%d', $I2_USER->uid)->fetch_array();
+			$app = $I2_SQL->query('SELECT timestamp, mentorship, other_driver, other_driver_approved FROM parking_apps WHERE uid=%d', $I2_USER->uid)->fetch_array();
 			$this->template_args['submitdate'] = date('F jS, Y',strtotime($app['timestamp']));
 			$this->template_args['mship'] = $app['mentorship'];
 			if (!empty($app['other_driver']) && is_numeric($app['other_driver'])) {
 				$this->template_args['otherdriver'] = new User($app['other_driver']);
+				$this->template_args['otherdriver_od'] = $I2_SQL->query('SELECT other_driver FROM parking_apps WHERE uid=%d', $app['other_driver'])->fetch_single_value();
 			}
 
 			$res = $I2_SQL->query('SELECT plate, make, model, year FROM parking_cars WHERE uid=%d', $I2_USER->uid);
@@ -172,6 +176,13 @@ class Parking implements Module {
 			/* so smarty doesn't whine about undefined indexes */
 			$this->template_args['submitdate'] = $this->template_args['mship'] = $this->template_args['otherdriver'] = "";
 		}
+
+		$res = $I2_SQL->query('SELECT uid FROM parking_apps WHERE other_driver=%d', $I2_USER->uid);
+		$pot_parts = array();
+		while ($row = $res->fetch_array()) {
+			$pot_parts[] = new User($row['uid']);
+		}
+		$this->template_args['potential_partners'] = $pot_parts;
 
 		/* so smarty doesn't whine about undefined indexes */
 		while(count($this->template_args['cars']) < 4) {
@@ -202,6 +213,10 @@ class Parking implements Module {
 			}
 		}
 		else if (isset($I2_ARGS[2]) && $I2_ARGS[2] == 'select') {
+			if ($I2_SQL->query('SELECT other_driver_approved FROM parking_apps WHERE uid=%d', $I2_USER->uid)->fetch_single_value()) {
+				$olduid = $I2_SQL->query('SELECT other_driver FROM parking_apps WHERE uid=%d', $I2_USER->uid)->fetch_single_value();
+				$I2_SQL->query('UPDATE parking_apps SET other_driver_approved=0 WHERE uid=%d or uid=%d', $I2_USER->uid, $olduid);
+			}
 			$partner = new User($I2_ARGS[3]);
 			if ($partner->grade != 10 && $partner->grade != 11) {
 				$this->template_args['search_destination'] = 'parking/partner/searchdone';
@@ -215,8 +230,19 @@ class Parking implements Module {
 			}
 			else {
 				$I2_SQL->query('UPDATE parking_apps SET other_driver=%d WHERE uid=%d', $partner->uid, $I2_USER->uid);
+				$res = $I2_SQL->query('SELECT COUNT(*) FROM parking_apps WHERE uid=%d AND other_driver=%d',
+					$partner->uid, $I2_USER->uid);
+				if ($res->fetch_single_value()) {
+					$I2_SQL->query('UPDATE parking_apps SET other_driver_approved=1 WHERE uid=%d OR uid=%d',
+						$I2_USER->uid, $partner->uid);
+				}
 				redirect('parking/apply');
 			}
+		}
+		else if (isset($I2_ARGS[2]) && $I2_ARGS[2] == 'remove') {
+			$olduid = $I2_SQL->query('SELECT other_driver FROM parking_apps WHERE uid=%d', $I2_USER->uid)->fetch_single_value();
+			$I2_SQL->query('UPDATE parking_apps SET other_driver=NULL, other_driver_skips=0, other_driver_approved=0 WHERE uid=%d OR uid=%d', $I2_USER->uid, $olduid);
+			redirect('parking/apply');
 		}
 		else {
 			$this->template_args['search_destination'] = 'parking/partner/searchdone';
@@ -354,7 +380,7 @@ class Parking implements Module {
 				else {
 					$person['isTeacher'] = FALSE;
 				}
-				if ($record['other_driver']) {
+				if ($record['other_driver'] && $record['other_driver_approved']) {
 					$otherdriver = new User($record['other_driver']);
 					$person['name'] = $record['name'] . ' AND ' . $otherdriver->name_comma;
 					$driveruids[] = $record['uid'];
