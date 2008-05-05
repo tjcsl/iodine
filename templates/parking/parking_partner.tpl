@@ -1,3 +1,5 @@
+<a href="[<$I2_ROOT>]parking/apply">Back to your parking application</a><br /><br />
+
 [<if isset($message)>][<$message>]<br /><br />[</if>]
 
 Find your parking partner: <br /><br />
