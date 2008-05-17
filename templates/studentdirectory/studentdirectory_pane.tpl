@@ -76,18 +76,25 @@ To view this user's portfolio click <a href="http://shares.tjhsst.edu/PORTFOLIO/
 
 [<include file="studentdirectory/im_status.tpl">]
 
-[<if count($user->webpage)>]Webpage(s):
+
+[<if count($user->webpage) > 1>]Webpages:[</if>]
+[<if count($user->webpage) == 1>]Webpage:[</if>]
+[<if count($user->webpage)>]
  <ul>
- [<foreach from=$user->webpage item=webpage>]
-  <li><a href="[<$webpage|escape:'html'>]" id="webpage_display">[<$webpage>]</a></li>
+ [<foreach from=$user->webpage key=id item=webpage>]
+  <li><a href="[<$webpage|escape:'html'>]" id="webpage_display_[<$id>]">[<$webpage>]</a></li>
  [</foreach>]
  </ul>
- <script src="https://iodine.tjhsst.edu/www/js/ajax.js"></script>
+ <script src="[<$I2_ROOT>]www/js/ajax.js"></script>
  <script>
  http = createRequestObject();
  http.onreadystatechange = function(aEvt) {
         if(http.readyState == 4 && http.status == 200) {
-                document.getElementById('webpage_display').innerHTML = http.responseText.split('\n')[0];
+                count = parseInt(http.responseText.split('\n')[0]);
+                for(i = 0; i < count; i++)
+                {
+                   document.getElementById('webpage_display_' + i).innerHTML = http.responseText.split('\n')[i + 1];
+                }
         }
  };
  sendReq(http, 'webpage_title/[<$user->username>]');

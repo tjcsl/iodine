@@ -12,6 +12,7 @@ function createRequestObject() {
 	return ro;
 }
 function sendReq(http, info) {
+   // FIXME: should account for a different www_root
 	http.open('GET', '/ajax/' + info);
 	http.send(null);
 }
