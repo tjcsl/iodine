@@ -7,7 +7,7 @@
 			<th style="width: 100px; text-align: left;">Value</th>
 		</tr>
 		<tr>
-			<td onDblClick="this.style.backgroundColor='#FF0000';">Student ID</td>
+			<td ondblclick="this.style.backgroundColor='#FF0000';">Student ID</td>
 			<td><input type="text" name="studentid" value="[<$user->studentid>]" style="border: 1px dotted #000000; padding: 2px;" /></td>
 		</tr>
 		<tr>

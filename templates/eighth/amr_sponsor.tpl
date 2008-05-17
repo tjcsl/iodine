@@ -9,7 +9,7 @@ function sponsorSelect(sid) {
 	document.getElementById("remove").style.visibility = "visible";
 	document.getElementById("remove").value = "Remove " + sponsorData[sid][1];
 }
-sponsorData = Array();
+var sponsorData = Array();
 [<foreach from=$sponsors item='sponsor'>]
 	sponsorData[[<$sponsor.sid>]] = Array("[<$sponsor.fname>]", "[<$sponsor.lname>]", "[<$sponsor.pickup>]");
 [</foreach>]

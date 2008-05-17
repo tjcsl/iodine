@@ -32,4 +32,4 @@ This page allows you to add yourself to <a href="https://alumni.tjtech.org/">alu
 Alumni Password <input type="password" id="pass2" /><br/>
 Type Again <input type="password" id="pass3" /><br/>
 Non-TJ E-mail <input type="text" id="email" /><br/>
-<input type="submit" onClick="sendPass();" value="Get an Alumni Account">
+<input type="submit" onclick="sendPass();" value="Get an Alumni Account">

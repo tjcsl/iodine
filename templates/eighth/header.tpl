@@ -1,7 +1,7 @@
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/eighth_help.js"></script>
 <div id="eighth_help_blocker"></div>
-<div id="eighth_help_pane" onMouseDown="register_press(event)">
-	<div id="eighth_help_close" onClick="hide_help(max_height)">Close</div>
+<div id="eighth_help_pane" onmousedown="register_press(event)">
+	<div id="eighth_help_close" onclick="hide_help(max_height)">Close</div>
 	<span class="bold">Help:</span><br /><br />
 	[<if isset($help)>][<$help>][</if>]
 </div>
@@ -20,7 +20,7 @@
 				<span class="bold" id="eighth_help_text" onclick="show_help(0)">Help</span>
 [<if isset($print_url)>]
 				[<*<a href="[<$I2_ROOT>]eighth/[<$method>]/format/[<$print_url>]"><img src="[<$I2_ROOT>]www/pics/eighth/printer.png" alt="Print" title="Print" style="vertical-align: middle; margin-left: 30px;" /></a>*>]
-				<a href="#" onClick="window.print()"><img src="[<$I2_ROOT>]www/pics/eighth/printer.png" alt="Print" title="Print" style="vertical-align: middle; margin-left: 30px;" /></a>
+				<a href="#" onclick="window.print()"><img src="[<$I2_ROOT>]www/pics/eighth/printer.png" alt="Print" title="Print" style="vertical-align: middle; margin-left: 30px;" /></a>
 [</if>]
 			</td>
 		</tr>

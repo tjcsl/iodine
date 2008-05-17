@@ -12,9 +12,9 @@
 		<td>Other Phone #(s):</td>
 		<td>
 [<foreach from=$I2_USER->telephoneNumber item=phone_other name=phone_other_loop>]
-			<input class="pref_preference_input" type="text" name="pref_telephoneNumber[]" value="[<$phone_other|escape:'html'>]" />[<if $smarty.foreach.phone_other_loop.first>]<a href="#" onClick="add_field('telephoneNumber', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('phone_other', this);">Remove</a>[</if>][<if !$smarty.foreach.phone_other_loop.last>]<br />[</if>]
+			<input class="pref_preference_input" type="text" name="pref_telephoneNumber[]" value="[<$phone_other|escape:'html'>]" />[<if $smarty.foreach.phone_other_loop.first>]<a href="#" onclick="add_field('telephoneNumber', this);">Add Another</a>[<else>]<a href="#" onclick="remove_field('phone_other', this);">Remove</a>[</if>][<if !$smarty.foreach.phone_other_loop.last>]<br />[</if>]
 [<foreachelse>]
-			<input class="pref_preference_input" type="text" name="pref_telephoneNumber[]" /><a href="#" onClick="add_field('telephoneNumber', this);">Add Another</a>
+			<input class="pref_preference_input" type="text" name="pref_telephoneNumber[]" /><a href="#" onclick="add_field('telephoneNumber', this);">Add Another</a>
 [</foreach>]
 		</td>
 	</tr>
@@ -22,9 +22,9 @@
 		<td>E-mail address(es):</td>
 		<td>
 [<foreach from=$I2_USER->mail item=email name=mail_loop>]
-			<input class="pref_preference_input" type="text" name="pref_mail[]" value="[<$email|escape:'html'>]" />[<if $smarty.foreach.mail_loop.first>]<a href="#" onClick="add_field('mail', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('mail', this);">Remove</a>[</if>][<if !$smarty.foreach.mail_loop.last>]<br />[</if>]
+			<input class="pref_preference_input" type="text" name="pref_mail[]" value="[<$email|escape:'html'>]" />[<if $smarty.foreach.mail_loop.first>]<a href="#" onclick="add_field('mail', this);">Add Another</a>[<else>]<a href="#" onclick="remove_field('mail', this);">Remove</a>[</if>][<if !$smarty.foreach.mail_loop.last>]<br />[</if>]
 [<foreachelse>]
-			<input class="pref_preference_input" type="text" name="pref_mail[]" /><a href="#" onClick="add_field('mail', this);">Add Another</a>
+			<input class="pref_preference_input" type="text" name="pref_mail[]" /><a href="#" onclick="add_field('mail', this);">Add Another</a>
 [</foreach>]
 		</td>
 	</tr>
@@ -32,9 +32,9 @@
 		<td>AIM:</td>
 		<td>
 [<foreach from=$I2_USER->aim item=aim name=aim_loop>]
-			<input class="pref_preference_input" type="text" name="pref_aim[]" value="[<$aim|escape:'html'>]" />[<if $smarty.foreach.aim_loop.first>]<a href="#" onClick="add_field('aim', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('aim', this);">Remove</a>[</if>][<if !$smarty.foreach.aim_loop.last>]<br />[</if>]
+			<input class="pref_preference_input" type="text" name="pref_aim[]" value="[<$aim|escape:'html'>]" />[<if $smarty.foreach.aim_loop.first>]<a href="#" onclick="add_field('aim', this);">Add Another</a>[<else>]<a href="#" onclick="remove_field('aim', this);">Remove</a>[</if>][<if !$smarty.foreach.aim_loop.last>]<br />[</if>]
 [<foreachelse>]
-			<input class="pref_preference_input" type="text" name="pref_aim[]" /><a href="#" onClick="add_field('aim', this);">Add Another</a>
+			<input class="pref_preference_input" type="text" name="pref_aim[]" /><a href="#" onclick="add_field('aim', this);">Add Another</a>
 [</foreach>]
 		</td>
 	</tr>
@@ -42,9 +42,9 @@
 		<td>Yahoo:</td>
 		<td>
 [<foreach from=$I2_USER->yahoo item=yahoo name=yahoo_loop>]
-			<input class="pref_preference_input" type="text" name="pref_yahoo[]" value="[<$yahoo|escape:'html'>]" />[<if $smarty.foreach.yahoo_loop.first>]<a href="#" onClick="add_field('yahoo', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('yahoo', this);">Remove</a>[</if>][<if !$smarty.foreach.yahoo_loop.last>]<br />[</if>]
+			<input class="pref_preference_input" type="text" name="pref_yahoo[]" value="[<$yahoo|escape:'html'>]" />[<if $smarty.foreach.yahoo_loop.first>]<a href="#" onclick="add_field('yahoo', this);">Add Another</a>[<else>]<a href="#" onclick="remove_field('yahoo', this);">Remove</a>[</if>][<if !$smarty.foreach.yahoo_loop.last>]<br />[</if>]
 [<foreachelse>]
-			<input class="pref_preference_input" type="text" name="pref_yahoo[]" /><a href="#" onClick="add_field('yahoo', this);">Add Another</a>
+			<input class="pref_preference_input" type="text" name="pref_yahoo[]" /><a href="#" onclick="add_field('yahoo', this);">Add Another</a>
 [</foreach>]
 		</td>
 	</tr>
@@ -52,9 +52,9 @@
 		<td>MSN:</td>
 		<td>
 [<foreach from=$I2_USER->msn item=msn name=msn_loop>]
-			<input class="pref_preference_input" type="text" name="pref_msn[]" value="[<$msn|escape:'html'>]" />[<if $smarty.foreach.msn_loop.first>]<a href="#" onClick="add_field('msn', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('msn', this);">Remove</a>[</if>][<if !$smarty.foreach.msn_loop.last>]<br />[</if>]
+			<input class="pref_preference_input" type="text" name="pref_msn[]" value="[<$msn|escape:'html'>]" />[<if $smarty.foreach.msn_loop.first>]<a href="#" onclick="add_field('msn', this);">Add Another</a>[<else>]<a href="#" onclick="remove_field('msn', this);">Remove</a>[</if>][<if !$smarty.foreach.msn_loop.last>]<br />[</if>]
 [<foreachelse>]
-			<input class="pref_preference_input" type="text" name="pref_msn[]" /><a href="#" onClick="add_field('msn', this);">Add Another</a>
+			<input class="pref_preference_input" type="text" name="pref_msn[]" /><a href="#" onclick="add_field('msn', this);">Add Another</a>
 [</foreach>]
 		</td>
 	</tr>
@@ -62,9 +62,9 @@
 		<td>ICQ:</td>
 		<td>
 [<foreach from=$I2_USER->icq item=icq name=icq_loop>]
-			<input class="pref_preference_input" type="text" name="pref_icq[]" value="[<$icq|escape:'html'>]" />[<if $smarty.foreach.icq_loop.first>]<a href="#" onClick="add_field('icq', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('icq', this);">Remove</a>[</if>][<if !$smarty.foreach.icq_loop.last>]<br />[</if>]
+			<input class="pref_preference_input" type="text" name="pref_icq[]" value="[<$icq|escape:'html'>]" />[<if $smarty.foreach.icq_loop.first>]<a href="#" onclick="add_field('icq', this);">Add Another</a>[<else>]<a href="#" onclick="remove_field('icq', this);">Remove</a>[</if>][<if !$smarty.foreach.icq_loop.last>]<br />[</if>]
 [<foreachelse>]
-			<input class="pref_preference_input" type="text" name="pref_icq[]" /><a href="#" onClick="add_field('icq', this);">Add Another</a>
+			<input class="pref_preference_input" type="text" name="pref_icq[]" /><a href="#" onclick="add_field('icq', this);">Add Another</a>
 [</foreach>]
 		</td>
 	</tr>
@@ -72,9 +72,9 @@
 		<td>Google Talk:</td>
 		<td>
 [<foreach from=$I2_USER->googleTalk item=googleTalk name=googleTalk_loop>]
-			<input class="pref_preference_input" type="text" name="pref_googleTalk[]" value="[<$googleTalk|escape:'html'>]" />[<if $smarty.foreach.googleTalk_loop.first>]<a href="#" onClick="add_field('googleTalk', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('googleTalk', this);">Remove</a>[</if>][<if !$smarty.foreach.googleTalk_loop.last>]<br />[</if>]
+			<input class="pref_preference_input" type="text" name="pref_googleTalk[]" value="[<$googleTalk|escape:'html'>]" />[<if $smarty.foreach.googleTalk_loop.first>]<a href="#" onclick="add_field('googleTalk', this);">Add Another</a>[<else>]<a href="#" onclick="remove_field('googleTalk', this);">Remove</a>[</if>][<if !$smarty.foreach.googleTalk_loop.last>]<br />[</if>]
 [<foreachelse>]
-			<input class="pref_preference_input" type="text" name="pref_googleTalk[]" /><a href="#" onClick="add_field('googleTalk', this);">Add Another</a>
+			<input class="pref_preference_input" type="text" name="pref_googleTalk[]" /><a href="#" onclick="add_field('googleTalk', this);">Add Another</a>
 [</foreach>]
 		</td>
 	</tr>
@@ -82,9 +82,9 @@
 		<td>Jabber:</td>
 		<td>
 [<foreach from=$I2_USER->jabber item=jabber name=jabber_loop>]
-			<input class="pref_preference_input" type="text" name="pref_jabber[]" value="[<$jabber|escape:'html'>]" />[<if $smarty.foreach.jabber_loop.first>]<a href="#" onClick="add_field('jabber', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('jabber', this);">Remove</a>[</if>][<if !$smarty.foreach.jabber_loop.last>]<br />[</if>]
+			<input class="pref_preference_input" type="text" name="pref_jabber[]" value="[<$jabber|escape:'html'>]" />[<if $smarty.foreach.jabber_loop.first>]<a href="#" onclick="add_field('jabber', this);">Add Another</a>[<else>]<a href="#" onclick="remove_field('jabber', this);">Remove</a>[</if>][<if !$smarty.foreach.jabber_loop.last>]<br />[</if>]
 [<foreachelse>]
-			<input class="pref_preference_input" type="text" name="pref_jabber[]" /><a href="#" onClick="add_field('jabber', this);">Add Another</a>
+			<input class="pref_preference_input" type="text" name="pref_jabber[]" /><a href="#" onclick="add_field('jabber', this);">Add Another</a>
 [</foreach>]
 		</td>
 	</tr>
@@ -92,9 +92,9 @@
 		<td>XFire:</td>
 		<td>
 [<foreach from=$I2_USER->xfire item=xfire name=xfire_loop>]
-			<input class="pref_preference_input" type="text" name="pref_xfire[]" value="[<$xfire|escape:'html'>]" />[<if $smarty.foreach.xfire_loop.first>]<a href="#" onClick="add_field('xfire', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('xfire', this);">Remove</a>[</if>][<if !$smarty.foreach.xfire_loop.last>]<br />[</if>]
+			<input class="pref_preference_input" type="text" name="pref_xfire[]" value="[<$xfire|escape:'html'>]" />[<if $smarty.foreach.xfire_loop.first>]<a href="#" onclick="add_field('xfire', this);">Add Another</a>[<else>]<a href="#" onclick="remove_field('xfire', this);">Remove</a>[</if>][<if !$smarty.foreach.xfire_loop.last>]<br />[</if>]
 [<foreachelse>]
-			<input class="pref_preference_input" type="text" name="pref_xfire[]" /><a href="#" onClick="add_field('xfire', this);">Add Another</a>
+			<input class="pref_preference_input" type="text" name="pref_xfire[]" /><a href="#" onclick="add_field('xfire', this);">Add Another</a>
 [</foreach>]
 		</td>
 	</tr>
@@ -102,9 +102,9 @@
 		<td>Skype:</td>
 		<td>
 [<foreach from=$I2_USER->skype item=skype name=skype_loop>]
-			<input class="pref_preference_input" type="text" name="pref_skype[]" value="[<$skype|escape:'html'>]" />[<if $smarty.foreach.skype_loop.first>]<a href="#" onClick="add_field('skype', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('skype', this);">Remove</a>[</if>][<if !$smarty.foreach.skype_loop.last>]<br />[</if>]
+			<input class="pref_preference_input" type="text" name="pref_skype[]" value="[<$skype|escape:'html'>]" />[<if $smarty.foreach.skype_loop.first>]<a href="#" onclick="add_field('skype', this);">Add Another</a>[<else>]<a href="#" onclick="remove_field('skype', this);">Remove</a>[</if>][<if !$smarty.foreach.skype_loop.last>]<br />[</if>]
 [<foreachelse>]
-			<input class="pref_preference_input" type="text" name="pref_skype[]" /><a href="#" onClick="add_field('skype', this);">Add Another</a>
+			<input class="pref_preference_input" type="text" name="pref_skype[]" /><a href="#" onclick="add_field('skype', this);">Add Another</a>
 [</foreach>]
 		</td>
 	</tr>
@@ -112,9 +112,9 @@
 		<td>Webpage(s):</td>
 		<td>
 [<foreach from=$I2_USER->webpage item=webpage name=webpage_loop>]
-			<input class="pref_preference_input" type="text" name="pref_webpage[]" value="[<$webpage|escape:'html'>]" />[<if $smarty.foreach.webpage_loop.first>]<a href="#" onClick="add_field('webpage', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('webpage', this);">Remove</a>[</if>][<if !$smarty.foreach.webpage_loop.last>]<br />[</if>]
+			<input class="pref_preference_input" type="text" name="pref_webpage[]" value="[<$webpage|escape:'html'>]" />[<if $smarty.foreach.webpage_loop.first>]<a href="#" onclick="add_field('webpage', this);">Add Another</a>[<else>]<a href="#" onclick="remove_field('webpage', this);">Remove</a>[</if>][<if !$smarty.foreach.webpage_loop.last>]<br />[</if>]
 [<foreachelse>]
-			<input class="pref_preference_input" type="text" name="pref_webpage[]" /><a href="#" onClick="add_field('webpage', this);">Add Another</a>
+			<input class="pref_preference_input" type="text" name="pref_webpage[]" /><a href="#" onclick="add_field('webpage', this);">Add Another</a>
 [</foreach>]
 		</td>
 	</tr>

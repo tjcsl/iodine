@@ -40,7 +40,7 @@ if (navigator.userAgent.indexOf("MSIE") > 0) {
 <div id="polls_header">
 <a href="[<$I2_ROOT>]polls/home">Polls Home</a><br /><br />
 
-Show responses by: (use Ctrl-click to select multiple responses) <br>
+Show responses by: (use Ctrl-click to select multiple responses) <br />
 <select onchange="hideAll(this);" size="5" multiple="multiple">
 	<option value="9" selected="selected">9th graders</option>
 	<option value="10" selected="selected">10th graders</option>

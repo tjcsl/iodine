@@ -8,9 +8,9 @@ Before you begin using the Intranet, we ask that you read this page and enter in
 [<if $I2_USER->grade == "staff">]Unfortunately, we cannot accurately determine what your e-mail might be, and we aren't currently provided with a list of staff e-mails.  It is helpful for students if you enter your e-mail address(es) so that Intranet can be a centralized place to search for anyone's e-mail:[<else>]Since people like to be able to reach you via e-mail if they need to, please [<if $user->mail>]verify[<else>]enter[</if>] your <strong>e-mail address(es)</strong>:[</if>]<br />
 <table><tr><td>
 [<foreach from=$I2_USER->mail item=email name=mail_loop>]
-<input class="pref_preference_input" type="text" name="pref_mail[]" value="[<$email|escape:'html'>]" />[<if $smarty.foreach.mail_loop.first>]<a href="#" onClick="add_field('mail', this);">Add Another</a>[<else>]<a href="#" onClick="remove_field('mail', this);">Remove</a>[</if>][<if !$smarty.foreach.mail_loop.last>]<br />[</if>]
+<input class="pref_preference_input" type="text" name="pref_mail[]" value="[<$email|escape:'html'>]" />[<if $smarty.foreach.mail_loop.first>]<a href="#" onclick="add_field('mail', this);">Add Another</a>[<else>]<a href="#" onclick="remove_field('mail', this);">Remove</a>[</if>][<if !$smarty.foreach.mail_loop.last>]<br />[</if>]
 [<foreachelse>]
-<input class="pref_preference_input" type="text" name="pref_mail[]" /><a href="#" onClick="add_field('mail', this);">Add Another</a>
+<input class="pref_preference_input" type="text" name="pref_mail[]" /><a href="#" onclick="add_field('mail', this);">Add Another</a>
 [</foreach>]
 </td></tr></table>
 [<if $I2_USER->grade != "staff">]Please don't enter an e-mail that you don't use.  It is frustrating when people list an e-mail that they cannot be reached at.  [</if>]You may add/verify other personal information (cell phone, AIM, etc.), and change other settings on the "Preferences" page.  Keep in mind that any information you enter will be available to the entire TJ community.<br /><br />

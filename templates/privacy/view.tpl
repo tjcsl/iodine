@@ -23,8 +23,8 @@ function toggle_self(currstate) {
 <tr><th>&nbsp;</th><th>User</th><th>Parental</th></tr>
 <tr>
 	<th>ALL</th>
-	<td><input type="checkbox" onClick="toggle_self(this.checked);" /></td>
-	<td><input type="checkbox" onClick="toggle_parent(this.checked);" /></td>
+	<td><input type="checkbox" onclick="toggle_self(this.checked);" /></td>
+	<td><input type="checkbox" onclick="toggle_parent(this.checked);" /></td>
 </tr>
 <tr>
 	<th>Address</th>
