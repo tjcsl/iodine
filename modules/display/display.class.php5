@@ -100,9 +100,7 @@ class Display {
 		$this->buffer = '';
 		$this->buffering = TRUE;
 
-		if (self::$style == NULL) {
-			self::style_changed();
-		}
+      self::style_set();
 	}
 
 	/**
@@ -253,6 +251,28 @@ class Display {
 		}
 		d('Style changed, is now: '.self::$style,7);
 	}
+
+    /**
+    * Initially set the style, if required.
+    */
+    public static function style_set() {
+        global $I2_USER;
+        if (self::$style == NULL) {
+           if (isSet($I2_USER)) {
+                 $I2_USER->recache('style');
+                 self::$style = ($I2_USER->style);
+           }
+           else {
+                 self::$style = 'default';
+           }
+           d('Style set to '.self::$style,7);
+        }
+        else
+        {
+           d('The style is already set and will not be reset');
+        }
+    }
+
 
 	/**
 	* Get the current buffering state.

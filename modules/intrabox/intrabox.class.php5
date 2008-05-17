@@ -160,8 +160,8 @@ class IntraBox {
 			$openclass = 'boxes_noheader';
 		}
 
-		// Hack needed for nags
-		Display::style_changed();
+      // Set the style if it is no already set - required for nags
+      Display::style_set();
 
 		self::$display->disp('intrabox_open.tpl',array('intrabox_open_class'=>$openclass));
 
