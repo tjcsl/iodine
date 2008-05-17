@@ -294,12 +294,10 @@ class User {
 				}
 				return FALSE;
 			case 'photonames':
-			case 'photoNames':
 				$cns = $I2_LDAP->search(LDAP::get_user_dn($this), 'objectClass=iodinePhoto', array('cn'))->fetch_col('cn');
 				@usort($cns, array("User", "sort_photos"));
 				return $cns;
 			case 'preferredphotoname':
-			case 'preferredPhotoName':
 				$row = $I2_LDAP->search_base(LDAP::get_user_dn($this), 'preferredPhoto')->fetch_array();
 				if (!$row) {
 					return NULL;
@@ -313,16 +311,11 @@ class User {
 				}
 				return $preferredPhoto;
 			case 'preferredphoto':
-			case 'preferredPhoto':
 			case 'preferred_photo':
 				return $this->__get($this->__get('preferredPhotoName'));
-			case 'freshmanPhoto':
 			case 'freshmanphoto':
-			case 'sophomorePhoto':
 			case 'sophomorephoto':
-			case 'juniorPhoto':
 			case 'juniorphoto':
-			case 'seniorPhoto':
 			case 'seniorphoto':
 				$userdn = LDAP::get_user_dn($this);
 				@$pic = $I2_LDAP->search("cn=$name,$userdn")->fetch_binary_value('jpegPhoto');
