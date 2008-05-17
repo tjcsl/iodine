@@ -28,7 +28,6 @@
 	number of characters.</li>
 </ul>
 </dd>
-<br />
 
 <dt>Field Matching</dt>
 <dd>
@@ -120,7 +119,7 @@
 <dd>
 <p>Searches by AOL Instant Messenger screen name. Case insensitivity and
 	wildcards are supported, spaces are not. If searching for a user
-	with a space in their AIM address, use a * in place of all spaces.<br />
+	with a space in their AIM address, use a * in place of all spaces.</p>
 </dd>
 
 </dl>

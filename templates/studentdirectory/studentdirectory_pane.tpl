@@ -73,58 +73,9 @@ To view this user's portfolio click <a href="http://shares.tjhsst.edu/PORTFOLIO/
 [</if>]
 [</if>]
 <br />
-[<if count($user->aim)>]
-	[<include file="studentdirectory/aim.tpl">]
-[</if>]
-[<if count($user->yahoo)>]Yahoo! ID(s):
- <ul class="none">
- [<foreach from=$user->yahoo item=yahoo>]
-  <li><img src="[<$I2_ROOT>]www/pics/osi/[<$im_status.yahoo.$yahoo>].png" /> [<$yahoo|escape:'html'>]</li>
- [</foreach>]
- </ul>
-[</if>]
-[<if count($user->msn)>]MSN Username(s):
- <ul>
- [<foreach from=$user->msn item=msn>]
-  <li>[<$msn|escape:'html'>]</li>
- [</foreach>]
- </ul>
-[</if>]
-[<if count($user->jabber)>]Jabber Username(s):
- <ul class="none">
- [<foreach from=$user->jabber item=jabber>]
-  <li><img src="[<$I2_ROOT>]www/pics/osi/[<$im_status.jabber.$jabber>].png" /> [<$jabber|escape:'html'>]</li>
- [</foreach>]
- </ul>
-[</if>]
-[<if count($user->icq)>]ICQ Number(s):
- <ul class="none">
- [<foreach from=$user->icq item=icq>]
-  <li><img src="[<$I2_ROOT>]www/pics/osi/[<$im_status.icq.$icq>].png" /> [<$icq|escape:'html'>]</li>
- [</foreach>]
- </ul>
-[</if>]
-[<if count($user->googleTalk)>]Google Talk Username(s):
- <ul>
- [<foreach from=$user->googleTalk item=googleTalk>]
-  <li>[<$googleTalk|escape:'html'>]</li>
- [</foreach>]
- </ul>
-[</if>]
-[<if count($user->xfire)>]XFire handle(s):
- <ul>
- [<foreach from=$user->xfire item=xfire>]
-  <li>[<$xfire|escape:'html'>]</li>
- [</foreach>]
- </ul>
-[</if>]
-[<if count($user->skype)>]Skype handle(s):
- <ul class="none">
- [<foreach from=$user->skype item=skype>]
-  <li><img src="http://mystatus.skype.com/smallicon/[<$skype|escape:'html'>]" /> <a href="skype:[<$skype>]?call">[<$skype|escape:'html'>]</a></li>
- [</foreach>]
- </ul>
-[</if>]
+
+[<include file="studentdirectory/im_status.tpl">]
+
 [<if count($user->webpage)>]Webpage(s):
  <ul>
  [<foreach from=$user->webpage item=webpage>]
