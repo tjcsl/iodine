@@ -378,8 +378,7 @@ class Newimport implements Module {
 			'poll_votes'		=> 'uid',
 			'prom'			=> 'uid',
 			'scratchpad'		=> 'uid',
-			'senior_destinations'	=> 'uid',
-			'servreq'		=> 'uid'
+			'senior_destinations'	=> 'uid'
 		);
 
 		d("deleting user $user", 7);
