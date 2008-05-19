@@ -1,12 +1,12 @@
 
 [<if count($today) > 0 >]
 
-<table>
+<table id="birthdays">
 <tbody>
 	<tr>
-		<th>Today</th>
-		<th>Grade</th>
-		<th>Age</th>
+		<th id="name">Today</th>
+		<th id="grade">Grade</th>
+		<th id="age">Age</th>
 	</tr>
 [<foreach from=$today item=person>]
 	<tr>
@@ -25,12 +25,12 @@ No birthdays today.
 [</if>]
 [<if count($tomorrow) > 0 >]
 
-<table>
+<table id="birthdays_tom">
 <tbody>
 	<tr>
-		<th>Tomorrow</th>
-		<th>Grade</th>
-		<th>Age</th>
+		<th id="name">Tomorrow</th>
+		<th id="grade">Grade</th>
+		<th id="age">Age</th>
 	</tr>
 [<foreach from=$tomorrow item=person>]
 	<tr>
@@ -47,4 +47,4 @@ No birthdays today.
 No birthdays tomorrow.
 
 [</if>]
-<div><a href="[<$I2_ROOT>]birthdays/">More birthdays</a></div>
+<div id="morebirthdays"><a href="[<$I2_ROOT>]birthdays/">More birthdays</a></div>
