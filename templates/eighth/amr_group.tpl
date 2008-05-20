@@ -11,6 +11,7 @@
 	<tr>
 		<th style="padding: 0px 5px; text-align: left;">Name</th>
 		<th style="padding: 0px 5px; text-align: left;">Student ID</th>
+		<th style="padding: 0px 5px; text-align: left;">Email</th>
 		<th style="padding: 0px 5px; text-align: left;">Grade</th>
 		<td><a href="[<$I2_ROOT>]eighth/amr_group/remove_all/gid/[<$group->gid>]">Remove all</a></td>
 	</tr>
@@ -19,6 +20,16 @@
 	<tr>
 		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$member->uid>]">[<$member->name_comma>]</a></td>
 		<td style="padding: 0px 5px; text-align: center;">[<$member->studentid>]</td>
+		<td style="padding: 0px 5px; text-align: center;">
+			[<if count($member->mail)>]
+				[<if count($member->mail) == 1>]
+					[<assign var="mail" value=$member->mail>]
+				[<else>]
+					[<assign var="mail" value=$member->mail.0>]
+				[</if>]
+				[<mailto address=$mail encode="hex">]
+			[<else>]&nbsp;[</if>]
+		</td>
 		<td style="padding: 0px 5px; text-align: center;">[<$member->grade>]</td>
 		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/amr_group/remove_member/gid/[<$group->gid>]/uid/[<$member->uid>]">Remove</a></td>
 	</tr>
