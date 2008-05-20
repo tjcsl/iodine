@@ -11,7 +11,7 @@
 	<tr>
 		<th style="padding: 0px 5px; text-align: left;">Name</th>
 		<th style="padding: 0px 5px; text-align: left;">Student ID</th>
-		<th style="padding: 0px 5px; text-align: left;">Email</th>
+		<th style="padding: 0px 5px; text-align: center;">Email</th>
 		<th style="padding: 0px 5px; text-align: left;">Grade</th>
 		<td><a href="[<$I2_ROOT>]eighth/amr_group/remove_all/gid/[<$group->gid>]">Remove all</a></td>
 	</tr>
