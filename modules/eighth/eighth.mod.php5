@@ -193,13 +193,15 @@ class Eighth implements Module {
 		if (count(self::$undo) == 0) {
 			return;
 		}
-		array_pop(self::$undo); // drop the end_undo
+		// Drop the last item if it is end_undo
+		if(self::$undo[-1] == self::$end_undo)
+			array_pop(self::$undo);
 		
 		$redo_queue = array(self::$end_undo);
 		do {
 			$action = array_pop(self::$undo);
 			$redo_queue[] = $action;
-			if($action != self::$start_undo) {
+			if($action != self::$start_undo && $action != self::$end_undo ) {
 				self::undoredo_exec($action[0],$action[1]);
 			}
 		} while ($action != self::$start_undo);
@@ -215,13 +217,15 @@ class Eighth implements Module {
 		if (count(self::$redo) == 0) {
 			return;
 		}
-		array_pop(self::$redo); 
+		// Drop the last item if it is start_undo
+		if(self::$redo[-1] == self::$start_undo)
+			array_pop(self::$redo); 
 		
 		$undo_queue = array(self::$end_undo);
 		do {
 			$action = array_pop(self::$redo);
 			$undo_queue[] = $action;
-			if($action != self::$start_undo) {
+			if($action != self::$start_undo && $action != self::$end_undo) {
 				self::undoredo_exec($action[2],$action[3]);
 			}
 		} while ($action != self::$start_undo);
@@ -712,7 +716,7 @@ class Eighth implements Module {
 		else if($this->op == 'remove') {
 				  $group = new Group($this->args['gid']);
 				  $group->delete_group();
-			redirect('eighth');
+			redirect('eighth/amr_group');
 		}
 		else if($this->op == 'view') {
 			$group = new Group($this->args['gid']);
@@ -839,8 +843,9 @@ class Eighth implements Module {
 				redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
 			}
 			else if($this->op == 'remove_all') {
-				$activity = new EighthActivity($this->args['aid']);
-				$activity->remove_restricted_all();
+				EighthActivity::remove_restricted_all_from_activity($this->args['aid']);
+				//$activity = new EighthActivity($this->args['aid']);
+				//$activity->remove_restricted_all();
 
 				redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
 			}
@@ -1192,6 +1197,39 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'print') {
 			EighthPrint::print_room_utilization($this->args['bid'], $this->args['format']);
+		}
+	}
+
+	/**
+	* Cancel/set comments/advertize for an activity
+	*
+	* @access private
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
+	*/
+	public function cancel_activity() {
+		if($this->op == '') {
+			$this->setup_block_selection();
+			$this->template_args['op'] = 'activity';
+		}
+		else if($this->op == 'activity') {
+			$this->setup_activity_selection(FALSE, $this->args['bid']);
+			$this->template_args['op'] = "view/bid/{$this->args['bid']}";
+		}
+		else if($this->op == 'view') {
+			$this->template = 'cancel_activity.tpl';
+			$this->template_args['activity'] = new EighthActivity($this->args['aid'], $this->args['bid']);
+			$this->title = "Cancel an Activity";
+		}
+		else if($this->op == 'update') {
+			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
+			self::start_undo_transaction();
+			$activity->comment = $this->args['comment'];
+			$activity->advertisement = $this->args['advertisement'];
+			$activity->cancelled = ($this->args['cancelled'] == "on");
+			self::end_undo_transaction();
+			//redirect("eighth/cancel_activity/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
+			redirect("eighth/cancel_activity/activity/bid/{$this->args['bid']}");
 		}
 	}
 

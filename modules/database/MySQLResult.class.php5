@@ -150,7 +150,8 @@ class MySQLResult implements Result {
 	}
 
 	/**
-	* Rewind function for Iterator interface
+	 * Go back to the beginning of the MySQL result resource
+	 * if this is possible.
 	*/
 	function rewind() {
 		if($this->more_rows()) {

@@ -47,7 +47,7 @@ class EighthActivity {
 			return;
 		}
 		if (! self::activity_exists($activityid)) {
-			throw new I2Exception('Tried to create a nonexistent EighthActivity object!');
+			throw new I2Exception('Tried to create an EighthActivity object for a nonexistent activity!');
 		}
 		if ($activityid != NULL && $activityid != '') {
 			$this->data = $I2_SQL->query('SELECT * FROM eighth_activities WHERE aid=%d', $activityid)->fetch_array(Result::ASSOC);
@@ -475,7 +475,7 @@ class EighthActivity {
 	}
 
 	/**
-	* Removes all members from the restricted activity.
+	* Removes all members from a restricted activity.
 	*
 	* @access public
 	*/
@@ -484,14 +484,13 @@ class EighthActivity {
 		Eighth::check_admin();
 		//Eighth::start_undo_transaction();
 		$old = $I2_SQL->query('SELECT userid FROM eighth_activity_permissions WHERE aid=%d',$this->data['aid']);
-		$query = 'DELETE FROM eighth_activity_permissions WHERE aid=%d';
-		$queryarg = array($this->data['aid']);
-		$result = $I2_SQL->query_arr($query, $queryarg);
-		$userq = 'DELETE FROM eighth_activity_permissions WHERE aid=%d AND userid=%d';
-		$invuserq = 'REPLACE INTO eighth_activity_permissions (aid,userid) VALUES(%d,%d)';
-		while ($userid = $old->fetch_single_value()) {
-			$invargs = array($this->data['aid'],$userid);
-			Eighth::push_undoable($userq,$invargs,$invuserq,$invargs,'Remove All From Restricted Activity');
+		$result = $I2_SQL->query('DELETE FROM eighth_activity_permissions WHERE aid=%d', $this->data['aid']);
+		// The query to delete a student from an activity
+		$userquery = 'DELETE FROM eighth_activity_permissions WHERE aid=%d AND userid=%d';
+		$undouserquery = 'REPLACE INTO eighth_activity_permissions (aid,userid) VALUES(%d,%d)';
+		foreach($old->fetch_all_single_values() as $userid) {
+			$undoargs = array($this->data['aid'],$userid);
+			Eighth::push_undoable($userquery,$undoargs,$undouserquery,$undoargs,'Remove All From Restricted Activity');
 		}
 		//Eighth::end_undo_transaction();
 	}
