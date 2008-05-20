@@ -1196,39 +1196,6 @@ class Eighth implements Module {
 	}
 
 	/**
-	* Cancel/set comments/advertize for an activity
-	*
-	* @access private
-	* @param string $this->op The operation to do.
-	* @param array $this->args The arguments for the operation.
-	*/
-	public function cancel_activity() {
-		if($this->op == '') {
-			$this->setup_block_selection();
-			$this->template_args['op'] = 'activity';
-		}
-		else if($this->op == 'activity') {
-			$this->setup_activity_selection(FALSE, $this->args['bid']);
-			$this->template_args['op'] = "view/bid/{$this->args['bid']}";
-		}
-		else if($this->op == 'view') {
-			$this->template = 'cancel_activity.tpl';
-			$this->template_args['activity'] = new EighthActivity($this->args['aid'], $this->args['bid']);
-			$this->title = "Cancel an Activity";
-		}
-		else if($this->op == 'update') {
-			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
-			self::start_undo_transaction();
-			$activity->comment = $this->args['comment'];
-			$activity->advertisement = $this->args['advertisement'];
-			$activity->cancelled = ($this->args['cancelled'] == "on");
-			self::end_undo_transaction();
-			//redirect("eighth/cancel_activity/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
-			redirect("eighth/cancel_activity/activity/bid/{$this->args['bid']}");
-		}
-	}
-
-	/**
 	* Room assignment sanity check
 	*
 	* @access private
