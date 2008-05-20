@@ -1457,7 +1457,7 @@ class Eighth implements Module {
 		// TODO: Sorting and exporting for all
 		if($this->op == '' || $this->op == 'sort' || $this->op == 'csv') {
 			// Print a list of delinquents
-			$lower = 1;
+			$lower = 0;
 			$upper = 1000;
 			$start = null;
 			$end = null;
