@@ -206,7 +206,17 @@ class Newimport implements Module {
 
 		$toremove = array_diff($oldusers, $newusers);
 		foreach ($toremove as $olduser) {
-			$this->del_user($olduser,$ldap);
+			/*
+			** Don't clobber "fake" students with uids between
+			** 1000 and 9999 (all real student iodineUidNumbers
+			** are above 10000).
+			**
+			** FIXME: This number should probably not be hardcoded.
+			*/
+			$res = $ldap->search(LDAP::get_user_dn(), 'iodineUid='.$olduser, 'iodineUidNumber');
+			if ($res->fetch_single_value() >= 10000) {
+				$this->del_user($olduser,$ldap);
+			}
 		}
 		$this->messages[] = 'Removed '.count($toremove).' old users';
 
