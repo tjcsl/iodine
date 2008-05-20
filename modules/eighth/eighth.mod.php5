@@ -1788,6 +1788,7 @@ class Eighth implements Module {
 			if(!isset($this->args['start_date'])) {
 				$this->args['start_date'] = NULL;
 			}
+			$this->template_args['start_date'] = ($this->args['start_date'] ? strtotime($this->args['start_date']) : time());
 			$user = new User($this->args['uid']);
 			$this->template_args['user'] = $user;
 			$this->template_args['comments'] = $user->comments;
