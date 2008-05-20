@@ -721,7 +721,7 @@ class Eighth implements Module {
 				  $group->delete_group();
 			redirect('eighth/amr_group');
 		}
-		else if($this->op == 'view') {
+		else if($this->op == 'view' || $this->op == 'csv') {
 			$group = new Group($this->args['gid']);
 			$this->template = 'amr_group.tpl';
 			$this->template_args['group'] = $group;
@@ -736,10 +736,33 @@ class Eighth implements Module {
 			$membersorted = array();
 			$membersorted = $group->members_obj;
 			usort($membersorted,array('User','name_cmp'));
-			$this->template_args['membersorted'] = $membersorted;
-			$this->template_args['search_destination'] = 'eighth/amr_group/add_member/gid/'.$this->args['gid'];
-			$this->template_args['action_name'] = 'Add';
-			$this->title = 'View Group (' . substr($group->name,7) . ')';
+			if ($this->op == 'view') {
+				$this->template_args['membersorted'] = $membersorted;
+				$this->template_args['search_destination'] = 'eighth/amr_group/add_member/gid/'.$this->args['gid'];
+				$this->template_args['action_name'] = 'Add';
+				$this->title = 'View Group (' . substr($group->name,7) . ')';
+			}
+			else if ($this->op == 'csv') {
+				Display::stop_display();
+				header('Pragma: ');
+				header('Content-type: text/csv');
+				$datestr = date('Y-m-d-His');
+				$name = substr($group->name, 7);
+				header("Content-Disposition: attachment; filename=\"EighthGroup-$name-$datestr.csv\"");
+				print "Last,First,Student ID,Gr,Email\r\n";
+
+				$attrib = array('lname','fname','tjhsstStudentId','grade');
+				foreach ($membersorted as $mem) {
+					foreach ($attrib as $att) {
+						print "{$mem->$att},";
+					}
+					$mail = $mem->mail;
+					if (count($mail)) {
+						print ((count($mail) == 1) ? $mail : $mail[0]);
+					}
+					print "\r\n";
+				}
+			}
 		}
 		else if($this->op == 'add_member') {
 			$group = new Group($this->args['gid']);
