@@ -6,6 +6,8 @@
 <input type="submit" value="Change group name" />
 </form>
 <br />
+<a href="[<$I2_ROOT>]eighth/amr_group/csv/gid/[<$group->gid>]">Download as CSV</a>
+<br />
 [<if count($group->members) > 0>]
 <table cellspacing="0" style="border: 0px; margin: 0px; padding: 0px;">
 	<tr>
