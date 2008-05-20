@@ -370,25 +370,26 @@ class Newimport implements Module {
 			$ldap = $I2_LDAP;
 		}
 
-		$sqltables = array('alum'	=> 'id',
-			'aphorisms'		=> 'uid',
-			'calculators'		=> 'uid',
-			'eighth_absentees'	=> 'userid',
-			'eighth_activity_map'	=> 'userid',
-			'event_admins'		=> 'uid',
-			'event_signups'		=> 'uid',
-			'event_verifiers'	=> 'uid',
-			'groups_static'		=> 'uid',
-			'groups_user_perms'	=> 'uid',
-			'intrabox_map'		=> 'uid',
-			'news_read_map'		=> 'uid',
-			'news'			=> 'authorID',
-			'parking_apps'		=> 'uid',
-			'parking_cars'		=> 'uid',
-			'poll_votes'		=> 'uid',
-			'prom'			=> 'uid',
-			'scratchpad'		=> 'uid',
-			'senior_destinations'	=> 'uid'
+		$sqltables = array('alum'		=> 'id',
+			'aphorisms'			=> 'uid',
+			'calculators'			=> 'uid',
+			'eighth_absentees'		=> 'userid',
+			'eighth_activity_map'		=> 'userid',
+			'eighth_activity_permissions'	=> 'userid',
+			'event_admins'			=> 'uid',
+			'event_signups'			=> 'uid',
+			'event_verifiers'		=> 'uid',
+			'groups_static'			=> 'uid',
+			'groups_user_perms'		=> 'uid',
+			'intrabox_map'			=> 'uid',
+			'news_read_map'			=> 'uid',
+			'news'				=> 'authorID',
+			'parking_apps'			=> 'uid',
+			'parking_cars'			=> 'uid',
+			'poll_votes'			=> 'uid',
+			'prom'				=> 'uid',
+			'scratchpad'			=> 'uid',
+			'senior_destinations'		=> 'uid'
 		);
 
 		d("deleting user $user", 7);
