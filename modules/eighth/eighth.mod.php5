@@ -237,15 +237,6 @@ class Eighth implements Module {
 
 	private static function start_undo_transaction() {
 		array_push(self::$undo, self::$start_undo);
-		
-		self::$redo = array();
-	
-		while(count(array_keys(self::$undo, self::$end_undo)) >= self::$max_undo) {
-			do {
-				$k = array_shift(self::$undo);
-			}
-			while($k != self::$end_undo);
-		}	
 	}
 	
 	private static function start_redo_transaction() {
@@ -286,6 +277,15 @@ class Eighth implements Module {
 	public static function undo_off() {
 		self::$doundo = FALSE;
 	}
+	
+	/**
+	* Trim the undo stack to $max_undo or less
+	*/
+	private static function trim_undo_stack() {
+		while(count(array_keys(self::$undo, self::$end_undo)) >= self::$max_undo) {
+			while(array_shift(self::$undo) != self::$end_undo);
+		}	
+	}
 
 	/**
 	* Register an undoable action with the eighth-period undo system.
@@ -300,6 +300,9 @@ class Eighth implements Module {
 		//$I2_LOG->log_file('PUSH UNDO: '.print_r($undo,1));
 		array_push(self::$undo,$undo);
 		//array_push($_SESSION['eighth_undo'],$undo);
+		
+		self::trim_undo_stack();
+		self::$redo = array();
 	}
 
 	private static function get_undoredo_name($stack) {
