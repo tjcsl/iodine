@@ -80,8 +80,6 @@ class EighthRoom {
 			usort($utilizations, array('EighthRoom', 'sort_by_teacher'));
 		} elseif ($sort == 'students') {
 			usort($utilizations, array('EighthRoom', 'sort_by_students'));
-		} elseif ($sort == 'comments') {
-			usort($utilizations, array('EighthRoom', 'sort_by_comments'));
 		} else {
 				  throw new I2Exception("Unknown sort type \"$sort\"");
 		}
