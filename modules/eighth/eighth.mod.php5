@@ -1788,7 +1788,6 @@ class Eighth implements Module {
 			if(!isset($this->args['start_date'])) {
 				$this->args['start_date'] = NULL;
 			}
-			$this->template_args['start_date'] = ($this->args['start_date'] ? strtotime($this->args['start_date']) : time());
 			$user = new User($this->args['uid']);
 			$this->template_args['user'] = $user;
 			$this->template_args['comments'] = $user->comments;
@@ -1804,6 +1803,28 @@ class Eighth implements Module {
 			
 			$this->template = 'vcp_schedule_view.tpl';
 			$this->title = 'View Schedule';
+		}
+		else if ($this->op == 'history') {
+			$date = getdate();
+			$date = ($date['mon'] > 7 ? $date['year'] : $date['year']-1).'-09-01';
+			$this->template_args['start_date'] = strtotime($date);
+			$days = intval((time()-strtotime($date))/86400);
+			$user = new User($this->args['uid']);
+			$this->template_args['user'] = $user;
+			$this->template_args['comments'] = $user->comments;
+			$this->template_args['activities'] = EighthActivity::
+				id_to_activity(EighthSchedule::get_activities(
+				$this->args['uid'], $date, $days), FALSE);
+			$this->template_args['absences'] = EighthSchedule::get_absences($this->args['uid']);
+			$this->template_args['absence_count'] = count($this->template_args['absences']);
+			
+			try {
+				//$this->template_args['ta'] = $user->schedule()->last()->teacher->sn;
+			} catch (I2Exception $e) {
+				//There is something wrong with the schedule or teacher.	
+			}	
+			$this->title = 'Eighth Periods Attended';
+			$this->template = 'vcp_schedule_history.tpl';
 		}
 		else if($this->op == 'format') {
 			if(!isset($this->args['start_date'])) {
