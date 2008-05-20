@@ -165,7 +165,6 @@ class EighthActivity {
 		}
 		if ($otheract && $otheract->aid == $this->data['aid'] && $this->oneaday) {
 			$ret |= EighthActivity::ONEADAY;
-			print "oneaday\n";
 		}
 		$signup_bothblocks = 0;
 		if ($otheract && $this->bothblocks && $otheract->aid != $this->data['aid']) {
