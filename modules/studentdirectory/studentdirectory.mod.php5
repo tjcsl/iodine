@@ -286,7 +286,7 @@ class StudentDirectory implements Module {
 	}
 
 	function icq_statuses($sns) {
-		foreach(array_key($sns) as $icq) {
+		foreach(array_keys($sns) as $icq) {
 			$server = 'status.icq.com';
 			$url = '/online.gif?icq=' . $icq . '&img=1';
 			$fp = @fsockopen($server, 80, $errno, $errstr, 90);
