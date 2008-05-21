@@ -5,9 +5,7 @@
   <tr>
    <th>Name</th>
    <th>Email</th>
-   [<if $aimkey>]
    <th>AIM Status</th>
-   [</if>]
   </tr>
  </thead>
 [<foreach from=$students item=student>]
@@ -26,13 +24,11 @@
      &nbsp;
     [</if>]
     </td>
-    [<if $aimkey>]
     <td class="directory-table">
     [<foreach from=$student->aim item=username key=k>]
-    <img src="http://api.oscar.aol.com/presence/icon?k=[<$aimkey>]&t=[<$username>]" /> <a href="aim:goim?screenname=[<$username>]">[<$username|escape:'html'>]</a>
+      <img src="[<$im_icons>][<$aim[$username]>]" /> <a href=aim:goim?screenname=[<$username|escape:'url'>]>[<$username|escape:'html'>]</a>
     [</foreach>]
     </td>
-    [</if>]
   </tr>
  </tbody>
 [</foreach>]
