@@ -70,7 +70,6 @@ AID: <input type="text" name="aid"/>
 		</td>
 		<td style="text-align: left;">
 			<a href="#[<$activity.block.bid>]" onclick="return do_action('view_rooms', '[<$activity.block.bid>]', new Array([<$activity.rooms_array>]), event);">Add Room</a><br />
-			<a href="#[<$activity.block.bid>]" onclick="return do_action('set_default_rooms', '[<$activity.block.bid>]', new Array(new Array([<$activity.rooms_array>]), new Array([<$activity.rooms_name_array>])));">Set to Default Room(s)</a>
 		</td>
 		<td class="eighth_sch_activity_listcell">
 			<div id="div_sponsor_list_[<$activity.block.bid>]" class="eighth_sponsor_list">
@@ -85,7 +84,6 @@ AID: <input type="text" name="aid"/>
 		</td>
 		<td style="text-align: left;">
 			<a href="#[<$activity.block.bid>]" onclick="return do_action('view_sponsors', '[<$activity.block.bid>]', new Array([<$activity.sponsors_array>]), event);">Add Sponsor</a><br />
-			<a href="#[<$activity.block.bid>]" onclick="return do_action('set_default_sponsors', '[<$activity.block.bid>]', new Array(new Array([<$activity.sponsors_array>]), new Array([<$activity.sponsors_name_array>])));">Set to Default Sponsor(s)</a>
 		</td>
 		<td style="padding: 5px;">
 			<textarea name="comments[[<$activity.block.bid>]]" id="comment_[<$activity.block.bid>]" readonly="readonly" class="eighth_sch_activity_commentcell" rows="1">[<if isset($activity.comment) >][<$activity.comment|escape:"html">][</if>]</textarea>
