@@ -75,8 +75,28 @@ class StudentDirectory implements Module {
 					redirect();
 				}
 				$sec = Schedule::section($I2_ARGS[2]);
+				$students = $sec->get_students();
+				
+				$aim_sns = Array();
+				foreach ($students as $student) {
+					$aim = $student->aim;
+					if (! empty($aim)) {
+						if (gettype($aim) == "array") {
+							$aim_sns = array_merge($aim_sns, array_values($aim));
+						} else {
+							$aim_sns[] = $aim;
+						}
+					}
+				}
+				if(!empty($aim_sns)) {
+					$aim_sns = $this->aim_statuses(array_flip($aim_sns));
+				}
+				
 				$this->template = 'class.tpl';
-				$this->template_args = array('class'=>$sec,'students'=>$sec->get_students(),'aimkey'=>i2config_get("key", NULL, "aim"));
+				$this->template_args['class'] = $sec;
+				$this->template_args['students'] = $students;
+				$this->template_args['im_icons'] = $I2_ROOT . 'www/status/';
+				$this->template_args['aim'] = $aim_sns;
 				return "Students in {$sec->name}, Period {$sec->period}";
 			case 'section':
 				if (isSet($I2_ARGS[2])) {

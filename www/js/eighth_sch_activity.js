@@ -185,22 +185,6 @@ function do_action(action, bid, data, e) {
 		remove_btn.parentNode.removeChild(remove_btn);
 		sponsors.value = list_of_sponsors.join(",");
 	}
-	else if(action == "set_default_rooms") {
-		var rooms = document.getElementById("room_list_" + bid);
-		var room_list = document.getElementById("div_room_list_" + bid);
-		rooms.value = data[0].join(",");
-		for(room in data[1]) {
-			room_list.innerHTML += data[1][room] + " <a href=\"#\" onclick=\"do_action('remove_room', " + bid + ", " + data[0][room] + ", event)\">Remove</a><br />";
-		}
-	}
-	else if(action == "set_default_sponsors") {
-		var sponsors = document.getElementById("sponsor_list_" + bid);
-		var sponsor_list = document.getElementById("div_sponsor_list_" + bid);
-		sponsors.value = data[0].join(",");
-		for(sponsor in data[1]) {
-			sponsor_list.innerHTML += data[1][sponsor] + " <a href=\"#\" onclick=\"do_action('remove_sponsor', " + bid + ", " + data[0][sponsor] + ", event)\">Remove</a><br />";
-		}
-	}
 	else if(action == "propagate") {
 		for(block in unscheduled_blocks) {
 			var ubid = unscheduled_blocks[block];

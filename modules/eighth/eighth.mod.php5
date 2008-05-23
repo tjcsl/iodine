@@ -1724,7 +1724,12 @@ class Eighth implements Module {
 	public function ar_block() {
 		if($this->op == '') {
 			$this->template = 'ar_block.tpl';
-			$this->template_args['blocks'] = EighthBlock::get_all_blocks(i2config_get('start_date', date('Y-m-d'), 'eighth'));
+			if (isSet($this->args['start_date'])) {
+				$start_date = $this->args['start_date'];
+			} else {
+				$start_date = i2config_get('start_date', date('Y-m-d'), 'eighth');
+			}
+			$this->template_args['blocks'] = EighthBlock::get_all_blocks($start_date);
 			$this->title = 'Add/Remove Block';
 		}
 		else if($this->op == 'add') {
