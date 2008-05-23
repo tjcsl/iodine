@@ -22,7 +22,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 var chflag=0;
-
+var http;
+if (window.ActiveXObject) {
+	var ms = new ActiveXObject("Msxml2.XMLHTTP");
+	http = ms ? ms : new ActiveXObject("Microsoft.XMLHTTP");
+} else if (window.XMLHttpRequest) {
+	http = new XMLHttpRequest();
+}
 window.onload = function(){
 	// Set up tab functions
 	tabInfo.list = document.getElementById("tabs");
