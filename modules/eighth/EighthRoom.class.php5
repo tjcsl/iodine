@@ -103,7 +103,11 @@ class EighthRoom {
 	}
 	
 	private static function sort_by_name($utilization1, $utilization2) {
-		return strcasecmp($utilization1['activity']->name, $utilization2['activity']->name);
+		if( ($utilization1['activity']->special == $utilization2['activity']->special) ) {
+			return strcasecmp($utilization1['activity']->name, $utilization2['activity']->name);
+		} else {
+			return $utilization2['activity']->special;
+		}
 	}
 	
 	private static function sort_by_comments($utilization1, $utilization2) {
@@ -126,17 +130,17 @@ class EighthRoom {
 	*/
 	public static function get_conflicts($blockid) {
 		global $I2_SQL;
-		$result = $I2_SQL->query("SELECT aid,name,restricted,eighth_block_map.rooms FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d AND eighth_block_map.rooms != ''", $blockid)->fetch_all_arrays(Result::ASSOC);
+		$result = $I2_SQL->query("SELECT aid,name,special,restricted,eighth_block_map.rooms FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d AND eighth_block_map.rooms != ''", $blockid)->fetch_all_arrays(Result::ASSOC);
 		$conflicts = array();
 		foreach($result as $activity) {
 			$rooms = explode(',', $activity['rooms']);
 			foreach($rooms as $room) {
 				$eighth_room = new EighthRoom($room);
 				if(!array_key_exists($eighth_room->name, $conflicts)) {
-					$conflicts[$eighth_room->name] = array(array('aid' => $activity['aid'], 'name' => ($activity['name'] . ($activity['restricted'] ? ' (R)' :''))));
+					$conflicts[$eighth_room->name] = array(array('aid' => $activity['aid'], 'name' => (($activity['special'] ? 'SPECIAL: ' : '') . $activity['name'] . ($activity['restricted'] ? ' (R)' :''))));
 				}
 				else {
-					$conflicts[$eighth_room->name][] = array('aid' => $activity['aid'], 'name' => ($activity['name'] . ($activity['restricted'] ? ' (R)' :'')));
+					$conflicts[$eighth_room->name][] = array('aid' => $activity['aid'], 'name' => (($activity['special'] ? 'SPECIAL: ' : '') . $activity['name'] . ($activity['restricted'] ? ' (R)' :'')));
 				}
 			}
 		}
