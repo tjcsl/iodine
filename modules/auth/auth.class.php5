@@ -44,7 +44,7 @@ class Auth {
 	public function __construct() {	
 		global $I2_ARGS;
 
-		$this->encryption = i2config_get('encryption',1,'core');
+		$this->encryption = i2config_get('pass_encrypt',1,'core');
 
 		if($this->encryption && !function_exists('mcrypt_module_open')) {
 			d('Encryption is enabled, but the mcrypt module is not enabled in PHP. Mcrypt is necessary for encrypting cached passwords.',1);
@@ -413,13 +413,15 @@ class Auth {
 	* encryption in a client's cookie called IODINE_PASS_VECTOR.
 	*/
 	private function cache_password($pass) {
+		global $I2_DOMAIN;
+
 		if (!$this->encryption) {
 			$_SESSION['i2_password'] = $pass;
 			return;
 		}
 		$_SESSION['i2_auth_passkey'] = substr(md5(rand(0,999999)),0,16);
 		list($_SESSION['i2_password'], ,$iv) = self::encrypt($pass,$_SESSION['i2_auth_passkey'].substr(md5($_SERVER['REMOTE_ADDR']),0,16));
-		setcookie('IODINE_PASS_VECTOR',$iv,0,'/',i2config_get('domain','iodine.tjhsst.edu','core'));
+		setcookie('IODINE_PASS_VECTOR',$iv,0,'/',$I2_DOMAIN);
 	}
 
 	/**

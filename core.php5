@@ -28,6 +28,7 @@ define('CONFIG_FILENAME', 'config.ini');
 * A few helpful globals, which need to be generated, so they cannot simply be define()'d.
 */
 $I2_SELF = $_SERVER['REDIRECT_URL'];
+$I2_DOMAIN = $_SERVER['HTTP_HOST'];
 
 /**
 * 'core.php5' is nine letters
