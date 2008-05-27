@@ -1679,14 +1679,19 @@ class Eighth implements Module {
 	*/
 	public function prn_attendance() {
 		if($this->op == '') {
-			$this->template_args['op'] = 'format';
+			$this->template_args['op'] = 'color';
 			$this->setup_block_selection();
 		}
+		else if ($this->op == 'color') {
+			$this->template_args['bid'] = $this->args['bid'];
+			$this->template = 'block_color.tpl';
+		}
 		else if($this->op == 'format') {
-			$this->setup_format_selection('prn_attendance', 'Activity Rosters', array('bid' => $this->args['bid']));
+			print_r($_POST);
+			$this->setup_format_selection('prn_attendance', 'Activity Rosters', array('bid' => $this->args['bid'], 'color' => $_POST['color']));
 		}
 		else if($this->op == 'print') {
-			EighthPrint::print_activity_rosters(explode(',', $this->args['bid']), $this->args['format']);
+			EighthPrint::print_activity_rosters(explode(',', $this->args['bid']), $this->args['color'], $this->args['format']);
 		}
 	}
 
