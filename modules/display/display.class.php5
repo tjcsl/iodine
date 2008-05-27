@@ -96,7 +96,7 @@ class Display {
 		if ($module_name == 'core') {
 			self::$core_display = $this;
 		}
-		self::$tpl_root = i2config_get('template_path','./','core');
+		self::$tpl_root = $I2_FS_ROOT . 'templates/';
 		$this->buffer = '';
 		$this->buffering = TRUE;
 
