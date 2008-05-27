@@ -225,12 +225,13 @@ function i2config_get($field, $default = NULL, $section = NULL) {
 *                    be redirected to Iodine root.
 */
 function redirect($url = NULL) {
-	
+	global $I2_ROOT;
+
 	if( headers_sent($file, $line) ) {
 		throw new I2Exception('A redirect was attempted, but headers have already been sent in file '.$file.' on line '.$line);
 	}
 	
-	$url = i2config_get('www_root', 'https://iodine.tjhsst.edu/', 'core') . $url;
+	$url = $I2_ROOT . $url;
 	d('Redirecting to '.$url);
 
 	header('Location: '.$url);

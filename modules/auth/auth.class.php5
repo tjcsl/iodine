@@ -263,7 +263,7 @@ class Auth {
 	* @returns bool Whether or not the user has successfully logged in.
 	*/
 	public function login() {
-		global $I2_ARGS, $modauth_loginfailed;
+		global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $modauth_loginfailed;
 
 		// the log function uses this to tell if the login was successful
 		// if login fails, something else will set it
@@ -322,7 +322,7 @@ class Auth {
 		if (! isset($image)) {
 
 			$images = array();
-			$dirpath = i2config_get('root_path', '', 'core') . 'www/pics/logins';
+			$dirpath = $I2_FS_ROOT . 'www/pics/logins';
 			$dir = opendir($dirpath);
 			while ($file = readdir($dir)) {
 				if (! is_dir($dirpath . '/' . $file)) {
@@ -335,7 +335,7 @@ class Auth {
 	
 		// Show the login box
 		$disp = new Display('login');
-		$disp->disp('login.tpl',array('failed' => $modauth_loginfailed,'uname' => $uname, 'css' => i2config_get('www_root', NULL, 'core') . i2config_get('login_css', NULL, 'auth') , 'bg' => $image));
+		$disp->disp('login.tpl',array('failed' => $modauth_loginfailed,'uname' => $uname, 'css' => $I2_ROOT . i2config_get('login_css', NULL, 'auth') , 'bg' => $image));
 
 		return FALSE;
 	}
