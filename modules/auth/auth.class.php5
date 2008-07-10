@@ -335,7 +335,11 @@ class Auth {
 	
 		// Show the login box
 		$disp = new Display('login');
-		$disp->disp('login.tpl',array('failed' => $modauth_loginfailed,'uname' => $uname, 'css' => $I2_ROOT . i2config_get('login_css', NULL, 'auth') , 'bg' => $image));
+		$disp->disp('login.tpl',array(
+			'failed' => $modauth_loginfailed,
+			'uname' => $uname,
+			'css' => $I2_ROOT . i2config_get('www_root', NULL, 'core') . i2config_get('login_css', NULL, 'auth'),
+			'bg' => $image));
 
 		return FALSE;
 	}
