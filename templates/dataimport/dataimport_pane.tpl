@@ -1,3 +1,4 @@
+<span style="color: red;"><strong>THIS IS DEPRECATED. USE THE <a href="[<$I2_ROOT>]newimport">NEWIMPORT</a> MODULE INSTEAD.</strong></span><br /><br />
 Database update procedure:
 <ol>
 	<li>Back up the database, just to be safe.</li>
