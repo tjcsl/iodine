@@ -4,14 +4,17 @@
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005-2006 The Intranet 2 Development Team
 * @package core
-* @subpackage Database
+* @subpackage Scheduling
 * @filesource
 */
 
 /**
 * A class that represents a single Section that is stored in LDAP.
+*
+* For data available from Section objects, see the {@link __get} method.
+*
 * @package core
-* @subpackage Database
+* @subpackage Scheduling
 */
 class SectionLDAP implements Section {
 
@@ -46,6 +49,23 @@ class SectionLDAP implements Section {
 		}*/
 	}
 
+	/**
+	* The php magical __get method
+	*
+	* Accessing $section->thing calls this method. Things you can legitimately
+	* access this way are:
+	* <ul>
+	*  <li>sectionid</li>
+	*  <li>classid</li>
+	*  <li>quarters -- may be array or single value</li>
+	*  <li>room</li>
+	*  <li>name</li>
+	*  <li>period -- may be array or single value</li>
+	*  <li>term -- a string of quarters joined by ", "</li>
+	*  <li>periods -- a string of periods joined by ", "</li>
+	*  <li>students</li>
+	* </ul>
+	*/
 	public function __get($var) {
 		if ($var == 'students') {
 			return $this->get_students();

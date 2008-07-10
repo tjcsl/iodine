@@ -11,6 +11,16 @@
 
 /**
 * The class that represents a student's schedule.
+*
+* You probably want to use this class like:
+*
+* <code>
+* $schedule = new Schedule($user);
+* foreach ($schedule as $section) {
+*	// do something
+* }
+* </code>
+*
 * @package core
 * @subpackage Scheduling
 */
