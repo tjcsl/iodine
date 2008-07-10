@@ -582,13 +582,13 @@ class EighthActivity {
 	public static function get_all_activities($blockids = NULL, $restricted = FALSE) {
 		global $I2_SQL;
 		if($blockids == NULL) {
-			return self::id_to_activity(flatten($I2_SQL->query('SELECT aid FROM eighth_activities ' . ($restricted ? 'WHERE restricted=1 ' : '') . 'ORDER BY name')->fetch_all_arrays(Result::NUM)));
+			return self::id_to_activity(flatten($I2_SQL->query('SELECT aid FROM eighth_activities ' . ($restricted ? 'WHERE restricted=1 ' : '') . 'ORDER BY special DESC, name')->fetch_all_arrays(Result::NUM)));
 		}
 		else {
 			if(!is_array($blockids)) {
 				settype($blockids, 'array');
 			}
-			return self::id_to_activity($I2_SQL->query('SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid IN (%D) ' . ($restricted ? 'AND restricted=1 ' : '') . 'GROUP BY aid ORDER BY name', $blockids)->fetch_all_arrays(Result::NUM));
+			return self::id_to_activity($I2_SQL->query('SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid IN (%D) ' . ($restricted ? 'AND restricted=1 ' : '') . 'GROUP BY aid ORDER BY special DESC, name', $blockids)->fetch_all_arrays(Result::NUM));
 		}
 	}
 
@@ -600,7 +600,7 @@ class EighthActivity {
 	*/
 	public static function get_all_activities_starting($startdate = NULL) {
 			  global $I2_SQL;
-			  return self::id_to_activity($I2_SQL->query('SELECT activityid,eighth_blocks.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) LEFT JOIN eighth_activities ON (eighth_activities.aid=eighth_block_map.activityid) WHERE date > %t GROUP BY activityid ORDER BY name',$startdate)->fetch_all_arrays(Result::NUM));
+			  return self::id_to_activity($I2_SQL->query('SELECT activityid,eighth_blocks.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) LEFT JOIN eighth_activities ON (eighth_activities.aid=eighth_block_map.activityid) WHERE date > %t GROUP BY activityid ORDER BY special DESC, name',$startdate)->fetch_all_arrays(Result::NUM));
 	}
 
 	/**
@@ -732,7 +732,7 @@ class EighthActivity {
 					}
 					return '';
 				case 'name_r':
-					return $this->data['name'] . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
+					return ($this->data['special'] ? 'SPECIAL: ' : '') . $this->data['name'] . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
 			 case 'name_full_r':
 					$namelen = strlen($this->data['name']);
 					// Make it so that all names w/comments are 50ish characters or less w/o truncating the name itself
@@ -746,7 +746,7 @@ class EighthActivity {
 						$commentlen = 0;
 						$comment = '';
 					}
-					return $this->data['name'] . ($commentlen ? ' - ' . substr($comment,0,70-$namelen).(70-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
+					return ($this->data['special'] ? 'SPECIAL: ' : '') . $this->data['name'] . ($commentlen ? ' - ' . substr($comment,0,70-$namelen).(70-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
 				case 'name_friendly':
 					$comment = $this->__get('comment_short');
 					if (!$comment) {

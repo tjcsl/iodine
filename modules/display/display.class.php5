@@ -72,7 +72,7 @@ class Display {
 	* @param string $module_name The name of the module this Display object applies to.
 	*/
 	public function __construct($module_name='core') {
-		global $I2_LOG;
+		global $I2_FS_ROOT, $I2_LOG;
 		require_once('Smarty.class.php');
 		$this->smarty = new Smarty;
 		//$this->smarty->register_prefilter(array(&$this,'prefilter'));
@@ -82,7 +82,7 @@ class Display {
 		$this->smarty->left_delimiter = '[<';
 		$this->smarty->right_delimiter = '>]';
 		$this->smarty->compile_dir = i2config_get('cache_dir', NULL, 'core') . 'smarty/';
-		$this->smarty->plugins_dir = array('plugins',i2config_get('root_path',NULL,'core').'smarty');
+		$this->smarty->plugins_dir = array('plugins',$I2_FS_ROOT . 'smarty');
 		$this->smarty->cache_dir = $this->smarty->compile_dir.'cache';
 
 		// Caching off by default
@@ -96,7 +96,7 @@ class Display {
 		if ($module_name == 'core') {
 			self::$core_display = $this;
 		}
-		self::$tpl_root = i2config_get('template_path','./','core');
+		self::$tpl_root = $I2_FS_ROOT . 'templates/';
 		$this->buffer = '';
 		$this->buffering = TRUE;
 

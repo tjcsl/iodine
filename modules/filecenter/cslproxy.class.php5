@@ -42,6 +42,8 @@ class CSLProxy {
 	 * return exit status
 	 */
 	public function __call($function, $args) {
+		global $I2_FS_ROOT;
+
 		$temp = tmpfile();
 
 		$descriptors = array(
@@ -54,15 +56,14 @@ class CSLProxy {
 			'KRB5CCNAME' => $this->kerberos_cache
 		);
 
-		$root_path = i2config_get('root_path', NULL, 'core');
-		$peer =  $root_path . 'bin/cslhelper.php5';
+		$peer =  $I2_FS_ROOT . 'bin/cslhelper.php5';
 
 		$AFS_CELL = i2config_get('cell','csl.tjhsst.edu','afs');
 		if (!isSet($this->kerberos_realm)) {
 			$this->kerberos_realm = i2config_get('afs_realm','CSL.TJHSST.EDU','kerberos');
 		}
 
-		$process = proc_open("pagsh -c \"aklog -c $AFS_CELL -k {$this->kerberos_realm}; $peer {$this->kerberos_realm}\"", $descriptors, $pipes, $root_path, $env);
+		$process = proc_open("pagsh -c \"aklog -c $AFS_CELL -k {$this->kerberos_realm}; $peer {$this->kerberos_realm}\"", $descriptors, $pipes, $I2_FS_ROOT, $env);
 		if(is_resource($process)) {
 			fwrite($pipes[0], serialize(array($function, $args)));
 			fclose($pipes[0]);

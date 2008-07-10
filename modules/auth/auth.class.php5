@@ -44,7 +44,7 @@ class Auth {
 	public function __construct() {	
 		global $I2_ARGS;
 
-		$this->encryption = i2config_get('encryption',1,'core');
+		$this->encryption = i2config_get('pass_encrypt',1,'core');
 
 		if($this->encryption && !function_exists('mcrypt_module_open')) {
 			d('Encryption is enabled, but the mcrypt module is not enabled in PHP. Mcrypt is necessary for encrypting cached passwords.',1);
@@ -263,7 +263,7 @@ class Auth {
 	* @returns bool Whether or not the user has successfully logged in.
 	*/
 	public function login() {
-		global $I2_ARGS, $modauth_loginfailed;
+		global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $modauth_loginfailed;
 
 		// the log function uses this to tell if the login was successful
 		// if login fails, something else will set it
@@ -322,7 +322,7 @@ class Auth {
 		if (! isset($image)) {
 
 			$images = array();
-			$dirpath = i2config_get('root_path', '', 'core') . 'www/pics/logins';
+			$dirpath = $I2_FS_ROOT . 'www/pics/logins';
 			$dir = opendir($dirpath);
 			while ($file = readdir($dir)) {
 				if (! is_dir($dirpath . '/' . $file)) {
@@ -335,7 +335,7 @@ class Auth {
 	
 		// Show the login box
 		$disp = new Display('login');
-		$disp->disp('login.tpl',array('failed' => $modauth_loginfailed,'uname' => $uname, 'css' => i2config_get('www_root', NULL, 'core') . i2config_get('login_css', NULL, 'auth') , 'bg' => $image));
+		$disp->disp('login.tpl',array('failed' => $modauth_loginfailed,'uname' => $uname, 'css' => $I2_ROOT . i2config_get('login_css', NULL, 'auth') , 'bg' => $image));
 
 		return FALSE;
 	}
@@ -413,13 +413,15 @@ class Auth {
 	* encryption in a client's cookie called IODINE_PASS_VECTOR.
 	*/
 	private function cache_password($pass) {
+		global $I2_DOMAIN;
+
 		if (!$this->encryption) {
 			$_SESSION['i2_password'] = $pass;
 			return;
 		}
 		$_SESSION['i2_auth_passkey'] = substr(md5(rand(0,999999)),0,16);
 		list($_SESSION['i2_password'], ,$iv) = self::encrypt($pass,$_SESSION['i2_auth_passkey'].substr(md5($_SERVER['REMOTE_ADDR']),0,16));
-		setcookie('IODINE_PASS_VECTOR',$iv,0,'/',i2config_get('domain','iodine.tjhsst.edu','core'));
+		setcookie('IODINE_PASS_VECTOR',$iv,0,'/',$I2_DOMAIN);
 	}
 
 	/**

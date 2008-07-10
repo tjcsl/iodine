@@ -98,7 +98,8 @@ class User {
 						$this->info[strtolower($key)] = $val;
 					}
 				} else {
-					//throw new I2Exception('Invalid iodineUidNumber '.$uid);
+					warn('Invalid iodineUidNumber '.$uid);
+					//Below two lines are 9996 replacement hack; this can be safely removed once we are sure we properly clean out all the users from all the tables upon deletion using dataimport.
 					$this->info['iodineuid']="nostudent";
 					$this->info['iodineuidnumber']=$uid;
 				}

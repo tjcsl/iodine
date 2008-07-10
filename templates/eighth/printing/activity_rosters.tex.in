@@ -5,6 +5,9 @@
 \textheight 11in
 \topmargin -0.5in
 
+\usepackage{color}
+\definecolor{blockColor}{rgb}{%@$color@%}
+
 \usepackage{pslatex}
 \makeatletter
 \newcommand\HUGE{\@setfontsize\HUGE{60pt}{63}}
@@ -17,7 +20,7 @@
 \end{raggedright}
 \begin{raggedleft}
 	\begin{tabular}[c]{rl}
-		{\Large %@$activity->block_sponsors_comma_short@%} & \multirow{3}*{\HUGE %@$activity->block->block@%} \\
+		{\Large %@$activity->block_sponsors_comma_short@%} & \multirow{3}*{\HUGE\color{blockColor} %@$activity->block->block@%} \\
 		{\Large Room%@(count($activity->block_rooms) > 1 ? 's ' : ' ') . $activity->block_rooms_comma@%} & \\
 		{\Large %@date('l n/j/y', strtotime($activity->block->date))@%} & \\
 	\end{tabular} \\

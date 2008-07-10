@@ -42,7 +42,8 @@ class ModulesMapper {
 	}
 
 	public static function generate() {
-		$module_path = i2config_get('module_path', NULL, 'core');
+		global $I2_FS_ROOT;
+		$module_path = $I2_FS_ROOT . 'modules/';
 		$cache_dir = i2config_get('cache_dir', NULL, 'core');
 		$map_file = $cache_dir . 'module.map';
 		
