@@ -15,7 +15,7 @@
 */
 class Newimport implements Module {
 
-	private $template = 'newimport_home.tpl';
+	private $template = 'home.tpl';
 	private $template_args = array();
 
 	private $startyear = FALSE;
@@ -25,6 +25,28 @@ class Newimport implements Module {
 	private $boxids;
 
 	private $new_iodine_uid;
+
+	public static $sqltables = array('alum'		=> 'id',
+			'aphorisms'			=> 'uid',
+			'calculators'			=> 'uid',
+			'eighth_absentees'		=> 'userid',
+			'eighth_activity_map'		=> 'userid',
+			'eighth_activity_permissions'	=> 'userid',
+			'event_admins'			=> 'uid',
+			'event_signups'			=> 'uid',
+			'event_verifiers'		=> 'uid',
+			'groups_static'			=> 'uid',
+			'groups_user_perms'		=> 'uid',
+			'intrabox_map'			=> 'uid',
+			'news_read_map'			=> 'uid',
+			'news'				=> 'authorID',
+			'parking_apps'			=> 'uid',
+			'parking_cars'			=> 'uid',
+			'poll_votes'			=> 'uid',
+			'prom'				=> 'uid',
+			'scratchpad'			=> 'uid',
+			'senior_destinations'		=> 'uid'
+	);
 
 	/**
 	* Required by the {@link Module} interface
@@ -60,8 +82,170 @@ class Newimport implements Module {
 		return 'Import Data';
 	}
 
+	public function teachers() {
+		$this->template = 'teachers.tpl';
+		return array('Import Data', 'Import Data: Edit Teachers');
+	}
+
+	public function teacher_new() {
+		global $I2_LDAP;
+		if (array_key_exists('id', $_REQUEST)) {
+			$uid = $_REQUEST['id'];
+		}
+		else {
+			redirect('newimport');
+		}
+
+		$res = $I2_LDAP->search_one(LDAP::get_user_dn(), "(&(objectClass=tjhsstTeacher)(iodineUidNumber=$uid))");
+
+		// RANDOM BUGGY num_rows() RETURNS ONE MORE THAN IT SHOULD
+		if ($res->num_rows() > 1) {
+			$this->template = 'teacher_new_conflict.tpl';
+			$this->template_args['user'] = new User($uid);
+			return array('Import Data', 'Import Data: Conflicting ID Number');
+		}
+
+		$this->template_args['iodineUidNumber'] = $uid;
+		$this->template_args['iodineUid'] = $this->template_args['givenName'] = $this->template_args['sn'] = "";
+
+		$this->template_args['method'] = 'teacher_new_doit';
+		$this->template_args['showdelete'] = FALSE;
+		$this->template = 'teacher_edit.tpl';
+		return array('Import Data', 'Import Data: New Teacher');
+	}
+
+	public function teacher_new_doit() {
+		if (!array_key_exists('id', $_REQUEST)) {
+			redirect('newimport');
+		}
+
+		$this->create_teacher($_REQUEST['data']);
+
+		$user = new User($_REQUEST['data']['iodineUid']);
+
+		$this->template = 'teacher_done.tpl';
+		$this->template_args['action'] = 'edit';
+		$this->template_args['name'] = $user->name;
+		return array('Import Data', 'Import Data: Teacher Successfully Created');
+	}
+
+	public function teacher_edit() {
+		global $I2_ARGS;
+
+		if (array_key_exists('id', $_REQUEST)) {
+			$uid = $_REQUEST['id'];
+		}
+		else if (array_key_exists(2, $I2_ARGS)) {
+			$uid = $I2_ARGS[2];
+		}
+		else {
+			redirect('newimport');
+		}
+
+		$user = new User($uid);
+
+		$this->template_args['method'] = 'teacher_edit_doit';
+		$this->template_args['iodineUid'] = $user->iodineUid;
+		$this->template_args['iodineUidNumber'] = $user->iodineUidNumber;
+		$this->template_args['givenName'] = $user->givenName;
+		$this->template_args['sn'] = $user->sn;
+
+		$this->template_args['showdelete'] = TRUE;
+
+		$this->template = 'teacher_edit.tpl';
+		return array('Import Data', 'Import Data: Edit Teacher');
+	}
+
+	public function teacher_edit_doit() {
+		global $I2_LDAP, $I2_ROOT;
+
+		if (!array_key_exists('id', $_REQUEST)) {
+			redirect('newimport');
+		}
+
+		$user = new User($_REQUEST['id']);
+		$warnings = array();
+		
+		$data = $_REQUEST['data'];
+		if ($data['iodineUid'] != $user->iodineUid) {
+			$warnings[] = "You are changing the username. This <em>should</em> work correctly, but may cause problems.";
+		}
+		if ($data['iodineUidNumber'] != $user->iodineUidNumber) {
+			$res = $I2_LDAP->search_one(LDAP::get_user_dn(), "(&(objectClass=tjhsstTeacher)(iodineUidNumber={$data['iodineUidNumber']}))");
+			// RANDOM BUGGY num_rows() RETURNS ONE MORE THAN IT SHOULD
+			if ($res->num_rows() > 1) {
+				$warnings[] = '<span style="color: red;">YOU ARE CHANGING THE UID NUMBER TO A NUMBER THAT IS ALREADY USED.</span> '.
+					"It is taken by <a href=\"{$I2_ROOT}newimport/teacher_edit/{$existant->iodineUidNumber}\">{$existant->name}</a>.";
+			}
+			else {
+				$warnings[] = "You are changing the UID number. This <em>should</em> work correctly, but may cause problems.";
+			}
+		}
+
+		if (!array_key_exists('DOIT', $_REQUEST)) {
+			$this->template_args['iodineUid_old'] = $user->iodineUid;
+			$this->template_args['iodineUid_new'] = $data['iodineUid'];
+			$this->template_args['iodineUidNumber_old'] = $user->iodineUidNumber;
+			$this->template_args['iodineUidNumber_new'] = $data['iodineUidNumber'];
+			$this->template_args['givenName_old'] = $user->givenName;
+			$this->template_args['givenName_new'] = $data['givenName'];
+			$this->template_args['sn_old'] = $user->sn;
+			$this->template_args['sn_new'] = $data['sn'];
+			$this->template_args['warnings'] = $warnings;
+
+			$this->template = 'teacher_edit_doit.tpl';
+			return array('Import Data', 'Import Data: Confirm Teacher Data Change');
+		}
+		else {
+			if ($data['iodineUid'] != $user->iodineUid) {
+				$user->set_uid($data['iodineUid']);
+			}
+			if ($data['iodineUidNumber'] != $user->iodineUidNumber) {
+				$user->set_uidnumber($data['iodineUidNumber']);
+			}
+			$user->givenName = $data['givenName'];
+			$user->sn = $data['sn'];
+			$user->cn = $data['givenName'].' '.$data['sn'];
+
+			$this->template = 'teacher_done.tpl';
+			$this->template_args['action'] = 'edit';
+			$this->template_args['name'] = $user->name;
+			return array('Import Data', 'Import Data: Teacher Successfully Modified');
+		}
+	}
+
+	public function teacher_delete() {
+		if (!array_key_exists('uid', $_REQUEST)) {
+			redirect('newimport');
+		}
+
+		$user = new User($_REQUEST['uid']);
+		$this->template_args['user'] = $user;
+		$this->template = 'teacher_del.tpl';
+		return array('Import Data', 'Import Data: Confirm Teacher Deletion');
+	}
+
+	public function teacher_delete_doit() {
+		if (array_key_exists('uid', $_REQUEST)) {
+			$uid = $_REQUEST['uid'];
+		}
+		else {
+			redirect('newimport');
+		}
+
+		$user = new User($uid);
+		$name = $user->name;
+
+		$this->del_user($uid);
+
+		$this->template = 'teacher_done.tpl';
+		$this->template_args['action'] = 'delete';
+		$this->template_args['name'] = $name;
+		return array('Import Data', 'Import Data: Teacher Successfully Deleted');
+	}
+
 	public function students() {
-		$this->template = 'newimport_students.tpl';
+		$this->template = 'students.tpl';
 		return array('Import Data', 'Import Data: Student Data');
 	}
 
@@ -114,7 +298,7 @@ class Newimport implements Module {
 		*/
 		$I2_SQL = new MySQL();
 
-		$this->template = 'newimport_done.tpl';
+		$this->template = 'done.tpl';
 		$this->template_args['action'] = 'Student Import';
 		$this->template_args['messages'] = $this->messages;
 		return array('Data Import', 'Data Import: Finished Student Data');
@@ -132,6 +316,44 @@ class Newimport implements Module {
 	*/
 	public function get_name() {
 		return 'Newimport';
+	}
+
+	/**
+	* Create a new teacher in the database
+	*/
+	private function create_teacher($info, $ldap=NULL) {
+		global $I2_SQL, $I2_LDAP;
+		
+		if ($ldap === NULL) {
+			$ldap = $I2_LDAP;
+		}
+
+		$newteach = array();
+		$newteach['objectClass'] = 'tjhsstTeacher';
+		$newteach['iodineUid'] = $info['iodineUid'];
+		$newteach['iodineUidNumber'] = $info['iodineUidNumber'];
+		$newteach['cn'] = $info['givenName'].' '.$info['sn'];
+		$newteach['sn'] = $info['sn'];
+		$newteach['givenName'] = $info['givenName'];
+		$newteach['style'] = 'default';
+		$newteach['header'] = 'TRUE';
+		$newteach['chrome'] = 'TRUE';
+		$newteach['startpage'] = 'welcome';
+		$dn = "iodineUid={$newteach['iodineUid']},ou=people,dc=tjhsst,dc=edu";
+
+		$ldap->add($dn,$newteach);
+
+		$this->init_desired_boxes();
+
+		$count = 0;
+		//$I2_SQL->query('DELETE FROM intrabox_map WHERE uid=%d', $info['id']);
+		foreach ($this->boxids as $boxid=>$name) {
+			if ($name == 'eighth' || $name == 'mail') {
+				continue; // teachers don't need (or want) eighth period or mail
+			}
+			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid,box_order,closed) VALUES(%d,%d,%d,%d)',$info['iodineUidNumber'],$boxid,$count,0);
+			$count++;
+		}
 	}
 	
 	/**
@@ -370,33 +592,11 @@ class Newimport implements Module {
 			$ldap = $I2_LDAP;
 		}
 
-		$sqltables = array('alum'		=> 'id',
-			'aphorisms'			=> 'uid',
-			'calculators'			=> 'uid',
-			'eighth_absentees'		=> 'userid',
-			'eighth_activity_map'		=> 'userid',
-			'eighth_activity_permissions'	=> 'userid',
-			'event_admins'			=> 'uid',
-			'event_signups'			=> 'uid',
-			'event_verifiers'		=> 'uid',
-			'groups_static'			=> 'uid',
-			'groups_user_perms'		=> 'uid',
-			'intrabox_map'			=> 'uid',
-			'news_read_map'			=> 'uid',
-			'news'				=> 'authorID',
-			'parking_apps'			=> 'uid',
-			'parking_cars'			=> 'uid',
-			'poll_votes'			=> 'uid',
-			'prom'				=> 'uid',
-			'scratchpad'			=> 'uid',
-			'senior_destinations'		=> 'uid'
-		);
-
 		d("deleting user $user", 7);
 		$uid = $ldap->search(LDAP::get_user_dn(), "iodineUid=$user", 'iodineUidNumber')->fetch_single_value();
 		d("(uidnumber $uid)", 7);
 		if ($uid) {
-			foreach ($sqltables as $table => $col) {
+			foreach (self::$sqltables as $table => $col) {
 				$I2_SQL->query('DELETE FROM %c WHERE %c=%d', $table, $col, $uid);
 			}
 		}
