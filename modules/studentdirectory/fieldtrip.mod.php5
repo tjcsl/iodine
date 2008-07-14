@@ -133,44 +133,6 @@ class Fieldtrip implements Module {
 		return strcmp($a->name_comma, $b->name_comma);
 	}
 
-	public static function sort_name($a, $b) {
-		return strcmp($a->name, $b->name);
-	}
-
-	public static function sort_teacher($a, $b) {
-		return strcmp($a->teacher->name_comma, $b->teacher->name_comma);
-	}
-
-	public static function sort_period($a, $b) {
-		$tem = strcmp($a->period, $b->period);
-		if($tem == 0)
-			//sub-sort by term
-			return sort_term($a, $b);
-		return $tem;
-	}
-
-	public static function sort_room($a, $b) {
-		return strcmp($a->room, $b->room);
-	}
-
-	public static function sort_term($a, $b) {
-		if (count($a->quarters) < count($b->quarters)) {
-			return -1;
-		}
-		if (count($a->quarters) > count($b->quarters)) {
-			return 1;
-		}
-		for ($x = 0; $x < count($a->quarters); $x++) {
-			if ($a->quarters[$x] < $b->quarters[$x]) {
-				return -1;
-			}
-			if ($a->quarters[$x] > $b->quarters[$x]) {
-				return 1;
-			}
-		}
-		return 0;
-	}
-
 }
 
 ?>
