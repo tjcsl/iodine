@@ -443,7 +443,10 @@ class User {
 		}
 		$name = strtolower($name);
 		if ($name == 'username' || $name == 'iodineuid') {
-			$this->username = $val;
+			throw new I2Exception('User iodineUids cannot be modified via the __set method!');
+		}
+		if ($name == 'iodineuidnumber') {
+			throw new I2Exception('User iodineUidNumbers cannot be modified via the __set method!');
 		}
 		/*if (!$this->username) {
 			throw new I2Exception('User entries without usernames cannot be modified!');
@@ -540,6 +543,55 @@ class User {
 		}
 		
 		$ldap->modify_val(LDAP::get_user_dn($this),$name,$val);
+	}
+
+	/**
+	* Change a user's iodineUid.
+	*/
+	public function set_uid($username) {
+		global $I2_LDAP;
+
+		$olddn = LDAP::get_user_dn($this);
+		$I2_LDAP->rename($olddn, $username);
+		$this->username = $username;
+		$this->info['iodineuid'] = $username;
+
+		$newdn = LDAP::get_user_dn($this);
+
+		/*
+		** Maybe we want to be fancy and do something flexible? For now
+		** we'll just look at classes, the only things that point to
+		** users...
+		*/
+		//$refs = $I2_LDAP->search_sub("dc=tjhsst,dc=edu", ":dn:distinguishedNameMatch:=$olddn", array('dn', 'sponsorDn'))->fetch_all_arrays(Result::ASSOC);
+		$refs = $I2_LDAP->search_sub(LDAP::get_schedule_dn(), "(&(objectClass=tjhsstClass)(sponsorDn=$olddn))", array('dn', 'sponsorDn'))->fetch_all_arrays(Result::ASSOC);
+		foreach ($refs as $dn => $result) {
+			$sponsorDn = $result['sponsorDn'];
+			if (is_array($sponsorDn)) {
+				$index = array_search($olddn, $sponsorDn);
+				$sponsorDn[$index] = $newdn;
+			}
+			else {
+				$sponsorDn = $newdn;
+			}
+			$I2_LDAP->modify_val($dn, 'sponsorDn', $sponsorDn);
+		}
+	}
+
+	/**
+	* Change a user's iodineUidNumber.
+	*/
+	public function set_uidnumber($uidnumber) {
+		global $I2_LDAP, $I2_SQL;
+
+		$olduid = $this->myuid;
+		$I2_LDAP->modify_val(LDAP::get_user_dn($this), 'iodineUidNumber', $uidnumber);
+		$this->myuid = $uidnumber;
+		$this->info['iodineuidnumber'] = $uidnumber;
+
+		foreach (Newimport::$sqltables as $table => $field) {
+			$I2_SQL->query('UPDATE %c SET %c=%d WHERE %c=%d', $table, $field, $uidnumber, $field, $olduid);
+		}
 	}
 
 	/**
