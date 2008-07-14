@@ -371,6 +371,38 @@ class LDAP {
 		return ldap_add($bind,$dn,$newvalues);
 	}
 
+	/**
+	* Rename an entry in LDAP -- MAY BE DANGEROUS?
+	*
+	* This may(?) have the ability to overwrite entries. Be careful.
+	*
+	* This line of code demonstrates moving
+	* "iodineUid=jrandom,ou=people,dc=tjhsst,dc=edu" to
+	* "iodineUid=jhacker,ou=people,dc=tjhsst,dc=edu":
+	*
+	* <code>
+	*  $I2_LDAP->rename("iodineUid=jrandom,ou=people,dc=tjhsst,dc=edu", "jhacker");
+	* </code>
+	*/
+	public function rename($olddn, $newrdnvalue, $bind = NULL) {
+		$this->rebase($olddn);
+		if (!$bind) {
+			$bind = $this->conn;
+		}
+		if (!$newrdnvalue) {
+			throw new I2Exception("Attempted to rename LDAP object to nothing");
+		}
+
+		$dnsections = explode(',', $olddn);
+		array_shift($dnsections);
+		$parent = implode(',', $dnsections);
+
+		$rdnsections = explode('=', $olddn);
+		$newrdn = $rdnsections[0].'='.$newrdnvalue;
+
+		return ldap_rename($bind, $olddn, $newrdn, $parent, TRUE);
+	}
+
 	public function attribute_add($dn, $values, $bind = NULL) {
 		$this->rebase($dn);
 		if(!$bind) {
