@@ -44,8 +44,6 @@ class Fieldtrip implements Module {
 			$this->template_args['student'] = TRUE;
 		}
 
-		$teachers = array();
-
 		if (array_key_exists('fieldtrip_submit', $_REQUEST)) {
 			$input = trim($_REQUEST['students']);
 			$students = split("[, \n\r\t]+", $input);
@@ -54,8 +52,16 @@ class Fieldtrip implements Module {
 				$periods = $_REQUEST['periods'];
 			}
 
+			$teachers = array();
+			$notfound = array();
 			foreach ($students as $student) {
-				$user = new User($student);
+				try {
+					$user = new User($student);
+				}
+				catch (I2Exception $e) {
+					$notfound[] = $student;
+					continue;
+				}
 				$sections = $user->schedule();
 				foreach ($sections as $section) {
 					if (in_array($section->period, $periods) && in_array($_REQUEST['quarter'], $section->quarters)) {
@@ -84,6 +90,7 @@ class Fieldtrip implements Module {
 
 			$this->template = "fieldtrip_out.tpl";
 			$this->template_args['teachers'] = $teachers;
+			$this->template_args['notfound'] = $notfound;
 		}
 		else {
 			$this->template = "fieldtrip.tpl";
