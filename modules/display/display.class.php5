@@ -376,7 +376,6 @@ class Display {
 			return;
 		}
 	
-		$text = 'Raw display from module '.$this->my_module_name.': '.$text;
 		if ($this->buffering_on()) {
 			self::$core_display->buffer .= "$text";
 		} else {
