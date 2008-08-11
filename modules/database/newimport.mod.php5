@@ -45,8 +45,13 @@ class Newimport implements Module {
 			'poll_votes'			=> 'uid',
 			'prom'				=> 'uid',
 			'scratchpad'			=> 'uid',
-			'senior_destinations'		=> 'uid'
-	);
+			'senior_destinations'		=> 'uid',
+			'news_shaded_map'		=> 'uid',
+			'homecoming_votes'		=> 'uid',
+			'homecoming_votes'		=> 'male',
+			'homecoming_votes'		=> 'female',
+			'event_signups'			=> 'vid'
+	); #This is also used by the set_uidnumber function in User.
 
 	/**
 	* Required by the {@link Module} interface
@@ -360,10 +365,12 @@ class Newimport implements Module {
 	* Do start-of-the-year cleanup stuff
 	*
 	* Basically, wipes eighth period absences
+	* and now also homecoming court votes
 	*/
 	private function start_year() {
 		global $I2_SQL;
 		$I2_SQL->query('DELETE FROM eighth_absentees');
+		$I2_SQL->query('DELETE FROM homecoming_votes');
 	}
 
 	/**
