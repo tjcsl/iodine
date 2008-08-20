@@ -36,7 +36,7 @@ access to attrs=cn,sn,givenName,soundexFirst,soundexLast,displayName,mname,nickn
 ###
 
 # Allow users to change their own prefs
-access to attrs=startpage,style,header,boxcolor,boxtitlecolor
+access to attrs=startpage,style,header,boxcolor,boxtitlecolor,chrome
 	by self write
 	by * read
 
