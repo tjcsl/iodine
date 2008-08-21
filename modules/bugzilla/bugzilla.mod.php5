@@ -95,6 +95,28 @@ class Bugzilla implements Module {
 		}
 		$userid = $res->fetch_single_value();
 
+		$res = $otherSQL->query('SELECT COUNT(*) FROM email_setting WHERE user_id=%s', $userid);
+
+		if ($res->fetch_single_value() == 0) {
+			foreach(array(0,1,2,3,4,5) as $brel) {
+				foreach(array(0,1,2,3,4,5,6,7,8,9,50) as $bev) {
+					if($bev==8 && $brel!=2)
+						continue;
+					$otherSQL->query(
+						'INSERT INTO email_setting (user_id, relationship, event) VALUES (%s, %s, %s)',
+						$userid,
+						$brel,
+						$bev);
+				}
+			}
+			foreach(array(100,101) as $bev) {
+				$otherSQL->query(
+					'INSERT INTO email_setting (user_id, relationship, event) VALUES (%s, 100, %s)',
+					$userid,
+					$bev);
+			}
+		}
+
 		$ipaddy = $_SERVER['REMOTE_ADDR'];
 
 		do {
