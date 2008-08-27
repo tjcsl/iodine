@@ -130,9 +130,15 @@
 <input type="radio" name="pref_preferredPhoto" value="[<$photo>]" [<if $prefs.preferredPhoto == $photo>]checked="checked"[</if>]/>[<$text>] photo<br />
 [</foreach>]
 <br />
+[</if>]
 <strong>Privacy Options</strong><br />
+[<if $I2_USER->grade != "staff">]
 <em>If your parent did not give permission on the "Intranet Posting Agreement" form to show specific personal information, other students will not be able to see that information regardless of your personal settings.</em><br />
+[<else>]
+<em>These options only have effect if the information is in the database.  The fact that these options are here does not indicate that Intranet necessarily has the information.</em><br />
+[</if>]
 <em>Note that all TJ staff can always view all of this information.</em><br />
+[<if $I2_USER->grade != "staff">]
 <table style="text-align: center;" cellpadding="1" cellspacing="0">
 <tr><td style="padding: 0ex .5ex; text-decoration: underline;">Parent</td><td style="padding: 0ex 2ex; text-decoration: underline;">You</td><td></td></tr>
 <tr><td><input type="checkbox" name="showaddress" [<if $prefs.showaddress>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Address</td></tr>
@@ -144,8 +150,15 @@
 <tr><td><input type="checkbox" name="showeighth" [<if $prefs.showeighth>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showeighthself" [<if $prefs.showeighthself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Eighth Period Schedule</td></tr>
 <tr><td><input type="checkbox" name="showlocker" [<if $prefs.showlocker>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showlockerself" [<if $prefs.showlockerself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Locker Number</td></tr>
 </table>
-<br />
+[<else>]
+<table style="text-align: center;" cellpadding="1" cellspacing="0">
+<tr><td><input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Address</td></tr>
+<tr><td><input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Birthday</td></tr>
+<tr><td><input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Pictures</td></tr>
+<tr><td><input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Home Telephone Number</td></tr>
+</table>
 [</if>]
+<br />
 <strong>Display Options</strong><br />
 <table>
 <tr>
