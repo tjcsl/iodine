@@ -730,6 +730,9 @@ objectclass ( i2OC:2
 		afsid $
 		homeDirectory $
 		loginShell $
+		perm-showaddress-self $
+		perm-showtelephone-self $
+		perm-showbirthday-self $
 		is-admin
 	)
 	)
