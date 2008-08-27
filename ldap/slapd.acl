@@ -21,8 +21,9 @@ access to *
 	by group/groupOfURLs/memberURL.base="cn=teachers,dc=tjhsst,dc=edu" read
 	by * break
 
-# no one can read studentids
+# no one can read studentids...except self
 access to attrs=tjhsstStudentId
+	by self read
 	by * none
 
 # general user-readable data
