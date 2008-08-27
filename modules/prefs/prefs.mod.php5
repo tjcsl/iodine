@@ -40,8 +40,12 @@ class Prefs implements Module {
 				}
 			}
 
-			foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showeighthself','showmapself','showpictureself','showlockerself') as $pref) {
-				if ($I2_USER->grade != 'staff') {
+			if ($I2_USER->grade != 'staff') {
+				foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showeighthself','showmapself','showpictureself','showlockerself') as $pref) {
+					$I2_USER->$pref = isSet($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';
+				}
+			} else {
+				foreach (array('showaddressself','showphoneself','showbdayself','showpictureself') as $pref) {
 					$I2_USER->$pref = isSet($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';
 				}
 			}

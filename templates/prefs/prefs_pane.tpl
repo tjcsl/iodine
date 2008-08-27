@@ -152,10 +152,11 @@
 </table>
 [<else>]
 <table style="text-align: center;" cellpadding="1" cellspacing="0">
-<tr><td><input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Address</td></tr>
-<tr><td><input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Birthday</td></tr>
-<tr><td><input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Pictures</td></tr>
-<tr><td><input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Home Telephone Number</td></tr>
+<tr><td style="padding: 0ex .5ex; text-decoration: underline;">Can Enable</td><td style="padding: 0ex 2ex; text-decoration: underline;">Your Setting</td><td></td></tr>
+<tr><td><input type="checkbox" name="showaddress" [<if $prefs.showaddress>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Address</td></tr>
+<tr><td><input type="checkbox" name="showbday" [<if $prefs.showbday>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Birthday</td></tr>
+<tr><td><input type="checkbox" name="showpicture" [<if $prefs.showpicture>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Pictures</td></tr>
+<tr><td><input type="checkbox" name="showphone" [<if $prefs.showphone>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Home Telephone Number</td></tr>
 </table>
 [</if>]
 <br />
