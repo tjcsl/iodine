@@ -48,7 +48,7 @@ access to dn.regex="^.*,iodineUid=([^,]+),ou=people,dc=tjhsst,dc=edu$"
 	by * read continue
 
 # Allow users to set their own permissions bits
-access to attrs=perm-showtelephone-self,perm-showbirthday-self,perm-showaddress-self,perm-showmap-self,perm-showpictures-self,perm-showschedule-self,showphoneself,showscheduleself,showbdayself,showaddressself,showmapself,showpictureself
+access to attrs=perm-showtelephone-self,perm-showbirthday-self,perm-showaddress-self,perm-showmap-self,perm-showpictures-self,perm-showschedule-self,perm-showlocker-self
 	by self write
 	by * read
 
