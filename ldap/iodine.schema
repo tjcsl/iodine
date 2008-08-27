@@ -733,6 +733,7 @@ objectclass ( i2OC:2
 		perm-showaddress-self $
 		perm-showtelephone-self $
 		perm-showbirthday-self $
+		perm-showpictures-self $
 		is-admin
 	)
 	)
