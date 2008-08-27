@@ -34,9 +34,9 @@ class Scratchpad implements Module {
 		}
 
 		if(isset($HTTP_RAW_POST_DATA)) {
-			$I2_LOG->log_file('Scratch ('.$I2_ARGS[1].')'.$HTTP_RAW_POST_DATA);
+			//$I2_LOG->log_file('Scratch ('.$I2_ARGS[1].')'.$HTTP_RAW_POST_DATA);
 		} else {
-			$I2_LOG->log_file('Scratch ('.$I2_ARGS[1].')');
+			//$I2_LOG->log_file('Scratch ('.$I2_ARGS[1].')');
 		}
 
 		switch ($I2_ARGS[1]) {
