@@ -1,5 +1,5 @@
 <p><a href="[<$I2_ROOT>]studentdirectory/section/[<$class->classid>]">Click here to view a list of all sections of [<$class->name>].</a></p>
-<p>Students in <a href=[<$I2_ROOT>]studentdirectory/info/[<$class->teacher->uid>]>[<$class->teacher->name>]</a>'s [<$class->name>], period [<$class->period>]:</p>
+<p>Students in <a href=[<$I2_ROOT>]studentdirectory/info/[<$class->teacher->uid>]>[<$class->teacher->name>]</a>'s [<$class->name>], period [<$class->periods>]:</p>
 <table cellspacing="0">
  <thead>
   <tr>
