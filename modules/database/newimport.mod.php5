@@ -480,6 +480,7 @@ class Newimport implements Module {
 		$usernew['objectClass'] = 'tjhsstStudent';
 		$usernew['graduationYear'] = (12-$user['grade'])+i2config_get('senior_gradyear',date('Y'),'user');
 		$usernew['iodineUid'] = strtolower($user['username']);
+		$usernew['givenName'] = $user['fname'];
 		$usernew['cn'] = $user['fname'].' '.$user['lname'];
 		$usernew['sn'] = $user['lname'];
 		$usernew['tjhsstStudentId'] = $user['studentid'];
@@ -541,6 +542,7 @@ class Newimport implements Module {
 		$usernew['birthday'] = $user['bdate'];
 		$usernew['street'] = $user['address'];
 		$usernew['givenName'] = $user['fname'];
+		$usernew['graduationYear'] = (12-$user['grade'])+i2config_get('senior_gradyear',date('Y'),'user');
 		if ($user['nick']) {
 			$usernew['nickName'] = $user['nick'];
 		}

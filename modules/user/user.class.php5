@@ -86,7 +86,7 @@ class User {
 		} else {
 			$uid = self::to_uidnumber($uid);
 			if (!$uid) {
-				throw new I2Exception('Blank uidnumber used in User construction');
+				throw new I2Exception('Blank uidnumber used in User construction'.$this->username);
 			}
 			$this->info = array();
 			if (isSet(self::$cache[$uid]) && isSet(self::$cache[$uid]['iodineuid'])) {
