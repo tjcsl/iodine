@@ -1619,7 +1619,9 @@ class dataimport implements Module {
 
 	public function init_pane() {
 		global $I2_ARGS,$I2_USER;
-		if (!$I2_USER->is_group_member('admin_all')) {
+
+		if (! $I2_USER->is_ldap_admin()) {
+		//if (!$I2_USER->is_group_member('admin_all')) {
 			return FALSE;
 		}
 		if (isSet($_REQUEST['start_year'])) {

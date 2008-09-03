@@ -91,10 +91,15 @@ class EighthActivity {
 	* @param boolean $force Force the change.
 	* @param int $blockid The block ID to add them to.
 	*/
-	public function add_member(User $user, $force = FALSE, $blockid = NULL) {
+	public function add_member($user, $force = FALSE, $blockid = NULL) {
 		global $I2_SQL,$I2_USER,$I2_LOG;
-
-		$userid = $user->uid;
+		
+		//Assume that we have an iodine uid number
+		if (! $user instanceof User) {
+			$userid = $user;
+		} else {
+			$userid = $user->uid;
+		}	
 		$admin = Eighth::is_admin();
 
 		/*
@@ -107,7 +112,10 @@ class EighthActivity {
 			Eighth::check_admin();
 		}
 		if($blockid == NULL) {
+			$block = $this->data['block'];
 			$blockid = $this->data['bid'];
+		} else {
+			$block = new EighthBlock($blockid);
 		}
 
 		$ret = 0;
@@ -121,13 +129,13 @@ class EighthActivity {
 		if($this->data['restricted'] && !in_array($userid, $this->get_restricted_members())) {
 			$ret |= EighthActivity::PERMISSIONS;
 		}
-		if ($this->presign && $this->block && time() < strtotime($this->block->date)-60*60*24*2) {
+		if ($this->presign && $block && time() < strtotime($block->date)-60*60*24*2) {
 			$ret |= EighthActivity::PRESIGN;
 		}
-		if (time() > strtotime($this->block->date)+60*60*24) {
+		if (time() > strtotime($block->date)+60*60*24) {
 			$ret |= EighthActivity::PAST;
 		}
-		if ($this->block->locked) {
+		if ($block->locked) {
 			$ret |= EighthActivity::LOCKED;
 		}
 
@@ -152,7 +160,7 @@ class EighthActivity {
 		}
 		
 		$otheract = FALSE;
-		$dayacts = EighthSchedule::get_activities($user->uid, $this->data['block']->date, 1);
+		$dayacts = EighthSchedule::get_activities($userid, $block->date, 1);
 		foreach ($dayacts as $act) {
 			// find one that's not this block
 			if ($act[1] != $blockid) {
@@ -183,12 +191,12 @@ class EighthActivity {
 			
 			// now deal with bothblocks
 			if ($signup_bothblocks == 1) {
-				$this->add_member($user, $force, $otheract->bid);
+				$this->add_member($userid, $force, $otheract->bid);
 			}
 			else if ($signup_bothblocks == -1) {
 				$defaid = i2config_get('default_aid', 999, 'eighth');
 				$defact = new EighthActivity($defaid, $otheract->bid);
-				$defact->add_member($user, $force);
+				$defact->add_member($userid, $force);
 				//EighthActivity::add_member_to_activity($defaid, $user, $force, $otheract->bid);
 			}
 

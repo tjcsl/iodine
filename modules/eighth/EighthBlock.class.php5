@@ -57,7 +57,7 @@ class EighthBlock {
 		$bid = $result->get_insert_id();
 		$newarg = array($date,$block,$bid);
 		Eighth::push_undoable($query,$newarg,$invquery,$queryarg,'Add Block');
-		$default_aid = i2config_get('default_aid', 3, 'eighth');
+		$default_aid = i2config_get('default_aid', 999, 'eighth');
 		$activity = new EighthActivity($default_aid);
 		//schedule the default activity
 

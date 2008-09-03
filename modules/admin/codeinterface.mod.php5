@@ -82,7 +82,7 @@ class CodeInterface implements Module {
 		
 		if ( isset($_POST['codeinterface_submit']) && $_POST['codeinterface_submit'] && $_POST['codeinterface_code']) {
 			d('got code');
-			$this->code = $_POST['codeinterface_code'];
+			$this->code = stripslashes($_POST['codeinterface_code']);
 			try {
 				$this->return = print_r(eval($this->code), 1);
 			} catch (Exception $e) {
