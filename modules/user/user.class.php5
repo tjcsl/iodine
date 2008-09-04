@@ -339,6 +339,8 @@ class User {
 			case 'showbdayself':
 			case 'showbdateself':
 			case 'showbdate':
+			case 'showlocker':
+			case 'showlockerself':
 				$row = $I2_LDAP->search_base(LDAP::get_user_dn($this->username),$name);
 				if (!$row) {
 					return NULL;
@@ -514,6 +516,8 @@ class User {
 			case 'showaddress':
 			case 'showphoneself':
 			case 'showphone':
+			case 'showlocker':
+			case 'showlockerself':
 				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';
 				break;
 			case 'showpictureself':

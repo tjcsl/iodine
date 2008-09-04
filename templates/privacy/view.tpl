@@ -58,8 +58,8 @@ function toggle_self(currstate) {
 </tr>
 <tr>
 	<th>Locker Number</th>
-	<td><input name=perm_showlockerself" type="checkbox" [<if $user->showlockerself>]checked="checked"[</if>]/></td>
-	<td><input name=perm_showlocker" type="checkbox" [<if $user->showlocker>]checked="checked"[</if>]/></td>
+	<td><input name="perm_showlockerself" type="checkbox" [<if $user->showlockerself>]checked="checked"[</if>]/></td>
+	<td><input name="perm_showlocker" type="checkbox" [<if $user->showlocker>]checked="checked"[</if>]/></td>
 </tr>
 </table>
 <input type="hidden" name="update" value="1"/>
