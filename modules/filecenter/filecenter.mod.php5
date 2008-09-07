@@ -147,20 +147,7 @@ class Filecenter implements Module {
 		$this->directory = '/';
 		
 		if (count($I2_ARGS) > 2) {
-			$temp = array_slice($I2_ARGS, 2);
-			#If the user logged in with uppercase letters, make them all lowercase
-			#so that their home directory can be found
-			for($i=0;$i<count($temp);$i++)
-			{
-				if(strcasecmp($temp[$i], $_SESSION['i2_username']) == 0)
-				{
-					$temp[$i] = strtolower($temp[$i]);
-					#in case they named a directory the same as their username
-					#we don't want to change it, so break
-					break;
-				}
-			}
-			$this->directory .= implode('/', $temp) . '/';
+			$this->directory .= implode('/', array_slice($I2_ARGS, 2)) . '/';
 		}
 
 		if (isset($_FILES['file'])) {
