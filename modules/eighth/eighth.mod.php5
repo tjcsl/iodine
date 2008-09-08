@@ -1831,9 +1831,27 @@ class Eighth implements Module {
 			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($this->args['uid'], $this->args['start_date']), FALSE);
 			$this->template_args['absences'] = EighthSchedule::get_absences($this->args['uid']);
 			$this->template_args['absence_count'] = count($this->template_args['absences']);
+
+			if(strlen($user->counselor_name) == 0) {
+				$this->template_args['counselor_name'] = "N/A";
+			}
+			else {
+				$this->template_args['counselor_name'] = $user->counselor_name;
+			}
 			
 			try {
-				//$this->template_args['ta'] = $user->schedule()->last()->teacher->sn;
+				if($user->schedule()->last() != null) {
+					$lastclass = $user->schedule()->last();
+					if($lastclass->period != 8) {
+						$this->template_args['ta'] = "N/A";
+					}
+					else {
+						$this->template_args['ta'] = $lastclass->teacher->sn;
+					}
+				}
+				else {
+					$this->template_args['ta'] = "N/A";
+				}
 			} catch (I2Exception $e) {
 				//There is something wrong with the schedule or teacher.	
 			}	
@@ -1854,9 +1872,27 @@ class Eighth implements Module {
 				$this->args['uid'], $date, $days), FALSE);
 			$this->template_args['absences'] = EighthSchedule::get_absences($this->args['uid']);
 			$this->template_args['absence_count'] = count($this->template_args['absences']);
-			
+
+			if(strlen($user->counselor_name) == 0) {
+				$this->template_args['counselor_name'] = "N/A";
+			}
+			else {
+				$this->template_args['counselor_name'] = $user->counselor_name;
+			}
+
 			try {
-				//$this->template_args['ta'] = $user->schedule()->last()->teacher->sn;
+				if($user->schedule()->last() != null) {
+					$lastclass = $user->schedule()->last();
+					if($lastclass->period != 8) {
+						$this->template_args['ta'] = "N/A";
+					}
+					else {
+						$this->template_args['ta'] = $lastclass->teacher->sn;
+					}
+				}
+				else {
+					$this->template_args['ta'] = "N/A";
+				}
 			} catch (I2Exception $e) {
 				//There is something wrong with the schedule or teacher.	
 			}	
