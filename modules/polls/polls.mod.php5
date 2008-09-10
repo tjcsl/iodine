@@ -62,17 +62,25 @@ class Polls implements Module {
 
 	/**
 	 * Initializes the intranet box.
-	 * Currently is not used.
 	 */
 	function init_box() {
-		return FALSE;
+		$polls = Poll::accessible_polls();
+		$open = array();
+		$time = time();
+		foreach($polls as $poll) {
+			if(strtotime($poll->startdt) < $time && strtotime($poll->enddt) > $time)
+				$open[] = $poll;
+		}
+		$this->template_args['open'] = $open;
+		$num = count($open);
+		return 'Polls: '.$num.' open poll'.($num==1?'':'s');
 	}
 
 	/**
 	 * Displays the intranet box.
-	 * Currently is not used.
 	 */
 	function display_box($display) {
+		$display->disp('polls_box.tpl',$this->template_args);
 	}
 
 	/**
