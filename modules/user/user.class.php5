@@ -57,8 +57,8 @@ class User {
 	public function __construct($uid = NULL) {
 		global $I2_ERR, $I2_LDAP;
 		if( $uid === NULL ) {
-			#if( isset($_SESSION['i2_uid']) ) {
-			#	$this->username = $_SESSION['i2_uid'];
+			//if( isset($_SESSION['i2_uid']) ) {
+			//	$this->username = $_SESSION['i2_uid'];
 			if( isset($_SESSION['i2_username']) ) {
 				$this->username = $_SESSION['i2_username'];
 				$uid = $this->username;

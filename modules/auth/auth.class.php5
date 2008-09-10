@@ -52,7 +52,7 @@ class Auth {
 		}
 
 		if( isset($I2_ARGS[0]) && $I2_ARGS[0] == 'logout' ) {
-				#if (isSet($_SESSION['i2_uid'])) {
+				//if (isSet($_SESSION['i2_uid'])) {
 				if (isSet($_SESSION['i2_username'])) {
 					self::log_out();
 				} else {
@@ -97,7 +97,7 @@ class Auth {
 			if ($atpos !== -1) {
 				$user = substr($user,0,$atpos);
 			}
-			#$_SESSION['i2_uid'] = strtolower($user);
+			//$_SESSION['i2_uid'] = strtolower($user);
 			$_SESSION['i2_username'] = strtolower($user);
 			//$_SESSION['i2_uid'] = $_SERVER['WEBAUTH_LDAP_IODINEUIDNUMBER'];
 			d('Kerberos pre-auth succeeded for principal '.$_SERVER['REMOTE_USER'],8);
@@ -107,7 +107,7 @@ class Auth {
 		/*
 		** Iodine proprietary authentication (of all kinds)
 		*/
-		#if (	isset($_SESSION['i2_uid']) 
+		//if (	isset($_SESSION['i2_uid']) 
 		if (	isset($_SESSION['i2_username']) 
 			&& isset($_SESSION['i2_login_time'])) {
 
@@ -280,7 +280,7 @@ class Auth {
 		
 			if (($check_result = $this->check_user($_REQUEST['login_username'],$_REQUEST['login_password']))) {
 
-				#$_SESSION['i2_uid'] = strtolower($_REQUEST['login_username']);
+				//$_SESSION['i2_uid'] = strtolower($_REQUEST['login_username']);
 				$_SESSION['i2_username'] = strtolower($_REQUEST['login_username']);
 				//$_SERVER['REMOTE_USER'] = $_REQUEST['login_username'];
 					
