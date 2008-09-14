@@ -187,6 +187,9 @@ class Filecenter implements Module {
 		} else if (isSet($I2_QUERY['rmd'])) {
 			$this->filesystem->remove_dir($this->directory . $I2_QUERY['rmd']);
 			redirect("filecenter/$system_type"."{$this->directory}");
+		} else if (isSet($I2_QUERY['rmd_recursive'])) {
+			$this->filesystem->remove_dir_recursive($this->directory . $I2_QUERY['rmd_recursive']);
+			redirect("filecenter/$system_type"."{$this->directory}");
 		}
 		
 		$this->template = 'filecenter_pane.tpl';
@@ -240,6 +243,8 @@ class Filecenter implements Module {
 				}
 			
 				if ($file->is_directory()) {
+					$temp = count($this->filesystem->list_files($this->directory . $file->get_name()));
+					$properties["empty"] = $temp > 0 ? FALSE : TRUE;
 					$dirs[] = $properties;
 				} else {
 					$files[] = $properties;

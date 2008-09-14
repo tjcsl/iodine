@@ -136,9 +136,24 @@ abstract class Filesystem {
 	public function remove_dir($pathname) {
 		$path = $this->convert_path($pathname);
 		
-		if (rmdir($path) === FALSE) {
+		if (rmdir($path) == FALSE) {
 			throw new I2Exception("Could not remove directory $path");
 		}
+	}
+
+	public function remove_dir_recursive($pathname) {
+		foreach($this->list_files($pathname) as $file) {
+			if($file->is_directory()) {
+				if(count($this->list_files($pathname . "/" .  $file->get_name())) > 0) { //not empty
+					$this->remove_dir_recursive($pathname . "/" .  $file->get_name());
+				} else { //empty
+					$this->remove_dir($pathname . "/" . $file->get_name());
+				}
+			} else {
+				$this->delete_file($pathname . "/" . $file->get_name());
+			}
+		}
+		$this->remove_dir($pathname);
 	}
 
 	public function zip_dir($dirpath, $zippath, $origpath=NULL) {

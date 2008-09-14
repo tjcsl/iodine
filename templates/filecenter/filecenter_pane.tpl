@@ -35,7 +35,7 @@
   <tr>
    <td><a href="[<$dir.name|escape:"url">]/"><img src="[<$I2_ROOT>]www/pics/filecenter/dir2.png" width="16" height="16" /></a></td>
    <td>
-    [<if $dir.name == '..'>]<a href="..">* Parent Directory (Go up one level)[<else>]<a href="" onclick="return options(this, 'dir')">[<$dir.name|escape>][</if>]</a>
+    [<if $dir.name == '..'>]<a href="..">* Parent Directory (Go up one level)[<elseif $dir.empty>]<a href="" onclick="return options(this, 'emptydir')">[<$dir.name|escape>][<else>]<a href="" onclick="return options(this, 'dir')">[<$dir.name|escape>][</if>]</a>
    </td>
    <td>&nbsp;</td>
    <td>Directory</td>

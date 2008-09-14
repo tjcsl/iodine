@@ -26,7 +26,14 @@ function options(anchor, type) {
 			"<a href=\"" + url + "/\">Open directory</a><br />" + 
 			"<a href=\"" + url + "/?download\">Download directory as ZIP</a> (NOTE: The ZIP will not include any individual files over 100 MB in size)<br />" +
 			"<a href=\"javascript:rename('" + file + "')\">Rename directory</a><br />" +
+			"<a href=\"javascript:rmd_recursive('" + file + "')\">Delete directory</a><br />";
+		} else if (type == 'emptydir') {
+			cell.innerHTML =
+			"<a href=\"" + url + "/\">Open directory</a><br />" + 
+			"<a href=\"" + url + "/?download\">Download directory as ZIP</a> (NOTE: The ZIP will not include any individual files over 100 MB in size)<br />" +
+			"<a href=\"javascript:rename('" + file + "')\">Rename directory</a><br />" +
 			"<a href=\"javascript:rmd('" + file + "')\">Delete directory</a><br />";
+
 		} else if (type == 'cur') {
 			cell.innerHTML = 
 			"<a href=\"?download\">Download directory as ZIP</a><br />" +
@@ -55,8 +62,15 @@ function rmf(file) {
 }
 
 function rmd(file) {
-	var name = confirm("Are you sure you want to delete \"" + file + "\"?  (Note: Intranet filecenter currently only supports deleting of empty directories; delete the contents of this directory first.)");
+	var name = confirm("Are you sure you want to delete \"" + file + "\"?");
 	if (name) {
 		window.location = window.location + "?rmd=" + escape(file);
+	}
+}
+
+function rmd_recursive(file) {
+	var name = confirm("Are you sure you want to delete \"" + file + "\"?\n(Warning: ALL files within \"" + file + "\" will be deleted)");
+	if (name) {
+		window.location = window.location + "?rmd_recursive=" + escape(file);
 	}
 }
