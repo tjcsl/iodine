@@ -75,7 +75,7 @@ class CSS implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_ARGS, $I2_USER;
+		global $I2_ARGS, $I2_USER, $I2_FS_ROOT;
 		
 		$current_style = $I2_ARGS[1];
 
@@ -83,7 +83,7 @@ class CSS implements Module {
 			$current_style = substr($current_style, 0, strlen($current_style) - 4);
 		}
 		
-		$this->style_path = i2config_get('style_path', NULL, 'core');
+		$this->style_path = $I2_FS_ROOT . 'styles/';
 		$cache_dir = i2config_get('cache_dir', NULL, 'core') . 'styles/';
 		if (!is_dir($cache_dir)) {
 			mkdir($cache_dir, 0700, TRUE);
@@ -136,12 +136,14 @@ class CSS implements Module {
 	 * Returns an array of all the styles that the CSS module recognizes.
 	 */
 	public static function get_available_styles() {
+		global $I2_FS_ROOT;
+		$style_path = $I2_FS_ROOT . 'styles/';
+		
 		$styles = array();
-
-		$style_path = i2config_get('style_path', NULL, 'core');
+		
 		$handle = opendir($style_path);
 		while (($name = readdir($handle)) !== FALSE) {
-			if ($name != '.' && $name != '..' && is_dir("$style_path/$name")) {
+			if ($name != '.' && $name != '..' && is_dir($style_path . $name)) {
 				$styles[] = $name;
 			}
 		}
