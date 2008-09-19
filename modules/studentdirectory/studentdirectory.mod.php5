@@ -196,7 +196,7 @@ class StudentDirectory implements Module {
 				
 				$this->template_args['homecoming_may_vote'] = Homecoming::user_may_vote($user);
 				$this->template_args['is_admin'] = Group::admin_all()->has_member($user);
-				$this->template_args['mode'] = i2config_get('mode','full','roster');
+				$this->template_args['mode'] = $mode;
 				return Array('Directory: '.$user->fname.' '.$user->lname, $user->fname.' '.$user->lname);
 			default:
 				return Array('Error', 'Error: User does not exist');
