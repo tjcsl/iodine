@@ -168,8 +168,8 @@ class LDAP {
 	* Gets a simple bind as a generic authuser.
 	*/
 	public static function get_generic_bind() {
-		$dn = i2config_get('authuser_dn',NULL,'ldap');
-		$pass = i2config_get('authuser_passwd',NULL,'ldap');
+		$dn = i2config_get('authuser_dn','fail','ldap');
+		$pass = i2config_get('authuser_passwd','fail','ldap');
 		return self::get_simple_bind($dn,$pass);
 	}
 

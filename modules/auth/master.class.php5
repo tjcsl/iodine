@@ -19,19 +19,21 @@ class Master implements AuthType {
 	* The login method required by the {@link AuthType} interface
 	*/
 	public function login($user, $pass) {
-
 		$master_pass = i2config_get('master_pass',NULL,'master');
 		if ($master_pass !== NULL && $pass == $master_pass) {
-			$ldap = LDAP::get_anonymous_bind();
+			try {
+				$ldap = LDAP::get_generic_bind();
+			} catch (Exception $e) {
+				d("Login with master password failed. Check if LDAP and authuser are configured correctly.", 1);
+				return FALSE;
+			}
 			if ($ldap->search_one(LDAP::get_user_dn(), "iodineUid=$user", array('iodineUidNumber'))->fetch_single_value() == NULL) {
 				d("You can't log in as someone who doesn't exist.", 1);
 				return FALSE;
 			}
 			return TRUE;
 		}
-		else {
-			return FALSE;
-		}
+		return FALSE;
 	}
 
 	/**
@@ -52,7 +54,7 @@ class Master implements AuthType {
 			return LDAP::get_admin_bind($manager_pw);
 		}
 		else {
-			return LDAP::get_generic_bind();
+			return  LDAP::get_generic_bind();
 		}
 	}
 }

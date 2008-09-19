@@ -33,10 +33,20 @@ class Birthdays implements Module {
 		$mytime = getdate();
 
 		if(!(list($this->birthdays_today, $this->birthdays_tomorrow) = $this->get_cache($mytime))) {
-			$this->tmp_ldap = LDAP::get_simple_bind( i2config_get('authuser_dn','cn=authuser,dc=tjhsst,dc=edu','ldap'), i2config_get('authuser_passwd',NULL,'ldap') );
+			$cache = FALSE;
+			try {
+				$this->tmp_ldap = LDAP::get_generic_bind();
+				$cache = TRUE;
+			} catch (Exception $e) {
+				global $I2_LDAP;
+				$this->tmp_ldap = $I2_LDAP;
+			}
 			$this->birthdays_today = $this->get_birthdays(time());
-			$this->birthdays_tomorrow = $this->get_birthdays(time() + 86400);
-			$this->store_cache($this->birthdays_today, $this->birthdays_tomorrow, $mytime);
+			$this->birthdays_tomorrow = $this->get_birthdays(time() + self::DAY);
+			//If the generic bind fails, bind as the user and don't cache the results.
+			if ($cache) {	
+				$this->store_cache($this->birthdays_today, $this->birthdays_tomorrow, $mytime);
+			}
 		}
 		
 		return 'Birthdays';
@@ -65,7 +75,7 @@ class Birthdays implements Module {
 		$this->tmp_ldap = $I2_LDAP;
 
 		for($i = -3; $i <= 3; $i+=1) {
-			$timestamp = $time + ($i * Birthdays::DAY);
+			$timestamp = $time + ($i * self::DAY);
 			$birthday = array();
 			$birthday['date'] = $timestamp;
 			$birthday['people'] = $this->get_birthdays($timestamp);
