@@ -485,7 +485,7 @@ class Newimport implements Module {
 		}
 		$usernew = array();
 		$usernew['objectClass'] = 'tjhsstStudent';
-		$usernew['graduationYear'] = (12-$user['grade'])+i2config_get('senior_gradyear',date('Y'),'user');
+		$usernew['graduationYear'] = User::get_gradyear($user['grade']);
 		$usernew['iodineUid'] = strtolower($user['username']);
 		$usernew['givenName'] = $user['fname'];
 		$usernew['cn'] = $user['fname'].' '.$user['lname'];
@@ -549,7 +549,7 @@ class Newimport implements Module {
 		$usernew['birthday'] = $user['bdate'];
 		$usernew['street'] = $user['address'];
 		$usernew['givenName'] = $user['fname'];
-		$usernew['graduationYear'] = (12-$user['grade'])+i2config_get('senior_gradyear',date('Y'),'user');
+		$usernew['graduationYear'] = User::get_gradyear($user['grade']);
 		if ($user['nick']) {
 			$usernew['nickName'] = $user['nick'];
 		}
@@ -658,7 +658,7 @@ class Newimport implements Module {
 				'courselength' => $courselen=='YR'?4:($courselen[0]=='S'?2:1),
 				'quarternumber' => $courselen=='YR'?array(1,2,3,4):($courselen[0]=='S'?($semesterno==1?array(1,2):array(3,4)):$semesterno),
 				'roomNumber' => $room,
-				'year' => i2config_get('senior_gradyear',date('Y'),'user'),
+				'year' => User::get_gradyear(12),
 				'cn' => $class,
 				'sponsorDn' => $sponsordn,
 				'classPeriod' => range((int)$periodstart,(int)$periodend),

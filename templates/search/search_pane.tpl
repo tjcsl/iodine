@@ -1,3 +1,6 @@
+[<php>]
+$this->assign('first_year', User::get_gradyear(12));
+[</php>]
 <form name="search_pane_form" action="[<$I2_ROOT>]search/results/[<$search_destination>]" method="POST">
 Grade:<br />
 [<if empty($choose_grades) || !empty($grade_9)>]<input type="checkbox" name="graduationYear[]" value="[<$first_year+3>]"/>Freshman<br />[</if>]

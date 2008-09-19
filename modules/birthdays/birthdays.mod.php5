@@ -30,7 +30,7 @@ class Birthdays implements Module {
 		global $I2_ROOT;
 
 		$this->cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'birthdays.cache';
-		$mytime = getdate(time());
+		$mytime = getdate();
 
 		if(!(list($this->birthdays_today, $this->birthdays_tomorrow) = $this->get_cache($mytime))) {
 			$this->tmp_ldap = LDAP::get_simple_bind( i2config_get('authuser_dn','cn=authuser,dc=tjhsst,dc=edu','ldap'), i2config_get('authuser_passwd',NULL,'ldap') );

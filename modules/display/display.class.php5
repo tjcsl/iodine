@@ -313,7 +313,6 @@ class Display {
 		$this->smarty->assign('I2_ROOT', $I2_ROOT);
 		$this->smarty->assign('I2_SELF', $I2_SELF);
 		$this->smarty->assign('I2_ARGSTRING', implode('/',$I2_ARGS));
-		$this->smarty->assign('first_year',i2config_get('senior_gradyear',date('Y'),'user'));
 		if( isSet($I2_USER) ) {
 			$this->smarty->assign('I2_UID', $I2_USER->uid);
 			$this->smarty->assign('I2_USER', $I2_USER);

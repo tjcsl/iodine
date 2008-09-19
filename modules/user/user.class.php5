@@ -38,6 +38,8 @@ class User {
 	* The username of the user.
 	*/
 	private $username;
+	
+	private static $senior_gradyear;
 
 	/**
 	* The User class constructor.
@@ -399,11 +401,12 @@ class User {
 	* @return int The student's grade, 9-12, or -1 if other.
 	*/
 	public static function get_grade($gradyear) {
-	   if (!$gradyear) {
+		if (!$gradyear) {
 			d('False gradyear passed to get_grade',6);
 			return -1;
 		}
-		$grade = ((int)i2config_get('senior_gradyear','foobertybroken','user'))-((int)$gradyear)+12;
+
+		$grade = self::get_gradyear(12) - ((int)$gradyear) + 12;
 		if ($grade >= 9 && $grade <= 12) {
 			return $grade;
 		}
@@ -418,11 +421,15 @@ class User {
 	* @return int The graduation year of the student
 	*/
 	public static function get_gradyear($grade) {
-			  if (!$grade || $grade < 9 || $grade > 12) {
-						 d('Grade out-of-bounds passed to get_gradyear',5);
-			  }
-			  $gradyear = ((int)i2config_get('senior_gradyear','ntohurchouorchu','user'))-((int)$grade)+12;
-			  return $gradyear;
+		if (!$grade || $grade < 9 || $grade > 12) {
+			d('Grade out-of-bounds passed to get_gradyear',5);
+		}
+		if (! isSet(self::$senior_gradyear)) {
+			$date = getdate();
+			self::$senior_gradyear = $date['year'] + ($date['mon'] >= 6 ? 1 : 0);
+		}
+		$gradyear = self::$senior_gradyear - ((int)$grade) + 12;
+		return $gradyear;
 	}
 
 	/**
