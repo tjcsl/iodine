@@ -1,5 +1,5 @@
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/scratchpad.js"></script>
-<script type="text/javascript">
+<script language="javascript" type="text/javascript">
 var load_page = "[<$I2_ROOT>]scratchpad/load/";
 var save_page = "[<$I2_ROOT>]scratchpad/save/";
 var close_source = "[<$I2_ROOT>]www/pics/close.gif";

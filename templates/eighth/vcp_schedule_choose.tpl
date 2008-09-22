@@ -14,7 +14,7 @@
 	<select name="aid" size="15" onchange="changeDescription(this.options[this.selectedIndex].value)">
 [<foreach from=$activities item="activity">]
 	[<assign var=capacity value=$activity->capacity>]
-        <option value="[<$activity->aid>]"[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"[</if>]>[<$activity->aid>]: [<$activity->name_full_r>]</option>
+        <option value="[<$activity->aid>]"[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"[</if>]>[<$activity->aid>]: [<$activity->name_full_r|escape:html>]</option>
 [</foreach>] 
 	</select><br />
 	<input type="text" name="aid" id="aid_box" maxlength="4" size="4" /><input type="submit" name="submit" value="Change" />[<if empty($manybids)>]<input type="submit" name="submit" value="View Roster" />[</if>]<br />
@@ -26,7 +26,7 @@
 	[<assign var=capacity value=$activity->capacity>]
 <div id="desc_[<$activity->aid>]" style="display: none; border: solid thin; padding: 5px; margin: 5px; width: 600px;">
 	<span class="bold">Description:</span><br />
-	[<$activity->description>]<br />
+	[<$activity->description|escape:html>]<br />
 	[<if $activity->comment>]<br /><b>[<$activity->comment>]</b><br /><br />[</if>]
 	[<$activity->member_count>] student(s) are signed up [<if $capacity != -1>]out of [<$capacity>] allowed [</if>]for this activity.<br />
 	[<if $activity->cancelled>]<br /><span class="bold" style="color: #FF0000;">CANCELLED</span>[</if>]
