@@ -285,15 +285,19 @@ class Polls implements Module {
 	 * The method that handles deletion of polls.
 	 */
 	function delete() {
-		global $I2_USER, $I2_ARGS;
+		global $I2_USER, $I2_ARGS, $I2_SQL;
 
 		if (! isset($I2_ARGS[2])) {
 			$this->home();
 		}
 
+		$pid = $I2_ARGS[2];
+		$name = $I2_SQL->query('SELECT name FROM polls WHERE pid=%d', $pid)->fetch_single_value();
+		$this->template_args['pollname'] = $name;
+
 		if (isset($_REQUEST['polls_delete_form'])) {
 			if ($_REQUEST['polls_delete_form'] == 'delete_poll') {
-				Poll::delete_poll($I2_ARGS[2]);
+				Poll::delete_poll($pid);
 				$this->template_args['deleted'] = TRUE;
 			}
 		}
