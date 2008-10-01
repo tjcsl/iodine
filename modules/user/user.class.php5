@@ -722,12 +722,12 @@ class User {
 			  ** Supports mapping to one of an array of values, in which case it ORs the match
 			  */
 			  $maptable = array(
-						 'firstname' => array('givenname','mname'),
+						 'firstname' => array('givenname','nickname'),
 						 'first' => array('givenname','nickname'),
 						 'lastname' => 'sn',
 						 'last' => 'sn',
 						 'nick' => 'nickname',
-						 'name' => array('sn','mname','givenname'),
+						 'name' => array('sn','mname','givenname', 'nickname'),
 						 'firstnamesound' => 'soundexfirst',
 						 'firstsound' => 'soundexfirst',
 						 'lastnamesound' => 'soundexlast',
@@ -737,9 +737,9 @@ class User {
 						 'town' => 'l',
 						 'middle' => 'mname',
 						 'middlename' => 'mname',
-						 'phone' => 'homephone',
+						 'phone' => array('homephone', 'mobile'),
+						 'homephone' => 'homephone',
 						 'cell' => 'mobile',
-						 'telephone' => 'homephone',
 						 'address' => 'street',
 						 'zip' => 'postalcode',
 						 'grade' => 'graduationYear',
