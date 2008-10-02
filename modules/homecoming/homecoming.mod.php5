@@ -184,12 +184,21 @@ class Homecoming implements Module {
 			$males = array();
 			$females = array();
 
+			$mtotal = 0;
+			$ftotal = 0;
+
 			foreach ($muids as $uid => $numvotes) {
+				$mtotal += $numvotes;
 				$males[] = array('user' => new User($uid), 'numvotes' => $numvotes);
 			}
 			foreach ($fuids as $uid => $numvotes) {
+				$ftotal += $numvotes;
 				$females[] = array('user' => new User($uid), 'numvotes' => $numvotes);
 			}
+
+			$this->template_args['numvotes_male'] = $mtotal;
+			$this->template_args['numvotes_female'] = $ftotal;
+
 
 			$sortfunc = create_function('$a, $b', 'return $a["numvotes"] < $b["numvotes"];');
 

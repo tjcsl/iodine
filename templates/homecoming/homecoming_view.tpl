@@ -6,8 +6,8 @@ Homecoming court voting results for grade [<$grade>]: <br /><br />
   <th>Males</th><th>Females</th>
  </tr>
  <tr>
-  <td>People voted for [<$numvotees_male>][<if $numvotees_male > 1>] different[</if>] boy[<if $numvotees_male != 1>]s[</if>].</td>
-  <td>People voted for [<$numvotees_female>][<if $numvotees_female > 1>] different[</if>] girl[<if $numvotees_female != 1>]s[</if>].</td>
+  <td>[<$numvotes_male>] [<if $numvotes_male > 1>] people [<else>] person [</if>] voted for [<$numvotees_male>][<if $numvotees_male > 1>] different[</if>] boy[<if $numvotees_male != 1>]s[</if>].</td>
+  <td>[<$numvotes_female>] [<if $numvotes_female > 1>] people [<else>] person [</if>] voted for [<$numvotees_female>][<if $numvotees_female > 1>] different[</if>] girl[<if $numvotees_female != 1>]s[</if>].</td>
  </tr>
  <tr>
   <td valign="top">
