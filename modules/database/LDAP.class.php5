@@ -42,11 +42,8 @@ class LDAP {
 		} else {
 			$this->server = i2config_get('server','localhost','ldap');
 		}
+		self::cache_config();
 		$this->dnbase = i2config_get('base_dn','dc=tjhsst,dc=edu','ldap');
-		self::$ou_bases['user'] = i2config_get('user_dn','ou=people,dc=tjhsst,dc=edu','ldap');
-		self::$ou_bases['group'] = i2config_get('group_dn','ou=groups,dc=iodine,dc=tjhsst,dc=edu','ldap');
-		self::$ou_bases['room'] = i2config_get('room_dn','ou=rooms,dc=tjhsst,dc=edu','ldap');
-		self::$ou_bases['schedule'] = i2config_get('schedule_dn','ou=schedule,dc=tjhsst,dc=edu','ldap');
 		$this->sizelimit = i2config_get('max_rows',500,'ldap');
 		$this->timelimit = i2config_get('max_time',0,'ldap');
 		
@@ -103,6 +100,15 @@ class LDAP {
 		}
 	}
 
+	public static function cache_config() { 
+		if (count(self::$ou_bases) > 0) {
+			return;
+		}
+		self::$ou_bases['user'] = i2config_get('user_dn','ou=people,dc=tjhsst,dc=edu','ldap');
+		self::$ou_bases['group'] = i2config_get('group_dn','ou=groups,dc=iodine,dc=tjhsst,dc=edu','ldap');
+		self::$ou_bases['room'] = i2config_get('room_dn','ou=rooms,dc=tjhsst,dc=edu','ldap');
+		self::$ou_bases['schedule'] = i2config_get('schedule_dn','ou=schedule,dc=tjhsst,dc=edu','ldap');
+	}
 	private function conn_options($conn) {
 		/*
 		** Version 3 required for GSSAPI binds
@@ -448,6 +454,7 @@ class LDAP {
 	}
 
 	public static function get_user_dn($uid = NULL) {
+		self::cache_config();
 		$oubase = self::$ou_bases['user'];
 		if (!$uid) {
 			return $oubase;
