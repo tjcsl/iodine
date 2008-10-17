@@ -66,6 +66,7 @@ class StudentDirectory implements Module {
 						redirect('studentdirectory/info/'.$info[0]->uid);
 					} 
 					$this->template_args['info'] = $info;
+					$this->template_args['numresults'] = count($info);
 					$this->template = 'search.tpl';
 					return array('Directory search results for "'.$_REQUEST['studentdirectory_query'].'"', 'Search results for "'.$_REQUEST['studentdirectory_query'].'"');
 				}
