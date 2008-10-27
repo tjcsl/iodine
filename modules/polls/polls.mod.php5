@@ -149,8 +149,13 @@ class Polls implements Module {
 			$p = Poll::add_poll($name, $blurb, $begin, $end, $on);
 
 			$_POST['groups'] = array_unique($_POST['groups']);
-			foreach ($_POST['groups'] as $group) {
-				$p->add_group_id($group);
+                        foreach ($_POST[groups] as $key => $id) {
+				$g = $_POST[group_gids][$id];
+				$p->add_group_id($g, array(
+					isset($_POST[vote][$id])?1:0,
+					isset($_POST[modify][$id])?1:0,
+					isset($_POST[results][$id])?1:0
+				));
 			}
 			$_POST = array(); // Unset post vars
 			$I2_ARGS[2] = $p->pid;
