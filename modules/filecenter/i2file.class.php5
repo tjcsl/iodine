@@ -12,10 +12,13 @@
 */
 class I2File {
 
-	const FILE = 1;
+	const FILE      = 1;
 	const DIRECTORY = 2;
+	const LINKFILE  = 3;
+	const LINKDIR   = 4;
 
 	private $absolute_path;
+	private $relative_path;
 
 	private $filesize;
 
@@ -29,15 +32,23 @@ class I2File {
 		}
 		
 		$this->absolute_path = realpath($path);
+		$this->relative_path = $path;
 		
 		if ($this->absolute_path !== FALSE) {
-			$this->filesize = filesize($this->absolute_path);
-			if (is_dir($this->absolute_path)) {
+			$this->filesize = filesize($this->relative_path);
+			$this->last_modified = filemtime($this->relative_path);
+
+			if (is_link($this->relative_path)) {
+				if (is_dir($this->absolute_path)) {
+					$this->type = self::LINKDIR;
+				} else {
+					$this->type = self::LINKFILE;
+				}
+			} else if (is_dir($this->absolute_path)) {
 				$this->type = self::DIRECTORY;
 			} else {
 				$this->type = self::FILE;
 			}
-			$this->last_modified = filemtime($this->absolute_path);
 		}
 	}
 
@@ -46,7 +57,7 @@ class I2File {
 	}
 	
 	public function get_name() {
-		return basename($this->absolute_path);
+		return basename($this->relative_path);
 	}
 	
 	public function get_parent() {
@@ -58,7 +69,11 @@ class I2File {
 	}
 	
 	public function is_directory() {
-		return $this->type == self::DIRECTORY;
+		return $this->type == self::DIRECTORY or $this->type == self::LINKDIR;
+	}
+
+	public function is_symlink() {
+		return $this->type == self::LINKFILE or $this->type == self::LINKDIR;
 	}
 	
 	public function is_file() {

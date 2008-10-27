@@ -184,8 +184,14 @@ class Filecenter implements Module {
 		} else if (isSet($I2_QUERY['rmf'])) {
 			$this->filesystem->delete_file($this->directory . $I2_QUERY['rmf']);
 			redirect("filecenter/$system_type"."{$this->directory}");
+		} else if (isSet($I2_QUERY['rml'])) {
+			$this->filesystem->delete_link($this->directory . $I2_QUERY['rml']);
+			redirect("filecenter/$system_type"."{$this->directory}");
 		} else if (isSet($I2_QUERY['rmd'])) {
 			$this->filesystem->remove_dir($this->directory . $I2_QUERY['rmd']);
+			redirect("filecenter/$system_type"."{$this->directory}");
+		} else if (isSet($I2_QUERY['rmld'])) {
+			$this->filesystem->delete_link($this->directory . $I2_QUERY['rmld']);
 			redirect("filecenter/$system_type"."{$this->directory}");
 		} else if (isSet($I2_QUERY['rmd_recursive'])) {
 			$this->filesystem->remove_dir_recursive($this->directory . $I2_QUERY['rmd_recursive']);
@@ -227,7 +233,9 @@ class Filecenter implements Module {
 				$file = $this->filesystem->get_file($this->directory . '/..');
 				$dirs[] = array(
 					'name' => '..',
-					'last_modified' => date('n/j/y g:i A', $file->last_modified()) 
+					'last_modified' => date('n/j/y g:i A', $file->last_modified()),
+					'link' => FALSE,
+					'empty' => FALSE
 				);
 			}
 
@@ -242,9 +250,13 @@ class Filecenter implements Module {
 					continue;
 				}
 			
+				$properties["link"]  = $file->is_symlink();
+
 				if ($file->is_directory()) {
 					$temp = count($this->filesystem->list_files($this->directory . $file->get_name()));
+
 					$properties["empty"] = $temp > 0 ? FALSE : TRUE;
+
 					$dirs[] = $properties;
 				} else {
 					$files[] = $properties;

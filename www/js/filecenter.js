@@ -21,12 +21,24 @@ function options(anchor, type) {
 			"<a href=\"" + url + "?download=zip\">Download file as ZIP</a> (NOTE: This will not work for files over 100 MB in size)<br />" +
 			"<a href=\"javascript:rename('" + file + "')\">Rename file</a><br />" + 
 			"<a href=\"javascript:rmf('" + file + "')\">Delete file</a><br />";
+		} else if (type == 'link') {
+			cell.innerHTML = 
+			"<a href=\"" + url + "\">Download linked file</a><br />" + 
+			"<a href=\"" + url + "?download=zip\">Download linked file as ZIP</a> (NOTE: This will not work for files over 100 MB in size)<br />" +
+			"<a href=\"javascript:rename('" + file + "')\">Rename link</a><br />" + 
+			"<a href=\"javascript:rml('" + file + "')\">Delete link</a><br />";
 		} else if (type == 'dir') {
 			cell.innerHTML = 
 			"<a href=\"" + url + "/\">Open directory</a><br />" + 
 			"<a href=\"" + url + "/?download\">Download directory as ZIP</a> (NOTE: The ZIP will not include any individual files over 100 MB in size)<br />" +
 			"<a href=\"javascript:rename('" + file + "')\">Rename directory</a><br />" +
 			"<a href=\"javascript:rmd_recursive('" + file + "')\">Delete directory</a><br />";
+		} else if (type == 'linkdir') {
+			cell.innerHTML = 
+			"<a href=\"" + url + "/\">Open linked directory</a><br />" + 
+			"<a href=\"" + url + "/?download\">Download linked directory as ZIP</a> (NOTE: The ZIP will not include any individual files over 100 MB in size)<br />" +
+			"<a href=\"javascript:rename('" + file + "')\">Rename link</a><br />" +
+			"<a href=\"javascript:rmld('" + file + "')\">Delete link</a><br />";
 		} else if (type == 'emptydir') {
 			cell.innerHTML =
 			"<a href=\"" + url + "/\">Open directory</a><br />" + 
@@ -61,10 +73,24 @@ function rmf(file) {
 	}
 }
 
+function rml(file) {
+	var name = confirm("Are you sure you want to delete \"" + file + "\"?\nNote: \"" + file + "\" is a symbolic link, so only the link will be deleted, not the file it points to.");
+	if (name) {
+		window.location = window.location + "?rml=" + escape(file);
+	}
+}
+
 function rmd(file) {
 	var name = confirm("Are you sure you want to delete \"" + file + "\"?");
 	if (name) {
 		window.location = window.location + "?rmd=" + escape(file);
+	}
+}
+
+function rmld(file) {
+	var name = confirm("Are you sure you want to delete \"" + file + "\"?\nNote: \"" + file + " is a symbolic link, so only the link will be deleted, not the directory it points to.");
+	if (name) {
+		window.location = window.location+ "?rmld=" + escape(file);
 	}
 }
 

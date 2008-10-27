@@ -42,6 +42,29 @@ abstract class Filesystem {
 		}
 	}
 
+	protected function convert_relative_path($path, $must_exist=TRUE) {
+		$basename = basename($path);
+		
+		if ($must_exist == FALSE && $basename != '..' && $basename != '.') {
+			$new_path = $this->convert_path(dirname($path)) . '/' . $basename;
+			if (!file_exists($new_path)) {
+				return $new_path;
+			}
+		}
+	
+		$relative_path = $this->root_dir . '/' . $path;
+	
+		if ($relative_path === FALSE) {
+			throw new I2Exception('File ' . $this->root_dir . '/' . $path . ' does not exist');
+		}
+	
+		if ($relative_path == $this->root_dir || fnmatch($this->root_dir. '/*', $relative_path)) {
+			return $relative_path;
+		} else {
+			throw new I2Exception("File $relative_path is outside of user's homedir");
+		}
+	}
+
 	public function copy_file_into_system($oldfilename, $newfilename) {
 		$oldpath = realpath($oldfilename);
 		$newpath = $this->convert_path($newfilename, FALSE);
@@ -74,6 +97,14 @@ abstract class Filesystem {
 			throw new I2Exception("Could not delete file $path");
 		}
 	}
+
+	public function delete_link($filename) {
+		$path = $this->convert_relative_path($filename);//$this->root_dir . "/" . $filename;
+
+		if (unlink($path) == FALSE) {
+			throw new I2Exception("Could not delete link $path");
+		}
+	}
 	
 	public function list_files($pathname) {
 		$path = $this->convert_path($pathname);
@@ -93,13 +124,13 @@ abstract class Filesystem {
 			return $files;
 	
 		} else {
-			throw new I2Exception("Could not open directory $path");
+			throw new I2Exception("Could not open directory $pathname");
 		}
 	}
 	
 	public function move_file($oldpath, $newpath) {
-		$oldpath = $this->convert_path($oldpath);
-		$newpath = $this->convert_path($newpath, FALSE);
+		$oldpath = $this->convert_relative_path($oldpath);
+		$newpath = $this->convert_relative_path($newpath, FALSE);
 
 		if (file_exists($newpath)) {
 			throw new I2Exception("File $newpath already exists");
@@ -142,18 +173,26 @@ abstract class Filesystem {
 	}
 
 	public function remove_dir_recursive($pathname) {
-		foreach($this->list_files($pathname) as $file) {
-			if($file->is_directory()) {
-				if(count($this->list_files($pathname . "/" .  $file->get_name())) > 0) { //not empty
-					$this->remove_dir_recursive($pathname . "/" .  $file->get_name());
-				} else { //empty
-					$this->remove_dir($pathname . "/" . $file->get_name());
-				}
-			} else {
-				$this->delete_file($pathname . "/" . $file->get_name());
-			}
+		if(is_link($this->root_dir . $pathname)) {
+			throw new I2Exception("in remove_dir_recursive()\nis_link(" . $this->root_dir . $pathname . ") == " . is_link($this->root_dir . $pathname));
+			$this->delete_link($pathname);
 		}
-		$this->remove_dir($pathname);
+		else {
+			foreach($this->list_files($pathname) as $file) {
+				if($file->is_symlink()) {
+					$this->delete_link($pathname . "/" . $file->get_name());
+				} else if($file->is_directory()) {
+					if(count($this->list_files($pathname . "/" .  $file->get_name())) > 0) { //not empty
+						$this->remove_dir_recursive($pathname . "/" .  $file->get_name());
+					} else { //empty
+						$this->remove_dir($pathname . "/" . $file->get_name());
+					}
+				} else {
+					$this->delete_file($pathname . "/" . $file->get_name());
+				}
+			}
+			$this->remove_dir($pathname);
+		}
 	}
 
 	public function zip_dir($dirpath, $zippath, $origpath=NULL) {

@@ -23,7 +23,7 @@
  </thead>
  <tbody>
   <tr>
-   <td><a href="."><img src="[<$I2_ROOT>]www/pics/filecenter/dir2.png" width="16" height="16" /></a></td>
+   <td><a href="."><img src="[<$I2_ROOT>]www/pics/filecenter/dir2new.png" width="16" height="16" /></a></td>
    <td>
     <a href="" onclick="return options(this, 'cur')">* Current Directory (List actions)</a>
    </td>
@@ -33,9 +33,9 @@
   </tr>
   [<foreach from=$dirs item=dir>]
   <tr>
-   <td><a href="[<$dir.name|escape:"url">]/"><img src="[<$I2_ROOT>]www/pics/filecenter/dir2.png" width="16" height="16" /></a></td>
+   <td><a href="[<$dir.name|escape:"url">]/">[<if $dir.link>]<img src="[<$I2_ROOT>]www/pics/filecenter/dir2link.png" width="16" height="16" />[<else>]<img src="[<$I2_ROOT>]www/pics/filecenter/dir2new.png" width="16" height="16" />[</if>]</a></td>
    <td>
-    [<if $dir.name == '..'>]<a href="..">* Parent Directory (Go up one level)[<elseif $dir.empty>]<a href="" onclick="return options(this, 'emptydir')">[<$dir.name|escape>][<else>]<a href="" onclick="return options(this, 'dir')">[<$dir.name|escape>][</if>]</a>
+    [<if $dir.name == '..'>]<a href="..">* Parent Directory (Go up one level)[<elseif $dir.link>]<a href="" onclick="return options(this, 'linkdir')">[<$dir.name|escape>][<elseif $dir.empty>]<a href="" onclick="return options(this, 'emptydir')">[<$dir.name|escape>][<else>]<a href="" onclick="return options(this, 'dir')">[<$dir.name|escape>][</if>]</a>
    </td>
    <td>&nbsp;</td>
    <td>Directory</td>
@@ -44,8 +44,10 @@
   [</foreach>]
   [<foreach from=$files item=file>]
   <tr>
-   <td><a href="[<$file.name|escape:"url">]"><img src="[<$I2_ROOT>]www/pics/filecenter/file2.png" width="15" height="16" /></a></td>
-   <td><a href="" onclick="return options(this, 'file')">[<$file.name|escape>]</a></td>
+   <td><a href="[<$file.name|escape:"url">]">[<if $file.link>]<img src="[<$I2_ROOT>]www/pics/filecenter/file2link.png" width="15" height="16" />[<else>]<img src="[<$I2_ROOT>]www/pics/filecenter/file2new.png" width="16" height="16" />[</if>]</a></td>
+   <td>
+    [<if $file.link>]<a href="" onclick="return options(this, 'link')">[<$file.name|escape>][<else>]<a href="" onclick="return options(this, 'file')">[<$file.name|escape>][</if>]</a>
+   </td>
    <td class="size">[<$file.size>]</td>
    <td>File</td>
    <td>[<$file.last_modified>]</td>
