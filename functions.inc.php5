@@ -217,7 +217,7 @@ function i2config_get($field, $default = NULL, $section = NULL) {
 * Issues an HTTP redirect to the user.
 *
 * Redirects a user to the specified URL via an HTTP Location: header.
-* Do _not_ use this function if output as already been sent to the
+* Do _not_ use this function if output has already been sent to the
 * user. If you attempt to do so, an exception will be thrown.
 *
 * @param string $url The url to redirect to (relative to Iodine root).
