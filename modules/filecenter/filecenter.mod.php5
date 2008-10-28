@@ -182,16 +182,16 @@ class Filecenter implements Module {
 			$this->filesystem->make_dir($this->directory . $_REQUEST['mkdir']);
 			redirect("filecenter/$system_type"."{$this->directory}");
 		} else if (isSet($I2_QUERY['rmf'])) {
-			$this->filesystem->delete_file($this->directory . $I2_QUERY['rmf']);
+			$this->filesystem->remove_file($this->directory . $I2_QUERY['rmf']);
 			redirect("filecenter/$system_type"."{$this->directory}");
 		} else if (isSet($I2_QUERY['rml'])) {
-			$this->filesystem->delete_link($this->directory . $I2_QUERY['rml']);
+			$this->filesystem->remove_link($this->directory . $I2_QUERY['rml']);
 			redirect("filecenter/$system_type"."{$this->directory}");
 		} else if (isSet($I2_QUERY['rmd'])) {
 			$this->filesystem->remove_dir($this->directory . $I2_QUERY['rmd']);
 			redirect("filecenter/$system_type"."{$this->directory}");
 		} else if (isSet($I2_QUERY['rmld'])) {
-			$this->filesystem->delete_link($this->directory . $I2_QUERY['rmld']);
+			$this->filesystem->remove_link($this->directory . $I2_QUERY['rmld']);
 			redirect("filecenter/$system_type"."{$this->directory}");
 		} else if (isSet($I2_QUERY['rmd_recursive'])) {
 			$this->filesystem->remove_dir_recursive($this->directory . $I2_QUERY['rmd_recursive']);

@@ -35,6 +35,8 @@ class I2File {
 		$this->relative_path = $path;
 		
 		if ($this->absolute_path !== FALSE) {
+			//TODO even though these use the relative path, they return the
+			//filesize and modify_date of the linked file. Why?
 			$this->filesize = filesize($this->relative_path);
 			$this->last_modified = filemtime($this->relative_path);
 
