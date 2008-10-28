@@ -50,7 +50,8 @@ class Newimport implements Module {
 			'homecoming_votes'		=> 'uid',
 			'homecoming_votes'		=> 'male',
 			'homecoming_votes'		=> 'female',
-			'event_signups'			=> 'vid'
+			'event_signups'			=> 'vid',
+			'eighth_activity_permissions'	=> 'userid'
 	); #This is also used by the set_uidnumber function in User.
 
 	/**
