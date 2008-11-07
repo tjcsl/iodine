@@ -49,13 +49,7 @@ class Master implements AuthType {
 	* 	if possible)
 	*/
 	public function get_ldap_bind() {
-		if (i2config_get('can_bind_manager',0,'ldap')) {
-			$manager_pw = i2config_get('admin_pw',NULL,'ldap');
-			return LDAP::get_admin_bind($manager_pw);
-		}
-		else {
-			return  LDAP::get_generic_bind();
-		}
+		return  LDAP::get_generic_bind();
 	}
 }
 
