@@ -3,6 +3,8 @@
 /**
  *	Script to send today's birthday emails
  */
+$do_mail = TRUE;
+
 //Assumes it is located in intranet2/scripts directory, change as necessary
 include "../functions.inc.php5";
 define("CONFIG_FILENAME","../config.ini");
@@ -10,19 +12,16 @@ define("CONFIG_FILENAME","../config.ini");
 $birthday = strftime("%m%d");
 $filter = "(&(objectClass=tjhsstStudent)(birthday=*$birthday))";
 
-$who = i2config_get('admin_dn',NULL,'ldap');
-$cred = i2config_get('admin_pw',NULL,'ldap');
-$user_dn = i2config_get('user_dn',NULL,'ldap');
-$admin_dn = i2config_get('admin_dn',NULL,'ldap');
+$who = i2config_get('authuser_dn',NULL,'ldap');
+$cred = i2config_get('authuser_passwd',NULL,'ldap');
 
-//if ($who == 'Fix me' || $cred == 'Fix me' || $user_dn == 'Fix me' || $admin_dn == 'Fix me') {
-if (in_array(NULL,array($who,$cred,$user_dn,$admin_dn))) {
+if ($who === NULL || $cred === NULL) {
 	print "Could not access the configuration.";
 	exit(1);
 }
 
 $results = array();
-exec("ldapsearch -x -LLL -D $admin_dn -w $cred \"$filter\" iodineUid cn birthday givenName mail",$results);
+exec("ldapsearch -x -LLL -D $who -w $cred \"$filter\" iodineUid cn birthday givenName mail",$results);
 $results = implode("\n",$results);
 $results = explode("\n\n",$results);
 
@@ -62,7 +61,6 @@ function email($array) {
 	if ($name == NULL) {
 		$name = $cn;
 	}
-	//print_r(array($iodineuid,$givenname,$mail));
 	
 	$from = "intranet@tjhsst.edu";
 	$subj = "Happy Birthday!";
@@ -72,14 +70,13 @@ function email($array) {
 	$mesg = "Hey $name! This is the TJ Intranet wishing you a happy $age birthday! Have a good one!\r\n";
 	$mesg .= "\r\nP.S. Make Intranet devs happy -- bake them cookies!\r\n\r\n-$from";
 
-
-	////FIXME
-	//$mail = "jboning@gmail.com";
-
+	if (!$do_mail) {
+		echo(print_r(array($iodineuid,$givenname,$mail),1));
+		return;
+	}
 	if (!mail($mail,$subj,$mesg,$headers)) {
 		print "Mail could not be sent to $mail.\n";
-	}
-	else {
+	} else {
 		print "Mail sent sucessfully to $mail.\n";
 	}
 }
