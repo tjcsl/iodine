@@ -1,0 +1,32 @@
+\documentclass[fullpage,12pt]{article}
+\usepackage{fullpage}
+\pagestyle{empty}
+
+\begin{document}
+\begin{center}
+{\bf\Large %@$sponsor->name@%}
+\end{center}
+%@begin header
+\begin{tabular}{clcc}
+{\bf Date} & \multicolumn{1}{c}{\bf Activity} & {\bf Room} & {\bf Students Enrolled} \\
+%@end header
+%@begin footer
+\end{tabular}
+%@end footer
+%@include header
+%@?
+foreach($activity->get_all_blocks() as $num => $act) {
+@%
+%@$act->block->date@%, %@$act->block->block@% Block & %@$act->name@% & %@$act->block_rooms_comma@% & %@$act->member_count@% \\
+%@?
+	if(($num + 1) % 40 == 0) {
+@%
+%@include footer
+\pagebreak
+%@include header
+%@?
+	}
+}
+@%
+%@include footer
+\end{document}
