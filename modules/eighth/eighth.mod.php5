@@ -95,7 +95,13 @@ class Eighth implements Module {
 	*/
 	private static $max_undo = 10;
 	
+	/**
+	* Value for start_date on login
+	*/
+	public static $default_start_date;
+	
 	function __construct() {
+		self::$default_start_date = date('Y-m-d'); 
 		self::init_undo();
 	}
 
@@ -330,9 +336,14 @@ class Eighth implements Module {
 		$this->args = array();
 		$this->admin = self::is_admin();
 		$this->template_args['eighth_admin'] = $this->admin;
-		/*if (!isSet(self::$undo)) {
-				  self::init_undo();
-		}*/
+		
+		//Every time a user logs in, set start_date to default
+		if(! isSet($_SESSION['eighth']['start_date'])) {
+			$_SESSION['eighth']['start_date'] = self::$default_start_date;
+		}
+		//This may be clobbered later in REQUEST (for vcp_schedule and chg_start)
+		$this->args['start_date'] = $_SESSION['eighth']['start_date'];
+		
 		if(count($I2_ARGS) <= 1) {
 			if (!$this->admin) {
 				return FALSE;
@@ -346,7 +357,12 @@ class Eighth implements Module {
 			for($i = count($I2_ARGS) - 1; $i > 2; $i -= 2) {
 				$this->args[$I2_ARGS[$i - 1]] = $I2_ARGS[$i];
 			}
-			$this->args += $_POST;
+			// Let POST clobber args. This may break things.
+			$this->args = array_merge($this->args, $_POST);
+			
+			// Add POST variables - but do not let them clobber args
+			//$this->args += $_POST;
+			
 			// Add GET variables into the array - and let them clobber POST
 			foreach ($_GET as $key=>$value) {
 				// Strip to the last question mark to determine real key name - I don't know why we have to do this.
@@ -371,6 +387,8 @@ class Eighth implements Module {
 			if(isset($_SESSION['eighth'])) {
 				$this->args += $_SESSION['eighth'];
 			}
+
+			//Be careful with this line
 			if(method_exists($this, $method) && (in_array($method, $this->safe_modules) || $this->admin) || $I2_USER->is_group_member('grade_staff')) {
 				$this->$method();
 				$this->template_args['method'] = $method;
@@ -402,9 +420,12 @@ class Eighth implements Module {
 		$this->template_args['argstr'] = $argstr;
 		$this->template_args['last_undo'] = self::get_undo_name();
 		$this->template_args['last_redo'] = self::get_redo_name();
-		if (isSet($_SESSION['eighth']['start_date'])) {
-			$this->template_args['startdate'] = $_SESSION['eighth']['start_date'];
+
+		//For header.tpl and vcp_schedule
+		if(! isSet($this->template_args['start_date'])) {
+			$this->template_args['start_date'] = $this->args['start_date'];
 		}
+		
 		$this->template_args['defaultaid'] = i2config_get('default_aid','999','eighth');
 		$display->disp($this->template, $this->template_args);
 	}
@@ -470,31 +491,25 @@ class Eighth implements Module {
 	* @access private
 	* @param bool $add Whether to include the add field or not.
 	* @param string $title The title for the block list.
-	* @param date $startdate The date from which to show blocks.
+	* @param date $start_date The date from which to show blocks.
 	* @param int $daysf  The number of days forward to show blocks.
 	*/
-	private function setup_block_selection($add = FALSE, $field = NULL, $title = NULL, $startdate = NULL, $daysf = NULL) {
+	private function setup_block_selection($add = FALSE, $field = NULL, $title = NULL, $start_date = NULL, $daysf = NULL) {
 		if ($field === NULL) {
 			$field = 'bid';
 		}
 		if ($title === NULL) {
 			$title = 'Select a block:';
 		}
-		if ($startdate === NULL) {
-			if (isSet($this->args['startdate'])) {
-				$startdate = $this->args['startdate'];
-			} else if (isSet($_SESSION['eighth']['start_date'])){
-				$startdate = $_SESSION['eighth']['start_date'];
-			} else {
-				$startdate = date('Y-m-d');
-			}
+		if ($start_date === NULL) {
+			$start_date = $this->args['start_date'];
 		}
 		if ($daysf === NULL && isSet($this->args['daysforward'])) {
 			$daysf = $this->args['daysforward'];
 		} else {
 			$daysf = 99999;
 		}
-		$blocks = EighthBlock::get_all_blocks($startdate, $daysf);
+		$blocks = EighthBlock::get_all_blocks($start_date, $daysf);
 		$this->template = 'block_selection.tpl';
 		$this->template_args['blocks'] = $blocks;
 		if($add) {
@@ -835,12 +850,12 @@ class Eighth implements Module {
 			$this->template_args['activity'] = new EighthActivity($this->args['aid']);
 			$this->template_args['groups'] = Group::get_all_groups('eighth');
 			if (isSet($this->args['searchdone']) && Search::get_results()) {
-					  $this->template_args['results_destination'] = 'eighth/alt_permissions/add_member/aid/'.$this->args['aid'].'/uid/';
-					  $this->template_args['return_destination'] = 'eighth/alt_permissions/view/aid/'.$this->args['aid'];
-					  $this->template_args['info'] = Search::get_results();
-					  if(count($this->template_args['info']) == 1) {
-						  redirect($this->template_args['results_destination'] . $this->template_args['info'][0]->uid);
-					  }
+				$this->template_args['results_destination'] = 'eighth/alt_permissions/add_member/aid/'.$this->args['aid'].'/uid/';
+				$this->template_args['return_destination'] = 'eighth/alt_permissions/view/aid/'.$this->args['aid'];
+				$this->template_args['info'] = Search::get_results();
+				if(count($this->template_args['info']) == 1) {
+					redirect($this->template_args['results_destination'] . $this->template_args['info'][0]->uid);
+				}
 			} else {
 				$this->template_args['search_destination'] = 'eighth/alt_permissions/view/searchdone/1/aid/'.$this->args['aid'];
 				$this->template_args['action_name'] = 'Add';
@@ -1110,14 +1125,8 @@ class Eighth implements Module {
 			$this->template = 'sch_activity.tpl';
 			$this->template_args['rooms'] = EighthRoom::get_all_rooms();
 			$this->template_args['sponsors'] = EighthSponsor::get_all_sponsors();
-			if (isSet($this->args['startdate'])) {
-				$startdate = $this->args['startdate'];
-			} elseif (isSet($_SESSION['eighth']['start_date'])) {
-					  $startdate = $_SESSION['eighth']['start_date'];
-			} else {
-					  $startdate = date('Y-m-d');
-			}
-			list($this->template_args['unscheduled_blocks'], $this->template_args['block_activities']) = EighthSchedule::get_activity_schedule($this->args['aid'], $startdate);
+			$start_date = $this->args['start_date'];
+			list($this->template_args['unscheduled_blocks'], $this->template_args['block_activities']) = EighthSchedule::get_activity_schedule($this->args['aid'], $start_date);
 			$this->template_args['unscheduled_blocks'] = "'" . implode("','", $this->template_args['unscheduled_blocks']) . "'";
 			$this->template_args['activities'] = EighthActivity::get_all_activities();
 			$this->template_args['act'] = new EighthActivity($this->args['aid']);
@@ -1294,15 +1303,8 @@ class Eighth implements Module {
 			$sponsor = new EighthSponsor($this->args['sid']);
 			$this->template = 'vp_sponsor.tpl';
 			$this->template_args['sponsor'] = $sponsor;
-			//$this->template_args['activities'] = $sponsor->schedule;
-			if (isSet($this->args['startdate'])) {
-				$startdate = $this->args['startdate'];
-			} else if (isSet($_SESSION['eighth']['start_date'])){
-				$startdate = $_SESSION['eighth']['start_date'];
-			} else {
-				$startdate = date('Y-m-d');
-			}
-			$this->template_args['activities'] = EighthSponsor::get_schedule($sponsor->sid,$startdate);
+			$start_date = $this->args['start_date'];
+			$this->template_args['activities'] = EighthSponsor::get_schedule($sponsor->sid,$start_date);
 			$this->template_args['print_url'] = "sid/{$this->args['sid']}";
 			$this->title = 'View Sponsor Schedule';
 		}
@@ -1314,6 +1316,39 @@ class Eighth implements Module {
 		}
 	}
 
+	/**
+	* View or print sponsor schedule
+	*
+	* @access private
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
+	*/
+	public function vp_activity() {
+		if($this->op == '') {
+			$this->setup_activity_selection();
+		}
+		else if($this->op == 'view') {
+			
+			
+			$start_date = $this->args['start_date'];
+			$activity = new EighthActivity($this->args['aid']);
+			//$activities = $activity->get_all_blocks($start_date);
+			$activities = $activity->get_all_blocks();
+			$this->template_args['activity'] = $activity;
+			$this->template_args['activities'] = $activities;
+			//$this->template_args['print_url'] = "sid/{$this->args['sid']}";
+
+			$this->template = 'vp_activity.tpl';
+			$this->title = 'View Activity Schedule';
+		}
+		else if($this->op == 'format') {
+			$this->setup_format_selection('vp_activity', 'Activity Schedule', array('aid' => $this->args['aid']));
+		}
+		else if($this->op == 'print') {
+			EighthPrint::print_activity_schedule($this->args['aid'], $this->args['format']);
+		}
+	}
+	
 	/**
 	* Reschedule students by student ID for a single activity
 	*
@@ -1701,20 +1736,14 @@ class Eighth implements Module {
 	* @access private
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
-	* @todo Figure out where to store the starting date, in config.ini for now.
 	*/
 	public function chg_start() {
 		if($this->op == '') {
-			$date = '';
-			if(isset($_SESSION['eighth']['start_date'])) {
-				$date = $_SESSION['eighth']['start_date'];
-			}
-			$this->template_args['date'] = $date;
 			$this->template = 'chg_start.tpl';
 			$this->title = 'Change Start Date';
 		}
 		else if($this->op == 'change') {
-			$_SESSION['eighth']['start_date'] = $this->args['date'];
+			$_SESSION['eighth']['start_date'] = $this->args['start_date'];
 			redirect('eighth');
 		}
 	}
@@ -1729,11 +1758,7 @@ class Eighth implements Module {
 	public function ar_block() {
 		if($this->op == '') {
 			$this->template = 'ar_block.tpl';
-			if (isSet($this->args['start_date'])) {
-				$start_date = $this->args['start_date'];
-			} else {
-				$start_date = i2config_get('start_date', date('Y-m-d'), 'eighth');
-			}
+			$start_date = $this->args['start_date'];
 			$this->template_args['blocks'] = EighthBlock::get_all_blocks($start_date);
 			$this->title = 'Add/Remove Block';
 		}
@@ -1771,8 +1796,8 @@ class Eighth implements Module {
 		$alluids = $I2_LDAP->search('ou=people,dc=tjhsst,dc=edu', 'objectClass=tjhsstStudent', 'iodineUidNumber')->fetch_col('iodineUidNumber');
 		$numuids = count($alluids);
 		if ($this->op == '') {
-			$date = (isset($this->args['startdate']) ? $this->args['startdate'] : date('Y-m-d'));
-			$bids = $I2_SQL->query('SELECT bid FROM eighth_blocks WHERE date >= %s', $date)->fetch_col('bid');
+			$start_date = $this->args['start_date'];
+			$bids = $I2_SQL->query('SELECT bid FROM eighth_blocks WHERE date >= %s', $start_date)->fetch_col('bid');
 			$default_aid = i2config_get('default_aid',999,'eighth');
 			foreach($bids as $bid) {
 				$uidstofix = array();
@@ -1800,10 +1825,11 @@ class Eighth implements Module {
 	*/
 	public function vcp_schedule() {
 		global $I2_SQL;
+		$uid = $this->args['uid'];
 		if($this->op == '') {
 			$this->template = 'vcp_schedule.tpl';
-			if(!empty($this->args['uid'])) {
-				$this->template_args['users'] = array(new User($this->args['uid']));
+			if(!empty($uid)) {
+				$this->template_args['users'] = array(new User($uid));
 			}
 			else {
 				if (isSet($this->args['fname']) && $this->args['fname']!="")
@@ -1821,15 +1847,13 @@ class Eighth implements Module {
 			$this->title = 'Search Students';
 		}
 		else if($this->op == 'view') {
-			if(!isset($this->args['start_date'])) {
-				$this->args['start_date'] = NULL;
-			}
-			$this->template_args['start_date'] = ($this->args['start_date'] ? strtotime($this->args['start_date']) : time());
-			$user = new User($this->args['uid']);
+			$start_date = $this->args['start_date'];
+			$user = new User($uid);
 			$this->template_args['user'] = $user;
 			$this->template_args['comments'] = $user->comments;
-			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($this->args['uid'], $this->args['start_date']), FALSE);
-			$this->template_args['absences'] = EighthSchedule::get_absences($this->args['uid']);
+			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($uid, $start_date), FALSE);
+			$this->template_args['absences'] = EighthSchedule::get_absences($uid);
+			//TODO: Do this in the the template
 			$this->template_args['absence_count'] = count($this->template_args['absences']);
 
 			if(strlen($user->counselor_name) == 0) {
@@ -1862,15 +1886,17 @@ class Eighth implements Module {
 		else if ($this->op == 'history') {
 			$date = getdate();
 			$date = ($date['mon'] > 7 ? $date['year'] : $date['year']-1).'-09-01';
-			$this->template_args['start_date'] = strtotime($date);
 			$days = intval((time()-strtotime($date))/86400);
-			$user = new User($this->args['uid']);
+			$this->template_args['start_date'] = strtotime($date);
+			
+			$user = new User($uid);
 			$this->template_args['user'] = $user;
 			$this->template_args['comments'] = $user->comments;
 			$this->template_args['activities'] = EighthActivity::
 				id_to_activity(EighthSchedule::get_activities(
-				$this->args['uid'], $date, $days), FALSE);
-			$this->template_args['absences'] = EighthSchedule::get_absences($this->args['uid']);
+				$uid, $date, $days), FALSE);
+			$this->template_args['absences'] = EighthSchedule::get_absences($uid);
+			//TODO: Do this in the the template
 			$this->template_args['absence_count'] = count($this->template_args['absences']);
 
 			if(strlen($user->counselor_name) == 0) {
@@ -1900,19 +1926,16 @@ class Eighth implements Module {
 			$this->template = 'vcp_schedule_history.tpl';
 		}
 		else if($this->op == 'format') {
-			if(!isset($this->args['start_date'])) {
-				$this->args['start_date'] = NULL;
-			}
-			$this->setup_format_selection('vcp_schedule', 'Student Schedule', array('uid' => $this->args['uid']) + ($this->args['start_date'] ? array('start_date' => $this->args['start_date']) : array()), TRUE);
+			$this->setup_format_selection('vcp_schedule', 'Student Schedule', array('uid' => $uid), TRUE);
 		}
 		else if($this->op == 'print') {
-			EighthPrint::print_student_schedule($this->args['uid'], $this->args['start_date'], $this->args['format']);
+			EighthPrint::print_student_schedule($uid, $this->args['start_date'], $this->args['format']);
 		}
 		else if($this->op == 'choose') {
 			$valids = array();
 			$validdata = array();
 			$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bids'],FALSE);
-			$this->template_args['uid'] = $this->args['uid'];
+			$this->template_args['uid'] = $uid;
 			$this->template = 'vcp_schedule_choose.tpl';
 			if(!is_array($this->args['bids'])) {
 				$this->template_args['bids'] = $this->args['bids'];
@@ -1933,8 +1956,6 @@ class Eighth implements Module {
 				}
 			}
 			$this->title = 'Choose an Activity'.$blockdate;
-			//Allows us to return to last date view after changing activities!
-			$this->template_args['start_date'] = isset($this->args['start_date']) ? $this->args['start_date'] : NULL;
 		}
 		else if($this->op == 'change') {
 			if(isset($_POST['submit']) && $_POST['submit'] == "View Roster") {
@@ -1949,7 +1970,7 @@ class Eighth implements Module {
 						$activity = new EighthActivity($this->args['aid'], $bid);
 						
 						self::start_undo_transaction();
-						$ret = $activity->add_member(new User($this->args['uid']), isset($this->args['force']));
+						$ret = $activity->add_member(new User($uid), isset($this->args['force']));
 						self::end_undo_transaction();
 						
 						$act_status = array();
@@ -1987,16 +2008,19 @@ class Eighth implements Module {
 					}
 				}
 				if(count($status) == 0) {
-					$append = isset($this->args['start_date']) ? "/start_date/{$this->args['start_date']}" : NULL;
-					redirect("eighth/vcp_schedule/view/uid/{$this->args['uid']}$append");
+					$start_date = $this->args['start_date'];
+					if ($start_date !=  self::$default_start_date) {
+						$append = "/start_date/{$start_date}";
+					} else {
+						$append = NULL;
+					}
+					redirect("eighth/vcp_schedule/view/uid/{$uid}$append");
 				}
 				$this->template = 'vcp_schedule_change.tpl';
 				$this->template_args['status'] = $status;
-				$this->template_args['uid'] = $this->args['uid'];
+				$this->template_args['uid'] = $uid;
 				$this->template_args['bids'] = $this->args['bids'];
 				$this->template_args['aid'] = $this->args['aid'];
-				//Allows us to return to last date view after changing activities!
-				$this->template_args['start_date'] = isset($this->args['start_date']) ? $this->args['start_date'] : NULL;
 			}
 		}
 		else if($this->op == 'roster') {
@@ -2006,20 +2030,18 @@ class Eighth implements Module {
 			$this->title = 'Activity Roster';
 		}
 		else if($this->op == 'absences') {
-			$absences = EighthActivity::id_to_Activity(EighthSchedule::get_absences($this->args['uid']));
+			$absences = EighthActivity::id_to_Activity(EighthSchedule::get_absences($uid));
 			$this->template_args['absences'] = $absences;
-			$user = new User($this->args['uid']);
-			//$this->template_args['uid'] = $this->args['uid'];
-			//$this->template_args['name'] = $user->fullname_comma;
+			$user = new User($uid);
 			$this->template_args['user'] = $user;
 			$this->template_args['admin'] = $this->admin;
 			$this->template = 'vcp_schedule_absences.tpl';
 		}
 		else if($this->op == 'remove_absence') {
 			self::start_undo_transaction();
-			EighthSchedule::remove_absentee($this->args['bid'], $this->args['uid']);
+			EighthSchedule::remove_absentee($this->args['bid'], $uid);
 			self::end_undo_transaction();
-			redirect('eighth/vcp_schedule/absences/uid/'.$this->args['uid']);
+			redirect('eighth/vcp_schedule/absences/uid/'.$uid);
 		}
 	}
 
