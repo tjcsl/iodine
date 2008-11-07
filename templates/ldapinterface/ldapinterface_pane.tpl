@@ -1,5 +1,4 @@
 [<if $query_data != NULL>]
-
  [<if !is_string($query_data)>]
   Query results:<br/>
   [<foreach from=$query_data item=row key=dn>]
@@ -33,12 +32,3 @@
  <br /><input type="submit" name="ldapinterface_submit" value="Search"/>
 </form>
 </p>
-<br />
-[<if !$master_pass>]
-	<form action="[<$I2_SELF>]" method="POST">
-		LDAP Master Password: <input type="password" name="master_pass"/><br />
-		<input type="submit" value="Set Master Password"/>
-	</form>
-[<else>]
-LDAP Master Password: <a href="[<$I2_SELF>]/unset_password">SET</a>
-[</if>]
