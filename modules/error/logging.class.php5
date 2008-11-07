@@ -27,17 +27,37 @@ class Logging {
 	/**
 	* Whether to debug information to the screen or not.
 	*/
-	private $screen_debug = FALSE;
-
-	/**
-	* The name of the debug log file
-	*/
-	private $log_file_name;
+	private $screen_debug;
 
 	/**
 	* The file to use for debug logging
 	*/
-	private $log_file;
+	private $debug_log;
+	
+	/**
+	* The file to use for access logging
+	*/
+	private $access_log;
+	
+	/**
+	* The file to use for error logging
+	*/
+	private $error_log;
+	
+	/**
+	* The file to use for auth logging
+	*/
+	private $auth_log;
+	
+	/**
+	* The default debug level for log_debug calls without a debug level
+	*/
+	private $default_debug_level;
+	
+	/**
+	* The debug level below which messages should be logged
+	*/
+	private $debug_loglevel;
 	
 	/**
 	* The Logging class constructor.
@@ -45,16 +65,49 @@ class Logging {
 	* @access public
 	*/
 	public function __construct() {
-		$this->log_access();
-		$this->screen_debug = true;
+		global $I2_ERR;
+
 		$this->my_email = i2config_get('email', 'iodine-errors@tjhsst.edu', 'logging');
-		$this->log_file_name = i2config_get('debug_log','/tmp/i2-log','logging');
-		$this->log_file = fopen($this->log_file_name,'a');
+	
+		/* If not defined in config.ini, the log paths are absolute. */
+		$log_dir = i2config_get('log_dir', NULL, 'logging');
+		if($log_dir === NULL) {
+			$debug_file = i2config_get('debug_log');
+			$access_file = i2config_get('access_log');
+			$error_file = i2config_get('error_log');
+			$auth_file = i2config_get('auth_log');
+		} else { 
+			$debug_file = $log_dir . i2config_get('debug_log','iodine-debug.log','logging');
+			$access_file = $log_dir . i2config_get('access_log','iodine-access.log','logging');
+			$error_file = $log_dir . i2config_get('error_log','iodine-error.log','logging');
+			$auth_file = $log_dir . i2config_get('auth_log','iodine-auth.log','logging');
+		}
+		
+		if (!$access_file || !($this->access_log = fopen($access_file, 'a'))) {
+			$I2_ERR->fatal_error('The main iodine access log cannot be accessed.');
+		}
+		$this->log_access();
+		if (!$debug_file || !($this->debug_log = fopen($debug_file, 'a'))) {
+			$I2_ERR->fatal_error('The main iodine debug log cannot be accessed.');
+		}
+		if (!$error_file || !($this->error_log = fopen($error_file, 'a'))) {
+			$I2_ERR->fatal_error('The main iodine error log cannot be accessed.');
+		}
+		if (!$auth_file || !($this->auth_log = fopen($auth_file, 'a'))) {
+			$I2_ERR->fatal_error('The main iodine authentication log cannot be accessed.');
+		}
+		$this->default_debug_level = i2config_get('default_debug_level', 0, 'logging');
+		$this->debug_loglevel = i2config_get('debug_loglevel', 9, 'logging');
+		$this->screen_debug = i2config_get('screen_debug', 1, 'logging');
+		
 		register_shutdown_function(array($this, 'flush_debug_output'));
 	}
 
 	public function __destruct() {
-		fclose($this->log_file);
+		fclose($this->debug_log);
+		fclose($this->access_log);
+		fclose($this->auth_log);
+		fclose($this->error_log);
 	}
 
 	/**
@@ -65,17 +118,7 @@ class Logging {
 	* 'IP - username - [Apache-style date format] "Request" "Referrer" "User-Agent"'.
 	*/
 	public function log_access() {
-		global $I2_ERR;
-		
-		$fname = i2config_get('access_log');
-		
-		if (!$fname || !($fh = fopen($fname, 'a'))) {
-			$I2_ERR->fatal_error('The main iodine access log cannot be accessed.');
-		}
-		
-		/* IP - username - [Apache-style date format] "Request" "Referrer" "User-Agent" */
-
-		fwrite($fh,
+		fwrite($this->access_log,
 			$_SERVER['REMOTE_ADDR'] . ' - ' .
 			(isset($_SESSION['i2_username'])?$_SESSION['i2_username']:'not_logged_in') . ' - [' .
 			date('d/M/Y:H:i:s O') . '] "' .
@@ -83,7 +126,6 @@ class Logging {
 			(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'') . '" "' .
 			(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'') . '"' ."\n"
 		);
-
 	}
 
 	/**
@@ -96,14 +138,6 @@ class Logging {
 	* @param string $msg The error message to record.
 	*/
 	public function log_error($msg) {
-		global $I2_ERR, $I2_DISP;
-		
-		$fname = i2config_get('error_log');
-		
-		if (!$fname || !($fh = fopen($fname, 'a'))) {
-			$I2_ERR->fatal_error('The main iodine error log cannot be accessed.');
-		}
-
 		$trace_arr = array();
 		foreach(array_slice(debug_backtrace(),1) as $trace) {
 			if (isSet($trace['file']) && isSet($trace['line'])) {
@@ -115,16 +149,13 @@ class Logging {
 			}
 		}
 		
-		/* IP - [Apache-style date format] [Mini-backtrace] "Request" "Error" */
-		fwrite($fh,
+		fwrite($this->error_log,
 			$_SERVER['REMOTE_ADDR'] . ' - [' .
 			@date('d/M/Y:H:i:s O') . '] [' .
 			implode($trace_arr, ',') . '] "' .
 			$_SERVER['REQUEST_URI'] . '" "' .
 			$msg . '"' ."\n"
 		);
-		fclose($fh);
-
 
 		$this->error_buf .= "\r\n<p>$msg</p>";
 	}
@@ -147,11 +178,10 @@ class Logging {
 	* @param int $level The debug level.
 	*/
 	function log_debug($msg, $level = NULL) {
-
 		if ($level === NULL) { /* If not set, get default debug level */
-			$level = i2config_get('default_debug_level', 0, 'logging');
+			$level = $this->default_debug_level;
 		}
-		if ($level > i2config_get('debug_loglevel', 9, 'logging')) {
+		if ($level > $this->debug_loglevel) {
 			return;
 		}
 		if ($this->screen_debug) {
@@ -169,14 +199,7 @@ class Logging {
 	 * @param string $msg The message to log.
 	 */
 	function log_auth($msg) {
-		$fname = i2config_get('auth_log');
-
-		if (!$fname || !($fh = fopen($fname, 'a'))) {
-			warn('The iodine authentication log cannot be accessed.');
-			return;
-		}
-
-		fwrite($fh, $msg."\n");
+		fwrite($this->auth_log, $msg."\n");
 	}
 
 	/**
@@ -184,13 +207,13 @@ class Logging {
 	*/
 	public function log_file($msg,$level=NULL) {
 		if ($level === NULL) { /* If not set, get default debug level */
-			$level = i2config_get('default_debug_level', 0, 'logging');
+			$level = $this->default_debug_level;
 		}
-		if ($level > i2config_get('debug_loglevel', 9, 'logging')) {
+		if ($level > $this->debug_loglevel) {
 			return;
 		}
-		fprintf($this->log_file,$msg."\n");
-		fflush($this->log_file);
+		fprintf($this->debug_log,$msg."\n");
+		fflush($this->debug_log);
 	}
 
 	/**
