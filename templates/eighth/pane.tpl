@@ -37,6 +37,7 @@
 				<li>[<* P- *>]<a href="[<$I2_ROOT>]eighth/vp_room"><b>View or print the utilization of a room</b></a></li>
 				<li><a href="[<$I2_ROOT>]eighth/room_sanity">Room assignment sanity check</a></li>
 				<li>[<* P+ *>]<a href="[<$I2_ROOT>]eighth/vp_sponsor">View or print sponsor schedule</a></li>
+				<li>[<* P- *>]<a href="[<$I2_ROOT>]eighth/vp_activity">View or print activity schedule</a></li>
 			</ol>
 		</td>
 		<td>

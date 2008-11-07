@@ -69,6 +69,23 @@ class EighthPrint {
 		}
 	}
 
+	public static function print_activity_schedule($aid, $format = 'print') {
+		$activity = new EighthActivity($aid);
+		$output = self::latexify('activity_schedule');
+		ob_start();
+		eval($output);
+		$output = ob_get_clean();
+		if($format == 'print') {
+			self::do_print($output);
+		}
+		else {
+			if($format == 'pdf') {
+				self::add_info($output, 'Print Activity Schedule', $activity->name);
+			}
+			self::do_display($output, $format, "Activity Schedule for {$activity->name}");
+		}
+	}
+	
 	/**
 	* Print the attendance data for the given bloack and activity.
 	*

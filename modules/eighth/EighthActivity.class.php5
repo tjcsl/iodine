@@ -607,8 +607,21 @@ class EighthActivity {
 	* @return array An array of EighthActivity objects representing activities
 	*/
 	public static function get_all_activities_starting($startdate = NULL) {
-			  global $I2_SQL;
-			  return self::id_to_activity($I2_SQL->query('SELECT activityid,eighth_blocks.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) LEFT JOIN eighth_activities ON (eighth_activities.aid=eighth_block_map.activityid) WHERE date > %t GROUP BY activityid ORDER BY special DESC, name',$startdate)->fetch_all_arrays(Result::NUM));
+		global $I2_SQL;
+		return self::id_to_activity($I2_SQL->query('SELECT activityid,eighth_blocks.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) LEFT JOIN eighth_activities ON (eighth_activities.aid=eighth_block_map.activityid) WHERE date > %t GROUP BY activityid ORDER BY special DESC, name',$startdate)->fetch_all_arrays(Result::NUM));
+	}
+	
+	/**
+	* Gets all the blocks in which an activity is scheduled
+	*/
+	public function get_all_blocks($start_date = NULL) {
+		global $I2_SQL;
+		$activity = new EighthActivity($this->data['aid']);
+		if($start_date === NULL) {
+			$start_date = Eighth::$default_start_date;
+		}
+
+		return EighthActivity::id_to_activity($I2_SQL->query('SELECT activityid,eighth_blocks.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) LEFT JOIN eighth_activities ON (eighth_activities.aid=eighth_block_map.activityid) WHERE activityid=%d AND date >= %t ORDER BY date',$this->data['aid'], $start_date)->fetch_all_arrays(Result::NUM));
 	}
 
 	/**

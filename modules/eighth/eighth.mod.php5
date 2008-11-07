@@ -1336,7 +1336,7 @@ class Eighth implements Module {
 			$activities = $activity->get_all_blocks();
 			$this->template_args['activity'] = $activity;
 			$this->template_args['activities'] = $activities;
-			//$this->template_args['print_url'] = "sid/{$this->args['sid']}";
+			$this->template_args['print_url'] = "aid/{$this->args['aid']}";
 
 			$this->template = 'vp_activity.tpl';
 			$this->title = 'View Activity Schedule';

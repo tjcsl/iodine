@@ -43,5 +43,5 @@
 <script language="javascript" type="text/javascript">
 	document.scheduleform.name_id.focus();
 </script>
-[<if isSet($startdate)>]<b>Start date: [<$startdate|date_format>]</b><br />[</if>]
+[<if isSet($start_date)>]<b>Start date: [<$start_date|date_format>]</b><br />[</if>]
 [</if>]
