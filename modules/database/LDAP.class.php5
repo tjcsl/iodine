@@ -163,14 +163,6 @@ class LDAP {
 	}
 
 	/**
-	* Gets an administrative simple bind.
-	*/
-	public static function get_admin_bind($pass) {
-		$dn = i2config_get('admin_dn','cn=Manager,dc=tjhsst,dc=edu','ldap');
-		return self::get_simple_bind($dn,$pass);
-	}
-
-	/**
 	* Gets a simple bind as a generic authuser.
 	*/
 	public static function get_generic_bind() {

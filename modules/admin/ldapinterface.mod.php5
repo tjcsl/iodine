@@ -23,7 +23,6 @@ class LDAPInterface implements Module {
 	private $dn = FALSE;
 	private $searchtype = 'search';
 	private $attrs = FALSE;
-	private $admin_pass = FALSE;
 
 	/**
 	* Unused; we don't display a box (yet)
@@ -47,8 +46,7 @@ class LDAPInterface implements Module {
 				'query' => addslashes($this->query), 
 				'last_dn' => addslashes($this->dn),
 				'searchtype' => $this->searchtype,
-				'last_attrs' => $this->attrs,
-				'master_pass' => $this->admin_pass?TRUE:FALSE
+				'last_attrs' => $this->attrs
 			));
 	}
 	
@@ -90,22 +88,11 @@ class LDAPInterface implements Module {
 		global $I2_LDAP, $I2_ARGS, $I2_USER;
 
 		// Only available to people with LDAP admin privs
+		// TODO: It may be permissible to allow non-admins with user bind
 		if (! $I2_USER->is_ldap_admin()) {
 			return FALSE;
 		}
 		
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_password') {
-			unset($_SESSION['ldap_admin_pass']);
-			$this->admin_pass = FALSE;
-			redirect('ldapinterface');
-		}	
-		if (isSet($_POST['master_pass'])) {
-			$_SESSION['ldap_admin_pass'] = $_POST['master_pass'];
-		}
-		if (isSet($_SESSION['ldap_admin_pass'])) {
-			$this->admin_pass = $_SESSION['ldap_admin_pass'];
-		}
-
 		if( isset($_POST['ldapinterface_submit']) && $_POST['ldapinterface_submit']) {
 			if (isSet($_POST['ldapinterface_query'])) {
 				$this->query = $_POST['ldapinterface_query'];
@@ -115,7 +102,7 @@ class LDAPInterface implements Module {
 			
 			if (isSet($_POST['ldapinterface_dn'])) {
 				$this->dn = $_POST['ldapinterface_dn'];
-			} elseif (!$this->dn) {
+			} else {
 				$this->dn = i2config_get('base_dn','dc=tjhsst,dc=edu','ldap');
 			}
 			
@@ -143,12 +130,7 @@ class LDAPInterface implements Module {
 			}
 			
 			$ldap = $I2_LDAP;
-			if ($this->admin_pass) {
-				$ldap = LDAP::get_admin_bind($this->admin_pass);
-			}
-			
 			try {
-				//$this->query_data = $I2_LDAP->search($this->query,"()",array("objectClass"));
 				$res = NULL;
 				if ($this->searchtype == 'search') {
 					$res = $ldap->search($this->dn,$this->query,$myattrs);
@@ -167,17 +149,16 @@ class LDAPInterface implements Module {
 							$this->query_data = $res;
 						}
 					} else {
-							$res = $ldap->delete($dn);
-							$this->query_data = $res;
+						$res = $ldap->delete($dn);
+						$this->query_data = $res;
 					}
 				} else if ($this->searchtype == 'delete_recursive') {
 					$res = $ldap->delete_recursive($this->dn);
 					$this->query_data = $res;
 				}
-
 				
 				d("LDAP $this->searchtype Results:",7);
-				d(print_r($this->query_data,1),7);
+				d_r($this->query_data,7);
 			} catch (I2Exception $e) {
 				$this->query_data = 'LDAP error: '.$e->get_message();
 			}
