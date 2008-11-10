@@ -1848,6 +1848,15 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'view') {
 			$start_date = $this->args['start_date'];
+			
+			$temp = new DateTime($start_date);
+			$temp->modify("+2 weeks");
+			$this->template_args['next_date'] = $temp->format("Y-m-d");
+			//modify works in-place, so we have to cancel out the +2 in addition to
+			//the new -2
+			$temp->modify("-4 weeks");
+			$this->template_args['prev_date'] = $temp->format("Y-m-d");
+
 			$user = new User($uid);
 			$this->template_args['user'] = $user;
 			$this->template_args['comments'] = $user->comments;

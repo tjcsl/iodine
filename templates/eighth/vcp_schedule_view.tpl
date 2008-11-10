@@ -56,10 +56,10 @@
 	<form name="activities" action="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$user->uid>][<if $start_date != NULL>]/start_date/[<$start_date|date_format:"%Y-%m-%d">][</if>]" method="post" onsubmit="return validateSelected()">
 	<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; border: 0px; width: 100%; clear: left;">
 	<tr>
-	<td><input type="button" value="&lt; Back Two Weeks" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]'" /></td>
+	<td><input type="button" value="&lt; Back Two Weeks" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$prev_date>]'" /></td>
 	<td><input type="submit" value="Change Selected" /></td>
 	<td><input type="button" value="View Attended Activities" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/history/uid/[<$user->uid>]'"/></td>
-	<td><input type="button" value="Forward Two Weeks &gt;" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]'" /></td>
+	<td><input type="button" value="Forward Two Weeks &gt;" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$next_date>]'" /></td>
 	</tr>
 	</table>
 	<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; border: 0px; width: 100%;">
@@ -90,10 +90,10 @@
 	</table>
 	<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; border: 0px; width: 100%;">
 	<tr>
-	<td><input type="button" value="&lt; Back Two Weeks" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date-3600*24*14|date_format:"%Y-%m-%d">]'" /></td>
+	<td><input type="button" value="&lt; Back Two Weeks" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$prev_date>]'" /></td>
 	<td><input type="submit" value="Change Selected" /></td>
 	<td><input type="button" value="View Attended Activities" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/history/uid/[<$user->uid>]'"/></td>
-	<td><input type="button" value="Forward Two Weeks &gt;" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$start_date+3600*24*14|date_format:"%Y-%m-%d">]'" /></td>
+	<td><input type="button" value="Forward Two Weeks &gt;" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$next_date>]'" /></td>
 	</tr>
 	</table>
 </form>
