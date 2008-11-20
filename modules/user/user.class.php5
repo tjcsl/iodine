@@ -426,7 +426,7 @@ class User {
 		}
 		if (! isSet(self::$senior_gradyear)) {
 			$date = getdate();
-			self::$senior_gradyear = $date['year'] + ($date['mon'] >= 7 ? 1 : 0);
+			self::$senior_gradyear = $date['year'] + ($date['mon'] >= 9 ? 1 : 0);
 		}
 		$gradyear = self::$senior_gradyear - ((int)$grade) + 12;
 		return $gradyear;
