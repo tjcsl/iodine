@@ -2,7 +2,7 @@ var ccwin = null;
 var slider_moving = null;
 var red_fg = 0, green_fg = 0, blue_fg = 0, red_bg = 0, green_bg = 0, blue_bg = 0;
 var red_fg_slider_bar = null, red_bg_slider_bar = null, green_fg_slider_bar = null, green_bg_slider_bar = null, blue_fg_slider_bar = null, blue_bg_slider_bar = null;
-var change_slider_colors = TRUE;
+var change_slider_colors = true;
 function show_color_chooser() {
 	var e = event;
 	if(ccwin == null) {
