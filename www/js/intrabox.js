@@ -111,6 +111,30 @@ function getTop(element) {
 	}
 	return offset;
 }
+function createRequestObject() {
+	var ro = null;
+	if(window.ActiveXObject) {
+		ro = new ActiveXObject("Msxml2.XMLHTTP");
+		if(!ro) {
+			ro = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	}
+	else if(window.XMLHttpRequest) {
+		ro = new XMLHttpRequest();
+	}
+	return ro;
+}
+var http = createRequestObject();
+function sendReq(info) {
+	http.open('GET', ajax_page+info);
+	http.onreadystatechange = handleResponse;
+	http.send(null);
+}
+function handleResponse() {
+	if(http.readyState == 4) {
+		var response = http.responseText;
+	}
+}
 function init(box) {
 	box.onmousedown = doIntraboxDown;
 	if(isNaN(parseInt(make_intrabox().style.left)))
