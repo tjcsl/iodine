@@ -1,3 +1,6 @@
+[<if isset($is_admin)>]
+  <a href="[<$I2_ROOT>]seniors/admin">Add a College or Major</a><br />
+[</if>]
 [<if isset($is_senior)>]
   <a href="[<$I2_ROOT>]seniors/submit">Click here to [<if isset($has_submitted)>]change[<else>]add[</if>] your college destination info</a><br /><br />
 [</if>]

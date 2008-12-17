@@ -24,16 +24,21 @@ class Seniors implements Module {
 	* Template for the specified action
 	*/
 	private $template;
+	private $template_args = array();
 
 	private $college_cache = array();
 	private $major_cache = array();
 
+	private $is_admin = false;
+	
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
 		global $I2_ARGS, $I2_USER;
 
+		$this->is_admin = $I2_USER->is_group_member('admin_all');
+		
 		$args = array();
 		if(count($I2_ARGS) <= 1) {
 			return $this->sort();
@@ -53,7 +58,8 @@ class Seniors implements Module {
 		global $I2_SQL, $I2_USER, $I2_ARGS;
 
 		$this->template = 'destinations.tpl';
-
+		$this->template_args['is_admin'] = $this->is_admin;
+	
 		$sort = 'name';
 		$sortdir = 'ASC';
 		if (isset($I2_ARGS[2])) {
@@ -180,7 +186,24 @@ class Seniors implements Module {
 		return $this->major_cache[$id];
 	}
 
-	//private function 
+	private function admin() {
+		global $I2_SQL;
+
+		if (! $this->is_admin) {
+			redirect('seniors');
+		}
+		if (isSet($_POST['add_college'])) {
+			$I2_SQL->query('INSERT INTO CEEBMap SET CEEB=%d, CollegeName=%s;', $_POST['ceeb'], $_POST['college']);
+			redirect('seniors');
+		}
+		if (isSet($_POST['add_major'])) {
+	 		$I2_SQL->query('INSERT INTO MajorMap SET Major=%s;', $_POST['major']);	
+			redirect('seniors');
+		}
+		
+		$this->template = 'admin.tpl';
+		return "Add a College or Major";
+	}
 
 	/**
 	* Required by the {@link Module} interface.
