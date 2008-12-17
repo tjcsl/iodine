@@ -1825,11 +1825,10 @@ class Eighth implements Module {
 	*/
 	public function vcp_schedule() {
 		global $I2_SQL;
-		$uid = $this->args['uid'];
 		if($this->op == '') {
 			$this->template = 'vcp_schedule.tpl';
-			if(!empty($uid)) {
-				$this->template_args['users'] = array(new User($uid));
+			if(!empty($this->args['uid'])) {
+				$this->template_args['users'] = array(new User($this->args['uid']));
 			}
 			else {
 				if (isSet($this->args['fname']) && $this->args['fname']!="")
@@ -1857,11 +1856,11 @@ class Eighth implements Module {
 			$temp->modify("-4 weeks");
 			$this->template_args['prev_date'] = $temp->format("Y-m-d");
 
-			$user = new User($uid);
+			$user = new User($this->args['uid']);
 			$this->template_args['user'] = $user;
 			$this->template_args['comments'] = $user->comments;
-			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($uid, $start_date), FALSE);
-			$this->template_args['absences'] = EighthSchedule::get_absences($uid);
+			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($this->args['uid'], $start_date), FALSE);
+			$this->template_args['absences'] = EighthSchedule::get_absences($this->args['uid']);
 			//TODO: Do this in the the template
 			$this->template_args['absence_count'] = count($this->template_args['absences']);
 
@@ -1898,13 +1897,13 @@ class Eighth implements Module {
 			$days = intval((time()-strtotime($date))/86400);
 			$this->template_args['start_date'] = strtotime($date);
 			
-			$user = new User($uid);
+			$user = new User($this->args['uid']);
 			$this->template_args['user'] = $user;
 			$this->template_args['comments'] = $user->comments;
 			$this->template_args['activities'] = EighthActivity::
 				id_to_activity(EighthSchedule::get_activities(
-				$uid, $date, $days), FALSE);
-			$this->template_args['absences'] = EighthSchedule::get_absences($uid);
+				$this->args['uid'], $date, $days), FALSE);
+			$this->template_args['absences'] = EighthSchedule::get_absences($this->args['uid']);
 			//TODO: Do this in the the template
 			$this->template_args['absence_count'] = count($this->template_args['absences']);
 
@@ -1935,16 +1934,16 @@ class Eighth implements Module {
 			$this->template = 'vcp_schedule_history.tpl';
 		}
 		else if($this->op == 'format') {
-			$this->setup_format_selection('vcp_schedule', 'Student Schedule', array('uid' => $uid), TRUE);
+			$this->setup_format_selection('vcp_schedule', 'Student Schedule', array('uid' => $this->args['uid']), TRUE);
 		}
 		else if($this->op == 'print') {
-			EighthPrint::print_student_schedule($uid, $this->args['start_date'], $this->args['format']);
+			EighthPrint::print_student_schedule($this->args['uid'], $this->args['start_date'], $this->args['format']);
 		}
 		else if($this->op == 'choose') {
 			$valids = array();
 			$validdata = array();
 			$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bids'],FALSE);
-			$this->template_args['uid'] = $uid;
+			$this->template_args['uid'] = $this->args['uid'];
 			$this->template = 'vcp_schedule_choose.tpl';
 			if(!is_array($this->args['bids'])) {
 				$this->template_args['bids'] = $this->args['bids'];
@@ -1979,7 +1978,7 @@ class Eighth implements Module {
 						$activity = new EighthActivity($this->args['aid'], $bid);
 						
 						self::start_undo_transaction();
-						$ret = $activity->add_member(new User($uid), isset($this->args['force']));
+						$ret = $activity->add_member(new User($this->args['uid']), isset($this->args['force']));
 						self::end_undo_transaction();
 						
 						$act_status = array();
@@ -2023,11 +2022,11 @@ class Eighth implements Module {
 					} else {
 						$append = NULL;
 					}
-					redirect("eighth/vcp_schedule/view/uid/{$uid}$append");
+					redirect("eighth/vcp_schedule/view/uid/{$this->args['uid']}$append");
 				}
 				$this->template = 'vcp_schedule_change.tpl';
 				$this->template_args['status'] = $status;
-				$this->template_args['uid'] = $uid;
+				$this->template_args['uid'] = $this->args['uid'];
 				$this->template_args['bids'] = $this->args['bids'];
 				$this->template_args['aid'] = $this->args['aid'];
 			}
@@ -2039,7 +2038,7 @@ class Eighth implements Module {
 			$this->title = 'Activity Roster';
 		}
 		else if($this->op == 'absences') {
-			$absences = EighthActivity::id_to_Activity(EighthSchedule::get_absences($uid));
+			$absences = EighthActivity::id_to_Activity(EighthSchedule::get_absences($this->args['uid']));
 			$this->template_args['absences'] = $absences;
 			$user = new User($uid);
 			$this->template_args['user'] = $user;
@@ -2048,9 +2047,9 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'remove_absence') {
 			self::start_undo_transaction();
-			EighthSchedule::remove_absentee($this->args['bid'], $uid);
+			EighthSchedule::remove_absentee($this->args['bid'], $this->args['uid']);
 			self::end_undo_transaction();
-			redirect('eighth/vcp_schedule/absences/uid/'.$uid);
+			redirect('eighth/vcp_schedule/absences/uid/'.$this->args['uid']);
 		}
 	}
 
