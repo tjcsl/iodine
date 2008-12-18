@@ -2040,7 +2040,7 @@ class Eighth implements Module {
 		else if($this->op == 'absences') {
 			$absences = EighthActivity::id_to_Activity(EighthSchedule::get_absences($this->args['uid']));
 			$this->template_args['absences'] = $absences;
-			$user = new User($uid);
+			$user = new User($this->args['uid']);
 			$this->template_args['user'] = $user;
 			$this->template_args['admin'] = $this->admin;
 			$this->template = 'vcp_schedule_absences.tpl';
