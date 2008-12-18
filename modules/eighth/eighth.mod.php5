@@ -1328,12 +1328,9 @@ class Eighth implements Module {
 			$this->setup_activity_selection();
 		}
 		else if($this->op == 'view') {
-			
-			
 			$start_date = $this->args['start_date'];
 			$activity = new EighthActivity($this->args['aid']);
-			//$activities = $activity->get_all_blocks($start_date);
-			$activities = $activity->get_all_blocks();
+			$activities = $activity->get_all_blocks($start_date);
 			$this->template_args['activity'] = $activity;
 			$this->template_args['activities'] = $activities;
 			$this->template_args['print_url'] = "aid/{$this->args['aid']}";
