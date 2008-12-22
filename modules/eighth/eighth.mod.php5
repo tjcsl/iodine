@@ -1238,7 +1238,7 @@ class Eighth implements Module {
 	/**
 	* Cancel/set comments/advertize for an activity
 	*
-	* @access private
+	* @access public
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
 	*/
@@ -1271,7 +1271,7 @@ class Eighth implements Module {
 	/**
 	* Room assignment sanity check
 	*
-	* @access private
+	* @access public
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
 	*/
@@ -1291,7 +1291,7 @@ class Eighth implements Module {
 	/**
 	* View or print sponsor schedule
 	*
-	* @access private
+	* @access public
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
 	*/
@@ -1319,7 +1319,7 @@ class Eighth implements Module {
 	/**
 	* View or print sponsor schedule
 	*
-	* @access private
+	* @access public
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
 	*/
@@ -1349,7 +1349,7 @@ class Eighth implements Module {
 	/**
 	* Reschedule students by student ID for a single activity
 	*
-	* @access private
+	* @access public
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
 	*/
@@ -1413,7 +1413,7 @@ class Eighth implements Module {
 	/**
 	* View, change, or print attendance data
 	*
-	* @access private
+	* @access public
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
 	*/
@@ -1466,7 +1466,7 @@ class Eighth implements Module {
 	/**
 	* Enter TA absences by student ID
 	*
-	* @access private
+	* @access public
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
 	*/
@@ -1507,7 +1507,7 @@ class Eighth implements Module {
 	/**
 	* View or print a list of delinquent students
 	*
-	* @access private
+	* @access public
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
 	*/
@@ -1676,7 +1676,7 @@ class Eighth implements Module {
 	/**
 	* Finalize student schedules
 	*
-	* @access private
+	* @access public
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
 	*/
@@ -1705,7 +1705,7 @@ class Eighth implements Module {
 	/**
 	* Print activity rosters
 	*
-	* @access private
+	* @access public
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
 	*/
@@ -1730,7 +1730,7 @@ class Eighth implements Module {
 	/**
 	* Change starting date
 	*
-	* @access private
+	* @access public
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
 	*/
@@ -1748,7 +1748,7 @@ class Eighth implements Module {
 	/**
 	* Add or remove 8th period block from system
 	*
-	* @access private
+	* @access public
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
 	*/
@@ -1782,7 +1782,7 @@ class Eighth implements Module {
 	* that block in order to sign up for anything. This signs everyone who is not already signed up for anything
 	* into the default activity, so that they can see and change their activity.
 	*
-	* @access private
+	* @access public
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
 	* @todo Figure out what voodoo this does
@@ -1816,7 +1816,7 @@ class Eighth implements Module {
 	/**
 	* View, change, or print student schedule
 	*
-	* @access private
+	* @access public
 	* @param string $this->op The operation to do.
 	* @param array $this->args The arguments for the operation.
 	*/
