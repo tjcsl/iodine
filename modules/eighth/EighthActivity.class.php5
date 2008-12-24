@@ -740,111 +740,123 @@ class EighthActivity {
 		else if($name == 'absentees' && $this->data['bid']) {
 			return EighthSchedule::get_absentees($this->data['bid'], $this->data['aid']);
 		}
-		else {
-			switch($name) {
-				case 'comment_short':
-					if(isset($this->data['comment'])) {
-						return substr($this->data['comment'], 0, 15) . (strlen($this->data['comment']) > 15 ? '...' : '');
-					}
+		switch($name) {
+			case 'comment_short':
+				if(isset($this->data['comment'])) {
+					return substr($this->data['comment'], 0, 15) . (strlen($this->data['comment']) > 15 ? '...' : '');
+				}
+				return '';
+			case 'comment_notsoshort':
+				if(isset($this->data['comment'])) {
+					return substr($this->data['comment'], 0, 20) . (strlen($this->data['comment']) > 20 ? '...' : '');
+				}
+				return '';
+			case 'name_r':
+				return ($this->data['special'] ? 'SPECIAL: ' : '') . $this->data['name'] . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
+			case 'name_full_r':
+				$namelen = strlen($this->data['name']);
+				// Make it so that all names w/comments are 50ish characters or less w/o truncating the name itself
+				if ($namelen >= 70) {
+					return $this->data['name'];
+				}
+				if (isSet($this->data['comment'])) {
+					$comment = $this->data['comment'];
+					$commentlen = strlen($comment);
+				} else {
+					$commentlen = 0;
+					$comment = '';
+				}
+				return ($this->data['special'] ? 'SPECIAL: ' : '') . $this->data['name'] . ($commentlen ? ' - ' . substr($comment,0,70-$namelen).(70-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
+			case 'name_comment_r':
+				if (isSet($this->data['comment'])) {
+					$comment = $this->data['comment'];
+				} else {
+					$comment = '';
+				}
+				return ($this->data['special'] ? 'SPECIAL: ' : '') . $this->data['name'] . ($comment ? ' - ' . $comment : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
+			case 'name_friendly':
+				$comment = $this->__get('comment_short');
+				if (!$comment) {
+					return $this->data['name'];
+				}
+				return $this->data['name'].' - '.$comment;
+			case 'sponsors_comma':
+				$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
+				$temp_sponsors = array();
+				foreach($sponsors as $sponsor) {
+					$temp_sponsors[] = $sponsor->name;
+				}
+				return implode(', ', $temp_sponsors);
+			case 'sponsors_lname_comma':
+				$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
+				$temp_sponsors = array();
+				foreach($sponsors as $sponsor) {
+					$temp_sponsors[] = $sponsor->lname;
+				}
+				return implode(', ', $temp_sponsors);
+
+			case 'block_sponsors_comma':
+				if($this->data['cancelled']) {
+					return 'CANCELLED';
+				}
+				$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
+				$temp_sponsors = array();
+				foreach($sponsors as $sponsor) {
+					$temp_sponsors[] = $sponsor->name_comma;
+				}
+				return implode(', ', $temp_sponsors);
+			case 'block_sponsors_comma_short':
+				if($this->data['cancelled']) {
+					return 'CANCELLED';
+				}
+				$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
+				$temp_sponsors = array();
+				foreach($sponsors as $sponsor) {
+					$temp_sponsors[] =  $sponsor->lname . ($sponsor->fname ? ', ' . substr($sponsor->fname, 0, 1) . '.' : '');
+				}
+				return implode(', ', $temp_sponsors);
+			case 'pickups_comma':
+				$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
+				$temp_pickups = array();
+				foreach($sponsors as $sponsor) {
+					$temp_pickups[] = $sponsor->pickup;
+				}
+				return implode(', ', array_unique($temp_pickups));
+			case 'rooms_comma':
+				$rooms = EighthRoom::id_to_room($this->data['rooms']);
+				$temp_rooms = array();
+				foreach($rooms as $room) {
+					$temp_rooms[] = $room->name;
+				}
+				return implode(', ', $temp_rooms);
+			case 'block_rooms_comma':
+				if($this->data['cancelled']) {
 					return '';
-				case 'comment_notsoshort':
-					if(isset($this->data['comment'])) {
-						return substr($this->data['comment'], 0, 20) . (strlen($this->data['comment']) > 20 ? '...' : '');
-					}
-					return '';
-				case 'name_r':
-					return ($this->data['special'] ? 'SPECIAL: ' : '') . $this->data['name'] . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
-			 case 'name_full_r':
-					$namelen = strlen($this->data['name']);
-					// Make it so that all names w/comments are 50ish characters or less w/o truncating the name itself
-					if ($namelen >= 70) {
-							  return $this->data['name'];
-					}
-					if (isSet($this->data['comment'])) {
-						$comment = $this->data['comment'];
-						$commentlen = strlen($comment);
-					} else {
-						$commentlen = 0;
-						$comment = '';
-					}
-					return ($this->data['special'] ? 'SPECIAL: ' : '') . $this->data['name'] . ($commentlen ? ' - ' . substr($comment,0,70-$namelen).(70-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
-				case 'name_friendly':
-					$comment = $this->__get('comment_short');
-					if (!$comment) {
-						return $this->data['name'];
-					}
-					return $this->data['name'].' - '.$comment;
-				case 'sponsors_comma':
-					$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
-					$temp_sponsors = array();
-					foreach($sponsors as $sponsor) {
-						$temp_sponsors[] = $sponsor->name;
-					}
-					return implode(', ', $temp_sponsors);
-				case 'block_sponsors_comma':
-					if($this->data['cancelled']) {
-						return 'CANCELLED';
-					}
-					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
-					$temp_sponsors = array();
-					foreach($sponsors as $sponsor) {
-						$temp_sponsors[] = $sponsor->name_comma;
-					}
-					return implode(', ', $temp_sponsors);
-				case 'block_sponsors_comma_short':
-					if($this->data['cancelled']) {
-						return 'CANCELLED';
-					}
-					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
-					$temp_sponsors = array();
-					foreach($sponsors as $sponsor) {
-						$temp_sponsors[] =  $sponsor->lname . ($sponsor->fname ? ', ' . substr($sponsor->fname, 0, 1) . '.' : '');
-					}
-					return implode(', ', $temp_sponsors);
-				case 'pickups_comma':
-					$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
-					$temp_pickups = array();
-					foreach($sponsors as $sponsor) {
-						$temp_pickups[] = $sponsor->pickup;
-					}
-					return implode(', ', array_unique($temp_pickups));
-				case 'rooms_comma':
-					$rooms = EighthRoom::id_to_room($this->data['rooms']);
-					$temp_rooms = array();
-					foreach($rooms as $room) {
-						$temp_rooms[] = $room->name;
-					}
-					return implode(', ', $temp_rooms);
-				case 'block_rooms_comma':
-					if($this->data['cancelled']) {
-						return '';
-					}
-					$rooms = EighthRoom::id_to_room($this->data['block_rooms']);
-					$temp_rooms = array();
-					foreach($rooms as $room) {
-						$temp_rooms[] = $room->name;
-					}
-					return implode(', ', $temp_rooms);
-				case 'restricted_members':
-					return $this->get_restricted_members();
-				case 'restricted_members_obj':
-					return User::sort_users($this->get_restricted_members());
-				case 'restricted_members_obj_sorted':
-					$members = $this->__get('restricted_members_obj');
-					usort($members,array($this,'sort_by_name'));
-					return $members;
-				case 'capacity':
-					if (!isSet($this->data['block_rooms']) || count($this->data['block_rooms']) == 0) {
-						return -1;
-					}
-					$this->data['capacity'] = $I2_SQL->query('SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)', 
-							  $this->data['block_rooms'])->fetch_single_value();
-					return $this->data['capacity'];
-		 case 'member_count':
-					$this->data['member_count'] = $I2_SQL->query('SELECT COUNT(userid) FROM eighth_activity_map WHERE bid=%d AND aid=%d'
-							  ,$this->data['bid'],$this->data['aid'])->fetch_single_value();
-					return $this->data['member_count'];
-			}
+				}
+				$rooms = EighthRoom::id_to_room($this->data['block_rooms']);
+				$temp_rooms = array();
+				foreach($rooms as $room) {
+					$temp_rooms[] = $room->name;
+				}
+				return implode(', ', $temp_rooms);
+			case 'restricted_members':
+				return $this->get_restricted_members();
+			case 'restricted_members_obj':
+				return User::sort_users($this->get_restricted_members());
+			case 'restricted_members_obj_sorted':
+				$members = $this->__get('restricted_members_obj');
+				usort($members,array($this,'sort_by_name'));
+				return $members;
+			case 'capacity':
+				if (!isSet($this->data['block_rooms']) || count($this->data['block_rooms']) == 0) {
+					return -1;
+				}
+				$this->data['capacity'] = $I2_SQL->query('SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)', 
+						  $this->data['block_rooms'])->fetch_single_value();
+			return $this->data['capacity'];
+		 	case 'member_count':
+				$this->data['member_count'] = $I2_SQL->query('SELECT COUNT(userid) FROM eighth_activity_map WHERE bid=%d AND aid=%d',$this->data['bid'],$this->data['aid'])->fetch_single_value();
+				return $this->data['member_count'];
 		}
 	}
 

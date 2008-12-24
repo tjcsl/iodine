@@ -11,26 +11,44 @@
 	}
 </script>
 <form name="activity_select_form" action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$uid>]/bids/[<$bids>][<if $start_date != NULL>]/start_date/[<$start_date>][</if>]" method="post">
-	<select name="aid" size="15" onchange="changeDescription(this.options[this.selectedIndex].value)">
-[<foreach from=$activities item="activity">]
-	[<assign var=capacity value=$activity->capacity>]
-        <option value="[<$activity->aid>]"[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"[</if>]>[<$activity->aid>]: [<$activity->name_full_r|escape:html>]</option>
-[</foreach>] 
+	<select name="aid" size="15" style="width:100%; margin-top:3px;" onchange="changeDescription(this.options[this.selectedIndex].value)">
+	[<foreach from=$activities item="activity">]
+		[<assign var=capacity value=$activity->capacity>]
+		<option value="[<$activity->aid>]"[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"[</if>]>[<$activity->aid>]: [<$activity->name_comment_r|escape:html>]</option>
+	[</foreach>] 
 	</select><br />
-	<input type="text" name="aid" id="aid_box" maxlength="4" size="4" /><input type="submit" name="submit" value="Change" />[<if empty($manybids)>]<input type="submit" name="submit" value="View Roster" />[</if>]<br />
+	<input type="text" name="aid" id="aid_box" maxlength="4" size="4" />
+	<input type="submit" name="submit" value="Change" />
+	[<if empty($manybids)>]
+		<input type="submit" name="submit" value="View Roster" />
+	[</if>]
 </form>
 <script language="javascript" type="text/javascript">
 	document.getElementById("aid_box").focus();
 </script>
 [<foreach from=$activities item="activity">]
 	[<assign var=capacity value=$activity->capacity>]
-<div id="desc_[<$activity->aid>]" style="display: none; border: solid thin; padding: 5px; margin: 5px; width: 600px;">
-	<span class="bold">Description:</span><br />
-	[<$activity->description|escape:html>]<br />
-	[<if $activity->comment>]<br /><b>[<$activity->comment>]</b><br /><br />[</if>]
-	[<$activity->member_count>] student(s) are signed up [<if $capacity != -1>]out of [<$capacity>] allowed [</if>]for this activity.<br />
-	[<if $activity->cancelled>]<br /><span class="bold" style="color: #FF0000;">CANCELLED</span>[</if>]
-	[<if $capacity != -1 && $activity->member_count >= $capacity>]<br /><span class="bold" style="color: #0000FF;">CAPACITY FULL</span>[</if>]
-	[<if $activity->restricted>]<br /><span class="bold" style="color: #FF6600;">RESTRICTED</span>[</if>]
+	[<assign var=members value=$activity->member_count>]
+	<div id="desc_[<$activity->aid>]" style="display: none; border: solid thin; padding: 5px; margin-top:2px; margin-bottom:3px">
+	[<$activity->name|escape:html>]
+	[<if $activity->comment>]
+		<br /><b>[<$activity->comment|escape:html>]</b>
+	[</if>]
+	[<if $activity->description>]
+		<br /><br /><b>Description:</b> [<$activity->description|escape:html>]
+	[</if>]
+	[<if $activity->sponsors_lname_comma>]
+		<br /><br /><b>Sponsor:</b> [<$activity->sponsors_lname_comma>]
+	[</if>]
+	<br /><br />[<$members>] student[<if $members == 1>] is[<else>]s are[</if>] signed up [<if $capacity != -1>]out of [<$capacity>] allowed [</if>]for this activity.<br />
+	[<if $activity->cancelled>]
+		<br /><span class="bold" style="color: #FF0000;">CANCELLED</span>
+	[</if>]
+	[<if $capacity != -1 && $activity->member_count >= $capacity>]
+		<br /><span class="bold" style="color: #0000FF;">CAPACITY FULL</span>
+	[</if>]
+	[<if $activity->restricted>]
+		<br /><span class="bold" style="color: #FF6600;">RESTRICTED</span>
+	[</if>]
 </div>
 [</foreach>]
