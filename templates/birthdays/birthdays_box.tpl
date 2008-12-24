@@ -1,50 +1,35 @@
-
-[<if count($today) > 0 >]
-
 <table id="birthdays">
-<tbody>
-	<tr>
-		<th id="name">Today</th>
-		<th id="grade">Grade</th>
-		<th id="age">Age</th>
-	</tr>
-[<foreach from=$today item=person>]
-	<tr>
-		<td><a href="[<$I2_ROOT>]studentdirectory/info/[<$person.uid>]">[<$person.name>]</a></td>
-		<td>[<$person.grade>]</td>
-		<td>[<$person.age>]</td>
-	</tr>
-[</foreach>]
-</tbody>
+	[<if count($today) >]
+		<tr>
+			<th style="width:50%;">Today</th>
+			<th>Grade</th>
+			<th>Age</th>
+		</tr>
+	[<foreach from=$today item=person>]
+		<tr>
+			<td><a href="[<$I2_ROOT>]studentdirectory/info/[<$person.uid>]">[<$person.name>]</a></td>
+			<td>[<$person.grade>]</td>
+			<td>[<$person.age>]</td>
+		</tr>
+	[</foreach>]
+	[<else>]
+		<tr><td>No birthdays today.</td></tr>
+	[</if>]
+	[<if count($tomorrow) >]
+		<tr>
+			<th style="width:50%;">Tomorrow</th>
+			<th>Grade</th>
+			<th>Age</th>
+		</tr>
+		[<foreach from=$tomorrow item=person>]
+			<tr>
+				<td><a href="[<$I2_ROOT>]studentdirectory/info/[<$person.uid>]">[<$person.name>]</a></td>
+				<td>[<$person.grade>]</td>
+				<td>[<$person.age>]</td>
+			</tr>
+		[</foreach>]
+	[<else>]
+		<tr><td>No birthdays tomorrow.</td></tr>
+	[</if>]
 </table>
-
-[<else>]
-
-No birthdays today.
-
-[</if>]
-[<if count($tomorrow) > 0 >]
-
-<table id="birthdays_tom">
-<tbody>
-	<tr>
-		<th id="name">Tomorrow</th>
-		<th id="grade">Grade</th>
-		<th id="age">Age</th>
-	</tr>
-[<foreach from=$tomorrow item=person>]
-	<tr>
-		<td><a href="[<$I2_ROOT>]studentdirectory/info/[<$person.uid>]">[<$person.name>]</a></td>
-		<td>[<$person.grade>]</td>
-		<td>[<$person.age>]</td>
-	</tr>
-[</foreach>]
-</tbody>
-</table>
-
-[<else>]
-
-No birthdays tomorrow.
-
-[</if>]
-<div id="morebirthdays"><a href="[<$I2_ROOT>]birthdays/">More birthdays</a></div>
+<b><a href="[<$I2_ROOT>]birthdays/">More birthdays</a></b>
