@@ -226,6 +226,7 @@ class Logging {
 	*/
 	public function log_screen($msg) {
 		if($this->screen_debug) {
+			$msg = htmlspecialchars($msg);
 			$this->debug_buf .= "\r\n<br />$msg";
 		}	
 	}
