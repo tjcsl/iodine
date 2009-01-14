@@ -91,7 +91,8 @@ class CSS implements Module {
 		$style_cache = $cache_dir . $I2_USER->uid;
 
 		//Recompile the cache if it's stale
-		if (!file_exists($style_cache) || filemtime($style_cache) < dirmtime($this->style_path)) {
+		if (!file_exists($style_cache)) {
+			//|| filemtime($style_cache) < dirmtime($this->style_path)) {
 			$this->style_sheet = new StyleSheet();
 			$this->load_style('default');
 			if ($current_style != 'default') {
