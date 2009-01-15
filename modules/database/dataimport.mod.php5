@@ -523,6 +523,8 @@ class dataimport implements Module {
 		$usernew['showbdayself'] = 'TRUE';
 		$usernew['showeighthself'] = 'TRUE';
 
+		$usernew['preferredPhoto'] = 'AUTO';
+
 		$dn = "iodineUid={$usernew['iodineUid']},ou=people,dc=tjhsst,dc=edu";
 
 		d("Creating user \"{$usernew['iodineUid']}\"...",7);

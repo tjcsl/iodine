@@ -515,6 +515,8 @@ class Newimport implements Module {
 		$usernew['showeighthself'] = 'TRUE';
 		$usernew['showlockerself'] = 'TRUE';
 
+		$usernew['preferredPhoto'] = 'AUTO';
+
 		$dn = "iodineUid={$usernew['iodineUid']},ou=people,dc=tjhsst,dc=edu";
 
 		d("Creating user \"{$usernew['iodineUid']}\"...",7);
