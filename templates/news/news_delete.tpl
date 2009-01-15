@@ -6,7 +6,7 @@
  [<$newsitem->text>]
  <form action="[<$I2_SELF>]" method="POST">
  <input type="hidden" name="delete_confirm" value="1" />
- <br /><br /><input type="submit" value="Submit" name="submit" />
+ <br /><br /><input type="submit" value="Delete" name="submit" />
  </form>
 [<else>]
  Your post has been deleted.<br />
