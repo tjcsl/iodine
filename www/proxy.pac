@@ -34,7 +34,7 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, "hwwilsonweb.com") ||
 		dnsDomainIs(host, "worldbookonline.com")
 	)
-		return "PROXY border.tjhsst.edu:8080";
+		return "PROXY local.border.tjhsst.edu:8080";
 	else
 		return "DIRECT";
 }
