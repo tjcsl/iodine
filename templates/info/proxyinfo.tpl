@@ -4,9 +4,9 @@
 </h1>
 
 <p>
-   By virtue of a proxy/authentication process that uses your Novell account
-   on the TJ school LAN, you can now access from home a variety of resources
-   at TJ. Currently, our library subscribes to online databases that are
+   By virtue of a proxy/authentication process that uses your TJ network
+   account, you can now access from home a variety of resources at TJ.
+   Currently, our library subscribes to online databases that are
    available for research from school and home. Note too, that students
    are running a student-based Intranet that is accessed off the 
    <a href="http://www.tjhsst.edu/">TJ Home Page.</a>
@@ -46,7 +46,7 @@
   <li> Click on "LAN Settings" and select the box that says "Use a proxy
     server". </li>
   <li> Click the "Advanced" button. </li>
-  <li> Under HTTP, enter <b>border.tjhsst.edu</b> and set the port to <b>8080</b>. </li>
+  <li> Under HTTP, enter <b>local.border.tjhsst.edu</b> and set the port to <b>8080</b>. </li>
   <li> Click "OK" three times to return to the browser window. </li>
   <li> Go to the <a href="http://www.tjhsst.edu/%7Elibrary/database.htm">
     TJ Library Online Database</a> page and click "Reload". </li>
@@ -62,7 +62,7 @@
     "Connections" tab. </li>
   <li> Click on "Settings" and select the box that says "Use a proxy server". </li>
   <li> Click the "Advanced" button. </li>
-  <li> Under HTTP, enter <b>border.tjhsst.edu</b> and set the port to 
+  <li> Under HTTP, enter <b>local.border.tjhsst.edu</b> and set the port to 
     <b>8080</b>. </li>
   <li> Click "OK" three times to return to the browser window. </li>
   <li> Go to the <a href="http://www.tjhsst.edu/%7Elibrary/database.htm">TJ
@@ -84,7 +84,7 @@
   <li> Click on the "Proxies" tab. </li>
   <li> Check the box that says "Web Proxy (HTTP)" in the list under "Select a
     proxy server to configure:". </li>
-  <li> Under "Web Proxy Server", enter <b>border.tjhsst.edu</b>; after the
+  <li> Under "Web Proxy Server", enter <b>local.border.tjhsst.edu</b>; after the
     colon, set the port to <b>8080</b>. </li>
   <li> Click the "Apply Now" button at the lower-right of the window. </li>
   <li> Go to the <a href="http://www.tjhsst.edu/%7Elibrary/database.htm">TJ
@@ -104,7 +104,7 @@
 	window). </li>
   <li> Check the box that says "Web Proxy (HTTP)" in the list under "Select a
     proxy server to configure:". </li>
-  <li> Under "Web Proxy Server", enter <b>border.tjhsst.edu</b>; after the
+  <li> Under "Web Proxy Server", enter <b>local.border.tjhsst.edu</b>; after the
     colon, set the port to <b>8080</b>. </li>
   <li> Click the "Apply Now" button at the lower-right of the window. </li>
   <li> Go back to Safari and close the "Advanced" settings window. </li>
@@ -122,7 +122,7 @@
   <li> On the left, choose "General". </li>
   <li> Click on "Connection Settings". </li>
   <li> Select the radio bubble "Manual Proxy Configuration". </li>
-  <li> After "HTTP Proxy" type <b>border.tjhsst.edu</b> and set the port to
+  <li> After "HTTP Proxy" type <b>local.border.tjhsst.edu</b> and set the port to
     <b>8080</b>. </li>
   <li> After using the databases, change the radio bubble back to "Direct
     Connect to the Internet" to close the portal to TJ. </li>
@@ -143,7 +143,7 @@
   <li> In the Edit TCP/IP: LAN or ISP window, select "Manual Proxy 
     Configuration," then click "Next". </li>
   <li> In the "Edit Manual Proxy Configuration" window, enter 
-    <b>border.tjhsst.edu</b> and set the port to <b>8080</b>. Then click
+    <b>local.border.tjhsst.edu</b> and set the port to <b>8080</b>. Then click
 	"Next". </li>
   <li> In the "Summary" window, click "Sign On to AOL Now" to sign on
     immediately or click "Make More Changes" to make additional changes. </li>
@@ -156,7 +156,7 @@
   <li> Scroll down until you get to proxy. Select proxy.</li>
   <li> Select the bubble next to "Manually Specify the Proxy Settings,"
     then click "Setup"</li>
-  <li> In the Servers box, next to HTTP, type <b>border.tjhsst.edu</b>
+  <li> In the Servers box, next to HTTP, type <b>local.border.tjhsst.edu</b>
     and set the port at <b>8080</b></li>
 </ol>
 
@@ -171,7 +171,7 @@
   <li> Click the "Proxy Servers" button near the top of the pane. </li>
   <li> Check the box next to "HTTP" at the top of the window that comes up. 
   </li>
-  <li> Click on the text box in the same row.  Type <b>border.tjhsst.edu</b>. 
+  <li> Click on the text box in the same row.  Type <b>local.border.tjhsst.edu</b>. 
   </li>
   <li> Click on the box on the right in the same row.  Type <b>8080</b>. </li>
   <li> Click "OK" twice. <li>

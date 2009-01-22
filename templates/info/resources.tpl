@@ -1,6 +1,6 @@
 <div style="text-align: center; text-weight: bold;">Get the most updated online research resources at the TJ Library site: <a href="http://www.tjhsst.edu/~library/database.htm">http://www.tjhsst.edu/~library/database.htm</a></div>
 <hr />
-In order for the following links to work as expected, <b>if you are at home</b>, you first need to set your browser's proxy to <b>border.tjhsst.edu</b> on port <b>8080</b> (<a href="[<$I2_ROOT>]info/proxyinfo">Detailed directions</a>).
+In order for the following links to work as expected, <b>if you are at home</b>, you first need to set your browser's proxy to <b>local.border.tjhsst.edu</b> on port <b>8080</b> (<a href="[<$I2_ROOT>]info/proxyinfo">Detailed directions</a>).
 <ul>
 <li><a href="http://www.socialstudies.abc-clio.com/">ABC - CLIO</a></li>
 <li><a href="http://www.accessscience.com/">Access Science</a></li>
