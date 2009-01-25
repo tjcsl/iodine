@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 //                   JAVASCRIPT FOR SCRATCHPAD                                //
 // Author: Joshua Cranmer <jcranmer@tjhsst.edu>                               //
-// Last Updated: 05/02/07                                                     //
+// Last Updated: 01/25/09                                                     //
 // Exported functions:                                                        //
 //   NONE                                                                     //
 // Local use functions:                                                       //
@@ -71,7 +71,7 @@ window.onunload = function(){
 	}
 	http.open('POST', save_page,false);
 	http.setRequestHeader('Content-Type','text/plain');
-	http.onreadystatechange = handleResponse;
+	http.onreadystatechange = function () {};
 	var arr = [];
 	for (var i=0;i<tabInfo.names.length;i++) {
 		var str = encodeURIComponent(tabInfo.names[i]);
