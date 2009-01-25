@@ -1,0 +1,21 @@
+<li><a href="http://www.socialstudies.abc-clio.com/unifiedlogin.aspx?ipaddress=true&schoolid=35474">ABC - CLIO </a></li>
+<li><a href="http://www.accessscience.com">Access Science</a></li>
+<li><a href="http://www.america.eb.com">Britannica's Online Reference - Annals of American History </a></li>
+<li><a href="http://www.world.eb.com">Britannica's Online Reference - World Data Analyst</a></li>
+<li><a href="http://www.spanish.eb.com">Britannica's Online Reference - Gran Enciclopedia Planeta</a></li>
+<li><a href="http://www.mwu.eb.com">Britannica's Online Reference - Merriam-Websters Third New International Dictionary</a></li>
+<li><a href="http://library.cqpress.com/cqresearcher">CQ Researcher</a></li>
+<li><a href="http://earthscape.org">Columbia Earthscape</a></li>
+<li><a href="http://search.ebscohost.com">EBSCOHost Research </a></li>
+<li><a href="http://ehrafworldcultures.yale.edu/ehrafe">eHRAF (Human Relations Area Files)</a></li>
+<li><a href="http://infotrac.galegroup.com/itweb/tjhs_e">Gale Cengage InfoTrac</a></li>
+<li><a href="http://go-passport.grolier.com">Grolier Online </a></li>
+<li><a href="http://www.jstor.org">JSTOR</a></li>
+<li><a href="https://web.lexis-nexis.com/scholastic">Lexis-Nexis Scholastic</a></li>
+<li><a href="http://www.noodletools.com/noodlebib/index.php">NoodleTools</a></li>
+<li><a href="http://dictionary.oed.com">Oxford English Dictionary</a></li>
+<li><a href="http://poll.orspub.com">Polling the Nations: The Ultimate Survey Database</a></li>
+<li><a href="http://www.proquestk12.com/myproducts">ProQuest Direct </a></li>
+<li><a href="http://www.sciencedirect.com">Science Direct</a></li>
+<li><a href="http://hwwilsonweb.com">Wilson's Science Databases</a></li>
+<li><a href="http://www.worldbookonline.com">World Book Online</a></li>
