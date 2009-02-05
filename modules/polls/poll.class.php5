@@ -58,10 +58,10 @@ class Poll {
 	 * objects.
 	 *
 	 * @param int $pid The id to grab.
+	 * @param boolean $loadq Should we load the questions into the new Poll object?
 	 */
-	public function __construct($pid) {
+	public function __construct($pid, $loadq=TRUE) {
 		global $I2_SQL,$I2_LOG;
-
 		$pollinfo = $I2_SQL->query('SELECT name,introduction,startdt,'.
 			'enddt, visible FROM polls WHERE pid=%d', $pid)->
 			fetch_array(Result::ASSOC);
@@ -72,18 +72,27 @@ class Poll {
 		$this->begin = $pollinfo['startdt'];
 		$this->end = $pollinfo['enddt'];
 		$this->visibility = $pollinfo['visible'] == 1 ? true : false;
-
-		$qs = $I2_SQL->query('SELECT qid FROM poll_questions WHERE '.
-			'pid=%d',$pid)->fetch_all_single_values();
-		foreach ($qs as $q) {
-			$this->qs[$q] = new PollQuestion($pid, $q);
-		}
+		if($loadq)
+			$this->load_poll_questions();
 
 		$gs = $I2_SQL->query('SELECT * FROM poll_permissions WHERE '.
 			'pid=%d',$pid)->fetch_all_arrays();
 		foreach ($gs as $g) {
 			$this->gs[$g['gid']] = array($g['vote'], $g['modify'],
 				$g['results']);
+		}
+	}
+	
+	/**
+	 * Loads questions associated with the Poll calling it.
+	 */
+	function load_poll_questions() {
+		global $I2_SQL;
+
+		$qs = $I2_SQL->query('SELECT qid FROM poll_questions WHERE '.
+			'pid=%d',$this->pid)->fetch_all_single_values();
+		foreach ($qs as $q) {
+			$this->qs[$q] = new PollQuestion($this->pid, $q);
 		}
 	}
 
@@ -150,16 +159,17 @@ class Poll {
 	 *
 	 * The format of the array is an unindexed list of polls
 	 *
+	 * @param boolean $loadq Should we load the questions associated with the Poll object?
 	 * @return array Aforementioned array
 	 */
-	public static function all_polls() {
+	public static function all_polls($loadq=TRUE) {
 		global $I2_SQL;
 
 		$pids = $I2_SQL->query('SELECT pid FROM polls ORDER BY pid'.
 			' DESC')->fetch_all_single_values();
 		$polls = array();
 		foreach ($pids as $pid) {
-			$polls[] = new Poll($pid);
+			$polls[] = new Poll($pid,$loadq);
 		}
 		return $polls;
 	}
@@ -167,15 +177,20 @@ class Poll {
 	/**
 	 * Returns all polls that the user can see.
 	 *
+	 * @param boolean $loadq Should we load the questions associated with the Poll object?
 	 * @return array all_polls(), including only what I can see
 	 */
-	public static function accessible_polls() {
-		global $I2_USER;
+	public static function accessible_polls($loadq=TRUE) {
+		global $I2_USER, $I2_SQL;
 
-		$polls = Poll::all_polls();
-		foreach ($polls as $p) {
-			if ($p->can_see())
-				$out[] = $p;
+		$polls = Poll::all_polls($loadq);
+//		$gs = $I2_SQL->query('SELECT * FROM poll_permissions')->fetch_all_arrays();
+		$ugroups = Group::get_user_groups($I2_USER);
+		foreach($polls as $p) {
+			foreach($ugroups as $g) {
+				if(isset($p->gs[$g->gid]))
+					$out[] = $p;
+			}
 		}
 		return $out;
 	}

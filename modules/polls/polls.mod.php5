@@ -64,7 +64,7 @@ class Polls implements Module {
 	 * Initializes the intranet box.
 	 */
 	function init_box() {
-		$polls = Poll::accessible_polls();
+		$polls = Poll::accessible_polls(FALSE);
 		$open = array();
 		$time = time();
 		foreach($polls as $poll) {
@@ -108,7 +108,7 @@ class Polls implements Module {
 	function home() {
 		global $I2_USER;
 
-		$polls = Poll::accessible_polls();
+		$polls = Poll::accessible_polls(FALSE);
 		$open = array();
 		$finished = array();
 		$unstarted = array();
