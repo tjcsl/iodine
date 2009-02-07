@@ -38,6 +38,7 @@ class Birthdays implements Module {
 				$this->tmp_ldap = LDAP::get_generic_bind();
 				$cache = TRUE;
 			} catch (Exception $e) {
+				d("Could not bind as generic user, searching birthdays as current user, not writing cache",1);
 				global $I2_LDAP;
 				$this->tmp_ldap = $I2_LDAP;
 			}
