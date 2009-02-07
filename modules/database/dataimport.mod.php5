@@ -1367,7 +1367,7 @@ class dataimport implements Module {
 		 */
 		$admin_number = 9998;
 		$admin = array(
-			'objectClass' => 'fakeUser',
+			'objectClass' => 'simpleUser',
 			'cn'	=> 'Admin',
 			'givenName' => 'Admin',
 			'iodineUid' => 'admin',
