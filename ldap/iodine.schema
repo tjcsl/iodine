@@ -267,7 +267,7 @@ attributetype ( i2Attr:30
 	DESC 'The birthday of a person'
 	EQUALITY numericStringMatch
 	SUBSTR numericStringSubstringsMatch
-	SYNTAX integerSyntax
+	SYNTAX numericStringSyntax
 	SINGLE-VALUE
 	)
 
