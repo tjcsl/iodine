@@ -1,6 +1,6 @@
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/news_groups.js"></script>
 [<if isset($edited)>]
-Yours news post has been changed.<br />
+Your news post has been changed.<br />
 <a href="[<$I2_ROOT>]news">Back to news</a><br />
 [</if>]
 <form action="[<$I2_SELF>]" method="POST">
