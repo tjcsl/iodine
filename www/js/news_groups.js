@@ -7,7 +7,7 @@ function addGroup(gid) {
 	var select = document.createElement("SELECT");
 	select.name="add_groups[]";
 	select.className="groups_list";
-	for (var i = 1; i < groupsList.options.length; i+=1) {
+	for (var i = 0; i < groupsList.options.length; i+=1) {
 		var option = groupsList.options[i];
 		var newOption = document.createElement("OPTION");
 		newOption.value = option.value;
