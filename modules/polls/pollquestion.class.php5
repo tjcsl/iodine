@@ -39,11 +39,26 @@ class PollQuestion {
 			return $this->myquestion;
 		case 'answers':
 			return $this->myanswers;
+		case 'htmlanswers':
+			return $this->escaped_answers();
 		case 'answertype':
 			return $this->myanswertype;
 		default:
 			throw new I2Exception("Invalid variable $var attempted to be accessed in PollQuestion");
 		}
+	}
+
+	/**
+	 * Returns the list of answers with special characters escaped for HTML
+	 *
+	 * @TODO - do this for more than just quotes? This is a pretty quick fix.
+	 */
+	public function escaped_answers() {
+		$ret = array();
+		foreach($this->myanswers as $ans) {
+			$ret[] = str_replace("\"", "&quot;", $ans);
+		}
+		return $ret;
 	}
 
 	/**
