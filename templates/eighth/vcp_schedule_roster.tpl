@@ -1,7 +1,7 @@
 Roster for <b>[<$activity->name|escape:"html">]</b><br />
 Room: [<$activity->block_rooms_comma>]<br />
 Date: <b>[<$activity->block->date|date_format:"%A, %B %e %Y">]</b> Block <b>[<$activity->block->block>]</b><br />
-
+Sponsor(s): [<$activity->block_sponsors_comma_short>]<br />
 [<if $activity->comment|escape:"html">]
 <br />
 <em>[<$activity->comment>]</em>

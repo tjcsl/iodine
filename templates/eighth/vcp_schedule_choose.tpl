@@ -37,8 +37,8 @@
 	[<if $activity->description>]
 		<br /><br /><b>Description:</b> [<$activity->description|escape:html>]
 	[</if>]
-	[<if $activity->sponsors_lname_comma>]
-		<br /><br /><b>Sponsor:</b> [<$activity->sponsors_lname_comma>]
+	[<if $activity->block_sponsors_comma_short>]
+		<br /><br /><b>Sponsor:</b> [<$activity->block_sponsors_comma_short>]
 	[</if>]
 	<br /><br />[<$members>] student[<if $members == 1>] is[<else>]s are[</if>] signed up [<if $capacity != -1>]out of [<$capacity>] allowed [</if>]for this activity.<br />
 	[<if $activity->cancelled>]
