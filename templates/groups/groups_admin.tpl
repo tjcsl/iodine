@@ -14,7 +14,7 @@ To remove a group, enter its name here:<br />
 <input type="text" name="name" value="" /><input type="submit" value="Remove" name="submit" /><br />
 </form>
 <br />
-The current existant groups are:<br />
+The current existent groups are:<br />
 <ul>
 [<foreach from=$groups item=grp>]
   <li><a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a></li>
@@ -33,7 +33,7 @@ To remove a permission, enter its name here:<br />
 <input type="text" name="name" value="" /><input type="submit" value="Remove" name="submit" /><br />
 </form>
 <br />
-The current existant permissions are:<br />
+The current existent permissions are:<br />
 <ul>
 [<foreach from=$perms item=perm>]
   <li><a href="[<$I2_ROOT>]groups/perm/[<$perm->pid>]">[<$perm->name>]</a> ([<$perm->description>])</li>

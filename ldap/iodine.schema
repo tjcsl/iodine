@@ -617,23 +617,31 @@ attributetype ( i2Attr:75
 	)
 
 attributetype ( i2Attr:76
-	NAME ('perm-showlocker' 'showlocker')
-	DESC 'Whether the users locker number may be shown'
-	EQUALITY booleanMatch
-	SYNTAX boolSyntax
-	SINGLE-VALUE
-	)
+   NAME ('perm-showlocker' 'showlocker')
+   DESC 'Whether the users locker number may be shown'
+   EQUALITY booleanMatch
+   SYNTAX boolSyntax
+   SINGLE-VALUE
+   )
 
 attributetype ( i2Attr:77
-	NAME ('perm-showlocker-self' 'showlockerself')
-	DESC 'Whether the user wants their locker number shown'
+   NAME ('perm-showlocker-self' 'showlockerself')
+   DESC 'Whether the user wants their locker number shown'
+   EQUALITY booleanMatch
+   SYNTAX boolSyntax
+   SINGLE-VALUE
+   )
+
+attributetype ( i2Attr:78
+	NAME ('is-student-admin')
+	DESC 'Whether the user is a student (limited-privileges) admin'
 	EQUALITY booleanMatch
 	SYNTAX boolSyntax
 	SINGLE-VALUE
 	)
 
 objectclass ( i2OC:1
-	NAME ('tjhsstStudent' 'iodineStudent')
+	NAME 'tjhsstStudent'
 	SUP inetOrgPerson STRUCTURAL
 	MUST (
 		graduationYear $
@@ -641,13 +649,13 @@ objectclass ( i2OC:1
 		cn $
 		sn $
 		startpage $
-		tjhsstStudentId $
 		iodineUidNumber $
 		style $
 		header $
 		chrome
 	)
 	MAY (
+		tjhsstStudentId $
 		perm-showpictures $
 		perm-showaddress $
 		perm-showtelephone $
@@ -655,7 +663,7 @@ objectclass ( i2OC:1
 		perm-showschedule $
 		perm-showmap $
 		perm-showeighth $
-		perm-showlocker $
+      perm-showlocker $
 		perm-showpictures-self $
 		perm-showaddress-self $
 		perm-showtelephone-self $
@@ -663,7 +671,7 @@ objectclass ( i2OC:1
 		perm-showschedule-self $
 		perm-showmap-self $
 		perm-showeighth-self $
-		perm-showlocker-self $
+      perm-showlocker-self $
 		displayName $
 		middlename $
 		nickname $
@@ -687,12 +695,13 @@ objectclass ( i2OC:1
 		afsid $
 		homeDirectory $
 		loginShell $
+		is-student-admin $
 		is-admin
 	)
 	)
 
 objectclass ( i2OC:2
-	NAME ('tjhsstTeacher' 'iodineTeacher' 'tjhsstStaff' 'tjhsstFaculty')
+	NAME 'tjhsstTeacher'
 	SUP inetOrgPerson STRUCTURAL
 	MUST (
 		cn $
@@ -743,7 +752,7 @@ objectclass ( i2OC:2
 	)
 
 objectclass ( i2OC:4
-	NAME ('tjhsstClass' 'tjhsstCourse')
+	NAME 'tjhsstClass'
 	MUST (
 		tjhsstClassId $
 		tjhsstSectionId $
@@ -780,7 +789,7 @@ objectclass ( i2OC:8
 	)
 
 objectclass ( i2OC:9
-	NAME ('tjhsstRoom')
+	NAME 'tjhsstRoom'
 	MUST (
 		roomNumber
 	)
@@ -792,7 +801,7 @@ objectclass ( i2OC:9
 	)
 
 objectclass ( i2OC:10
-	NAME ('tjhsstYear' 'year' 'y')
+	NAME 'tjhsstYear'
 	MUST (
 		year
 	)
@@ -842,12 +851,12 @@ objectclass ( i2OC:17
 	)
 
 objectclass ( i2OC:18
-	NAME ('tjhsstCounselor' 'iodineCounselor')
+	NAME 'tjhsstCounselor'
 	SUP tjhsstTeacher STRUCTURAL
 	)
 
 objectclass ( i2OC:19
-	NAME ('simpleUser' 'fakeUser' 'iodineUser')
+	NAME 'simpleUser'
 	SUP inetOrgPerson STRUCTURAL
 	MUST (
 		iodineUid $
@@ -862,12 +871,12 @@ objectclass ( i2OC:19
 		givenName $
 		sn $
 		cn $
-		is-admin
+      is-admin
 	)
 	)
 
 objectclass ( i2OC:20
-	NAME ('iodineGroup')
+	NAME 'iodineGroup'
 	MUST (
 		cn
 	)
@@ -880,10 +889,12 @@ objectclass ( i2OC:20
 	)
 
 objectclass ( i2OC:21
-	NAME ('iodinePhoto')
+	NAME 'iodinePhoto'
 	MUST (
 		jpegPhoto $
-		cn $
+		cn
+   )
+   MAY (
 		perm-showpictures $
 		perm-showpictures-self
 	)

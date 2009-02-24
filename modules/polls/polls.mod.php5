@@ -64,7 +64,7 @@ class Polls implements Module {
 	 * Initializes the intranet box.
 	 */
 	function init_box() {
-		$polls = Poll::accessible_polls();
+		$polls = Poll::accessible_polls(FALSE);
 		$open = array();
 		$time = time();
 		foreach($polls as $poll) {
@@ -108,7 +108,7 @@ class Polls implements Module {
 	function home() {
 		global $I2_USER;
 
-		$polls = Poll::accessible_polls();
+		$polls = Poll::accessible_polls(FALSE);
 		$open = array();
 		$finished = array();
 		$unstarted = array();
@@ -149,12 +149,12 @@ class Polls implements Module {
 			$p = Poll::add_poll($name, $blurb, $begin, $end, $on);
 
 			$_POST['groups'] = array_unique($_POST['groups']);
-                        foreach ($_POST[groups] as $key => $id) {
-				$g = $_POST[group_gids][$id];
+                        foreach ($_POST['groups'] as $key => $id) {
+				$g = $_POST['group_gids'][$id];
 				$p->add_group_id($g, array(
-					isset($_POST[vote][$id])?1:0,
-					isset($_POST[modify][$id])?1:0,
-					isset($_POST[results][$id])?1:0
+					isset($_POST['vote'][$id])?1:0,
+					isset($_POST['modify'][$id])?1:0,
+					isset($_POST['results'][$id])?1:0
 				));
 			}
 			$_POST = array(); // Unset post vars

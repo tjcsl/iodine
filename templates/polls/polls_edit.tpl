@@ -88,7 +88,7 @@ Questions:<br />
       <a href="[<$I2_ROOT>]polls/edit/[<$pid>]/adda/[<$q->qid>]" onclick="addAnswer(event)">Add an answer choice</a>
     </li>[<foreach from=$q->answers item=ans key=aid>]<li>
       <input type="hidden" name="a_[<$q->qid>][]" value="[<$aid>]" />
-      <a href="[<$I2_ROOT>]polls/edit/[<$pid>]/dela/[<$q->qid>]/[<$aid>]" onclick="deleteAnswer(event)">Delete</a>&nbsp;&nbsp;&nbsp;<input name="a_[<$q->qid>]_[<$aid>]" value="[<$ans>]" /></textarea>
+      <a href="[<$I2_ROOT>]polls/edit/[<$pid>]/dela/[<$q->qid>]/[<$aid>]" onclick="deleteAnswer(event)">Delete</a>&nbsp;&nbsp;&nbsp;<input name="a_[<$q->qid>]_[<$aid>]" value="[<$ans|escape:'html'>]" /></textarea>
     </li>[</foreach>]</ul>
   </td>
   </tr>

@@ -66,7 +66,7 @@ function addQuestion(event) {
 	input = document.createElement("a");
 	var img = document.createElement("img");
 	img.onclick = deleteRow;
-	img.src = root+"www/pics/close.gif";
+	img.src = root+"www/pics/pollx.gif";
 	input.appendChild(img);
 	cell.appendChild(input);
 	row.appendChild(cell);

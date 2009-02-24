@@ -174,7 +174,7 @@
   <li> Click on the text box in the same row.  Type <b>local.border.tjhsst.edu</b>. 
   </li>
   <li> Click on the box on the right in the same row.  Type <b>8080</b>. </li>
-  <li> Click "OK" twice. <li>
+  <li> Click "OK" twice. </li>
   <li> After using the databases, go back to the proxy servers settings and
     uncheck the box next to "HTTP" to close the portal to TJ. </li>
 </ol>

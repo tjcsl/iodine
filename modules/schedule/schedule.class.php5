@@ -45,7 +45,7 @@ class Schedule implements Iterator {
 		$this->ldap = $I2_LDAP;
 		$this->sections = array();
 		if ($user->is_group_member('grade_staff')) {
-			$res = $this->ldap->search(LDAP::get_schedule_dn(),'sponsorDN='.LDAP::get_user_dn($user),array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDN','tjhsstClassId'));
+			$res = $this->ldap->search(LDAP::get_schedule_dn(),'sponsorDN='.LDAP::get_user_dn($user),array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDn','tjhsstClassId'));
 			if ($res) {
 				while ($row = $res->fetch_array(Result::ASSOC)) {
 					$this->sections[] = $row;

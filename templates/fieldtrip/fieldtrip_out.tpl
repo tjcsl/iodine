@@ -9,6 +9,7 @@
 [</foreach>]
 </ul><br />
 [</if>]
+<strong>Also inform Pat Groves, Margo Stead, Marie Lauducci, and Jean Stevens.</strong><br /><br />
 <strong>Students found:</strong><br />
 <ul>
 [<foreach from=$teachers key=tchr item=periods>]

@@ -30,11 +30,11 @@ function sort(table, direction) {
   <thead>
    <tr>
     <th rowspan="2">Answer</th>
-    <th colspan="4"><img src="[<$I2_ROOT>]www/pics/down.gif" onclick="sort(this, -1)" />Total Votes<img src="[<$I2_ROOT>]www/pics/up.gif" onclick="sort(this, 1)" /></th>
-    <th colspan="3"><img src="[<$I2_ROOT>]www/pics/down.gif" onclick="sort(this, -1)" />9<img src="[<$I2_ROOT>]www/pics/up.gif" onclick="sort(this, 1)" /></th>
-    <th colspan="3"><img src="[<$I2_ROOT>]www/pics/down.gif" onclick="sort(this, -1)" />10<img src="[<$I2_ROOT>]www/pics/up.gif" onclick="sort(this, 1)" /></th>
-    <th colspan="3"><img src="[<$I2_ROOT>]www/pics/down.gif" onclick="sort(this, -1)" />11<img src="[<$I2_ROOT>]www/pics/up.gif" onclick="sort(this, 1)" /></th>
-    <th colspan="3"><img src="[<$I2_ROOT>]www/pics/down.gif" onclick="sort(this, -1)" />12<img src="[<$I2_ROOT>]www/pics/up.gif" onclick="sort(this, 1)" /></th>
+    <th colspan="4"><img src="[<$I2_ROOT>]www/pics/downarrow.gif" onclick="sort(this, -1)" />Total Votes<img src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, 1)" /></th>
+    <th colspan="3"><img src="[<$I2_ROOT>]www/pics/downarrow.gif" onclick="sort(this, -1)" />9<img src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, 1)" /></th>
+    <th colspan="3"><img src="[<$I2_ROOT>]www/pics/downarrow.gif" onclick="sort(this, -1)" />10<img src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, 1)" /></th>
+    <th colspan="3"><img src="[<$I2_ROOT>]www/pics/downarrow.gif" onclick="sort(this, -1)" />11<img src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, 1)" /></th>
+    <th colspan="3"><img src="[<$I2_ROOT>]www/pics/downarrow.gif" onclick="sort(this, -1)" />12<img src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, 1)" /></th>
     <th colspan="3">Staff</th>
    </tr>
    <tr>
