@@ -1,8 +1,12 @@
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/sort.js"></script>
 <script type="text/javascript">
 <!--
-function sort(table, direction) {
+function sort(table, name) {
 	var cell = table.parentNode;
+	var direction = document.getElementById("order_" + name).value;
+	document.getElementById("arrow_" + name).src = "[<$I2_ROOT>]www/pics/" + (direction == 1 ? "uparrow.gif" : "downarrow.gif");
+	//switch the sort order
+	document.getElementById("order_" + name).value *= -1;
 	table = cell.parentNode.parentNode.parentNode;
 	index = cell.cellIndex*3-1;
 	if (index == 2)
@@ -15,7 +19,12 @@ function sort(table, direction) {
 
 <b>[<$poll->name>]</b><br /><br />
 <ol class="poll_questions">
-[<foreach from=$questions item=question>]
+[<foreach from=$questions key=qid item=question>]
+ <input type="hidden" name="order_total_[<$qid>]" id="order_total_[<$qid>]" value="-1" />
+ <input type="hidden" name="order_9_[<$qid>]" id="order_9_[<$qid>]" value="-1" />
+ <input type="hidden" name="order_10_[<$qid>]" id="order_10_[<$qid>]" value="-1" />
+ <input type="hidden" name="order_11_[<$qid>]" id="order_11_[<$qid>]" value="-1" />
+ <input type="hidden" name="order_12_[<$qid>]" id="order_12_[<$qid>]" value="-1" />
  <li>
  [<if $question.answertype == 'free_response'>]
   <a href="[<$I2_ROOT>]polls/results/[<$poll->pid>]/_[<$question.qid>]">[<$question.text>]</a><br />
@@ -30,11 +39,11 @@ function sort(table, direction) {
   <thead>
    <tr>
     <th rowspan="2">Answer</th>
-    <th colspan="4"><img src="[<$I2_ROOT>]www/pics/downarrow.gif" onclick="sort(this, -1)" />Total Votes<img src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, 1)" /></th>
-    <th colspan="3"><img src="[<$I2_ROOT>]www/pics/downarrow.gif" onclick="sort(this, -1)" />9<img src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, 1)" /></th>
-    <th colspan="3"><img src="[<$I2_ROOT>]www/pics/downarrow.gif" onclick="sort(this, -1)" />10<img src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, 1)" /></th>
-    <th colspan="3"><img src="[<$I2_ROOT>]www/pics/downarrow.gif" onclick="sort(this, -1)" />11<img src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, 1)" /></th>
-    <th colspan="3"><img src="[<$I2_ROOT>]www/pics/downarrow.gif" onclick="sort(this, -1)" />12<img src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, 1)" /></th>
+    <th colspan="4">Total Votes<img alt="" id="arrow_total_[<$qid>]" src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, 'total_[<$qid>]')" /></th>
+    <th colspan="3">9<img alt=""id="arrow_9_[<$qid>]" src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, '9_[<$qid>]')" /></th>
+    <th colspan="3">10<img alt=""id="arrow_10_[<$qid>]" src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, '10_[<$qid>]')" /></th>
+    <th colspan="3">11<img alt=""id="arrow_11_[<$qid>]" src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, '11_[<$qid>]')" /></th>
+    <th colspan="3">12<img alt=""id="arrow_12_[<$qid>]" src="[<$I2_ROOT>]www/pics/uparrow.gif" onclick="sort(this, '12_[<$qid>]')" /></th>
     <th colspan="3">Staff</th>
    </tr>
    <tr>
