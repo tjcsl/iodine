@@ -30,6 +30,7 @@ foreach ($results as $k) {
 }
 
 function email($array) {
+	global $do_mail;
 	$iodineuid = NULL;
 	$cn = NULL;
 	$age = NULL;
