@@ -193,6 +193,7 @@ class Poll {
 			foreach($ugroups as $g) {
 				if(isset($p->gs[$g->gid])) {
 					$out[] = $p;
+					break;
 				}
 			}
 		}
