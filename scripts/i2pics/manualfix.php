@@ -1,7 +1,7 @@
 <?php
 /***
  */
-$managerpswd = 	"MANAGERPSWDHERE"
+$managerpswd = 	"MANAGERPSWDHERE";
 
 $search =	"username";
 $class =	"senior";
