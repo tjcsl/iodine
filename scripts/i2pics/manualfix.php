@@ -5,7 +5,7 @@ $managerpswd = 	"MANAGERPSWDHERE";
 
 $search =	"username";
 $class =	"senior";
-$path =		"/home/200809pics_seniorformal/lifetouch/images"
+$path =		"/home/wyang/200809pics_seniorformal/lifetouch/images";
 $file =		"noid00000.jpg";
 /***
  */
