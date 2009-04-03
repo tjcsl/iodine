@@ -101,15 +101,15 @@ class EighthActivity {
 			$userid = $user->uid;
 		}	
 		$admin = Eighth::is_admin();
-
+		$signup_admin = Eighth::is_signup_admin();
 		/*
 		** Users need to be able to add themselves to an activity
 		*/
-		if ($I2_USER->uid != $userid && !$admin) {
+		if ($I2_USER->uid != $userid && !$admin && !$signup_admin) {
 			throw new I2Exception("You may not change other students' activities!");
 		}
 		if ($force) {
-			Eighth::check_admin();
+			Eighth::check_admin(); //Exits on failure
 		}
 		if($blockid == NULL) {
 			$block = $this->data['block'];

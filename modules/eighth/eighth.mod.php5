@@ -478,6 +478,11 @@ class Eighth implements Module {
 		global $I2_USER;
 		return $I2_USER->is_group_member('admin_eighth');
 	}
+
+	public static function is_signup_admin() {
+		global $I2_USER;
+		return $I2_USER->is_group_member('admin_eighth_signup');
+	}
 	
 	public static function check_admin() {
 		if (!self::is_admin()) {
