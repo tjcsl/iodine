@@ -53,9 +53,9 @@
 	var select_activity = document.getElementById("select_activity");
 	changeDescription(select_activity.options[select_activity.selectedIndex].value);
 	document.getElementById('aid_box').focus();
-   [<if count($activities) == 0>]
-      document.getElementById('aid_box').value = "";
-   [<else>]
-      document.getElementById('aid_box').value = "[<$activities[0]->aid>]";
-   [</if>]
+	[<if count($activities) == 0>]
+		document.getElementById('aid_box').value = "";
+	[<else>]
+		document.getElementById('aid_box').value = "[<$activities[0]->aid>]";
+	[</if>]
 </script>
