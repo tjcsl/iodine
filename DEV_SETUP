@@ -54,3 +54,6 @@ PHP Configuration:
    * asession.gc_maxlifetime = 3600
      3600 must be larger than the iodine session timeout
 
+Current issues:
+   * The following warning in CLI PHP can be ignored:
+	  PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20060613+lfs/sybase_ct.so' - /usr/lib/php5/20060613+lfs/sybase_ct.so: cannot open shared object file: No such file or directory in Unknown on line 0
