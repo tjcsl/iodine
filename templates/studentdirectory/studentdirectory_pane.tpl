@@ -68,7 +68,7 @@ E-mail address(es):
 [<if $user->grade != 'staff'>]
 [<if $I2_USER->grade == 'staff'>]
 <br />
-To view this user's portfolio click <a href="http://shares.tjhsst.edu/PORTFOLIO/[<$user->graduationyear>]/[<$user->iodineuid>]/">here</a>.
+To view this user's portfolio click <a href="https://shares.tjhsst.edu/PORTFOLIO/[<$user->graduationyear>]/[<$user->iodineuid>]/">here</a>.
 <br />
 [</if>]
 [</if>]
