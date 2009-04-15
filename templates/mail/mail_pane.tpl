@@ -1,4 +1,4 @@
-Login to your <a href="https://mail.tjhsst.edu/">TJ Mail Account</a> to read and send mail.<br /><br />
+Login to your <a href="https://webmail.tjhsst.edu/">TJ Mail Account</a> to read and send mail.<br /><br />
 [<if isset($err)>]
 There was an error retrieving your email messages. Either your password for the mail system is different than your Intranet password, or the mail server is unavailable.
 [<else>]
