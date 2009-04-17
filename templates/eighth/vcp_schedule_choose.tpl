@@ -58,4 +58,5 @@
 	[<else>]
 		document.getElementById('aid_box').value = "[<$activities[0]->aid>]";
 	[</if>]
+	document.getElementById('aid_box').select();
 </script>
