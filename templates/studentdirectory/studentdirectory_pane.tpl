@@ -105,7 +105,7 @@ To view this user's portfolio click <a href="https://shares.tjhsst.edu/PORTFOLIO
 
 [<if $mode != 'off' && $schedule && count($schedule) > 0 >]
 [<if ($mode == 'skeletal' && $user->grade != 'staff') || $mode == 'full' >]
-<div style="float: left; margin-right: 50px;">
+<div style="margin-right: 50px;">
  <br /><span class="bold">Classes:</span><br />
  <table cellspacing="0">
   <thead>

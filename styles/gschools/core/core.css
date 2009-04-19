@@ -1,0 +1,24 @@
+.title {
+	font-size: 1.0em;
+	font-weight: bold;
+	font-family: "Trebuchet MS", Arial, Tahoma, sans-serif;
+	color: black;
+	line-height: 1em;
+        border-bottom: 1px solid #c9d7f1;
+}
+
+.date {
+	position: absolute;
+	top: 1em;
+	right: 1em;
+	color: white;
+}
+
+div#menu span {
+	display: inline-block;
+	width: 0px;
+	border-right: 1px solid black;
+	font-size: 95%;
+	line-height: 1em;
+	left: -0.5em;
+}
