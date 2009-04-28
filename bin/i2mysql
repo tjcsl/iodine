@@ -1,8 +1,3 @@
 #!/bin/bash
-#Nick Starr
-#4-27-09
-pass=`cat $HOME/intranet2/config.ini | grep -A3 mysql | grep pass | cut -d"=" -f 2 | sed "s/ //g"`
-user=`cat $HOME/intranet2/config.ini | grep -A3 mysql | grep user | cut -d"=" -f 2 | sed "s/ //g"`
-server=`cat $HOME/intranet2/config.ini | grep -A3 mysql | grep server | cut -d"=" -f 2 | sed "s/ //g"`
-db=`cat $HOME/intranet2/config.ini | grep -A3 mysql | grep db | cut -d"=" -f 2 | sed "s/ //g"`
-mysql -u $user -p"$pass" -h $server -D $db
+CONFIG=$HOME/intranet2/config.ini
+mysql --defaults-file=$CONFIG
