@@ -83,9 +83,9 @@ class MySQL {
 			}
 		}
 		if ($db === NULL) {
-			$db = i2config_get('db', FALSE, 'mysql');
+			$db = i2config_get('database', 'iodine', 'mysql');
 			if (!$db) {
-				$db = i2config_get('database', 'iodine', 'mysql');
+				$db = i2config_get('db', FALSE, 'mysql');
 			}
 		}
 		if ($user === NULL) {
