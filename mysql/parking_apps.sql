@@ -6,6 +6,7 @@ CREATE TABLE parking_apps(
 	uid MEDIUMINT UNSIGNED,
 	name VARCHAR(30),
 	special_name VARCHAR(30),
+	email VARCHAR(100),
 	mentorship TINYINT(1),
 	other_driver VARCHAR(30),
 	other_driver_skips MEDIUMINT NOT NULL,
