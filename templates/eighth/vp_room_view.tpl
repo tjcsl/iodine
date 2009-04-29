@@ -11,12 +11,23 @@
 	</tr>
 [<foreach from=$utilizations item="utilization">]
 	<tr>
-		[<if isSet($inc.room)>]<td style="padding: 0px 5px;">[<$utilization.room->name>]</td>[</if>]
-		[<if isSet($inc.aid)>]<td style="padding: 0px 5px;">[<$utilization.activity->aid>]</td>[</if>]
-		[<if isSet($inc.name)>]<td style="padding: 0px 5px;"><span[<if $utilization.activity->cancelled >] style="color: #FF0000; font-weight: bold;"[<elseif $utilization.activity->restricted >] style="color: #FF6600; font-weight: bold;"[<elseif $utilization.activity->capacity != -1 && $utilization.activity->member_count >= $utilization.activity->capacity>] style="color: #0000FF; font-weight: bold;"[</if>]> [<$utilization.activity->name_r>][<if $utilization.activity->comment>] ([<$utilization.activity->comment>])[</if>]</span></td>[</if>]
-		[<if isSet($inc.teacher)>]<td style="padding: 0px 5px;">[<$utilization.activity->block_sponsors_comma>]</td>[</if>]
+		[<assign var=activity value=$utilization.activity>]
+		[<assign var=room value=$utilization.room>]
+		[<if isSet($inc.room)>]<td style="padding: 0px 5px;">[<$room->name>]</td>[</if>]
+		[<if isSet($inc.aid)>]<td style="padding: 0px 5px;">[<$activity->aid>]</td>[</if>]
+		[<if isSet($inc.name)>]<td style="padding: 0px 5px;">
+			[<math equation="(x * 100)/(y)" x=$activity->member_count y=$activity->capacity assign=percent>]
+			<span
+				[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"
+				[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"
+				[<elseif $activity->capacity != -1 && $activity->member_count >= $activity->capacity>] style="color: #0000FF; font-weight: bold;"
+				[<elseif $activity->capacity != -1 && $percent >= 90 >] style="color: #00878D; font-weight: bold;"[</if>]>
+				[<$activity->name_r>]
+				[<if $activity->comment>] ([<$activity->comment>])[</if>]
+			</span></td>[</if>]
+		[<if isSet($inc.teacher)>]<td style="padding: 0px 5px;">[<$activity->block_sponsors_comma>]</td>[</if>]
 		[<if isSet($inc.students)>]<td style="padding: 0px 5px;">[<$utilization.students>]</td>[</if>]
-		[<if isSet($inc.capacity)>]<td style="padding: 0px 5px;">[<if $utilization.room->capacity == -1>]UNLIMITED[<else>][<$utilization.room->capacity>][</if>]</td>[</if>]
+		[<if isSet($inc.capacity)>]<td style="padding: 0px 5px;">[<if $room->capacity == -1>]UNLIMITED[<else>][<$room->capacity>][</if>]</td>[</if>]
 	</tr>
 [</foreach>]
 </table>
