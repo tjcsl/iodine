@@ -95,8 +95,17 @@ For each car you may be parking in this spot, please enter the following data:
 </table>
 
 <p>
+Email Address:
+<input type="text" name="email" value="[<$email>]" />
+<br />
+(For notification of parking-lot closures, etc.)
+</p>
+<p>
+<strong>Your application will not be considered unless you enter an email address.</strong>
+</p>
+<hr />
+<p>
 Note that submission is not final; you can change your values until the deadline.
-And don't lie; you'll get caught and it will only hurt your chances.
 </p>
 <br />
 
