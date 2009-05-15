@@ -18,7 +18,7 @@ access to attrs=is-admin,is-student-admin
 
 # teachers can read anything
 access to *
-	by group/groupOfURLs/memberURL.base="cn=teachers,dc=tjhsst,dc=edu" read
+	by group/groupOfURLs/memberURL.base="cn=teachers,dc=tjhsst,dc=edu" read continue
 	by * break
 
 ## student admins can edit their own entries
