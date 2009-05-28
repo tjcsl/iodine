@@ -27,5 +27,22 @@ class TJStar implements Module {
 	function get_name() {
 		return "TJStar";
 	}
+
+	/* 
+	 * Removes the tjstar intrabox
+	*/
+
+	public static function remove_self() {
+		global $I2_SQL;
+		$tjstarid = $I2_SQL->query('SELECT boxid FROM intrabox WHERE name="tjstar";')->fetch_single_value();
+		$users = $I2_SQL->query('SELECT uid FROM intrabox_map WHERE boxid=%d;', $tjstarid)->fetch_all_arrays(Result::ASSOC);
+		foreach ($users as $user) {
+			$order = $I2_SQL->query('SELECT box_order FROM intrabox_map WHERE boxid=%d AND uid=%d;', $tjstarid, $user['uid'])->fetch_single_value();
+			$I2_SQL->query('DELETE FROM intrabox_map WHERE uid=%d AND boxid=%d;', $user['uid'], $tjstarid);
+			$I2_SQL->query('UPDATE intrabox_map SET box_order=box_order-1 WHERE uid=%d AND box_order>%d;', $user['uid'], $order);
+		}
+		$I2_SQL->query('DELETE FROM intrabox WHERE name="tjstar";');
+		
+	}
 }
 ?>
