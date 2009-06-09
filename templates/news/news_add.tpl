@@ -17,7 +17,7 @@
   <tr><td colspan="2"><strong>WARNING:</strong> <em>Currently the expiration is set for MIDNIGHT of the selected date; i.e. this news item will not appear at ALL on the date that you select.  If you want to expire the article mid-day, please edit after initially posting and set a specific time.</em></td></tr>
   <tr><td>Visible:</td><td><input type="checkbox" name="add_visible" checked="checked"></td></tr>
   </table>
-  <table id="groups_table" cellpadding="0" width="100%">
+  <table id="news_groups_table" cellpadding="0" width="100%">
    <tr>
     <td width="20%">Groups:</td>
     <td width="1%">

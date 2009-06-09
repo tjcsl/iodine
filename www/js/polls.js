@@ -139,7 +139,7 @@ function deleteAnswer(event) {
 
 function polls_addGroup(event) {
 	event.preventDefault();
-	var table = document.getElementById("groups_table");
+	var table = document.getElementById("polls_groups_table");
 	var body = table.tBodies.item(0);
 	var index = body.lastChild.previousSibling;
 	index = index.firstChild;

@@ -6,7 +6,7 @@ Name: <input type="text" name="name" value="" maxlength="128" /><br />
 Start date/time:<input type="text" name="startdt" value="YYYY-MM-DD HH:MM:SS" /><br />
 End date/time:<input type="text" name="enddt" value="YYYY-MM-DD HH:MM:SS" /><br />
 <input type="checkbox" name="visible" /> Visible<br />
-<table id="groups_table" cellpadding="0">
+<table id="polls_groups_table" cellpadding="0">
 <thead>
   <tr>
     <td></td>
@@ -18,7 +18,7 @@ End date/time:<input type="text" name="enddt" value="YYYY-MM-DD HH:MM:SS" /><br 
 </thead>
 <tbody><tr>
     <td>Groups:</td>
-    <td>admin_polls<select id="groups">
+    <td>admin_polls<select id="polls_groups">
 [<foreach from=$groups item=group>]
       <option value="[<$group->gid>]">[<$group->name>]</option>
 [</foreach>]

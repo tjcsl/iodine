@@ -10,7 +10,7 @@ Your news post has been changed.<br />
  <tr><td>Expiration date:</td><td><input type="text" name="edit_expire" size="30" value="[<$newsitem->expire>]"/></td></tr>
  <tr><td width="20%">Visible:</td><td><input type="checkbox" name="edit_visible"[<if $newsitem->visible>]checked="checked"[</if>] /></td></tr>
  </table>
- <table id="groups_table" cellpadding="0" width="100%">
+ <table id="news_groups_table" cellpadding="0" width="100%">
   <tr>
    <td width="20%">Groups:</td>
    <td width="1%">
