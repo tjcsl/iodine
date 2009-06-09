@@ -28,7 +28,7 @@
    </tr>
    <tr>
     <td>&nbsp;</td>
-    <td><a href="#" onclick="addGroup(); return false">Add another group</a></td>
+    <td><a href="#" onclick="news_addGroup(); return false">Add another group</a></td>
     <td>&nbsp;</td>
    </tr>
   </table>

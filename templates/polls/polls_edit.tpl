@@ -40,7 +40,7 @@ End date/time:<input type="text" name="enddt" value="[<$poll->enddt>]" /><br />
     <td><input type="checkbox" name="vote[0]" /></td>
     <td><input type="checkbox" name="modify[0]" /></td>
     <td><input type="checkbox" name="results[0]" /></td>
-    <td><a onclick="deleteGroup(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/delg/-1">remove</a></td>
+    <td><a onclick="polls_deleteGroup(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/delg/-1">remove</a></td>
   </tr><tr>
 [<else>]
  [<assign var='index' value=0 >]
@@ -54,13 +54,13 @@ End date/time:<input type="text" name="enddt" value="[<$poll->enddt>]" /><br />
     <td><input type="checkbox" name="vote[[<$index>]]" [<if $perms[0] == 1>]checked="checked"[</if>] /></td>
     <td><input type="checkbox" name="modify[[<$index>]]" [<if $perms[1] == 1>]checked="checked"[</if>] /></td>
     <td><input type="checkbox" name="results[[<$index>]]" [<if $perms[2] == 1>]checked="checked"[</if>] /></td>
-    <td><a onclick="deleteGroup(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/delg/[<$gid>]">remove</a></td>
+    <td><a onclick="polls_deleteGroup(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/delg/[<$gid>]">remove</a></td>
   </tr><tr>
   [<assign var='index' value=`$index+1`>]
  [</foreach>]
 [</if>]
   <td></td>
-  <td><a href="[<$I2_ROOT>]polls/edit/[<$pid>]/addg" onclick="addGroup(event)">Add another group</a></td>
+  <td><a href="[<$I2_ROOT>]polls/edit/[<$pid>]/addg" onclick="polls_addGroup(event)">Add another group</a></td>
   <td></td>
  </tr></tbody>
 </table>

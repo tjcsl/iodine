@@ -1,4 +1,4 @@
-function addGroup(gid) {
+function news_addGroup(gid) {
 	var table = document.getElementById("groups_table");
 	var row = table.insertRow(table.rows.length-1);
 	row.insertCell(0).innerHTML="&nbsp;";

@@ -137,7 +137,7 @@ function deleteAnswer(event) {
 	e.parentNode.parentNode.removeChild(e.parentNode);
 }
 
-function addGroup(event) {
+function polls_addGroup(event) {
 	event.preventDefault();
 	var table = document.getElementById("groups_table");
 	var body = table.tBodies.item(0);
@@ -188,7 +188,7 @@ function addGroup(event) {
 	row.insertCell(5).appendChild(remove);
 }
 
-function deleteGroup(event) {
+function polls_deleteGroup(event) {
 	event.preventDefault();
 	var row = event.target.parentNode.parentNode;
 	var table = row.parentNode;

@@ -30,13 +30,13 @@ Your news post has been changed.<br />
   </tr>
   <tr>
    <td>&nbsp;</td>
-   <td><a href="#" onclick="addGroup(); return false">Add another group</a></td>
+   <td><a href="#" onclick="news_addGroup(); return false">Add another group</a></td>
    <td>&nbsp;</td>
   </tr>
  </table>
  <script type="text/javascript">
   [<section name=i loop=$newsitem->groups start=1>]
-   addGroup([<$newsitem->groups[i]->gid>]);
+   news_addGroup([<$newsitem->groups[i]->gid>]);
   [</section>]
  </script>
  Text: <br />
