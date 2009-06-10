@@ -154,7 +154,7 @@ function polls_addGroup(event) {
 	box.value = index;
 	row.insertCell(0).appendChild(box); // The empty cell for entabulation
 	
-	var groupsList = document.getElementById("groups");
+	var groupsList = document.getElementById("polls_groups");
 	var select = document.createElement("select");
 	select.name="group_gids[]";
 	select.className="groups_list";
