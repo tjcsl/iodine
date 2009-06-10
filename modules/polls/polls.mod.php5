@@ -68,7 +68,7 @@ class Polls implements Module {
 		$open = array();
 		$time = time();
 		foreach($polls as $poll) {
-			if(strtotime($poll->startdt) < $time && strtotime($poll->enddt) > $time)
+			if(strtotime($poll->startdt) < $time && strtotime($poll->enddt) > $time && $poll->visible)
 				$open[] = $poll;
 		}
 		$this->template_args['open'] = $open;

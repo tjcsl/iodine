@@ -14,7 +14,13 @@
 	<select name="aid" id="select_activity" size="15" style="width:100%; margin-top:3px;" onchange="changeDescription(this.options[this.selectedIndex].value)">
 	[<foreach from=$activities item="activity" key="key">]
 		[<assign var=capacity value=$activity->capacity>]
-		<option value="[<$activity->aid>]" [<if $key == 0>]selected [</if>][<if $activity->cancelled >]style="color: #FF0000; font-weight: bold;"[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"[</if>]>[<$activity->aid>]: [<$activity->name_comment_r|escape:html>]</option>
+		[<math equation="(x * 100)/(y)" x=$activity->member_count y=$capacity assign=percent>]
+		<option value="[<$activity->aid>]" [<if $key == 0>]selected [</if>]
+		[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"
+		[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"
+		[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"
+		[<elseif $capacity != -1 && $percent >= 90 >] style="color: #00878D; font-weight: bold;" 
+		[</if>]>[<$activity->aid>]: [<$activity->name_comment_r|escape:html>]</option>
 	[</foreach>] 
 	</select><br />
 	<input type="text" name="aid" id="aid_box" maxlength="4" size="4" />

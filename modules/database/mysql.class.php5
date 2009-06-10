@@ -77,10 +77,16 @@ class MySQL {
 	*/
 	function __construct($server=NULL,$db=NULL,$user=NULL,$pass=NULL) {
 		if ($server === NULL) {
-			$server = i2config_get('server','','mysql');
+			$server = i2config_get('host', FALSE, 'mysql');
+			if (!$server) {
+				$server = i2config_get('server', '', 'mysql');
+			}
 		}
 		if ($db === NULL) {
-			$db = i2config_get('db','iodine','mysql');
+			$db = i2config_get('database', 'iodine', 'mysql');
+			if (!$db) {
+				$db = i2config_get('db', FALSE, 'mysql');
+			}
 		}
 		if ($user === NULL) {
 			$user = i2config_get('user','','mysql');

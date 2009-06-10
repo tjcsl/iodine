@@ -9,7 +9,7 @@ Name: <input type="text" name="name" value="[<$poll->name>]" /><br />
 Start date/time:<input type="text" name="startdt" value="[<$poll->startdt>]" /><br />
 End date/time:<input type="text" name="enddt" value="[<$poll->enddt>]" /><br />
 <input type="checkbox" name="visible" [<if $poll->visible>]checked="checked" [</if>]/> Visible<br />
-<table id="groups_table" cellpadding="0">
+<table id="polls_groups_table" cellpadding="0">
 <thead>
   <tr>
     <td></td>
@@ -21,7 +21,7 @@ End date/time:<input type="text" name="enddt" value="[<$poll->enddt>]" /><br />
 </thead>
 <tbody><tr>
     <td>Groups:</td>
-    <td>admin_polls<select id="groups">
+    <td>admin_polls<select id="polls_groups">
 [<foreach from=$groups item=group>]
       <option value="[<$group->gid>]">[<$group->name>]</option>
 [</foreach>]
@@ -40,7 +40,7 @@ End date/time:<input type="text" name="enddt" value="[<$poll->enddt>]" /><br />
     <td><input type="checkbox" name="vote[0]" /></td>
     <td><input type="checkbox" name="modify[0]" /></td>
     <td><input type="checkbox" name="results[0]" /></td>
-    <td><a onclick="deleteGroup(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/delg/-1">remove</a></td>
+    <td><a onclick="polls_deleteGroup(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/delg/-1">remove</a></td>
   </tr><tr>
 [<else>]
  [<assign var='index' value=0 >]
@@ -54,13 +54,13 @@ End date/time:<input type="text" name="enddt" value="[<$poll->enddt>]" /><br />
     <td><input type="checkbox" name="vote[[<$index>]]" [<if $perms[0] == 1>]checked="checked"[</if>] /></td>
     <td><input type="checkbox" name="modify[[<$index>]]" [<if $perms[1] == 1>]checked="checked"[</if>] /></td>
     <td><input type="checkbox" name="results[[<$index>]]" [<if $perms[2] == 1>]checked="checked"[</if>] /></td>
-    <td><a onclick="deleteGroup(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/delg/[<$gid>]">remove</a></td>
+    <td><a onclick="polls_deleteGroup(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/delg/[<$gid>]">remove</a></td>
   </tr><tr>
   [<assign var='index' value=`$index+1`>]
  [</foreach>]
 [</if>]
   <td></td>
-  <td><a href="[<$I2_ROOT>]polls/edit/[<$pid>]/addg" onclick="addGroup(event)">Add another group</a></td>
+  <td><a href="[<$I2_ROOT>]polls/edit/[<$pid>]/addg" onclick="polls_addGroup(event)">Add another group</a></td>
   <td></td>
  </tr></tbody>
 </table>

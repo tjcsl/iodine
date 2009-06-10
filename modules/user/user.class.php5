@@ -298,6 +298,27 @@ class User {
 					return $couns->sn;
 				}
 				return FALSE;
+			case 'college':
+				$row = $I2_SQL->query("SELECT name, CollegeName, college_certain FROM senior_destinations LEFT JOIN CEEBMap USING (CEEB) WHERE uid=%d", $this->myuid)->fetch_array(Result::ASSOC);
+				if(count($row) == 1) {
+					return "";
+				}
+				$ret = $row["CollegeName"];
+				if(!$row["college_certain"]) {
+					$ret .= " (unsure)";
+				}
+				return $ret;
+			case 'major':
+				$row = $I2_SQL->query("SELECT name, MajorMap.major, major_certain FROM senior_destinations LEFT JOIN MajorMap ON senior_destinations.major=MajorMap.MajorID WHERE uid=%d", $this->myuid)->fetch_array(Result::ASSOC);
+				if(count($row) == 1) {
+					return "";
+				}
+				$ret = $row["major"];
+				if(!$row["major_certain"]) {
+					$ret .= " (unsure)";
+				}
+				return $ret;
+			
 			case 'photonames':
 				$cns = $I2_LDAP->search(LDAP::get_user_dn($this), 'objectClass=iodinePhoto', array('cn'))->fetch_col('cn');
 				@usort($cns, array("User", "sort_photos"));

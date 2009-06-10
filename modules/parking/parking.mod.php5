@@ -43,12 +43,13 @@ class Parking implements Module {
 	 */
 	private $query = 'SELECT *,
 			(skips + other_driver_skips * other_driver_approved) AS totalskips,
-			(skips <= 3 AND other_driver_skips * other_driver_approved <= 3) as s1,
+			(other_driver_approved * (skips <= 3 AND other_driver_skips * other_driver_approved <= 3)) as s0,
+			((skips < 1 AND other_driver_skips * other_driver_approved < 1) * (NOT other_driver_approved)) as s1,
 			(skips < 6 AND other_driver_skips * other_driver_approved < 6) as s2,
 			(skips < 11 AND other_driver_skips * other_driver_approved < 11) as s3,
 			(skips < 12 AND other_driver_skips * other_driver_approved < 12) as s4
 			FROM parking_apps WHERE uid IS NOT NULL
-			ORDER BY grade DESC, other_driver_approved DESC, s1 DESC, s2 DESC, s3 DESC, s4 DESC, RAND();';
+			ORDER BY grade DESC, s0 DESC, s1 DESC, s2 DESC, s3 DESC, s4 DESC, RAND();';
 
 	/**
 	* Required by the {@link Module} interface.
@@ -119,11 +120,24 @@ class Parking implements Module {
 			$this->template = 'parking_past_deadline.tpl';
 			return;
 		}
-
+		
 		// do the application processing
 		if(isset($_REQUEST['parking_apply_form'])) {
 
-			if($_REQUEST['parking_apply_form'] == 'apply') {
+			$eaddr = "";
+			if(isset($_REQUEST['email'])) {
+				$eaddr = $_REQUEST['email'];
+			}
+
+			$validform = true;
+			if(isset($_REQUEST['email'])) {
+				if(!ereg("^[^@]{1,64}@[^@]{1,255}$", $eaddr)) {
+					$validform = false;
+				}
+			}
+
+			if($_REQUEST['parking_apply_form'] == 'apply' && $validform) {
+
 				if(isset($_REQUEST['mship'])) {
 					$mship = 1;
 				}
@@ -132,7 +146,7 @@ class Parking implements Module {
 				}
 
 				if($I2_SQL->query('SELECT COUNT(*) FROM parking_apps WHERE uid=%d', $I2_USER->uid)->fetch_single_value() == 0) {
-					$I2_SQL->query('INSERT INTO parking_apps SET uid=%d, mentorship=%d, name=%s, skips=%d, grade=%d, timestamp=NOW()', $I2_USER->uid, $mship, $I2_USER->name_comma, count(EighthSchedule::get_absences($I2_USER->uid)), $I2_USER->grade);
+					$I2_SQL->query('INSERT INTO parking_apps SET uid=%d, mentorship=%d, name=%s, email=%s, skips=%d, grade=%d, timestamp=NOW()', $I2_USER->uid, $mship, $I2_USER->name_comma, $eaddr, count(EighthSchedule::get_absences($I2_USER->uid)), $I2_USER->grade);
 				}
 				else {
 					$I2_SQL->query('UPDATE parking_apps SET mentorship=%d, skips=%d WHERE uid=%d', $mship, count(EighthSchedule::get_absences($I2_USER->uid)), $I2_USER->uid);
@@ -159,7 +173,9 @@ class Parking implements Module {
 
 		if($I2_SQL->query('SELECT COUNT(*) FROM parking_apps WHERE uid=%d', $I2_USER->uid)->fetch_single_value() != 0) {
 
-			$app = $I2_SQL->query('SELECT timestamp, mentorship, other_driver, other_driver_approved FROM parking_apps WHERE uid=%d', $I2_USER->uid)->fetch_array();
+			//$app = $I2_SQL->query('SELECT timestamp, mentorship, other_driver, other_driver_approved FROM parking_apps WHERE uid=%d', $I2_USER->uid)->fetch_array();
+			$app = $I2_SQL->query('SELECT email, timestamp, mentorship, other_driver, other_driver_approved FROM parking_apps WHERE uid=%d', $I2_USER->uid)->fetch_array();
+			$this->template_args['email'] = $app['email'];
 			$this->template_args['submitdate'] = date('F jS, Y',strtotime($app['timestamp']));
 			$this->template_args['mship'] = $app['mentorship'];
 			if (!empty($app['other_driver']) && is_numeric($app['other_driver'])) {
@@ -174,7 +190,7 @@ class Parking implements Module {
 		}
 		else {
 			/* so smarty doesn't whine about undefined indexes */
-			$this->template_args['submitdate'] = $this->template_args['mship'] = $this->template_args['otherdriver'] = "";
+			$this->template_args['email'] = $this->template_args['submitdate'] = $this->template_args['mship'] = $this->template_args['otherdriver'] = "";
 		}
 
 		$res = $I2_SQL->query('SELECT uid FROM parking_apps WHERE other_driver=%d', $I2_USER->uid);
@@ -392,9 +408,10 @@ class Parking implements Module {
 			}
 
 			$person['assigned'] = $record['assigned'];
-			d('assigned: ' . $record['assigned'], 1);
+			//d('assigned: ' . $record['assigned'], 1);
 			$person['id'] = $record['uid'];
 			$person['grade'] = $record['grade'];
+			$person['email'] = "<a href=\"mailto:" . $record['email'] . "\">" . $record['email'] . "</a>";
 			//d('mentorship: ' . $record['mentorship']);
 			if($record['mentorship']) {
 				$person['mentor'] = 'Y';
@@ -505,6 +522,7 @@ class Parking implements Module {
 			$person['assigned'] = $record['assigned'];
 			$person['id'] = $record['uid'];
 			$person['grade'] = $record['grade'];
+			$person['email'] = $record['email'];
 			if($record['mentorship']) {
 				$person['mentor'] = 'Y';
 			}

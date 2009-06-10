@@ -1,5 +1,5 @@
-function addGroup(gid) {
-	var table = document.getElementById("groups_table");
+function news_addGroup(gid) {
+	var table = document.getElementById("news_groups_table");
 	var row = table.insertRow(table.rows.length-1);
 	row.insertCell(0).innerHTML="&nbsp;";
 	

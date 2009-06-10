@@ -139,8 +139,8 @@ class Seniors implements Module {
 
 		$res = $I2_SQL->query('SELECT * FROM senior_destinations WHERE uid=%d', $I2_USER->uid);
 		if ($res->num_rows() > 0) {
-			$row = $res->fetch_row(Result::ASSOC);
-			$this->template_args['sel_ceeb'] = $row['CEEB'];
+			$row = $res->fetch_array(Result::ASSOC);
+			$this->template_args['sel_ceeb'] = $row['ceeb'];
 			$this->template_args['dest_sure'] = $row['college_certain'];
 			$this->template_args['sel_major'] = $row['major'];
 			$this->template_args['major_sure'] = $row['major_certain'];

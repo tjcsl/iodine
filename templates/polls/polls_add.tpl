@@ -6,7 +6,7 @@ Name: <input type="text" name="name" value="" maxlength="128" /><br />
 Start date/time:<input type="text" name="startdt" value="YYYY-MM-DD HH:MM:SS" /><br />
 End date/time:<input type="text" name="enddt" value="YYYY-MM-DD HH:MM:SS" /><br />
 <input type="checkbox" name="visible" /> Visible<br />
-<table id="groups_table" cellpadding="0">
+<table id="polls_groups_table" cellpadding="0">
 <thead>
   <tr>
     <td></td>
@@ -18,7 +18,7 @@ End date/time:<input type="text" name="enddt" value="YYYY-MM-DD HH:MM:SS" /><br 
 </thead>
 <tbody><tr>
     <td>Groups:</td>
-    <td>admin_polls<select id="groups">
+    <td>admin_polls<select id="polls_groups">
 [<foreach from=$groups item=group>]
       <option value="[<$group->gid>]">[<$group->name>]</option>
 [</foreach>]
@@ -36,11 +36,11 @@ End date/time:<input type="text" name="enddt" value="YYYY-MM-DD HH:MM:SS" /><br 
     <td><input type="checkbox" name="vote[0]" /></td>
     <td><input type="checkbox" name="modify[0]" /></td>
     <td><input type="checkbox" name="results[0]" /></td>
-    <td><a onclick="deleteGroup(event)" href="">remove</a></td>
+    <td><a onclick="polls_deleteGroup(event)" href="">remove</a></td>
   </tr><tr>
     <td></td>
     <!-- We should have a non-JS interface, but this is difficult to do at this point in time. -->
-    <td><a href="" onclick="addGroup(event)">Add another group</a></td>
+    <td><a href="" onclick="polls_addGroup(event)">Add another group</a></td>
     <td></td>
   </tr></tbody>
 </table>

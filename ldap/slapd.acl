@@ -12,14 +12,25 @@ access to attrs=userPassword
 	by anonymous auth
 	by * none
 
-# no one (except admins) can adjust adminship
-access to attrs=is-admin
+# no one (except full admins) can adjust adminship
+access to attrs=is-admin,is-student-admin
 	by * read
 
 # teachers can read anything
 access to *
-	by group/groupOfURLs/memberURL.base="cn=teachers,dc=tjhsst,dc=edu" read
+	by group/groupOfURLs/memberURL.base="cn=teachers,dc=tjhsst,dc=edu" read continue
 	by * break
+
+## student admins can edit their own entries
+#access to filter=(is-student-admin=TRUE)
+#	by self write
+#	by * none break
+#
+## student admins can edit their own subtrees
+##	by set="[ldap:///ou=people,dc=tjhsst,dc=edu??one?is-student-admin=TRUE]/entryDN & this/-* & user" write
+#access to dn.regex="^.*,iodineUid=([^,]+),ou=people,dc=tjhsst,dc=edu$"
+#	by set="[ldap:///ou=people,dc=tjhsst,dc=edu??sub?is-student-admin=TRUE]" write
+#	by * none break
 
 # no one can read studentids...except self
 access to attrs=tjhsstStudentId
@@ -53,7 +64,7 @@ access to attrs=perm-showtelephone-self,perm-showbirthday-self,perm-showaddress-
 	by * read
 
 # ... but not the parental ones
-access to attrs=perm-showtelephone,perm-showbirthday,perm-showaddress,perm-showmap,perm-showpictures,perm-showschedule
+access to attrs=perm-showtelephone,perm-showbirthday,perm-showaddress,perm-showmap,perm-showpictures,perm-showschedule,perm-showlocker
 	by * read
 
 

@@ -101,7 +101,11 @@ To view this user's portfolio click <a href="https://shares.tjhsst.edu/PORTFOLIO
 </script>
 [</if>]
 [<if $user->locker>]Locker Number: [<$user->locker|escape:'html'>]<br />[</if>]
-</td></tr></table>
+[<if $user->college>]<br />College: [<$user->college>]<br />[</if>]
+[<if $user->major>]Major: [<$user->major>]<br />[</if>]
+</td>
+</tr>
+</table>
 
 [<if $mode != 'off' && $schedule && count($schedule) > 0 >]
 [<if ($mode == 'skeletal' && $user->grade != 'staff') || $mode == 'full' >]
