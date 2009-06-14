@@ -184,7 +184,8 @@ function polls_addGroup(event) {
 
 	var remove = document.createElement("a");
 	remove.appendChild(document.createTextNode("remove"));
-	remove.onclick = deleteGroup;
+	remove.onclick = polls_deleteGroup;
+	remove.href = "";
 	row.insertCell(5).appendChild(remove);
 }
 
