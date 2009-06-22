@@ -42,7 +42,7 @@ class Newimport implements Module {
 			'news'				=> 'authorID',
 			'parking_apps'			=> 'uid',
 			'parking_cars'			=> 'uid',
-			'poll_votes'			=> 'uid',
+			//'poll_votes'			=> 'uid', #leave the data in this table, it's historical --wyang 2009/06/22
 			'prom'				=> 'uid',
 			'scratchpad'			=> 'uid',
 			'senior_destinations'		=> 'uid',
