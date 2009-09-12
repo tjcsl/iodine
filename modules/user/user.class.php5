@@ -103,7 +103,7 @@ class User {
 					}
 				} else {
 					warn('Invalid iodineUidNumber '.$uid);
-					//Below two lines are 9996 replacement hack; this can be safely removed once we are sure we properly clean out all the users from all the tables upon deletion using dataimport.
+					//Below two lines are 9996 replacement hack; while this can be safely removed once we are sure we properly clean out all the users from all the tables upon deletion using dataimport, I recommend leaving it in place in case other coding errors cause the same effect, as occurred 9/2009. --wyang, comment modified 2009/09/12
 					$this->info['iodineuid']="nostudent";
 					$this->info['iodineuidnumber']=$uid;
 				}
