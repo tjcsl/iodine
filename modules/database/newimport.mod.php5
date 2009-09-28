@@ -443,12 +443,18 @@ class Newimport implements Module {
 			**
 			** FIXME: This number should probably not be hardcoded.
 			*/
+			$fakecount=0;
 			$res = $ldap->search(LDAP::get_user_dn(), 'iodineUid='.$olduser, 'iodineUidNumber');
+			d("deleting old user $olduser",7);
 			if ($res->fetch_single_value() >= 10000) {
 				$this->del_user($olduser,$ldap);
+				d("this user is real, goodby",7);
+			} else {
+				$fakecount++;
+				d("this user is fake",7);
 			}
 		}
-		$this->messages[] = 'Removed '.count($toremove).' old users';
+		$this->messages[] = 'Removed '.(count($toremove)-$fakecount).' old users';
 
 		$this->init_desired_boxes();
 
