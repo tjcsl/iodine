@@ -12,8 +12,24 @@ class Weather implements Module {
 
 	private function makeData($server = 'weather.tjhsst.edu', $port=8889) {
 		$connection = fsockopen($server, $port, $errno, $errstr);
+		// We don't assume that weather is always up.
 		if (!$connection) {
-			throw new I2Exception("Error in loading socket: $errstr ($errno)");
+			$this->template_args['data'] = 0;
+			$this->template_args['temperature'] = 0;
+			$this->template_args['windchill'] = 0;
+			$this->template_args['humidity'] = 0;
+			$this->template_args['barometer'] = 0;
+			if (0 < 0)
+				$this->template_args['bar_fall'] = 'falling';
+			else if (0 > 0)
+				$this->template_args['bar_fall'] = 'rising';
+			else
+				$this->template_args['bar_fall'] = 'steady';
+			$this->template_args['wind'] = 0;
+			$this->template_args['wind_dir'] = 0;
+			$this->template_args['rain'] = 0;
+			$this->template_args['rain_int'] = 0;
+			return;
 		}
 		$datum = '';
 		while (!feof($connection))
