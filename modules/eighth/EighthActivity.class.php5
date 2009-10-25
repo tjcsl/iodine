@@ -34,7 +34,7 @@ class EighthActivity {
 	* @param int $blockid The block ID for an activity, NULL in general.
 	*/
 	public function __construct($activityid, $blockid = NULL, $special = NULL) {
-		global $I2_SQL;
+		global $I2_SQL,$I2_USER;
 		if ($special == "CANCELLED") {
 			$tmp = new EighthActivity($activityid);
 			$this->data['name'] = $tmp->name;
@@ -64,6 +64,8 @@ class EighthActivity {
 				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(',', $this->data['block_rooms']) : array());
 			}
 		}
+		// Import favorites data. This is a _good_thing_.
+		$this->data['favorite']=sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $activityid)->fetch_array(MYSQL_ASSOC))>1?TRUE:FALSE;
 	}
 
 	/**
@@ -590,14 +592,45 @@ class EighthActivity {
 	public static function get_all_activities($blockids = NULL, $restricted = FALSE) {
 		global $I2_SQL;
 		if($blockids == NULL) {
-			return self::id_to_activity(flatten($I2_SQL->query('SELECT aid FROM eighth_activities ' . ($restricted ? 'WHERE restricted=1 ' : '') . 'ORDER BY special DESC, name')->fetch_all_arrays(Result::NUM)));
+			$as = self::id_to_activity(flatten($I2_SQL->query('SELECT aid FROM eighth_activities ' . ($restricted ? 'WHERE restricted=1 ' : ''))->fetch_all_arrays(Result::NUM)));
+			usort($as,'EighthActivity::activity_favorite_compare');
+			return $as;
 		}
 		else {
 			if(!is_array($blockids)) {
 				settype($blockids, 'array');
 			}
-			return self::id_to_activity($I2_SQL->query('SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid IN (%D) ' . ($restricted ? 'AND restricted=1 ' : '') . 'GROUP BY aid ORDER BY special DESC, name', $blockids)->fetch_all_arrays(Result::NUM));
+			$as = self::id_to_activity($I2_SQL->query('SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid IN (%D) ' . ($restricted ? 'AND restricted=1 ' : '') . 'GROUP BY aid ORDER BY special DESC', $blockids)->fetch_all_arrays(Result::NUM));
+			usort($as,'EighthActivity::activity_favorite_compare');
+			return $as;
 		}
+	}
+
+	/**
+	* Helper function to sort eighth period activities better, as this one also uses the favorites correctly.
+	* @access public
+	* @param EighthActivity $a The first activity to compare.
+	* @param EighthActivity $b The second activity to compare.
+	*/
+	public static function activity_favorite_compare($a,$b) {
+		if($a->data['favorite'] && !$b->data['favorite'])
+			return -1;
+		elseif(!$a->data['favorite'] && $b->data['favorite'])
+			return 1;
+		return $a->data['name'] > $b->data['name'];
+	}
+
+	/**
+	* Change the favoritism status of a club.
+	* @access public
+	* @param int $aid The activity ID.
+	*/
+	public static function favorite_change($aid) {
+		global $I2_USER,$I2_SQL;
+		if(sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $aid)->fetch_array(MYSQL_ASSOC))>1)
+			$I2_SQL->query('DELETE FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $aid);
+		else
+			$I2_SQL->query('INSERT INTO eighth_favorites (uid,aid) VALUES (%d,%d)', $I2_USER->uid, $aid);
 	}
 
 	/**

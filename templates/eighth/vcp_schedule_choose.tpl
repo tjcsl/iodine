@@ -20,7 +20,8 @@
 		[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"
 		[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"
 		[<elseif $capacity != -1 && $percent >= 90 >] style="color: #00878D; font-weight: bold;" 
-		[</if>]>[<$activity->aid>]: [<$activity->name_comment_r|escape:html>]</option>
+		[<elseif $activity->favorite>] style="color: #008800;"
+		[</if>]>[<$activity->aid>]: [<$activity->name_comment_r|escape:html>][<if $activity->favorite>] --Favorited[</if>]</option>
 	[</foreach>] 
 	</select><br />
 	<input type="text" name="aid" id="aid_box" maxlength="4" size="4" />
@@ -33,6 +34,7 @@
 	[<assign var=capacity value=$activity->capacity>]
 	[<assign var=members value=$activity->member_count>]
 	<div id="desc_[<$activity->aid>]" style="display: none; border: solid thin; padding: 5px; margin-top:2px; margin-bottom:3px">
+	<a href="[<$I2_ROOT>]eighth/vcp_schedule/favorite/uid/[<$activity->aid>]/bids/[<$bids>]">[<if $activity->favorite>]Unfavorite this activity[<else>]Favorite this activity[</if>]</a><br />
 	[<$activity->name|escape:html>]
 	[<if $activity->comment>]
 		<br /><b>[<$activity->comment|escape:html>]</b>

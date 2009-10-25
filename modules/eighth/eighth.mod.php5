@@ -1826,7 +1826,7 @@ class Eighth implements Module {
 	* @param array $this->args The arguments for the operation.
 	*/
 	public function vcp_schedule() {
-		global $I2_SQL;
+		global $I2_SQL,$I2_USER;
 		if($this->op == '') {
 			$this->template = 'vcp_schedule.tpl';
 			if(!empty($this->args['uid'])) {
@@ -2052,6 +2052,12 @@ class Eighth implements Module {
 			EighthSchedule::remove_absentee($this->args['bid'], $this->args['uid']);
 			self::end_undo_transaction();
 			redirect('eighth/vcp_schedule/absences/uid/'.$this->args['uid']);
+		}
+		else if($this->op == 'favorite') {
+			// The uid field here is used for the aid instead
+			EighthActivity::favorite_change($this->args['uid']);
+			$this->template_args['bids'] = $this->args['bids'];
+			redirect("eighth/vcp_schedule/choose/uid/{$I2_USER->uid}/bids/{$this->args['bids']}");
 		}
 	}
 
