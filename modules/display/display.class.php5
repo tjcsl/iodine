@@ -34,7 +34,7 @@ class Display {
 	/**
 	* The output buffer.
 	*
-	* @access private
+	* @access public
 	*/
 	public $buffer;
 	
