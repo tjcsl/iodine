@@ -19,12 +19,7 @@ class Weather implements Module {
 			$this->template_args['windchill'] = 0;
 			$this->template_args['humidity'] = 0;
 			$this->template_args['barometer'] = 0;
-			if (0 < 0)
-				$this->template_args['bar_fall'] = 'falling';
-			else if (0 > 0)
-				$this->template_args['bar_fall'] = 'rising';
-			else
-				$this->template_args['bar_fall'] = 'steady';
+			$this->template_args['bar_fall'] = 'steady';
 			$this->template_args['wind'] = 0;
 			$this->template_args['wind_dir'] = 0;
 			$this->template_args['rain'] = 0;
