@@ -55,7 +55,6 @@ everyone. Edit config.server.ini to edit the server (production) config.
 
 /* Load essential modules, parse query string, start session, etc. */
 try {
-
 	load_module_map();
 
 	//session_set_save_handler(open,close,read,write,destroy,gc);
