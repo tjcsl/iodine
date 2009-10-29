@@ -38,7 +38,7 @@ class Suggestion implements Module {
 		$to = i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion'); 
 		$subj = "Suggestion from {$I2_USER->fullname}";
 		$browser = $_SERVER['HTTP_USER_AGENT'];
-		$mesg .= "\r\n\r\n $browser";
+		$mesg .= "\r\n\r\n Username: $I2_USER->username UID: $I2_User->uid \r\n $browser";
 		$headers = "From: $usermail\r\n";
 		$headers .= "Reply-To: $usermail\r\n";
 		$headers .= "Return-Path: $to\r\n";
