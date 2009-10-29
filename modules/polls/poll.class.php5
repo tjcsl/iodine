@@ -188,6 +188,8 @@ class Poll {
 
 		$polls = Poll::all_polls($loadq);
 //		$gs = $I2_SQL->query('SELECT * FROM poll_permissions')->fetch_all_arrays();
+		if($I2_USER->is_group_member('admin_polls'))
+			return $polls;
 		$ugroups = Group::get_user_groups($I2_USER);
 		foreach($polls as $p) {
 			foreach($ugroups as $g) {
