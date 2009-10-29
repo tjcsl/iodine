@@ -2,12 +2,24 @@ Roster for <b>[<$activity->name|escape:"html">]</b><br />
 Room: [<$activity->block_rooms_comma>]<br />
 Date: <b>[<$activity->block->date|date_format:"%A, %B %e %Y">]</b> Block <b>[<$activity->block->block>]</b><br />
 Sponsor(s): [<$activity->block_sponsors_comma_short>]<br />
+[<assign var='inthisactivity' value=0>]
+[<foreach from=$activity->members_obj item="member">]
+	[<if $member->uid==$I2_USER->uid>]
+		[<assign var='inthisactivity' value=1>]
+	[</if>]
+[</foreach>]
 [<if $activity->comment|escape:"html">]
 <br />
 <em>[<$activity->comment>]</em>
 <br />
 [</if>]
-
+[<if !$inthisactivity>]
+<br />
+<form name="activity_select_form" action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$I2_USER->uid>]/bids/[<$activity->bid>]" method="post">
+<input type="hidden" name="aid" id="aid_box" value="[<$activity->aid>]" />
+<input type="submit" name="submit" value="Change to this activity" />
+</form>
+[</if>]
 <br />
 [<if $activity->member_count > 0>]
 <table cellspacing="0" cellpadding="0">
