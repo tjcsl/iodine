@@ -163,6 +163,10 @@
 <strong>Display Options</strong><br />
 <table>
 <tr>
+ <td>Send all news posts to my email address:</td>
+ <td><input type="checkbox" name="newsforwarding" [<if $I2_USER->newsforwarding>]checked="checked"[</if>] /></td>
+</tr>
+<tr>
  <td>Style:</td>
  <td><select name="pref_style">
 	[<foreach from=$themes item=theme>]

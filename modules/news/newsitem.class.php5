@@ -226,6 +226,26 @@ class NewsItem {
 			$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%s', $nid, $group->name);
 		}
 
+		// Mail out the news post to any users who have subscribed to the news and can read it.
+		$groupstring = "";
+		foreach($groups as $group)
+			$groupstring .= $group->name . ", ";
+		$groupstring = substr($groupstring, 0,-2);
+		$subj = "[Iodine-news] {$title}";
+		$headers = "From: " . i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion') . "\r\n";
+		$headers .= "Reply-To: " . i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion') . "\r\n";
+		$message = "Posted by " . $author->fullname . " to " . $groupstring . ":\r\n\r\n" . $text;
+		$news = new NewsItem($nid);
+		foreach($I2_SQL->query('SELECT * FROM news_forwarding')->fetch_all_arrays() as $target) {
+			$user = new User($target[0]);
+			if($news->readable($user)) {
+				if(gettype($user->mail)=="array") {
+					foreach($user->mail as $mail)
+						mail($mail,$subj,$message,$headers);
+				} else
+					mail($user->mail,$subj,$message,$headers);
+			}
+		}
 		return true;
 	}
 

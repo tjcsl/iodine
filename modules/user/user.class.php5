@@ -348,6 +348,8 @@ class User {
 				return $pic[0];
 			case 'show_map':
 					  return ($this->__get('perm-showmap')!='FALSE')&&($this->__get('perm-showmap-self')!='FALSE');
+			case 'newsforwarding':
+				return $this->get_news_forwarding();
 			case 'showpictureself':
 			case 'showpicture':
 			case 'showpictures':
@@ -533,6 +535,9 @@ class User {
 			case 'phone_other':
 				$this->set('phoneNumber',$val,$ldap);
 				return;
+			case 'newsforwarding':
+				$this->set_news_forwarding($val);
+				return;
 			case 'showmapself':
 			case 'showmap':
 			case 'showbdayself':
@@ -626,6 +631,26 @@ class User {
 		foreach (Newimport::$sqltables as $table => $field) {
 			$I2_SQL->query('UPDATE %c SET %c=%d WHERE %c=%d', $table, $field, $uidnumber, $field, $olduid);
 		}
+	}
+
+	/**
+	* Change a user's news forwarding status.
+	*/
+	public function set_news_forwarding($val) {
+		global $I2_SQL;
+		if ($val == 'TRUE' || $val == 'on') {
+			$I2_SQL->query('INSERT INTO news_forwarding VALUES (%d)',$this->myuid);
+		} else {
+			$I2_SQL->query('DELETE FROM news_forwarding WHERE uid=%d',$this->myuid);
+		}
+	}
+
+	/**
+	* Get a user's news forwarding status.
+	*/
+	public function get_news_forwarding() {
+		global $I2_SQL;
+		return count($I2_SQL->query('SELECT * FROM news_forwarding WHERE uid=%d',$this->myuid)->fetch_all_single_values())>0;
 	}
 
 	/**
