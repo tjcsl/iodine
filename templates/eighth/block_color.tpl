@@ -20,12 +20,12 @@ table#colorpicker th {
 		<th colspan="4">Select a color for the block letter</th>
 	</tr><tr>
 		<td><span type="black"></span><input type="radio" name="color" value="0-0-0" checked="checked"/></td>
-		<td><span type="goldenrod"></span><input type="radio" name="color" value="0.85-0.69-0.13"/></td>
+		<td><span type="darkorange"></span><input type="radio" name="color" value="1-0.56-0"/></td>
 		<td><span type="#C8A2C8"></span><input type="radio" name="color" value="0.78-0.64-0.78"/></td>
 		<td><span type="deeppink"></span><input type="radio" name="color" value="1-0.08-0.58"/></td>
 	</tr>
 	<tr>
-		<td><span type="yellow"></span><input type="radio" name="color" value="1-1-0"/></td>
+		<td><span type="#FFBF00"></span><input type="radio" name="color" value="1-0.76-0"/></td>
 		<td><span type="blue"></span><input type="radio" name="color" value="0-0-1"/></td>
 		<td><span type="green"></span><input type="radio" name="color" value="0-0.5-0"/></td>
 		<td><span type="salmon"></span><input type="radio" name="color" value="0.98-0.5-0.45"/></td>
