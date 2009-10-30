@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS news_forwarding;
+CREATE TABLE news_forwarding (
+	uid MEDIUMINT(8) UNSIGNED PRIMARY KEY
+);
