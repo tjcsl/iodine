@@ -250,12 +250,6 @@ class Filecenter implements Module {
 						'empty' => FALSE
 					);
 				}
-				$dirs[] = array(
-					'name' => 'testing',
-					'last_modified' => date('n/j/y g:i A', $file->last_modified()),
-					'link' => FALSE,
-					'empty' => FALSE
-				);
 			} else {
 				foreach($this->filesystem->list_files($this->directory) as $file) {
 					$properties = array(
