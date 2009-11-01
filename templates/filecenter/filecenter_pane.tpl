@@ -15,10 +15,10 @@
  <thead>
   <tr>
    <th class="image">&nbsp;</th>
-   <th class="name">Name</th>
-   <th class="size">Size</th>
+   <th class="name"><a href="?sort=name[<if $sort=='name' && $reverse=='false'>]&reverse=true[</if>]">Name</a></th>
+   <th class="size"><a href="?sort=size[<if $sort=='size' && $reverse=='false'>]&reverse=true[</if>]">Size</a></th>
    <th class="type">Type</th>
-   <th class="modified">Last Modified</th>
+   <th class="modified"><a href="?sort=mtime[<if $sort=='mtime' && $reverse=='false'>]&reverse=true[</if>]">Last Modified</a></th>
   </tr>
  </thead>
  <tbody>

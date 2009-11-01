@@ -207,7 +207,7 @@ class Filecenter implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
-		global $I2_SQL, $I2_USER;
+		global $I2_SQL, $I2_USER, $I2_QUERY;
 
 		// if the user didn't choose a filesystem
 		if($this->filesystem == 'listing') {
@@ -231,9 +231,11 @@ class Filecenter implements Module {
 			//Add the .. directory
 			if (!$this->filesystem->is_root($this->directory)) {
 				$file = $this->filesystem->get_file($this->directory . '/..');
+				$raw_mtime = $file->last_modified();
 				$dirs[] = array(
 					'name' => '..',
-					'last_modified' => date('n/j/y g:i A', $file->last_modified()),
+					'last_modified' => date('n/j/y g:i A', $raw_mtime),
+					'raw_mtime' => $raw_mtime,
 					'link' => FALSE,
 					'empty' => FALSE
 				);
@@ -246,16 +248,21 @@ class Filecenter implements Module {
 					$dirs[] = array(
 						'name' => $carr[0],
 						'last_modified' => '',
+						'raw_mtime' => 0,
 						'link' => $carr[1],
 						'empty' => FALSE
 					);
 				}
 			} else {
 				foreach($this->filesystem->list_files($this->directory) as $file) {
+					$raw_size = $file->get_size();
+					$raw_mtime = $file->last_modified();
 					$properties = array(
 						"name" => $file->get_name(),
-						"size" => self::human_readable_size($file->get_size()),
-						"last_modified" => date("n/j/y g:i A", $file->last_modified())
+						"size" => self::human_readable_size($raw_size),
+						"raw_size" => $raw_size,
+						"last_modified" => date("n/j/y g:i A", $raw_mtime),
+						"raw_mtime" => $raw_mtime
 					);
 					
 					if (!$this->show_hidden_files && $file->is_hidden()) {
@@ -275,16 +282,74 @@ class Filecenter implements Module {
 					}
 				}
 			}
-		
-			sort($dirs);
-			sort($files);
-		
+			if (isset($I2_QUERY['sort'])) { // Ooh, the user wants us to sort it a special way.
+				switch( $I2_QUERY['sort'] ) {
+					case 'name':
+						usort($dirs,'Filecenter::equals_name');
+						usort($files,'Filecenter::equals_name');
+						$this->template_args['sort']='name';
+						break;
+					case 'size':
+						usort($dirs,'Filecenter::equals_name'); // Files have no size
+						usort($files,'Filecenter::equals_size');
+						$this->template_args['sort']='size';
+						break;
+					case 'mtime':
+						usort($dirs,'Filecenter::equals_mtime');
+						usort($files,'Filecenter::equals_mtime');
+						$this->template_args['sort']='mtime';
+						break;
+					default:
+						usort($dirs,'Filecenter::equals_name');
+						usort($files,'Filecenter::equals_name');
+						$this->template_args['sort']='name';
+						break;
+				}
+			}
+			else {
+				usort($dirs,'Filecenter::equals_name');
+				usort($files,'Filecenter::equals_name');
+				$this->template_args['sort']='name';
+			}
+			if (isset($I2_QUERY['reverse'])) {
+				$dirs=array_reverse($dirs);
+				$files=array_reverse($files);
+				$this->template_args['reverse'] = 'true';
+			}
+			else $this->template_args['reverse'] = 'false';
 			$this->template_args['dirs'] = $dirs;
 			$this->template_args['files'] = $files;
 			$this->template_args['curdir'] = $this->directory;
 		}
 		
 		$display->disp($this->template, $this->template_args);
+	}
+
+	/**
+	* Sort by name, used for field sorting in the usort()s above.
+	*/
+	static function equals_name($f1,$f2) {
+		return strnatcmp($f1['name'],$f2['name']);
+	}
+
+	/**
+	* Sort by size, used for field sorting in the usort()s above.
+	*/
+	static function equals_size($f1,$f2) {
+		if ($f1['raw_size']==$f2['raw_size'])
+			return strnatcmp($f1['name'],$f2['name']);
+		return $f1['raw_size']>$f2['raw_size'];
+	}
+
+	/**
+	* Sort by mtime, used for field sorting in the usort()s above.
+	*/
+	static function equals_mtime($f1,$f2) {
+		// Here we do /60 to remove the difference of seconds, because
+		// the users don't see them. It looks better.
+		if ((int)($f1['raw_mtime']/60)==(int)($f2['raw_mtime']/60))
+			return strnatcmp($f1['name'],$f2['name']);
+		return $f1['raw_mtime']>$f2['raw_mtime'];
 	}
 
 	/**
