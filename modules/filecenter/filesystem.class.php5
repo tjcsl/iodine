@@ -144,7 +144,12 @@ abstract class Filesystem {
 	public function get_file($pathname) {
 		$path = $this->convert_path($pathname);
 		return new I2File($path);
-	}	
+	}
+
+	public function exists_file($pathname) {
+		$path = $this->convert_path($pathname,FALSE);
+		return file_exists($path);
+	}
 	
 	public function echo_contents($filename) {
 		$path = $this->convert_path($filename);

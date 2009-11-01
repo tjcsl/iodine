@@ -90,6 +90,20 @@ class I2File {
 		return $this->last_modified;
 	}
 
+	public function read_cache_arrays() {
+		$contents = explode("\n",file_get_contents($this->absolute_path));
+		$output = array();
+		$index = 0;
+		foreach ($contents as $content) {
+			$arr = explode(" ",$content);
+			if(sizeof($arr)>1) { // Don't do anything if there's only one thing on the line
+				$output[] = explode(" ",$content);
+				$output[$index][1] = ($output[$index][1] == "0");
+				$index += 1;
+			}
+		}
+		return $output;
+	}
 }
 
 ?>

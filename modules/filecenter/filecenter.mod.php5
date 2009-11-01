@@ -238,28 +238,47 @@ class Filecenter implements Module {
 					'empty' => FALSE
 				);
 			}
-
-			foreach($this->filesystem->list_files($this->directory) as $file) {
-				$properties = array(
-					"name" => $file->get_name(),
-					"size" => self::human_readable_size($file->get_size()),
-					"last_modified" => date("n/j/y g:i A", $file->last_modified())
-				);
-			
-				if (!$this->show_hidden_files && $file->is_hidden()) {
-					continue;
+			//We cache some directories just to reduce the OMG9000 request time
+			if ($this->filesystem->exists_file($this->directory . '.filecache')) {
+				$cache = $this->filesystem->get_file($this->directory . '.filecache');
+				$cachearray = $cache->read_cache_arrays();
+				foreach ($cachearray as $carr) {
+					$dirs[] = array(
+						'name' => $carr[0],
+						'last_modified' => '',
+						'link' => $carr[1],
+						'empty' => FALSE
+					);
 				}
-			
-				$properties["link"]  = $file->is_symlink();
-
-				if ($file->is_directory()) {
-					$temp = count($this->filesystem->list_files($this->directory . $file->get_name()));
-
-					$properties["empty"] = $temp > 0 ? FALSE : TRUE;
-
-					$dirs[] = $properties;
-				} else {
-					$files[] = $properties;
+				$dirs[] = array(
+					'name' => 'testing',
+					'last_modified' => date('n/j/y g:i A', $file->last_modified()),
+					'link' => FALSE,
+					'empty' => FALSE
+				);
+			} else {
+				foreach($this->filesystem->list_files($this->directory) as $file) {
+					$properties = array(
+						"name" => $file->get_name(),
+						"size" => self::human_readable_size($file->get_size()),
+						"last_modified" => date("n/j/y g:i A", $file->last_modified())
+					);
+					
+					if (!$this->show_hidden_files && $file->is_hidden()) {
+						continue;
+					}
+				
+					$properties["link"]  = $file->is_symlink();
+	
+					if ($file->is_directory()) {
+						$temp = count($this->filesystem->list_files($this->directory . $file->get_name()));
+	
+						$properties["empty"] = $temp > 0 ? FALSE : TRUE;
+	
+						$dirs[] = $properties;
+					} else {
+						$files[] = $properties;
+					}
 				}
 			}
 		
