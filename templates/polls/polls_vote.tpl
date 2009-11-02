@@ -11,7 +11,7 @@
 [<$poll->introduction>]<br /><br />
 
 <form method="post" action="[<if $avail>][<$I2_ROOT>]polls/vote/[<$poll->pid>][</if>]" class="boxform">
-<input type="hidden" name="polls_vote_form" value="vote">
+<input type="hidden" name="polls_vote_form" value="vote" />
 <ol class="poll_questions">
 [<foreach from=$poll->questions item=q>]
   <li>
