@@ -15,7 +15,7 @@
 	[<foreach from=$activities item="activity" key="key">]
 		[<assign var=capacity value=$activity->capacity>]
 		[<math equation="(x * 100)/(y)" x=$activity->member_count y=$capacity assign=percent>]
-		<option value="[<$activity->aid>]" [<if $key == 0>]selected [</if>]
+		<option value="[<$activity->aid>]" [<if $key == 0>]selected="selected"[</if>]
 		[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"
 		[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"
 		[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"
