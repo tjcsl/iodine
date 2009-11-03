@@ -49,7 +49,7 @@ class JS implements Module {
 		header('Cache-Control: public');
 		header('Pragma:'); // Unset Pragma header
 		header('Expires:'); // Unset Expires header
-		echo "/* Server-Cache: {$this->style_cache} */\n";
+		echo "/* Server-Cache: {$this->script_cache} */\n";
 		echo "/* Client-Cached: {$this->date} */\n";
 		
 		$disp->clear_buffer();
@@ -102,7 +102,7 @@ class JS implements Module {
 			file_put_contents($script_cache,$contents);
 		}
 		
-		$this->gmdate = gmdate('D, d M Y H:i:s', filemtime($style_cache)) . ' GMT';
+		$this->gmdate = gmdate('D, d M Y H:i:s', filemtime($script_cache)) . ' GMT';
 		
 		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 			$if_modified_since = preg_replace('/;.*$/', '', $_SERVER['HTTP_IF_MODIFIED_SINCE']);

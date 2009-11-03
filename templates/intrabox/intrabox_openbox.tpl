@@ -1,4 +1,4 @@
-<div class="intrabox" id="intrabox_[<$boxid>]">
+<div class="intrabox" id="intrabox_[<$boxid>]" onmouseover="intrabox_onmouseover([<$boxid>])" onmouseout="intrabox_onmouseout([<$boxid>])">
 <div class="boxbuttons">
 	<span class="upbutton"><a href="[<$I2_ROOT>]manageibox/move/[<$boxid>]/-1"><img src="[<$I2_ROOT>]www/pics/clear.gif" alt="Up" /></a></span>
 	<span class="dnbutton"><a href="[<$I2_ROOT>]manageibox/move/[<$boxid>]/1"><img src="[<$I2_ROOT>]www/pics/clear.gif" alt="Down" /></a></span>
