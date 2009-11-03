@@ -223,6 +223,8 @@ class EighthPrint {
 		ftp_chdir($ftpconn, 'PORT1');
 		ftp_put($ftpconn, "{$temp}.ps", "{$temp}.ps", FTP_BINARY);
 		ftp_close($ftpconn);
+		unlink($temp . ".ps");
+		unlink($temp . ".dvi");
 	}
 	
 	/**
