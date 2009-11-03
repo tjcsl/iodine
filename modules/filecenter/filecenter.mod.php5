@@ -272,7 +272,8 @@ class Filecenter implements Module {
 					$properties["link"]  = $file->is_symlink();
 	
 					if ($file->is_directory()) {
-						$temp = count($this->filesystem->list_files($this->directory . $file->get_name()));
+						// Commenting this out because it's not used EVER and it causes errors -dmorris
+						$temp = 0;//count($this->filesystem->list_files($this->directory . $file->get_name()));
 	
 						$properties["empty"] = $temp > 0 ? FALSE : TRUE;
 	
