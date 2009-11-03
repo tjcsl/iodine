@@ -2,4 +2,5 @@
 echo "Updating your local repository from the global tree..."
 hg pull http://iodine.tjhsst.edu/hg
 hg update $*
+rm /tmp/i2cache-`whoami`/modules.map
 echo "Done."
