@@ -38,6 +38,7 @@ class Newimport implements Module {
 			'groups_static'			=> 'uid',
 			'groups_user_perms'		=> 'uid',
 			'intrabox_map'			=> 'uid',
+			'news_forwarding'		=> 'uid',
 			'news_read_map'			=> 'uid',
 			'news'				=> 'authorID',
 			'parking_apps'			=> 'uid',
