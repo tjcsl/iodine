@@ -1,4 +1,4 @@
-<iframe id="sgdframe" style="width: 100%; height: 600px; border: none;" src="[<$I2_ROOT>]sgd/form" ></iframe>
+<iframe id="sgdframe" style="width: 100%; height: 600px; border: none;" src="https://sun.tjhsst.edu/sgd/index.jsp?langSelected=en" ></iframe>
 [<* commented out <script type="text/javascript">
 var sgdframe = document.getElementById('sgdframe');
 // If the user is already logged into sgd, they will get a blank page. This stops that.
