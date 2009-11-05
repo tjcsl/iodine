@@ -196,6 +196,7 @@ class StudentDirectory implements Module {
 				$this->template_args['eighth'] = $eighth;
 				
 				$this->template_args['homecoming_may_vote'] = Homecoming::user_may_vote($user);
+				$this->template_args['im_an_admin'] = Group::admin_all()->has_member($I2_USER);
 				$this->template_args['is_admin'] = Group::admin_all()->has_member($user);
 				$this->template_args['sex'] = $user->sex;
 				$this->template_args['mode'] = $mode;

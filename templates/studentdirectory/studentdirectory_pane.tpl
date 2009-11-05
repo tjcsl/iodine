@@ -4,6 +4,9 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
 [<elseif $I2_USER->grade == "staff">]
 <strong>As a member of the TJ faculty, you are permitted to see all information, regardless of privacy settings.  Please be aware of this.</strong><br /><br />
 [</if>]
+[<if $im_an_admin>]
+<a href="[<$I2_ROOT>]groups/view/[<$user->uid>]">View this user's groups</a><br /><br />
+[</if>]
 [<if $is_admin>]
 <strong>This person is an Intranet Administrator, please contact [<if $user->sex == "M">]him[<elseif $user->sex == "F">]her[<else>]him/her[</if>] with any problems you encounter.</strong><br /><br />
 [</if>]

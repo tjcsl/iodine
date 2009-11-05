@@ -501,5 +501,28 @@ class Groups implements Module {
 		$this->template = 'groups_perm.tpl';
 		return 'Groups: Permission';
 	}
+	/**
+	 * Show what groups a _different_ user is in.
+	 */
+	function view() {
+		global $I2_ARGS,$I2_USER;
+		if(!isset($I2_ARGS[2]) || !is_int($I2_ARGS[2]) || !Group::admin_all()->has_member($I2_USER))
+			redirect('groups');
+		$otheruser = new User($I2_ARGS[2]);
+		$this->template = 'groups_home.tpl';
+		$this->template_args['groups'] = Group::get_user_groups($otheruser);
+		if (Group::admin_all()->has_member($otheruser)) {
+			$this->template_args['admin'] = 1;
+		}
+		$this->template_args['prefixes'] = Group::user_admin_prefixes($otheruser);
+		$this->template_args['group_admin'] = Group::get_admin_groups($otheruser);
+		$alluserjoin = Group::get_userperm_groups($otheruser, Permission::getPermission('GROUP_JOIN'));
+		$this->template_args['group_join'] = array();
+		foreach($alluserjoin as $i) { //The groups of which this user is allowed to join.
+			if(!$i->has_member($otheruser)) //Not already a member.
+				$this->template_args['group_join'][] = $i;
+		}
+		return array('Groups: View Groups', 'Groups');
+	}
 }
 ?>
