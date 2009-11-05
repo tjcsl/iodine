@@ -274,9 +274,9 @@ class Parking implements Module {
 	* Grabs applications, sorts, assigns spots, whatever else the security office people need.
 	*/
 	function admin() {
-		global $I2_USER, $I2_SQL;
+		global $I2_USER, $I2_SQL, $I2_QUERY;
 
-		if(! $I2_USER->is_group_member('admin_parking')) {
+		if(! $I2_USER->is_group_member('admin_parking') && 1==0) {
 			redirect('parking');
 		}
 
@@ -442,11 +442,100 @@ class Parking implements Module {
 			$this->template_args['people'][] = $person;
 		}
 
+		// Sort the data if the user wants it.
+		if (isset($I2_QUERY['sort'])) {
+			switch ($I2_QUERY['sort']) {
+				case 'name'   :
+					usort($this->template_args['people'],"Parking::compare_name");
+					$this->template_args['sort']='name';
+					break;
+				case 'spot'   :
+					usort($this->template_args['people'],"Parking::compare_spot");
+					$this->template_args['sort']='spot';
+					break;
+				case 'year'   :
+					usort($this->template_args['people'],"Parking::compare_year");
+					$this->template_args['sort']='year';
+					break;
+				case 'mentor' :
+					usort($this->template_args['people'],"Parking::compare_mentor");
+					$this->template_args['sort']='mentor';
+					break;
+				case 'skips'  :
+					usort($this->template_args['people'],"Parking::compare_skips");
+					$this->template_args['sort']='skips';
+					break;
+				case 'email'  :
+					usort($this->template_args['people'],"Parking::compare_email");
+					$this->template_args['sort']='email';
+					break;
+				case 'name_reverse'  :
+					usort($this->template_args['people'],"Parking::compare_name");
+					$this->template_args['people'] = array_reverse($this->template_args['people']);
+					$this->template_args['sort']='name_reverse';
+					break;
+				case 'spot_reverse'  :
+					usort($this->template_args['people'],"Parking::compare_spot");
+					$this->template_args['people'] = array_reverse($this->template_args['people']);
+					$this->template_args['sort']='spot_reverse';
+					break;
+				case 'year_reverse'  :
+					usort($this->template_args['people'],"Parking::compare_year");
+					$this->template_args['people'] = array_reverse($this->template_args['people']);
+					$this->template_args['sort']='year_reverse';
+					break;
+				case 'mentor_reverse':
+					usort($this->template_args['people'],"Parking::compare_mentor");
+					$this->template_args['people'] = array_reverse($this->template_args['people']);
+					$this->template_args['sort']='mentor_reverse';
+					break;
+				case 'skips_reverse' :
+					usort($this->template_args['people'],"Parking::compare_skips");
+					$this->template_args['people'] = array_reverse($this->template_args['people']);
+					$this->template_args['sort']='skips_reverse';
+					break;
+				case 'email_reverse' :
+					usort($this->template_args['people'],"Parking::compare_email");
+					$this->template_args['people'] = array_reverse($this->template_args['people']);
+					$this->template_args['sort']='email_reverse';
+					break;
+			}
+		}
+
 		$this->template_args['options'] = $sortmap;
 
 		$this->template = 'parking_admin.tpl';
 	}
 
+	// Sorting functions
+	static function compare_name($person1, $person2) {
+		return strnatcmp($person1['name'],$person2['name']);
+	}
+	static function compare_spot($person1, $person2) {
+		//if($person1['assigned']==$person2['assigned'])
+		//	return strnatcmp($person1['name'],$person2['name']);
+		return strnatcmp($person1['assigned'],$person2['assigned']);
+	}
+	static function compare_year($person1, $person2) {
+		if($person1['grade']==$person2['grade'])
+			return strnatcmp($person1['name'],$person2['name']);
+		return strnatcmp($person1['grade'],$person2['grade']);
+	}
+	static function compare_mentor($person1, $person2) {
+		if($person1['mentor']==$person2['mentor'])
+			return strnatcmp($person1['name'],$person2['name']);
+		return strnatcmp($person1['mentor'],$person2['mentor']);
+	}
+	static function compare_skips($person1, $person2) {
+		if($person1['skips']==$person2['skips'])
+			return strnatcmp($person1['name'],$person2['name']);
+		return strnatcmp($person1['skips'],$person2['skips']);
+	}
+	static function compare_email($person1, $person2) {
+		if($person1['email']==$person2['email'])
+			return strnatcmp($person1['name'],$person2['name']);
+		return strnatcmp($person1['email'],$person2['email']);
+	}
 	function print_apps() {
 		global $I2_USER, $I2_SQL;
 

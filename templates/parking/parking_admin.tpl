@@ -1,6 +1,6 @@
 [<if isset($ask_override)>]
  <div style="color: red;">Assigning parking spot [<$override_spot>] to [<$override_name>]: parking spot already taken by <a href="[<$I2_ROOT>]parking/admin#[<$override_otherid>]">[<$override_othername>]</a>.
-  <form action="[<$I2_ROOT>]parking/admin" method="post" class="boxform">
+  <form action="[<$I2_ROOT>]parking/admin[<if isset($sort)>]?sort=[<$sort>][</if>]" method="post" class="boxform">
    <input type="hidden" name="parking_admin_form" value="person_assign" />
    <input type="hidden" name="person_id" value="[<$override_id>]" />
    <input type="hidden" name="spot" value="[<$override_spot>]" />
@@ -22,17 +22,17 @@ Using this interface, you can:
 [<*<li>assign or remove parking spots. You must enter a number and then press Enter or click Set for that box. The form will save the space and then return you to the spot you were working on (saved sort preferences). To remove an assigned parking spot, enter a blank box or a 0 and set. If you assign an already assigned number, the interface will stop you to alert you that you are doing so. There is an option to override the protection if needed (for joint applicants).</li>*>]
 </ul>
 Some features to come include searching by field.<br /><br />
-<form action="[<$I2_ROOT>]parking/admin" method="post" class="boxform">
+<form action="[<$I2_ROOT>]parking/admin[<if isset($sort)>]?sort=[<$sort>][</if>]" method="post" class="boxform">
  <input type="hidden" name="parking_admin_form" value="changestartdate" />
  <input type="text" name="startdate" value="[<$startdate>]" />
  <input type="submit" value="Update starting date" />
 </form><br />
-<form action="[<$I2_ROOT>]parking/admin" method="post" class="boxform">
+<form action="[<$I2_ROOT>]parking/admin[<if isset($sort)>]?sort=[<$sort>][</if>]" method="post" class="boxform">
  <input type="hidden" name="parking_admin_form" value="changedeadline" />
  <input type="text" name="deadline" value="[<$deadline>]" />
  <input type="submit" value="Update deadline" />
 </form><br /><br />
-[<*<form action="[<$I2_ROOT>]parking/admin" method="post" class="boxform">
+[<*<form action="[<$I2_ROOT>]parking/admin[<if isset($sort)>]?sort=[<$sort>][</if>]" method="post" class="boxform">
  *<input type="hidden" name="parking_admin_form" value="sort" />
  *Priority 1:
  *<select name="sort1">
@@ -71,12 +71,12 @@ Note: For joint applications, the number of 8th period skips is the sum of the t
 <br /><br />
 <table>
  <tr>
-  <th>Spot</th>
-  <th>Name</th>
-  <th>Yr</th>
-  <th>Mntr</th>
-  <th>8th</th>
-  <th>Email</th>
+  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='spot'>]spot_reverse[<else>]spot[</if>]">Spot</th>
+  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='name'>]name_reverse[<else>]name[</if>]">Name</a></th>
+  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='year'>]year_reverse[<else>]year[</if>]">Yr</th>
+  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='mentor'>]mentor_reverse[<else>]mentor[</if>]">Mntr</th>
+  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='skips'>]skips_reverse[<else>]skips[</if>]">8th</th>
+  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='email'>]email_reverse[<else>]email[</if>]">Email</th>
   <th>Plate</th>
   <th>Make</th>
   <th>Model</th>
@@ -88,7 +88,7 @@ Note: For joint applications, the number of 8th period skips is the sum of the t
     [<if $car.index == 0>]
      <td rowspan="[<$person.numcars>]" style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">
       <a name="[<$person.id>]" />[<if $person.assigned == "">]---[<else>][<$person.assigned>][</if>]<br />
-      <form action="[<$I2_ROOT>]parking/admin" method="post" class="boxform"><input type="hidden" name="parking_admin_form" value="person_assign" /><input type="hidden" name="person_id" value="[<$person.id>]" /><input type="text" name="spot" value="[<$person.assigned>]" style="width: 40px; font-size: 10px;" /><input type="submit" value="Set" style="cursor: pointer; font-size: 10px;" /></form>
+      <form action="[<$I2_ROOT>]parking/admin[<if isset($sort)>]?sort=[<$sort>][</if>]" method="post" class="boxform"><input type="hidden" name="parking_admin_form" value="person_assign" /><input type="hidden" name="person_id" value="[<$person.id>]" /><input type="text" name="spot" value="[<$person.assigned>]" style="width: 40px; font-size: 10px;" /><input type="submit" value="Set" style="cursor: pointer; font-size: 10px;" /></form>
      </td>
      <td rowspan="[<$person.numcars>]" style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.name>]</td>
      <td rowspan="[<$person.numcars>]" style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.grade>]</td>
@@ -105,7 +105,7 @@ Note: For joint applications, the number of 8th period skips is the sum of the t
    <tr>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">
      <a name="[<$person.id>]" />[<if $person.assigned == "">]---[<else>][<$person.assigned>][</if>]
-     <form action="[<$I2_ROOT>]parking/admin" method="post" class="boxform"><input type="hidden" name="parking_admin_form" value="person_assign" /><input type="hidden" name="person_id" value="[<$person.id>]" /><input type="text" name="spot" value="[<$person.assigned>]" style="width: 40px; font-size: 10px;" /><input type="submit" value="Set" style="cursor: pointer; font-size: 10px;" /></form>
+     <form action="[<$I2_ROOT>]parking/admin[<if isset($sort)>]?sort=[<$sort>][</if>]" method="post" class="boxform"><input type="hidden" name="parking_admin_form" value="person_assign" /><input type="hidden" name="person_id" value="[<$person.id>]" /><input type="text" name="spot" value="[<$person.assigned>]" style="width: 40px; font-size: 10px;" /><input type="submit" value="Set" style="cursor: pointer; font-size: 10px;" /></form>
     </td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.name>]</td>
     <td style="padding: 4px; border-right: 1px solid gray; border-bottom: 1px solid gray;[<if $person.isTeacher>] color: red;[</if>]">[<$person.grade>]</td>
