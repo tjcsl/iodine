@@ -70,9 +70,15 @@ class Event {
 				$uids = $I2_SQL->query('SELECT uid FROM event_verifiers WHERE eid=%d', $this->myeid)->fetch_col('uid');
 				$this->info[$var] = array();
 				foreach ($uids as $uid) {
-					$this->info[$var][] = new User($uid);
+					try {
+						$verifier =  new User($uid);
+					} catch(I2Exception $e) {
+						$name = $I2_SQL->query('SELECT name FROM event_verifiers WHERE eid=%d AND uid=%d',$this->myeid,$uid)->fetch_single_value();
+						$verifier = new FakeUser($uid,$name);
+					}
+					$this->info[$var][] = $verifier;
 				}
-				usort($this->info[$var], array('User', 'name_cmp'));
+				usort($this->info[$var], array('User', 'commaname_cmp'));
 				break;
 		}
 
@@ -477,7 +483,7 @@ class Event {
 			throw new I2Exception('This event will not be occuring during block #'.$block->bid);
 		}
 
-		$I2_SQL->query('INSERT INTO event_signups SET eid=%d, bid=%d, uid=%d, vid=%d, paid=0', $this->myeid, $block->bid, $user->uid, $verifier->uid);
+		$I2_SQL->query('INSERT INTO event_signups SET eid=%d, bid=%d, uid=%d, vid=%d, paid=0, vname=%s', $this->myeid, $block->bid, $user->uid, $verifier->uid, $verifier->name_comma);
 	}
 
 	/**
@@ -542,7 +548,15 @@ class Event {
 			throw new I2Exception('You do not have permission to see the payment verifiers for this user');
 		}
 
-		return new User($I2_SQL->query('SELECT vid FROM event_signups WHERE uid=%d AND eid=%d', $user->uid, $this->eid)->fetch_single_value());
+		$vid = $I2_SQL->query('SELECT vid FROM event_signups WHERE uid=%d AND eid=%d', $user->uid, $this->eid)->fetch_single_value();
+		try {
+			$verifier = new User($vid);
+		}
+		catch(I2Exception $e) {
+			// Invalid uid, this is a problem in the tables sadly, as teacher uids are recycled and teacher accounts are removed after a while.
+			$verifier = new FakeUser($vid,$I2_SQL->query('SELECT vname FROM event_signups WHERE uid=%d AND eid=%d', $user->uid, $this->eid)->fetch_single_value());
+		}
+		return $verifier;
 	}
 
 	/**
