@@ -1,5 +1,6 @@
 <a href="[<$I2_ROOT>]groups">Groups Home</a><br />
 <br />
+[<if isset($error)>]<font color=red><b>[<$error>]</b></font>[</if>]
 <table width="100%">
 <tr>
 <td valign=top>

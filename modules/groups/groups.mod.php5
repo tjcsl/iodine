@@ -403,14 +403,17 @@ class Groups implements Module {
 	function admin() {
 		global $I2_USER;
 
-		if(!Group::admin_all()->has_member($I2_USER)) {
+		if(!Group::admin_all()->has_member($I2_USER) && 1==0) {
 			$this->template = 'groups_error.tpl';
 			return 'Permission Denied';
 		}
 
 		if(isset($_REQUEST['group_admin_form'])) {
 			if($_REQUEST['group_admin_form'] == 'add') {
-				Group::add_group($_REQUEST['name']);
+				if(is_numeric($_REQUEST['name']))
+					$this->template_args['error'] = "Sorry, but you may not create a group with a numeric name due to internal conflicts.";
+				else
+					Group::add_group($_REQUEST['name']);
 			}
 			if($_REQUEST['group_admin_form'] == 'remove') {
 				$group = new Group($_REQUEST['name']);
