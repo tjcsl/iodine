@@ -25,6 +25,7 @@ class Suggestion implements Module {
 			$usermail = $usermail[0];
 		}
 		$this->template_args['usermail'] = $usermail;
+		$this->template_args['sendchoices'] = array(array('name'=>'intranet','address'=>i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion')),array('name'=>'SGA','address'=>'sga@lists.tjhsst.edu'));
 
 		if (!(isset($_REQUEST['submit_form']) && isset($_REQUEST['submit_box']))) {
 			return 'Suggestion';
@@ -35,10 +36,19 @@ class Suggestion implements Module {
 			return 'Suggestion';
 		}
 
-		$to = i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion'); 
+		$to = i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion');
+		switch ($_REQUEST['sendchoice']) {
+			case 'SGA':
+				$to='sga@lists.tjhsst.edu';
+				break;
+			case 'intranet':
+			default:
+				$to=i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion');
+				// We want more info for debugging.
+				$mesg .= "\r\n\r\n Username: $I2_USER->username UID: $I2_User->uid \r\n $browser";
+		}
 		$subj = "Suggestion from {$I2_USER->fullname}";
 		$browser = $_SERVER['HTTP_USER_AGENT'];
-		$mesg .= "\r\n\r\n Username: $I2_USER->username UID: $I2_User->uid \r\n $browser";
 		$headers = "From: $usermail\r\n";
 		$headers .= "Reply-To: $usermail\r\n";
 		$headers .= "Return-Path: $to\r\n";
