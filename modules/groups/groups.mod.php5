@@ -403,7 +403,7 @@ class Groups implements Module {
 	function admin() {
 		global $I2_USER;
 
-		if(!Group::admin_all()->has_member($I2_USER) && 1==0) {
+		if(!Group::admin_all()->has_member($I2_USER)) {
 			$this->template = 'groups_error.tpl';
 			return 'Permission Denied';
 		}
