@@ -276,7 +276,7 @@ class Parking implements Module {
 	function admin() {
 		global $I2_USER, $I2_SQL, $I2_QUERY;
 
-		if(! $I2_USER->is_group_member('admin_parking') && 1==0) {
+		if(! $I2_USER->is_group_member('admin_parking')) {
 			redirect('parking');
 		}
 
