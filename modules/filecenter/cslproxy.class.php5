@@ -42,7 +42,7 @@ class CSLProxy {
 	 * return exit status
 	 */
 	public function __call($function, $args) {
-		global $I2_FS_ROOT;
+		global $I2_FS_ROOT,$I2_USER;
 
 		$temp = tmpfile();
 
@@ -61,6 +61,41 @@ class CSLProxy {
 		$AFS_CELL = i2config_get('cell','csl.tjhsst.edu','afs');
 		if (!isSet($this->kerberos_realm)) {
 			$this->kerberos_realm = i2config_get('afs_realm','CSL.TJHSST.EDU','kerberos');
+		}
+
+		// TODO Actually fix the can_do method so that we don't have to do this.
+		// Fairly log-priority.
+		if($function == 'can_do') {
+			$username = $I2_USER->username;
+			$usergroups = array();
+			$filepath = '/afs/csl.tjhsst.edu/' . $args[0];
+			$retarray=array();
+			exec("echo `pts groups $username | grep -v Groups` system:authuser system:anyuser | sed 's/ /\\\\|/g'",$usergroups);
+			$usergroups = $usergroups[0];
+			exec("fs la $filepath | grep -v 'Access list for' | grep '$usergroups' | sed 's/^ *[a-zA-Z0-9:]* //g' | tr '\\n' '/' | sed 's/\\///g'",$retarray);
+			if(!isset($retarray[0])) {
+				// This means that `fs la` showed an error message. This is almost always
+				// because of insufficient permissions, so we'll return false.
+				return FALSE;
+			}
+			switch ($args[1]) {
+				case 'read':
+					return !(strpos($retarray[0],'r') === false);
+				case 'list':
+					return !(strpos($retarray[0],'l') === false);
+				case 'insert':
+					return !(strpos($retarray[0],'i') === false);
+				case 'delete':
+					return !(strpos($retarray[0],'d') === false);
+				case 'write':
+					return !(strpos($retarray[0],'w') === false);
+				case 'lock':
+					return !(strpos($retarray[0],'k') === false);
+				case 'administer':
+					return !(strpos($retarray[0],'a') === false);
+				default:
+					return false;
+			}
 		}
 
 		$process = proc_open("pagsh -c \"aklog -c $AFS_CELL -k {$this->kerberos_realm}; $peer {$this->kerberos_realm}\"", $descriptors, $pipes, $I2_FS_ROOT, $env);

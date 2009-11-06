@@ -240,87 +240,97 @@ class Filecenter implements Module {
 					'empty' => FALSE
 				);
 			}
-			//We cache some directories just to reduce the OMG9000 request time
-			if ($this->filesystem->exists_file($this->directory . '.filecache')) {
-				$cache = $this->filesystem->get_file($this->directory . '.filecache');
-				$cachearray = $cache->read_cache_arrays();
-				foreach ($cachearray as $carr) {
-					$dirs[] = array(
-						'name' => $carr[0],
-						'last_modified' => '',
-						'raw_mtime' => 0,
-						'link' => $carr[1],
-						'empty' => FALSE
-					);
-				}
+			// Check if the user actually CAN view the directory due to permissions.
+			if (! $this->filesystem->can_do($this->directory,'list')) {
+				$this->template_args['error'] = "You do not have permission to view this directory.";
+				$this->template_args['sort'] = 'name';
+				$this->template_args['reverse'] = false;
+				$this->template_args['files'] = $files;
+				$this->template_args['dirs'] = $dirs;
 			} else {
-				foreach($this->filesystem->list_files($this->directory) as $file) {
-					$raw_size = $file->get_size();
-					$raw_mtime = $file->last_modified();
-					$properties = array(
-						"name" => $file->get_name(),
-						"size" => self::human_readable_size($raw_size),
-						"raw_size" => $raw_size,
-						"last_modified" => date("n/j/y g:i A", $raw_mtime),
-						"raw_mtime" => $raw_mtime
-					);
-					
-					if (!$this->show_hidden_files && $file->is_hidden()) {
-						continue;
+				// We cache some directories just to reduce the OMG9000 request time
+				if ($this->filesystem->exists_file($this->directory . '.filecache')) {
+					$cache = $this->filesystem->get_file($this->directory . '.filecache');
+					$cachearray = $cache->read_cache_arrays();
+					foreach ($cachearray as $carr) {
+						$dirs[] = array(
+							'name' => $carr[0],
+							'last_modified' => '',
+							'raw_mtime' => 0,
+							'link' => $carr[1],
+							'empty' => FALSE
+						);
 					}
+				} else {
+					foreach($this->filesystem->list_files($this->directory) as $file) {
+						$raw_size = $file->get_size();
+						$raw_mtime = $file->last_modified();
+						$properties = array(
+							"name" => $file->get_name(),
+							"size" => self::human_readable_size($raw_size),
+							"raw_size" => $raw_size,
+							"last_modified" => date("n/j/y g:i A", $raw_mtime),
+							"raw_mtime" => $raw_mtime
+						);
+						
+						if (!$this->show_hidden_files && $file->is_hidden()) {
+							continue;
+						}
+						
+						$properties["link"]  = $file->is_symlink();
+						
+						if ($file->is_directory()) {
+							// Commenting this out because it's not used EVER and it causes errors -dmorris
+							$temp = 0;//count($this->filesystem->list_files($this->directory . $file->get_name()));
+							
+							$properties["empty"] = $temp > 0 ? FALSE : TRUE;
+							
+							$dirs[] = $properties;
+						} else {
+							$files[] = $properties;
+						}
+					}
+				}
 				
-					$properties["link"]  = $file->is_symlink();
-	
-					if ($file->is_directory()) {
-						// Commenting this out because it's not used EVER and it causes errors -dmorris
-						$temp = 0;//count($this->filesystem->list_files($this->directory . $file->get_name()));
-	
-						$properties["empty"] = $temp > 0 ? FALSE : TRUE;
-	
-						$dirs[] = $properties;
-					} else {
-						$files[] = $properties;
+				if (isset($I2_QUERY['sort'])) { // Ooh, the user wants us to sort it a special way.
+					switch( $I2_QUERY['sort'] ) {
+						case 'name':
+							usort($dirs,'Filecenter::equals_name');
+							usort($files,'Filecenter::equals_name');
+							$this->template_args['sort']='name';
+							break;
+						case 'size':
+							usort($dirs,'Filecenter::equals_name'); // Files have no size
+							usort($files,'Filecenter::equals_size');
+							$this->template_args['sort']='size';
+							break;
+						case 'mtime':
+							usort($dirs,'Filecenter::equals_mtime');
+							usort($files,'Filecenter::equals_mtime');
+							$this->template_args['sort']='mtime';
+							break;
+						default:
+							usort($dirs,'Filecenter::equals_name');
+							usort($files,'Filecenter::equals_name');
+							$this->template_args['sort']='name';
+							break;
 					}
 				}
-			}
-			if (isset($I2_QUERY['sort'])) { // Ooh, the user wants us to sort it a special way.
-				switch( $I2_QUERY['sort'] ) {
-					case 'name':
-						usort($dirs,'Filecenter::equals_name');
-						usort($files,'Filecenter::equals_name');
-						$this->template_args['sort']='name';
-						break;
-					case 'size':
-						usort($dirs,'Filecenter::equals_name'); // Files have no size
-						usort($files,'Filecenter::equals_size');
-						$this->template_args['sort']='size';
-						break;
-					case 'mtime':
-						usort($dirs,'Filecenter::equals_mtime');
-						usort($files,'Filecenter::equals_mtime');
-						$this->template_args['sort']='mtime';
-						break;
-					default:
-						usort($dirs,'Filecenter::equals_name');
-						usort($files,'Filecenter::equals_name');
-						$this->template_args['sort']='name';
-						break;
+				else {
+					usort($dirs,'Filecenter::equals_name');
+					usort($files,'Filecenter::equals_name');
+					$this->template_args['sort']='name';
 				}
+				if (isset($I2_QUERY['reverse'])) {
+					$dirs=array_reverse($dirs);
+					$files=array_reverse($files);
+					$this->template_args['reverse'] = 'true';
+				}
+				else $this->template_args['reverse'] = 'false';
+				$this->template_args['dirs'] = $dirs;
+				$this->template_args['files'] = $files;
+				$this->template_args['curdir'] = $this->directory;
 			}
-			else {
-				usort($dirs,'Filecenter::equals_name');
-				usort($files,'Filecenter::equals_name');
-				$this->template_args['sort']='name';
-			}
-			if (isset($I2_QUERY['reverse'])) {
-				$dirs=array_reverse($dirs);
-				$files=array_reverse($files);
-				$this->template_args['reverse'] = 'true';
-			}
-			else $this->template_args['reverse'] = 'false';
-			$this->template_args['dirs'] = $dirs;
-			$this->template_args['files'] = $files;
-			$this->template_args['curdir'] = $this->directory;
 		}
 		
 		$display->disp($this->template, $this->template_args);

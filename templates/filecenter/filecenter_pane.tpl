@@ -55,6 +55,9 @@
   [</foreach>]
  </tbody>
 </table>
+[<if isset($error)>]
+<font color=red><b>[<$error>]</b></font>
+[</if>]
 <div id="fileupload">
  <div>Upload a file:</div>
  <form enctype="multipart/form-data" method="post" action="">

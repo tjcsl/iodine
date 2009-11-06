@@ -262,5 +262,8 @@ abstract class Filesystem {
 		return TRUE;
 	}
 
+	public function can_do($filepath,$action) { // Override this for permissions in each filesystem.
+		return TRUE;
+	}
 }
 ?>
