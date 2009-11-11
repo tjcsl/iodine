@@ -46,15 +46,6 @@ Phone number(s):
   [<$user->address3_city>], [<$user->address3_state>] [<$user->address3_zip>]<br />
  [</if>]
 [</if>]
-[<* Disabled to appease the administration. -- AES 6/14/06 *>]
-[<if $user->street && $user->show_map>]
-Get directions:
-[<if $I2_UID != $user->uid>]<a href="http://maps.google.com/maps?f=d&hl=en&saddr=[<$I2_USER->street>], [<$I2_USER->l>], [<$I2_USER->st>] [<$I2_USER->postalCode>]&daddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]">from your home</a>
-or <a href="http://maps.google.com/maps?f=d&hl=en&saddr=6560 Braddock Rd, Alexandria, VA 22312&daddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]">from school</a>
-[<else>]<a href="http://maps.google.com/maps?f=d&hl=en&saddr=[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]&daddr=6560 Braddock Rd, Alexandria, VA 22312">to school</a>
-[</if>]
-<br />
-[</if>]
 <br />
 [<if $user->mail>]
 E-mail address(es): 
@@ -109,6 +100,225 @@ To view this user's portfolio click <a href="https://shares.tjhsst.edu/PORTFOLIO
 </td>
 </tr>
 </table>
+
+[<* Disabled to appease the administration. -- AES 6/14/06 *>]
+[<* ReEnabled for members of admin_all, did not ask administration, but it should be ok. -- 11/11/09 *>]
+[<if $user->street && $user->show_map || $im_an_admin>]
+ <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAPYn494d47HCCt6Y72eRhjRTyVqJo5zK-dNka2EGhn8GD1IZjtBQvAgUtM7M1VxbN0qo5YqjV4SFu5g" type="text/javascript"></script>
+ <script type="text/javascript">
+ var map=null;
+ var userLocation = '[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]';
+ var mapcanvas=null;
+ var mapbutton=null;
+ var directions=null;
+ var directionsPanel=null;
+ var geocoder=null;
+ var marker=null;
+ //var geoXML=null;
+ //loadLatitude();
+ var maphidden=1;
+ var dirhidden=1;
+ var markerhidden=1;
+ var pathhidden=1;
+ function initialize() {
+ 	if(GBrowserIsCompatible()) {
+		if(!mapcanvas)
+			mapcanvas=document.getElementById("map_canvas");
+ 		mapcanvas.style.width="100%";
+ 		mapcanvas.style.height="400px";
+ 		mapcanvas.style.visibility="visible";
+		if(!mapbutton)
+			mapbutton=document.getElementById("map_button");
+ 		mapbutton.onclick=hideMap;
+ 		mapbutton.childNodes[0].data="hide map";
+		if(!map) {
+ 			map = new GMap2(mapcanvas);
+ 			map.setMapType(G_NORMAL_MAP);
+ 			map.addControl(new GSmallMapControl());
+		}
+		if(!geocoder) {
+	 		geocoder = new GClientGeocoder();
+		}
+ 		showAddress(userLocation,0);
+		if(!directions) {
+ 			directionsPanel = document.getElementById("map_directions");
+ 			directions = new GDirections(map, directionsPanel);
+		}
+ 		maphidden=0;
+ 	}
+ }
+ function initializeNoMarker() {
+ 	if(GBrowserIsCompatible()) {
+		if(!mapcanvas)
+			mapcanvas=document.getElementById("map_canvas");
+ 		mapcanvas.style.width="100%";
+ 		mapcanvas.style.height="400px";
+ 		mapcanvas.style.visibility="visible";
+		if(!mapbutton)
+			mapbutton=document.getElementById("map_button");
+ 		mapbutton.onclick=hideMap;
+ 		mapbutton.childNodes[0].data="hide map";
+		if(!map) {
+ 			map = new GMap2(mapcanvas);
+ 			map.setMapType(G_NORMAL_MAP);
+ 			map.addControl(new GSmallMapControl());
+		}
+		if(!geocoder) {
+ 			geocoder = new GClientGeocoder();
+		}
+ 		showAddress(userLocation,1);
+		if(!directions) {
+ 			directionsPanel = document.getElementById("map_directions");
+ 			directions = new GDirections(map, directionsPanel);
+		}
+ 		maphidden=0;
+ 	}
+ }
+ function hideMap() {
+ 	mapcanvas.style.width="0";
+ 	mapcanvas.style.height="0";
+ 	mapcanvas.style.visibility="hidden";
+ 	mapbutton.onclick=initialize;
+ 	mapbutton.childNodes[0].data="show map";
+	maphidden=1;
+ 	if(dirhidden==0) {
+ 		directionsPanel.style.visibility="hidden";
+ 		directionsPanel.style.width="0";
+ 		directionsPanel.style.height="0";
+ 		dirhidden=1;
+ 	}
+	if(pathhidden==0) {
+		directions.clear();
+		pathhidden=1;
+	}
+ }
+ function makeDirections(address1,address2) {
+ 	if(maphidden==1) {
+ 		initializeNoMarker();
+ 	}
+	if(markerhidden==0) {
+		map.removeOverlay(marker);
+		markerhidden=1;
+	}
+ 	if(directions) {
+ 		if(dirhidden==1) {
+ 			directionsPanel.style.visibility="visible";
+ 			directionsPanel.style.width="";
+ 			directionsPanel.style.height="";
+ 		}
+ 		dirhidden=0;
+ 		directions.load("from: " + address1 + " to: " + address2);
+		pathhidden=0;
+ 	}
+ }
+ function showAddress(address,nomarker) {
+ 	if(geocoder) {
+ 		geocoder.getLatLng(
+ 			address,
+ 			function(point) {
+ 				if (!point) {
+ 					alert(address + " not found");
+ 				} else {
+ 					map.setCenter(point, 13);
+ 					if(nomarker==0) {
+						if(markerhidden==0) {
+							map.removeOverlay(marker);
+							markerhidden
+						}
+ 						marker = new GMarker(point);
+ 						map.addOverlay(marker);
+ 						marker.openInfoWindowHtml("[<if $I2_USER->name == $user->name>]Your house[<else>][<$user->name>][</if>]<br />"+address);
+						markerhidden=0;
+ 					}
+ 				}
+ 			}
+ 		);
+ 	}
+ }
+ // Google Latitude Support. Good luck getting this accepted. :P
+ // Currently it doesn't work for some reason, which is why it's commented out.
+ // If you can figure out why, go ahead. This code was working a while ago,
+ // but Google changed something in their code, and now it not work. :(
+/* function loadLatitude() {
+ 	if(!geoXML) {
+ 		geoXML= new GGeoXml("https://www.google.com/latitude/apps/badge/api?user=[<$user->latitude>]&type=kml");
+ 		setTimeout("latitudeNotify();",1);
+ 	}
+	/*if(!geoXML.hasLoaded()) {
+ 		document.getElementById("map_button").childNodes[0].data="loading Google Latitude data...";
+ 	}/
+ }
+ function latitudeNotify() {
+	if(geoXML.hasLoaded()) {
+ 		//document.getElementById("map_button").childNodes[0].data="Google Latitude data loaded.";
+		setTimeout("resetMessage();",1000);
+	} else {
+ 		//document.getElementById("map_button").childNodes[0].data="Google Latitude data loading...";
+ 		setTimeout("latitudeNotify();",10);
+ 	}
+ }
+ function resetMessage() {
+ 	//document.getElementById("map_button").childNodes[0].data="hide map";
+ }
+ function showGoogleLatitude() {
+	if(maphidden==1) {
+		initializeNoMarker();
+		setTimeout("realLatitude();",500);
+	} else
+	 	realLatitude();
+ }
+ function realLatitude() {
+ 	map.addOverlay(geoXML);
+ 	document.getElementById("map_button").childNodes[0].data=""+geoXML.getDefaultCenter();
+ 	map.setCenter(geoXML.getDefaultCenter(),12);
+ }
+ function fromUserToMe() {
+ 	makeDirections(""+geoXML.getDefaultCenter().lat()+","+geoXML.getDefaultCenter().lng(),""+geoXML.getDefaultCenter().lat()+","+geoXML.getDefaultCenter().lng());
+ }
+ function fromHomeToMe() {
+ 	makeDirections('[<$I2_USER->street>], [<$I2_USER->l>], [<$I2_USER->st>] [<$I2_USER->postalCode>]',""+geoXML.getDefaultCenter().lat()+","+geoXML.getDefaultCenter().lng());
+ }
+ function fromSchoolToMe() {
+ 	makeDirections("6560 Braddock Rd, Alexandria, VA 22312",""+geoXML.getDefaultCenter().lat()+","+geoXML.getDefaultCenter().lng());
+ }
+ function getMeHome() {
+	makeDirections(""+geoXML.getDefaultCenter().lat()+","+geoXML.getDefaultCenter().lng(),userLocation);
+ }
+ function getMeSchool() {
+ 	makeDirections(""+geoXML.getDefaultCenter().lat()+","+geoXML.getDefaultCenter().lng(),"6560 Braddock Rd, Alexandria, VA 22312");
+ }*/
+ </script>
+ <a id="map_button" onClick="initialize()">show map</a><br />
+ Get directions:
+ [<if $I2_USER->uid != $user->uid>]
+  <a onClick="makeDirections('[<$I2_USER->street>], [<$I2_USER->l>], [<$I2_USER->st>] [<$I2_USER->postalCode>]','[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]')">from your home</a>
+  or <a onClick="makeDirections('6560 Braddock Rd, Alexandria, VA 22312','[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]')">from school</a>
+ [<else>]
+ <a onClick="makeDirections('[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]','6560 Braddock Rd, Alexandria, VA 22312')">to school</a>
+ [</if>]
+ [<* This is shorted out until someone wants to get that js up there working *>]
+ [<if 1==0 && $user->latitude !=0>]
+  [<if $I2_USER->uid == $user->uid>]
+   <br />Get directions from me:
+   <a onClick="getMeHome()">to home</a>
+   or
+   <a onClick="getMeSchool()">to school</a>
+  [<else>]
+   <br />Get directions to me:
+   [<if $I2_USER->latitude != 0>]
+    <a onClick="fromUserToMe()">from your location</a>
+    or
+   [</if>]
+   <a onClick="fromHomeToMe()">from your home</a>
+   or
+   <a onClick="fromSchoolToMe()">from school</a>
+  <br />Find <a onClick="showGoogleLatitude()">Current location (Google Latitude)</a>
+  [</if>]
+ [</if>]
+ <div id="map_canvas" style="visibility: hidden"></div>
+ <div id="map_directions" style="visibility: hidden"></div>
+ <br />
+[</if>]
 
 [<if $mode != 'off' && $schedule && count($schedule) > 0 >]
 [<if ($mode == 'skeletal' && $user->grade != 'staff') || $mode == 'full' >]
