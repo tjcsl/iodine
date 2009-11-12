@@ -512,7 +512,7 @@ class Groups implements Module {
 		if(!isset($I2_ARGS[2]) || !is_int($I2_ARGS[2]) || !Group::admin_all()->has_member($I2_USER))
 			redirect('groups');
 		$otheruser = new User($I2_ARGS[2]);
-		$this->template = 'groups_home.tpl';
+		$this->template = 'groups_view.tpl';
 		$this->template_args['groups'] = Group::get_user_groups($otheruser);
 		if (Group::admin_all()->has_member($otheruser)) {
 			$this->template_args['admin'] = 1;
