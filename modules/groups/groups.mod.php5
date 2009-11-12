@@ -507,9 +507,9 @@ class Groups implements Module {
 	/**
 	 * Show what groups a _different_ user is in.
 	 */
-	function view() {
+	public function view() {
 		global $I2_ARGS,$I2_USER;
-		if(!isset($I2_ARGS[2]) || !is_int($I2_ARGS[2]) || !Group::admin_all()->has_member($I2_USER))
+		if(!isset($I2_ARGS[2]) || !is_numeric($I2_ARGS[2]) || !Group::admin_all()->has_member($I2_USER))
 			redirect('groups');
 		$otheruser = new User($I2_ARGS[2]);
 		$this->template = 'groups_view.tpl';
