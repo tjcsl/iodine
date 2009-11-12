@@ -104,7 +104,7 @@ To view this user's portfolio click <a href="https://shares.tjhsst.edu/PORTFOLIO
 [<* Disabled to appease the administration. -- AES 6/14/06 *>]
 [<* ReEnabled for members of admin_all, did not ask administration, but it should be ok. -- 11/11/09 *>]
 [<if $user->street && $user->show_map || $im_an_admin>]
- <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAPYn494d47HCCt6Y72eRhjRTyVqJo5zK-dNka2EGhn8GD1IZjtBQvAgUtM7M1VxbN0qo5YqjV4SFu5g" type="text/javascript"></script>
+ <script src="https://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAPYn494d47HCCt6Y72eRhjRTyVqJo5zK-dNka2EGhn8GD1IZjtBQvAgUtM7M1VxbN0qo5YqjV4SFu5g" type="text/javascript"></script>
  <script type="text/javascript">
  var map=null;
  var userLocation = '[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]';
@@ -291,8 +291,9 @@ To view this user's portfolio click <a href="https://shares.tjhsst.edu/PORTFOLIO
  <a id="map_button" onClick="initialize()">show map</a><br />
  Get directions:
  [<if $I2_USER->uid != $user->uid>]
+  [<if isset($I2_USER->street) >]
   <a onClick="makeDirections('[<$I2_USER->street>], [<$I2_USER->l>], [<$I2_USER->st>] [<$I2_USER->postalCode>]','[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]')">from your home</a>
-  or <a onClick="makeDirections('6560 Braddock Rd, Alexandria, VA 22312','[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]')">from school</a>
+  or [</if>]<a onClick="makeDirections('6560 Braddock Rd, Alexandria, VA 22312','[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]')">from school</a>
  [<else>]
  <a onClick="makeDirections('[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]','6560 Braddock Rd, Alexandria, VA 22312')">to school</a>
  [</if>]
