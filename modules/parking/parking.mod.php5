@@ -389,15 +389,25 @@ class Parking implements Module {
 				$person['name'] = $record['special_name'];
 			}
 			else {
-				$user = new User($record['uid']);
-				if($user->objectclass == 'tjhsstTeacher') {
-					$person['isTeacher'] = TRUE;
-				}
-				else {
+				try {
+					$user = new User($record['uid']);
+					if($user->objectclass == 'tjhsstTeacher') {
+						$person['isTeacher'] = TRUE;
+					}
+					else {
+						$person['isTeacher'] = FALSE;
+					}
+				} catch (I2Exception $e) {
+					$user = new FakeUser($record['uid'],$record['name']);
 					$person['isTeacher'] = FALSE;
 				}
 				if ($record['other_driver'] && $record['other_driver_approved']) {
-					$otherdriver = new User($record['other_driver']);
+					
+					try {
+						$otherdriver = new User($record['other_driver']);
+					} catch (Exception $e) {
+						$otherdriver = new FakeUser($record['other_driver'],'Someone Else');
+					}
 					$person['name'] = $record['name'] . ' AND ' . $otherdriver->name_comma;
 					$driveruids[] = $record['uid'];
 					$driveruids[] = $otherdriver->uid;
@@ -421,7 +431,11 @@ class Parking implements Module {
 			}
 			$person['skips'] = $record['totalskips'];
 			if (!empty($record['other_driver']) && is_numeric($record['other_driver'])) {
-				$person['otherdriver'] = new User($record['other_driver']);
+				try {
+					$person['otherdriver'] = new User($record['other_driver']);
+				} catch (I2Exception $e) {
+					$person['otherdriver'] = new FakeUser($record['other_driver'],'Someone Else');
+				}
 			}
 			$person['numcars'] = 0;
 			$person['cars'] = array();
