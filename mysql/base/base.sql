@@ -12,3 +12,4 @@ INSERT INTO intrabox (name,display_name) VALUES('filecenter','Access Your Files'
 INSERT INTO intrabox (name,display_name) VALUES('scratchpad','Scratchpad');
 INSERT INTO intrabox (name,display_name) VALUES('mail','Mail');
 INSERT INTO intrabox (name,display_name) VALUES('devlinks','Developer Links');
+INSERT INTO intrabox (name,disppay_name) VALUES('remote','Remote Access');
