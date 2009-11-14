@@ -40,15 +40,17 @@ class Suggestion implements Module {
 		switch ($_REQUEST['sendchoice']) {
 			case 'SGA':
 				$to='sga@lists.tjhsst.edu';
+				$mesg .= "\r\n\r\nSent through Intranet.";
 				break;
 			case 'intranet':
 			default:
 				$to=i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion');
-				// We want more info for debugging.
-				$mesg .= "\r\n\r\n Username: $I2_USER->username UID: $I2_User->uid \r\n $browser";
+				// Intranet dev gets more info for debugging.
+				$browser = $_SERVER['HTTP_USER_AGENT'];
+				$mesg .= "\r\n\r\n Username: $I2_USER->username UID: $I2_USER->uid \r\n $browser";
+				break;
 		}
 		$subj = "Suggestion from {$I2_USER->fullname}";
-		$browser = $_SERVER['HTTP_USER_AGENT'];
 		$headers = "From: $usermail\r\n";
 		$headers .= "Reply-To: $usermail\r\n";
 		$headers .= "Return-Path: $to\r\n";
