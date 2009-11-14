@@ -102,8 +102,9 @@ To view this user's portfolio click <a href="https://shares.tjhsst.edu/PORTFOLIO
 </table>
 
 [<* Disabled to appease the administration. -- AES 6/14/06 *>]
-[<* ReEnabled for members of admin_all, did not ask administration, but it should be ok. -- 11/11/09 *>]
-[<if $user->street && $user->show_map || $im_an_admin>]
+[<* Reenabled for members of admin_all, did not ask administration, but it should be ok. -- 11/11/09 *>]
+[<* Redisabled for admin_all because of potential problems. -- 11/14/09 *>]
+[<if $user->street && $user->show_map>]
  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAPYn494d47HCCt6Y72eRhjRTyVqJo5zK-dNka2EGhn8GD1IZjtBQvAgUtM7M1VxbN0qo5YqjV4SFu5g" type="text/javascript"></script>
  <script type="text/javascript">
  var map=null;
