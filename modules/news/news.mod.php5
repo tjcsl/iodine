@@ -225,6 +225,32 @@ class News implements Module {
 				$item->mark_as_unread();
 		 		return self::display_news(true,'Old News Posts');
 
+			case 'request':
+				$this->template = 'news_request.tpl';
+				$usermail = $I2_USER->mail;
+				if (is_array($usermail)) {
+					$usermail = $usermail[0];
+				}
+				$this->template_args['usermail'] = $usermail;
+				$this->template_args['iodinemail'] = i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion');
+		
+				if (!((isset($_REQUEST['submit_form']) && isset($_REQUEST['submit_title'])) && isset($_REQUEST['submit_box']))) {
+					return 'News Request';
+				}
+				
+				$mesg = 'Title: ' . $_REQUEST['submit_title'] . "\r\n\r\nText:\r\n" . $_REQUEST['submit_box'];
+				if ($mesg == "" || $mesg == " ") { //may need a whitespace regex
+					return 'News Request';
+				}
+		
+				$to = i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion');
+				$subj = "News request from {$I2_USER->fullname}";
+				$headers = "From: $usermail\r\n";
+				$headers .= "Reply-To: $usermail\r\n";
+				$headers .= "Return-Path: $to\r\n";
+		
+				$this->template_args['mailed'] = mail($to,$subj,$mesg,$headers);
+				return 'News Request';
 			case 'shade':
 				$nid = $I2_ARGS[2];
 				$closed = $I2_SQL->query('SELECT COUNT(*) FROM news_shaded_map WHERE uid=%d AND nid=%d;', $I2_USER->uid, $nid)->fetch_single_value();
