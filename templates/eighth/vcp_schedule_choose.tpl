@@ -20,7 +20,7 @@
 		[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"
 		[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"
 		[<elseif $capacity != -1 && $percent >= 90 >] style="color: #00878D; font-weight: bold;" 
-		[<elseif $activity->favorite>] style="color: #008800;"
+		[<elseif $activity->favorite>] style="color: #008800; font-weight: bold;"
 		[</if>]>[<$activity->aid>]: [<$activity->name_comment_r|escape:html>][<if $activity->favorite>] --Favorited[</if>]</option>
 	[</foreach>] 
 	</select><br />
