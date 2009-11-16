@@ -54,5 +54,5 @@ Your news post has been changed.<br />
 		formfield.body.innerHTML = "[<$newsitem->text|replace:'"':"'"|replace:"\n":''>]";
 	}
  </script>
- <input type="submit" value="Submit" name="submit" />
+ <input type="submit" value="Submit" name="submit" onclick="doonsubmit()" />
 </form>
