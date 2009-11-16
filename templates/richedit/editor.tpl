@@ -30,6 +30,9 @@ function docolor(where) {
 <div style="font-weight: bold; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('bold')">Bold</div>
 <div style="text-decoration: underline; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('underline')">Underline</div>
 <div style="text-decoration: line-through; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('strikethrough')">Strikethrough</div>
+<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('inserthorizontalrule')">Horizontal Rule</div>
+<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('superscript')">Superscript</div>
+<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('subscript')">Subscript</div>
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="dohref()">Hyperlink</div>
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doimg()">Image</div><br /><br />
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="docolor('forecolor')">Text Color</div>
