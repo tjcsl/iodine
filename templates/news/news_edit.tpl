@@ -42,6 +42,17 @@ Your news post has been changed.<br />
   [</section>]
  </script>
  Text: <br />
- <textarea name="edit_text" cols="80" rows="15">[<$newsitem->text|escape:"html">]</textarea><br />
+ [<include file="richedit/editor.tpl">]
+ <input type="hidden" id="text" name="edit_text" />
+ <script type="text/javascript">
+	window.onload = function() {
+		formfield = document.getElementById("RichForm").contentWindow.document;
+		formfield.designMode='on';
+		fillinarea();
+	}
+	function fillinarea() {
+		formfield.body.innerHTML = "[<$newsitem->text|replace:'"':"'"|replace:"\n":''>]";
+	}
+ </script>
  <input type="submit" value="Submit" name="submit" />
 </form>
