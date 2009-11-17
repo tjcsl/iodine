@@ -617,7 +617,10 @@ class EighthActivity {
 			return -1;
 		elseif(!$a->data['favorite'] && $b->data['favorite'])
 			return 1;
-		return $a->data['name'] > $b->data['name'];
+		if($a->data['special'] != $b->data['special']) {
+			return $a->data['special'] < $b->data['special'];
+		}
+		return strnatcmp($a->data['name'],$b->data['name']);
 	}
 
 	/**
