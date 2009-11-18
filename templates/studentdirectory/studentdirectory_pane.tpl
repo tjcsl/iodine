@@ -4,9 +4,6 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
 [<elseif $I2_USER->grade == "staff">]
 <strong>As a member of the TJ faculty, you are permitted to see all information, regardless of privacy settings.  Please be aware of this.</strong><br /><br />
 [</if>]
-[<if $im_an_admin>]
-<a href="[<$I2_ROOT>]groups/view/[<$user->uid>]">View this user's groups</a><br /><br />
-[</if>]
 [<if $is_admin>]
 <strong>This person is an Intranet Administrator, please contact [<if $user->sex == "M">]him[<elseif $user->sex == "F">]her[<else>]him/her[</if>] with any problems you encounter.</strong><br /><br />
 [</if>]
@@ -15,6 +12,11 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
 <td valign="top">
 <img src="[<$I2_ROOT>]pictures/[<$user->uid>]" vspace="2" width="172" height="228" /><br />
 <a href="[<$I2_ROOT>]studentdirectory/pictures/[<$user->uid>]">View pictures from all years</a>
+[<if $im_an_admin>]
+<br /><br />
+Username: [<$user->iodineuid>]<br />
+<a href="[<$I2_ROOT>]groups/view/[<$user->uid>]">View this user's groups</a>
+[</if>]
 [<if $user->grade != 'staff'>]
 [<if $homecoming_may_vote>]<br /><br /><strong><a href="[<$I2_ROOT>]homecoming/vote/[<$user->uid>]">Vote for this person<br />for homecoming court</a></strong>[</if>]
 [</if>]
