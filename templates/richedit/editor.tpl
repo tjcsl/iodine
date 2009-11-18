@@ -1,11 +1,15 @@
 <script type="text/javascript">
 formfield = null;
+form = "form";
 window.onload=function() {
 	formfield = document.getElementById('RichForm').contentWindow.document;
 	formfield.designMode='on';
 }
 function doonsubmit() {
-	document.getElementById("text").value=formfield.body.innerHTML;
+	if(form == "form")
+		document.getElementById("text").value=formfield.body.innerHTML;
+	else
+		document.getElementById("text").value=document.getElementById("RichHTML").value;
 }
 function doit(action) {
 	formfield.execCommand(action,false,null);
@@ -25,6 +29,25 @@ function docolor(where) {
 	if(color != null && color != "")
 		formfield.execCommand(where,false,color);
 }
+function edithtml() {
+	document.getElementById('RichHTML').style.visibility="visible";
+	document.getElementById('RichHTML').style.height="120px";
+	document.getElementById('RichHTML').value = formfield.body.innerHTML;
+	document.getElementById('RichForm').style.display="none";
+	form="html";
+	document.getElementById('htmlswitcher').childNodes[0].data="Hide HTML";
+	document.getElementById('htmlswitcher').onclick=hidehtml;
+	//formfield.body.innerHTML = prompt("Input any raw html:",formfield.body.innerHTML);
+}
+function hidehtml() {
+	document.getElementById('RichHTML').style.visibility="hidden";
+	document.getElementById('RichHTML').style.height="0px";
+	formfield.body.innerHTML = document.getElementById('RichHTML').value;
+	document.getElementById('RichForm').style.display="block";
+	form="form";
+	document.getElementById('htmlswitcher').childNodes[0].data="Show HTML";
+	document.getElementById('htmlswitcher').onclick=edithtml;
+}
 </script>
 <div style="font-style: italic; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('italic')">Italic</div>
 <div style="font-weight: bold; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('bold')">Bold</div>
@@ -42,4 +65,6 @@ function docolor(where) {
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyright')">Justify Right</div>
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifycenter')">Justify Center</div>
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyfull')">Justify Full</div>
+<div id="htmlswitcher" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="edithtml()">Edit HTML</div><br /><br />
+<textarea id="RichHTML" style="visibility: hidden; width: 90%; height: 0px"></textarea>
 <iframe id="RichForm" width="90%" height="120"></iframe><br />
