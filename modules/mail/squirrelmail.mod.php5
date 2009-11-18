@@ -85,7 +85,7 @@ class SquirrelMail implements Module {
 				if(!$pass) {
 					header("Location: $base_url/");
 				} else {
-					header("Location: $base_url/src/redirect.php?login_username={$I2_USER->username}&secretkey=$pass&just_logged_in=1&js_autodetect_results=0");
+					//header("Location: $base_url/src/redirect.php?login_username={$I2_USER->username}&secretkey=$pass&just_logged_in=1&js_autodetect_results=0");
 				}
 				exit();
 			}
