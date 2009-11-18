@@ -70,7 +70,7 @@ class CSLProxy {
 			$usergroups = array();
 			$filepath = '/afs/csl.tjhsst.edu/' . $args[0];
 			$retarray=array();
-			exec("echo `pts groups $username | grep -v Groups` system:authuser system:anyuser | sed 's/ /\\\\|/g'",$usergroups);
+			exec("echo `pts groups $username | grep -v Groups` system:authuser system:anyuser $username | sed 's/ /\\\\|/g'",$usergroups);
 			$usergroups = $usergroups[0];
 			exec("fs la $filepath | grep -v 'Access list for' | grep '$usergroups' | sed 's/^ *[a-zA-Z0-9:]* //g' | tr '\\n' '/' | sed 's/\\///g'",$retarray);
 			if(!isset($retarray[0])) {
