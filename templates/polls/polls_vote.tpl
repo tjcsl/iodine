@@ -1,5 +1,16 @@
 <a href="[<$I2_ROOT>]polls">Polls Home</a><br /><br />
 
+<script type="text/javascript">
+function checklength(area,error) {
+	error = document.getElementById(error);
+	var lengthleft = 1500 - area.value.length;
+	if(lengthleft >=0) {
+		error.innerHTML ="(" + (lengthleft) + " characters left)";
+	} else {
+		error.innerHTML ="<font color=red style='text-weight: strong'>Over by " + (-lengthleft) + " characters!</font>";
+	}
+}
+</script>
 <strong>[<$poll->name|escape:"html">]</strong><br /><br />
 
 [<if !$avail>]
@@ -39,7 +50,8 @@
   [</foreach>]
  [<elseif $q->answertype == 'free_response'>]
   [<assign var="aid" value="0">]
-  <textarea rows="5" cols="80" name="[<$q->qid>]">[<if $q->user_voted_for(0)>][<$q->get_response()>][</if>]</textarea><br />
+  <div id="error_[<$q->qid>]">(1500 characters left)</div> 
+  <textarea rows="5" cols="80" name="[<$q->qid>]" onkeyup="checklength(this,'error_[<$q->qid>]')">[<if $q->user_voted_for(0)>][<$q->get_response()>][</if>]</textarea><br />
  [</if>]
   </li>
 [</foreach>]
