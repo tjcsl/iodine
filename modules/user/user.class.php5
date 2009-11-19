@@ -640,7 +640,8 @@ class User {
 	public function set_news_forwarding($val) {
 		global $I2_SQL;
 		if ($val == 'TRUE' || $val == 'on') {
-			$I2_SQL->query('INSERT INTO news_forwarding VALUES (%d)',$this->myuid);
+			if (!$this->get_news_forwarding())
+				$I2_SQL->query('INSERT INTO news_forwarding VALUES (%d)',$this->myuid);
 		} else {
 			$I2_SQL->query('DELETE FROM news_forwarding WHERE uid=%d',$this->myuid);
 		}
