@@ -6,6 +6,7 @@
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('superscript')">Superscript</div>
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('subscript')">Subscript</div>
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="dohref()">Hyperlink</div>
+<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('unlink')">Unlink text</div>
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doimg()">Image</div><br /><br />
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="docolor('forecolor')">Text Color</div>
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="docolor('backcolor')">Back Color</div>
@@ -14,6 +15,8 @@
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyright')">Justify Right</div>
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifycenter')">Justify Center</div>
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyfull')">Justify Full</div>
+<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('insertorderedlist')">Ordered List</div>
+<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('insertunorderedlist')">Unordered List</div>
 <div id="htmlswitcher" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="edithtml()">Edit HTML</div><br /><br />
 <textarea id="RichHTML" style="visibility: hidden; width: 90%; height: 0px"></textarea>
 <iframe id="RichForm" width="90%" height="120" src="javascript:"""></iframe><br />
