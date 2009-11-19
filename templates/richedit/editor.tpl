@@ -1,54 +1,3 @@
-<script type="text/javascript">
-formfield = null;
-form = "form";
-window.onload=function() {
-	formfield = document.getElementById('RichForm').contentWindow.document;
-	formfield.designMode='on';
-}
-function doonsubmit() {
-	if(form == "form")
-		document.getElementById("text").value=formfield.body.innerHTML;
-	else
-		document.getElementById("text").value=document.getElementById("RichHTML").value;
-}
-function doit(action) {
-	formfield.execCommand(action,false,null);
-}
-function dohref() {
-	var url = prompt("Input link url:","http://");
-	if(url != null && url != "")
-		formfield.execCommand("CreateLink",false,url);
-}
-function doimg() {
-	var url = prompt("Input image url:","http://");
-	if(url != null && url != "")
-		formfield.execCommand("InsertImage",false,url);
-}
-function docolor(where) {
-	var color = prompt("Input color in hex (e.g. 00bcff):","");
-	if(color != null && color != "")
-		formfield.execCommand(where,false,color);
-}
-function edithtml() {
-	document.getElementById('RichHTML').style.visibility="visible";
-	document.getElementById('RichHTML').style.height="120px";
-	document.getElementById('RichHTML').value = formfield.body.innerHTML;
-	document.getElementById('RichForm').style.display="none";
-	form="html";
-	document.getElementById('htmlswitcher').childNodes[0].data="Hide HTML";
-	document.getElementById('htmlswitcher').onclick=hidehtml;
-	//formfield.body.innerHTML = prompt("Input any raw html:",formfield.body.innerHTML);
-}
-function hidehtml() {
-	document.getElementById('RichHTML').style.visibility="hidden";
-	document.getElementById('RichHTML').style.height="0px";
-	formfield.body.innerHTML = document.getElementById('RichHTML').value;
-	document.getElementById('RichForm').style.display="block";
-	form="form";
-	document.getElementById('htmlswitcher').childNodes[0].data="Show HTML";
-	document.getElementById('htmlswitcher').onclick=edithtml;
-}
-</script>
 <div style="font-style: italic; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('italic')">Italic</div>
 <div style="font-weight: bold; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('bold')">Bold</div>
 <div style="text-decoration: underline; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('underline')">Underline</div>
@@ -67,4 +16,65 @@ function hidehtml() {
 <div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyfull')">Justify Full</div>
 <div id="htmlswitcher" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="edithtml()">Edit HTML</div><br /><br />
 <textarea id="RichHTML" style="visibility: hidden; width: 90%; height: 0px"></textarea>
-<iframe id="RichForm" width="90%" height="120"></iframe><br />
+<iframe id="RichForm" width="90%" height="120" src="javascript:"""></iframe><br />
+<script type="text/javascript">
+formfield = null;
+form = "form";
+window.onload = function() {
+	formfield = document.getElementById('RichForm').contentWindow.document;
+	document.getElementById('RichForm').contentWindow.document.designMode='on';
+}
+function initrichform() {
+	formfield = document.getElementById('RichForm').contentWindow.document;
+	document.getElementById('RichForm').contentWindow.document.designMode='on';
+}
+function doonsubmit() {
+	if(form == "form")
+		document.getElementById("text").value=formfield.body.innerHTML;
+	else
+		document.getElementById("text").value=document.getElementById("RichHTML").value;
+}
+function doit(action) {
+	if(!formfield) initrichform();
+	formfield.execCommand(action,false,null);
+}
+function dohref() {
+	if(!formfield) initrichform();
+	var url = prompt("Input link url:","http://");
+	if(url != null && url != "")
+		formfield.execCommand("CreateLink",false,url);
+}
+function doimg() {
+	if(!formfield) initrichform();
+	var url = prompt("Input image url:","http://");
+	if(url != null && url != "")
+		formfield.execCommand("InsertImage",false,url);
+}
+function docolor(where) {
+	if(!formfield) initrichform();
+	var color = prompt("Input color in hex (e.g. 00bcff):","");
+	if(color != null && color != "")
+		formfield.execCommand(where,false,color);
+}
+function edithtml() {
+	if(!formfield) initrichform();
+	document.getElementById('RichHTML').style.visibility="visible";
+	document.getElementById('RichHTML').style.height="120px";
+	document.getElementById('RichHTML').value = formfield.body.innerHTML;
+	document.getElementById('RichForm').style.display="none";
+	form="html";
+	document.getElementById('htmlswitcher').childNodes[0].data="Hide HTML";
+	document.getElementById('htmlswitcher').onclick=hidehtml;
+	//formfield.body.innerHTML = prompt("Input any raw html:",formfield.body.innerHTML);
+}
+function hidehtml() {
+	if(!formfield) initrichform();
+	document.getElementById('RichHTML').style.visibility="hidden";
+	document.getElementById('RichHTML').style.height="0px";
+	formfield.body.innerHTML = document.getElementById('RichHTML').value;
+	document.getElementById('RichForm').style.display="block";
+	form="form";
+	document.getElementById('htmlswitcher').childNodes[0].data="Show HTML";
+	document.getElementById('htmlswitcher').onclick=edithtml;
+}
+</script>

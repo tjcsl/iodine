@@ -181,7 +181,7 @@ class NewsItem {
 	 */
 
 	public static function clean_text($text) {
-		$text = str_replace('&','&amp;',$text);
+		//$text = str_replace('&','&amp;',$text);
 		$text = str_replace('\r','<br />',$text);
 		$text = preg_replace("/\r\n|\n|\r/", "<br />", $text);
 		$text = preg_replace('/<br\\s*?\/??>/i', "<br />", $text);
