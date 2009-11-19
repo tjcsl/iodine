@@ -51,7 +51,7 @@ Your news post has been changed.<br />
 		fillinarea();
 	}
 	function fillinarea() {
-		formfield.body.innerHTML = "[<$newsitem->text|replace:'"':"'"|replace:"\n":'<br />'>]";
+		formfield.execCommand("inserthtml",false,"[<$newsitem->text|replace:'"':"'"|replace:"\n":'<br />'>]");
 	}
  </script>
  <input type="submit" value="Submit" name="submit" onclick="doonsubmit()" />
