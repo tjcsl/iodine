@@ -52,6 +52,12 @@ Your news post has been changed.<br />
 	}
 	function fillinarea() {
 		formfield.execCommand("inserthtml",false,"[<$newsitem->text|replace:'"':"'"|replace:"\n":'<br />'>]");
+		var subhead = formfield.getElementsByTagName("head")[0];
+		var css = formfield.createElement("link");
+		css.setAttribute("rel", "stylesheet");
+		css.setAttribute("type", "text/css");
+		css.setAttribute("href", "[<$I2_CSS>]");
+		subhead.appendChild(css);
 	}
  </script>
  <input type="submit" value="Submit" name="submit" onclick="doonsubmit()" />

@@ -21,15 +21,27 @@
 <textarea id="RichHTML" style="visibility: hidden; width: 90%; height: 0px"></textarea>
 <iframe id="RichForm" width="90%" height="120" src="javascript:"""></iframe><br />
 <script type="text/javascript">
-formfield = null;
-form = "form";
+var formfield = null;
+var form = "form";
 window.onload = function() {
 	formfield = document.getElementById('RichForm').contentWindow.document;
 	document.getElementById('RichForm').contentWindow.document.designMode='on';
+	var subhead = formfield.getElementsByTagName("head")[0];
+	var css = formfield.createElement("link");
+	css.setAttribute("rel", "stylesheet");
+	css.setAttribute("type", "text/css");
+	css.setAttribute("href", "[<$I2_CSS>]");
+	subhead.appendChild(css);
 }
 function initrichform() {
 	formfield = document.getElementById('RichForm').contentWindow.document;
 	document.getElementById('RichForm').contentWindow.document.designMode='on';
+	var subhead = formfield.getElementsByTagName("head")[0];
+	var css = formfield.createElement("link");
+	css.setAttribute("rel", "stylesheet");
+	css.setAttribute("type", "text/css");
+	css.setAttribute("href", "[<$I2_CSS>]");
+	subhead.appendChild(css);
 }
 function doonsubmit() {
 	if(form == "form")
