@@ -192,7 +192,9 @@ class News implements Module {
 				}
 				$item = new Newsitem($I2_ARGS[2]);
 				$this->template_args['story'] = $item;
-				return "News: $item->title";
+				$notag_title = preg_replace("/<font(.*?)>/",'',$item->title);
+				$notag_title = preg_replace("/<\/font>/",'',$notag_title);
+				return "News: $notag_title";
 
 
 			case 'read':
