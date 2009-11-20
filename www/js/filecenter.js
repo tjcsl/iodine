@@ -1,6 +1,6 @@
 var rowIndex = null;
 
-function options(anchor, type) {
+function options(anchor, type, canread, canwrite, candelete) {
 	var file = anchor.innerHTML;
 	var url = escape(file);
 	var row = anchor.parentNode.parentNode;
@@ -16,11 +16,21 @@ function options(anchor, type) {
 		cell.id = "options";
 		cell.colSpan = "4";
 		if (type == 'file') {
-			cell.innerHTML = 
-			"<a href=\"" + url + "\">Download file</a><br />" + 
-			"<a href=\"" + url + "?download=zip\">Download file as ZIP</a> (NOTE: This will not work for files over 100 MB in size)<br />" +
-			"<a href=\"javascript:rename('" + file + "')\">Rename file</a><br />" + 
-			"<a href=\"javascript:rmf('" + file + "')\">Delete file</a><br />";
+			var contents = "";
+			if (canread) {
+				contents += "<a href=\"" + url + "\">Download file</a><br />" + 
+				"<a href=\"" + url + "?download=zip\">Download file as ZIP</a> (NOTE: This will not work for files over 100 MB in size)<br />";
+			}
+			if (canwrite && canread) {
+				contents += "<a href=\"javascript:rename('" + file + "')\">Rename file</a><br />"; 
+			}
+			if (candelete) {
+				contents +="<a href=\"javascript:rmf('" + file + "')\">Delete file</a><br />";
+			}
+			if (contents.length == 0) {
+				contents = "<font color='red'>Permission denied</font><br />";
+			}
+			cell.innerHTML = contents;
 		} else if (type == 'link') {
 			cell.innerHTML = 
 			"<a href=\"" + url + "\">Download linked file</a><br />" + 
@@ -47,9 +57,13 @@ function options(anchor, type) {
 			"<a href=\"javascript:rmd('" + file + "')\">Delete directory</a><br />";
 
 		} else if (type == 'cur') {
-			cell.innerHTML = 
-			"<a href=\"?download\">Download directory as ZIP</a><br />" +
-			"NOTE: The ZIP will not include any individual files over 100 MB in size";
+			if (canread) {
+				cell.innerHTML = 
+				"<a href=\"?download\">Download directory as ZIP</a><br />" +
+				"NOTE: The ZIP will not include any individual files over 100 MB in size";
+			} else {
+				cell.innerHTML = "<font color='red'>Permission denied</font><br />";
+			}
 		}
 		rowIndex = row.rowIndex;
 	} else {

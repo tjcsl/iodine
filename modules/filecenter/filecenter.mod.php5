@@ -331,6 +331,12 @@ class Filecenter implements Module {
 				$this->template_args['files'] = $files;
 				$this->template_args['curdir'] = $this->directory;
 			}
+			$this->template_args['readperm'] = $this->filesystem->can_do($this->directory,'read')?'true':'false';
+			$this->template_args['insertperm'] = $this->filesystem->can_do($this->directory,'insert')?'true':'false';
+			$this->template_args['deleteperm'] = $this->filesystem->can_do($this->directory,'delete')?'true':'false';
+			$this->template_args['writeperm'] = $this->filesystem->can_do($this->directory,'write')?'true':'false';
+			$this->template_args['lockperm'] = $this->filesystem->can_do($this->directory,'lock')?'true':'false';
+			$this->template_args['adminperm'] = $this->filesystem->can_do($this->directory,'administer')?'true':'false';
 		}
 		
 		$display->disp($this->template, $this->template_args);
