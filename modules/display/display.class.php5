@@ -245,6 +245,7 @@ class Display {
 			$I2_USER->recache('style');
 			self::$style = ($I2_USER->style);
 			CSS::flush_cache($I2_USER);
+			JS::flush_cache($I2_USER);
 		}
 		else {
 			self::$style = 'default';
