@@ -10,7 +10,7 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
 <table>
 <tr>
 <td valign="top">
-<img src="[<$I2_ROOT>]pictures/[<$user->uid>]" vspace="2" width="172" height="228" /><br />
+<img src="[<$I2_ROOT>]pictures/[<$user->uid>]" vspace="2"/><br />
 <a href="[<$I2_ROOT>]studentdirectory/pictures/[<$user->uid>]">View pictures from all years</a>
 [<if $im_an_admin>]
 <br /><br />
