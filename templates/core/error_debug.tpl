@@ -2,7 +2,7 @@
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/genresize.js"></script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/ieemu.js"></script>
 <script type="text/javascript">
-default_width = '[<if $debug && $errors>]45%[<else>]90%[</if>]';
+	var default_width = '[<if $debug && $errors>]45%[<else>]90%[</if>]';
 </script>
 [<if $errors>]
  <div class="error minimized" id="error">

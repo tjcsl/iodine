@@ -32,6 +32,7 @@ window.onload = function() {
 	css.setAttribute("type", "text/css");
 	css.setAttribute("href", "[<$I2_CSS>]");
 	subhead.appendChild(css);
+	page_init(); // Allow the theme-specific stuff to run.
 }
 /*function initrichform() {
 	formfield = document.getElementById('RichForm').contentWindow.document;

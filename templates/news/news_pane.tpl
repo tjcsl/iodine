@@ -1,6 +1,6 @@
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/news.js"></script>
 <script type="text/javascript">
-	news_root = '[<$I2_ROOT>]news/';
+	var news_root = '[<$I2_ROOT>]news/';
 </script>
 
 [<if $newsadmin || $maypost>]

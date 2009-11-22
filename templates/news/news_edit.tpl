@@ -49,6 +49,7 @@ Your news post has been changed.<br />
 		formfield = document.getElementById("RichForm").contentWindow.document;
 		formfield.designMode='on';
 		fillinarea();
+		page_init();
 	}
 	function fillinarea() {
 		formfield.execCommand("inserthtml",false,"[<$newsitem->text|replace:'"':"'"|replace:"\n":'<br />'>]");

@@ -1,3 +1,11 @@
+.logo {
+	position: absolute;
+	top: 26px;
+	left: 8px;
+	width: 99%;
+	height: 99%;
+	background: url(/www/pics/gschools_logo.jpg) no-repeat;
+}
 .title {
 	font-size: 1.0em;
 	font-weight: bold;
@@ -12,8 +20,13 @@
 	top: 0em;
 	right: 1em;
 	color: white;
+	z-index: 99;
 }
-
+#menu {
+	width: 100%;
+	text-align: right;
+	padding-top: 5px;
+}
 div#menu span {
 	display: inline-block;
 	width: 0px;
@@ -21,4 +34,51 @@ div#menu span {
 	font-size: 95%;
 	line-height: 1em;
 	left: -0.5em;
+}
+.gtopbar {
+	width: 100%;
+	position: absolute;
+	border-bottom: 1px solid #aaaaaa;
+	top: 0px;
+	height: 20px;
+	z-index: 1;
+	padding-top: 5px;
+}
+.header {
+	left: 330px;
+	position: absolute;
+	right: 10px;
+	top: 50px;
+}
+.glinks {
+	left: 10px;
+	position: absolute;
+	top: 140px;
+	width: 305px;
+}
+div#glinks div {
+	width: 300px;
+	padding-left: 20px;
+}
+.glinks-selected {
+	background-color: #c9d7f1;
+	border-radius: 5px 0px 0px 5px;
+	-moz-border-radius: 5px 0px 0px 5px;
+}
+.glinks-unselected {
+}
+.username {
+	color: black;
+	font-weight: bold;
+}
+.username:link {
+	color: black;
+}
+.username:visited {
+	color: black;
+}
+.searchformdiv {
+	position: absolute;
+	left: 347px;
+	top: 105px;
 }

@@ -1,3 +1,9 @@
+.boxes {
+	position: absolute;
+	top: 220px;
+	left: 10px;
+	width: 305px;
+}
 .intrabox {
 	border-radius: 3px;
 	-moz-border-radius: 3px;
@@ -60,7 +66,7 @@
 	-moz-border-radius-bottomleft:4px;
 	-moz-border-radius-bottomright:4px;
 	position: absolute;
-	top: 110px;
+	top: 140px;
 	left: 327px;
 	right: 10px;
 	margin-bottom: 10pt;
