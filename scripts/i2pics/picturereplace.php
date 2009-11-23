@@ -16,7 +16,7 @@
 # 4. Run "wget -O pictures.ldif --http-user=user --http-password=password
 #     http://iodine.tjhsst.edu/path/to/script/picturereplace.php"
 # 5. Look over the LDIF to make sure it is what you expect.
-# 6. ldapadd the generated ldif as an LDAP admin user.
+# 6. ldapmodify the generated ldif as an LDAP admin user.
 # 7. Optionally run the findStudentsMissingPictures.sh shell script to check
 #     for users missing pictures.
 #
