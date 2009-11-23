@@ -240,7 +240,7 @@ class News implements Module {
 					return 'News Request';
 				}
 				
-				$mesg = 'Title: ' . $_REQUEST['submit_title'] . "\r\n\r\nText:\r\n" . $_REQUEST['submit_box'];
+				$mesg = 'Title: ' . $_REQUEST['submit_title'] . "\r\nRequested expiration date: " . $_REQUEST['submit_expdate'] . "\r\n\r\nText:\r\n" . $_REQUEST['submit_box'];
 				if ($mesg == "" || $mesg == " ") { //may need a whitespace regex
 					return 'News Request';
 				}
