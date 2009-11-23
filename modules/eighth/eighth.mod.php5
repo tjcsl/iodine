@@ -2057,7 +2057,10 @@ class Eighth implements Module {
 			// The uid field here is used for the aid instead
 			EighthActivity::favorite_change($this->args['uid']);
 			$this->template_args['bids'] = $this->args['bids'];
-			redirect("eighth/vcp_schedule/choose/uid/{$I2_USER->uid}/bids/{$this->args['bids']}");
+			if(is_numeric($this->args['bids']))
+				redirect("eighth/vcp_schedule/choose/uid/{$I2_USER->uid}/bids/{$this->args['bids']}");
+			else
+				redirect("eighth/vcp_schedule/choose/uid/{$I2_USER->uid}/bids/" . substr($this->args['bids'],0,strpos($this->args['bids'],",")));
 		}
 	}
 
