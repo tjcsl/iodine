@@ -6,7 +6,7 @@ USAGE: include file='utils/calendar.tpl' post_var='var'
 *>]
 <input type="hidden" name="[<$post_var>]" value="3000-01-01 00:00:00"/>
 <input type="checkbox" name="[<$post_var>]_allow" checked="checked" onchange="disable(this);"/>
-<select id="[<$post_var>]_mon">
+<select id="[<$post_var>]_mon" onchange="submit_form_[<$post_var>]()">
   <option value="0">Month</option>
   <option value="1">Jan</option>
   <option value="2">Feb</option>
@@ -21,7 +21,7 @@ USAGE: include file='utils/calendar.tpl' post_var='var'
   <option value="11">Nov</option>
   <option value="12">Dec</option>
 </select>
-<select id="[<$post_var>]_day">
+<select id="[<$post_var>]_day" onchange="submit_form_[<$post_var>]()">
   <option value="0">Day</option>
 [<php>]
   for ($i=1;$i<=31;$i++) {
@@ -41,15 +41,16 @@ USAGE: include file='utils/calendar.tpl' post_var='var'
 	$this->assign('y1',$year1);
 	$this->assign('y2',$year2);
 [</php>]
-<select id="[<$post_var>]_year">
+<select id="[<$post_var>]_year" onchange="submit_form_[<$post_var>]()">
   <option value="0">Year</option>
   <option value="[<$y1>]">[<$y1>]</option>
   <option value="[<$y2>]">[<$y2>]</option>
 </select>
+<span id="alerter" style="color: #ff0000"></span>
 <script type="text/javascript">
 [<* This code will select the last year, the current year, and next year for year *>]
-var form = document.getElementById("[<$post_var>]_year").form;
 function submit_form_[<$post_var>]() {
+	var form = document.getElementById("[<$post_var>]_year").form;
 	var supra = form.elements.namedItem("[<$post_var>]");
 	var month = form.elements.namedItem("[<$post_var>]_mon").value;
 	var year = form.elements.namedItem("[<$post_var>]_year").value;
@@ -58,9 +59,11 @@ function submit_form_[<$post_var>]() {
 		supra.value = '3000-01-01';
 	} else {
 		if (!validate_[<$post_var>](month, year, day)) {
-			alert("The date is not a legal date.");
+			//alert("The date is not a legal date.");
+			document.getElementById("alerter").innerHTML = "The date is not a legal date.";
 			return false;
 		}
+		document.getElementById("alerter").innerHTML = "";
 		month = month < 10 ? '0'+month : month;
 		day = day < 10 ? '0'+day : day;
 		supra.value = year+'-'+month+'-'+day;
@@ -81,7 +84,6 @@ function validate_[<$post_var>](month, year, day) {
 		return false;
 	return true;
 }
-form.onsubmit = submit_form_[<$post_var>];
 
 function disable(checkbox) {
 	var form = checkbox.form;
@@ -91,5 +93,6 @@ function disable(checkbox) {
 	month.disabled = !checkbox.checked;
 	year.disabled = !checkbox.checked;
 	day.disabled = !checkbox.checked;
+	submit_form_[<$post_var>]();
 }
 </script>
