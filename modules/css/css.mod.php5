@@ -26,6 +26,8 @@ class CSS implements Module {
 
 	private $gmdate;
 
+	private $current_style;
+
 	/**
 	* Required by the {@link Module} interface.
 	*/
@@ -56,6 +58,10 @@ class CSS implements Module {
 		
 		$disp->clear_buffer();
 		$text = $disp->fetch($this->style_cache,array(),FALSE);
+		if ($this->current_style != substr($text,-(strlen($this->current_style)))) {
+			$this->recache();
+			$text = $disp->fetch($this->style_cache,array(),FALSE);
+		}
 		//TODO: cache to stop extra Smarty runs?
 		echo $text;
 		
@@ -82,6 +88,7 @@ class CSS implements Module {
 		if (ends_with($current_style, '.css')) {
 			$current_style = substr($current_style, 0, strlen($current_style) - 4);
 		}
+		$this->current_style = $current_style;
 		
 		$this->style_path = $I2_FS_ROOT . 'styles/';
 		$cache_dir = i2config_get('cache_dir', NULL, 'core') . 'styles/';
@@ -90,23 +97,12 @@ class CSS implements Module {
 		}
 		$style_cache = $cache_dir . $I2_USER->uid;
 
+		$this->style_cache = $style_cache;
+
 		//Recompile the cache if it's stale
 		if (!file_exists($style_cache)) {
 			//|| filemtime($style_cache) < dirmtime($this->style_path)) {
-			$this->style_sheet = new StyleSheet();
-			$this->load_style('default');
-			if ($current_style != 'default') {
-				$this->load_style($current_style);
-			}
-
-			$date = date("D M j G:i:s T Y");
-			$contents = "/* Server cache '$current_style' created on $date */\n";
-
-			foreach ($this->warnings as $message) {
-				$contents .= "/* WARNING: $message */\n";
-			}
-			$contents .= $this->style_sheet->__toString();
-			file_put_contents($style_cache, $contents);
+			$this->recache();
 		}
 		
 		//Modification date of cache file
@@ -126,13 +122,31 @@ class CSS implements Module {
 		$date = date('D M j G:i:s T Y');
 		$this->date = $date;
 
-		$this->style_cache = $style_cache;
-
 		//$this->css_text = file_get_contents($style_cache);
 		
 		return 'css';
 	}
 
+	/**
+	 * Regenerate the cache if the cache file requested is not the same as the one stored.
+	 */
+	function recache() {
+		$this->style_sheet = new StyleSheet();
+		$this->load_style('default');
+		if ($this->current_style != 'default') {
+			$this->load_style($this->current_style);
+		}
+
+		$date = date("D M j G:i:s T Y");
+		$contents = "/* Server cache '$this->current_style' created on $date */\n";
+
+		foreach ($this->warnings as $message) {
+			$contents .= "/* WARNING: $message */\n";
+		}
+		$contents .= $this->style_sheet->__toString();
+		$contents .= "//$this->current_style";
+		file_put_contents($this->style_cache, $contents);
+	}
 	/**
 	 * Returns an array of all the styles that the CSS module recognizes.
 	 */

@@ -25,6 +25,7 @@ class JS implements Module {
 
 	private $script_cache;
 
+	private $current_style;
 	/**
 	* Required by the {@link Module} interface.
 	*/
@@ -54,6 +55,10 @@ class JS implements Module {
 		
 		$disp->clear_buffer();
 		$text = file_get_contents($this->script_cache); // Put something here!!!
+		if ($this->current_style != substr($text, -(strlen($this->current_style)))) {
+			$this->recache();
+			$text = file_get_contents($this->script_cache); // Put something here!!!
+		}
 		echo $text;
 		
 		Display::stop_display();
@@ -80,6 +85,7 @@ class JS implements Module {
 			$current_style = substr($current_style, 0, strlen($current_style) - 3);
 		}
 		
+		$this->current_style = $current_style;
 		$this->script_path = $I2_FS_ROOT . 'javascriptstyles/' . $current_style . '.js';
 		$cache_dir = i2config_get('cache_dir', NULL, 'core') . 'javascriptstyles/';
 		if (!is_dir($cache_dir)) {
@@ -88,18 +94,12 @@ class JS implements Module {
 
 		$script_cache = $cache_dir . $I2_USER->uid;
 
+		$this->script_cache = $script_cache;
+
 		//Recomi)le the cache if it's stale
 		if (!file_exists($script_cache)) {
 			// || (filemtime($script_cache) < filemtime($this->script_path))
-			$date = date("D M j G:i:s T Y");
-			$contents = "/* Server cache '$current_style' created on $date */\n";
-			foreach ($this->warnings as $message) {
-				$contents .= "/* WARNING: $message */\n";
-			}
-			$parser = new Display();
-			$contents .= $parser->fetch($this->script_path,array(),FALSE);
-			$contents .= "\n/* End of file */\n";
-			file_put_contents($script_cache,$contents);
+			$this->recache();
 		}
 		
 		$this->gmdate = gmdate('D, d M Y H:i:s', filemtime($script_cache)) . ' GMT';
@@ -116,9 +116,20 @@ class JS implements Module {
 		$date = date('D M j G:i:s T Y');
 		$this->date = $date;
 
-		$this->script_cache = $script_cache;
-
 		return 'js';
+	}
+
+	function recache() {
+		$date = date("D M j G:i:s T Y");
+		$contents = "/* Server cache '$this->current_style' created on $date */\n";
+		foreach ($this->warnings as $message) {
+			$contents .= "/* WARNING: $message */\n";
+		}
+		$parser = new Display();
+		$contents .= $parser->fetch($this->script_path,array(),FALSE);
+		$contents .= "\n/* End of file */\n";
+		$contents .= "//$this->current_style";
+		file_put_contents($this->script_cache,$contents);
 	}
 
 	public static function flush_cache(User $user) {
