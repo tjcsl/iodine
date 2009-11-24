@@ -528,5 +528,28 @@ class Groups implements Module {
 		}
 		return array('Groups: View Groups', 'Groups');
 	}
+	/**
+	 * Change a group's bookmarks.
+	 */
+	public function bookmarks() {
+		global $I2_USER, $I2_ARGS, $I2_QUERY, $I2_SQL;
+		$group = new Group($I2_ARGS[2]);
+		if ($group->is_admin($I2_USER)) {
+			if (isset($I2_QUERY['action'])) {
+				d($I2_QUERY['action']);
+				switch ($I2_QUERY['action']) {
+					case 'add':
+						if(isset($I2_QUERY['name']) && isset($I2_QUERY['path']))
+							$I2_SQL->query("INSERT INTO filecenter_folders_groups VALUES (%d,%s,%s)",$group->gid,$I2_QUERY['path'],$I2_QUERY['name']);
+						break;
+					case 'remove':
+						if(isset($I2_QUERY['name']) && isset($I2_QUERY['path']))
+							$I2_SQL->query("DELETE FROM filecenter_folders_groups WHERE `gid`=%d AND `name`=%s AND `path`=%s",$group->gid,$I2_QUERY['name'],$I2_QUERY['path']);
+						break;
+				}
+			}
+		}
+		redirect('groups/pane/'.$group->gid);
+	}
 }
 ?>

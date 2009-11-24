@@ -151,13 +151,22 @@ Group: <strong>[<$group>]</strong><br />
  <thead>
   <th>Name</th>
   <th>Directory</th>
+  [<if $can_set_perms>]
+   <th>Remove</th>
+  [</if>]
  </thead>
  <tbody>
 [<foreach from=$bookmarks item=bookmark>]
   <tr class="[<cycle values="c1,c2">]">
    <td style="text-align: center;">[<$bookmark.name>]</td>
    <td style="text-align: center;"><a href="[<$I2_ROOT>]filecenter/[<$bookmark.path>]">[<$bookmark.path>]</a></td>
+   [<if $can_set_perms>]
+    <td style="text-align: center;"><form method="get" action="[<$I2_ROOT>]groups/bookmarks/[<$gid>]"><input type="hidden" name="action" value="remove" /><input type="hidden" name="name" value="[<$bookmark.name>]" /><input type="hidden" name="path" value="[<$bookmark.path>]" /><input type="submit" value="Remove" /></form></td>
+   [</if>]
   </tr>
 [</foreach>]
  </tbody>
 </table>
+[<if $can_set_perms>]
+<form method="get" action="[<$I2_ROOT>]groups/bookmarks/[<$gid>]"><input type="hidden" name="action" value="add" />Name: <input type="text" name="name"/> Path: <input type="text" name="path" /><input type="submit" value="Add" /></form>
+[</if>]
