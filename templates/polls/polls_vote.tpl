@@ -51,7 +51,10 @@ function checklength(area,error) {
  [<elseif $q->answertype == 'free_response'>]
   [<assign var="aid" value="0">]
   <div id="error_[<$q->qid>]">(1500 characters left)</div> 
-  <textarea rows="5" cols="80" name="[<$q->qid>]" onkeyup="checklength(this,'error_[<$q->qid>]')">[<if $q->user_voted_for(0)>][<$q->get_response()>][</if>]</textarea><br />
+  <textarea id="textarea_[<$q->qid>]" rows="5" cols="80" name="[<$q->qid>]" onkeyup="checklength(this,'error_[<$q->qid>]')">[<if $q->user_voted_for(0)>][<$q->get_response()>][</if>]</textarea><br />
+  <script type="text/javascript">
+	checklength(document.getElementById('textarea_[<$q->qid>]'),'error_[<$q->qid>]');
+  </script>
  [</if>]
   </li>
 [</foreach>]
