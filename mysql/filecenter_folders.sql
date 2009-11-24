@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS filecenter_folders;
+CREATE TABLE filecenter_folders (
+	uid MEDIUMINT UNSIGNED NOT NULL,
+	path VARCHAR(255) NOT NULL,
+	name VARCHAR(255) NOT NULL
+);

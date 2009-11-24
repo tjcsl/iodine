@@ -136,6 +136,10 @@ class Filecenter implements Module {
 			$this->filesystem = new CSLProxy($_SESSION['i2_username'], $I2_AUTH->get_user_password(),'LOCAL.TJHSST.EDU');
 			$this->template_args['max_file_size'] = 20971520;
 			break;
+		case 'bookmarks':
+			$this->filesystem = 'bookmarks';
+			return array('Filecenter','Filecenter bookmarks');
+			break;
 		case 'undefined':
 		default:
 			$this->filesystem = 'listing';
@@ -222,7 +226,26 @@ class Filecenter implements Module {
 			if ($I2_USER->grade != "staff") {
 				$this->template_args['tj01path'] = 'students/' . self::$standing[$I2_USER->grade] . '/' . $_SESSION['i2_username'];
 			}
+			$this->template_args['otherdirs'] = Filecenter::get_additional_dirs();
 			$this->template = 'filecenter_box.tpl';
+		}
+		elseif ($this->filesystem == 'bookmarks') {
+			if (isset($I2_QUERY['action'])) {
+				d($I2_QUERY['action']);
+				switch ($I2_QUERY['action']) {
+					case 'add':
+						if(isset($I2_QUERY['name']) && isset($I2_QUERY['path']))
+							$I2_SQL->query("INSERT INTO filecenter_folders VALUES (%d,%s,%s)",$I2_USER->uid,$I2_QUERY['path'],$I2_QUERY['name']);
+						break;
+					case 'remove':
+						if(isset($I2_QUERY['name']) && isset($I2_QUERY['path']))
+							$I2_SQL->query("DELETE FROM filecenter_folders WHERE `uid`=%d AND `name`=%s AND `path`=%s",$I2_USER->uid,$I2_QUERY['name'],$I2_QUERY['path']);
+						break;
+				}
+				redirect("{$I2_ROOT}filecenter/bookmarks");
+			}
+			$this->template_args['otherdirs'] = Filecenter::get_additional_dirs();
+			$this->template = 'filecenter_bookmarks.tpl';
 		}
 		elseif ($this->filesystem->is_valid()) {
 			$dirs = array();
@@ -386,6 +409,7 @@ class Filecenter implements Module {
 		if ($I2_USER->grade != "staff") {
 			$this->box_args['tj01path'] = 'students/' . self::$standing[$I2_USER->grade] . '/' . $_SESSION['i2_username'];
 		}
+		$this->box_args['otherdirs'] = Filecenter::get_additional_dirs();
 
 		return 'Filecenter';
 	}
@@ -431,6 +455,12 @@ class Filecenter implements Module {
 		die;
 	}
 	
+	static function get_additional_dirs() {
+		global $I2_USER, $I2_SQL;
+		$dirs = array();
+		$dirs = $I2_SQL->query('SELECT `path`,`name` FROM filecenter_folders WHERE `uid`=%d',$I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
+		return $dirs;
+	}
 	/**
 	* Required by the {@link Module} interface.
 	*/

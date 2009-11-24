@@ -30,7 +30,7 @@ class StudentDirectory implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_ROOT,$I2_SQL,$I2_ARGS,$I2_USER;
+		global $I2_ROOT,$I2_ARGS,$I2_USER;
 
 		$this->user = NULL;
 
