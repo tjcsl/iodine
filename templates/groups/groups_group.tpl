@@ -145,3 +145,19 @@ Group: <strong>[<$group>]</strong><br />
 [<else>]
 <p>This group has no static members.</p>
 [</if>]
+<h3>Special Properties</h3>
+<p>This group has the following filecenter bookmarks:</p>
+<table style="width: 30em;">
+ <thead>
+  <th>Name</th>
+  <th>Directory</th>
+ </thead>
+ <tbody>
+[<foreach from=$bookmarks item=bookmark>]
+  <tr class="[<cycle values="c1,c2">]">
+   <td style="text-align: center;">[<$bookmark.name>]</td>
+   <td style="text-align: center;"><a href="[<$I2_ROOT>]filecenter/[<$bookmark.path>]">[<$bookmark.path>]</a></td>
+  </tr>
+[</foreach>]
+ </tbody>
+</table>

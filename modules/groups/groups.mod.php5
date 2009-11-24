@@ -287,6 +287,7 @@ class Groups implements Module {
 		if($group->is_admin($I2_USER)) {
 			$this->template_args['can_set_perms'] = TRUE;
 			$this->template_args['perms'] = Permission::list_permissions();
+			$this->template_args['bookmarks'] = Filecenter::get_additional_dirs_onlygroup($group->gid);
 
 			switch($action) {
 				case 'grant':

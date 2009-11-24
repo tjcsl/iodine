@@ -480,6 +480,11 @@ class Filecenter implements Module {
 		$dirs = $I2_SQL->query('SELECT `path`,`name` FROM filecenter_folders WHERE `uid`=%d',$I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
 		return $dirs;
 	}
+
+	static function get_additional_dirs_onlygroup($gid) {
+		global $I2_SQL;
+		return $I2_SQL->query('SELECT `path`,`name` FROM filecenter_folders_groups WHERE gid=%d',$gid)->fetch_all_arrays(Result::ASSOC);
+	}
 	/**
 	* Required by the {@link Module} interface.
 	*/
