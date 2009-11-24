@@ -15,7 +15,6 @@
 		<th style="padding: 0px 5px; text-align: left;">Student ID</th>
 		<th style="padding: 0px 5px; text-align: center;">Email</th>
 		<th style="padding: 0px 5px; text-align: left;">Grade</th>
-		<td><a href="[<$I2_ROOT>]eighth/amr_group/remove_all/gid/[<$group->gid>]">Remove all</a></td>
 	</tr>
 	<tr><td colspan="4">&nbsp;</td></tr>
 [<foreach from=$membersorted item='member'>]
@@ -36,11 +35,11 @@
 		<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/amr_group/remove_member/gid/[<$group->gid>]/uid/[<$member->uid>]">Remove</a></td>
 	</tr>
 [</foreach>]
-	<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/amr_group/remove_all/gid/[<$group->gid>]">Remove all</a></td></tr>
 </table><br />
 [</if>]
 </td><td style="vertical-align: top;">
-<a href="[<$I2_ROOT>]eighth/amr_group/remove/gid/[<$group->gid>]">Remove Group</a><br />
+<a href="[<$I2_ROOT>]eighth/amr_group/remove/gid/[<$group->gid>]" onclick="if (confirm('Are you sure you want to delete this group?')) { window.location.href = this.href } return false;">Remove Group</a><br />
+<a href="[<$I2_ROOT>]eighth/amr_group/remove_all/gid/[<$group->gid>]" onclick="if (confirm('Are you sure you want to remove all members from this group?')) { window.location.href = this.href } return false;">Remove all members from group</a><br />
 [<if isSet($lastaction)>]<b>[<$lastaction>]</b><br />[</if>]
 	<fieldset style="width: 220px;">
 	[<if isSet($info)>]
