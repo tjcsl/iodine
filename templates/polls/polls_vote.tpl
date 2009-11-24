@@ -3,11 +3,11 @@
 <script type="text/javascript">
 function checklength(area,error) {
 	error = document.getElementById(error);
-	var lengthleft = 1500 - area.value.length;
+	var lengthleft = 2000 - area.value.length - area.value.split("\n").length +1;
 	if(lengthleft >=0) {
 		error.innerHTML ="(" + (lengthleft) + " characters left)";
 	} else {
-		error.innerHTML ="<font color=red style='text-weight: strong'>Over by " + (-lengthleft) + " characters!</font>";
+		error.innerHTML ="<font color=red style='text-weight: strong'>Over by " + (-lengthleft) + " characters! Extra characters will be truncated.</font>";
 	}
 }
 </script>
