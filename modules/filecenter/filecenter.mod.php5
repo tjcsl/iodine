@@ -244,7 +244,7 @@ class Filecenter implements Module {
 				}
 				redirect("{$I2_ROOT}filecenter/bookmarks");
 			}
-			$this->template_args['otherdirs'] = Filecenter::get_additional_dirs();
+			$this->template_args['otherdirs'] = Filecenter::get_additional_dirs_onlymine();
 			$this->template = 'filecenter_bookmarks.tpl';
 		}
 		elseif ($this->filesystem->is_valid()) {
@@ -456,6 +456,25 @@ class Filecenter implements Module {
 	}
 	
 	static function get_additional_dirs() {
+		global $I2_USER, $I2_SQL;
+		$dirs = array();
+		$dirs = $I2_SQL->query('SELECT `path`,`name` FROM filecenter_folders WHERE `uid`=%d',$I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
+		// Find out all of a user's groups, then dynamic groups
+		$groups = $I2_SQL->query('SELECT `gid` FROM groups_static WHERE `uid`=%d',$I2_USER->uid)->fetch_all_single_values();
+		$dynagroups = array();
+		$dynagroupsarray = $I2_SQL->query('SELECT * FROM groups_dynamic')->fetch_all_arrays(Result::ASSOC);
+		$user = $I2_USER;
+		foreach ($dynagroupsarray as $dynagroup) {
+			if($dynagroup['dbtype'] == 'PHP') {
+				if(eval($dynagroup['query']))
+					$dynagroups[] = $dynagroup['gid'];
+			} // TODO: handle other types of dynamic groups. No other kinds are used right now, so it's relatively safe to have this open.
+		}
+		$groupdirs = $I2_SQL->query('SELECT `path`,`name` FROM filecenter_folders_groups WHERE gid IN (%D)',array_merge($groups,$dynagroups))->fetch_all_arrays(Result::ASSOC);
+		return array_merge($dirs,$groupdirs);
+	}
+
+	static function get_additional_dirs_onlymine() {
 		global $I2_USER, $I2_SQL;
 		$dirs = array();
 		$dirs = $I2_SQL->query('SELECT `path`,`name` FROM filecenter_folders WHERE `uid`=%d',$I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
