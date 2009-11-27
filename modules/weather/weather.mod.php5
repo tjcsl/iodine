@@ -11,7 +11,7 @@ class Weather implements Module {
 	private $data;
 
 	private function makeData($server = 'weather.tjhsst.edu', $port=8889) {
-		$connection = fsockopen($server, $port, $errno, $errstr);
+		$connection = @fsockopen($server, $port, $errno, $errstr);
 		// We don't assume that weather is always up.
 		if (!$connection) {
 			$this->template_args['data'] = 0;
