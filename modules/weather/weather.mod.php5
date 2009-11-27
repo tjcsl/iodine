@@ -24,6 +24,7 @@ class Weather implements Module {
 			$this->template_args['wind_dir'] = 0;
 			$this->template_args['rain'] = 0;
 			$this->template_args['rain_int'] = 0;
+			$this->template_args['error'] = "It appears that the weather station is currently unavailable. We apologize for the inconvenience.";
 			return;
 		}
 		$datum = '';
