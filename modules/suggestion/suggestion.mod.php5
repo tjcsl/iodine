@@ -25,7 +25,7 @@ class Suggestion implements Module {
 			$usermail = $usermail[0];
 		}
 		$this->template_args['usermail'] = $usermail;
-		$this->template_args['sendchoices'] = array(array('name'=>'intranet','address'=>i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion')),array('name'=>'SGA','address'=>'sga@lists.tjhsst.edu'));
+		$this->template_args['sendchoices'] = array(array('name'=>'intranet','address'=>i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion')),array('name'=>'SGA','address'=>'TJHSSTSGA@googlegroups.com'));
 
 		if (!(isset($_REQUEST['submit_form']) && isset($_REQUEST['submit_box']))) {
 			return 'Suggestion';
