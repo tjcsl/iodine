@@ -24,11 +24,10 @@ class RichEdit implements Module {
 	}
 	
 	function display_pane($display) {
-		// We just need a blank page under the same domain, so that
-		// security stuff doesn't stop other parts of our js.
-		echo "<html>";
-		echo "<head></head>";
-		echo "<body></body></html>";
+		global $I2_FS_ROOT;
+		// This just makes basically a blank page with just the css set
+		// That way the editor already has the css loaded for you
+		echo $display->fetch($I2_FS_ROOT . "templates/richedit/richeditwindow.tpl", array(), FALSE);
 		Display::stop_display();
 		exit;
 	}

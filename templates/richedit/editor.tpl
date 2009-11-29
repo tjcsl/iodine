@@ -1,49 +1,36 @@
-<div style="font-style: italic; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('italic')">Italic</div>
-<div style="font-weight: bold; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('bold')">Bold</div>
-<div style="text-decoration: underline; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('underline')">Underline</div>
-<div style="text-decoration: line-through; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('strikethrough')">Strikethrough</div>
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('inserthorizontalrule')">Horizontal Rule</div>
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('superscript')">Superscript</div>
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('subscript')">Subscript</div>
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="dohref()">Hyperlink</div>
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('unlink')">Unlink text</div>
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doimg()">Image</div><br /><br />
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="docolor('forecolor')">Text Color</div>
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="docolor('backcolor')">Back Color</div>
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="docolor('hilitecolor')">Highlight Color</div><br /><br />
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyleft')">Justify Left</div>
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyright')">Justify Right</div>
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifycenter')">Justify Center</div>
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyfull')">Justify Full</div>
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('insertorderedlist')">Ordered List</div>
-<div style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('insertunorderedlist')">Unordered List</div>
-<div id="htmlswitcher" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="edithtml()">Edit HTML</div><br /><br />
+<input type="button" style="font-style: italic; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('italic')" value="Italic" />
+<input type="button" style="font-weight: bold; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('bold')" value="Bold" />
+<input type="button" style="text-decoration: underline; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('underline')" value="Underline" />
+<input type="button" style="text-decoration: line-through; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('strikethrough')" value="Strikethrough" />
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('inserthorizontalrule')" value="Horizontal Rule" />
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('superscript')" value="Superscript" />
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('subscript')" value="Subscript" />
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="dohref()" value="Hyperlink" />
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('unlink')" value="Unlink text" />
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doimg()" value="Image" /><br /><br />
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="docolor('forecolor')" value="Text Color" />
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="docolor('backcolor')" value="Back Color" />
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="docolor('hilitecolor')" value="Highlight Color" /><br /><br />
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyleft')" value="Justify Left" />
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyright')" value="Justify Right" />
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifycenter')" value="Justify Center" />
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyfull')" value="Justify Full"/>
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('insertorderedlist')" value="Ordered List" />
+<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('insertunorderedlist')" value="Unordered List" />
+<input type="button" id="htmlswitcher" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="edithtml()" value="Edit HTML" /><br /><br />
 <textarea id="RichHTML" style="visibility: hidden; width: 99%; height: 0px"></textarea>
-<iframe id="RichForm" width="99%" height="200" src="javascript:"""></iframe><br />
+<iframe id="RichForm" width="99%" height="200" src="[<$I2_ROOT>]richedit"></iframe><br />
 <script type="text/javascript">
 var formfield = null;
 var form = "form";
 window.onload = function() {
 	formfield = document.getElementById('RichForm').contentWindow.document;
 	document.getElementById('RichForm').contentWindow.document.designMode='on';
-	var subhead = formfield.getElementsByTagName("head")[0];
-	var css = formfield.createElement("link");
-	css.setAttribute("rel", "stylesheet");
-	css.setAttribute("type", "text/css");
-	css.setAttribute("href", "[<$I2_CSS>]");
-	subhead.appendChild(css);
+	// Need the next line for ie support :(
+	formfield = document.getElementById('RichForm').contentWindow.document;
+	// End of ie redundancy
 	page_init(); // Allow the theme-specific stuff to run.
 }
-/*function initrichform() {
-	formfield = document.getElementById('RichForm').contentWindow.document;
-	document.getElementById('RichForm').contentWindow.document.designMode='on';
-	var subhead = formfield.getElementsByTagName("head")[0];
-	var css = formfield.createElement("link");
-	css.setAttribute("rel", "stylesheet");
-	css.setAttribute("type", "text/css");
-	css.setAttribute("href", "[<$I2_CSS>]");
-	subhead.appendChild(css);
-}*/
 function doonsubmit() {
 	if(form == "form")
 		document.getElementById("text").value=formfield.body.innerHTML;
@@ -51,46 +38,49 @@ function doonsubmit() {
 		document.getElementById("text").value=document.getElementById("RichHTML").value;
 }
 function doit(action) {
-//	if(!formfield) initrichform();
-	formfield.execCommand(action,false,null);
+	if(!document.all) { // W3C Compliant browsers
+		formfield.execCommand(action,false,null);
+	} else { // IE
+		var selection = formfield.selection.createRange();
+		selection.execCommand(action);
+		selection.select();
+		document.getElementById('RichForm').contentWindow.focus();
+	}
 }
 function dohref() {
-//	if(!formfield) initrichform();
 	var url = prompt("Input link url:","http://");
 	if(url != null && url != "")
 		formfield.execCommand("CreateLink",false,url);
 }
 function doimg() {
-//	if(!formfield) initrichform();
 	var url = prompt("Input image url:","http://");
-	if(url != null && url != "")
+	if(url != null && url != "") {
+		if(document.all) // IE fix
+			document.getElementById('RichForm').contentWindow.focus();
 		formfield.execCommand("InsertImage",false,url);
+	}
 }
 function docolor(where) {
-//	if(!formfield) initrichform();
 	var color = prompt("Input color in hex (e.g. 00bcff):","");
 	if(color != null && color != "")
 		formfield.execCommand(where,false,color);
 }
 function edithtml() {
-//	if(!formfield) initrichform();
 	document.getElementById('RichHTML').style.visibility="visible";
 	document.getElementById('RichHTML').style.height="120px";
 	document.getElementById('RichHTML').value = formfield.body.innerHTML;
 	document.getElementById('RichForm').style.display="none";
 	form="html";
-	document.getElementById('htmlswitcher').childNodes[0].data="Hide HTML";
+	document.getElementById('htmlswitcher').value="Hide HTML";
 	document.getElementById('htmlswitcher').onclick=hidehtml;
-	//formfield.body.innerHTML = prompt("Input any raw html:",formfield.body.innerHTML);
 }
 function hidehtml() {
-//	if(!formfield) initrichform();
 	document.getElementById('RichHTML').style.visibility="hidden";
 	document.getElementById('RichHTML').style.height="0px";
 	formfield.body.innerHTML = document.getElementById('RichHTML').value;
 	document.getElementById('RichForm').style.display="block";
 	form="form";
-	document.getElementById('htmlswitcher').childNodes[0].data="Show HTML";
+	document.getElementById('htmlswitcher').value="Show HTML";
 	document.getElementById('htmlswitcher').onclick=edithtml;
 }
 </script>
