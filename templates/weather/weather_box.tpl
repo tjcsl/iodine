@@ -1,4 +1,4 @@
-[<if $error>]
+[<if isset($error)>]
 [<$error>]
 [<else>]
 <div style="font-size:16pt; font-weight:bold; border:1px solid; padding:4px 4px 4px 10px; margin:4px 7px 4px 0px; vertical-align:top; height:100%;">[<$temperature>]&#176;F&nbsp;<span style="font-size:normal; font-weight:normal;">(feels like [<$windchill>]&#176;F)</span></div>
