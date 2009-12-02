@@ -64,7 +64,7 @@ access to attrs=perm-showtelephone-self,perm-showbirthday-self,perm-showaddress-
 	by * read
 
 # ... but not the parental ones
-access to attrs=perm-showtelephone,perm-showbirthday,perm-showaddress,perm-showmap,perm-showpictures,perm-showschedule,perm-showlocker
+access to attrs=perm-showtelephone,perm-showbirthday,perm-showaddress,perm-showmap,perm-showpictures,perm-showschedule,perm-showlocker,perm-showeighth
 	by * read
 
 
