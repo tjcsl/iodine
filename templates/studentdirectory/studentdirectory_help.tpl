@@ -167,6 +167,12 @@
 
 </dd>
 
+<dt><tt>locker</tt></dt>
+<dd>
+<p>Searches by locker number.<br />
+	<tt>locker:9001</tt> picks up "Joe Filler"</p>
+</dd>
+
 </dl>
 </dd>
 </dl>
