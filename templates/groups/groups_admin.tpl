@@ -3,7 +3,7 @@
 [<if isset($error)>]<font color=red><b>[<$error>]</b></font>[</if>]
 <table width="100%">
 <tr>
-<td valign=top>
+<td valign="top">
 To add a group, enter a new name here:<br />
 <form method="post" action="[<$I2_ROOT>]groups/admin/" class="boxform">
 <input type="hidden" name="group_admin_form" value="add" />
@@ -22,7 +22,7 @@ The current existent groups are:<br />
 [</foreach>]
 </ul>
 </td>
-<td valign=top>
+<td valign="top">
 To add a permission, enter a new name here:<br />
 <form method="post" action="[<$I2_ROOT>]groups/admin/" class="boxform">
 <input type="hidden" name="group_admin_form" value="add_perm" />
