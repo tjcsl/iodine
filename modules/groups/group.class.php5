@@ -356,6 +356,7 @@ class Group {
 	* @param string $name The name for the new group.
 	*/
 	public static function add_group($name,$description='No description available',$gid=NULL) {
+		$name = str_replace("&","&amp;",$name); // this is supposed to fix an error where the & character is used and breaks validation.
 		return GroupSQL::add_group($name,$description,$gid);
 	}
 
