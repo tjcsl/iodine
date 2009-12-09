@@ -1,5 +1,8 @@
 [<include file="eighth/header.tpl">]
 <table><tr><td>
+[<if isset($error) >]
+<font color=red>[<$error>]</font>
+[</if>]
 <br />
 <form method="post" action="[<$I2_ROOT>]eighth/amr_group/modify/gid/[<$group->gid>]">
 <input type="text" name="name" size="25" value="[<$group->name|replace:'eighth_':''>]" />

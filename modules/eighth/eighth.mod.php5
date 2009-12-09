@@ -760,6 +760,9 @@ class Eighth implements Module {
 				$this->template_args['membersorted'] = $membersorted;
 				$this->template_args['search_destination'] = 'eighth/amr_group/add_member/gid/'.$this->args['gid'];
 				$this->template_args['action_name'] = 'Add';
+				if(isset($this->args['error']) && $this->args['error']=='true') {
+					$this->template_args['error'] = "There was an error processing your input. Please check to make sure that no entries are missing.";
+				}
 				$this->title = 'View Group (' . substr($group->name,7) . ')';
 			}
 			else if ($this->op == 'csv') {
@@ -813,9 +816,10 @@ class Eighth implements Module {
 		else if($this->op == 'remove_all') {
 			$group = new Group($this->args['gid']);
 			$group->remove_all_members();
-			redirect("eighth/amr_group/view/gid/{$this->args['gid']}");
+			redirect("eighth/amr_group/view/gid/{$this->args['gid']}/");
 		}
 		else if($this->op == 'add_members') {
+			$error="false";
 			if (!isset($_FILES['textfile'])) {
 				redirect("eighth/amr_group/view/gid/{$this->args['gid']}/");
 			}
@@ -829,12 +833,16 @@ class Eighth implements Module {
 				$id = trim(fgets($fd));
 				if (strlen($id) == 0)
 					continue;
-				$thing = User::studentid_to_uid($id);
-				if (!$thing) $thing = $id;
-				$group->add_user(new User($thing));
+				try {
+					$thing = User::studentid_to_uid($id);
+					if (!$thing) $thing = $id;
+					$group->add_user(new User($thing));
+				} catch (I2Exception $e) {
+					$error="true";
+				}
 			}
 			fclose($fd);
-			redirect("eighth/amr_group/view/gid/{$this->args['gid']}/");
+			redirect("eighth/amr_group/view/error/$error/gid/{$this->args['gid']}/");
 		}
 	}
 	
