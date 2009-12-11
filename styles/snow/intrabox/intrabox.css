@@ -1,0 +1,30 @@
+@extend {
+.intrabox {
+	background: black;
+}
+.boxcontent {
+	color: white;
+}
+.boxform {
+	color: white;
+}
+}
+.boxheader {
+	color: #[<$I2_USER->boxtitlecolor|default:"FFFFFF">];
+	font-weight: bold;
+	background-color: #[<$I2_USER->boxcolor|default:'000000'>];
+	border-left: 4px solid #[<$I2_USER->boxcolor|default:'000000'>];
+	border-right: 4px solid #[<$I2_USER->boxcolor|default:'000000'>];
+}
+.upbutton {
+	background: url(/www/pics/up.gif) center no-repeat;
+}
+.dnbutton {
+	background: url(/www/pics/down.gif) center no-repeat;
+}
+.mnbutton {
+	background: url(/www/pics/min.gif) center no-repeat;
+}
+.rmbutton {
+	background: url(/www/pics/close.gif) center no-repeat;
+}

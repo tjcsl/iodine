@@ -1,0 +1,12 @@
+@extend {
+.newsitem {
+	border-left: dotted 1px white;
+	border-right: dotted 1px white;
+	border-bottom: dotted 1px white;
+}
+}
+.newsgroups {
+	font-size: 8pt;
+	font-style: italic;
+	color: white;
+}

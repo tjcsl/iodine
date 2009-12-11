@@ -1,0 +1,16 @@
+@extend {
+.logo {
+	top: 0px;
+	left: 0px;
+	background: url(/www/pics/minimal_white.png) no-repeat;	
+}
+.title {
+	color: white;
+}
+.date {
+	color: white;
+}
+.blurb {
+   color: white;
+}
+}
