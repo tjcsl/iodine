@@ -6,6 +6,9 @@
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/login.css" />
 	<link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 	<link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
+	[<if isset($bgjs)>]
+	<script type="text/javascript" src="[<$I2_ROOT>][<$bgjs>]"></script>
+	[</if>]
 <!--[if lt IE 7]>
 <script type="text/javascript">
 IE7_PNG_SUFFIX = ".png";

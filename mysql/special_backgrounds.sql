@@ -6,5 +6,6 @@ CREATE TABLE special_backgrounds(
 	startdt VARCHAR(255) NOT NULL,
 	enddt VARCHAR(255) NOT NULL,
 	occasion VARCHAR(255) NOT NULL,
-	background VARCHAR(255) NOT NULL
+	background VARCHAR(255) NOT NULL,
+	js VARCHAR(255)
 )

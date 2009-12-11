@@ -321,7 +321,9 @@ class Auth {
 		}
 		
 		// try to get a special image for a holiday, etc.
-		$image = self::getSpecialBG();
+		$imagearr = self::getSpecialBG();
+		$image = $imagearr[0];
+		$imagejs = $imagearr[1];
 
 		// if no special image, get a random normal one
 		if (! isset($image)) {
@@ -342,7 +344,8 @@ class Auth {
 		$template_args = array(
 			'failed' => $modauth_loginfailed,
 			'uname' => $uname,
-			'bg' => $image);
+			'bg' => $image,
+			'bgjs' => $imagejs);
 		$disp = new Display('login');
 		$disp->disp('login.tpl', $template_args); 
 
@@ -443,13 +446,13 @@ class Auth {
 	private static function getSpecialBG() {
 		global $I2_SQL;
 
-		$rows = $I2_SQL->query('SELECT startdt, enddt, background FROM special_backgrounds');
+		$rows = $I2_SQL->query('SELECT startdt, enddt, background, js FROM special_backgrounds');
 
 		$timestamp = time();
 
 		foreach ($rows as $occasion) {
 			if (strtotime($occasion['startdt']) < $timestamp && $timestamp < strtotime($occasion['enddt'])) {
-				return 'www/pics/logins/special/'.$occasion['background'];
+				return array('www/pics/logins/special/'.$occasion['background'],'www/js/logins/special/'.$occasion['js']);
 			}
 		}
 	}
