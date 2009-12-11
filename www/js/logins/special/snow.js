@@ -12,12 +12,17 @@ var snowflakes = new Array();
 
 var screenwidth=1000;
 var screenheight=1000;
-if(document.all) {
-	screenwidth = document.body.clientWidth-25;
-	screenheight = document.body.clientHeight-25;
-} else {
-	screenwidth = window.innerWidth-25;
-	screenheight = window.innerHeight-25;
+
+window.onresize=resize;
+resize();
+function resize() {
+	if(document.all) {
+		screenwidth = document.body.clientWidth-25;
+		screenheight = document.body.clientHeight-25;
+	} else {
+		screenwidth = window.innerWidth-25;
+		screenheight = window.innerHeight-25;
+	}
 }
 
 function initsnow() {
