@@ -3,7 +3,7 @@ var snowmax=65;
 var snowcolor=new Array("#aaaacc","#ddddFF","#ccccDD");
 var snowtype=new Array("Arial Black","Arial Narrow","Times","Comic Sans MS");
 var snowletter="*";
-var sinkspeed=0.6;
+var sinkspeed=0.8;
 var snowmaxsize=22;
 var snowminsize=8;
 
