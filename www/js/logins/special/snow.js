@@ -17,8 +17,8 @@ window.onresize=resize;
 resize();
 function resize() {
 	if(document.all) {
-		screenwidth = document.body.clientWidth-25;
-		screenheight = document.body.clientHeight-25;
+		screenwidth = document.documentElement.clientWidth -25;
+		screenheight = document.documentElement.clientHeight -25;
 	} else {
 		screenwidth = window.innerWidth-25;
 		screenheight = window.innerHeight-25;
