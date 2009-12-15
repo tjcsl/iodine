@@ -1,7 +1,8 @@
 var rowIndex = null;
 
-function options(anchor, type, canread, canwrite, candelete) {
-	var file = anchor.innerHTML;
+function options(anchor, unescapedanchor, type, canread, canwrite, candelete) {
+	//var file = anchor.innerHTML;
+	var file= unescapedanchor;
 	var url = escape(file);
 	var row = anchor.parentNode.parentNode;
 	var table = row.parentNode;
