@@ -166,6 +166,10 @@ class PollQuestion {
 			return $I2_SQL->query('SELECT written FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d',$this->mypid,$this->myqid,$uid)->fetch_single_value();
 		else if ($this->myanswertype == 'standard')
 			return $I2_SQL->query('SELECT aid FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d',$this->mypid,$this->myqid,$uid)->fetch_single_value();
+		else if ($this->myanswertype == 'approval')
+			return $I2_SQL->query('SELECT aid FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d ORDER BY aid DESC',$this->mypid,$this->myqid,$uid)->fetch_all_single_values();
+		else if ($this->myanswertype == 'split_approval')
+			return $I2_SQL->query('SELECT aid FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d ORDER BY aid DESC',$this->mypid,$this->myqid,$uid)->fetch_all_single_values();
 	}
 
 	public function delete_vote($uid = NULL) {

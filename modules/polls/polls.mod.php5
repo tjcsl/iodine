@@ -492,9 +492,12 @@ class Polls implements Module {
 		$list = array();
 		foreach ($poll->questions as $q) {
 			switch($q->answertype) {
-			case 'free_response':
-			case 'standard':
-			      $list[$q->qid] = '"'.$q->question.'"';
+				case 'free_response':
+				case 'standard':
+				case 'approval':
+				case 'split_approval':
+					// Escape the quotes, they break csv file format
+					$list[$q->qid] = '"'.str_replace('"','“',$q->question).'"';
 			}
 		}
 
@@ -512,10 +515,19 @@ class Polls implements Module {
 				$answer = $info[0]->get_response($user);
 				switch($info[0]->answertype) {
 					case 'free_response':
-						$responses[] = '"'.$answer.'"';
+						// Don't break the csv file format with quotes!!!
+						$responses[] = '"'.str_replace('"','“',$answer).'"';
 						break;
-					default:
-						$responses[] = '"'.$info[1][$answer].'"';
+					case 'standard':
+						$responses[] = '"'.str_replace('"','“',$info[1][$answer]).'"';
+						break;
+					case 'approval':
+					case 'split_approval':
+						$returnstring = "";
+						foreach($answer as $a)
+							$returnstring .= $a;
+						$responses[] = '"'.$returnstring.'"';
+						break;
 				}
 			}
 			echo implode(',',$responses)."\r\n";
