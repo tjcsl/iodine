@@ -9,6 +9,7 @@ var snowminsize=8;
 
 var snowsizerange=snowmaxsize-snowminsize;
 var snowflakes = new Array();
+var snowy = new Array();
 
 var screenwidth=1000;
 var screenheight=1000;
@@ -37,9 +38,9 @@ function initsnow() {
 		//alert(snowflakes[i].style.fontSize);
 		snowflakes[i].style.position="absolute";
 		snowflakes[i].x=Math.floor(Math.random()*screenwidth);
-		snowflakes[i].y=Math.floor(Math.random()*screenheight);
+		snowy[i]=Math.floor(Math.random()*screenheight);
 		snowflakes[i].style.left=snowflakes[i].x + "px";
-		snowflakes[i].style.top=snowflakes[i].y + "px";
+		snowflakes[i].style.top=snowy[i] + "px";
 		snowflakes[i].fall=sinkspeed*snowflakes[i].size/5;
 		snowflakes[i].style.zIndex="-1";
 		document.body.appendChild(snowflakes[i]);
@@ -48,13 +49,13 @@ function initsnow() {
 }
 function movesnow() {
 	for (var i=0; i<=snowmax; i++) {
-		snowflakes[i].y+=snowflakes[i].fall;
-		if(snowflakes[i].y+snowflakes[i].size >=screenheight) {
-			snowflakes[i].y=0;
+		snowy[i]+=snowflakes[i].fall;
+		if(snowy[i]+snowflakes[i].size >=screenheight) {
+			snowy[i]=-snowflakes[i].size;
 		}
 		
-		snowflakes[i].style.top = snowflakes[i].y+"px";
-		snowflakes[i].style.left = (snowflakes[i].x+10*Math.sin(snowflakes[i].y/9))+"px";
+		snowflakes[i].style.top = snowy[i]+"px";
+		snowflakes[i].style.left = (snowflakes[i].x+10*Math.sin(snowy[i]/9))+"px";
 	}
 	setTimeout("movesnow()",60);
 }
