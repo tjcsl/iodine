@@ -97,7 +97,7 @@ function initsnow() {
 		background.style.top="0px";
 		background.style.width=realscreenwidth+"px";
 		background.style.height=realscreenheight +"px";
-		background.style.zIndex="-3";
+		background.style.zIndex="-1";
 		graphics=background.getContext("2d");
 		document.body.appendChild(background);
 		graphics.lineWidth=2;
@@ -123,7 +123,7 @@ function initsnow() {
 		snowflakes[i].style.left=snowflakes[i].x + "px";
 		snowflakes[i].style.top=snowy[i] + "px";
 		snowflakes[i].fall=sinkspeed*snowsize/5;
-		snowflakes[i].style.zIndex="-1";
+		snowflakes[i].style.zIndex="-2";
 		document.body.appendChild(snowflakes[i]);
 	}
 	if(pile) {
