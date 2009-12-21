@@ -1,7 +1,7 @@
 //TJHSST Intranet login page snow script
 //Config
 //Number of flakes
-var snowmax=60;
+var snowmax=50;
 //Colors possible for flakes
 var snowcolor=new Array("#aaaacc","#ddddFF","#ccccDD");
 //Fonts possible for flakes
@@ -17,6 +17,8 @@ var snowminsize=8;
 
 //Should the snow pile up?
 var pile=false;
+//Should we use fast piling?
+var fastpile=true;
 //Resolution of snow depth data
 var heightbuckets = 200;
 //End Config
@@ -33,9 +35,17 @@ var snowy = new Array();
 var screenwidth=1000;
 //Screen height (set to default)
 var screenheight=1000;
+//Real Screen width
+var realscreenwidth;
+//Real Screen height
+var realscreenheight;
 
 //The array of the depths of the snow
 var snowheight = new Array();
+//The height of the fast fill snow
+var fastfillheight;
+//Graphics control
+var graphics;
 //The multiplyer to find the correct bucket
 var heightacc = heightbuckets/screenwidth;
 //Temporary variables
@@ -48,21 +58,30 @@ window.onresize=resize;
 resize();
 function resize() {
 	if(document.all) {
-		screenwidth = document.documentElement.clientWidth -40;
+		realscreenwidth = document.documentElement.clientWidth;
+		screenwidth = realscreenwidth-40;
+		realscreenheight = document.documentElement.clientHeight;
 		if(pile) {
-			screenheight = document.documentElement.clientHeight-5;
+			screenheight = realscreenheight-5;
 		} else {
-			screenheight = document.documentElement.clientHeight-37;
+			screenheight = realscreenheight-37;
 		}
 	} else {
-		screenwidth = window.innerWidth-40;
+		realscreenwidth = window.innerWidth;
+		screenwidth = realscreenwidth-40;
+		realscreenheight=window.innerHeight;
 		if(pile) {
-			screenheight = window.innerHeight-5;
+			screenheight = realscreenheight-5;
 		} else {
-			screenheight = window.innerHeight-37;
+			screenheight = realscreenheight-37;
 		}
 	}
-	heightacc = heightbuckets/screenwidth;
+	if(pile) {
+		heightacc = heightbuckets/screenwidth;
+	}
+	if(fastpile) {
+		fastfillheight=150;
+	}
 }
 
 function initsnow() {
@@ -70,6 +89,19 @@ function initsnow() {
 		for (var i=0; i<heightbuckets; i++) {
 			snowheight[i] = screenheight;
 		}
+	}
+	if(fastpile) {
+		var background=document.createElement("canvas");
+		background.style.position="absolute";
+		background.style.left="0px";
+		background.style.top="0px";
+		background.style.width=(realscreenwidth-15)+"px";
+		background.style.height=realscreenheight +"px";
+		background.style.zIndex="-3";
+		graphics=background.getContext("2d");
+		document.body.appendChild(background);
+		graphics.lineWidth=2;
+		graphics.strokeStyle="#FFFFFF";
 	}
 	for (var i=0; i<=snowmax; i++) {
 		snowflakes[i]=document.createElement("span");
@@ -96,6 +128,8 @@ function initsnow() {
 	}
 	if(pile) {
 		setTimeout("movesnow_pile()",30);
+	} else if (fastpile) {
+		setTimeout("movesnow_fastpile()",30);
 	} else {
 		setTimeout("movesnow_nopile()",30);
 	}
@@ -142,6 +176,23 @@ function movesnow_nopile() {
 		snowflakes[i].style.left = (snowflakes[i].x+10*Math.sin(snowy[i]/9))+"px";
 	}
 	setTimeout("movesnow_nopile()",60);
+}
+function movesnow_fastpile() {
+	for (var i=0; i<=snowmax; i++) {
+		snowy[i]+=snowflakes[i].fall;
+		if(snowy[i] >=screenheight) {
+			snowy[i]=-snowflakes[i].size;
+			//incrementsnowheight;
+			fastfillheight-=0.02;
+			graphics.moveTo(0,fastfillheight);
+			graphics.lineTo(realscreenwidth+25,fastfillheight);
+			graphics.stroke();
+		}
+		
+		snowflakes[i].style.top = snowy[i]+"px";
+		snowflakes[i].style.left = (snowflakes[i].x+10*Math.sin(snowy[i]/9))+"px";
+	}
+	setTimeout("movesnow_fastpile()",60);
 }
 
 window.onload=initsnow;
