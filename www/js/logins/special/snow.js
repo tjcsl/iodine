@@ -95,7 +95,7 @@ function initsnow() {
 		background.style.position="absolute";
 		background.style.left="0px";
 		background.style.top="0px";
-		background.style.width=(realscreenwidth-15)+"px";
+		background.style.width=realscreenwidth+"px";
 		background.style.height=realscreenheight +"px";
 		background.style.zIndex="-3";
 		graphics=background.getContext("2d");
