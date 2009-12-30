@@ -66,21 +66,19 @@ class News implements Module {
 	}
 	
 	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
+	* Turns out that the normal news view also works for mobile.
 	*/
 	function init_mobile() {
-		return FALSE;
+		return $this->init_pane();
 	}
 
 	/**
-	* Unused; Not supported for this module.
+	* Turns out that the normal news view also works for mobile.
 	*
 	* @param Display $disp The Display object to use for output.
 	*/
 	function display_mobile($disp) {
-		return FALSE;
+		return $this->display_pane($disp);
 	}
 
 	/**
