@@ -49,6 +49,24 @@ class Weather implements Module {
 		$this->template_args['rain_int'] = $this->data[50];
 	}
 
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function init_mobile() {
+		return FALSE;
+	}
+
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_mobile($disp) {
+		return FALSE;
+	}
+
 	public function init_box() {
 		$this->makeData();
 		return 'Current Weather at TJ';

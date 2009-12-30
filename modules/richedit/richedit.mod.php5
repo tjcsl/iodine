@@ -19,6 +19,24 @@ class RichEdit implements Module {
 	//private $OMGPONIES
 
 	private static $bb_otags, $bb_ctags, $bb_nostrip, $errs;
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function init_mobile() {
+		return FALSE;
+	}
+
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_mobile($disp) {
+		return FALSE;
+	}
+
 	function init_pane() {
 		return 'RichEdit';
 	}
@@ -67,7 +85,7 @@ class RichEdit implements Module {
 	 *
 	 * @param string $text The input to process
 	 */
-	// Dyllan Ladwig's awesome BBCode handler
+	// Dyllan Ladwig's awesome BBCode handler - currently unused, but still cool
 	public static function doBCode($post) {
 		global $bb_otags, $bb_ctags, $bb_nostrip, $errs;
 		$bb_otags=array('lb'=>'[','rb'=>']', 'hr'=>"<div class='bb_hr'></div>", 'hairline'=>"<div class='bb_hr'></div>", 'b'=>"<span class='bb_bold'>", 'bold'=>"<span class='bb_bold'>", 'i'=>"<span class='bb_italic'>", 'ital'=>"<span class='bb_italic'>", 'italic'=>"<span class='bb_italic", 'u'=>"<span class='bb_underline'>", 'under'=>"<span class='bb_underline'>", 'underline'=>"span class='bb_underline'", 'hl'=>"<span class='bb_highlight'>", 'high'=>"<span class='bb_highlight'", 'highlight'=>"<span class='bb_highlight'>", 's'=>"<span class='bb_strike'>", 'strike'=>"<span class='bb_strike'>", 'strikethrough'=>"<span class='bb_strikethrough'>", 'a='=>array("<a href='", "'>", 'safe'=>'strtr'), 'anchor='=>array("a href='","'>", 'safe'=>'strtr'), 'img='=>array("<img src='", "' alt='User Picture' />", 'safe'=>'strtr'), 'image='=>array("<img src='","' alt='User Picture' />", 'safe'=>'strtr'), 'color='=>array("<span style='color:","'>",'safe'=>'strtr'), 'url='=>array("<a href='","'>", 'safe'=>'strtr'));

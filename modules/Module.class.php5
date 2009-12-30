@@ -32,6 +32,14 @@ interface Module {
 	function display_pane($disp);
 	
 	/**
+	* Displays a version of the module designed for small screens.
+	*
+	* @param Display $disp The Display object to use for output.
+	* @abstract
+	*/
+	function display_mobile($disp);
+
+	/**
 	* Gets the module's name.
 	*
 	* @returns string The name of the module.
@@ -65,5 +73,16 @@ interface Module {
 	* @abstract
 	*/
 	function init_pane();
+	
+	/**
+	* Performs all initialization necessary for this module to be 
+	* displayed in a small browser.
+	*
+	* @returns string The title of the box if it is to be displayed,
+	*                 otherwise FALSE if this module can't be displayed
+	*                 on a small screen.
+	* @abstract
+	*/
+	function init_mobile();
 }
 ?>

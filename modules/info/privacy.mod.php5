@@ -18,6 +18,24 @@ class Privacy implements Module {
 	private $template = 'view.tpl';
 	private $template_args = array();
 
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function init_mobile() {
+		return FALSE;
+	}
+
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_mobile($disp) {
+		return FALSE;
+	}
+
 	public function init_box() {
 		return FALSE;
 	}

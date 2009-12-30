@@ -19,6 +19,24 @@ class ScheduleNavigator implements Module {
 	private $template_args;
 	private $sched;
 
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function init_mobile() {
+		return FALSE;
+	}
+
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_mobile($disp) {
+		return FALSE;
+	}
+
 	public function init_box() {
 		global $I2_USER;
 		$this->sched = new Schedule($I2_USER);

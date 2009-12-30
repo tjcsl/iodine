@@ -19,6 +19,24 @@ class SquirrelMail implements Module {
 	private $tpl = NULL;
 
 	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function init_mobile() {
+		return FALSE;
+	}
+
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_mobile($disp) {
+		return FALSE;
+	}
+
+	/**
 	* Displays all of a module's ibox content.
 	*
 	* @param Display $disp The Display object to use for output.

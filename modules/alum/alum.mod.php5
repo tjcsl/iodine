@@ -10,6 +10,24 @@
 
 class Alum implements Module {
 
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function init_mobile() {
+		return FALSE;
+	}
+
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_mobile($disp) {
+		return FALSE;
+	}
+
 	function init_pane() {
 		global $I2_USER,$I2_ARGS,$I2_SQL;
 

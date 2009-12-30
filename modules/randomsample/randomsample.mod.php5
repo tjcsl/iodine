@@ -69,6 +69,24 @@ class Randomsample implements Module {
 		return $samp;
 	}
 
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function init_mobile() {
+		return FALSE;
+	}
+
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_mobile($disp) {
+		return FALSE;
+	}
+
 	public function init_pane() {
 		global $I2_ARGS;
 		if (!isSet($I2_ARGS[1]) || $I2_ARGS[1] != 'results') {
