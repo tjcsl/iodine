@@ -241,7 +241,10 @@ class User {
 				return $this->get_tjmail();
 		   	case 'uid':
 		   	case 'uidnumber':
-				return $this->__get('iodineUidNumber');
+			case 'iodineUidNumber':
+				return $this->myuid;
+				// Cut down on the LDAP queries. myuid is set in the constructor already.
+				//return $this->__get('iodineUidNumber');
 			case 'username':
 				return $this->username;
 			case 'grade':
