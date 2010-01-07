@@ -416,6 +416,7 @@ class Filecenter implements Module {
 	function init_box() {
 		global $I2_USER;
 
+		// Most of this stuff isn't used, but keep it just in case.
 		$this->box_args['i2_username'] = $_SESSION['i2_username'];
 		$this->box_args['grad_year'] = $I2_USER->grad_year;
 		if (isSet($_SESSION['csl_username'])) {
@@ -427,6 +428,7 @@ class Filecenter implements Module {
 		if ($I2_USER->grade != "staff") {
 			$this->box_args['tj01path'] = 'students/' . self::$standing[$I2_USER->grade] . '/' . $_SESSION['i2_username'];
 		}
+		// This is where most of the directories are loaded from mysql/
 		$this->box_args['otherdirs'] = Filecenter::get_additional_dirs();
 
 		return 'Filecenter';
@@ -474,7 +476,7 @@ class Filecenter implements Module {
 	}
 	
 	static function get_additional_dirs() {
-		global $I2_USER, $I2_SQL;
+		global $I2_USER, $I2_SQL, $I2_ROOT;
 		$dirs = array();
 		$dirs = $I2_SQL->query('SELECT `path`,`name` FROM filecenter_folders WHERE `uid`=%d',$I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
 		// Find out all of a user's groups, then dynamic groups
@@ -489,7 +491,26 @@ class Filecenter implements Module {
 			} // TODO: handle other types of dynamic groups. No other kinds are used right now, so it's relatively safe to have this open.
 		}
 		$groupdirs = $I2_SQL->query('SELECT `path`,`name` FROM filecenter_folders_groups WHERE gid IN (%D)',array_merge($groups,$dynagroups))->fetch_all_arrays(Result::ASSOC);
-		return array_merge($dirs,$groupdirs);
+		$outarray = array_merge($dirs,$groupdirs);
+		// Magic words. Lets the entries be customized for each student.
+		$grad_year = $I2_USER->grad_year;
+		$i2_username = $_SESSION['i2_username'];
+		$tj01path = 'students/' . self::$standing[$I2_USER->grade] . '/' . $i2_username;
+		$studentorstaff = ($I2_USER->grade!='staff')?"students/".$grad_year:"staff"; //Used for the unix files entry
+		if (isSet($_SESSION['csl_username'])) {
+			$csl_username = $_SESSION['csl_username'];
+		} else {
+			$csl_username = $i2_username;
+		}
+		for ($i=0;$i<sizeof($outarray);$i++) {
+			$outarray[$i] = str_replace("{{grad_year}}",$grad_year,$outarray[$i]);
+			$outarray[$i] = str_replace("{{i2_username}}",$i2_username,$outarray[$i]);
+			$outarray[$i] = str_replace("{{tj01path}}",$tj01path,$outarray[$i]);
+			$outarray[$i] = str_replace("{{studentorstaff}}",$studentorstaff,$outarray[$i]);
+			$outarray[$i] = str_replace("{{csl_username}}",$csl_username,$outarray[$i]);
+			$outarray[$i] = str_replace("{{I2_ROOT}}",$I2_ROOT,$outarray[$i]);
+		}
+		return $outarray;
 	}
 
 	static function get_additional_dirs_onlymine() {
