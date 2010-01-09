@@ -25,6 +25,7 @@ End date/time:<input type="text" name="enddt" value="[<$poll->enddt>]" /><br />
 [<foreach from=$groups item=group>]
       <option value="[<$group->gid>]">[<$group->name>]</option>
 [</foreach>]
+    </select>
     </td>
     <td><input type="checkbox" disabled="disabled" checked="checked" /></td>
     <td><input type="checkbox" disabled="disabled" checked="checked" /></td>
