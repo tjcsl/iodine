@@ -123,7 +123,7 @@ class Docs implements Module {
 						$this->template_args['error'] = "There was an error placing the file in ".$upload_dir;
 					}
 				} else {
-					$this->template_args['error'] = "The file upload directory is not writable. It may need a chmod 777.";
+					$this->template_args['error'] = "The file upload directory is not writable. It may need to have `chmod 777` run against it.";
 				}
 			} else {
 				$this->template_args['error'] = "Either your file was too big, or it was an improper file type";
