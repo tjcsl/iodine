@@ -593,17 +593,40 @@ class EighthActivity {
 		global $I2_SQL;
 		if($blockids == NULL) {
 			$as = self::id_to_activity(flatten($I2_SQL->query('SELECT aid FROM eighth_activities ' . ($restricted ? 'WHERE restricted=1 ' : ''))->fetch_all_arrays(Result::NUM)));
-			usort($as,'EighthActivity::activity_favorite_compare');
-			return $as;
+			$arr = Array();
+			foreach($as as $i) {
+				if($i->data['favorite'])
+					$arr[] = $i;
+			}
+			usort($as,'EighthActivity::activity_compare');
+			return array_merge($arr,$as);
 		}
 		else {
 			if(!is_array($blockids)) {
 				settype($blockids, 'array');
 			}
 			$as = self::id_to_activity($I2_SQL->query('SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid IN (%D) ' . ($restricted ? 'AND restricted=1 ' : '') . 'GROUP BY aid ORDER BY special DESC', $blockids)->fetch_all_arrays(Result::NUM));
-			usort($as,'EighthActivity::activity_favorite_compare');
-			return $as;
+			$arr = Array();
+			foreach($as as $i) {
+				if($i->data['favorite'])
+					$arr[] = $i;
+			}
+			usort($as,'EighthActivity::activity_compare');
+			return array_merge($arr,$as);
 		}
+	}
+
+	/**
+	* Helper function to sort eighth period activities.
+	* @access public
+	* @param EighthActivity $a The first activity to compare.
+	* @param EighthActivity $b The second activity to compare.
+	*/
+	public static function activity_compare($a,$b) {
+		if($a->data['special'] != $b->data['special']) {
+			return $a->data['special'] < $b->data['special'];
+		}
+		return strnatcmp($a->data['name'],$b->data['name']);
 	}
 
 	/**
