@@ -115,16 +115,17 @@ class Docs implements Module {
 	function add() {
 		global $I2_USER, $I2_ARGS;
 		$this->template_args['groups'] = Group::get_all_groups();
-		$allowed_extensions = array('.txt','.rtf','.doc','.docx','.pdf');
+		//$allowed_extensions = array('.txt','.rtf','.doc','.docx','.pdf');
+		$allowed_types = array('
 		$this->template_args['exts'] = implode(', ',$allowed_extensions);
 		$max_size = 10485760; // 10 MB
 		if(count($_POST) > 0) {
 			$fname = $_FILES['upfile']['name'];
-			$ext = strrchr($fname,'.'); //We shouldn't do extension-based file determination.
+			//$ext = strrchr($fname,'.'); //We shouldn't do extension-based file determination.
 			//$typer = new finfo(FILEINFO_MIME); //FileInfo should be enabled by default, but for some reason php can't find it.
 			//$filetype = $typer->file($this->path); //So for now we'll just use `file`.
-			$filetype = exec("file ".$_FILES['upfile']['tmp_name']." --mime-encoding -b");
-			if(in_array($ext,$allowed_extensions) && filesize($_FILES['upfile']['tmp_name']) <= $max_size) {
+			$filetype = exec("file ".escapeshellarg($_FILES['upfile']['tmp_name'])." --mime-encoding -b");
+			if(in_array($filetype,$allowed_types) && filesize($_FILES['upfile']['tmp_name']) <= $max_size) {
 				$upload_dir = i2config_get('upload_dir', NULL, 'core');
 				if(is_writable($upload_dir)) {
 					if(move_uploaded_file($_FILES['upfile']['tmp_name'],$upload_dir.$fname)) {
