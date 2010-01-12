@@ -115,8 +115,8 @@ class Docs implements Module {
 	function add() {
 		global $I2_USER, $I2_ARGS;
 		$this->template_args['groups'] = Group::get_all_groups();
-		//$allowed_extensions = array('.txt','.rtf','.doc','.docx','.pdf');
-		$allowed_types = array('
+		$allowed_extensions = array('.txt','.rtf','.doc','.docx','.pdf');
+		$allowed_types = array('text/plain','application/rtf','application/msword','application/vnd.ms-excel','application/pdf');
 		$this->template_args['exts'] = implode(', ',$allowed_extensions);
 		$max_size = 10485760; // 10 MB
 		if(count($_POST) > 0) {
@@ -124,7 +124,9 @@ class Docs implements Module {
 			//$ext = strrchr($fname,'.'); //We shouldn't do extension-based file determination.
 			//$typer = new finfo(FILEINFO_MIME); //FileInfo should be enabled by default, but for some reason php can't find it.
 			//$filetype = $typer->file($this->path); //So for now we'll just use `file`.
-			$filetype = exec("file ".escapeshellarg($_FILES['upfile']['tmp_name'])." --mime-encoding -b");
+			$filetype = exec("file ".escapeshellarg($_FILES['upfile']['tmp_name'])." -bi");
+			if(stripos($filetype," ")) //Remove encoding information
+				$filetype = substr($filetype,0,stripos($filetype," "));
 			if(in_array($filetype,$allowed_types) && filesize($_FILES['upfile']['tmp_name']) <= $max_size) {
 				$upload_dir = i2config_get('upload_dir', NULL, 'core');
 				if(is_writable($upload_dir)) {
@@ -148,7 +150,7 @@ class Docs implements Module {
 					$this->template_args['error'] = "The file upload directory is not writable. It may need to have `chmod 777` run against it.";
 				}
 			} else {
-				$this->template_args['error'] = "Either your file was too big, or it was an improper file type";
+				$this->template_args['error'] = "Either your file was too big, or it was an improper file type. ($filetype)";
 			}
 			if(isset($this->template_args['error'])) {
 				$this->template = 'docs_add.tpl';
