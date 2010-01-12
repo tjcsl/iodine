@@ -19,10 +19,11 @@ class Doc {
         private $visibility;
 
         private $gs = array();
+	private $type;
 
         /**
          * Vars this can get:
-         * docid, name, visible, groups, path
+         * docid, name, visible, groups, path, type
          */
         public function __get($var) {
                 global $I2_SQL;
@@ -37,6 +38,8 @@ class Doc {
                                 return $this->visibility;
                         case 'groups':
                                 return $this->gs;
+			case 'type':
+				return $this->type;
                 }
         }
 
@@ -47,10 +50,11 @@ class Doc {
         */
         public function __construct($docid) {
                 global $I2_SQL;
-                $docinfo = $I2_SQL->query('SELECT name,path,visible FROM docs WHERE docid=%d', $docid)->fetch_array(Result::ASSOC);
+                $docinfo = $I2_SQL->query('SELECT name,path,visible,type FROM docs WHERE docid=%d', $docid)->fetch_array(Result::ASSOC);
                 $this->doc_id = $docid;
                 $this->name = $docinfo['name'];
                 $this->path = $docinfo['path'];
+		$this->type = $docinfo['type'];
                 $this->visibility = $docinfo['visible'] == 1 ? true : false;
 
                 $gs = $I2_SQL->query('SELECT * FROM doc_permissions WHERE docid=%d',$docid)->fetch_all_arrays();
@@ -65,12 +69,13 @@ class Doc {
         * @param string $name The name of the document
         * @param string $path The path to the document
         * @param boolean $visible Determines if the document is visible
+	* @param string $type The mime type of the document
         *
         * @return Doc The newly-created document
         */
-        public static function add_doc($name, $path, $visible) {
+        public static function add_doc($name, $path, $visible, $type) {
                 global $I2_SQL;
-                $docid = $I2_SQL->query('INSERT INTO docs SET name=%s, path=%s, visible=%d',$name,$path,$visible)->get_insert_id();
+                $docid = $I2_SQL->query('INSERT INTO docs SET name=%s, path=%s, visible=%d, type=%s',$name,$path,$visible,$type)->get_insert_id();
                 return new Doc($docid);
         }
 
@@ -80,13 +85,15 @@ class Doc {
         * @param string $name The name of the document
         * @param string $path The path to the document
         * @param boolean $visible Determines if the document is visible
+	* @param string $type The mime type of the document
         */
-        public function edit_doc($name, $path, $visible) {
+        public function edit_doc($name, $path, $visible, $type) {
                 global $I2_SQL;
-                $I2_SQL->query('UPDATE docs SET name=%s, path=%s, visible=%d WHERE docid=%d',$name,$path,$visible,$this->doc_id);
+                $I2_SQL->query('UPDATE docs SET name=%s, path=%s, visible=%d, type=%s WHERE docid=%d',$name,$path,$visible,$type,$this->doc_id);
                 $this->name = $name;
                 $this->path = $path;
                 $this->visibility = $visible;
+		$this->type = $type;
         }
 
         /**

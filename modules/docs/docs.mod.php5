@@ -120,7 +120,10 @@ class Docs implements Module {
 		$max_size = 10485760; // 10 MB
 		if(count($_POST) > 0) {
 			$fname = $_FILES['upfile']['name'];
-			$ext = strrchr($fname,'.');
+			$ext = strrchr($fname,'.'); //We shouldn't do extension-based file determination.
+			//$typer = new finfo(FILEINFO_MIME); //FileInfo should be enabled by default, but for some reason php can't find it.
+			//$filetype = $typer->file($this->path); //So for now we'll just use `file`.
+			$filetype = exec("file ".$_FILES['upfile']['tmp_name']." --mime-encoding -b");
 			if(in_array($ext,$allowed_extensions) && filesize($_FILES['upfile']['tmp_name']) <= $max_size) {
 				$upload_dir = i2config_get('upload_dir', NULL, 'core');
 				if(is_writable($upload_dir)) {
@@ -128,7 +131,7 @@ class Docs implements Module {
 						$name = $_POST['name'];
 						$path = $upload_dir.$fname;
 						$visible = isset($_POST['visible']) && $_POST['visible'] == 'on' ? 1 : 0;
-						$d = Doc::add_doc($name, $path, $visible);
+						$d = Doc::add_doc($name, $path, $visible, $filetype);
 						$_POST['groups'] = array_unique($_POST['groups']);
 						foreach($_POST['groups'] as $key => $id) {
 							$g = $_POST['group_gids'][$id];

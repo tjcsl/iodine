@@ -3,7 +3,7 @@
 
 <table class="docs">
 [<foreach from=$docs item=doc>]
-	<tr><th><a href="[<$I2_ROOT>]docs/view/[<$doc->docid>]">[<$doc->name>]</a></th>
+	<tr><th><a href="[<$I2_ROOT>]docs/view/[<$doc->docid>]">[<$doc->name>]</a> ([<$doc->type>])</th>
 	[<if $is_admin>]
 	<td><a href="[<$I2_ROOT>]docs/edit/[<$doc->docid>]">Edit</a></td>
 	<td><a href="[<$I2_ROOT>]docs/delete/[<$doc->docid>]">Delete</a></td>
