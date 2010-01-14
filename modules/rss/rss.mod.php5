@@ -84,6 +84,15 @@ class RSS implements Module {
 		$p.="		<webMaster>iodine@tjhsst.edu</webMaster>\n";
 		$news = NewsItem::get_all_items();
 		foreach($news as $item) {
+			$test=FALSE;	//Stuff only goes on the feed if "all" can see it.
+			foreach ($item->groups as $group) {
+				if($group->gid == 1) {
+					$test=TRUE;
+				}
+			}
+			if(!$test) {
+				continue;
+			}
 			$p.="		<item>\n";
 			$p.="			<title>".strip_tags($item->title)."</title>\n";
 			$p.="			<link>https://iodine.tjhsst.edu/news/show/$item->nid</link>\n";
