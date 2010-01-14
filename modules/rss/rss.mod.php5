@@ -1,0 +1,96 @@
+<?php
+/**
+* Just contains the definition for the class {@link RSS}.
+* @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
+* @copyright 2005 The Intranet 2 Development Team
+* @package modules
+* @subpackage RSS
+* @filesource
+*/
+
+/**
+* The module that handles unauthenticated RSS feeds.
+* @package modules
+* @subpackage RSS
+*/
+class RSS implements Module {
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function init_mobile() {
+		return FALSE;
+	}
+
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_mobile($disp) {
+		return FALSE;
+	}
+
+	/**
+	* Required by the {@link Module} interface.
+	*/
+	function init_pane() {
+	}
+
+	/**
+	* Required by the {@link Module} interface.
+	*/
+	function display_pane($display) {
+		header("Content-Type: application/xml");
+		$p = "";
+		$p.="<?xml version=\"1.0\"?>\n";
+		$p.="<rss version=\"2.0\">\n";
+		$p.="	<channel>\n";
+		$p.="		<title>TJHSST Intranet News</title>\n";
+		$p.="		<link>https://iodine.tjhsst.edu/</link>\n";
+		$p.="		<description>TJHSST Intranet News</description>\n";
+		$p.="		<language>en-us</language>\n";
+		//$p.="		<pubDate></pubDate>\n"; //We should make a variable to store this later.
+		$p.="		<generator>TJHSST Intranet</generator>\n";
+		$p.="		<managingEditor>iodine@tjhsst.edu</managingEditor>\n";
+		$p.="		<webMaster>iodine@tjhsst.edu</webMaster>\n";
+		$news = NewsItem::get_all_items();
+		foreach($news as $item) {
+			$p.="		<item>\n";
+			$p.="			<title>".strip_tags($item->title)."</title>\n";
+			$p.="			<link>https://iodine.tjhsst.edu/news/show/$item->nid</link>\n";
+			$p.="			<description>".htmlspecialchars($item->text)."</description>\n";
+			$p.="			<pubDate>".date("r",strtotime($item->posted))."</pubDate>\n";
+			$p.="			<guid>https://iodine.tjhsst.edu/news/show/$item->nid</guid>\n";
+			$p.="		</item>\n";
+		}
+		$p.="	</channel>\n";
+		$p.="</rss>\n";
+		echo $p;
+		Display::stop_display();
+	}
+
+	/**
+	* Required by the {@link Module} interface.
+	*/
+	function init_box() {
+		return FALSE;
+	}
+	
+	/**
+	* Required by the {@link Module} interface.
+	*/
+	function display_box($display) {
+		return FALSE;
+	}
+	
+	/**
+	* Required by the {@link Module} interface.
+	*/
+	function get_name() {
+		return "RSS";
+	}
+}
+
+?>
