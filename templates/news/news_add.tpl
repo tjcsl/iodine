@@ -15,7 +15,7 @@
   <tr><td width="20%">Title:</td><td><input type="text" name="add_title" size="30" /></td></tr>
   <tr><td>Expiration date:</td><td>[<include file='utils/calendar.tpl' post_var='add_expire'>]</td></tr>
   <tr><td colspan="2"><strong>WARNING:</strong> <em>Currently the expiration is set for MIDNIGHT of the selected date; i.e. this news item will not appear at ALL on the date that you select.  If you want to expire the article mid-day, please edit after initially posting and set a specific time.</em></td></tr>
-  <tr><td>Visible:</td><td><input type="checkbox" name="add_visible" checked="checked" /></td></tr>
+  <tr><td>Visible:</td><td><input type="checkbox" name="add_visible" checked="checked" /></td><td>Public:</td><td><input type="checkbox" name="add_public" checked="checked" /></td></tr>
   </table>
   <table id="news_groups_table" cellpadding="0" width="100%">
    <tr>

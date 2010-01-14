@@ -108,8 +108,9 @@ class News implements Module {
 					$expire = $_REQUEST['add_expire'];
 					$visible = isSet($_REQUEST['add_visible']) ? 1 : 0;
 					$groups = Group::generate($_REQUEST['add_groups']);
+					$public = isSet($_REQUEST['add_public']) ? 1 : 0;
 
-					if(Newsitem::post_item($I2_USER, $title, $text, $groups, $expire, $visible)) {
+					if(Newsitem::post_item($I2_USER, $title, $text, $groups, $expire, $visible, $public)) {
 						$this->template_args['added'] = 1;
 					}
 					else {
@@ -151,7 +152,8 @@ class News implements Module {
 					$expire = $_REQUEST['edit_expire'];
 					$visible = isSet($_REQUEST['edit_visible']) ? 1 : 0;
 					$groups = Group::generate($_REQUEST['add_groups']);
-					$item->edit($title, $text, $groups,$expire,$visible);
+					$public = isSet($_REQUEST['edit_public']) ? 1 : 0;
+					$item->edit($title, $text, $groups,$expire,$visible,$public);
 					$item = new Newsitem($I2_ARGS[2], TRUE);
 					$this->template_args['edited'] = 1;
 				}

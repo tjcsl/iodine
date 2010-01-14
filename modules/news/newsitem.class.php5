@@ -75,6 +75,7 @@ class NewsItem {
 			case 'visible':
 			case 'groups':
 			case 'read':
+			case 'public':
 				self::fetch_data();
 				break;
 		}
@@ -114,13 +115,14 @@ class NewsItem {
 			self::$unfetched[$row['nid']]->info['read'] = TRUE;
 		}
 
-		foreach($I2_SQL->query('SELECT `id`,`title`,`authorID`,`posted`,`expire`, `visible` FROM news WHERE `id` IN (%D)', array_keys(self::$unfetched)) as $row) {
+		foreach($I2_SQL->query('SELECT `id`,`title`,`authorID`,`posted`,`expire`,`visible`,`public` FROM news WHERE `id` IN (%D)', array_keys(self::$unfetched)) as $row) {
 			$item = self::$unfetched[$row['id']];
 			$item->info['title'] = $row['title'];
 			$item->info['authorID'] = $row['authorID'];
 			$item->info['posted'] = $row['posted'];
 			$item->info['expire'] = $row['expire'] === NULL ? '' : $row['expire'];
 			$item->info['visible'] = $row['visible'];
+			$item->info['public'] = $row['public'];
 		}
 		
 		self::$unfetched = array();
@@ -171,6 +173,31 @@ class NewsItem {
 	}
 
 	/**
+	 * All the existant newsitems which anyone has access to.
+	 *
+	 * Gets an array of all readable newsitems.
+	 *
+	 * @static
+	 * @access public
+	 * @return array An array of all Newsitems.
+	 */
+	public static function get_all_items_nouser($expired = false) {
+		global $I2_SQL;
+		$allitems = array();
+		$myitems = array();
+		$qstring = 'SELECT id FROM news ' . ($expired ? '' : 'WHERE expire > NOW() OR expire IS NULL ') .
+			'ORDER BY posted DESC';
+		foreach($I2_SQL->query($qstring)->fetch_all_single_values() as $nid) {
+			$allitems[] = new Newsitem($nid);
+		}
+		foreach($allitems as $item) {
+			if($item->visible)
+				$myitems[] = $item;
+		}
+		return $myitems;
+	}
+
+	/**
 	 * The function to clean text for input
 	 *
 	 * Prepairs text for insertion in MySQL
@@ -202,7 +229,7 @@ class NewsItem {
 	 * @param string $text The content of the news post.
 	 * @param string $group
 	 */
-	public static function post_item($author, $title, $text, $groups, $expire, $visible) {
+	public static function post_item($author, $title, $text, $groups, $expire, $visible, $public) {
 		global $I2_SQL,$I2_USER;
 
 		$newsadm = new Group('admin_news');
@@ -215,7 +242,7 @@ class NewsItem {
 		}
 
 		$text = self::clean_text($text);
-		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP, expire=%s, visible=%d', $author->uid, $title, $text, $expire, $visible);
+		$I2_SQL->query('INSERT INTO news SET authorID=%d, title=%s, text=%s, posted=CURRENT_TIMESTAMP, expire=%s, visible=%d, public=%d', $author->uid, $title, $text, $expire, $visible, $public);
 
 		$nid = $I2_SQL->query('SELECT LAST_INSERT_ID()')->fetch_single_value();
 		
@@ -333,7 +360,7 @@ class NewsItem {
 	 * @param string $text The new content for the news post.
 	 * @param string $groupnames The new comma-seperated list of groups.
 	 */
-	public function edit($title, $text, $groups, $expire, $visible) {
+	public function edit($title, $text, $groups, $expire, $visible, $public) {
 		global $I2_SQL,$I2_USER;
 
 		$text = self::clean_text($text);
@@ -347,7 +374,7 @@ class NewsItem {
 			}
 		}
 
-		$I2_SQL->query('UPDATE news SET title=%s, text=%s, expire=%s, visible=%d WHERE id=%d', $title, $text, $expire, $visible, $this->mynid);
+		$I2_SQL->query('UPDATE news SET title=%s, text=%s, expire=%s, visible=%d, public=%d WHERE id=%d', $title, $text, $expire, $visible, $public, $this->mynid);
 
 		// flush the group mappings for this post and recreate them entirely
 		$I2_SQL->query('DELETE FROM news_group_map WHERE nid=%d', $this->mynid);

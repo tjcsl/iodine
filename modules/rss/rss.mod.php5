@@ -82,8 +82,10 @@ class RSS implements Module {
 		$p.="		<generator>TJHSST Intranet</generator>\n";
 		$p.="		<managingEditor>iodine@tjhsst.edu</managingEditor>\n";
 		$p.="		<webMaster>iodine@tjhsst.edu</webMaster>\n";
-		$news = NewsItem::get_all_items();
+		$news = NewsItem::get_all_items_nouser();
 		foreach($news as $item) {
+			if($item->public==0) //Only display stuff that's public.
+				continue;
 			$test=FALSE;	//Stuff only goes on the feed if "all" can see it.
 			foreach ($item->groups as $group) {
 				if($group->gid == 1) {
