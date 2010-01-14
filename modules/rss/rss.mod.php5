@@ -42,7 +42,34 @@ class RSS implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
+		global $I2_ROOT;
 		header("Content-Type: application/xml");
+
+		$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'rss.cache';
+
+		if(!($contents = RSS::get_cache($cachefile))) {
+			$contents = RSS::update($cachefile);
+		}
+		echo $contents;
+		Display::stop_display();
+	}
+
+	private static function get_cache($cachefile) {
+		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile))) {
+			return FALSE;
+		}
+		
+		return unserialize($contents);
+	}
+
+	private static function store_cache($content,$cachefile) {
+		$fh = fopen($cachefile,'w');
+		$serial = serialize($content);
+		fwrite($fh,$serial);
+		fclose($fh);
+	}
+
+	private static function create_contents() {
 		$p = "";
 		$p.="<?xml version=\"1.0\"?>\n";
 		$p.="<rss version=\"2.0\">\n";
@@ -51,7 +78,7 @@ class RSS implements Module {
 		$p.="		<link>https://iodine.tjhsst.edu/</link>\n";
 		$p.="		<description>TJHSST Intranet News</description>\n";
 		$p.="		<language>en-us</language>\n";
-		//$p.="		<pubDate></pubDate>\n"; //We should make a variable to store this later.
+		$p.="		<pubDate>".date("r")."</pubDate>\n"; //We should make a variable to store this later.
 		$p.="		<generator>TJHSST Intranet</generator>\n";
 		$p.="		<managingEditor>iodine@tjhsst.edu</managingEditor>\n";
 		$p.="		<webMaster>iodine@tjhsst.edu</webMaster>\n";
@@ -67,10 +94,14 @@ class RSS implements Module {
 		}
 		$p.="	</channel>\n";
 		$p.="</rss>\n";
-		echo $p;
-		Display::stop_display();
+		return $p;
 	}
-
+	public static function update($cachefile=FALSE) {
+		$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'rss.cache';
+		$contents = RSS::create_contents();// If the contents of the file havn't been made yet.
+		RSS::store_cache($contents,$cachefile);
+		return $contents;
+	}
 	/**
 	* Required by the {@link Module} interface.
 	*/
