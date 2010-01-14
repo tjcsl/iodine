@@ -161,7 +161,10 @@ try {
 	 *
 	 * @global LDAP $I2_LDAP
 	 */
-	$I2_LDAP = LDAP::get_user_bind();
+	if(isset($I2_ARGS[0]) and $I2_ARGS[0]=='rss') {
+		//don't try to bind when you're in generic mode.
+	} else {
+		$I2_LDAP = LDAP::get_user_bind();
 
 	/**
 	 * The global user info mechanism.
@@ -170,8 +173,8 @@ try {
 	 *
 	 * @global User $I2_USER
 	 */
-	$I2_USER = new User();
-
+		$I2_USER = new User();
+	}
 	/**
 	 * The global display mechanism.
 	 *

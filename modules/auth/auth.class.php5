@@ -67,6 +67,9 @@ class Auth {
 				// problems. So, we redirect instead.
 				redirect();
 		}
+		if( isset($I2_ARGS[0]) && $I2_ARGS[0] == 'rss' ) {
+			return true;
+		}
 		
 		if( !$this->is_authenticated() && !$this->login() ) {
 			die();
@@ -83,6 +86,9 @@ class Auth {
 	* @return bool True if user is authenticated, False otherwise.
 	*/
 	public function is_authenticated() {
+		global $I2_ARGS;
+		if(isset($I2_ARGS[0]) and $I2_ARGS[0]=='rss')
+			return true;
 		$this->is_master = FALSE;
 		/*
 		** mod_auth_kerb/WebAuth authentication
