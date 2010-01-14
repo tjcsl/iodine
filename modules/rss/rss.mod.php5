@@ -70,12 +70,13 @@ class RSS implements Module {
 	}
 
 	private static function create_contents() {
+		global $I2_ROOT;
 		$p = "";
 		$p.="<?xml version=\"1.0\"?>\n";
 		$p.="<rss version=\"2.0\">\n";
 		$p.="	<channel>\n";
 		$p.="		<title>TJHSST Intranet News</title>\n";
-		$p.="		<link>https://iodine.tjhsst.edu/</link>\n";
+		$p.="		<link>".$I2_ROOT."</link>\n";
 		$p.="		<description>TJHSST Intranet News</description>\n";
 		$p.="		<language>en-us</language>\n";
 		$p.="		<pubDate>".date("r")."</pubDate>\n"; //We should make a variable to store this later.
@@ -98,10 +99,10 @@ class RSS implements Module {
 			}
 			$p.="		<item>\n";
 			$p.="			<title>".strip_tags($item->title)."</title>\n";
-			$p.="			<link>https://iodine.tjhsst.edu/news/show/$item->nid</link>\n";
+			$p.="			<link>".$I2_ROOT."news/show/$item->nid</link>\n";
 			$p.="			<description>".htmlspecialchars($item->text)."</description>\n";
 			$p.="			<pubDate>".date("r",strtotime($item->posted))."</pubDate>\n";
-			$p.="			<guid>https://iodine.tjhsst.edu/news/show/$item->nid</guid>\n";
+			$p.="			<guid>".$I2_ROOT."news/show/$item->nid</guid>\n";
 			$p.="		</item>\n";
 		}
 		$p.="	</channel>\n";
