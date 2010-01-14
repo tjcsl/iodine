@@ -95,6 +95,7 @@ class EighthActivity {
 	*/
 	public function add_member($user, $force = FALSE, $blockid = NULL) {
 		global $I2_SQL,$I2_USER,$I2_LOG;
+		$defaid = i2config_get('default_aid', 999, 'eighth');
 		
 		//Assume that we have an iodine uid number
 		if (! $user instanceof User) {
@@ -122,7 +123,8 @@ class EighthActivity {
 
 		$ret = 0;
 		$capacity = $this->__get('capacity');
-		if($capacity != -1 && $this->__get('member_count') >= $capacity) {
+		//Check the capacity. The default activity has unlimited capacity for a special reason.
+		if($capacity != -1 && $this->__get('member_count') >= $capacity && $this->data['aid']!=$defaid) {
 			$ret |= EighthActivity::CAPACITY;
 		}
 		if($this->cancelled) {
@@ -196,7 +198,6 @@ class EighthActivity {
 				$this->add_member($userid, $force, $otheract->bid);
 			}
 			else if ($signup_bothblocks == -1) {
-				$defaid = i2config_get('default_aid', 999, 'eighth');
 				$defact = new EighthActivity($defaid, $otheract->bid);
 				$defact->add_member($userid, $force);
 				//EighthActivity::add_member_to_activity($defaid, $user, $force, $otheract->bid);
