@@ -88,6 +88,7 @@ class RSS implements Module {
 			foreach ($item->groups as $group) {
 				if($group->gid == 1) {
 					$test=TRUE;
+					break;
 				}
 			}
 			if(!$test) {
