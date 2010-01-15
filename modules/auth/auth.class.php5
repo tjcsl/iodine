@@ -67,7 +67,7 @@ class Auth {
 				// problems. So, we redirect instead.
 				redirect();
 		}
-		if( isset($I2_ARGS[0]) && $I2_ARGS[0] == 'rss' ) {
+		if( isset($I2_ARGS[0]) && ($I2_ARGS[0] == 'rss' || $I2_ARGS[0] == 'atom') ) {
 			return true;
 		}
 		
@@ -87,7 +87,7 @@ class Auth {
 	*/
 	public function is_authenticated() {
 		global $I2_ARGS;
-		if(isset($I2_ARGS[0]) and $I2_ARGS[0]=='rss')
+		if(isset($I2_ARGS[0]) && ($I2_ARGS[0]=='rss' || $I2_ARGS[0]=='atom'))
 			return true;
 		$this->is_master = FALSE;
 		/*

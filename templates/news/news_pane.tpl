@@ -8,7 +8,7 @@
 [</if>]
 [<if !$newsadmin >]
 	<a href="[<$I2_ROOT>]news/request">Request posting a news article</a><br />
-[</if>]</div><div style="position:absolute; right:3px; top:20px;"><a href="[<$I2_ROOT>]rss"><img src="[<$I2_ROOT>]www/pics/rss_logo.png" width="15" alt="RSS" title="RSS" /></a></div>
+[</if>]</div><div style="position:absolute; right:3px; top:18px;"><img src="[<$I2_ROOT>]www/pics/rss_logo.png" width="15" alt="RSS" title="RSS" style="position: relative; top: 3px" /> <a href="[<$I2_ROOT>]rss">RSS</a>&middot;<a href="[<$I2_ROOT>]atom">ATOM</a></div>
 [<foreach from=$stories item=story>]
 		[<include file="news/news-disp.tpl">]
 [</foreach>]

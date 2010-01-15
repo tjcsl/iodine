@@ -161,7 +161,7 @@ try {
 	 *
 	 * @global LDAP $I2_LDAP
 	 */
-	if(isset($I2_ARGS[0]) and $I2_ARGS[0]=='rss') {
+	if(isset($I2_ARGS[0]) && ($I2_ARGS[0]=='rss' || $I2_ARGS[0]=='atom')) {
 		//don't try to bind when you're in generic mode.
 	} else {
 		$I2_LDAP = LDAP::get_user_bind();

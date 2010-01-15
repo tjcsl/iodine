@@ -282,8 +282,8 @@ class NewsItem {
 				}
 			}
 		}
-		// Update the RSS feed.
-		RSS::update();
+		// Update the feeds.
+		Feeds::update();
 
 		return true;
 	}
@@ -320,8 +320,8 @@ class NewsItem {
 		$I2_SQL->query('DELETE FROM news WHERE id=%d', $nid);
 		$I2_SQL->query('DELETE FROM news_group_map WHERE nid=%d', $nid);
 		$I2_SQL->query('DELETE FROM news_read_map WHERE nid=%d',$nid);
-		// Update the RSS feed.
-		RSS::update();
+		// Update the feeds.
+		Feeds::update();
 	}
 
 	/**
@@ -384,8 +384,8 @@ class NewsItem {
 			}
 			$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%s', $this->mynid, $group->name);
 		}
-		// Update the RSS feed.
-		RSS::update();
+		// Update the feeds.
+		Feeds::update();
 	}
 
 	/**
