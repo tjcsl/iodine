@@ -7,7 +7,7 @@ Aphorisms for [<$username>]<br /><br />
 
 [<if $updated>]<b>Aphorism Updated</b>[</if>]
 
-<form action="[<$I2_ROOT>]aphorisms" method="POST">
+<form action="[<$I2_ROOT>]aphorisms" method="post">
 	<input type="hidden" name="posting" value="1"/><br />
 	<table>
 	<tr><td style="width:180px;">College you plan to attend:</td><td><input type="text" size="50" name="college" value="[<$aphorism.college|escape>]"/></td></tr>

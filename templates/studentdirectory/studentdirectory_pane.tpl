@@ -291,32 +291,32 @@ To view this user's portfolio click <a href="https://shares.tjhsst.edu/PORTFOLIO
  	makeDirections(""+geoXML.getDefaultCenter().lat()+","+geoXML.getDefaultCenter().lng(),"6560 Braddock Rd, Alexandria, VA 22312");
  }*/
  </script>
- <a id="map_button" onClick="initialize()">show map</a><br />
+ <a id="map_button" onclick="initialize()">show map</a><br />
  Get directions:
  [<if $I2_USER->uid != $user->uid>]
   [<if isset($I2_USER->street) >]
-  <a onClick="makeDirections('[<$I2_USER->street>], [<$I2_USER->l>], [<$I2_USER->st>] [<$I2_USER->postalCode>]','[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]')">from your home</a>
-  or [</if>]<a onClick="makeDirections('6560 Braddock Rd, Alexandria, VA 22312','[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]')">from school</a>
+  <a onclick="makeDirections('[<$I2_USER->street>], [<$I2_USER->l>], [<$I2_USER->st>] [<$I2_USER->postalCode>]','[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]')">from your home</a>
+  or [</if>]<a onclick="makeDirections('6560 Braddock Rd, Alexandria, VA 22312','[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]')">from school</a>
  [<else>]
- <a onClick="makeDirections('[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]','6560 Braddock Rd, Alexandria, VA 22312')">to school</a>
+ <a onclick="makeDirections('[<$user->street>], [<$user->l>], [<$user->st>] [<$user->postalCode>]','6560 Braddock Rd, Alexandria, VA 22312')">to school</a>
  [</if>]
  [<* This is shorted out until someone wants to get that js up there working *>]
  [<if 1==0 && $user->latitude !=0>]
   [<if $I2_USER->uid == $user->uid>]
    <br />Get directions from me:
-   <a onClick="getMeHome()">to home</a>
+   <a onclick="getMeHome()">to home</a>
    or
-   <a onClick="getMeSchool()">to school</a>
+   <a onclick="getMeSchool()">to school</a>
   [<else>]
    <br />Get directions to me:
    [<if $I2_USER->latitude != 0>]
-    <a onClick="fromUserToMe()">from your location</a>
+    <a onclick="fromUserToMe()">from your location</a>
     or
    [</if>]
-   <a onClick="fromHomeToMe()">from your home</a>
+   <a onclick="fromHomeToMe()">from your home</a>
    or
-   <a onClick="fromSchoolToMe()">from school</a>
-  <br />Find <a onClick="showGoogleLatitude()">Current location (Google Latitude)</a>
+   <a onclick="fromSchoolToMe()">from school</a>
+  <br />Find <a onclick="showGoogleLatitude()">Current location (Google Latitude)</a>
   [</if>]
  [</if>]
  <div id="map_canvas" style="visibility: hidden"></div>

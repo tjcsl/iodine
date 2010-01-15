@@ -18,7 +18,7 @@ function toggle_self(currstate) {
 
 </script>
 
-<form action="[<$I2_ROOT>]privacy" method="POST" name="privacy_form">
+<form action="[<$I2_ROOT>]privacy" method="post" name="privacy_form">
 <table>
 <tr><th>&nbsp;</th><th>User</th><th>Parental</th></tr>
 <tr>

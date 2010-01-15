@@ -2,7 +2,7 @@
 
 If the college you plan to attend or the subject you plan to major in is not listed below, please notify <a href="mailto:intranet@tjhsst.edu">intranet@tjhsst.edu</a> and include the name of the missing item.<br /><br />
 
-<form action="[<$I2_ROOT>]seniors/submit/" method="POST">
+<form action="[<$I2_ROOT>]seniors/submit/" method="post">
 	<input type="hidden" name="seniors_form" value="yeah" />
 	Please choose your:
 	<fieldset>

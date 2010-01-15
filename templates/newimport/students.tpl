@@ -2,7 +2,7 @@
 
 This may take a <strong>really, really</strong> long time.
 
-<form enctype="multipart/form-data" action="[<$I2_ROOT>]newimport/students_doit" method="POST">
+<form enctype="multipart/form-data" action="[<$I2_ROOT>]newimport/students_doit" method="post">
 <input type="hidden" name="MAX_FILE_SIZE" value="3000000" />
 
 <fieldset style="width: 300px">

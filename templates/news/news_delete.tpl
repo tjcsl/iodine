@@ -4,7 +4,7 @@
  Groups: [<$newsitem->groupsstring>]<br /><br />
  Text:<br />
  [<$newsitem->text>]
- <form action="[<$I2_SELF>]" method="POST">
+ <form action="[<$I2_SELF>]" method="post">
  <input type="hidden" name="delete_confirm" value="1" />
  <br /><br /><input type="submit" value="Delete" name="submit" />
  </form>

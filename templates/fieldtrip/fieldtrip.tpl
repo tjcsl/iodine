@@ -1,7 +1,7 @@
 [<if $student>]
 <span style="color: red;"><strong>You are a student; students who elected not to show their schedules will not appear on this list.</strong></span><br /><br />
 [</if>]
-<form action="[<$I2_ROOT>]fieldtrip" method="POST">
+<form action="[<$I2_ROOT>]fieldtrip" method="post">
 	<fieldset>
 		<legend>Student ids or usernames:</legend>
 		<textarea name="students" rows="8" cols="80"></textarea><br />

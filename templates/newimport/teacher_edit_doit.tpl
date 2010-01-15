@@ -1,4 +1,4 @@
-<form action="[<$I2_ROOT>]newimport/teacher_edit_doit" method="POST">
+<form action="[<$I2_ROOT>]newimport/teacher_edit_doit" method="post">
 [<foreach from=$warnings item=warning>]
   <strong>Warning: [<$warning>]</strong><br />
 [</foreach>]

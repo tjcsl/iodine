@@ -1,4 +1,4 @@
-<form action="[<$I2_ROOT>]newimport/[<$method>]" method="POST">
+<form action="[<$I2_ROOT>]newimport/[<$method>]" method="post">
 <input type="hidden" name="id" value="[<$iodineUid>]" />
 <table>
 <tbody>
@@ -14,7 +14,7 @@
 <br /><br />
 
 [<if $showdelete>]
-<form action="[<$I2_ROOT>]newimport/teacher_delete" method="POST">
+<form action="[<$I2_ROOT>]newimport/teacher_delete" method="post">
 <input type="hidden" name="uid" value="[<$iodineUid>]" />
 <input type="submit" value="Delete this teacher" />
 </form>

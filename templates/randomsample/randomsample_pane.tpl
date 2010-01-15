@@ -14,7 +14,7 @@
 		[</foreach>]
 	</table>
 [<else>]
-<form action="[<$I2_ROOT>]randomsample/results" method="POST">
+<form action="[<$I2_ROOT>]randomsample/results" method="post">
 	<table>
 		<tr><th>Sample size:</th><td><input type="text" name="size"/></td></tr>
 		<tr><th>Filter:</th><td><input type="text" name="filter"/></td></tr>

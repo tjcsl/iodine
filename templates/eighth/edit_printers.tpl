@@ -2,7 +2,7 @@
 
 <span style="font-weight: bold; font-size: 125%;">Set Current Printer</span><br />
 <form name="printer_choose_form" method="post" action="[<$I2_ROOT>]eighth/edit_printers/choose">
-<select name="printer" size="10" onChange="location.href='[<$I2_ROOT>]eighth/edit_printers/choose/printer/' + this.options[this.selectedIndex].value">
+<select name="printer" size="10" onchange="location.href='[<$I2_ROOT>]eighth/edit_printers/choose/printer/' + this.options[this.selectedIndex].value">
 [<foreach from=$printers item='printer'>]
 	<option value="[<$printer.id>]" [<if $printer.is_selected>]selected="SELECTED"[</if>]>[<$printer.name>]</option>
 [</foreach>]

@@ -17,7 +17,7 @@
  [</if>]
 [</if>]
 <p>
-<form action="[<$I2_SELF>]" method="POST">
+<form action="[<$I2_SELF>]" method="post">
  Query:<br />
  <textarea name="ldapinterface_query" rows="5" cols="70">[<$query>]</textarea><br />
  Base DN:<br />

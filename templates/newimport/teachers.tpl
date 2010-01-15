@@ -1,6 +1,6 @@
 <a href="[<$I2_ROOT>]newimport">Back to data import home</a><br /><br />
 
-<form action="[<$I2_ROOT>]newimport/teacher_new" method="POST">
+<form action="[<$I2_ROOT>]newimport/teacher_new" method="post">
 <fieldset>
 	<legend>Add New Teacher</legend>
 	Enter new teacher's ID number:<br />
@@ -9,7 +9,7 @@
 </fieldset>
 </form>
 
-<form action="[<$I2_ROOT>]newimport/teacher_edit" method="POST">
+<form action="[<$I2_ROOT>]newimport/teacher_edit" method="post">
 <fieldset>
 	<legend>Modify Existing Teacher</legend>
 	Enter an ID number or username:<br />

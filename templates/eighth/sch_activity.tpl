@@ -1,12 +1,12 @@
 [<include file="eighth/header.tpl">]
 <script language="javascript" type="text/javascript" src="[<$I2_ROOT>]www/js/eighth_sch_activity.js"></script>
 <div style="width: 100%; text-align: center; font-weight: bold; font-size: 18pt; margin-top: 10px;">
-<select name="activity_list" style="font-size: 18pt; text-align: left;" onChange="location.href='[<$I2_ROOT>]eighth/sch_activity/view/aid/' + this.options[this.selectedIndex].value">
+<select name="activity_list" style="font-size: 18pt; text-align: left;" onchange="location.href='[<$I2_ROOT>]eighth/sch_activity/view/aid/' + this.options[this.selectedIndex].value">
 [<foreach from=$activities item="activity">]
 	<option value="[<$activity->aid>]" [<if $act->aid == $activity->aid>]style="font-size: 18pt; font-weight: bold;" SELECTED[<else>]style="font-size: 10pt; "[</if>]>[<$activity->aid>]: [<$activity->name_r>]</option>
 [</foreach>]
 </select>
-<form name="aidform" action="[<$I2_ROOT>]eighth/sch_activity/view/" method="POST">
+<form name="aidform" action="[<$I2_ROOT>]eighth/sch_activity/view/" method="post">
 AID: <input type="text" name="aid"/>
 <script language="javascript" type="text/javascript">
 	document.aidform.aid.focus();
@@ -16,7 +16,7 @@ AID: <input type="text" name="aid"/>
 
 <form name="activities" action="[<$I2_ROOT>]eighth/sch_activity/modify/aid/[<$act->aid>]" method="post">
 <div id="eighth_room_pane">
-	<select id="eighth_room_list" name="rooms" size="10" multiple="multiple" onChange="do_action('add_room', 0, this.options[this.selectedIndex]); void(this.selectedIndex=-1);">
+	<select id="eighth_room_list" name="rooms" size="10" multiple="multiple" onchange="do_action('add_room', 0, this.options[this.selectedIndex]); void(this.selectedIndex=-1);">
 [<foreach from=$rooms item='room'>]
 		<option value="[<$room.rid>]">[<$room.name>]</option>
 [</foreach>]
@@ -24,7 +24,7 @@ AID: <input type="text" name="aid"/>
 	<span style="text-decoration: underline; cursor: pointer;" onclick="void(this.parentNode.style.display='none');">Close</span>
 </div>
 <div id="eighth_sponsor_pane">
-	<select id="eighth_sponsor_list" name="sponsors" size="10" multiple="multiple" onChange="do_action('add_sponsor', 0, this.options[this.selectedIndex]); void(this.selectedIndex=-1);">
+	<select id="eighth_sponsor_list" name="sponsors" size="10" multiple="multiple" onchange="do_action('add_sponsor', 0, this.options[this.selectedIndex]); void(this.selectedIndex=-1);">
 [<foreach from=$sponsors item='sponsor'>]
 	<option value="[<$sponsor.sid>]">[<$sponsor.name_comma>]</option>
 [</foreach>]
