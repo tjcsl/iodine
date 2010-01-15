@@ -10,7 +10,7 @@ In order to choose what info can be seen by OTHER users, please setup your <a hr
 <table>
 <tr>
 <td valign="top">
-<img src="[<$I2_ROOT>]pictures/[<$user->uid>]" vspace="2"/><br />
+<img src="[<$I2_ROOT>]pictures/[<$user->uid>]" vspace="2" alt="Student Picture" /><br />
 <a href="[<$I2_ROOT>]studentdirectory/pictures/[<$user->uid>]">View pictures from all years</a>
 [<if $im_an_admin>]
 <br /><br />
@@ -337,7 +337,7 @@ To view this user's portfolio click <a href="https://shares.tjhsst.edu/PORTFOLIO
     [<if $mode == 'full'>]
     <th>Teacher</th>
     [</if>]
-    <th>Quarter(s)</td>
+    <th>Quarter(s)</th>
    </tr>
   </thead>
   <tbody>

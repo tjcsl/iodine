@@ -2,9 +2,11 @@ Sections of <b>[<$classes.0.class->name>]</b>: <br /><br />
 
 <table>
 	<thead>
-		<th>Period</th>
-		<th>Teacher</th>
-		<th>Quarter(s)</th>
+		<tr>
+			<th>Period</th>
+			<th>Teacher</th>
+			<th>Quarter(s)</th>
+		</tr>
 	</thead>
 	<tbody>
 [<foreach from=$classes item="class">]

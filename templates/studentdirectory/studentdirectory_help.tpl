@@ -109,6 +109,7 @@
 <dd>
 <p>Searches by both home phone number and cellphone number. It can be
 	formatted either as 123-456-7890 or 1234567890. <!--(NOT (123)-456-7890).--></p>
+</dd>
 
 <dt><tt>homephone</tt></dt>
 <dd>
@@ -163,8 +164,6 @@
 <dt><tt>email</tt></dt>
 <dd>
 <p>Searches by email address.</p>
-</dd>
-
 </dd>
 
 <dt><tt>locker</tt></dt>

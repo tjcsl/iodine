@@ -83,8 +83,8 @@ Questions:<br />
 [</foreach>]
   </select></td>
   <td><input name="q_[<$q->qid>]_lim" maxlength="3" size="3" value="[<$q->maxvotes>]" /></td>
-  <td><a href="[<$I2_ROOT>]polls/edit/[<$pid>]/delq/[<$q->qid>]"><img src="[<$I2_ROOT>]www/pics/pollx.gif" onclick="deleteRow(event)"/></a></td>
-  </tr><tr><td colspan=4">
+  <td><a href="[<$I2_ROOT>]polls/edit/[<$pid>]/delq/[<$q->qid>]"><img src="[<$I2_ROOT>]www/pics/pollx.gif" onclick="deleteRow(event)" alt="" /></a></td>
+  </tr><tr><td colspan="4">
     <ul><li>
       <a href="[<$I2_ROOT>]polls/edit/[<$pid>]/adda/[<$q->qid>]" onclick="addAnswer(event)">Add an answer choice</a>
     </li>[<foreach from=$q->answers item=ans key=aid>]<li>
