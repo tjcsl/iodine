@@ -778,8 +778,8 @@ class Eighth implements Module {
 				$this->template_args['membersorted'] = $membersorted;
 				$this->template_args['search_destination'] = 'eighth/amr_group/add_member/gid/'.$this->args['gid'];
 				$this->template_args['action_name'] = 'Add';
-				if(isset($this->args['error']) && $this->args['error']=='true') {
-					$this->template_args['error'] = "There was an error processing your input. Please check to make sure that no entries are missing.";
+				if(isset($this->args['error']) && $this->args['error']!='false') {
+					$this->template_args['error'] = "There was an error processing your input. Please check to make sure that no entries are missing. Errors were with the ids " . $this->args['error'] . ".";
 				}
 				$this->title = 'View Group (' . substr($group->name,7) . ')';
 			}
@@ -856,7 +856,10 @@ class Eighth implements Module {
 					if (!$thing) $thing = $id;
 					$group->add_user(new User($thing));
 				} catch (I2Exception $e) {
-					$error="true";
+					if($error=="false")
+						$error=$id;
+					else
+						$error=$error.",$id";
 				}
 			}
 			fclose($fd);
