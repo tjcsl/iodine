@@ -308,6 +308,7 @@ class Auth {
 				
 				session_regenerate_id(TRUE);
 				setcookie('PHPSESSID', '', 1, '/', '.tjhsst.edu'); /* Should fix accursed login bug */
+				setcookie('fortune',exec("fortune -s"),1,'/','.tjhsst.edu');
 
 				$redir="";
 				if(isset($_SERVER['REDIRECT_QUERY_STRING'])) {
