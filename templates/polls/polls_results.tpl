@@ -3,6 +3,8 @@
 <!--
 function sort(table, name) {
 	var cell = table.parentNode;
+	if(!document.getElementById("order_" + name).value)
+		document.getElementById("order_" + name).value = -1;
 	var direction = document.getElementById("order_" + name).value;
 	document.getElementById("arrow_" + name).src = "[<$I2_ROOT>]www/pics/" + (direction == 1 ? "uparrow.gif" : "downarrow.gif");
 	//switch the sort order
@@ -20,16 +22,16 @@ function sort(table, name) {
 <b>[<$poll->name>]</b><br /><br />
 <ol class="poll_questions">
 [<foreach from=$questions key=qid item=question>]
- <input type="hidden" name="order_total_[<$qid>]" id="order_total_[<$qid>]" value="-1" />
- <input type="hidden" name="order_9_[<$qid>]" id="order_9_[<$qid>]" value="-1" />
- <input type="hidden" name="order_10_[<$qid>]" id="order_10_[<$qid>]" value="-1" />
- <input type="hidden" name="order_11_[<$qid>]" id="order_11_[<$qid>]" value="-1" />
- <input type="hidden" name="order_12_[<$qid>]" id="order_12_[<$qid>]" value="-1" />
  <li>
  [<if $question.answertype == 'free_response'>]
   <a href="[<$I2_ROOT>]polls/results/[<$poll->pid>]/_[<$question.qid>]">[<$question.text>]</a><br />
  [<else>]
   [<$question.text>]<br />
+  <a name="order_total_[<$qid>]" id="order_total_[<$qid>]" />
+  <a name="order_9_[<$qid>]" id="order_9_[<$qid>]" />
+  <a name="order_10_[<$qid>]" id="order_10_[<$qid>]" />
+  <a name="order_11_[<$qid>]" id="order_11_[<$qid>]" />
+  <a name="order_12_[<$qid>]" id="order_12_[<$qid>]" />
   <table class="results">
    <col /><col class="l" /><col span="3" />
    <col class="l" /><col span="2" />
@@ -54,7 +56,19 @@ function sort(table, name) {
     <th>T</th><th>M</th><th>F</th>
     <th colspan="3">T</th>
    </tr>
-  </thead><tbody>
+  </thead>
+  <tfoot>
+   <tr>
+    <th>Total</th>
+    <td>[<$question.total.T>]</td><td></td><td>[<$question.total.M>]</td><td>[<$question.total.F>]</td>
+    <td>[<$question.total.9T>]</td><td>[<$question.total.9M>]</td><td>[<$question.total.9F>]</td>
+    <td>[<$question.total.10T>]</td><td>[<$question.total.10M>]</td><td>[<$question.total.10F>]</td>
+    <td>[<$question.total.11T>]</td><td>[<$question.total.11M>]</td><td>[<$question.total.11F>]</td>
+    <td>[<$question.total.12T>]</td><td>[<$question.total.12M>]</td><td>[<$question.total.12F>]</td>
+    <td colspan="3">[<$question.total.staffT>]</td>
+   </tr>
+  </tfoot>
+  <tbody>
    [<foreach from=$question.answers item=answer>]
     <tr>
      <th>[<$answer.text>]</th>
@@ -66,17 +80,7 @@ function sort(table, name) {
      <td colspan="3">[<$answer.votes.staffT>]</td>
     </tr>
    [</foreach>]
-  </tbody><tfoot>
-   <tr>
-    <th>Total</th>
-    <td>[<$question.total.T>]</td><td></td><td>[<$question.total.M>]</td><td>[<$question.total.F>]</td>
-    <td>[<$question.total.9T>]</td><td>[<$question.total.9M>]</td><td>[<$question.total.9F>]</td>
-    <td>[<$question.total.10T>]</td><td>[<$question.total.10M>]</td><td>[<$question.total.10F>]</td>
-    <td>[<$question.total.11T>]</td><td>[<$question.total.11M>]</td><td>[<$question.total.11F>]</td>
-    <td>[<$question.total.12T>]</td><td>[<$question.total.12M>]</td><td>[<$question.total.12F>]</td>
-    <td colspan="3">[<$question.total.staffT>]</td>
-   </tr>
-  </tfoot>
+  </tbody>
   </table>
   [<if $question.answertype == 'approval'>][<* Ironically, split-vote DOES sum to 100% *>]
     <span class="note">Note: The percentages do not sum to 100% because this is an approval question.</span><br />
