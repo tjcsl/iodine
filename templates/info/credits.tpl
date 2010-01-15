@@ -3,7 +3,7 @@ Intranet is a student-built project that was originally built to support the Eig
 Intranet2 is a redeveloped version of Intranet desgined to be easier to maintain and extend.  Where Intranet innovated by using new technologies and proved useful to students and faculty alike, Intranet2 aims to follow.  <p />
 <table width="100%">
 <tr>
-<td valign=top>
+<td valign="top">
 Intranet Groundwork:
 <ul>
 	<li>Brent Metz (1998)</li>
@@ -33,7 +33,7 @@ Intranet Maintainers:
 	<li>Josiah Boning (2008)</li>
 </ul>
 </td>
-<td valign=top>
+<td valign="top">
 Intranet2 (Codename Iodine) Development Initiative:
 <ul>
 	<li>Aman Gupta (2004)</li>
