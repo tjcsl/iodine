@@ -3,58 +3,16 @@
 * Just contains the definition for the class {@link RSS}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005 The Intranet 2 Development Team
-* @package modules
-* @subpackage RSS
+* @package RSS
 * @filesource
 */
 
 /**
-* The module that handles unauthenticated RSS feeds.
-* @package modules
-* @subpackage RSS
+* The class that handles unauthenticated RSS feeds.
+* @package RSS
 */
-class RSS implements Module {
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_pane() {
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function display_pane($display) {
-		global $I2_ROOT;
-		header("Content-Type: application/xml");
-
-		$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'rss.cache';
-
-		if(!($contents = RSS::get_cache($cachefile))) {
-			$contents = RSS::update($cachefile);
-		}
-		echo $contents;
-		Display::stop_display();
-	}
-
-	private static function get_cache($cachefile) {
+class RSS {
+	public static function get_cache($cachefile) {
 		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile))) {
 			return FALSE;
 		}
@@ -83,20 +41,8 @@ class RSS implements Module {
 		$p.="		<generator>TJHSST Intranet</generator>\n";
 		$p.="		<managingEditor>iodine@tjhsst.edu</managingEditor>\n";
 		$p.="		<webMaster>iodine@tjhsst.edu</webMaster>\n";
-		$news = NewsItem::get_all_items_nouser();
+		$news = Feeds::getItems();
 		foreach($news as $item) {
-			if($item->public==0) //Only display stuff that's public.
-				continue;
-			$test=FALSE;	//Stuff only goes on the feed if "all" can see it.
-			foreach ($item->groups as $group) {
-				if($group->gid == 1) {
-					$test=TRUE;
-					break;
-				}
-			}
-			if(!$test) {
-				continue;
-			}
 			$p.="		<item>\n";
 			$p.="			<title>".strip_tags($item->title)."</title>\n";
 			$p.="			<link>".$I2_ROOT."news/show/$item->nid</link>\n";
@@ -114,26 +60,6 @@ class RSS implements Module {
 		$contents = RSS::create_contents();// If the contents of the file havn't been made yet.
 		RSS::store_cache($contents,$cachefile);
 		return $contents;
-	}
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return FALSE;
-	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function display_box($display) {
-		return FALSE;
-	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function get_name() {
-		return "RSS";
 	}
 }
 

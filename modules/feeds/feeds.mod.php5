@@ -36,14 +36,35 @@ class Feeds implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		return FALSE;
+		return 'Intranet Feeds';
 	}
 
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
-		return FALSE;
+		global $I2_ARGS;
+		if(!isset($I2_ARGS[1])) {
+			redirect();
+		} else if($I2_ARGS[1] == 'rss') {
+			header("Content-Type: application/xml");
+			$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'rss.cache';
+			if(!($contents = RSS::get_cache($cachefile))) {
+				$contents = RSS::update($cachefile);
+			}
+			echo $contents;
+			Display::stop_display();
+		} else if($I2_ARGS[1] == 'atom') {
+			header("Content-Type: application/xml");
+			$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'atom.cache';
+			if(!($contents = ATOM::get_cache($cachefile))) {
+				$contents = ATOM::update($cachefile);
+			}
+			echo $contents;
+			Display::stop_display();
+		} else {
+			redirect();
+		}
 	}
 
 	public static function update() {
@@ -69,6 +90,26 @@ class Feeds implements Module {
 	*/
 	function get_name() {
 		return "Feeds";
+	}
+	public static function getItems() {
+		$news = NewsItem::get_all_items_nouser();
+		$returner = array();
+		foreach($news as $item) {
+			if($item->public==0) //Only display stuff that's public.
+				continue;
+			$test=FALSE;	//Stuff only goes on the feed if "all" can see it.
+			foreach ($item->groups as $group) {
+				if($group->gid == 1) {
+					$test=TRUE;
+					break;
+				}
+			}
+			if(!$test) {
+				continue;
+			}
+			$returner[] = $item;
+		}
+		return $returner;
 	}
 }
 
