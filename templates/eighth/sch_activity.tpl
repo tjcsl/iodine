@@ -3,7 +3,7 @@
 <div style="width: 100%; text-align: center; font-weight: bold; font-size: 18pt; margin-top: 10px;">
 <select name="activity_list" style="font-size: 18pt; text-align: left;" onchange="location.href='[<$I2_ROOT>]eighth/sch_activity/view/aid/' + this.options[this.selectedIndex].value">
 [<foreach from=$activities item="activity">]
-	<option value="[<$activity->aid>]" [<if $act->aid == $activity->aid>]style="font-size: 18pt; font-weight: bold;" SELECTED[<else>]style="font-size: 10pt; "[</if>]>[<$activity->aid>]: [<$activity->name_r>]</option>
+	<option value="[<$activity->aid>]" [<if $act->aid == $activity->aid>]style="font-size: 18pt; font-weight: bold;" selected="selected"[<else>]style="font-size: 10pt; "[</if>]>[<$activity->aid>]: [<$activity->name_r>]</option>
 [</foreach>]
 </select>
 <form name="aidform" action="[<$I2_ROOT>]eighth/sch_activity/view/" method="post">

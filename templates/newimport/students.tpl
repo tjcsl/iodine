@@ -9,7 +9,7 @@ This may take a <strong>really, really</strong> long time.
 <legend>Database Cleaning</legend>
 Is this the initial data import of the year?<br ?>
 <input type="radio" name="startyear" value="1" /> Yes<br />
-<input type="radio" name="startyear" value="0" checked="CHECKED" /> No<br />
+<input type="radio" name="startyear" value="0" checked="checked" /> No<br />
 </fieldset>
 
 <fieldset style="width: 300px">

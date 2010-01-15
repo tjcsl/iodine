@@ -4,7 +4,7 @@
 <form name="printer_choose_form" method="post" action="[<$I2_ROOT>]eighth/edit_printers/choose">
 <select name="printer" size="10" onchange="location.href='[<$I2_ROOT>]eighth/edit_printers/choose/printer/' + this.options[this.selectedIndex].value">
 [<foreach from=$printers item='printer'>]
-	<option value="[<$printer.id>]" [<if $printer.is_selected>]selected="SELECTED"[</if>]>[<$printer.name>]</option>
+	<option value="[<$printer.id>]" [<if $printer.is_selected>]selected="selected"[</if>]>[<$printer.name>]</option>
 [</foreach>]
 </select><br />
 <input type="submit" value="Set Printer" />

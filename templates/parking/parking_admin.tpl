@@ -37,31 +37,31 @@ Some features to come include searching by field.<br /><br />
  *Priority 1:
  *<select name="sort1">
  * [<foreach from=$options key=name item=option>]
- *  <option value="[<$name>]" [<if $sort_selected.1 == $name>]SELECTED[</if>]>[<$option.1>]</option>
+ *  <option value="[<$name>]" [<if $sort_selected.1 == $name>]selected="selected"[</if>]>[<$option.1>]</option>
  * [</foreach>]
  *</select><br />
  *Priority 2:
  *<select name="sort2">
  * [<foreach from=$options key=name item=option>]
- *  <option value="[<$name>]" [<if $sort_selected.2 == $name>]SELECTED[</if>]>[<$option.1>]</option>
+ *  <option value="[<$name>]" [<if $sort_selected.2 == $name>]selected="selected"[</if>]>[<$option.1>]</option>
  * [</foreach>]
  *</select><br />
  *Priority 3:
  *<select name="sort3">
  * [<foreach from=$options key=name item=option>]
- *  <option value="[<$name>]" [<if $sort_selected.3 == $name>]SELECTED[</if>]>[<$option.1>]</option>
+ *  <option value="[<$name>]" [<if $sort_selected.3 == $name>]selected="selected"[</if>]>[<$option.1>]</option>
  * [</foreach>]
  *</select><br />
  *Priority 4:
  *<select name="sort4">
  * [<foreach from=$options key=name item=option>]
- *  <option value="[<$name>]" [<if $sort_selected.4 == $name>]SELECTED[</if>]>[<$option.1>]</option>
+ *  <option value="[<$name>]" [<if $sort_selected.4 == $name>]selected="selected"[</if>]>[<$option.1>]</option>
  * [</foreach>]
  *</select><br />
  *Priority 5:
  *<select name="sort5">
  * [<foreach from=$options key=name item=option>]
- *  <option value="[<$name>]" [<if $sort_selected.5 == $name>]SELECTED[</if>]>[<$option.1>]</option>
+ *  <option value="[<$name>]" [<if $sort_selected.5 == $name>]selected="selected"[</if>]>[<$option.1>]</option>
  * [</foreach>]
  *</select><br />
  *<input type="submit" value="Sort">

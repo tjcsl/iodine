@@ -2,7 +2,7 @@
 <span style="font-weight: bold; font-size: 125%;">[<$title|default:"">]</span><br />
 <select name="activity_list" size="10" onchange="location.href='[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">]/[<if isSet($bid)>]bid/[<$bid>]/[</if>][<$field|default:"aid">]/' + this.options[this.selectedIndex].value">
 [<foreach from=$activities item='activity'>]
-	<option value="[<$activity->aid>]"[<if isset($act) && ($act->aid == $activity->aid)>] SELECTED[</if>]>[<$activity->aid>]: [<$activity->name_r>][<if $activity->comment_short>] - [<$activity->comment_short>][</if>]</option>
+	<option value="[<$activity->aid>]"[<if isset($act) && ($act->aid == $activity->aid)>] selected="selected"[</if>]>[<$activity->aid>]: [<$activity->name_r>][<if $activity->comment_short>] - [<$activity->comment_short>][</if>]</option>
 [</foreach>]
 </select><br />
 <form name="activity_selection_form" action="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">][<if isSet($bid)>]/bid/[<$bid>][</if>]" method="get">
