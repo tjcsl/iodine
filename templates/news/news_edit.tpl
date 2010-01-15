@@ -3,12 +3,12 @@
 Your news post has been changed.<br />
 <a href="[<$I2_ROOT>]news">Back to news</a><br />
 [</if>]
-<form action="[<$I2_SELF>]" method="POST">
+<form action="[<$I2_SELF>]" method="post">
  <input type="hidden" name="edit_form" value="1" />
  <table cellpadding="0" width="100%">
  <tr><td width="20%">Title:</td><td><input type="text" name="edit_title" value="[<$newsitem->title|replace:'"':'&quot;'>]" size="30" /></td></tr>
  <tr><td>Expiration date:</td><td><input type="text" name="edit_expire" size="30" value="[<$newsitem->expire>]"/></td></tr>
- <tr><td width="20%">Visible:</td><td><input type="checkbox" name="edit_visible"[<if $newsitem->visible>] checked="checked"[</if>] /></td><td>Public:</td><td><input type="checkbox" name="edit_public"[<if $newsitem->public>] checked="checked"[</if>] /></tr>
+ <tr><td width="20%">Visible:</td><td><input type="checkbox" name="edit_visible"[<if $newsitem->visible>] checked="checked"[</if>] /></td><td>Public:</td><td><input type="checkbox" name="edit_public"[<if $newsitem->public>] checked="checked"[</if>] /></td></tr>
  </table>
  <table id="news_groups_table" cellpadding="0" width="100%">
   <tr>
@@ -23,7 +23,7 @@ Your news post has been changed.<br />
     [<else>]
     <select id="groups" class="groups_list" name="add_groups[]">
      [<foreach from=$groups item=group>]
-      <option value="[<$group->gid>]"[<if $group->gid == $newsitem->groups[0]->gid>] selected[</if>]>[<$group->name>]</option>
+      <option value="[<$group->gid>]"[<if $group->gid == $newsitem->groups[0]->gid>] selected="selected"[</if>]>[<$group->name>]</option>
      [</foreach>]
     </select>
     [</if>]

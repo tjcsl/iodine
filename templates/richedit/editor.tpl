@@ -18,7 +18,7 @@
 <input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('insertorderedlist')" value="Ordered List" />
 <input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('insertunorderedlist')" value="Unordered List" />
 <input type="button" id="htmlswitcher" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="edithtml()" value="Edit HTML" /><br /><br />
-<textarea id="RichHTML" style="visibility: hidden; width: 99%; height: 0px"></textarea>
+<textarea id="RichHTML" style="visibility: hidden; width: 99%; height: 0px" rows="10" cols="400"></textarea>
 <iframe id="RichForm" width="99%" height="200" src="[<$I2_ROOT>]richedit"></iframe><br />
 <script type="text/javascript">
 var formfield = null;

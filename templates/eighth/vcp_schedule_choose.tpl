@@ -30,32 +30,36 @@
 		<input type="submit" name="submit" value="View Roster" />
 	[</if>]
 </form>
+[<assign var=started value="0">]
 [<foreach from=$activities item="activity">]
-	[<assign var=capacity value=$activity->capacity>]
-	[<assign var=members value=$activity->member_count>]
-	<div id="desc_[<$activity->aid>]" style="display: none; border: solid thin; padding: 5px; margin-top:2px; margin-bottom:3px">
-	<a href="[<$I2_ROOT>]eighth/vcp_schedule/favorite/uid/[<$activity->aid>]/bids/[<$bids>]">[<if $activity->favorite>]Unfavorite this activity[<else>]Favorite this activity[</if>]</a><br />
-	[<$activity->name|escape:html>]
-	[<if $activity->comment>]
-		<br /><b>[<$activity->comment|escape:html>]</b>
+	[<if $started=="1" || !$activity->favorite>]
+		[<assign var=started value="1">]
+		[<assign var=capacity value=$activity->capacity>]
+		[<assign var=members value=$activity->member_count>]
+		<div id="desc_[<$activity->aid>]" style="display: none; border: solid thin; padding: 5px; margin-top:2px; margin-bottom:3px">
+			<a href="[<$I2_ROOT>]eighth/vcp_schedule/favorite/uid/[<$activity->aid>]/bids/[<$bids>]">[<if $activity->favorite>]Unfavorite this activity[<else>]Favorite this activity[</if>]</a><br />
+			[<$activity->name|escape:html>]
+			[<if $activity->comment>]
+				<br /><b>[<$activity->comment|escape:html>]</b>
+			[</if>]
+			[<if $activity->description>]
+				<br /><br /><b>Description:</b> [<$activity->description|escape:html>]
+			[</if>]
+			[<if $activity->block_sponsors_comma_short>]
+				<br /><br /><b>Sponsor:</b> [<$activity->block_sponsors_comma_short>]
+			[</if>]
+			<br /><br />[<$members>] student[<if $members == 1>] is[<else>]s are[</if>] signed up [<if $capacity != -1>]out of [<$capacity>] allowed [</if>]for this activity.<br />
+			[<if $activity->cancelled>]
+				<br /><span class="bold" style="color: #FF0000;">CANCELLED</span>
+			[</if>]
+			[<if $capacity != -1 && $activity->member_count >= $capacity>]
+				<br /><span class="bold" style="color: #0000FF;">CAPACITY FULL</span>
+			[</if>]
+			[<if $activity->restricted>]
+				<br /><span class="bold" style="color: #FF6600;">RESTRICTED</span>
+			[</if>]
+		</div>
 	[</if>]
-	[<if $activity->description>]
-		<br /><br /><b>Description:</b> [<$activity->description|escape:html>]
-	[</if>]
-	[<if $activity->block_sponsors_comma_short>]
-		<br /><br /><b>Sponsor:</b> [<$activity->block_sponsors_comma_short>]
-	[</if>]
-	<br /><br />[<$members>] student[<if $members == 1>] is[<else>]s are[</if>] signed up [<if $capacity != -1>]out of [<$capacity>] allowed [</if>]for this activity.<br />
-	[<if $activity->cancelled>]
-		<br /><span class="bold" style="color: #FF0000;">CANCELLED</span>
-	[</if>]
-	[<if $capacity != -1 && $activity->member_count >= $capacity>]
-		<br /><span class="bold" style="color: #0000FF;">CAPACITY FULL</span>
-	[</if>]
-	[<if $activity->restricted>]
-		<br /><span class="bold" style="color: #FF6600;">RESTRICTED</span>
-	[</if>]
-</div>
 [</foreach>]
 <script language="javascript" type="text/javascript">
 	var select_activity = document.getElementById("select_activity");
