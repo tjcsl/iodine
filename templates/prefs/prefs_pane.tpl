@@ -141,22 +141,22 @@
 [<if $I2_USER->grade != "staff">]
 <table style="text-align: center;" cellpadding="1" cellspacing="0">
 <tr><td style="padding: 0ex .5ex; text-decoration: underline;">Parent</td><td style="padding: 0ex 2ex; text-decoration: underline;">You</td><td></td></tr>
-<tr><td><input type="checkbox" name="showaddress" [<if $prefs.showaddress>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Address</td></tr>
-<tr><td><input type="checkbox" name="showbday" [<if $prefs.showbday>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Birthday</td></tr>
-[<*<tr><td><input type="checkbox" name="showmap" [<if $prefs.showmap>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showmapself" [<if $prefs.showmapself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Map Links</td></tr>*>]
-<tr><td><input type="checkbox" name="showpicture" [<if $prefs.showpicture>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Pictures</td></tr>
-<tr><td><input type="checkbox" name="showphone" [<if $prefs.showphone>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Home Telephone Number</td></tr>
-<tr><td><input type="checkbox" name="showschedule" [<if $prefs.showschedule>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showscheduleself" [<if $prefs.showscheduleself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Class Schedule</td></tr>
-<tr><td><input type="checkbox" name="showeighth" [<if $prefs.showeighth>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showeighthself" [<if $prefs.showeighthself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Eighth Period Schedule</td></tr>
-<tr><td><input type="checkbox" name="showlocker" [<if $prefs.showlocker>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showlockerself" [<if $prefs.showlockerself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Locker Number</td></tr>
+<tr><td><input type="checkbox" name="showaddress" [<if $prefs.showaddress>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Address</td></tr>
+<tr><td><input type="checkbox" name="showbday" [<if $prefs.showbday>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Birthday</td></tr>
+[<*<tr><td><input type="checkbox" name="showmap" [<if $prefs.showmap>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showmapself" [<if $prefs.showmapself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Map Links</td></tr>*>]
+<tr><td><input type="checkbox" name="showpicture" [<if $prefs.showpicture>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Pictures</td></tr>
+<tr><td><input type="checkbox" name="showphone" [<if $prefs.showphone>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Home Telephone Number</td></tr>
+<tr><td><input type="checkbox" name="showschedule" [<if $prefs.showschedule>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showscheduleself" [<if $prefs.showscheduleself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Class Schedule</td></tr>
+<tr><td><input type="checkbox" name="showeighth" [<if $prefs.showeighth>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showeighthself" [<if $prefs.showeighthself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Eighth Period Schedule</td></tr>
+<tr><td><input type="checkbox" name="showlocker" [<if $prefs.showlocker>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showlockerself" [<if $prefs.showlockerself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Locker Number</td></tr>
 </table>
 [<else>]
 <table style="text-align: center;" cellpadding="1" cellspacing="0">
 <tr><td style="padding: 0ex .5ex; text-decoration: underline;">Can Enable</td><td style="padding: 0ex 2ex; text-decoration: underline;">Your Setting</td><td></td></tr>
-<tr><td><input type="checkbox" name="showaddress" [<if $prefs.showaddress>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Address</td></tr>
-<tr><td><input type="checkbox" name="showbday" [<if $prefs.showbday>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Birthday</td></tr>
-<tr><td><input type="checkbox" name="showpicture" [<if $prefs.showpicture>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Pictures</td></tr>
-<tr><td><input type="checkbox" name="showphone" [<if $prefs.showphone>]checked="checked"[</if>] disabled /></td><td><input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Home Telephone Number</td></tr>
+<tr><td><input type="checkbox" name="showaddress" [<if $prefs.showaddress>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Address</td></tr>
+<tr><td><input type="checkbox" name="showbday" [<if $prefs.showbday>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Birthday</td></tr>
+<tr><td><input type="checkbox" name="showpicture" [<if $prefs.showpicture>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Pictures</td></tr>
+<tr><td><input type="checkbox" name="showphone" [<if $prefs.showphone>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Home Telephone Number</td></tr>
 </table>
 [</if>]
 <br />
@@ -186,17 +186,17 @@
 		<td>
 			[<assign var="messages" value=$I2_USER->mailmessages>]
 			<select name="pref_mailmessages">
-				<option value="-1" [<if $messages == -1>]selected="selected"[</if>]/>0
-				<option value="1" [<if $messages == 1>]selected="selected"[</if>]/>1
-				<option value="2" [<if $messages == 2>]selected="selected"[</if>]/>2
-				<option value="3" [<if $messages == 3>]selected="selected"[</if>]/>3
-				<option value="4" [<if $messages == 4>]selected="selected"[</if>]/>4
-				<option value="5" [<if $messages == 5>]selected="selected"[</if>]/>5
-				<option value="6" [<if $messages == 6>]selected="selected"[</if>]/>6
-				<option value="7" [<if $messages == 7>]selected="selected"[</if>]/>7
-				<option value="8" [<if $messages == 8>]selected="selected"[</if>]/>8
-				<option value="9" [<if $messages == 9>]selected="selected"[</if>]/>9
-				<option value="10" [<if $messages == 10>]selected="selected"[</if>]/>10
+				<option value="-1" [<if $messages == -1>]selected="selected"[</if>]>0</option>
+				<option value="1" [<if $messages == 1>]selected="selected"[</if>]>1</option>
+				<option value="2" [<if $messages == 2>]selected="selected"[</if>]>2</option>
+				<option value="3" [<if $messages == 3>]selected="selected"[</if>]>3</option>
+				<option value="4" [<if $messages == 4>]selected="selected"[</if>]>4</option>
+				<option value="5" [<if $messages == 5>]selected="selected"[</if>]>5</option>
+				<option value="6" [<if $messages == 6>]selected="selected"[</if>]>6</option>
+				<option value="7" [<if $messages == 7>]selected="selected"[</if>]>7</option>
+				<option value="8" [<if $messages == 8>]selected="selected"[</if>]>8</option>
+				<option value="9" [<if $messages == 9>]selected="selected"[</if>]>9</option>
+				<option value="10" [<if $messages == 10>]selected="selected"[</if>]>10</option>
 			</select>
 		</td>
 	</tr>
