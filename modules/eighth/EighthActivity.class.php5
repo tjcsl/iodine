@@ -594,26 +594,16 @@ class EighthActivity {
 		global $I2_SQL;
 		if($blockids == NULL) {
 			$as = self::id_to_activity(flatten($I2_SQL->query('SELECT aid FROM eighth_activities ' . ($restricted ? 'WHERE restricted=1 ' : ''))->fetch_all_arrays(Result::NUM)));
-			$arr = Array();
-			foreach($as as $i) {
-				if($i->data['favorite'])
-					$arr[] = $i;
-			}
 			usort($as,'EighthActivity::activity_compare');
-			return array_merge($arr,$as);
+			return $as;
 		}
 		else {
 			if(!is_array($blockids)) {
 				settype($blockids, 'array');
 			}
 			$as = self::id_to_activity($I2_SQL->query('SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid IN (%D) ' . ($restricted ? 'AND restricted=1 ' : '') . 'GROUP BY aid ORDER BY special DESC', $blockids)->fetch_all_arrays(Result::NUM));
-			$arr = Array();
-			foreach($as as $i) {
-				if($i->data['favorite'])
-					$arr[] = $i;
-			}
 			usort($as,'EighthActivity::activity_compare');
-			return array_merge($arr,$as);
+			return $as;
 		}
 	}
 

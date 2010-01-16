@@ -1974,6 +1974,12 @@ class Eighth implements Module {
 			$valids = array();
 			$validdata = array();
 			$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bids'],FALSE);
+			$arr = array();
+			foreach ($this->template_args['activities'] as $i) {
+				if($i->favorite)
+					$arr[] = $i;
+			}
+			$this->template_args['favorites'] = $arr;
 			$this->template_args['uid'] = $this->args['uid'];
 			$this->template = 'vcp_schedule_choose.tpl';
 			if(!is_array($this->args['bids'])) {

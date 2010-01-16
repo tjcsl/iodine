@@ -12,10 +12,22 @@
 </script>
 <form name="activity_select_form" action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$uid>]/bids/[<$bids>][<if $start_date != NULL>]/start_date/[<$start_date>][</if>]" method="post">
 	<select name="aid" id="select_activity" size="15" style="width:100%; margin-top:3px;" onchange="changeDescription(this.options[this.selectedIndex].value)">
+	[<assign var=check value="false">]
+	[<foreach from=$favorites item="activity" key="key">]
+		[<assign var=capacity value=$activity->capacity>]
+		[<math equation="(x * 100)/(y)" x=$activity->member_count y=$capacity assign=percent>]
+		<option value="[<$activity->aid>]" [<if $key == 0>]selected="selected"[<assign var=check value="true">][</if>]
+		[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"
+		[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"
+		[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"
+		[<elseif $capacity != -1 && $percent >= 90 >] style="color: #00878D; font-weight: bold;" 
+		[<elseif $activity->favorite>] style="color: #008800; font-weight: bold;"
+		[</if>]>[<$activity->aid>]: [<$activity->name_comment_r|escape:html>][<if $activity->favorite>] --Favorited[</if>]</option>
+	[</foreach>] 
 	[<foreach from=$activities item="activity" key="key">]
 		[<assign var=capacity value=$activity->capacity>]
 		[<math equation="(x * 100)/(y)" x=$activity->member_count y=$capacity assign=percent>]
-		<option value="[<$activity->aid>]" [<if $key == 0>]selected="selected"[</if>]
+		<option value="[<$activity->aid>]" [<if $key == 0 && $check=="false">]selected="selected"[</if>]
 		[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"
 		[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"
 		[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"
