@@ -73,10 +73,14 @@
 	var select_activity = document.getElementById("select_activity");
 	changeDescription(select_activity.options[select_activity.selectedIndex].value);
 	document.getElementById('aid_box').focus();
-	[<if count($activities) == 0>]
-		document.getElementById('aid_box').value = "";
+	[<if count($favorites) == 0>]
+		[<if count($activities) == 0>]
+			document.getElementById('aid_box').value = "";
+		[<else>]
+			document.getElementById('aid_box').value = "[<$activities[0]->aid>]";
+		[</if>]
 	[<else>]
-		document.getElementById('aid_box').value = "[<$activities[0]->aid>]";
+		document.getElementById('aid_box').value = "[<$favorites[0]->aid>]";
 	[</if>]
 	document.getElementById('aid_box').select();
 </script>
