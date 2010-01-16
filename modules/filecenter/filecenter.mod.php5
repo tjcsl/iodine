@@ -464,7 +464,7 @@ class Filecenter implements Module {
 		// Magic words. Lets the entries be customized for each student.
 		$grad_year = $I2_USER->grad_year;
 		$i2_username = $_SESSION['i2_username'];
-		$tj01path = 'students/' . self::$standing[$I2_USER->grade] . '/' . $i2_username;
+		$tj01path = ($I2_USER->grade!='staff') ? 'students/' . self::$standing[$I2_USER->grade] . '/' . $i2_username : "staff";
 		$studentorstaff = ($I2_USER->grade!='staff')?"students/".$grad_year:"staff"; //Used for the unix files entry
 		if (isSet($_SESSION['csl_username'])) {
 			$csl_username = $_SESSION['csl_username'];
