@@ -12,6 +12,7 @@
     <td><a href="[<$I2_ROOT>]polls/export_csv/[<$poll->pid>]">(as CSV)</a></td>
     <td><a href="[<$I2_ROOT>]polls/edit/[<$poll->pid>]">Edit</a></td>
     <td><a href="[<$I2_ROOT>]polls/delete/[<$poll->pid>]">Delete</a></td>
+    <td>[<$poll->startdt>] to [<$poll->enddt>]</td>
     [</if>]
   </tr>
 [</foreach>]
@@ -24,6 +25,7 @@
     <td><a href="[<$I2_ROOT>]polls/export_csv/[<$poll->pid>]">(as CSV)</a></td>
     <td><a href="[<$I2_ROOT>]polls/edit/[<$poll->pid>]">Edit</a></td>
     <td><a href="[<$I2_ROOT>]polls/delete/[<$poll->pid>]">Delete</a></td>
+    <td>[<$poll->startdt>] to [<$poll->enddt>]</td>
   </tr>
 [</foreach>]
   <tr><td colspan="5"><b>Unstarted polls</b></td></tr>
@@ -34,6 +36,7 @@
     <td><a href="[<$I2_ROOT>]polls/export_csv/[<$poll->pid>]">(as CSV)</a></td>
     <td><a href="[<$I2_ROOT>]polls/edit/[<$poll->pid>]">Edit</a></td>
     <td><a href="[<$I2_ROOT>]polls/delete/[<$poll->pid>]">Delete</a></td>
+    <td>[<$poll->startdt>] to [<$poll->enddt>]</td>
   </tr>
 [</foreach>]
 [</if>]
