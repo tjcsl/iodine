@@ -15,7 +15,11 @@
 	[<assign var=check value="false">]
 	[<foreach from=$favorites item="activity" key="key">]
 		[<assign var=capacity value=$activity->capacity>]
-		[<math equation="(x * 100)/(y)" x=$activity->member_count y=$capacity assign=percent>]
+		[<if isset($capacity)>]
+			[<math equation="(x * 100)/(y)" x=$activity->member_count y=$capacity assign=percent>]
+		[<else>]
+			[<assign var=percent value=0>]
+		[</if>]
 		<option value="[<$activity->aid>]" [<if $key == 0>]selected="selected"[<assign var=check value="true">][</if>]
 		[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"
 		[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"
