@@ -16,12 +16,11 @@
 		[<if isSet($inc.room)>]<td style="padding: 0px 5px;">[<$room->name>]</td>[</if>]
 		[<if isSet($inc.aid)>]<td style="padding: 0px 5px;">[<$activity->aid>]</td>[</if>]
 		[<if isSet($inc.name)>]<td style="padding: 0px 5px;">
-			[<math equation="(x * 100)/(y)" x=$activity->member_count y=$activity->capacity assign=percent>]
 			<span
 				[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"
 				[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"
 				[<elseif $activity->capacity != -1 && $activity->member_count >= $activity->capacity>] style="color: #0000FF; font-weight: bold;"
-				[<elseif $activity->capacity != -1 && $percent >= 90 >] style="color: #00878D; font-weight: bold;"[</if>]>
+				[<elseif $activity->capacity != -1 && $activity->percent_full >= 90 >] style="color: #00878D; font-weight: bold;"[</if>]>
 				[<$activity->name_r>]
 				[<if $activity->comment>] ([<$activity->comment>])[</if>]
 			</span></td>[</if>]
