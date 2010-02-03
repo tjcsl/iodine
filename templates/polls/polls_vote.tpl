@@ -11,7 +11,7 @@ function checklength(area,error) {
 	}
 }
 </script>
-<strong>[<$poll->name|escape:"html">]</strong><br /><br />
+<strong>[<$poll->name>]</strong><br /><br />
 
 [<if !$avail>]
  <font color="red">This poll is not currently available to you.  You may not have permissions to vote in this poll, the current date and time are not within the polling time window, or this poll has been disabled for other reasons.</font><br /><br />
