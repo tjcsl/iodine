@@ -7,7 +7,7 @@ function checklength(area,error) {
 	if(lengthleft >=0) {
 		error.innerHTML ="(" + (lengthleft) + " characters left)";
 	} else {
-		error.innerHTML ="<font color=red style='text-weight: strong'>Over by " + (-lengthleft) + " characters! Extra characters will be truncated.</font>";
+		error.innerHTML ="<font color='red' style='text-weight: strong'>Over by " + (-lengthleft) + " characters! Extra characters will be truncated.</font>";
 	}
 }
 </script>
