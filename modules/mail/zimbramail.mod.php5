@@ -91,7 +91,7 @@ class Zimbramail implements Module {
 	function init_pane() {
 		global $I2_USER, $I2_AUTH, $I2_ARGS;
 
-		$base_url = i2config_get('url_prefix', 'https://franklin.tjhsst.edu', 'mail');
+		$base_url = i2config_get('url_prefix', 'https://webmail.tjhsst.edu', 'mail');
 
 		if(isset($I2_ARGS[1])) {
 			if($I2_ARGS[1] == 'redirect') {
