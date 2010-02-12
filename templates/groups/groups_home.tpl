@@ -10,7 +10,7 @@
  You are currently a member of the following groups:<br />
  <ul>
  [<foreach from=$groups item=grp>]
-  <li><a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a> [<if $grp->has_permission($I2_USER,Permission::getPermission('GROUP_JOIN'))>]<em>- <a href="[<$I2_ROOT>]groups/sleave/[<$grp->gid>]">[Leave this group]</a> -</em> [</if>]([<$grp->description>])</li>
+  <li><a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a> [<if $grp->has_permission($I2_USER,'join')>]<em>- <a href="[<$I2_ROOT>]groups/sleave/[<$grp->gid>]">[Leave this group]</a> -</em> [</if>]([<$grp->description>])</li>
  [</foreach>]
  </ul>
 [<else>]

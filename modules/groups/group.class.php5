@@ -217,7 +217,12 @@ class Group {
 	* @param string $perm Which permission to check to see if the user has.
 	* @return bool TRUE if $subject has permission $perm in this group, FALSE otherwise.
 	*/
-	public function has_permission($subject, Permission $perm) {
+	public function has_permission($subject, $perm) {
+		if(is_string($perm)) {
+			if($perm=="join") {
+				$perm=Permission::getPermission('GROUP_JOIN');
+			}
+		}
 		return $this->wrap->has_permission($subject, $perm);
 	}
 

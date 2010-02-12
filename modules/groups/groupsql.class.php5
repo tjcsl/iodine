@@ -315,8 +315,14 @@ class GroupSQL extends Group {
 		return $ret;
 	}
 
-	public function has_permission($subject, Permission $perm) {
+	public function has_permission($subject, $perm) {
 		global $I2_SQL;
+
+		if(is_string($perm)) {
+			if($perm=="join") {
+				$perm=Permission::getPermission('GROUP_JOIN');
+			}
+		}
 
 		$pid = $perm->pid;
 
