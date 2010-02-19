@@ -349,7 +349,35 @@ class News implements Module {
 				$this->template_args['stories'][] = $story;
 			}
 		}
+		$this->template_args['weatherstatus']=$this->get_emerg_message();
 		return array('News',$title);
+	}
+	/**
+	* Get the emergency messages from FCPS.
+	* This is stuff like weather-related cancellations.
+	*/
+	function get_emerg_message() {
+		global $I2_ROOT;
+		$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'emerg.cache';
+		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile)>3600)) { //Don't let the cache get older than an hour.
+			$contents = $this->get_new_message();
+			$this->store_emerg_message($cachefile,$contents);
+		}
+		return $contents;
+	}
+	private function store_emerg_message($cachefile,$string) {
+		$fh = fopen($cachefile,'w');
+		fwrite($fh,$string);
+		fclose($fh);
+	}
+	private function get_new_message() {
+		$url = "http://www.fcps.edu/emergency.htm"; // FCPS Emergency announcement _really_ short summary page.
+		if( $str = file_get_contents($url) ) { // Returns false if can't get anything.
+			$str=str_replace("<p>","<p style='color: red'>",$str); // They use <p> tags for their formatting. We hijack that to do this!
+			return str_replace("href=\"","href=\"http://www.fcps.edu/",$str); // Their links are relative, so we have to do this. A better way to reliably do this would be good.
+		} else {
+			return ""; // If fcps isn't up, don't bother showing anything.
+		}
 	}
 }
 
