@@ -3,7 +3,7 @@
 <script type="text/javascript">
 function checklength(area,error) {
 	error = document.getElementById(error);
-	var lengthleft = 2000 - area.value.length - area.value.split("\n").length +1;
+	var lengthleft = 10000 - area.value.length - area.value.split("\n").length +1;
 	if(lengthleft >=0) {
 		error.innerHTML ="(" + (lengthleft) + " characters left)";
 	} else {

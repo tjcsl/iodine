@@ -191,7 +191,7 @@ class PollQuestion {
 			$uid = $I2_USER->uid;
 		switch ($this->myanswertype) {
 		case 'free_response':
-			$post = substr($post,0,min(strlen($post),2000)); // In case someone tries to put too much data in.
+			$post = substr($post,0,min(strlen($post),10000)); // In case someone tries to put too much data in.
 			$I2_SQL->query('INSERT INTO poll_votes SET pid=%d,qid=%d,uid=%d,written=%s',
 				$this->mypid, $this->myqid, $uid, $post);
 			break;
