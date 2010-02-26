@@ -359,7 +359,7 @@ class News implements Module {
 	function get_emerg_message() {
 		global $I2_ROOT;
 		$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'emerg.cache';
-		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile)>3600)) { //Don't let the cache get older than an hour.
+		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile)>1200)) { //Don't let the cache get older than an hour.
 			$contents = $this->get_new_message();
 			$this->store_emerg_message($cachefile,$contents);
 		}
