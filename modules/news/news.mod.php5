@@ -372,12 +372,23 @@ class News implements Module {
 	}
 	private function get_new_message() {
 		$url = "http://www.fcps.edu/emergency.htm"; // FCPS Emergency announcement _really_ short summary page.
-		if( $str = file_get_contents($url) ) { // Returns false if can't get anything.
+		if( $str = $this->curl_file_get_contents($url) ) { // Returns false if can't get anything.
 			$str=str_replace("<p","<p style='color: red' ",$str); // They use <p> tags for their formatting. We hijack that to do this!
 			return str_replace("href=\"","href=\"http://www.fcps.edu/",$str); // Their links are relative, so we have to do this. A better way to reliably do this would be good.
 		} else {
-			return ""; // If fcps isn't up, don't bother showing anything.
+			return "<!-- ERROR -->"; // If fcps isn't up, don't bother showing anything.
 		}
+	}
+	private function curl_file_get_contents($URL)
+	{
+		$c = curl_init();
+		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($c, CURLOPT_URL, $URL);
+		$contents = curl_exec($c);
+		curl_close($c);
+		
+		if ($contents) return $contents;
+		else return FALSE;
 	}
 }
 
