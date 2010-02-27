@@ -373,6 +373,7 @@ class News implements Module {
 	private function get_new_message() {
 		$url = "http://www.fcps.edu/emergency.htm"; // FCPS Emergency announcement _really_ short summary page.
 		if( $str = $this->curl_file_get_contents($url) ) { // Returns false if can't get anything.
+			$str=preg_replace("/<!--.*-->/s","",$str); // Remove all commented stuff.
 			$str=str_replace("<p","<p style='color: red' ",$str); // They use <p> tags for their formatting. We hijack that to do this!
 			return str_replace("href=\"","href=\"http://www.fcps.edu/",$str); // Their links are relative, so we have to do this. A better way to reliably do this would be good.
 		} else {
