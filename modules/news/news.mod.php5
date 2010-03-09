@@ -349,7 +349,7 @@ class News implements Module {
 				$this->template_args['stories'][] = $story;
 			}
 		}
-		$this->template_args['weatherstatus']="";//$this->get_emerg_message();
+		$this->template_args['weatherstatus']=$this->get_emerg_message();
 		return array('News',$title);
 	}
 	/**
