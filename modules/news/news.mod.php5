@@ -375,9 +375,14 @@ class News implements Module {
 		if( $str = $this->curl_file_get_contents($url) ) { // Returns false if can't get anything.
 			$str=preg_replace("/<!--.*-->/s","",$str); // Remove all commented stuff.
 			$str=str_replace("<p","<p style='color: red' ",$str); // They use <p> tags for their formatting. We hijack that to do this!
-			return str_replace("href=\"","href=\"http://www.fcps.edu/",$str); // Their links are relative, so we have to do this. A better way to reliably do this would be good.
+			$str=str_replace("href=\"","href=\"http://www.fcps.edu/",$str); // Their links are relative, so we have to do this. A better way to reliably do this would be good.
+			if(stristr($str,"proxy.tjhsst.edu")) {
+				return "<!-- ERROR: FCPS can't keep their info page up. -->";
+			} else {
+				return $str;
+			}
 		} else {
-			return "<!-- ERROR -->"; // If fcps isn't up, don't bother showing anything.
+			return "<!-- ERROR: We can't reach FCPS' page. -->"; // If fcps isn't up, don't bother showing anything.
 		}
 	}
 	private function curl_file_get_contents($URL)
