@@ -409,7 +409,8 @@ class StudentDirectory implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_box($display) {
-		$display->disp('studentdirectory_box.tpl');
+		$template_args['suggestenabled']=false;
+		$display->disp('studentdirectory_box.tpl',$template_args);
 	}
 
 	/**

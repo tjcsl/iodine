@@ -9,7 +9,7 @@
 */
 
 /**
-* The module that handles ajax scripts.
+* The module that handles search suggestions.
 * @package modules
 * @subpackage Suggest
 */
@@ -43,24 +43,28 @@ class Suggest implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($display) {
-		global $I2_ARGS;
-		if(!isset($I2_ARGS[1])) {
+		global $I2_ARGS,$I2_ROOT;
+		if(!isset($I2_ARGS[1]) || !isset($I2_ARGS[2])) {
 			redirect();
 		} else if($I2_ARGS[1] == 'searchsuggest') {
+			/*
 			header("Content-Type: application/xml");
 			$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'rss.cache';
 			if(!($contents = RSS::get_cache($cachefile))) {
 				$contents = RSS::update($cachefile);
 			}
-			echo $contents;
-			Display::stop_display();
-		} else if($I2_ARGS[1] == 'atom') {
-			header("Content-Type: application/xml");
-			$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'atom.cache';
-			if(!($contents = ATOM::get_cache($cachefile))) {
-				$contents = ATOM::update($cachefile);
+			unserialize($contents);*/
+			if(strlen($I2_ARGS[2])>=3) {
+				$arr = User::search_info($I2_ARGS[2]);
+				if(count($arr)>10) {
+					$arr=array_slice($arr,0,10);
+				}
+				foreach($arr as $ar) {
+					echo "<a href=\"$I2_ROOT/studentdirectory/info/$ar->uid\">" . $ar->fullname."</a><br />";
+				}
+			} else {
+				echo "";
 			}
-			echo $contents;
 			Display::stop_display();
 		} else {
 			redirect();

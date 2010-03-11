@@ -6,7 +6,7 @@
 <script language="javascript" type="text/javascript">
 	var xmlhttp;
 	function showResult(str) {
-		if (str.length==0)
+		if (str.length<3)
 		{
 			document.getElementById("livesearch").innerHTML="";
 			document.getElementById("livesearch").style.border="0px";
@@ -15,12 +15,10 @@
 		xmlhttp=createRequestObject()
 		if (xmlhttp==null)
 		{
-			alert ("Your browser does not support XML HTTP Request");
+			alert("Your browser does not support XML HTTP Request");
 			return;
 		}
-		var url="[<$I2_ROOT>]suggest/searchsuggest";
-		url=url+"?q="+str;
-		url=url+"&sid="+Math.random();
+		var url="[<$I2_ROOT>]suggest/searchsuggest/"+str;
 		xmlhttp.onreadystatechange=stateChanged;
 		xmlhttp.open("GET",url,true);
 		xmlhttp.send(null);
@@ -29,14 +27,17 @@
 	{
 		if (xmlhttp.readyState==4)
 		{
-			document.getElementById("livesearch").innerHTML=xmlhttp.responseText;
-			document.getElementById("livesearch").style.border="1px solid #A5ACB2";
+			var response = xmlhttp.responseText;
+			if(response.indexOf("html")==-1 && response.length>4) {
+				document.getElementById("livesearch").innerHTML=response;
+				document.getElementById("livesearch").style.border="1px solid #A5ACB2";
+			}
 		}
 	}
 </script>
-<!-- Add onkeyup="showResult(this.value)" -->
+<!-- Add onkeyup="showResult(this.value)" for suggestions -->
 <input name="studentdirectory_query" type="text" class="directory-field" id="studentdirectory_query"/>
-<div id="livesearch" style="margin:0px; width:194px;"></div>
+<div id="livesearch" style="margin:0px; width:194px; align=left;"></div>
 </td><td align="center">
 <input name="Submit" type="submit" value="Search" class="directory-button" />
 </td>
@@ -51,5 +52,6 @@
 		s.setAttribute("placeholder", "Search the Directory");
 		s.setAttribute("autosave", "iodine-studentdirectory-search");
 	}
+	document.getElementById("studentdirectory_query").setAttribute("autocomplete","off");
 </script>
 <span style="font-style: italic;"><a href="[<$I2_ROOT>]StudentDirectory/search/">Help</a> | <a href="[<$I2_ROOT>]studentdirectory/info/[<$I2_UID>]">Your info</a></span>
