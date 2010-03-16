@@ -116,7 +116,7 @@ class Docs implements Module {
 		global $I2_USER, $I2_ARGS;
 		$this->template_args['groups'] = Group::get_all_groups();
 		$allowed_extensions = array('.txt','.rtf','.doc','.docx','.pdf');
-		$allowed_types = array('text/plain','application/rtf','application/msword','application/vnd.ms-excel','application/pdf');
+		$allowed_types = array('text/plain','application/rtf','application/msword','application/vnd.ms-excel','application/pdf','application/vnd.ms-office','application/octet-stream');
 		$this->template_args['exts'] = implode(', ',$allowed_extensions);
 		$max_size = 10485760; // 10 MB
 		if(count($_POST) > 0) {

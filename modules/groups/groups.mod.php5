@@ -277,6 +277,9 @@ class Groups implements Module {
 		$this->template_args['group'] = $group->name;
 		$this->template_args['gid'] = $group->gid;
 		
+		// Only members of admin_all can make or delete dynamic rules, because stuff can break with or without them.
+		$this->template_args['global_admin'] = Group::admin_all()->has_member($I2_USER);
+		
 		// Only admins can alter permissions
 		$can_set_perms = $group->is_admin($I2_USER);
 		$can_add = $group->has_permission($I2_USER, Permission::getPermission(Group::PERM_ADD));

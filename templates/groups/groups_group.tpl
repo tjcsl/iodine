@@ -109,6 +109,7 @@ Group: <strong>[<$group>]</strong><br />
  <thead>
   <th>Rule type</th>
   <th>Query</th>
+[<if $global_admin>]  <th>Delete</th>[</if>]
  </thead>
  <tbody>
  [<foreach from=$dynamic_members item=member>]
@@ -119,6 +120,7 @@ Group: <strong>[<$group>]</strong><br />
    [<else>]
    <td>[<$member.query>]</td>
    [</if>]
+[<if $global_admin>]   <td><a href="[<$I2_ROOT>]groups/deldynrule/[<$member.group1->gid>]/memberid">delete</a></td>[</if>]
   </tr>
  [</foreach>]
  </tbody>
