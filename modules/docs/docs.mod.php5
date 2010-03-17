@@ -100,7 +100,9 @@ class Docs implements Module {
 			$content_types = array('.txt' => 'text/plain', '.rtf' => 'application/rtf', '.doc' => 'application/msword', '.docx' => 'application/vnd.ms-excel', '.pdf' => 'application/pdf');
 			$filename = substr(strrchr($doc->path,'/'),1);
 			$ext = strrchr($filename,'.');
-			header('Content-type: '.$content_types[$ext]);
+			header('Pragma: '); // IE won't download over SSL with default "Pragma: no-cache"
+			header('Content-Length: '.filesize("$doc->path"));
+			header('Content-Type: '.$content_types[$ext]);
 			header('Content-Disposition: attachment; filename="'.$filename.'"');
 			readfile($doc->path);
 		}
