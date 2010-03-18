@@ -105,6 +105,7 @@ class Docs implements Module {
 			header('Content-Type: '.$content_types[$ext]);
 			header('Content-Disposition: attachment; filename="'.$filename.'"');
 			readfile($doc->path);
+			die;
 		}
 		else {
 			$this->home();
