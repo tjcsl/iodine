@@ -120,11 +120,15 @@ Group: <strong>[<$group>]</strong><br />
    [<else>]
    <td>[<$member.query>]</td>
    [</if>]
-[<if $global_admin>]   <td><a href="[<$I2_ROOT>]groups/deldynrule/[<$member.group1->gid>]/memberid">delete</a></td>[</if>]
+[<if $global_admin>]   <td><a href="[<$I2_ROOT>]groups/deldynrule/[<$gid>]">delete</a></td>[</if>][<* This only supports one rule because you only need one, and also because there is no way to distinguish the rules *>]
   </tr>
  [</foreach>]
  </tbody>
 </table>
+[<else>]
+[<if $global_admin>]
+<p>Add a dynamic membership rule to this group: <form method="post" action="[<$I2_ROOT>]groups/adddynrule/[<$gid>]"><input type="text" name="rule" /><input type="submit" value="Add" /></form></p>
+[</if>]
 [</if>]
 [<if count($members) > 0>]
 <p>This group has the following static members:</p>

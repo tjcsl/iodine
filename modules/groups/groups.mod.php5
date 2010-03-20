@@ -554,22 +554,44 @@ class Groups implements Module {
 	 */
 	public function bookmarks() {
 		global $I2_USER, $I2_ARGS, $I2_QUERY, $I2_SQL;
+		if(!isset($I2_ARGS[2]) || !is_numeric($I2_ARGS[2]))
+			redirect('groups');
 		$group = new Group($I2_ARGS[2]);
-		if ($group->is_admin($I2_USER)) {
-			if (isset($I2_QUERY['action'])) {
-				d($I2_QUERY['action']);
-				switch ($I2_QUERY['action']) {
-					case 'add':
-						if(isset($I2_QUERY['name']) && isset($I2_QUERY['path']))
-							$I2_SQL->query("INSERT INTO filecenter_folders_groups VALUES (%d,%s,%s)",$group->gid,$I2_QUERY['path'],$I2_QUERY['name']);
-						break;
-					case 'remove':
-						if(isset($I2_QUERY['name']) && isset($I2_QUERY['path']))
-							$I2_SQL->query("DELETE FROM filecenter_folders_groups WHERE `gid`=%d AND `name`=%s AND `path`=%s",$group->gid,$I2_QUERY['name'],$I2_QUERY['path']);
-						break;
-				}
+		if ($group->is_admin($I2_USER) && isset($I2_QUERY['action']) && isset($I2_QUERY['name']) && isset($I2_QUERY['path'])) {
+			d($I2_QUERY['action']);
+			switch ($I2_QUERY['action']) {
+				case 'add':
+					$I2_SQL->query("INSERT INTO filecenter_folders_groups VALUES (%d,%s,%s)",$group->gid,$I2_QUERY['path'],$I2_QUERY['name']);
+					break;
+				case 'remove':
+					$I2_SQL->query("DELETE FROM filecenter_folders_groups WHERE `gid`=%d AND `name`=%s AND `path`=%s",$group->gid,$I2_QUERY['name'],$I2_QUERY['path']);
+					break;
 			}
 		}
+		redirect('groups/pane/'.$group->gid);
+	}
+	/**
+	 * Delete dynamic group rules.
+	 */
+	public function deldynrule() {
+		global $I2_USER, $I2_ARGS;
+		if(!isset($I2_ARGS[2]) || !is_numeric($I2_ARGS[2]) || !Group::admin_all()->has_member($I2_USER))
+			redirect('groups');
+		$group= new Group($I2_ARGS[2]);
+		$group->delete_dynamic_rules();
+		redirect('groups/pane/'.$group->gid);
+	}
+	/**
+	 * Add dynamic group rule.
+	 */
+	public function adddynrule() {
+		global $I2_USER, $I2_ARGS;
+		if(!isset($I2_ARGS[2]) || !is_numeric($I2_ARGS[2]))
+			redirect('groups');
+		$group=new Group($I2_ARGS[2]);
+		if(!Group::admin_all()->has_member($I2_USER) || !isset($_POST['rule']))
+			redirect('groups/pane/'.$group->gid);
+		$group->add_dynamic_rule("PHP",$_POST['rule']); //Only allowing for php rules right now.
 		redirect('groups/pane/'.$group->gid);
 	}
 }

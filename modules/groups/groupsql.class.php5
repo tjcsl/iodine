@@ -462,6 +462,25 @@ class GroupSQL extends Group {
 		return $ret;
 	}
 
+	public function delete_dynamic_rules() {
+		global $I2_SQL,$I2_USER;
+
+		if(!Group::admin_all()->has_member($I2_USER)) {
+			redirect('groups');
+		}
+		$I2_SQL->query('DELETE FROM groups_dynamic WHERE gid=%d',$this->gid);
+		return TRUE;
+	}
+
+	public function add_dynamic_rule($type,$query) {
+		global $I2_SQL, $I2_USER;
+		if(!Group::admin_all()->has_member($I2_USER)) {
+			redirect('groups');
+		}
+		$I2_SQL->query('INSERT INTO groups_dynamic VALUES (%d,%s,%s)',$this->gid,$type,$query);
+		return TRUE;
+	}
+
 	public static function get_dynamic_groups(User $user, $perms = NULL) {
 		global $I2_SQL, $I2_USER;
 		$ret = array();

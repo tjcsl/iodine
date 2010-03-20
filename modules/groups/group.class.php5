@@ -268,6 +268,20 @@ class Group {
 	}
 
 	/**
+	* Delete a group's dynamic rules.
+	*/
+	public function delete_dynamic_rules() {
+		return $this->wrap->delete_dynamic_rules();
+	}
+
+	/**
+	* Add a dynamic rule to a group.
+	*/
+	public function add_dynamic_rule($type,$query) {
+		return $this->wrap->add_dynamic_rule($type,$query);
+	}
+
+	/**
 	* Determines if a user is a member of this group.
 	*
 	* If this is an admin_* group, this method also checks to see if the user is a member of the admin_all group, and returns TRUE if they are. Otherwise, just checks if this group is listed as one that the user is a member of.
