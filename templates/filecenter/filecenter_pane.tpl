@@ -1,3 +1,10 @@
+
+[<if isset($error)>]
+<div style="text-align: left; float: left;">
+ <font color=red><b>[<$error>]</b></font>
+</div>
+[</if>]
+
 <div style="text-align: right;">
  <form method="post" action="">
   <input type="hidden" name="toggle_hide" value="1"/>
@@ -5,10 +12,12 @@
  </form>
 </div>
 
+[<if $insertperm=="true">][<* You actually do need insert permissions in afs to create directories *>]
 <form method="post" action="">
 <input type="text" name="mkdir" />
 <input type="submit" value="Create Directory"/>
 </form>
+[</if>]
 <br />
 
 <table id="filetable">
@@ -55,9 +64,6 @@
   [</foreach>]
  </tbody>
 </table>
-[<if isset($error)>]
-<font color=red><b>[<$error>]</b></font>
-[</if>]
 [<if $insertperm=='true'>]
 <div id="fileupload">
  <div>Upload a file:</div>

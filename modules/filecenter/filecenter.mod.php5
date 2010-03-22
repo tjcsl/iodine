@@ -412,7 +412,29 @@ class Filecenter implements Module {
 
 	public function handle_upload($file) {
 		if ($file['error'] != UPLOAD_ERR_OK) {
-			throw new I2Exception('Error with uploaded file: ' . $file['error']);
+			switch($file['error']) {
+				case UPLOAD_ERR_INI_SIZE: //Max size in php
+				case UPLOAD_ERR_FORM_SIZE: //Max size in html
+					$this->template_args['error'] = "The file exceeded the maximum file size.";
+					return;
+				case UPLOAD_ERR_PARTIAL:
+					$this->template_args['error'] = "There was an error with the upload. Intranet only recieved part of the file.";
+					return;
+				case UPLOAD_ERR_NO_FILE:
+					$this->template_args['error'] = "You must select a file to upload.";
+					return;
+				case UPLOAD_ERR_NO_TMP_DIR:
+					$this->template_args['error'] = "Internal error in Intranet. Temporary folder missing. Please report this to the Intranet staff.";
+					return;
+				case UPLOAD_ERR_CANT_WRITE:
+					$this->template_args['error'] = "Internal error in Intranet. Disk write failed. Please report this to the Intranet staff.";
+					return;
+				case UPLOAD_ERR_EXTENSION:
+					$this->template_args['error'] = "Internal error in Intranet. A PHP extension blocked the upload. Please report this to the Intranet staff.";
+					return;
+				default:
+					throw new I2Exception('Error with uploaded file: ' . $file['error']);
+			}
 		}
 
 		$this->filesystem->copy_file_into_system($file['tmp_name'], $this->directory . $file['name']);
