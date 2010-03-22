@@ -34,7 +34,7 @@
   <tr>
    <td><a href="."><img src="[<$I2_ROOT>]www/pics/filecenter/dir2new.png" width="16" height="16" alt="" /></a></td>
    <td>
-    <a href="" onclick="return options(this, 'cur', [<$readperm>], [<$writeperm>], [<$deleteperm>])">* Current Directory (List actions)</a>
+    <a href="" onclick="return options(this, 'Current Directory', 'cur', [<$readperm>], [<$writeperm>], [<$deleteperm>])">* Current Directory (List actions)</a>
    </td>
    <td>&nbsp;</td>
    <td>Directory</td>
