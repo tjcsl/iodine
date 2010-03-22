@@ -48,7 +48,7 @@ class StudentDirectory implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_ROOT,$I2_ARGS,$I2_USER;
+		global $I2_ROOT,$I2_ARGS,$I2_USER,$I2_LDAP;
 
 		$this->user = NULL;
 
@@ -218,6 +218,66 @@ class StudentDirectory implements Module {
 				$this->template_args['is_admin'] = Group::admin_all()->has_member($user);
 				$this->template_args['sex'] = $user->sex;
 				$this->template_args['mode'] = $mode;
+				return Array('Directory: '.$user->fname.' '.$user->lname, $user->fname.' '.$user->lname);
+			case 'preview':
+				try {
+					$user = isset($I2_ARGS[2]) ? new User($I2_ARGS[2]) : $I2_USER;
+				} catch(I2Exception $e) {
+					$this->template = 'nouser.tpl';
+					return array('Error', 'Error: User does not exist');
+				}
+
+				$I2_LDAP = LDAP::get_anonymous_bind();
+
+				try {
+					$sched = $user->schedule();
+					if (!$sched->current()) {
+						$sched = NULL;
+					}
+				} catch( I2Exception $e) {
+					$sched = NULL;
+				}
+			
+				$im_networks = Array(
+					'aim' => "AIM/AOL Screenname",
+					'yahoo' => 'Yahoo! ID',
+					'msn' => 'MSN Screenname',
+					'jabber' => 'Jabber Username',
+					'icq' => 'ICQ Number',
+					'googletalk' => 'Google Talk Username',
+					'xfire' => 'XFire handle',
+					'skype' => 'Skype handle');
+				$im_sns = Array();
+				foreach(array_keys($im_networks) as $network) {
+					$sns = $user->$network;
+					if(!empty($sns)) {
+						$method = $network . '_statuses';
+						if(!method_exists($this, $method)) {
+							$method = 'unknown_statuses';
+						}
+						$im_sns[$network] = $this->$method(array_flip((Array)$sns));
+					}
+
+				}
+				
+				$eighth = EighthActivity::id_to_activity(EighthSchedule::get_activities($user->uid));
+
+				$this->template = 'studentdirectory_pane.tpl';
+				$this->template_args['schedule'] = $sched;
+				$this->template_args['user'] = $user;
+				$this->template_args['im_sns'] = $im_sns;
+				$this->template_args['im_networks'] = $im_networks;
+				$this->template_args['im_icons'] = $I2_ROOT . 'www/status/';
+				$this->template_args['eighth'] = $eighth;
+				
+				$this->template_args['homecoming_may_vote'] = Homecoming::user_may_vote($user);
+				$this->template_args['im_an_admin'] = Group::admin_all()->has_member($I2_USER);
+				$this->template_args['is_admin'] = Group::admin_all()->has_member($user);
+				$this->template_args['sex'] = $user->sex;
+				$this->template_args['mode'] = $mode;
+
+				$I2_LDAP=LDAP::get_user_bind();
+
 				return Array('Directory: '.$user->fname.' '.$user->lname, $user->fname.' '.$user->lname);
 			default:
 				return Array('Error', 'Error: User does not exist');

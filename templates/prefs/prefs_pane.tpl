@@ -1,5 +1,6 @@
 <script src="[<$I2_ROOT>]www/js/prefs.js" type="text/javascript" language="javascript"></script>
 <script src="[<$I2_ROOT>]www/js/color_chooser.js" type="text/javascript" language="javascript"></script>
+<a href="[<$I2_ROOT>]studentdirectory/preview/[<$I2_USER->uid>]">Preview your profile page as seen by others (Beta)</a><br />
 <form method="post" action="[<$I2_ROOT>]prefs" class="boxform">
 <input type="hidden" name="prefs_form" value="" />
 <strong>Personal Information</strong>
