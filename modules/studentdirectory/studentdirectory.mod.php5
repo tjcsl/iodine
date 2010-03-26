@@ -227,7 +227,12 @@ class StudentDirectory implements Module {
 					return array('Error', 'Error: User does not exist');
 				}
 
-				$I2_LDAP = LDAP::get_anonymous_bind();
+				try {
+					$I2_LDAP = LDAP::get_generic_bind();
+				} catch( I2Exception $e) {
+					d("Generic bind failed, trying anonymous...",1);
+					$I2_LDAP = LDAP::get_anonymous_bind();
+				}
 
 				try {
 					$sched = $user->schedule();
