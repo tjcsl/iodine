@@ -275,7 +275,7 @@ class StudentDirectory implements Module {
 				$this->template_args['im_icons'] = $I2_ROOT . 'www/status/';
 				$this->template_args['eighth'] = $eighth;
 				
-				$this->template_args['homecoming_may_vote'] = Homecoming::user_may_vote($user);
+				$this->template_args['homecoming_may_vote'] = false;//Homecoming::user_may_vote($user); // Don't show this in the preview
 				$this->template_args['im_an_admin'] = Group::admin_all()->has_member($I2_USER);
 				$this->template_args['is_admin'] = Group::admin_all()->has_member($user);
 				$this->template_args['sex'] = $user->sex;
