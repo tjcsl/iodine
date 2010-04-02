@@ -14,12 +14,6 @@ body {
 	height: 100%;
 }
 
-body, div, p, span, td, th, i {
-	direction: rtl;
-	unicode-bidi: bidi-override;
-	text-align: left;
-}
-
 tt {
 	font-family: monospace, courier;
 }
