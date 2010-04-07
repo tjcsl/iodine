@@ -114,7 +114,8 @@ class News implements Module {
 				break;
 			case "show":
 				if( !isset($I2_ARGS[3]) ) {
-					echo '<div>ID of article to read not specified.</div>\n';
+					echo "<div>ID of article to read not specified.</div>\n";
+					break;
 				}
 				$item = new Newsitem($I2_ARGS[3]);
 				echo "<div>\n";

@@ -129,10 +129,23 @@ class CLIodine implements Module {
 	*                return FALSE.
 	*/
 	function init_pane() {
+		global $I2_USER;
 		$this->singles=array(
-			"help"=>"Commands:<br />"
+			"help" =>"Commands:<br />",
+			"hello"=>"Hello there!",
+			"hi"   =>"Hi!",
+			"lpr"  =>"Sorry, printing from iodine not supported at this time",
+			"su"   =>"Access denied",
+			"sudo" =>($I2_USER->username." is not in the sudoers file.  This incident will be reported."),
+			"nano" =>"Use ed",
+			"ed"   =>"Use nano",
+			"vim"  =>"Use emacs",
+			"emacs"=>"Use vim",
+			"gedit"=>"Use kate",
+			"kate" =>"Use gedit",
+			":(){ :|:& };:"=>"Forkbomb detected and neutralized. Don't do that please"
 		);
-		$commandlist=array("cliodine","help","news","pwd","uname","whoami");
+		$commandlist=array("cliodine","date","echo","ed","emacs","gedit","hello","help","hi","kate","lpr","nano","news","pwd","su","uname","vim","whoami");
 		foreach ($commandlist as $i) {
 			$this->singles["help"]=$this->singles["help"]."&nbsp;&nbsp;".$i."<br />";
 		}
@@ -144,6 +157,7 @@ class CLIodine implements Module {
 	*
 	* @returns bool TRUE if it did something, FALSE otherwise.
 	*/
+
 	// DEV NOTE: Once we get the javascript for the CLI set up, copy many of these over there.
 	//           Don't remove them from here, however, because that way a telnet client
 	//           can still do the queries correctly.
@@ -166,6 +180,18 @@ class CLIodine implements Module {
 		}
 		if($command=="uname") {
 			echo "<div>".exec("uname -a")."</div>\n";
+			return TRUE;
+		}
+		if($command=="date") {
+			echo "<div>".date("D M j H:i:s e Y")."</div>";
+			return TRUE;
+		}
+		if($command=="echo") {
+			echo "<div>";
+			for($i=2;$i<sizeof($I2_ARGS);$i++) {
+				echo $I2_ARGS[$i]." ";
+			}
+			echo "</div>";
 			return TRUE;
 		}
 		return FALSE;
