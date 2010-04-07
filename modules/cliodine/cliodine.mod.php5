@@ -66,15 +66,21 @@ class CLIodine implements Module {
 	* @param Display $disp The Display object to use for output.
 	*/
 	function display_pane($disp) {
-		global $I2_ARGS;
-		echo "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>\n";
-		echo "<html>\n";
-		echo "<head>\n";
-		echo "<title>CLIodine</title>\n";
-		echo "</head>\n";
-		echo "<body bgcolor='#000000'>\n";
-		echo "<div style='font-family: monospace; color: #FFFFFF'>\n";
-		if( isset($I2_ARGS[1])) {
+		global $I2_ARGS,$I2_ROOT;
+		if( !isset($I2_ARGS[1]) ){
+			echo "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>\n";
+			echo "<html>\n";
+			echo "<head>\n";
+			echo "<title>CLIodine</title>\n";
+			echo "<script type='text/javascript' src='".$I2_ROOT."www/js/cliodine.js'></script>\n";
+			echo "<link href='".$I2_ROOT."www/extra-css/cliodine.css' rel='stylesheet' />\n";
+			echo "</head>\n";
+			echo "<body>\n";
+			echo "<div class='console' id='terminal'>\n";
+			echo "</div>\n";
+			echo "</body>\n";
+			echo "</html>";
+		} else if ( isset($I2_ARGS[1])) {
 			if($this->do_special()) { //handle special stuff
 			} else if(get_i2module($I2_ARGS[1])) {
 				$mod= new $I2_ARGS[1];
@@ -89,9 +95,6 @@ class CLIodine implements Module {
 				echo "<div>".$I2_ARGS[1].": command not found<br /></div>\n";
 			}
 		}
-		echo "</div>\n";
-		echo "</body>\n";
-		echo "</html>";
 		Display::stop_display();
 	}
 	
@@ -116,7 +119,7 @@ class CLIodine implements Module {
 	}
 
 	/**
-	* Performs all initialization necessary for this module to be
+	* Performs all initialization necessary for this module to ba
 	* displayed as the main page.
 	*
 	* @returns mixed Either a string, which will be the title for both the
@@ -139,13 +142,23 @@ class CLIodine implements Module {
 			"sudo" =>($I2_USER->username." is not in the sudoers file.  This incident will be reported."),
 			"nano" =>"Use ed",
 			"ed"   =>"Use nano",
+			"vi"   =>"Upgrade to vim",
 			"vim"  =>"Use emacs",
 			"emacs"=>"Use vim",
 			"gedit"=>"Use kate",
 			"kate" =>"Use gedit",
-			":(){ :|:& };:"=>"Forkbomb detected and neutralized. Don't do that please"
+			":(){ :|:& };:"=>"Forkbomb detected and neutralized. Don't do that please.",
+			"bash" =>"Sorry, no recursion!",
+			"exit" =>"No, you exit! :)",
+			"quit" =>"Quitting is for losers",
+			"ssh"  =>"Remote access is not allowed through this terminal. Try the <a href='https://sun.tjhsst.edu/'>Sun Global Desktop</a>",
+			"i read the source code"=>($I2_USER->username."++! You must be cool."),
+			"shutdown"=>"shutdown: you must be root to do that!",
+			"halt" =>"halt: must be superuser.",
+			"reboot"=>"reboot: must be superuser.",
+			"poweroff"=>"poweroff: must be superuser."
 		);
-		$commandlist=array("cliodine","date","echo","ed","emacs","gedit","hello","help","hi","kate","lpr","nano","news","pwd","su","uname","vim","whoami");
+		$commandlist=array("bash","cliodine","date","echo","ed","emacs","exit","gedit","halt","hello","help","hi","kate","lpr","nano","news","poweroff","pwd","quit","reboot","shutdown","ssh","su","sudo","uname","vi","vim","whoami");
 		foreach ($commandlist as $i) {
 			$this->singles["help"]=$this->singles["help"]."&nbsp;&nbsp;".$i."<br />";
 		}
@@ -171,6 +184,7 @@ class CLIodine implements Module {
 		if($command=="pwd") {
 			global $I2_ROOT;
 			echo "<div>".$_SERVER['REQUEST_URI']."</div>\n";
+			echo $I2_ROOT;
 			return TRUE;
 		}
 		if($command=="whoami") {
@@ -192,6 +206,11 @@ class CLIodine implements Module {
 				echo $I2_ARGS[$i]." ";
 			}
 			echo "</div>";
+			return TRUE;
+		}
+		if($command=="logout") {
+			global $I2_ROOT;
+			echo "<script type='text/javscript'>window.location='".$I2_ROOT."logout'</script>";
 			return TRUE;
 		}
 		return FALSE;

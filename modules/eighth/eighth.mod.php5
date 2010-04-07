@@ -347,19 +347,69 @@ class Eighth implements Module {
 	}
 
 	/**
-	* Unused; Not supported for this module.
+	* Initialize variables for CLIodine
 	*/
 	function init_cli() {
-		return FALSE;
+		return "eighth";
 	}
 
 	/**
-	* Unused; Not supported for this module.
+	* Display a text version of the eighth period module.
 	*
 	* @param Display $disp The Display object to use for output.
 	*/
 	function display_cli($disp) {
-		return FALSE;
+		global $I2_ARGS;
+		$valid_commands = array("list","signup","old","archived");
+		if(!isset($I2_ARGS[2]) || !in_array(strtolower($I2_ARGS[2]),$valid_commands) ) {
+			return "<div>Usage: eighth list [block id]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eighth signup [activity id] [block id]<br /><br />eighth is a command for accessing and modifying eighth periods.<br /><br />Commands:<br />&nbsp;&nbsp;&nbsp;list - list all activites for today, or whatever block is specified<br />&nbsp;&nbsp;&nbsp;signup - sign up for the selected activity on all available blocks today or on the specified block<br />&nbsp;&nbsp;&nbsp;show - print the details of an activity<br />&nbsp;&nbsp;&nbsp;favorite - change the favorite status of an activity<br /></div>\n";
+		}
+		switch (strtolower($I2_ARGS[2])) {
+			case "list":
+				echo "<div>\n";
+				if( $this->stories === NULL) {
+					$this->stories = Newsitem::get_all_items(false);
+				}
+				foreach($this->stories as $story) {
+					if ((!$story->has_been_read()) && $story->readable()) {
+						echo "&nbsp;&nbsp;&nbsp;$story->nid - $story->title<br />\n";
+					}
+				}
+				echo "</div>\n";
+				break;
+			case "show":
+				if( !isset($I2_ARGS[3]) ) {
+					echo "<div>ID of article to read not specified.</div>\n";
+					break;
+				}
+				$item = new Newsitem($I2_ARGS[3]);
+				echo "<div>\n";
+				echo "$item->nid - $item->title<br /><br />\n";
+				echo "<div style='width:640px'>$item->text</div><br />\n";
+				break;
+			case "old":
+				echo "<div>\n";
+				if( $this->stories === NULL) {
+					$this->stories = Newsitem::get_all_items(true);
+				}
+				foreach($this->stories as $story) {
+					if (($archive || !$story->has_been_read()) && $story->readable()) {
+						echo "&nbsp;&nbsp;&nbsp;$story->nid - $story->title<br />\n";
+					}
+				}
+				echo "</div>\n";
+				break;
+			case "archived":
+				echo "<div>\n";
+				if( $this->stories === NULL) {
+					$this->stories = Newsitem::get_all_items(true);
+				}
+				foreach($this->stories as $story) {
+					echo "&nbsp;&nbsp;&nbsp;$story->nid - $story->title<br />\n";
+				}
+				echo "</div>\n";
+				break;
+		}
 	}
 
 	/**
