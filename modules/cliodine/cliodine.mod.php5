@@ -132,7 +132,7 @@ class CLIodine implements Module {
 		$this->singles=array(
 			"help"=>"Commands:<br />"
 		);
-		$commandlist=array("cliodine","help","news","pwd");
+		$commandlist=array("cliodine","help","news","pwd","whoami");
 		foreach ($commandlist as $i) {
 			$this->singles["help"]=$this->singles["help"]."&nbsp;&nbsp;".$i."<br />";
 		}
@@ -157,6 +157,11 @@ class CLIodine implements Module {
 		if($command=="pwd") {
 			global $I2_ROOT;
 			echo "<div>".$_SERVER['REQUEST_URI']."</div>\n";
+			return TRUE;
+		}
+		if($command=="whoami") {
+			global $I2_USER;
+			echo "<div>".$I2_USER->username."</div>\n";
 			return TRUE;
 		}
 		return FALSE;
