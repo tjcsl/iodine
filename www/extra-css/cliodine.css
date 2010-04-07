@@ -1,0 +1,8 @@
+div.console span {
+	color: #FFFFFF;
+	background-color: #000000;
+	font-family: monospace;
+}
+body {
+	background-color: #000000;
+}
