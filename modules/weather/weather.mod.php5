@@ -67,6 +67,22 @@ class Weather implements Module {
 		return FALSE;
 	}
 
+	/**
+	* Unused; Not supported for this module.
+	*/
+	function init_cli() {
+		return FALSE;
+	}
+
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_cli($disp) {
+		return FALSE;
+	}
+
 	public function init_box() {
 		$this->makeData();
 		return 'Current Weather at TJ';

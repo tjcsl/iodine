@@ -40,6 +40,14 @@ interface Module {
 	function display_mobile($disp);
 
 	/**
+	* Returns text to be displayed on a cli.
+	*
+	* @param Display $disp The Display object to use. Don't use it.
+	* @abstract
+	*/
+	function display_cli($disp);
+
+	/**
 	* Gets the module's name.
 	*
 	* @returns string The name of the module.
@@ -84,5 +92,13 @@ interface Module {
 	* @abstract
 	*/
 	function init_mobile();
+	/**
+	* Performs all initialization necessary for cli display
+	*
+	* @returns string The title of the command, otherwise FALSE if it
+	* 		  isn't ready for the cli.
+	* @abstract
+	*/
+	function init_cli();
 }
 ?>

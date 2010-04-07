@@ -33,6 +33,22 @@ class Remote implements Module {
 		return FALSE;
 	}
 
+	/**
+	* Unused; Not supported for this module.
+	*/
+	function init_cli() {
+		return FALSE;
+	}
+
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_cli($disp) {
+		return FALSE;
+	}
+
 	function init_pane() {
 		return FALSE;
 	}

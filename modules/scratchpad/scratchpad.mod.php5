@@ -28,6 +28,22 @@ class Scratchpad implements Module {
 		return FALSE;
 	}
 
+	/**
+	* Unused; Not supported for this module.
+	*/
+	function init_cli() {
+		return FALSE;
+	}
+
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_cli($disp) {
+		return FALSE;
+	}
+
 	public function init_box() {
 		GLOBAL $I2_USER, $I2_SQL;
 		$this->template_args['text'] = 'Loading...'; //$I2_SQL->query('SELECT padtext FROM scratchpad WHERE uid=%d',$I2_USER->uid)->fetch_single_value();

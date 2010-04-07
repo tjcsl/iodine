@@ -82,6 +82,73 @@ class News implements Module {
 	}
 
 	/**
+	* Returning the command title
+	*/
+	function init_cli() {
+		return "news";
+	}
+
+	/**
+	* Handle the news command.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_cli($disp) {
+		global $I2_ARGS;
+		$valid_commands = array("list","show","old","archived");
+		if(!isset($I2_ARGS[2]) || !in_array(strtolower($I2_ARGS[2]),$valid_commands) ) {
+			return "<div>Usage: news list<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;news show [news id]<br /><br />news is a command for reading Iodine news.<br /><br />Commands:<br />&nbsp;&nbsp;&nbsp;list - list all currently active news articles<br />&nbsp;&nbsp;&nbsp;show - print out the content of a news article<br />&nbsp;&nbsp;&nbsp;old - printa list of out old news<br />&nbsp;&nbsp;&nbsp;archived - print out a list of archived news<br /></div>\n";
+		}
+		switch (strtolower($I2_ARGS[2])) {
+			case "list":
+				echo "<div>\n";
+				if( $this->stories === NULL) {
+					$this->stories = Newsitem::get_all_items(false);
+				}
+				foreach($this->stories as $story) {
+					if ((!$story->has_been_read()) && $story->readable()) {
+						echo "&nbsp;&nbsp;&nbsp;$story->nid - $story->title<br />\n";
+					}
+				}
+				echo "</div>\n";
+				break;
+			case "show":
+				if( !isset($I2_ARGS[3]) ) {
+					echo '<div>ID of article to read not specified.</div>\n';
+				}
+				$item = new Newsitem($I2_ARGS[3]);
+				echo "<div>\n";
+				echo "$item->nid - $item->title<br /><br />\n";
+				echo "<div style='width:640px'>$item->text</div><br />\n";
+				break;
+			case "old":
+				echo "<div>\n";
+				if( $this->stories === NULL) {
+					$this->stories = Newsitem::get_all_items(true);
+				}
+				foreach($this->stories as $story) {
+					if (($archive || !$story->has_been_read()) && $story->readable()) {
+						echo "&nbsp;&nbsp;&nbsp;$story->nid - $story->title<br />\n";
+					}
+				}
+				echo "</div>\n";
+				break;
+			case "archived":
+				echo "<div>\n";
+				if( $this->stories === NULL) {
+					$this->stories = Newsitem::get_all_items(true);
+				}
+				foreach($this->stories as $story) {
+					echo "&nbsp;&nbsp;&nbsp;$story->nid - $story->title<br />\n";
+				}
+				echo "</div>\n";
+				break;
+			default:
+				return "<div>Error: unregognisable input</div>\n";
+		}
+	}
+
+	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {

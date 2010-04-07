@@ -40,6 +40,22 @@ class Polls implements Module {
 	}
 
 	/**
+	* Unused; Not supported for this module.
+	*/
+	function init_cli() {
+		return FALSE;
+	}
+
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_cli($disp) {
+		return FALSE;
+	}
+
+	/**
 	 * Initalizes the pane.
 	 * Steps in order:
 	 * @ No arguments -> home
