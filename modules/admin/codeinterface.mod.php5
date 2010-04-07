@@ -39,19 +39,19 @@ class CodeInterface implements Module {
 	}
 
 	/**
-	* Unused; Not supported for this module.
+	* Print a more specific message.
 	*/
 	function init_cli() {
-		return FALSE;
+		return "codeinterface";
 	}
 
 	/**
-	* Unused; Not supported for this module.
+	* We don't really support this yet, but make it look like we do.
 	*
 	* @param Display $disp The Display object to use for output.
 	*/
 	function display_cli($disp) {
-		return FALSE;
+		return "<div>Access Denied</div>";
 	}
 
 	/**

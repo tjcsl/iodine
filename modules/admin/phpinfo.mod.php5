@@ -35,10 +35,10 @@ class PHPInfo implements Module {
 	}
 
 	/**
-	* Unused; Not supported for this module.
+	* Send back the command name.
 	*/
 	function init_cli() {
-		return FALSE;
+		return "phpinfo";
 	}
 
 	/**
@@ -47,7 +47,15 @@ class PHPInfo implements Module {
 	* @param Display $disp The Display object to use for output.
 	*/
 	function display_cli($disp) {
-		return FALSE;
+		global $I2_USER;
+		if (!$I2_USER->is_group_member('admin_all'))
+			return "<div>Access Denied</div>";
+		ob_start();
+		phpinfo();
+		$pinfo=ob_get_contents();
+		ob_end_clean();
+		$pinfo=preg_replace( '%^.*<body>(.*)</body>.*$%ms','$1',$pinfo);
+		return $pinfo;
 	}
 
 	/**

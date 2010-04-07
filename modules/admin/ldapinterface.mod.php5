@@ -43,19 +43,19 @@ class LDAPInterface implements Module {
 	}
 
 	/**
-	* Unused; Not supported for this module.
+	* Better message.
 	*/
 	function init_cli() {
-		return FALSE;
+		return "ldapinterface";
 	}
 
 	/**
-	* Unused; Not supported for this module.
+	* Make it look like it works, but it doesn't.
 	*
 	* @param Display $disp The Display object to use for output.
 	*/
 	function display_cli($disp) {
-		return FALSE;
+		return "<div>Access Denied</div>";
 	}
 
 	/**

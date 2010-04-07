@@ -101,49 +101,45 @@ class News implements Module {
 		}
 		switch (strtolower($I2_ARGS[2])) {
 			case "list":
-				echo "<div>\n";
+				$string= "<div>\n";
 				if( $this->stories === NULL) {
 					$this->stories = Newsitem::get_all_items(false);
 				}
 				foreach($this->stories as $story) {
 					if ((!$story->has_been_read()) && $story->readable()) {
-						echo "&nbsp;&nbsp;&nbsp;$story->nid - $story->title<br />\n";
+						$string.= "&nbsp;&nbsp;&nbsp;$story->nid - $story->title<br />\n";
 					}
 				}
-				echo "</div>\n";
-				break;
+				$string.="</div>\n";
+				return $string;
 			case "show":
 				if( !isset($I2_ARGS[3]) ) {
-					echo "<div>ID of article to read not specified.</div>\n";
-					break;
+					return "<div>ID of article to read not specified.</div>\n";
 				}
 				$item = new Newsitem($I2_ARGS[3]);
-				echo "<div>\n";
-				echo "$item->nid - $item->title<br /><br />\n";
-				echo "<div style='width:640px'>$item->text</div><br />\n";
-				break;
+				return "<div>\n$item->nid - $item->title<br /><br />\n<div style='width:640px'>$item->text</div><br />";
 			case "old":
-				echo "<div>\n";
+				$string= "<div>\n";
 				if( $this->stories === NULL) {
 					$this->stories = Newsitem::get_all_items(true);
 				}
 				foreach($this->stories as $story) {
 					if (($archive || !$story->has_been_read()) && $story->readable()) {
-						echo "&nbsp;&nbsp;&nbsp;$story->nid - $story->title<br />\n";
+						$string.= "&nbsp;&nbsp;&nbsp;$story->nid - $story->title<br />\n";
 					}
 				}
-				echo "</div>\n";
-				break;
+				$string.="</div>\n";
+				return $string;
 			case "archived":
-				echo "<div>\n";
+				$string= "<div>\n";
 				if( $this->stories === NULL) {
 					$this->stories = Newsitem::get_all_items(true);
 				}
 				foreach($this->stories as $story) {
-					echo "&nbsp;&nbsp;&nbsp;$story->nid - $story->title<br />\n";
+					$string.= "&nbsp;&nbsp;&nbsp;$story->nid - $story->title<br />\n";
 				}
-				echo "</div>\n";
-				break;
+				$string.="</div>\n";
+				return $string;
 			default:
 				return "<div>Error: unregognisable input</div>\n";
 		}

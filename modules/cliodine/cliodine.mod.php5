@@ -158,7 +158,7 @@ class CLIodine implements Module {
 			"reboot"=>"reboot: must be superuser.",
 			"poweroff"=>"poweroff: must be superuser."
 		);
-		$commandlist=array("bash","cliodine","date","echo","ed","emacs","exit","gedit","halt","hello","help","hi","kate","lpr","nano","news","poweroff","pwd","quit","reboot","shutdown","ssh","su","sudo","uname","vi","vim","whoami");
+		$commandlist=array("bash","cliodine","codeinterface","date","echo","ed","emacs","exit","gedit","halt","hello","help","hi","kate","ldapinterface","lpr","mysqlinterface","nano","news","phpinfo","poweroff","pwd","quit","reboot","shutdown","ssh","su","sudo","uname","vi","vim","weather","whoami");
 		foreach ($commandlist as $i) {
 			$this->singles["help"]=$this->singles["help"]."&nbsp;&nbsp;".$i."<br />";
 		}

@@ -68,10 +68,11 @@ class Weather implements Module {
 	}
 
 	/**
-	* Unused; Not supported for this module.
+	* Build the dataset for the cli
 	*/
 	function init_cli() {
-		return FALSE;
+		$this->makeData();
+		return "weather";
 	}
 
 	/**
@@ -80,7 +81,13 @@ class Weather implements Module {
 	* @param Display $disp The Display object to use for output.
 	*/
 	function display_cli($disp) {
-		return FALSE;
+		if( isset($this->template_args['error']) ) {
+			return "<div>".$this->template_args['error']."</div>";
+		}
+		$str ="<div>\n";
+		$str.="Current temperature is {$this->template_args['temperature']}<br />\n";
+		$str.="Rain accumulation is {$this->template_args['rain']} inch(es)";
+		return $str;
 	}
 
 	public function init_box() {
