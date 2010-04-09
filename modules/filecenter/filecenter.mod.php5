@@ -88,10 +88,108 @@ class Filecenter implements Module {
 	}
 
 	/**
-	* Unused; Not supported for this module.
+	* Incomplete: will tie in more directly to cliodine
 	*/
 	function init_cli() {
-		return FALSE;
+		global $I2_USER, $I2_ARGS, $I2_QUERY, $I2_SQL, $I2_LOG, $I2_AUTH;
+
+		//Make sure the address ends in a trailing slash.
+		//...but only if first arg isn't cslauth.  Yes this is hackish. --wyang
+		if(isSet($I2_ARGS[1]) && $I2_ARGS[1] != "cslauth")
+		{
+			$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
+			if(substr($_SERVER['REDIRECT_QUERY_STRING'], $index-1, 1) != "/")
+				redirect(substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index) . "/");
+		}
+
+		$system_type = isSet($I2_ARGS[1]) ? $I2_ARGS[1] : 'undefined';
+		
+		if (!isset($_SESSION['csl_show_hidden_files'])) {
+			$_SESSION['csl_show_hidden_files'] = FALSE;
+		}
+		if (isset($_REQUEST['toggle_hide'])) {
+			$_SESSION['csl_show_hidden_files'] = !$_SESSION['csl_show_hidden_files'];
+		}
+
+		$this->show_hidden_files = $_SESSION['csl_show_hidden_files'];
+
+		if ($system_type == 'cslauth' && isset($_REQUEST['user']) && isset($_REQUEST['password'])) {
+			//$I2_SQL->query("INSERT INTO cslfiles (uid,user,pass) VALUES(%d,%s,%s)",);
+			/* 
+			 * We shouldn't store pass in a mysql table, but we could store a cslusername
+			 * and a setting that says if the pass is the same as intranet password.  If it is
+			 * we log in user, if not we prompt for password.
+			 * -Sam
+			 */
+			$_SESSION['csl_username'] = $_REQUEST['user'];
+			$_SESSION['csl_password'] = $_REQUEST['password'];
+			redirect('filecenter/csl/user/'.$_SESSION['csl_username'].'/');
+		}
+		else if (!isSet($_SESSION['csl_username'])) {
+			$_SESSION['csl_username'] = $_SESSION['i2_username'];
+			$_SESSION['csl_password'] = $I2_AUTH->get_user_password();
+		}
+		else {
+			$this->template_args['csl_failed_login'] = TRUE;
+		}
+
+		eval($I2_SQL->query('SELECT `code` FROM filecenter_filesystems WHERE `name`=%s',$system_type)->fetch_single_value());
+		
+		$this->directory = '/';
+		
+		if (count($I2_ARGS) > 2) {
+			$this->directory .= implode('/', array_slice($I2_ARGS, 2)) . '/';
+		}
+
+		if (isset($_FILES['file'])) {
+			d('Received uploaded file');
+			$this->handle_upload($_FILES['file']);
+		}
+
+		$file = $this->filesystem->get_file($this->directory);
+		if(!$file) {
+			throw new I2Exception('Filesystem returned invalid file object.');
+		}
+		if (isset($I2_QUERY['download']) || $file->is_file()) {
+			if ($file->is_directory()) {
+				$this->send_zipped_dir($this->directory);
+			} else {
+				if ($I2_QUERY['download'] == 'zip') {
+					$this->send_zipped_file($this->directory);
+				} else {
+					$this->file_header($file->get_name(), $file->get_size());
+					$this->filesystem->echo_contents($this->directory);
+					die;
+				}
+			}
+		} else if (isSet($I2_QUERY['rename'])) {
+			$from = $this->directory . $I2_QUERY['rename'];
+			$to = $this->directory . $I2_QUERY['to'];
+			if ($from != $to) {
+				$this->filesystem->move_file($from, $to);
+			}
+			redirect("filecenter/$system_type"."{$this->directory}");
+		} else if (isSet($_REQUEST['mkdir'])) {
+			$this->filesystem->make_dir($this->directory . $_REQUEST['mkdir']);
+			redirect("filecenter/$system_type"."{$this->directory}");
+		} else if (isSet($I2_QUERY['rmf'])) {
+			$this->filesystem->remove_file($this->directory . $I2_QUERY['rmf']);
+			redirect("filecenter/$system_type"."{$this->directory}");
+		} else if (isSet($I2_QUERY['rml'])) {
+			$this->filesystem->remove_link($this->directory . $I2_QUERY['rml']);
+			redirect("filecenter/$system_type"."{$this->directory}");
+		} else if (isSet($I2_QUERY['rmd'])) {
+			$this->filesystem->remove_dir($this->directory . $I2_QUERY['rmd']);
+			redirect("filecenter/$system_type"."{$this->directory}");
+		} else if (isSet($I2_QUERY['rmld'])) {
+			$this->filesystem->remove_link($this->directory . $I2_QUERY['rmld']);
+			redirect("filecenter/$system_type"."{$this->directory}");
+		} else if (isSet($I2_QUERY['rmd_recursive'])) {
+			$this->filesystem->remove_dir_recursive($this->directory . $I2_QUERY['rmd_recursive']);
+			redirect("filecenter/$system_type"."{$this->directory}");
+		}
+
+		return 'Filecenter';
 	}
 
 	/**
