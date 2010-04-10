@@ -79,7 +79,7 @@ class Feeds implements Module {
 			echo $contents;
 			Display::stop_display();
 		} else if($I2_ARGS[1] == 'news.odp') {
-			header("Content-Type: application/vnd.oasis.opendocument.text");
+			header("Content-Type: application/vnd.oasis.opendocument.presentation");
 			$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'newsodp.cache';
 			if(!($contents = NewsODP::get_cache($cachefile))) {
 				$contents = NewsODP::update($cachefile);
