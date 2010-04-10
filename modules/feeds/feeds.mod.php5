@@ -78,6 +78,14 @@ class Feeds implements Module {
 			}
 			echo $contents;
 			Display::stop_display();
+		} else if($I2_ARGS[1] == 'news.odp') {
+			header("Content-Type: application/vnd.oasis.opendocument.text");
+			$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'newsodp.cache';
+			if(!($contents = NewsODP::get_cache($cachefile))) {
+				$contents = NewsODP::update($cachefile);
+			}
+			echo $contents;
+			Display::stop_display();
 		} else {
 			redirect();
 		}
@@ -86,6 +94,7 @@ class Feeds implements Module {
 	public static function update() {
 		RSS::update();
 		ATOM::update();
+		NewsODP::update();
 	}
 	/**
 	* Required by the {@link Module} interface.
