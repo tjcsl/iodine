@@ -1,11 +1,20 @@
 var ctrlpressed=false;
+var ltext;
+var rtext;
+var cursor;
+var inputspan;
 function pressed(e) {
 	if( e.which>=32 && e.which<=126) {
 		var character=String.fromCharCode(e.which)
 		var letter=character.toLowerCase();
 	}
 	if(letter) {
-		alert(letter+"_:_"+character+"__"+ctrlpressed);
+		//alert(letter+"_:_"+character+"__"+ctrlpressed);
+		ltext.innerHTML=ltext.innerHTML+character;
+	} else if (e.which==8) {
+		if(ltext.innerHTML.length >0) {
+			ltext.innerHTML=ltext.innerHTML.substring(0,ltext.innerHTML.length-1);
+		}
 	}
 }
 function specialdown(e) {
@@ -17,20 +26,20 @@ function specialup(e) {
 		ctrlpressed=false;
 }
 function newprompt() {
-	var inputspan = document.createElement("span");
+	inputspan = document.createElement("span");
 	 inputspan.id="inputspan";
 	 var promptstatic = document.createElement("span");
 	  promptstatic.id="promptstatic";
 	  var j = document.createTextNode(username + "@iodine:~$ ");
 	  promptstatic.appendChild(j);
 	 inputspan.appendChild(promptstatic);
-	 var ltext = document.createElement("span");
+	 ltext = document.createElement("span");
 	  ltext.id="ltext";
 	 inputspan.appendChild(ltext);
-	 var cursor= document.createElement("span");
+	 cursor= document.createElement("span");
 	  cursor.id="cursor";
 	 inputspan.appendChild(cursor);
-	 var rtext = document.createElement("span");
+	 rtext = document.createElement("span");
 	  rtext.id="rtext";
 	 inputspan.appendChild(rtext);
 	document.getElementById("terminal").appendChild(inputspan);
