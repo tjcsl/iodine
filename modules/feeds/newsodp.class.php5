@@ -51,7 +51,7 @@ class NewsODP {
 			$p.="  <foil>\n";
 			$p.="    <title>".strip_tags($item->title)."</title>\n";
 			//$p.="    <link>".$I2_ROOT."news/show/$item->nid</link>\n";
-			$p.="    <para>".htmlspecialchars($item->text)."</para>\n";
+			$p.="    <para>".strip_tags($item->text)."</para>\n";
 			//$p.="    <pubDate>".date("r",strtotime($item->posted))."</pubDate>\n";
 			//$p.="    <guid>".$I2_ROOT."news/show/$item->nid</guid>\n";
 			$p.="  </foil>\n";
