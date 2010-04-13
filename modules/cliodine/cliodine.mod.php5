@@ -168,7 +168,8 @@ class CLIodine implements Module {
 			"shutdown"=>"shutdown: you must be root to do that!",
 			"halt" =>"halt: must be superuser.",
 			"reboot"=>"reboot: must be superuser.",
-			"poweroff"=>"poweroff: must be superuser."
+			"poweroff"=>"poweroff: must be superuser.",
+			"cat"=>"You're a kitty!"
 		);
 		$commandlist=array("bash","cliodine","codeinterface","date","echo","ed","emacs","exit","gedit","halt","hello","help","hi","kate","ldapinterface","lpr","mysqlinterface","nano","news","phpinfo","poweroff","pwd","quit","reboot","shutdown","ssh","su","sudo","uname","vi","vim","weather","whoami");
 		foreach ($commandlist as $i) {
