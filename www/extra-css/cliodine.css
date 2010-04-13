@@ -1,4 +1,20 @@
-div.console span {
+span.cursor {
+	color: #000000;
+	background-color: #FFFFFF;
+}
+span.darkcursor {
+	color: #FFFFFF;
+	background-color: #000000;
+}
+span.ltext {
+	color: #FFFFFF;
+	background-color: #000000;
+}
+span.rtext {
+	color: #FFFFFF;
+	background-color: #000000;
+}
+span.inputspan {
 	color: #FFFFFF;
 	background-color: #000000;
 	font-family: monospace;
