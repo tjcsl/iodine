@@ -3,6 +3,11 @@ div.console span {
 	background-color: #000000;
 	font-family: monospace;
 }
+div.console div {
+	color: #FFFFFF;
+	background-color: #000000;
+	font-family: monospace;
+}
 body {
 	background-color: #000000;
 }
