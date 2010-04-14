@@ -5,6 +5,7 @@ var cursor;
 var inputspan;
 var idoffset=0;
 var timer;
+var dropinput=1;
 
 var ajaxRequest;
 
@@ -35,6 +36,8 @@ ajaxRequest.onreadystatechange = function(){
 }
 
 function pressed(e) {
+	if( dropinput==1)
+		return;
 	if( e.which>=32 && e.which<=126) {
 		var character=String.fromCharCode(e.which)
 		var letter=character.toLowerCase();
@@ -51,12 +54,18 @@ function pressed(e) {
 		clearTimeout(timer);
 		brighten();
 	} else if (e.which==13) { // Enter
+		dropinput=1;
 		var str=ltext.innerHTML+cursor.innerHTML+rtext.innerHTML;
 		str=str.replace("&nbsp;"," ");
-		str=str.replace(" ","/");
-		str=i2root+"cliodine/"+str;
-		ajaxRequest.open("GET",str,true);
-		ajaxRequest.send(null);
+		if(!handleinjs(str)) {
+			str=str.replace(" ","/");
+			str=i2root+"cliodine/"+str;
+			ajaxRequest.open("GET",str,true);
+			ajaxRequest.send(null);
+		} else {
+			idoffset+=1;
+			newprompt();
+		}
 	} else if (e.keyCode>=37&&e.keyCode<=40) { // Arrow Keys
 		switch (e.keyCode) {
 			case 37:
@@ -111,6 +120,7 @@ function newprompt() {
 	 inputspan.appendChild(rtext);
 	document.getElementById("terminal").appendChild(inputspan);
 	document.getElementById("terminal").appendChild(document.createElement("br"));
+	dropinput=0;
 }
 function brighten() {
 	cursor.setAttribute("class","cursor");
@@ -126,4 +136,15 @@ function init() {
 	document.onkeyup=   function(e){ specialup(e)};
 	newprompt();
 	timer=setTimeout("darken()",500);
+}
+function handleinjs(str) {
+	//alert(str.substr(0,5).toLowerCase());
+	if(str.substr(0,5).toLowerCase() == "clear") {
+		var term = document.getElementById("terminal");
+		while(term.childNodes.length>=1) {
+			term.removeChild(term.firstChild);
+		}
+		return true;
+	}
+	return false;
 }
