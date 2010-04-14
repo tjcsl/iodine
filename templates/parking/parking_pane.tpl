@@ -5,18 +5,17 @@ Parking applicants,<br /><br />
 Complete the following online application no
 later than [<$deadline>].
 In addition to completing this online component, <b>there is a paper application available from the main office that must be filled out and returned to the security office by the same date.
-Students failing to apply online during the designated "online application period" will be allocated a parking space AFTER all other spaces have been assigned, if any are available.</b>
+Students failing to apply online or by paper application during the designated "application period" will be allocated a parking space AFTER all other spaces have been assigned, if any are available.</b>
 <b>Do not include payment with the application; payment is due in the fall when you pick up your parking permit.</b>
-You must also plan to have your driver's license by September 2, 2009 and have no more than 11 eighth period unexcused absences to be eligible. <b> You must have no outstanding debts to TJHSST.</b>
+You must also plan to have your driver's license by September 7, 2010 and have no more than 11 eighth period unexcused absences to be eligible. <b> You must have no outstanding debts to TJHSST.</b>
 </p>
+<p>To encourage ride sharing joint applicants are guarenteed student parking but recieve no priority status. <b> Joint applications will be allocated parking spaces based on the same priorities as all other applicants.</b></p>
 <p>
 Based on the number of student applications received, the following prioritized criteria will be used for allocating student parking spaces:<br />
 <ol>
-<li>Senior-Senior or Senior-Junior (Joint Application) -- Each student must have 0 to 3 Eighth Period Unexcused Absences</li>
 <li>Seniors with no Eighth Period Unexcused Absences</li>
 <li>Seniors with 1 to 5 Eighth Period Unexcused Absences</li>
 <li>Seniors with no more than 6 to 11 Eighth Period Unexcused Absences</li>
-<li>Junior-Junior (Joint Application) -- Each student must have 0 to 3 Eighth Period Unexcused Absences</li>
 <li>Juniors with no Eighth Period Unexcused Absences</li>
 <li>Juniors with 1 to 5 Eighth Period Unexcused Absences</li>
 <li>Juniors with no more than 6 to 11 Eighth Period Unexcused Absences</li>
