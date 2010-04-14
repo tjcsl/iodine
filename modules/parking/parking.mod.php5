@@ -41,10 +41,15 @@ class Parking implements Module {
 	 * of a good way to flexibly do this.
 	 * BAD. BAD. BAD. HACKY.
 	 */
-	private $query = 'SELECT *,
-			(skips + other_driver_skips * other_driver_approved) AS totalskips,
+/*
+			If they ever want to re-prioritize joint parking, switch in these two lines
 			(other_driver_approved * (skips <= 3 AND other_driver_skips * other_driver_approved <= 3)) as s0,
 			((skips < 1 AND other_driver_skips * other_driver_approved < 1) * (NOT other_driver_approved)) as s1,
+*/
+	private $query = 'SELECT *,
+			(skips + other_driver_skips * other_driver_approved) AS totalskips,
+			(skips <= 3 AND other_driver_skips * other_driver_approved <= 3) as s0,
+			(skips < 1 AND other_driver_skips * other_driver_approved < 1) as s1,
 			(skips < 6 AND other_driver_skips * other_driver_approved < 6) as s2,
 			(skips < 11 AND other_driver_skips * other_driver_approved < 11) as s3,
 			(skips < 12 AND other_driver_skips * other_driver_approved < 12) as s4
