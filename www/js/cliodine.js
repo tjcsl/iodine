@@ -54,8 +54,28 @@ function pressed(e) {
 		var str=ltext.innerHTML+cursor.innerHTML+rtext.innerHTML;
 		str=str.replace("&nbsp;"," ");
 		str=str.replace(" ","/");
+		str=i2root+"cliodine/"+str;
 		ajaxRequest.open("GET",str,true);
-		ajaxRequest.send();
+		ajaxRequest.send(null);
+	} else if (e.keyCode>=37&&e.keyCode<=40) { // Arrow Keys
+		switch (e.keyCode) {
+			case 37:
+				if(ltext.innerHTML.length>0) {
+					rtext.innerHTML=cursor.innerHTML+rtext.innerHTML;
+					cursor.innerHTML=ltext.innerHTML.charAt(ltext.innerHTML.length-1);
+					ltext.innerHTML=ltext.innerHTML.substr(0,ltext.innerHTML.length-1);
+				}
+				break;
+			case 38:
+				if(rtext.innerHTML.length>0) {
+					ltext.innerHTML=ltext.innerHTML+cursor.innerHTML;
+					cursor.innerHTML=rtext.innerHTML.charAt(0);
+					rtext.innerHTML=rtext.innerHTML.substr(1,rtext.innerHTML.length);
+				}
+				break;
+		}
+		clearTimeout(timer);
+		brighten();
 	}
 }
 function specialdown(e) {

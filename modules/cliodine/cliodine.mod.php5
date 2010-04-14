@@ -74,6 +74,7 @@ class CLIodine implements Module {
 			echo "<title>CLIodine</title>\n";
 			echo "<script type=\"text/javascript\">\n";
 			echo "var username='{$I2_USER->username}';\n";
+			echo "var i2root='{$I2_ROOT}';\n";
 			/*echo "}\n";
 			echo "\n";
 			echo "\n";
@@ -169,9 +170,19 @@ class CLIodine implements Module {
 			"halt" =>"halt: must be superuser.",
 			"reboot"=>"reboot: must be superuser.",
 			"poweroff"=>"poweroff: must be superuser.",
-			"cat"=>"You're a kitty!"
+			"cat"=>"You're a kitty!",
+			"screw you"=>"screw: Screwdriver not found.",
+			"finger"=>"How rude!",
+			"kill"=>"Killing isn't nice :(",
+			"apt-get"=>"Usage: apt-get [action]",
+			"apt-get moo"=>"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(__)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(oo)<br />&nbsp;&nbsp;&nbsp;/------\/&nbsp;<br />&nbsp;&nbsp;/&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;<br />&nbsp;*&nbsp;&nbsp;/\---/\&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;~~&nbsp;&nbsp;&nbsp;~~&nbsp;&nbsp;&nbsp;<br />....\"Have&nbsp;you&nbsp;mooed&nbsp;today?\"...",
+			"o hai thar"=>"hai!!!",
+			"lose the game"=>"Awww, you big meanie, I lost!",
+			"rickroll"=>"Iodine would never do something so cruel.<br /><br />Iodine will never give you up.<br />Iodine will never let you down.<br />Iodine will never run around and hurt you.",
+			"i lost the game"=>"Aww, now I lost the game too!"
+
 		);
-		$commandlist=array("bash","cliodine","codeinterface","date","echo","ed","emacs","exit","gedit","halt","hello","help","hi","kate","ldapinterface","lpr","mysqlinterface","nano","news","phpinfo","poweroff","pwd","quit","reboot","shutdown","ssh","su","sudo","uname","vi","vim","weather","whoami");
+		$commandlist=array("apt-get","bash","cliodine","codeinterface","date","echo","ed","emacs","exit","finger","gedit","halt","hello","help","hi","kate","kill","ldapinterface","lpr","mysqlinterface","nano","news","phpinfo","poweroff","pwd","quit","reboot","shutdown","ssh","su","sudo","uname","vi","vim","weather","whoami");
 		foreach ($commandlist as $i) {
 			$this->singles["help"]=$this->singles["help"]."&nbsp;&nbsp;".$i."<br />";
 		}
@@ -189,11 +200,21 @@ class CLIodine implements Module {
 	//           can still do the queries correctly.
 	function do_special() {
 		global $I2_ARGS;
-		$command = strtolower($I2_ARGS[1]);
+		$command = rtrim(strtolower($I2_ARGS[1]));
+		$commandconcat="";
+		for($i=1;$i<sizeof($I2_ARGS);$i++) {
+			$commandconcat.=$I2_ARGS[$i]." ";
+		}
+		$commandconcat=rtrim($commandconcat);
+		if(array_key_exists($commandconcat,$this->singles)) {
+			echo "<div>".$this->singles[$commandconcat]."</div>\n";
+			return TRUE;
+		}
 		if(array_key_exists($command,$this->singles)) {
 			echo "<div>".$this->singles[$command]."</div>\n";
 			return TRUE;
 		}
+		
 		if($command=="pwd") {
 			global $I2_ROOT;
 			echo "<div>".$_SERVER['REQUEST_URI']."</div>\n";
