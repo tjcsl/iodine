@@ -183,9 +183,14 @@ class CLIodine implements Module {
 
 		);
 		$commandlist=array("apt-get","bash","cliodine","codeinterface","date","echo","ed","emacs","exit","finger","gedit","halt","hello","help","hi","kate","kill","ldapinterface","lpr","mysqlinterface","nano","news","phpinfo","poweroff","pwd","quit","reboot","shutdown","ssh","su","sudo","uname","vi","vim","weather","whoami");
-		foreach ($commandlist as $i) {
-			$this->singles["help"]=$this->singles["help"]."&nbsp;&nbsp;".$i."<br />";
+		//foreach ($commandlist as $i) {
+		$this->singles["help"]="<table class='termtable'>";
+		for($i=0;$i<sizeof($commandlist)/2;$i++) {
+			$this->singles["help"].="<tr><td>{$commandlist[$i]}</td><td>{$commandlist[$i+sizeof($commandlist)/2]}</td></tr>";
 		}
+		if(sizeof($commandlist)%2==1)
+			$this->singles["help"].="<tr><td>{$commandlist[sizeof($commandlist)-1]}</td></tr>";
+		$this->singles["help"].="</table>";
 		return "CLIodine";
 	}
 

@@ -27,3 +27,6 @@ div.console div {
 body {
 	background-color: #000000;
 }
+table.termtable {
+	border-spacing: 16px 0;
+}
