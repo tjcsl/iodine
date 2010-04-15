@@ -53,6 +53,9 @@ function pressed(e) {
 		}
 		clearTimeout(timer);
 		brighten();
+		if(e.preventDefault)
+			e.preventDefault();
+		return false; // Overrides the default action
 	} else if (e.which==13) { // Enter
 		dropinput=1;
 		var str=ltext.innerHTML+cursor.innerHTML+rtext.innerHTML;
@@ -85,9 +88,12 @@ function pressed(e) {
 		}
 		clearTimeout(timer);
 		brighten();
+		return true;
 	}
 }
 function specialdown(e) {
+	if(e.which==8)
+		return false; // Override the backspace default action
 	if(e.which==17)
 		ctrlpressed=true;
 }
