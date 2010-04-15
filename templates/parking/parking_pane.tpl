@@ -27,7 +27,7 @@ Based on the number of student applications received, the following prioritized 
 <p>
 You can help your odds by completing both
 applications on time, <b>clearing incorrect unexcused absences with the 8th period office no
-later than [<$deadline>]</b>, and applying jointly with another student. A joint application means that two students will share one spot and one parking permit. This allows the two students to collectively only ever have one car on campus on a given day. The advantage is that by sharing a spot, you are placed at the top of the priority list and thus have a greater chance of receiving your spot of choice.
+later than [<$deadline>]</b>, and applying jointly with another student. A joint application means that two students will share one spot and one parking permit. This allows the two students to collectively only ever have one car on campus on a given day.
 Joint applications must be stapled together when turned in to the Safety &amp; Security Office.
 </p>
 
