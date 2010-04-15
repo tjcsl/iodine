@@ -14,42 +14,76 @@
 * @subpackage Utility
 */
 class Fail implements Module {
-		/**
-		* Just always returns the string 'Failure'
-		*
-		* @return string The word "Failure"
-		*/
-		public function init_pane() {
-			return 'Failure';
-		}
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function init_mobile() {
+		return FALSE;
+	}
 
-		/**
-		* Unused.
-		*/
-		public function init_box() {
-			return FALSE;
-		}
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_mobile($disp) {
+		return FALSE;
+	}
 
-		/**
-		* Always throws an {@link I2Exception} with the text "Failed!"
-		*/
-		public function display_pane($disp) {
-			throw new I2Exception('Failed!');
-		}
+	/**
+	* Unused; Not supported for this module.
+	*/
+	function init_cli() {
+		return FALSE;
+	}
 
-		/**
-		* Unused.
-		*/
-		public function display_box($disp) {
-		}
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_cli($disp) {
+		return FALSE;
+	}
 
-		/**
-		* Returns the name of the module.
-		*
-		* @return string The name of the module; in this case, 'Fail'
-		*/
-		public function get_name() {
-			return 'Fail';
-		}
+	/**
+	* Just always returns the string 'Failure'
+	*
+	* @return string The word "Failure"
+	*/
+	public function init_pane() {
+		return 'Failure';
+	}
+
+	/**
+	* Unused.
+	*/
+	public function init_box() {
+		return FALSE;
+	}
+
+	/**
+	* Always throws an {@link I2Exception} with the text "Failed!"
+	*/
+	public function display_pane($disp) {
+		throw new I2Exception('Failed!');
+	}
+
+	/**
+	* Unused.
+	*/
+	public function display_box($disp) {
+	}
+
+	/**
+	* Returns the name of the module.
+	*
+	* @return string The name of the module; in this case, 'Fail'
+	*/
+	public function get_name() {
+		return 'Fail';
+	}
 }
 ?>

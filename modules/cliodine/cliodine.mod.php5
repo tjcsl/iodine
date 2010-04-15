@@ -96,13 +96,21 @@ class CLIodine implements Module {
 		} else if ( isset($I2_ARGS[1])) {
 			if($this->do_special()) { //handle special stuff
 			} else if(get_i2module($I2_ARGS[1])) {
-				$mod= new $I2_ARGS[1];
-				$cmd=$mod->init_cli();
-				if(!$cmd) {
-					echo "<div>The module ".$I2_ARGS[1]." is not implemented for CLIodine.<br /></div>\n";
-				} else {
-					$str=$mod->display_cli($disp);
-					echo $str."\n";
+				try {
+					$mod= new $I2_ARGS[1];
+					if($mod instanceOf Module) {
+						$cmd=$mod->init_cli();
+						if(!$cmd) {
+							echo "<div>The module ".$I2_ARGS[1]." is not implemented for CLIodine.<br /></div>\n";
+						} else {
+							$str=$mod->display_cli($disp);
+							echo $str."\n";
+						}
+					} else {
+						echo "<div>".$I2_ARGS[1].": command not found<br /></div>\n";
+					}
+				} catch (Exception $e) {
+					echo "<div>".$I2_ARGS[1].": command not found<br /></div>\n";
 				}
 			} else {
 				echo "<div>".$I2_ARGS[1].": command not found<br /></div>\n";
