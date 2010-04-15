@@ -179,8 +179,10 @@ class CLIodine implements Module {
 			"o hai thar"=>"hai!!!",
 			"lose the game"=>"Awww, you big meanie, I lost!",
 			"rickroll"=>"Iodine would never do something so cruel.<br /><br />Iodine will never give you up.<br />Iodine will never let you down.<br />Iodine will never run around and hurt you.",
-			"i lost the game"=>"Aww, now I lost the game too!"
-
+			"i lost the game"=>"Aww, now I lost the game too!",
+			"lol"=>"Ha ha ha!",
+			"wtf"=>"I don't know What The Filesystem happened either.",
+			"rofl"=>"Oh, thanks. I don't have the ability to move, you know."
 		);
 		$commandlist=array("apt-get","bash","cliodine","codeinterface","date","echo","ed","emacs","exit","finger","gedit","halt","hello","help","hi","kate","kill","ldapinterface","lpr","mysqlinterface","nano","news","phpinfo","poweroff","pwd","quit","reboot","shutdown","ssh","su","sudo","uname","vi","vim","weather","whoami");
 		//foreach ($commandlist as $i) {
