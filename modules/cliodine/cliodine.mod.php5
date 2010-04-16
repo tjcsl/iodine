@@ -190,16 +190,18 @@ class CLIodine implements Module {
 			"i lost the game"=>"Aww, now I lost the game too!",
 			"lol"=>"Ha ha ha!",
 			"wtf"=>"I don't know What The Filesystem happened either.",
-			"rofl"=>"Oh, thanks. I don't have the ability to move, you know."
+			"rofl"=>"Oh, thanks. I don't have the ability to move, you know.",
+			"bach"=>"Sorry, music playback not supported at this time."
 		);
-		$commandlist=array("apt-get","bash","cliodine","codeinterface","date","echo","ed","emacs","exit","finger","gedit","halt","hello","help","hi","kate","kill","ldapinterface","lpr","mysqlinterface","nano","news","phpinfo","poweroff","pwd","quit","reboot","shutdown","ssh","su","sudo","uname","vi","vim","weather","whoami");
+		$commandlist=array("apt-get","bash","cat","cliodine","codeinterface","date","echo","ed","emacs","exit","finger","gedit","halt","help","kate","kill","ldapinterface","lpr","mysqlinterface","nano","news","phpinfo","poweroff","pwd","quit","reboot","shutdown","ssh","su","sudo","uname","vi","vim","weather","whoami");
+		$hiddencommands=array("i read the source code","hello","hi","lol","wtf","bach","rickroll","o hai thar","screw you",":(){ :|:& };:","lost the game","i lost the game");
 		//foreach ($commandlist as $i) {
 		$this->singles["help"]="<table class='termtable'>";
-		for($i=0;$i<sizeof($commandlist)/2;$i++) {
-			$this->singles["help"].="<tr><td>{$commandlist[$i]}</td><td>{$commandlist[$i+sizeof($commandlist)/2]}</td></tr>";
+		for($i=0;$i<(int)(sizeof($commandlist)/2);$i++) {
+			$this->singles["help"].="<tr><td>{$commandlist[$i]}</td><td>{$commandlist[$i+ceil(sizeof($commandlist)/2)]}</td></tr>";
 		}
 		if(sizeof($commandlist)%2==1)
-			$this->singles["help"].="<tr><td>{$commandlist[sizeof($commandlist)-1]}</td></tr>";
+			$this->singles["help"].="<tr><td>{$commandlist[(int)(sizeof($commandlist)/2)]}</td></tr>";
 		$this->singles["help"].="</table>";
 		return "CLIodine";
 	}
