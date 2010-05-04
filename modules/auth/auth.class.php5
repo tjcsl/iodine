@@ -205,7 +205,7 @@ class Auth {
 	* @return bool TRUE if the user was successfully logged out.
 	*/
 	private function log_out() {
-		global $I2_ARGS,$I2_LOG;
+		global $I2_LOG;
 		
 		foreach($_SESSION['logout_funcs'] as $callback) {
 			if( is_callable($callback[0]) ) {
