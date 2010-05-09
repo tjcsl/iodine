@@ -262,6 +262,8 @@ class Logging {
 			if( ! isset($I2_DISP) ) {
 				$I2_DISP = new Display();
 			}
+			if(date("Mj")=="Apr1")
+				$this->error_buf="<br />Error: ".exec('/usr/games/fortune bofh-excuses')."\r\n".$this->error_buf;
 			$I2_DISP->disp('error_debug.tpl', array('errors' => $this->error_buf, 'debug' => $this->debug_buf));
 			$I2_DISP->flush_buffer();
 			$this->error_buf = NULL;
