@@ -12,6 +12,7 @@ You must also plan to have your driver's license by September 7, 2010 and have n
 <p>To encourage ride sharing joint applicants are guarenteed student parking but recieve no priority status. <b> Joint applications will be allocated parking spaces based on the same priorities as all other applicants.</b></p>
 <p>
 Based on the number of student applications received, the following prioritized criteria will be used for allocating student parking spaces:<br />
+</p>
 <ol>
 <li>Seniors with no Eighth Period Unexcused Absences</li>
 <li>Seniors with 1 to 5 Eighth Period Unexcused Absences</li>
@@ -22,7 +23,6 @@ Based on the number of student applications received, the following prioritized 
 <li>Students failing to apply online during the designated "online application period" will be allocated a parking space AFTER all other spaces have been assigned, if any are available.</li>
 <li>Parking spaces will be assigned <b>randomly</b> within the above listed priorities.</li>
 </ol>
-</p>
 
 <p>
 You can help your odds by completing both
@@ -33,5 +33,5 @@ Joint applications must be stapled together when turned in to the Safety &amp; S
 
 <form action="[<$I2_ROOT>]parking" method="post" class="boxform">
 <input type="hidden" name="go_to_form" value="yes" />
-<input type="submit" value="Continue">
+<input type="submit" value="Continue" />
 </form>
