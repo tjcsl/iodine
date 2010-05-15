@@ -1,4 +1,4 @@
-<li><a href="http://www.socialstudies.abc-clio.com/unifiedlogin.aspx?ipaddress=true&schoolid=35474">ABC - CLIO </a></li>
+<li><a href="http://www.socialstudies.abc-clio.com/unifiedlogin.aspx?ipaddress=true&amp;schoolid=35474">ABC - CLIO </a></li>
 <li><a href="http://www.accessscience.com">Access Science</a></li>
 <li><a href="http://www.america.eb.com">Britannica's Online Reference - Annals of American History </a></li>
 <li><a href="http://www.world.eb.com">Britannica's Online Reference - World Data Analyst</a></li>
@@ -10,6 +10,7 @@
 <li><a href="http://ehrafworldcultures.yale.edu/ehrafe">eHRAF (Human Relations Area Files)</a></li>
 <li><a href="http://infotrac.galegroup.com/itweb/tjhs_e">Gale Cengage InfoTrac</a></li>
 <li><a href="http://go-passport.grolier.com">Grolier Online </a></li>
+<li><a href="http://jchemed.chem.wisc.edu">Journal of Chemical Education</a></li>
 <li><a href="http://www.jstor.org">JSTOR</a></li>
 <li><a href="https://web.lexis-nexis.com/scholastic">Lexis-Nexis Scholastic</a></li>
 <li><a href="http://www.noodletools.com/noodlebib/index.php">NoodleTools</a></li>

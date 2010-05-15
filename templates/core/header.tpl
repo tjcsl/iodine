@@ -4,6 +4,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>TJHSST Intranet2[<if $title != "" >]: [<$title>][</if>]</title>
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
+<script type="text/javascript">
+//Set some variables so that any script can use them.
+var username="[<$I2_USER->username>]";
+var name="[<$I2_USER->name>]";
+var fullname="[<$I2_USER->fullname>]";
+</script>
 <script type="text/javascript" src="[<$I2_JS>]" ></script>
 <link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />

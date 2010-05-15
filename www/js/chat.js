@@ -37,7 +37,7 @@ ajaxChatRequest.onreadystatechange = function(){
 	}
 }
 
-sendMessage(message) {
+function sendMessage(message) {
 	ajaxChatRequest.open("POST","http://www.google.com/",true);
 	ajaxChatRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	ajaxChatRequest.setRequestHeader("Content-length", message.length);
@@ -47,4 +47,21 @@ sendMessage(message) {
 
 /* End AJAX */
 
+/* Begin IRC functions */
 
+//var senderindicatorregex = new RegExp("something that matches the strings:  :user!username@host.webaddress");
+
+function initSession() {
+	container.innerHTML="Welcome "+name;
+	sendMessage("NICK " + username);
+	sendMessage("USER " + username + "4 * : " +name);
+}
+initSession();
+function responseRecieved(responseContent) {
+	if(responseContent.substr(0,4).toUpperCase()=="PING")
+	{
+		sendMessage("PONG"+responseContent.substr(4));
+		return;
+	}
+	
+}
