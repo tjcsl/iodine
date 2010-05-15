@@ -22,6 +22,7 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, "ehrafworldcultures.yale.edu") ||
 		dnsDomainIs(host, "infotrac.galegroup.com") ||
 		dnsDomainIs(host, "go-passport.grolier.com") ||
+		dnsDomainIs(host, "jchemed.chem.wisc.edu") ||
 		dnsDomainIs(host, "www.jstor.org") ||
 		dnsDomainIs(host, "web.lexis-nexis.com") ||
 		dnsDomainIs(host, "www.noodletools.com") ||
