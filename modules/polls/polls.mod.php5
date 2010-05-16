@@ -530,6 +530,7 @@ class Polls implements Module {
 				case 'standard':
 				case 'approval':
 				case 'split_approval':
+				case 'short_response':
 					// Escape the quotes, they break csv file format
 					$list[$q->qid] = '"'.str_replace('"','“',$q->question).'"';
 			}
@@ -549,6 +550,7 @@ class Polls implements Module {
 				$answer = $info[0]->get_response($user);
 				switch($info[0]->answertype) {
 					case 'free_response':
+					case 'short_response':
 						// Don't break the csv file format with quotes!!!
 						$responses[] = '"'.str_replace('"','“',$answer).'"';
 						break;

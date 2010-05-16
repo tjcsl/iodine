@@ -48,6 +48,10 @@ function addQuestion(event) {
 	option.appendChild(document.createTextNode("Free response"));
 	option.setAttribute("value","free_response");
 	select.appendChild(option);
+	option = document.createElement("option");
+	option.appendChild(document.createTextNode("Short response"));
+	option.setAttribute("value","short_response");
+	select.appendChild(option);
 	cell = document.createElement("td");
 	cell.appendChild(select);
 	row.appendChild(cell);

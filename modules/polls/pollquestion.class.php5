@@ -162,7 +162,7 @@ class PollQuestion {
 		global $I2_SQL, $I2_USER;
 		if ($uid === NULL)
 			$uid = $I2_USER->uid;
-		if ($this->myanswertype == 'free_response')
+		if ($this->myanswertype == 'free_response' || $this->myanswertype == 'short_response')
 			return $I2_SQL->query('SELECT written FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d',$this->mypid,$this->myqid,$uid)->fetch_single_value();
 		else if ($this->myanswertype == 'standard')
 			return $I2_SQL->query('SELECT aid FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d',$this->mypid,$this->myqid,$uid)->fetch_single_value();
@@ -192,6 +192,11 @@ class PollQuestion {
 		switch ($this->myanswertype) {
 		case 'free_response':
 			$post = substr($post,0,min(strlen($post),10000)); // In case someone tries to put too much data in.
+			$I2_SQL->query('INSERT INTO poll_votes SET pid=%d,qid=%d,uid=%d,written=%s',
+				$this->mypid, $this->myqid, $uid, $post);
+			break;
+		case 'short_response':
+			$post = substr($post,0,min(strlen($post),1000)); // In case someone tries to put too much data in.
 			$I2_SQL->query('INSERT INTO poll_votes SET pid=%d,qid=%d,uid=%d,written=%s',
 				$this->mypid, $this->myqid, $uid, $post);
 			break;

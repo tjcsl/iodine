@@ -1,9 +1,9 @@
 <a href="[<$I2_ROOT>]polls">Polls Home</a><br /><br />
 
 <script type="text/javascript">
-function checklength(area,error) {
+function checklength(area,error,count) {
 	error = document.getElementById(error);
-	var lengthleft = 10000 - area.value.length - area.value.split("\n").length +1;
+	var lengthleft = count - area.value.length - area.value.split("\n").length +1;
 	if(lengthleft >=0) {
 		error.innerHTML ="(" + (lengthleft) + " characters left)";
 	} else {
@@ -51,9 +51,16 @@ function checklength(area,error) {
  [<elseif $q->answertype == 'free_response'>]
   [<assign var="aid" value="0">]
   <div id="error_[<$q->qid>]">(1500 characters left)</div> 
-  <textarea id="textarea_[<$q->qid>]" rows="5" cols="80" name="[<$q->qid>]" onkeyup="checklength(this,'error_[<$q->qid>]')">[<if $q->user_voted_for(0)>][<$q->get_response()>][</if>]</textarea><br />
+  <textarea id="textarea_[<$q->qid>]" rows="5" cols="80" name="[<$q->qid>]" onkeyup="checklength(this,'error_[<$q->qid>]',10000)">[<if $q->user_voted_for(0)>][<$q->get_response()>][</if>]</textarea><br />
   <script type="text/javascript">
-	checklength(document.getElementById('textarea_[<$q->qid>]'),'error_[<$q->qid>]');
+	checklength(document.getElementById('textarea_[<$q->qid>]'),'error_[<$q->qid>]',10000);
+  </script>
+ [<elseif $q->answertype == 'short_response'>]
+  [<assign var="aid" value="0">]
+  <div id="error_[<$q->qid>]">(1000 characters left)</div> 
+  <input type="text" id="input_[<$q->qid>]" name="[<$q->qid>]" onkeyup="checklength(this,'error_[<$q->qid>]',1000)" value="[<if $q->user_voted_for(0)>][<$q->get_response()>][</if>]" /><br />
+  <script type="text/javascript">
+	checklength(document.getElementById('input_[<$q->qid>]'),'error_[<$q->qid>]',1000);
   </script>
  [</if>]
   </li>
