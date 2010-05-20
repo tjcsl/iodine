@@ -21,6 +21,10 @@ IE7_PNG_SUFFIX = ".png";
 <![endif]-->
 </head>
 <body onload="page_init()" id="body">
+<div style="height:100%; width:100%; position: fixed; top:0; left: 0; visibility: hidden; z-index:3">
+<div id="chat_area" style="float:right; height:100%">
+</div>
+</div>
 <div class="logo"><a href="[<$I2_ROOT>]"><span id="logotext">Intranet 2</span></a></div>
 <div class="header">
  <div class="title"> [<if $I2_USER->borntoday()>]Happy Birthday[<else>]Welcome[</if>], [<$I2_USER->firstornick>]!</div>
