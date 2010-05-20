@@ -52,7 +52,7 @@ class ATOM {
 			$p.="		<id>".$I2_ROOT."news/show/$item->nid</id>\n";
 			$p.="		<content type=\"xhtml\">\n";
 			$p.="			<div xmlns=\"http://www.w3.org/1999/xhtml\">\n";
-			$p.="				".str_replace("&nbsp;","&#160;",$item->text)."\n";
+			$p.="				".str_replace("&nbsp;","&#160;",$item->text)."\n"; // XML doesn't support &nbsp;, so to make it work, just use the unicode character for a non-breaking space.
 			$p.="			</div>\n";
 			$p.="		</content>\n";
 			$p.="	</entry>\n";
