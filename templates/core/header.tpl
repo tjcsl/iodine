@@ -6,6 +6,7 @@
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
 <script type="text/javascript">
 //Set some variables so that any script can use them.
+var i2root="[<$I2_ROOT>]";
 var username="[<$I2_USER->username>]";
 var name="[<$I2_USER->name>]";
 var fullname="[<$I2_USER->fullname>]";
