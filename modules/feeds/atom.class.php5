@@ -47,10 +47,14 @@ class ATOM {
 			$p.="	<entry>\n";
 			$p.="		<title>".strip_tags($item->title)."</title>\n";
 			$p.="		<link rel=\"alternate\" href=\"".$I2_ROOT."news/show/$item->nid\" />\n";
-			$p.="		<content>".htmlspecialchars($item->text)."</content>\n";
 			$p.="		<updated>".date("'Y-m-d\TH:i:s'",strtotime($item->posted))."</updated>\n";
 			$p.="		<published>".date("'Y-m-d\TH:i:s'",strtotime($item->posted))."</published>\n";
 			$p.="		<id>".$I2_ROOT."news/show/$item->nid</id>\n";
+			$p.="		<content type=\"xhtml\">\n";
+			$p.="			<div xmlns=\"http://www.w3.org/1999/xhtml\">\n";
+			$p.="				".str_replace("&nbsp;","&#160;",$item->text)."\n";
+			$p.="			</div>\n";
+			$p.="		</content>\n";
 			$p.="	</entry>\n";
 		}
 		$p.="</feed>\n";
