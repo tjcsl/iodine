@@ -62,11 +62,12 @@ ajaxChatRequest.onreadystatechange = function(){
 }
 
 function sendMessage(message) {
+	message="message="+encodeURI(message);
 	ajaxChatRequest.open("POST",i2root+"fastajax/chat.php5",true);
-	ajaxChatRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	ajaxChatRequest.setRequestHeader("Content-length", message.length);
+	ajaxChatRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	ajaxChatRequest.setRequestHeader("Content-Length", message.length);
 	ajaxChatRequest.setRequestHeader("Connection", "close");
-	ajaxChatRequest.send("message="+encodeURI(message));
+	ajaxChatRequest.send(message);
 }
 
 function lookformessages() {
@@ -93,7 +94,7 @@ function initSession() {
 	container.appendChild(inbox);
 	
 	sendMessage("NICK i2-" + username);
-	sendMessage("USER i2-" + username + " 4 * : " +name);
+	setTimeout(function() {sendMessage("USER i2-" + username + " 4 * : " +name)},500);// Do this to prevent errors with the second one coming back before the first one can be handled.
 }
 initSession();
 function responseRecieved(responseContent) {
@@ -106,7 +107,7 @@ function responseRecieved(responseContent) {
 	//var correctwindow="disp-"+senderid;
 	//var correctchat="disp-"+"onlyone";
 	//var textdivobj;
-	addchatwindow("#newchan");
+	printChat("#newchan",responseContent);
 }
 function formatAndSend(textobject,event) {
 	if((event.keyCode ? event.keyCode : event.which ? event.which : event.charCode)!=13)
@@ -123,6 +124,7 @@ function addchatwindow(targetname) {
 	// targetname is the name of the channel or user with which the chat window should correspond
 	if(document.getElementById("chat_bigholderbox"+targetname))
 		return; //Already exists
+	// Here comes a big formatting block. It might help to move some of this to CSS later on.
 	var bigholder=document.createElement("div");
 	bigholder.id="chat_bigholderbox"+targetname;
 	bigholder.style.position="relative";
@@ -137,6 +139,7 @@ function addchatwindow(targetname) {
 	holder.setAttribute('class',"intrabox");// Cheap way to get the right border styling
 	holder.style.marginBottom="0px";
 	holder.style.backgroundColor="#ffffff";
+	holder.style.color="#000000";
 	/*holder.style.backgroundColor="#ffffff";
 	holder.style.borderWidth="2px";
 	holder.style.borderStyle="Solid";*/
@@ -183,4 +186,10 @@ function minimizetoggle(boxname) { // Exactly what's implied by the function nam
 	} else {
 		box.style.display="none";
 	}
+}
+function printChat(channel,message) {
+	if(message.length == 0)
+		return;
+	addchatwindow(channel);
+	document.getElementById("chat_textbox"+channel).innerHTML += "<br />" + message;
 }

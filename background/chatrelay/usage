@@ -1,0 +1,2 @@
+#The correct command to run if you want to put the relay script in the background and log all chats (for now, logging is probably going to be put into the actual relay later on)
+./Relay > /var/log/iodine-chat & disown
