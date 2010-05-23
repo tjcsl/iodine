@@ -127,9 +127,16 @@ class Groups implements Module {
 	*/
 	public function sjoin() {
 		global $I2_USER, $I2_ARGS;
-		$grp = new Group($I2_ARGS[2]);
+		try {
+			$grp = new Group($I2_ARGS[2]);
+		} catch (I2Exception $e) {
+			$this->template_args['errormsg'] = "Sorry, there is no group with the id number ".$I2_ARGS[2].".";
+			$this->template = 'groups_error.tpl';
+			return 'Group Error';
+		}
 
 		if(!$grp->has_permission($I2_USER, Permission::getPermission(Group::PERM_JOIN))) {
+			$this->template_args['errormsg'] = "Sorry, but you do not have the necessary permissions to join this group.";
 			$this->template = 'groups_error.tpl';
 			return 'Permission denied';
 		}
@@ -146,9 +153,16 @@ class Groups implements Module {
 	*/
 	public function sleave() {
 		global $I2_USER, $I2_ARGS;
-		$grp = new Group($I2_ARGS[2]);
+		try {
+			$grp = new Group($I2_ARGS[2]);
+		} catch (I2Exception $e) {
+			$this->template_args['errormsg'] = "Sorry, there is no group with the id number ".$I2_ARGS[2].".";
+			$this->template = 'groups_error.tpl';
+			return 'Group Error';
+		}
 
 		if(!$grp->has_permission($I2_USER, Permission::getPermission(Group::PERM_JOIN))) {
+			$this->template_args['errormsg'] = "Sorry, but you do not have the necessary permissions to leave this group.";
 			$this->template = 'groups_error.tpl';
 			return 'Permission denied';
 		}
@@ -167,9 +181,16 @@ class Groups implements Module {
 	*/	
 	public function remove() {
 		global $I2_USER, $I2_ARGS;
-		$grp = new Group($I2_ARGS[3]);
+		try {
+			$grp = new Group($I2_ARGS[3]);
+		} catch (I2Exception $e) {
+			$this->template_args['errormsg'] = "Sorry, there is no group with the id number ".$I2_ARGS[3].".";
+			$this->template = 'groups_error.tpl';
+			return 'Group Error';
+		}
 
 		if (!$grp->has_permission($I2_USER, Permission::getPermission(Group::PERM_REMOVE))) {
+			$this->template_args['errormsg'] = "Sorry, but you do not have the necessary permissions to remove people from this group.";
 			$this->template = 'groups_error.tpl';
 			return 'Permission denied';
 		}
@@ -188,9 +209,16 @@ class Groups implements Module {
 	*/
 	public function grant() {
 		global $I2_USER, $I2_ARGS;
-		$grp = new Group($I2_ARGS[3]);
+		try {
+			$grp = new Group($I2_ARGS[3]);
+		} catch (I2Exception $e) {
+			$this->template_args['errormsg'] = "Sorry, there is no group with the id number ".$I2_ARGS[3].".";
+			$this->template = 'groups_error.tpl';
+			return 'Group Error';
+		}
 
 		if (!$grp->is_admin($I2_USER)) {
+			$this->template_args['errormsg'] = "Only group admins can grant permissions in a group.";
 			$this->template = 'groups_error.tpl';
 			return 'Permission denied';
 		}
@@ -210,9 +238,16 @@ class Groups implements Module {
 
 	public function grantgroup() {
 		global $I2_USER, $I2_ARGS;
-		$grp = new Group($I2_ARGS[3]);
+		try {
+			$grp = new Group($I2_ARGS[3]);
+		} catch (I2Exception $e) {
+			$this->template_args['errormsg'] = "Sorry, there is no group with the id number ".$I2_ARGS[3].".";
+			$this->template = 'groups_error.tpl';
+			return 'Group Error';
+		}
 
 		if (!$grp->is_admin($I2_USER)) {
+			$this->template_args['errormsg'] = "Only group admins can grant permissions in a group.";
 			$this->template = 'groups_error.tpl';
 			return 'Permission denied';
 		}
@@ -241,9 +276,16 @@ class Groups implements Module {
 	*/	
 	public function revoke() {
 		global $I2_USER, $I2_ARGS;
-		$grp = new Group($I2_ARGS[3]);
+		try {
+			$grp = new Group($I2_ARGS[3]);
+		} catch (I2Exception $e) {
+			$this->template_args['errormsg'] = "Sorry, there is no group with the id number ".$I2_ARGS[3].".";
+			$this->template = 'groups_error.tpl';
+			return 'Group Error';
+		}
 
 		if (!$grp->is_admin($I2_USER)) {
+			$this->template_args['errormsg'] = "Only group admins can revoke permissions in a group.";
 			$this->template = 'groups_error.tpl';
 			return 'Permission denied';
 		}
@@ -263,9 +305,16 @@ class Groups implements Module {
 	*/	
 	public function revokegroup() {
 		global $I2_USER, $I2_ARGS;
-		$grp = new Group($I2_ARGS[3]);
+		try {
+			$grp = new Group($I2_ARGS[3]);
+		} catch (I2Exception $e) {
+			$this->template_args['errormsg'] = "Sorry, there is no group with the id number ".$I2_ARGS[3].".";
+			$this->template = 'groups_error.tpl';
+			return 'Group Error';
+		}
 
 		if (!$grp->is_admin($I2_USER)) {
+			$this->template_args['errormsg'] = "Only group admins can revoke permissions in a group.";
 			$this->template = 'groups_error.tpl';
 			return 'Permission denied';
 		}
@@ -305,6 +354,7 @@ class Groups implements Module {
 			if(isset($_REQUEST['uid'])) {
 				$user = new User($_REQUEST['uid']);
 				if(!$user) {
+					$this->template_args['errormsg'] = "The chosen user id (".$_REQUEST['uid'].") is invalid.";
 					$this->template = 'groups_error.tpl';
 					return 'Invalid user specified';
 				}
@@ -312,6 +362,7 @@ class Groups implements Module {
 			if(isset($_REQUEST['gid'])) {
 				$req_group = new Group($_REQUEST['gid']);
 				if(!$req_group) {
+					$this->template_args['errormsg'] = "The chosen group id (".$_REQUEST['gid'].") is invalid.";
 					$this->template = 'groups_error.tpl';
 					return 'Invalid group specified';
 				}
@@ -442,6 +493,7 @@ class Groups implements Module {
 		global $I2_USER;
 
 		if(!Group::admin_all()->has_member($I2_USER)) {
+			$this->template_args['errormsg'] = "Only intranet admins can use the admin interface.";
 			$this->template = 'groups_error.tpl';
 			return 'Permission Denied';
 		}
@@ -481,6 +533,7 @@ class Groups implements Module {
 		global $I2_USER, $I2_ARGS;
 
 		if (!Group::prefix_admin($I2_ARGS[2].'_', $I2_USER)) {
+			$this->template_args['errormsg'] = "Only ".$I2_ARGS[2]." admins can access this admin interface.";
 			$this->template = 'groups_error.tpl';
 			return 'Permission Denied';
 		}
@@ -488,6 +541,7 @@ class Groups implements Module {
 		if(isset($_REQUEST['group_padmin_form'])) {
 			if($_REQUEST['group_padmin_form'] == 'add') {
 				if(!Group::prefix($_REQUEST['name']) == $I2_ARGS[2]) {
+					$this->template_args['errormsg'] = "The specified group name is invalid.";
 					$this->template = 'groups_error.tpl';
 					return 'Invalid Group Name';
 				}
@@ -495,6 +549,7 @@ class Groups implements Module {
 			}
 			if($_REQUEST['group_padmin_form'] == 'remove') {
 				if(!Group::prefix($_REQUEST['name']) == $I2_ARGS[2]) {
+					$this->template_args['errormsg'] = "The specified group name is invalid.";
 					$this->template = 'groups_error.tpl';
 					return 'Invalid Group Name';
 				}
@@ -518,6 +573,7 @@ class Groups implements Module {
 		global $I2_USER, $I2_ARGS;
 
 		if (!Group::admin_all()->has_member($I2_USER)) {
+			$this->template_args['errormsg'] = "Only intranet admins can add and remove permissions.";
 			$this->template = 'groups_error.tpl';
 			return 'Permission Denied';
 		}
