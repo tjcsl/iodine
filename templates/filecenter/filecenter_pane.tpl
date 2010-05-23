@@ -42,7 +42,7 @@
   </tr>
   [<foreach from=$dirs item=dir>]
   <tr>
-   <td><a href="[<$dir.name|escape:"url">]/">[<if $dir.link>]<img src="[<$I2_ROOT>]www/pics/filecenter/dir2link.png" width="16" height="16" alt="" />[<else>]<img src="[<$I2_ROOT>]www/pics/filecenter/dir2new.png" width="16" height="16" alt="" />[</if>]</a></td>
+   <td><a href="[<$dir.name|escape:"url">]/">[<if $dir.link>]<img src="[<$I2_ROOT>]www/pics/filecenter/dir2link.png" width="16" height="16" alt="" />[<else>][<if $dir.name == '..'>]<img src="[<$I2_ROOT>]www/pics/filecenter/dir2up.png" width="16" height="16" alt="" />[<else>]<img src="[<$I2_ROOT>]www/pics/filecenter/dir2new.png" width="16" height="16" alt="" />[</if>][</if>]</a></td>
    <td>
     [<if $dir.name == '..'>]<a href="..">* Parent Directory (Go up one level)[<elseif $dir.link>]<a href="" onclick="return options(this, '[<$dir.name>]', 'linkdir', true, true, true)">[<$dir.name|escape>][<elseif $dir.empty>]<a href="" onclick="return options(this, '[<$dir.name>]', 'emptydir', true, true, true)">[<$dir.name|escape>][<else>]<a href="" onclick="return options(this, '[<$dir.name>]', 'dir', true, true, true)">[<$dir.name|escape>][</if>]</a>
    </td>
