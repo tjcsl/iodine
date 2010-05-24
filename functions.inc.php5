@@ -224,7 +224,7 @@ function i2config_get($field, $default = NULL, $section = NULL) {
 *                    If this is NULL or not passed, then the user will
 *                    be redirected to Iodine root.
 */
-function redirect($url = NULL) {
+function redirect($url = NULL,$postrelay=false) {
 	global $I2_ROOT;
 
 	if( headers_sent($file, $line) ) {
@@ -234,6 +234,9 @@ function redirect($url = NULL) {
 	$url = $I2_ROOT . $url;
 	d('Redirecting to '.$url);
 
+	if($postrelay) {
+		header('HTTP/1.0 307 Temporary Redirect',true,307);
+	}
 	header('Location: '.$url);
 	die();
 

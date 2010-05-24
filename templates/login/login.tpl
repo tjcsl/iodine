@@ -38,6 +38,7 @@ IE7_PNG_SUFFIX = ".png";
 			Please type your username and password to login to the Intranet.
 [</if>]
 			<form name="login_form" action="[<$I2_SELF>]" method="post">
+				[<$posts>]
 				<table id="login_box">
 					<tr>
 						<td>Username:</td>

@@ -315,7 +315,7 @@ class Auth {
 					$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
 					$redir = substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index);
 				}
-				redirect($redir);
+				redirect($redir,sizeof($_POST)>2);//If we have additional post fields, prompt to allow relay, and relay if allowed.
 				return TRUE; //never reached
 			} else {
 				// Attempted login failed
@@ -353,6 +353,19 @@ class Auth {
 			'uname' => $uname,
 			'bg' => $image,
 			'bgjs' => $imagejs);
+		// Save any post data that we get and pass it to the html. (except for a password field)
+		$str="";
+		foreach (array_keys($_POST) as $post) {
+			if($post!="password" && $post!="login_password")
+				if(is_array($_POST[$post])) {
+					foreach($_POST[$post] as $p) {
+						$str.="<input type='hidden' name='".$post."[]' value='".$p."' />";
+					}
+				} else {
+					$str.="<input type='hidden' name='".$post."' value='".$_POST[$post]."' />";
+				}
+		}
+		$template_args['posts']=$str;
 		$disp = new Display('login');
 		$disp->disp('login.tpl', $template_args); 
 
