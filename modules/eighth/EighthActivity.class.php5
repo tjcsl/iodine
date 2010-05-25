@@ -169,9 +169,12 @@ class EighthActivity {
 			// find one that's not this block
 			if ($act[1] != $blockid) {
 				try {
-					$otheract = new EighthActivity($act[0], $act[1]);
+					$otheract = new EighthActivity($act[0], $act[1]); //It should recurse, so we don't need to do this again.
+					break;
 				} catch (I2Exception $e) {
 					warn($e);
+					$otheract = null; //DO NOT SIGN THEM UP FOR THE OTHER BLOCK IF YOU HAVE AN ERROR CREATING IT.
+							  //Should fix a small problem with both block stuff.
 				}
 			}
 		}

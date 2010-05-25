@@ -94,6 +94,7 @@ int main (void) {
 			if(read(sockets[i].sock, buffer, MAXSTRLENGTH - 1) != 0) {
 				memset(sendmsg.text, 0, 1000); /* Clear out the space */
 				strcpy(sendmsg.text, buffer); // Just for testing 
+				printf("%s",buffer);
 				sendmsg.type = sockets[i].id;
 				msgsnd(send_mq_id, &sendmsg, sizeof(sendmsg), 0);
 			}

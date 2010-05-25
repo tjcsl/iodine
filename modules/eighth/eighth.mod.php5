@@ -1027,7 +1027,11 @@ class Eighth implements Module {
 				redirect("eighth/people_switch/activity_to/bid_from/{$this->args['bid_from']}/aid_from/{$this->args['aid_from']}/bid_to/{$this->args['bid_to']}");
 			}
 			$this->template = 'people_switch.tpl';
-			$this->template_args['activity_from'] = new EighthActivity($this->args['aid_from'], $this->args['bid_from']);
+			try {
+				$this->template_args['activity_from'] = new EighthActivity($this->args['aid_from'], $this->args['bid_from']);
+			} catch (I2Exception $e) {
+				//$this->template_args['activity_from'] = new EighthActivity(i2config_get('default_aid',999,'eighth'), $this->args['bid_from']);
+			}
 			$this->template_args['activity_to'] = new EighthActivity($this->args['aid_to'], $this->args['bid_to']);
 			$this->title = 'Confirm Moving Students';
 		}
