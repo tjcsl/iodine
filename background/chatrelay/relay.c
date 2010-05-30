@@ -41,14 +41,17 @@ int main (void) {
 	address.sin_family = AF_INET;
 	
 	// Clear the list of sockets
-	memset(sockets,0,300);// 300 ints long
+	int socknum;
+	for(socknum=0;socknum<NUMSOCKS;socknum++)
+		sockets[socknum].id=0;
+	//memset(sockets,0,300);// 300 ints long
 
         /* We use the key 15 for messages just recieved from the user */
         /* Set up the reference to the recieving message queue */
 	/* We use the key 14 for messages to send to the user */
 	/* Set up the reference to the sending message queue */
         recipckey = 15;
-	sendipckey= 14;
+	sendipckey= 13;
 
         rec_mq_id = msgget(recipckey, 0);
         send_mq_id = msgget(sendipckey, 0);
@@ -58,11 +61,27 @@ int main (void) {
 		// Handle all incoming messages
 		while((received = msgrcv(rec_mq_id, &recmsg, sizeof(recmsg), 0, IPC_NOWAIT))!=-1) {
 			printf("%s (%d) (%d)\n", recmsg.text, received,recmsg.type);
+
+			int j=0,count=0,k;
+			char number[10],stringbuffer[1000];
+			memset(number,0,10);
+			while(recmsg.text[j]!=':'){j++;} // Read the php variable header
+			j++;
+			for(;j<1000&&recmsg.text[j]!=':';j++) {
+				number[count++]=recmsg.text[j];
+			}
+			count=atoi(number);
+			for(k=j+2;k<count+j+2;k++) {
+				stringbuffer[k-j-2]=recmsg.text[k];
+			}
+			printf("%s\n",stringbuffer);
+			//strcpy(recmsg.text,stringbuffer);
+
 			int i;
 			marker=0;
 			for(i=0;i<NUMSOCKS;i++) {
 				if(sockets[i].id==recmsg.type) {
-					write(sockets[i].sock,recmsg.text);
+					write(sockets[i].sock,stringbuffer);
 					marker=1;
 					break;
 				}
@@ -82,7 +101,7 @@ int main (void) {
 					if(connect(sockets[i].sock, (struct sockaddr *)&address, sizeof(struct sockaddr_in)) == -1){
 						marker=0;
 					}
-					printf("Created Socket");
+					printf("Created Socket\n");
 				}
 			}
 			if(marker==1) { // If we have a socket to write to, write to it.
@@ -91,12 +110,15 @@ int main (void) {
 		}
 		int i;
 		for(i=0;i<NUMSOCKS;i++) {
-			if(read(sockets[i].sock, buffer, MAXSTRLENGTH - 1) != 0) {
-				memset(sendmsg.text, 0, 1000); /* Clear out the space */
-				strcpy(sendmsg.text, buffer); // Just for testing 
-				printf("%s",buffer);
-				sendmsg.type = sockets[i].id;
-				msgsnd(send_mq_id, &sendmsg, sizeof(sendmsg), 0);
+			if(sockets[i].id!=0) {
+				printf("%i\n",sockets[i].id);
+				if(read(sockets[i].sock, buffer, MAXSTRLENGTH - 1) != 0) {
+					memset(sendmsg.text, 0, 1000); /* Clear out the space */
+					strcpy(sendmsg.text, buffer); // Just for testing 
+					printf("%s",buffer);
+					sendmsg.type = sockets[i].id;
+					msgsnd(send_mq_id, &sendmsg, sizeof(sendmsg), IPC_NOWAIT);
+				}
 			}
 		}
 	}
