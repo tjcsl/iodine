@@ -93,8 +93,9 @@ function initSession() {
 	inbox.id="#server";
 	container.appendChild(inbox);
 	
-	sendMessage("NICK i2-" + username);
-	setTimeout(function() {sendMessage("USER i2-" + username + " 4 * : " +name)},500);// Do this to prevent errors with the second one coming back before the first one can be handled.
+	sendMessage("");//Wake up the relay, tell it about our presence
+	setTimeout(function() {sendMessage("NICK i" + username)},200);
+	setTimeout(function() {sendMessage("USER i" + username + " 4 * : " +name)},500);// Do this to prevent errors with the second one coming back before the first one can be handled.
 }
 initSession();
 function responseRecieved(responseContent) {
