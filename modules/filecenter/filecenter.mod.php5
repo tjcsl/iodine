@@ -563,7 +563,8 @@ class Filecenter implements Module {
 	}
 
 	public function send_zipped_dir($path) {
-		$zipfile = tempname('/tmp/iodine-filesystem-', '.zip');
+		global $I2_USER;
+		$zipfile = tempname('/tmp/iodine-filesystem-'.$I2_USER->username.'--', '.zip');
 		$this->filesystem->zip_dir($path, $zipfile);
 		$this->file_header(basename($path) . '.zip', filesize($zipfile));
 		readfile($zipfile);
@@ -573,7 +574,7 @@ class Filecenter implements Module {
 
 	public function send_zipped_file($path) {
 		global $I2_USER;
-		$zipfile = tempname('/tmp/iodine-filesystem-'.$I2_USER->username, '.zip');
+		$zipfile = tempname('/tmp/iodine-filesystem-'.$I2_USER->username.'-', '.zip');
 		$this->filesystem->zip_file($path, $zipfile);
 		$this->file_header(basename($path) . '.zip', filesize($zipfile));
 		readfile($zipfile);
