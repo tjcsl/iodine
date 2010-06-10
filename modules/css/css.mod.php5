@@ -279,6 +279,70 @@ class CSS implements Module {
 		$style_cache = $cache_dir . $user->uid;
 		exec("rm -f $style_cache");
 	}
+	// Skip most of the stuff if just reading from cache. In fact, no mysql or ldap connection nor user object has been made at this point.
+	// Just a relatively quick function.
+	public static function showcss() {
+		global $I2_ARGS, $I2_FS_ROOT;
+		
+		$current_style = $I2_ARGS[1];
+		if(!isset($I2_ARGS[2]))
+			return false;
+		$uid=$I2_ARGS[2];
+
+		if (ends_with($current_style, '.css')) {
+			$current_style = substr($current_style, 0, strlen($current_style) - 4);
+		}
+		//$this->current_style = $current_style;
+		
+		//$this->style_path = $I2_FS_ROOT . 'styles/';
+		$cache_dir = i2config_get('cache_dir', NULL, 'core') . 'styles/';
+		if (!is_dir($cache_dir)) {
+			mkdir($cache_dir, 0700, TRUE);
+		}
+		$style_cache = $cache_dir . $uid;
+
+		//$this->style_cache = $style_cache;
+
+		//Recompile the cache if it's stale
+		if (!file_exists($style_cache)) {
+			return false; // Let it actually do the whole regening in the full method.
+			//|| filemtime($style_cache) < dirmtime($this->style_path)) {
+			//$this->recache();
+		}
+		
+		//Modification date of cache file
+		$gmdate = gmdate('D, d M Y H:i:s', filemtime($style_cache)) . ' GMT';
+
+		//Checks to see if the client's cache is stale
+		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+			$if_modified_since = preg_replace('/;.*$/', '', $_SERVER['HTTP_IF_MODIFIED_SINCE']);
+			if ($if_modified_since == $gmdate) {
+				header('HTTP/1.0 304 Not Modified');
+				return true;
+			}
+		}
+		$text=file_get_contents($style_cache);
+		if ($current_style != substr($text,-(strlen($current_style)))) 
+			return false;
+		header('Content-type: text/css');
+		header("Last-Modified: {$gmdate}");
+		header('Cache-Control: public');
+		header('Pragma:'); //Unset pragma header
+		header('Expires:'); //Unset expires header
+		//echo $this->css_text;
+		echo "/* Server-Cache: {$style_cache} */\n";
+		echo "/* Client-Cached: ".date('D M j G:i:s T Y')." */\n";
+		echo "/* Using faster cache... */\n";
+		echo $text;
+		
+		
+		
+		//$date = date('D M j G:i:s T Y');
+		//$this->date = $date;
+
+		//$this->css_text = file_get_contents($style_cache);
+		return true;
+	}
 }
 
 ?>

@@ -117,6 +117,15 @@ try {
 			}
 		}
 	}
+
+	/**
+	* Skip a lot of this computation when you're generating the CSS.
+	*
+	* Should be a fairly large speedup.
+	*/
+	if($I2_ARGS[0]=='css' && CSS::showCSS()) {
+		exit();
+	}
 		
 	/**
 	 * The global error-handling mechanism.

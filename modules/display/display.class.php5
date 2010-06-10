@@ -317,11 +317,11 @@ class Display {
 		if( isSet($I2_USER) ) {
 			$this->smarty->assign('I2_UID', $I2_USER->uid);
 			$this->smarty->assign('I2_USER', $I2_USER);
-			$this->smarty->assign('I2_CSS', "{$I2_ROOT}css/".self::$style.'.css');
+			$this->smarty->assign('I2_CSS', "{$I2_ROOT}css/".self::$style.'.css/'.$I2_USER->uid);
 			$this->smarty->assign('I2_JS', "{$I2_ROOT}js/".self::$style.'.js');
 		}
 		else {
-			$this->smarty->assign('I2_CSS', "{$I2_ROOT}css/default.css");
+			$this->smarty->assign('I2_CSS', "{$I2_ROOT}css/default.css/".$I2_USER->uid);
 		}
 	}
 
