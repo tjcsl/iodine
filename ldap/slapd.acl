@@ -4,8 +4,8 @@
 
 # admins can do anything!
 access to *
-	by group/groupOfURLs/memberURL.base="cn=admins,dc=tjhsst,dc=edu" write
-	by * break
+   by group/groupOfURLs/memberURL.base="cn=admins,dc=tjhsst,dc=edu" write
+   by * break
 
 # Make sure authing to a password is allowed
 access to attrs=userPassword
@@ -14,12 +14,15 @@ access to attrs=userPassword
 
 # no one (except full admins) can adjust adminship
 access to attrs=is-admin,is-student-admin
-	by * read
+   by * read
 
 # teachers can read anything
-access to *
-	by group/groupOfURLs/memberURL.base="cn=teachers,dc=tjhsst,dc=edu" read continue
-	by * break
+# changed teachers from read continue to read to fix teacher override not
+# working --ahamilto 2010-02-27
+# UPDATE moved to just above the deny statement at the bottom --ahamilto
+#access to *
+#   by group/groupOfURLs/memberURL.base="cn=teachers,dc=tjhsst,dc=edu" read
+#   by * break
 
 ## student admins can edit their own entries
 #access to filter=(is-student-admin=TRUE)
@@ -39,7 +42,7 @@ access to attrs=tjhsstStudentId
 
 # general user-readable data
 access to attrs=cn,sn,givenName,soundexFirst,soundexLast,displayName,mname,nickname,sex,title,graduationYear,tjhsstClassId,tjhsstSectionId,quarter,periodNumber,sponsorDn
-	by users read
+   	by users read
 	by * none
 
 
@@ -73,12 +76,12 @@ access to attrs=perm-showtelephone,perm-showbirthday,perm-showaddress,perm-showm
 ###
 
 access to attrs=homePhone,enrolledClass,counselor,street,birthday,st,street,l,postalCode,postalAddress,c,locker
-	by self read
-	by * none break
+   	by self read
+   	by * none break
 
 access to attrs=preferredPhoto
-	by self write
-	by * none break
+   	by self write
+   	by * none break
 
 access to dn.regex="^.*,iodineUid=([^,]+),ou=people,dc=tjhsst,dc=edu$"
 		attrs=jpegPhoto
@@ -92,7 +95,7 @@ access to dn.regex="^.*,iodineUid=([^,]+),ou=people,dc=tjhsst,dc=edu$"
 
 access to filter="(&(perm-showtelephone-self=TRUE)(perm-showtelephone=TRUE))"
 		attrs=homePhone
-	by users read
+   	by users read
 	by * none
 
 access to filter="(&(perm-showschedule-self=TRUE)(perm-showschedule=TRUE))"
@@ -137,6 +140,16 @@ access to attrs=mobile,aim,msn,icq,googletalk,yahoo,telephoneNumber,webpage,jabb
 	by self write
 	by users read
 	by * none
+
+# teachers can read anything
+# changed teachers from read continue to read to fix teacher override not
+# working.
+# ACL was moved down otherwise, teachers break with a * read and lose the
+# ability to set their own information
+# --ahamilto 2010-02-27
+access to *
+	by group/groupOfURLs/memberURL.base="cn=teachers,dc=tjhsst,dc=edu" read
+	by * break
 
 # Block access to sensitive info unless it was explicitly allowed above
 access to attrs=homePhone,enrolledClass,counselor,street,preferredPhoto,jpegPhoto,birthday,st,street,l,postalCode,postalAddress,c,locker
