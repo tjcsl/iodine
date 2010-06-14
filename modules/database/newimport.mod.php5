@@ -74,6 +74,22 @@ class Newimport implements Module {
 	}
 
 	/**
+	* Unused; Not supported for this module.
+	*/
+	function init_cli() {
+		return "cliodine";
+	}
+
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_cli($disp) {
+		return "<div>Sorry, no recursion!</div>\n";
+	}
+	
+	/**
 	* Required by the {@link Module} interface
 	*/
 	public function init_box() {
