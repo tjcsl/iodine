@@ -91,12 +91,11 @@ class CSS implements Module {
 		echo "/* Client-Cached: {$this->date} */\n";
 		
 		$disp->clear_buffer();
-		$text = $disp->fetch($this->style_cache,array(),FALSE);
+		$text = file_get_contents($this->style_cache);
 		if ($this->current_style != substr($text,-(strlen($this->current_style)))) {
 			$this->recache();
-			$text = $disp->fetch($this->style_cache,array(),FALSE);
+			$text = file_get_contents($this->style_cache);
 		}
-		//TODO: cache to stop extra Smarty runs?
 		echo $text;
 		
 		Display::stop_display();
@@ -165,6 +164,7 @@ class CSS implements Module {
 	 * Regenerate the cache if the cache file requested is not the same as the one stored.
 	 */
 	function recache() {
+		global $I2_DISP;
 		$this->style_sheet = new StyleSheet();
 		$this->load_style('default');
 		if ($this->current_style != 'default') {
@@ -180,6 +180,9 @@ class CSS implements Module {
 		$contents .= $this->style_sheet->__toString();
 		$contents .= "//$this->current_style";
 		file_put_contents($this->style_cache, $contents);
+		$text=$I2_DISP->fetch($this->style_cache,array(),FALSE);
+		unlink($this->style_cache);
+		file_put_contents($this->style_cache, $text);
 	}
 	/**
 	 * Returns an array of all the styles that the CSS module recognizes.
