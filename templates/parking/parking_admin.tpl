@@ -71,12 +71,12 @@ Note: For joint applications, the number of 8th period skips is the sum of the t
 <br /><br />
 <table>
  <tr>
-  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='spot'>]spot_reverse[<else>]spot[</if>]">Spot</th>
+  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='spot'>]spot_reverse[<else>]spot[</if>]">Spot</a></th>
   <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='name'>]name_reverse[<else>]name[</if>]">Name</a></th>
-  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='year'>]year_reverse[<else>]year[</if>]">Yr</th>
-  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='mentor'>]mentor_reverse[<else>]mentor[</if>]">Mntr</th>
-  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='skips'>]skips_reverse[<else>]skips[</if>]">8th</th>
-  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='email'>]email_reverse[<else>]email[</if>]">Email</th>
+  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='year'>]year_reverse[<else>]year[</if>]">Yr</a></th>
+  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='mentor'>]mentor_reverse[<else>]mentor[</if>]">Mntr</a></th>
+  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='skips'>]skips_reverse[<else>]skips[</if>]">8th</a></th>
+  <th><a href="[<$I2_ROOT>]parking/admin?sort=[<if isset($sort) && $sort=='email'>]email_reverse[<else>]email[</if>]">Email</a></th>
   <th>Plate</th>
   <th>Make</th>
   <th>Model</th>
