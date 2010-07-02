@@ -4,12 +4,12 @@
 [<if isSet($mailed)>]
 	<br />
 	[<if $mailed>]
-		Your request has been submitted.
+		Your request has been submitted for approval.
 	[<else>]
 		There was a problem submitting your request. Please contact the Intranet Developers for assistance.	
 	[</if>]
 [<else>]
-	Do you want to post an informational news article or announcement on Intranet? This page allows you to easily request news posts on Iodine.<br />
+	Do you want to post an informational news article or announcement on Intranet? This page allows you to easily submit news for approval.<br />
 	[<if $usermail>]
 		We will follow up with you at <strong>[<$usermail>]</strong> if needed.  If this e-mail address is incorrect, please update your preferences, or feel free to send an e-mail directly to <a href="mailto:[<$iodinemail>]">[<$iodinemail>]</a>.  If you send us an e-mail directly, don't forget to tell us who you are!<br />
 		Title:<br /><input type="text" name="submit_title" style="width:98%" /><br />
