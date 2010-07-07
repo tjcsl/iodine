@@ -191,11 +191,8 @@ class Mail implements Module {
 		
 		$path = i2config_get('imap_path','{mail.tjhsst.edu:993/imap/ssl/novalidate-cert}INBOX', 'mail');
 		d("Not using IMAP cache, downloading messages from $path",6);
-		try{
-			$this->connection = imap_open($path, $_SESSION['i2_username'], $I2_AUTH->get_user_password());
-		} catch (I2Exception $e){ 
-			return FALSE;
-		}
+		// We already check whether or not this command actually worked on the next line, therefore it's ok that we suppress the errors from it.
+		@$this->connection = imap_open($path, $_SESSION['i2_username'], $I2_AUTH->get_user_password());
 		if (! $this->connection) {
 			d('IMAP connection failed: ' . imap_last_error(), 3);
 			return FALSE;
