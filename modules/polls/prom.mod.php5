@@ -169,7 +169,7 @@ class Prom implements Module {
 			$this->template_args['fardate'] = $fardate;
 			return 'Prom Admin';
 		}
-		if ($I2_USER->grade != 12) {
+		if ($I2_USER->grade != 12 && !$I2_USER->is_group_member('admin_prom')) {
 			throw new I2Exception('Only seniors may register for the SENIOR prom!');
 		}
 		return 'Prom Registration';
