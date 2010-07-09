@@ -6,6 +6,13 @@
 	height: 99%;
 	background: url(/www/pics/gschools_logo.jpg) no-repeat;
 }
+.logo a {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 255px;
+	height: 105px;
+}
 .title {
 	font-size: 1.0em;
 	font-weight: bold;

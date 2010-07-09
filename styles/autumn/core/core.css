@@ -5,6 +5,8 @@
 }
 }
 .logo {}
+.logo a {
+}
 
 #logotext {
 	position: absolute;

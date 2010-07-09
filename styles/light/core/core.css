@@ -4,6 +4,13 @@
 	left: 0px;
 	background: url(/www/pics/minimal_black.png) no-repeat;	
 }
+.logo a {
+	position: absolute;
+	top: 24px;
+	left: 7px;
+	width: 266px;
+	height: 40px;
+}
 .title {
 	border-bottom: 2px solid white;
 }

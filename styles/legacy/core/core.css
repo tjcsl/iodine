@@ -4,6 +4,13 @@
 	left: 10px;
 	background: url(/www/pics/oldlogo.png) no-repeat;
 }
+.logo a {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 280px;
+	height: 90px;
+}
 .title {
 	border-bottom: 3px solid #000000;
 }

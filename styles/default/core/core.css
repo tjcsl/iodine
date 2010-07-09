@@ -7,6 +7,14 @@
 	background: url(www/pics/newlogo.png) no-repeat;
 }
 
+.logo a {
+	position: absolute;
+	top: 24px;
+	left: 0px;
+	width: 266px;
+	height: 68px;
+}
+
 #logotext {
 	display: none;
 }

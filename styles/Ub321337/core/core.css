@@ -2,6 +2,13 @@
 .logo {
 	background: url(/www/pics/1337logo.gif) 9px 9px no-repeat;	
 }
+.logo a {
+	position: absolute;
+	top: 9px;
+	left: 9px;
+	width: 261px;
+	height: 63px;
+}
 .title {
 	font-size: 10pt;
 	color: #008800;
