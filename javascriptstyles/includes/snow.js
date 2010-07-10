@@ -17,10 +17,10 @@ window.onresize=resize;
 resize();
 function resize() {
 	if(document.all) {
-		screenwidth = document.documentElement.clientWidth -25;
+		screenwidth = document.documentElement.clientWidth -30;
 		screenheight = document.documentElement.clientHeight -25;
 	} else {
-		screenwidth = window.innerWidth-25;
+		screenwidth = window.innerWidth-30;
 		screenheight = window.innerHeight-25;
 	}
 }
@@ -37,6 +37,10 @@ function initsnow() {
 		//alert(snowflakes[i].style.fontSize);
 		snowflakes[i].style.position="absolute";
 		snowflakes[i].x=Math.floor(Math.random()*screenwidth);
+		if(snowflakes[i].x+10+snowflakes[i].size>screenwidth)
+		{
+			snowflakes[i].x-=snowflakes[i].x+10+snowflakes[i].size-screenwidth-3;
+		}
 		snowflakes[i].y=Math.floor(Math.random()*screenheight);
 		snowflakes[i].style.left=snowflakes[i].x + "px";
 		snowflakes[i].style.top=snowflakes[i].y + "px";
