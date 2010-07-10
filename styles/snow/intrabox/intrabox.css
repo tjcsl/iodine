@@ -12,9 +12,11 @@
 .boxheader {
 	color: #[<$I2_USER->boxtitlecolor|default:"FFFFFF">];
 	font-weight: bold;
-	/*background-color: #[<$I2_USER->boxcolor|default:'000000'>];*/
-	/*border-left: 4px solid #[<$I2_USER->boxcolor|default:'000000'>];*/
-	/*border-right: 4px solid #[<$I2_USER->boxcolor|default:'000000'>];*/
+	[<if $I2_USER->boxcolor|count_characters > 0 >]
+	background-color: #[<$I2_USER->boxcolor|default:'000000'>];
+	border-left: 4px solid #[<$I2_USER->boxcolor|default:'000000'>];
+	border-right: 4px solid #[<$I2_USER->boxcolor|default:'000000'>];
+	[</if>]
 }
 .upbutton {
 	background: url(/www/pics/up.gif) center no-repeat;
