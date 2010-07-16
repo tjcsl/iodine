@@ -57,6 +57,11 @@ class LDAP {
 			*/
 			//$_ENV['KRB5CCNAME'] = $I2_AUTH->cache();
 			//putenv("KRB5CCNAME={$_ENV['KRB5CCNAME']}");
+			if(ldap_set_option($this->conn,LDAP_OPT_PROTOCOL_VERSION,3)) {
+				d('LDAP protocol version set to LDAPv3.',9); //Technically, we should do this, but we don't have to...most of the time.
+			} else {
+				d('LDAP protocol version set failed.',7);
+			}
 			d('KRB5CCNAME for LDAP bind is '.$_ENV['KRB5CCNAME'],8);
 			$this->bind = ldap_sasl_bind($this->conn,'','','GSSAPI');
 
