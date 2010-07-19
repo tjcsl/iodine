@@ -223,11 +223,11 @@ class EighthSchedule {
 	* @param $date The date to get activities for.
 	* @return array An array of ActivityIDs and BlockIDs.
 	*/
-	public static function get_activities($userid, $starting_date = NULL, $number_of_days = 14) {
+	public static function get_activities($userid, $starting_date = NULL, $number_of_days = 14,$permission_override=FALSE) {
 		global $I2_SQL, $I2_USER;
 		$user = new User($userid);
 		// Only show students who want to be found.
-		if(EighthSchedule::can_view_schedule($user))
+		if($permission_override===TRUE||EighthSchedule::can_view_schedule($user))
 		{
 			$userid = $user->uid;
 			if($starting_date == NULL) {
