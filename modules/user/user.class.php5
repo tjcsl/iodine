@@ -354,6 +354,8 @@ class User {
 					  return ($this->__get('perm-showmap')!='FALSE')&&($this->__get('perm-showmap-self')!='FALSE');
 			case 'newsforwarding':
 				return $this->get_news_forwarding();
+			case 'eighthalert':
+				return $this->get_eighth_alert_status();
 			case 'showpictureself':
 			case 'showpicture':
 			case 'showpictures':
@@ -542,6 +544,9 @@ class User {
 			case 'newsforwarding':
 				$this->set_news_forwarding($val);
 				return;
+			case 'eighthalert':
+				$this->set_eighth_alert_status($val);
+				return;
 			case 'showmapself':
 			case 'showmap':
 			case 'showbdayself':
@@ -658,6 +663,27 @@ class User {
 		return count($I2_SQL->query('SELECT * FROM news_forwarding WHERE uid=%d',$this->myuid)->fetch_all_single_values())>0;
 	}
 
+
+	/**
+	* Change a user's eighth alert status.
+	*/
+	public function set_eighth_alert_status($val) {
+		global $I2_SQL;
+		if ($val == 'TRUE' || $val == 'on') {
+			if (!$this->get_eighth_alert_status())
+				$I2_SQL->query('INSERT INTO eighth_alerts VALUES (%d)',$this->myuid);
+		} else {
+			$I2_SQL->query('DELETE FROM eighth_alerts WHERE userid=%d',$this->myuid);
+		}
+	}
+
+	/**
+	* Get a user's eighth alert status.
+	*/
+	public function get_eighth_alert_status() {
+		global $I2_SQL;
+		return count($I2_SQL->query('SELECT * FROM eighth_alerts WHERE userid=%d',$this->myuid)->fetch_all_single_values())>0;
+	}
 	/**
 	* Get a user by their username.
 	*

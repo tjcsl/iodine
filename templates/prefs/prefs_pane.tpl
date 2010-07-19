@@ -161,12 +161,19 @@
 </table>
 [</if>]
 <br />
-<strong>Display Options</strong><br />
+<strong>Notification Options</strong><br />
 <table>
 <tr>
  <td>Send all news posts to my email address:</td>
- <td><input type="checkbox" name="newsforwarding" [<if $I2_USER->newsforwarding>]checked="checked"[</if>] /></td>
+ <td><input type="checkbox" name="newsforwarding"[<if $I2_USER->newsforwarding>] checked="checked"[</if>] /></td>
 </tr>
+<tr>
+ <td>Send an email to me at 11:30 on days with 8th periods if I haven't signed up yet:</td>
+ <td><input type="checkbox" name="eighthalert"[<if $I2_USER->eighthalert>] checked="checked"[</if>] /></td>
+</tr>
+</table>
+<strong>Display Options</strong><br />
+<table>
 <tr>
  <td>Style:</td>
  <td><select name="pref_style">
