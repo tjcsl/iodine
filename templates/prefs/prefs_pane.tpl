@@ -167,10 +167,10 @@
  <td>Send all news posts to my email address:</td>
  <td><input type="checkbox" name="newsforwarding"[<if $I2_USER->newsforwarding>] checked="checked"[</if>] /></td>
 </tr>
-<tr>
+[<if $I2_USER->grade!='staff'>]<tr>
  <td>Send an email to me at 11:30 on days with 8th periods if I haven't signed up yet:</td>
  <td><input type="checkbox" name="eighthalert"[<if $I2_USER->eighthalert>] checked="checked"[</if>] /></td>
-</tr>
+</tr>[</if>]
 </table>
 <strong>Display Options</strong><br />
 <table>
