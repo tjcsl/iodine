@@ -230,7 +230,7 @@ class NewsItem {
 	 * @param string $group
 	 */
 	public static function post_item($author, $title, $text, $groups, $expire, $visible, $public) {
-		global $I2_SQL,$I2_USER;
+		global $I2_SQL,$I2_USER,$I2_ROOT;
 
 		$newsadm = new Group('admin_news');
 		if(!$newsadm->has_member()) {
@@ -284,6 +284,43 @@ class NewsItem {
 		}
 		// Update the feeds.
 		Feeds::update();
+		//Post to Twitter.
+		$test1=TRUE;
+		if($public==0) //Only display stuff that's public.
+			$test1=FALSE;
+		$test2=FALSE;	//Stuff only goes on the feed if "all" can see it.
+		foreach ($groups as $group) {
+			if($group->gid == 1) {
+				$test2=TRUE;
+				break;
+			}
+		}
+		if($test1&&$test2) {
+			// Set username and password
+			$username = i2config_get('twitter_username','TJIntranet','twitter');
+			$password = i2config_get('twitter_password','thisissparta','twitter');
+			// The message you want to send
+			$message = "";
+			$message .= $title;
+			$message .=": ";
+			$url = $I2_ROOT."news/view/".$nid;
+			$message .= substr(strip_tags($text),0,140-(strlen($message)+strlen($url)+4))."... ".$url;
+
+			// The twitter API address
+			$url = 'http://twitter.com/statuses/update.xml';
+			// Alternative JSON version
+			// $url = 'http://twitter.com/statuses/update.json';
+			// Set up and execute the curl process
+			$curl_handle = curl_init();
+			curl_setopt($curl_handle, CURLOPT_URL, "$url");
+			curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
+			curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($curl_handle, CURLOPT_POST, 1);
+			curl_setopt($curl_handle, CURLOPT_POSTFIELDS, "status=$message");
+			curl_setopt($curl_handle, CURLOPT_USERPWD, "$username:$password");
+			$buffer = curl_exec($curl_handle);
+			curl_close($curl_handle);
+		}
 
 		return true;
 	}
