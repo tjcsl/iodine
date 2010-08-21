@@ -19,10 +19,15 @@ class CSLProxy {
 
 	private $priv_cache = Array();
 
+	private $username;
+
+	private $isadminprinc=false;
+	private $isrootprinc=false;
+
 	public function __construct($user = FALSE, $pass = FALSE, $realm = FALSE) {
 		global $I2_SQL,$I2_USER;
 		if ($realm==FALSE) { $realm=i2config_get('afs_realm','CSL.TJHSST.EDU','kerberos'); }
-//		if (!isset($_SESSION['krb_csl_ticket'])) {
+		if (!isset($_SESSION['krb_csl_ticket'])) {
 			d("Getting $realm kerberos ticket",6);
 			$kerberos = new Kerberos($realm);
 			if($kerberos->login($user, $pass) === FALSE)
@@ -32,8 +37,16 @@ class CSLProxy {
 				return;
 			}
 			$_SESSION['krb_csl_ticket'] = $kerberos->cache();
-//		}
+		}
 //It is safe to uncomment the if statement once we have unified logins functioning.  This will allow us to properly use both CSL and NetWare migration in one session.
+		$username = $this->username;
+		$index = strrpos($user,'/');
+		if(substr($user,$index)=="/admin")
+			$this->isadminprinc=true;
+		if(substr($user,$index)=="/root")
+			$this->isrootprinc=true; //TODO: Does this do any special groups or anything? If so, add them.
+		$this->username=substr($user,0,$index);
+
 		$this->kerberos_cache = $_SESSION['krb_csl_ticket'];
 		$this->valid = TRUE;
 		$this->kerberos_realm = $realm;
@@ -85,11 +98,10 @@ class CSLProxy {
 				1 => array('pipe', 'w')
 			);
 
-			$username = $I2_USER->username;
 			$filepath = '/afs/csl.tjhsst.edu/' . $args[0];
 			$process= proc_open("pagsh", $descriptors, $pipes, $I2_FS_ROOT, $env);
 			if(is_resource($process)) {
-				fwrite($pipes[0],"aklog -c $AFS_CELL -k {$this->kerberos_realm};usergroups=`echo \`pts groups $username | grep -v Groups\` system:authuser system:anyuser $username | sed 's/ /\\\\\\|/g'`; fs la \"$filepath\" | grep -v \"Access list for\|Normal rights\" | grep \"\$usergroups\" | sed 's/^ *[0-9A-Za-z\:]*//g'");
+				fwrite($pipes[0],"aklog -c $AFS_CELL -k {$this->kerberos_realm};usergroups=`echo \`pts groups {$this->username} | grep -v Groups\` system:authuser system:anyuser".($this->isadminprinc===true?" system:administrators":"")." {$this->username} | sed 's/ /\\\\\\|/g'`; fs la \"$filepath\" | grep -v \"Access list for\|Normal rights\" | grep \"\$usergroups\" | sed 's/^ *[0-9A-Za-z\:]*//g'");
 				fclose($pipes[0]);
 				$out=stream_get_contents($pipes[1]);
 				fclose($pipes[1]);
@@ -180,7 +192,7 @@ class CSLProxy {
 				if ($type == 'error') {
 					trigger_error($error);
 				} else {
-					throw (object)$error;
+					throw new I2Exception($error);;
 				}
 			}
 		

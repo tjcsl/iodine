@@ -133,7 +133,9 @@ class Filecenter implements Module {
 			$this->template_args['csl_failed_login'] = TRUE;
 		}
 
+		$return=false;
 		eval($I2_SQL->query('SELECT `code` FROM filecenter_filesystems WHERE `name`=%s',$system_type)->fetch_single_value());
+		if($return) return $return;
 		
 		$this->directory = '/';
 		
@@ -247,7 +249,9 @@ class Filecenter implements Module {
 			$this->template_args['csl_failed_login'] = TRUE;
 		}
 
+		$return=false;
 		eval($I2_SQL->query('SELECT `code` FROM filecenter_filesystems WHERE `name`=%s',$system_type)->fetch_single_value());
+		if($return) return $return;//We have to do this, because if you return inside the eval, it just exits the eval.
 		
 		$this->directory = '/';
 		
