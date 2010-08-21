@@ -39,13 +39,7 @@ class CSLProxy {
 			$_SESSION['krb_csl_ticket'] = $kerberos->cache();
 		}
 //It is safe to uncomment the if statement once we have unified logins functioning.  This will allow us to properly use both CSL and NetWare migration in one session.
-		$username = $this->username;
-		$index = strrpos($user,'/');
-		if(substr($user,$index)=="/admin")
-			$this->isadminprinc=true;
-		if(substr($user,$index)=="/root")
-			$this->isrootprinc=true; //TODO: Does this do any special groups or anything? If so, add them.
-		$this->username=substr($user,0,$index);
+		$this->username=str_replace("/",".",$user);// Change kerberos username to afs username
 
 		$this->kerberos_cache = $_SESSION['krb_csl_ticket'];
 		$this->valid = TRUE;
@@ -59,7 +53,7 @@ class CSLProxy {
 	public function __call($function, $args) {
 		global $I2_FS_ROOT,$I2_USER;
 		// TODO Actually fix the can_do method so that we don't have to do this.
-		// Fairly low-priority.
+		// Fairly low-priority. Possibly not valid anymore.
 		if($function == 'can_do') {
 			if(isset($this->priv_cache[$args[0]])) {
 				switch ($args[1]) {
@@ -101,7 +95,7 @@ class CSLProxy {
 			$filepath = '/afs/csl.tjhsst.edu/' . $args[0];
 			$process= proc_open("pagsh", $descriptors, $pipes, $I2_FS_ROOT, $env);
 			if(is_resource($process)) {
-				fwrite($pipes[0],"aklog -c $AFS_CELL -k {$this->kerberos_realm};usergroups=`echo \`pts groups {$this->username} | grep -v Groups\` system:authuser system:anyuser".($this->isadminprinc===true?" system:administrators":"")." {$this->username} | sed 's/ /\\\\\\|/g'`; fs la \"$filepath\" | grep -v \"Access list for\|Normal rights\" | grep \"\$usergroups\" | sed 's/^ *[0-9A-Za-z\:]*//g'");
+				fwrite($pipes[0],"aklog -c $AFS_CELL -k {$this->kerberos_realm};usergroups=`echo \`pts groups {$this->username} | grep -v Groups\` system:authuser system:anyuser {$this->username} | sed 's/ /\\\\\\|/g'`; fs la \"$filepath\" | grep -v \"Access list for\|Normal rights\" | grep \"\$usergroups\" | sed 's/^ *[0-9A-Za-z\:]*//g'");
 				fclose($pipes[0]);
 				$out=stream_get_contents($pipes[1]);
 				fclose($pipes[1]);
