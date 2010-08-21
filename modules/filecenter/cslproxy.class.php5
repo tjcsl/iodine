@@ -17,6 +17,8 @@ class CSLProxy {
 	private $valid;
 	private $kerberos_realm;
 
+	private $priv_cache = Array();
+
 	public function __construct($user = FALSE, $pass = FALSE, $realm = FALSE) {
 		global $I2_SQL,$I2_USER;
 		if ($realm==FALSE) { $realm=i2config_get('afs_realm','CSL.TJHSST.EDU','kerberos'); }
@@ -43,14 +45,95 @@ class CSLProxy {
 	 */
 	public function __call($function, $args) {
 		global $I2_FS_ROOT,$I2_USER;
+		// TODO Actually fix the can_do method so that we don't have to do this.
+		// Fairly low-priority.
+		if($function == 'can_do') {
+			if(isset($this->priv_cache[$args[0]])) {
+				switch ($args[1]) {
+					case 'read':
+						return $this->priv_cache[$args[0]]&1;
+					case 'list':
+						return $this->priv_cache[$args[0]]&2;
+					case 'insert':
+						return $this->priv_cache[$args[0]]&4;
+					case 'delete':
+						return $this->priv_cache[$args[0]]&8;
+					case 'write':
+						return $this->priv_cache[$args[0]]&16;
+					case 'lock':
+						return $this->priv_cache[$args[0]]&32;
+					case 'administer':
+						return $this->priv_cache[$args[0]]&64;
+					default:
+						return false;
+				}
+			}
+
+			$env = array(
+				'KRB5CCNAME' => $this->kerberos_cache
+			);
+	
+			$peer =  $I2_FS_ROOT . 'bin/cslhelper.php5';
+	
+			$AFS_CELL = i2config_get('cell','csl.tjhsst.edu','afs');
+			if (!isSet($this->kerberos_realm)) {
+				$this->kerberos_realm = i2config_get('afs_realm','CSL.TJHSST.EDU','kerberos');
+			}
+
+			$descriptors = array(
+				0 => array('pipe', 'r'), 
+				1 => array('pipe', 'w')
+			);
+
+			$username = $I2_USER->username;
+			$filepath = '/afs/csl.tjhsst.edu/' . $args[0];
+			$process= proc_open("pagsh", $descriptors, $pipes, $I2_FS_ROOT, $env);
+			if(is_resource($process)) {
+				fwrite($pipes[0],"aklog -c $AFS_CELL -k {$this->kerberos_realm};usergroups=`echo \`pts groups $username | grep -v Groups\` system:authuser system:anyuser $username | sed 's/ /\\\\\\|/g'`; fs la \"$filepath\" | grep -v \"Access list for\|Normal rights\" | grep \"\$usergroups\" | sed 's/^ *[0-9A-Za-z\:]*//g'");
+				fclose($pipes[0]);
+				$out=stream_get_contents($pipes[1]);
+				fclose($pipes[1]);
+				proc_close($process);
+				if(!isset($out)) {
+					// This means that `fs la` showed an error message. This is almost always
+					// because of insufficient permissions, so we'll return false.
+					return FALSE;
+				}
+				// Yeah, set the bitmask for it all in a cache, because othewise this function
+				// gets called 8 times and every one of those times it looks though fs la.
+				$this->priv_cache[$args[0]] =stripos($out,'r')===false?0:1;
+				$this->priv_cache[$args[0]]+=stripos($out,'l')===false?0:2;
+				$this->priv_cache[$args[0]]+=stripos($out,'i')===false?0:4;
+				$this->priv_cache[$args[0]]+=stripos($out,'d')===false?0:8;
+				$this->priv_cache[$args[0]]+=stripos($out,'w')===false?0:16;
+				$this->priv_cache[$args[0]]+=stripos($out,'k')===false?0:32;
+				$this->priv_cache[$args[0]]+=stripos($out,'a')===false?0:64;
+				switch ($args[1]) {
+					case 'read':
+						return $this->priv_cache[$args[0]]&1;
+					case 'list':
+						return $this->priv_cache[$args[0]]&2;
+					case 'insert':
+						return $this->priv_cache[$args[0]]&4;
+					case 'delete':
+						return $this->priv_cache[$args[0]]&8;
+					case 'write':
+						return $this->priv_cache[$args[0]]&16;
+					case 'lock':
+						return $this->priv_cache[$args[0]]&32;
+					case 'administer':
+						return $this->priv_cache[$args[0]]&64;
+					default:
+						return false;
+				}
+			} else {
+				throw new I2Exception('Could not create process');
+				return false;
+			}
+		}
+
 
 		$temp = tmpfile();
-
-		$descriptors = array(
-			0 => array('pipe', 'r'), 
-			1 => $temp,
-			2 => array('pipe', 'w')
-		);
 
 		$env = array(
 			'KRB5CCNAME' => $this->kerberos_cache
@@ -63,40 +146,11 @@ class CSLProxy {
 			$this->kerberos_realm = i2config_get('afs_realm','CSL.TJHSST.EDU','kerberos');
 		}
 
-		// TODO Actually fix the can_do method so that we don't have to do this.
-		// Fairly log-priority.
-		if($function == 'can_do') {
-			$username = $I2_USER->username;
-			$usergroups = array();
-			$filepath = '/afs/csl.tjhsst.edu/' . $args[0];
-			$retarray=array();
-			exec("echo `pts groups $username | grep -v Groups` system:authuser system:anyuser $username | sed 's/ /\\\\|/g'",$usergroups);
-			$usergroups = $usergroups[0];
-			exec("fs la '$filepath' | grep -v 'Access list for' | grep '$usergroups' | sed 's/^ *[a-zA-Z0-9:]* //g' | tr '\\n' '/' | sed 's/\\///g'",$retarray);
-			if(!isset($retarray[0])) {
-				// This means that `fs la` showed an error message. This is almost always
-				// because of insufficient permissions, so we'll return false.
-				return FALSE;
-			}
-			switch ($args[1]) {
-				case 'read':
-					return !(strpos($retarray[0],'r') === false);
-				case 'list':
-					return !(strpos($retarray[0],'l') === false);
-				case 'insert':
-					return !(strpos($retarray[0],'i') === false);
-				case 'delete':
-					return !(strpos($retarray[0],'d') === false);
-				case 'write':
-					return !(strpos($retarray[0],'w') === false);
-				case 'lock':
-					return !(strpos($retarray[0],'k') === false);
-				case 'administer':
-					return !(strpos($retarray[0],'a') === false);
-				default:
-					return false;
-			}
-		}
+		$descriptors = array(
+			0 => array('pipe', 'r'), 
+			1 => $temp,
+			2 => array('pipe', 'w'),
+		);
 
 		$process = proc_open("pagsh -c \"aklog -c $AFS_CELL -k {$this->kerberos_realm}; $peer {$this->kerberos_realm}\"", $descriptors, $pipes, $I2_FS_ROOT, $env);
 		if(is_resource($process)) {
