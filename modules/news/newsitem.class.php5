@@ -260,8 +260,9 @@ class NewsItem {
 		$groupstring = substr($groupstring, 0,-2);
 		$subj = "[Iodine-news] {$title}";
 		$separator = "MAIL-" . md5(date("r",time()));
-		$headers = "From: " . i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion') . "\r\n";
-		$headers .= "Reply-To: " . i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion') . "\r\n";
+		$headers = "From: " . i2config_get('news', 'intranet-news@tjhsst.edu', 'suggestion') . "\r\n";
+		//We had some problems with people's vacation messages replying to alerts.
+		$headers .= "Reply-To: " . i2config_get('news', 'intranet-news@tjhsst.edu', 'suggestion') . "\r\n";
 		$headers .= "Content-Type: multipart/alternative; boundary=\"" . $separator . "\"";
 		$messagecontents = "Posted by " . $author->fullname . " to " . $groupstring . ":\r\n\r\n" . $text;
 		$message = "--" . $separator . "\r\nContent-Type: text/plain; charset=\"iso-8859-1\"\r\n";
