@@ -299,7 +299,7 @@ class NewsItem {
 		if($test1&&$test2) {
 			// Set username and password
 			$username = i2config_get('twitter_username','TJIntranet','twitter');
-			$password = i2config_get('twitter_password','thisissparta','twitter');
+			$password = i2config_get('twitter_password','password','twitter');
 			// The message you want to send
 			$message = "";
 			$message .= $title;
