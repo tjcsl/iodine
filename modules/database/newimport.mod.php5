@@ -620,7 +620,7 @@ class Newimport implements Module {
 			$usernew['showbdayself'] = 'TRUE';
 			$usernew['showeighthself'] = 'TRUE';
 			$usernew['showlockerself'] = 'TRUE';
-			$usernew['eighthoffice-comments'] = '';
+			$usernew['eighthoffice-comments'] = ' ';
 		}
 		$usernew['title'] = ($user['sex']=='M')?'Mr.':'Ms.';
 		if ($user['mname']) {
