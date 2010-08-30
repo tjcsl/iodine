@@ -41,7 +41,7 @@ class Cache {
 	/**
 	 * Store a variable in memcached
 	 * 
-	 * @param Object $module the module (or any object, really) that is talking to memcached
+	 * @param Object|string $module the module (or any object, really) that is talking to memcached or a string if no object is available
 	 * @param string $key the key the module wants to use for this object
 	 * @param mixed $val the value to store in memcached
 	 * @param int $expire optional time for value to expire
@@ -50,22 +50,25 @@ class Cache {
 	 */
 	public function store($module, $key, $val, $expire=null)
 	{
-		$name=get_class($module);
+		if(gettype($module)=="string") $name=$module;
+		else $name=get_class($module);
 		$db=i2config_get('database','iodine','mysql');
 		$hash=sha1($db."??".$name."::".$key);
 		if(!isset($expire)) $expire=intval(i2config_get('expire', '120', 'memcached'));
+		d("Storing item in memcached: $name, $key, $hash");
 		return $this->mcache->set($hash, $val, 0, $expire);
 	}
 
 	/**
 	 * Remove a variable from memcached
 	 * 
-	 * @param Object $module the module (or any object, really) that is talking to memcached
+	 * @param Object|string $module the module (or any object, really) that is talking to memcached or a string if no object is available
 	 * @param string $key the key the module wants to use for this object
 	 * @return bool true on success, false on failure
 	 */
 	public function remove($module, $key)
 	{
+		if(gettype($module)=="string") $name=$module;
 		$name=get_class($module);
 		$hash=sha1(i2config_get('database','iodine','mysql')."??".$name."::".$key);
 		return $this->mcache->delete($hash);
@@ -73,13 +76,14 @@ class Cache {
 	/**
 	 * Read a variable form memcached
 	 * 
-	 * @param Object $module the module (or any object, really) that is talking to memcached
+	 * @param Object|string $module the module (or any object, really) that is talking to memcached or a string if no object is available
 	 * @param string $key the key the module wants to use for this object
 	 * @param mixed $val FALSE on failure, otherwise the value that was stored with by the module with the key
 	 */
 	public function read($module, $key)
 	{
-		$name=get_class($module);
+		if(gettype($module)=="string") $name=$module;
+		else $name=get_class($module);
 		$hash=sha1(i2config_get('database','iodine','mysql')."??".$name."::".$key);
 		d("reading $hash from memcache");
 		if($hash===null) return false;
@@ -90,6 +94,10 @@ class Cache {
 			return false;
 		}
 		d("memcache lookup $hash succeeded");
+		//$val2=unserialize($val);
+		//print_r($val);
+		//if($val2!==false) $val=$val2;
 		return $val;
 	}
 }
+?>
