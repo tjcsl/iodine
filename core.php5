@@ -144,6 +144,15 @@ try {
 	 * @global Logging $I2_LOG
 	 */
 	$I2_LOG = new Logging();
+	
+	/**
+	 * The global memcache access mechanism
+	 * 
+	 * Use this {@link Cache} object to cache stuff with memcache.
+	 *
+	 * @global Cache $I2_CACHE
+	 */
+	$I2_CACHE = new Cache();
 
 	/**
 	 * The global SQL mechanism.
