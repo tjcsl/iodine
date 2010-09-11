@@ -21,6 +21,9 @@ abstract class Filesystem {
 
 	protected function convert_path($path, $must_exist=TRUE) {
 		$basename = basename($path);
+		//Trim following /s, stops some breakage
+		if ($path[strlen($path)-1]=='/')
+			$path=substr($path,0,-1);
 		
 		if ($must_exist == FALSE && $basename != '..' && $basename != '.') {
 			$new_path = $this->convert_path(dirname($path)) . '/' . $basename;
