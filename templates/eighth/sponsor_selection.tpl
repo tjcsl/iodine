@@ -5,7 +5,8 @@ function sponsorSelect(sid) {
 }
 </script>
 <span style="font-weight: bold; font-size: 125%;">[<$title|default:"">]</span><br />
-<select name="sponsor_list" id="sponsor_box" size="10" onchange="sponsorSelect(this.options[this.selectedIndex].value)">
+<select name="sponsor_list" id="spons_box" size="10" onchange="sponsorSelect(this.options[this.selectedIndex].value)">
+[<*if it is called sponsor_box then adblock might filter it*>]
 [<foreach from=$sponsors item='sponsor'>]
 	<option value="[<$sponsor.sid>]">[<$sponsor.name_comma>]</option>[</foreach>]
 </select>
