@@ -1,0 +1,138 @@
+/* Used in podcasts_home.tpl */
+table.podcasts td {
+	padding: 0px 5px;
+}
+
+table.podcasts th {
+	padding-left: 1em;
+	font-weight: normal;
+	text-align: left;
+}
+
+/* Used in podcasts_edit.tpl */
+table#podcasts_groups_table th, table#podcasts_groups_table td {
+	padding: 0px 3px;
+}
+
+table#podcasts_groups_table td select#podcasts_groups {
+	display: none;
+}
+
+/* Hack: a generic td syntax followed by a td:nth-child(2) should be used;
+ * nth-child find littles use.
+ * IE6 has no hope for supporting this, but it's not a big deal. */
+table#podcasts_groups_table td + td + td {
+	text-align: center;
+}
+
+/* Used in podcasts_results.tpl */
+/* These provide the major lines. */
+table.results {
+	margin: 3px 0em;
+	border-collapse: collapse;
+}
+table.results col {
+	border-width: 1px;
+	border-color: black;
+	border-style: solid;
+}
+table.results col.l {
+	border-left-width: 3px;
+}
+table.results th, table.results td {
+	padding: 2px 3px;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	border-width: 1px;
+	border-style: solid;
+}
+table.results tbody th + td,
+table.results tfoot th + td {
+	border-right-style: hidden;
+}
+
+/* Hacky, but E:last-child is not supported by IE, as it is a CSS3 specifier
+(FF/Opera support it). Remove the next rule and the first selector of the
+one thereafter when browsers regularly support :last-child
+In addition, the child selector prevents IE6 from gumming up. */
+table.results thead tr:first-child th {
+	border-bottom-width: 1px;
+}
+table.results thead tr > th,
+table.results thead tr:first-child th:first-child, 
+table.results thead tr:last-child th {
+	border-bottom-width: 3px;
+}
+table.results tfoot tr * {
+	border-top-width: 3px;
+}
+
+/* Format the left column. */
+table.results tbody th,
+table.results tfoot th {
+	font-weight: inherit;
+	text-align: left;
+}
+
+/* Make results easy to read. */
+table.results tbody td,
+table.results tfoot td {
+	text-align: right;
+}
+
+table.results thead img {
+	padding: 0px 5%;
+}
+
+
+/* Used in podcasts_results_freeresponse.tpl */
+div.podcast_freeresponse {
+	position: relative; /* Make this a containing block. */
+	display: block;
+	width: auto;
+	padding-left: 5.5em;
+	margin-bottom: 2px;
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap;
+	border: 1px dashed #999;
+	/* Broken in IE/FF. Needs to work. */
+	page-break-inside: avoid;
+}
+
+div.hidden {
+	display: none;
+}
+
+div.podcast_freeresponse span {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	display: block;
+	font-style: italic;
+}
+
+h4 {
+	font-weight: bold;
+}
+
+@media print {
+	div#podcasts_header {
+		display: none;
+	}
+	div.podcast_freesponse {
+		border-top: none;
+		border-left: none;
+		border-right: none;
+		border-bottom: 1px solid #999;
+	}
+}
+
+/* Format the display.*/
+ol.podcast_questions {
+	position: relative;
+	padding-left: 1.5em;
+}
+
+ol.podcast_questions > li {
+	padding-bottom: 1em;
+}

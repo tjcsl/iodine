@@ -144,6 +144,7 @@ class Docs implements Module {
 			//$typer = new finfo(FILEINFO_MIME); //FileInfo should be enabled by default, but for some reason php can't find it.
 			//$filetype = $typer->file($this->path); //So for now we'll just use `file`.
 			$filetype = exec("file ".escapeshellarg($_FILES['upfile']['tmp_name'])." -bi");
+			$filetype = str_replace(';','',$filetype);
 			if(stripos($filetype," ")) //Remove encoding information
 				$filetype = substr($filetype,0,stripos($filetype," "));
 			if(in_array($filetype,$allowed_types) && filesize($_FILES['upfile']['tmp_name']) <= $max_size) {

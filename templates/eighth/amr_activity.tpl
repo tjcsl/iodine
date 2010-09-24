@@ -29,6 +29,19 @@
 		<tr>
 			<td>Room(s):</td>
 			<td>
+				<script type="text/javascript">
+				function hider(obj,textbox) {
+					if(obj.style.display=="none"){
+						obj.style.display="block";
+						textbox.innerHTML="hide";
+					} else {
+						obj.style.display="none";
+						textbox.innerHTML="show";
+					}
+				}
+				</script>
+				<a id="roomhider" onclick="hider(document.getElementById('roomdiv'),this)">show</a>
+				<div id="roomdiv" style="display:none">
 [<if count($activity->rooms) > 0 >]
 				<select name="rooms[]" id="rooms" size="[<$activity->rooms|@count>]">
 [<php>]
@@ -45,6 +58,7 @@
 [<if count($activity->rooms) > 0 >]
 				<input type="button" value="Remove" onclick="location.href='[<$I2_ROOT>]eighth/amr_activity/remove_room/aid/[<$activity->aid>]/rid/' + document.getElementById('rooms').options[document.getElementById('rooms').selectedIndex].value;" />
 [</if>]
+				</div>
 			</td>
 		</tr>
 		<tr>
