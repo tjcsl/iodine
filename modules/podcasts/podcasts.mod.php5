@@ -318,7 +318,7 @@ class Podcasts implements Module {
 		}
 		$this->template = 'podcasts_edit.tpl';
 		$this->template_args['podcast'] = $podcast;
-		$this->template_args['types']=PodcastQuestion::get_answer_types();
+		$this->template_args['types'] = PodcastQuestion::get_answer_types();
 		$this->template_args['groups'] = Group::get_all_groups();
 	}
 

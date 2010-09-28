@@ -1019,7 +1019,7 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'activity_to') {
 			$this->setup_activity_selection(FALSE, $this->args['bid_to'], FALSE, "aid_to", "To this activity:");
-			$this->template_args['op'] = "confirm/bid_from/{$this->args['bid_from']}/aid_from/{$this->args['aid_from']}/bid_to/{$this->args['bid_to']}";
+			$this->template_args['op'] = "confirm/bid_from/{$this->args['bid_from']}/aid_from/{$_GET['aid_from']}/bid_to/{$this->args['bid_to']}";
 			$this->title = 'Select an Activity into which to move Students';
 		}
 		else if($this->op == 'confirm') {
