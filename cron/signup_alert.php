@@ -23,7 +23,7 @@ foreach($I2_SQL->query("SELECT userid FROM eighth_alerts")->fetch_all_single_val
 	$activities = EighthSchedule::get_activities($id, $date, 1,TRUE);
 	$notsigned=FALSE;
 	foreach($activities as $activity)
-		if($activity==$def_aid) {
+		if($activity[0]==$def_aid) {
 			$notsigned=TRUE;
 			break;
 		}

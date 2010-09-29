@@ -448,7 +448,7 @@ class Eighth implements Module {
 			//$this->args += $_POST;
 			
 			// Add GET variables into the array - and let them clobber POST
-			foreach ($_GET as $key=>$value) {
+			/*foreach ($_GET as $key=>$value) {
 				// Strip to the last question mark to determine real key name - I don't know why we have to do this.
 				// It's probably related to the .htaccess file we use.
 				$pos = strrpos($key,'?');
@@ -467,11 +467,18 @@ class Eighth implements Module {
 					$this->args[$keypart] = $valpart;
 					$tok = strtok('?');
 				}
+			}*/
+			foreach ($_GET as $key=>$value) {
+				d($value,3);
+				$this->args[$key]=$value;
 			}
 			if(isset($_SESSION['eighth'])) {
 				$this->args += $_SESSION['eighth'];
 			}
 
+			foreach($this->args as $i) {
+				d($i,1);
+			}
 			//Be careful with this line
 			if(method_exists($this, $method) && (in_array($method, $this->safe_modules) || $this->admin) || $I2_USER->is_group_member('grade_staff')) {
 				$this->$method();
@@ -1019,7 +1026,7 @@ class Eighth implements Module {
 		}
 		else if($this->op == 'activity_to') {
 			$this->setup_activity_selection(FALSE, $this->args['bid_to'], FALSE, "aid_to", "To this activity:");
-			$this->template_args['op'] = "confirm/bid_from/{$this->args['bid_from']}/aid_from/{$_GET['aid_from']}/bid_to/{$this->args['bid_to']}";
+			$this->template_args['op'] = "confirm/bid_from/{$this->args['bid_from']}/aid_from/{$this->args['aid_from']}/bid_to/{$this->args['bid_to']}";
 			$this->title = 'Select an Activity into which to move Students';
 		}
 		else if($this->op == 'confirm') {
