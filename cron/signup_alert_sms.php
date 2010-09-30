@@ -15,9 +15,6 @@ if($date!=date("Y-m-d")) {
 	//echo "There are no scheduled eighth periods today. Closing...\r\n";
 	exit();
 }
-$subj = "[Iodine-eighth] Signup Alert";
-$separator = "MAIL-" . md5(date("r",time()));
-$def_aid=i2config_get('default_aid', 999, 'eighth');
 
 // This table defines the relationship between carriers and sms gateways.
 $gateways = array(
@@ -61,6 +58,10 @@ $gateways = array(
 	'virgin'=>'@vmobl.com'
 );
 
+$subj = "Signup Alert";
+$separator = "MAIL-" . md5(date("r",time()));
+$def_aid=i2config_get('default_aid', 999, 'eighth');
+
 foreach($I2_SQL->query("SELECT userid FROM eighth_alerts")->fetch_all_single_values() as $id) {
 	//echo $id."\r\n";
 	$activities = EighthSchedule::get_activities($id, $date, 1,TRUE);
@@ -77,12 +78,25 @@ foreach($I2_SQL->query("SELECT userid FROM eighth_alerts")->fetch_all_single_val
 	$headers .= "Reply-To: " . i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion') . "\r\n";
 	$headers .= "Content-Type: multipart/alternative; boundary=\"" . $separator . "\"";
 	$messagecontents = "As of the time that this message is being sent, you have not signed up for one or more eighth periods on $date.\r\n";
-	$message = "--" . $separator . "\r\nContent-Type: text/plain; charset=\"iso-8859-1\"\r\n";
-	$message .= strip_tags($messagecontents);
-	$message .= "\r\n--" . $separator . "\r\nContent-Type: text/html; charset=\"iso-8859-1\"\r\n";
-	$message .= $messagecontents;
+	$emailmessage = "--" . $separator . "\r\nContent-Type: text/plain; charset=\"iso-8859-1\"\r\n";
+	$emailmessage .= strip_tags($messagecontents);
+	$emailmessage .= "\r\n--" . $separator . "\r\nContent-Type: text/html; charset=\"iso-8859-1\"\r\n";
+	$emailmessage .= $messagecontents;
 
 	$user = new User($id);
+	//We need something along thse lines:
+	/*
+	foreach ($user->smsaccounts as $acc) {
+		$address = $acc[0].$gateways[$acc[1]][0];
+		$message = $gateways[$acc[1]][1];
+		$message = str_replace('NUMBER',$acc[0],$message);
+		$message = str_replace('SUBJECT',$subj,$message);
+		$message = str_replace('CONTENTS',$messagecontents,$message);
+		$message = str_replace('
+		mail(
+	}
+	*/
+	/*
 	if(gettype($user->mail)=="array") {
 		foreach($user->mail as $mail) {
 			//echo $mail."\r\n";
@@ -91,7 +105,7 @@ foreach($I2_SQL->query("SELECT userid FROM eighth_alerts")->fetch_all_single_val
 	} else {
 		//echo $user->mail."\r\n";
 		mail($user->mail,$subj,$message,$headers);
-	}
+	}*/
 }
 //echo "Finished. Closing...";
 ?>

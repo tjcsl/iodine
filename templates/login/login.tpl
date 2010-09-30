@@ -25,7 +25,7 @@ IE7_PNG_SUFFIX = ".png";
 		<td class="box">
 [<if $failed eq 1>]
 			<div id="login_failed">
-				Your login as [<$uname>] failed.  Maybe your password is incorrect?<br />
+				Your login as [<$uname|escape>] failed.  Maybe your password is incorrect?<br />
 			</div>
 [<elseif $failed eq 2>]
 			<div id="login_failed">
@@ -43,7 +43,7 @@ IE7_PNG_SUFFIX = ".png";
 				<table id="login_box">
 					<tr>
 						<td>Username:</td>
-					   	<td><input name="login_username" type="text" size="25" value="[<$uname>]" /></td>
+					   	<td><input name="login_username" type="text" size="25" value="[<$uname|escape>]" /></td>
 					</tr>
 					<tr>
 						<td>Password:</td>
