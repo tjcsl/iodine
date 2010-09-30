@@ -17,6 +17,9 @@ if($date!=date("Y-m-d")) {
 }
 
 // This table defines the relationship between carriers and sms gateways.
+// The format is "'mysqlkey'=>['@gateway.extensi.on','formatstring'],".
+// Formatstring's format can be deduced from code below.
+
 $gateways = array(
 	'acs'=>'@msg.acsalaska.com',
 	'alltel'=>'@message.Alltel.com',
