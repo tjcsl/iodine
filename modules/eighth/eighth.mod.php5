@@ -416,7 +416,7 @@ class Eighth implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_ARGS, $I2_USER;
+		global $I2_ARGS, $I2_USER, $I2_QUERY;
 		$this->args = array();
 		$this->admin = self::is_admin();
 		$this->template_args['eighth_admin'] = $this->admin;
@@ -444,41 +444,14 @@ class Eighth implements Module {
 			// Let POST clobber args. This may break things.
 			$this->args = array_merge($this->args, $_POST);
 			
-			// Add POST variables - but do not let them clobber args
-			//$this->args += $_POST;
-			
 			// Add GET variables into the array - and let them clobber POST
-			/*foreach ($_GET as $key=>$value) {
-				// Strip to the last question mark to determine real key name - I don't know why we have to do this.
-				// It's probably related to the .htaccess file we use.
-				$pos = strrpos($key,'?');
-				$newkey = substr($key,($pos === FALSE ? 0 : $pos + 1));
-				// Don't skip the first argument
-				$value = $newkey.'='.$value;
-				$tok = strtok($value,'?');
-				while ($tok !== FALSE) {
-					$meh = explode('=',$tok);
-					if (count($meh) != 2) {
-						throw new I2Exception('Unparseable GET string!');
-					}
-					$keypart = $meh[0];
-					$valpart = $meh[1];
-					d($keypart.'=>'.$valpart,1);
-					$this->args[$keypart] = $valpart;
-					$tok = strtok('?');
-				}
-			}*/
-			foreach ($_GET as $key=>$value) {
-				d($value,3);
-				$this->args[$key]=$value;
+			foreach($I2_QUERY as $k=>$v) {
+				$this->args[$k]=$v;
 			}
 			if(isset($_SESSION['eighth'])) {
 				$this->args += $_SESSION['eighth'];
 			}
 
-			foreach($this->args as $i) {
-				d($i,1);
-			}
 			//Be careful with this line
 			if(method_exists($this, $method) && (in_array($method, $this->safe_modules) || $this->admin) || $I2_USER->is_group_member('grade_staff')) {
 				$this->$method();
