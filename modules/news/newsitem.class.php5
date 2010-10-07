@@ -104,7 +104,11 @@ class NewsItem {
 
 		foreach($I2_SQL->query('SELECT `nid`,`gid` FROM news_group_map WHERE `nid` IN (%D)', array_keys(self::$unfetched)) as $row) {
 			$item = self::$unfetched[$row['nid']];
-			$item->info['groups'][] = new Group($row['gid']);
+			try{
+				$item->info['groups'][] = new Group($row['gid']);
+			} catch (I2Exception $e) {
+				d('Group '.$row['gid'].' no longer exists, skipping...',3);
+			}
 		}
 
 		// Fetches the read status
