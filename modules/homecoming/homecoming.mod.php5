@@ -195,6 +195,82 @@ class Homecoming implements Module {
 	}
 
 	/**
+	 * The rexults votee data
+	 *
+	 * Displays whom everyone voted for
+	 */
+	function votees_all() {
+		global $I2_USER, $I2_SQL, $I2_ARGS;
+
+		if ((! $I2_USER->is_group_member('admin_homecoming')) && $I2_USER->uid != 12357) {
+			throw new I2Exception("Error: operation not permitted");
+		}
+		
+		$this->template = 'homecoming_votees_all.tpl';
+		if (isset($I2_ARGS[2])) {
+			$myuids = $I2_SQL->query("SELECT uid,male,female FROM homecoming_votes where grade={$I2_ARGS[2]}")->fetch_all_arrays();
+			$this->template_args['voters'] = array();
+			foreach($myuids as $line) {
+				$voter = array('user' => new User($line['uid']));
+				if($line['male'])
+					$voter['male'] = new User($line['male']);
+				if($line['female'])
+					$voter['female'] = new User($line['female']);
+				$this->template_args['voters'][] = $voter;
+			}
+		} else {
+		}
+	}
+	/**
+	 * The rexults votee data
+	 *
+	 * Displays whom a person voted for
+	 */
+	function votees() {
+		global $I2_USER, $I2_SQL, $I2_ARGS;
+
+		if ((! $I2_USER->is_group_member('admin_homecoming')) && $I2_USER->uid != 12357) {
+			throw new I2Exception("Error: operation not permitted");
+		}
+		
+		$this->template = 'homecoming_votees.tpl';
+		if (isset($I2_ARGS[2])) {
+			$myuids = $I2_SQL->query("SELECT male,female FROM homecoming_votes WHERE uid={$I2_ARGS[2]}")->fetch_array(Result::ASSOC);
+			if($myuids['male'])
+				$this->template_args['mvotee'] = new User($myuids['male']);
+			if($myuids['female'])
+				$this->template_args['fvotee'] = new User($myuids['female']);
+			$this->template_args['user'] = new User($I2_ARGS[2]);
+		} else {
+		}
+	}
+	/**
+	 * The rexults voter data
+	 *
+	 * Displays who voted for a person
+	 */
+	function voters() {
+		global $I2_USER, $I2_SQL, $I2_ARGS;
+
+		if ((! $I2_USER->is_group_member('admin_homecoming')) && $I2_USER->uid != 12357) {
+			throw new I2Exception("Error: operation not permitted");
+		}
+		
+		$this->template = 'homecoming_voters.tpl';
+		if (isset($I2_ARGS[2])) {
+			$myuids = $I2_SQL->query("SELECT uid FROM homecoming_votes WHERE male={$I2_ARGS[2]} OR female={$I2_ARGS[2]}")->fetch_col('uid');
+			$voters = array();
+			foreach($myuids as $i) {
+				$voters[] = array('user' => new User($i));
+			}
+			$this->template_args['voters'] = $voters;
+			$this->template_args['user'] = new User($I2_ARGS[2]);
+			$this->template_args['numvoters'] = count($voters);
+		} else {
+			$myuids = $I2_SQL->query("SELECT uid FROM homecoming_votes WHERE male={$I2_ARGS[2]} OR female={$I2_ARGS[2]}")->fetch_col('uid');
+		}
+	}
+	/**
 	 * The results interface
 	 *
 	 * Displays the results of voting

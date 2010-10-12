@@ -12,12 +12,12 @@ Homecoming court voting results for grade [<$grade>]: <br /><br />
  <tr>
   <td valign="top">
    [<foreach from=$males item=votee>]
-    <a href="[<$I2_ROOT>]studentdirectory/info/[<$votee.user->uid>]">[<$votee.user->name>]</a> -- [<$votee.numvotes>] vote[<if $votee.numvotes != 1>]s[</if>]<br />
+    <a href="[<$I2_ROOT>]studentdirectory/info/[<$votee.user->uid>]">[<$votee.user->name>]</a> -- [<$votee.numvotes>] vote[<if $votee.numvotes != 1>]s[</if>] -- <a href="[<$I2_ROOT>]homecoming/voters/[<$votee.user->uid>]">Voters</a><br />
    [</foreach>]
   </td>
   <td valign="top">
    [<foreach from=$females item=votee>]
-    <a href="[<$I2_ROOT>]studentdirectory/info/[<$votee.user->uid>]">[<$votee.user->name>]</a> -- [<$votee.numvotes>] vote[<if $votee.numvotes != 1>]s[</if>]<br />
+    <a href="[<$I2_ROOT>]studentdirectory/info/[<$votee.user->uid>]">[<$votee.user->name>]</a> -- [<$votee.numvotes>] vote[<if $votee.numvotes != 1>]s[</if>] -- <a href="[<$I2_ROOT>]homecoming/voters/[<$votee.user->uid>]">Voters</a><br />
    [</foreach>]
   </td>
  </tr>
