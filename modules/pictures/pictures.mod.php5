@@ -57,18 +57,14 @@ class Pictures implements Module {
 		Display::stop_display();
 		$user = new User($I2_ARGS[1]);
 		$legal_args = array(
-			'freshmanPhoto',
 			'freshmanphoto',
-			'sophomorePhoto', 
 			'sophomorephoto', 
-			'juniorPhoto', 
 			'juniorphoto', 
-			'seniorPhoto', 
 			'seniorphoto' 
 		);
-		$photoname='preferredPhoto';
-		if (isset($I2_ARGS[2]) && in_array($I2_ARGS[2], $legal_args)) {
-			$photoname = $I2_ARGS[2];
+		$photoname='preferredphoto';
+		if (isset($I2_ARGS[2]) && in_array(strtolower($I2_ARGS[2]), $legal_args)) {
+			$photoname = strtolower($I2_ARGS[2]);
 		}
 
 		if($photo = $user->$photoname) {
