@@ -20,7 +20,12 @@ $separator = "MAIL-" . md5(date("r",time()));
 $def_aid=i2config_get('default_aid', 999, 'eighth');
 foreach($I2_SQL->query("SELECT userid FROM eighth_alerts")->fetch_all_single_values() as $id) {
 	//echo $id."\r\n";
-	$activities = EighthSchedule::get_activities($id, $date, 1,TRUE);
+	try {
+		$activities = EighthSchedule::get_activities($id, $date, 1,TRUE);
+	} catch (I2Exception $e) {
+		// Usually induced if a user is removed from iodine without being removed from the db first.
+		continue;
+	}
 	$notsigned=FALSE;
 	foreach($activities as $activity)
 		if($activity[0]==$def_aid) {
