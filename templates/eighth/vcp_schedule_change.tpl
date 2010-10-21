@@ -7,7 +7,7 @@ You were unsuccessful in registering for the following activities:<br /><br />
 [<if isset($act_status.past)>]Activity is in the past<br />[</if>]
 [<if isset($act_status.presign)>]This activity is popular, and signups for it are not yet open.  Try signing up within 48 hours of the activity date.<br />[</if>]
 [<if isset($act_status.capacity)>]Activity is full<br />[</if>]
-[<if isset($act_status.sticky)>][<if $eighth_admin>]Student is[<else>]You are[</if>] stuck to another activity<br />[</if>]
+[<if isset($act_status.sticky)>][<if $eighth_admin>]<font size='16' color="red"> Student is stuck to another activity; do not move them!</font><br />[<else>]You are stuck to another activity<br />[</if>][</if>]
 [<if isset($act_status.permissions)>]Student is not allowed into the activity<br />[</if>]
 [<if isset($act_status.oneaday)>]Student is already signed up for another block of this one-a-day activity<br />[</if>]
 [<if isset($act_status.cancelled)>]Activity is cancelled<br />[</if>]
