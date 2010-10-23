@@ -113,7 +113,7 @@ class Docs implements Module {
 		global $I2_USER, $I2_ARGS;
 		$doc = new Doc($I2_ARGS[2]);
 		if($doc->can_see()) {
-			$content_types = array('.txt' => 'text/plain', '.rtf' => 'application/rtf', '.doc' => 'application/msword', '.docx' => 'application/vnd.ms-excel', '.pdf' => 'application/pdf');
+			$content_types = array('.txt' => 'text/plain', '.rtf' => 'application/rtf', '.doc' => 'application/msword', '.docx' => 'application/vnd.ms-excel', '.pdf' => 'application/pdf', '.jpg' => 'image/jpeg');
 			$filename = substr(strrchr($doc->path,'/'),1);
 			$ext = strrchr($filename,'.');
 			header('Pragma: '); // IE won't download over SSL with default "Pragma: no-cache"
@@ -134,8 +134,8 @@ class Docs implements Module {
 	function add() {
 		global $I2_USER, $I2_ARGS;
 		$this->template_args['groups'] = Group::get_all_groups();
-		$allowed_extensions = array('.txt','.rtf','.doc','.docx','.pdf');
-		$allowed_types = array('text/plain','application/rtf','application/msword','application/vnd.ms-excel','application/pdf','application/vnd.ms-office','application/octet-stream');
+		$allowed_extensions = array('.txt','.rtf','.doc','.docx','.pdf','.jpg');
+		$allowed_types = array('text/plain','application/rtf','application/msword','application/vnd.ms-excel','application/pdf','application/vnd.ms-office','application/octet-stream','image/jpeg');
 		$this->template_args['exts'] = implode(', ',$allowed_extensions);
 		$max_size = 10485760; // 10 MB
 		if(count($_POST) > 0) {
