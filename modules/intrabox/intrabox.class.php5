@@ -170,7 +170,7 @@ class IntraBox {
 			foreach($b as $box) {
 				$timetest=microtime();
 				$box->display_box();
-				d("Time to display intrabox for ".$box->module->get_name().": ".microtime()-$timetest." microseconds",6);
+				d("Time to display intrabox for "."a box".": ".microtime()-$timetest." microseconds",6);
 			}
 		}
 
