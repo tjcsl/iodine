@@ -68,7 +68,7 @@ class User {
 					$this->info = &self::$cache[$uid];
 				} else {
 					$this->info = array();
-					$blah = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid=$uid",array('iodineUidNumber'))->fetch_array(RESULT::ASSOC);
+					$blah = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
 					foreach ($blah as $key=>$val) {
 						$this->info[strtolower($key)] = $val;
 					}
@@ -94,9 +94,9 @@ class User {
 			}
 			$this->info = array();
 			if (isSet(self::$cache[$uid]) && isSet(self::$cache[$uid]['iodineuid'])) {
-				$this->info['iodineuid'] = self::$cache[$uid]['iodineuid'];
+				$this->info = self::$cache[$uid];
 			} else {
-				$blah = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUidNumber=$uid",array('iodineUid'))->fetch_array(Result::ASSOC);
+				$blah = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUidNumber=$uid")->fetch_array(Result::ASSOC);
 				if ($blah) {
 					foreach ($blah as $key=>$val) {
 						$this->info[strtolower($key)] = $val;
@@ -204,6 +204,8 @@ class User {
 
 		$name = strtolower($name);
 
+		if(isset($this->info[$name]))
+			return $this->info[$name];
 		/* pseudo-fields
 		** must use explicit __get calls here, since recursive implicit
 		** __get calls apparently are not allowed.
@@ -247,6 +249,8 @@ class User {
 				//return $this->__get('iodineUidNumber');
 			case 'username':
 				return $this->username;
+			case 'sex':
+				return $this->gender;
 			case 'grade':
 				$grade = self::get_grade($this->__get('graduationYear'));
 				if ($grade < 0) {
@@ -374,11 +378,12 @@ class User {
 			case 'showbdate':
 			case 'showlocker':
 			case 'showlockerself':
-				$row = $I2_LDAP->search_base(LDAP::get_user_dn($this->username),$name);
+				/*$row = $I2_LDAP->search_base(LDAP::get_user_dn($this->username),$name);
 				if (!$row) {
 					return NULL;
 				}
-				return $row->fetch_single_value()=='TRUE'?TRUE:FALSE;
+				return $row->fetch_single_value()=='TRUE'?TRUE:FALSE;*/
+				return $info[$name]=='TRUE'?TRUE:FALSE;
 				break;
 		}
 		
@@ -388,7 +393,8 @@ class User {
 			return $this->info[$name];
 		}
 		
-		$row = $I2_LDAP->search_base(LDAP::get_user_dn($this->username),$name);
+		d("Missed cache, name was ".$name,6);
+		$row = $I2_LDAP->search_base(LDAP::get_user_dn_username($this->username),$name);
 		
 		if (!$row) {
 			//$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information for '.$name);
@@ -411,7 +417,7 @@ class User {
 		}
 
 		$this->info[$name] = $res;
-		
+		d("VALID CACHE MISS: ".$name,3);
 		return $res;
 	}	
 
@@ -568,7 +574,7 @@ class User {
 			case 'showpicture':
 				// Set all the pictures' attributes to match the parent user's
 				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';
-				$res = $ldap->search_one(LDAP::get_user_dn($this->__get('username')),'objectClass=iodinePhoto',array('cn'));
+				$res = $ldap->search_one(LDAP::get_user_dn_username($this->__get('username')),'objectClass=iodinePhoto',array('cn'));
 				while ($row = $res->fetch_array()) {
 					$ldap->modify_val(LDAP::get_pic_dn($row['cn'],$this),$name,$val);
 				}
@@ -694,7 +700,7 @@ class User {
 	*/
 	public static function get_by_uname($username) {
 		global $I2_LDAP;
-		$uid = $I2_LDAP->search_base(LDAP::get_user_dn($username),array('iodineUidNumber'))->fetch_single_value();
+		$uid = $I2_LDAP->search_base(LDAP::get_user_dn_username($username),array('iodineUidNumber'))->fetch_single_value();
 		if(!$uid) {
 			return FALSE;
 		}

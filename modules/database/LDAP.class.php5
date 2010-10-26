@@ -465,6 +465,16 @@ class LDAP {
 		}
 	}
 
+	public static function get_user_dn_username($uid = NULL) {
+		self::cache_config();
+		$oubase = self::$ou_bases['user'];
+		if($uid) {
+			return "iodineUid={$uid},{$oubase}";
+		} else {
+			return $oubase;
+		}
+	}
+
 	public static function get_group_dn($name = NULL) {
 		$oubase = self::$ou_bases['group'];
 		if (!$name) {
