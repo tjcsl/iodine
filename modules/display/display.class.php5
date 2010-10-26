@@ -159,7 +159,9 @@ class Display {
 						$title = FALSE;
 					}
 					else {
+						$timetest=microtime();
 						$title = $mod->init_pane();
+						d("Time to init $module pane: ".microtime()-$timetest." microseconds",6);
 					}
 				} catch( Exception $e ) {
 					$this->global_header('Error');
@@ -194,7 +196,9 @@ class Display {
 							$this->open_content_pane(array('title' => htmlspecialchars($title[1])),$nagging);
 						}
 						try {
+							$timetest=microtime();
 							$mod->display_pane($disp);
+							d("Time to display $module pane: ".microtime()-$timetest." microseconds",6);
 						} catch (Exception $e) {
 							/* Make sure to close the content pane*/
 							if ($display_chrome || $nagging) {

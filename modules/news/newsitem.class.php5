@@ -119,7 +119,7 @@ class NewsItem {
 			self::$unfetched[$row['nid']]->info['read'] = TRUE;
 		}
 
-		foreach($I2_SQL->query('SELECT `id`,`title`,`authorID`,`posted`,`expire`,`visible`,`public` FROM news WHERE `id` IN (%D)', array_keys(self::$unfetched)) as $row) {
+		foreach($I2_SQL->query('SELECT `id`,`title`,`authorID`,`posted`,`expire`,`visible`,`public`,`text` FROM news WHERE `id` IN (%D)', array_keys(self::$unfetched)) as $row) {
 			$item = self::$unfetched[$row['id']];
 			$item->info['title'] = $row['title'];
 			$item->info['authorID'] = $row['authorID'];
@@ -127,6 +127,7 @@ class NewsItem {
 			$item->info['expire'] = $row['expire'] === NULL ? '' : $row['expire'];
 			$item->info['visible'] = $row['visible'];
 			$item->info['public'] = $row['public'];
+			$item->info['text'] = $row['text'];
 		}
 		
 		self::$unfetched = array();

@@ -160,15 +160,17 @@ class IntraBox {
 			$openclass = 'boxes_noheader';
 		}
 
-      // Set the style if it is no already set - required for nags
-      Display::style_set();
+		// Set the style if it is no already set - required for nags
+		Display::style_set();
 
 		self::$display->disp('intrabox_open.tpl',array('intrabox_open_class'=>$openclass));
 
 		if (!$nags) {
 			$b = self::get_user_boxes($I2_USER->uid);
 			foreach($b as $box) {
+				$timetest=microtime();
 				$box->display_box();
+				d("Time to display intrabox for ".$box->module->get_name().": ".microtime()-$timetest." microseconds",6);
 			}
 		}
 

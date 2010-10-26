@@ -14,6 +14,8 @@
 * @subpackage Polls
 */
 class Poll {
+	private static $pollcache;
+	private static $permissionscache;
 	private $poll_id;
 	private $title;
 
@@ -63,23 +65,34 @@ class Poll {
 	public function __construct($pid, $loadq=TRUE) {
 		global $I2_SQL,$I2_LOG;
 
-		$pollinfo = $I2_SQL->query('SELECT name,introduction,startdt,'.
-			'enddt, visible FROM polls WHERE pid=%d', $pid)->
-			fetch_array(Result::ASSOC);
+		if(!isset(Poll::$pollcache)) {
+			$pollinfo = $I2_SQL->query('SELECT name,introduction,startdt,'.
+				'enddt, visible FROM polls WHERE pid=%d', $pid)->
+				fetch_array(Result::ASSOC);
 
-		$this->poll_id = $pid;
-		$this->title = $pollinfo['name'];
-		$this->blurb = $pollinfo['introduction'];
-		$this->begin = $pollinfo['startdt'];
-		$this->end = $pollinfo['enddt'];
-		$this->visibility = $pollinfo['visible'] == 1 ? true : false;
+			$this->poll_id = $pid;
+			$this->title = $pollinfo['name'];
+			$this->blurb = $pollinfo['introduction'];
+			$this->begin = $pollinfo['startdt'];
+			$this->end = $pollinfo['enddt'];
+			$this->visibility = $pollinfo['visible'] == 1 ? true : false;
 
+			$gs = $I2_SQL->query('SELECT * FROM poll_permissions WHERE '.
+				'pid=%d',$pid)->fetch_all_arrays();
+		} else {
+			$this->poll_id = $pid;
+			$this->title = self::$pollcache[$pid]['name'];
+			$this->blurb = self::$pollcache[$pid]['introduction'];
+			$this->begin = self::$pollcache[$pid]['startdt'];
+			$this->end = self::$pollcache[$pid]['enddt'];
+			$this->visibility = self::$pollcache[$pid]['visible'] == 1 ? true : false;
+
+			$gs= isset(self::$permissionscache[$pid])?self::$permissionscache[$pid]:Array();
+		}
 		if($loadq) {
 			$this->load_poll_questions();
 		}
 
-		$gs = $I2_SQL->query('SELECT * FROM poll_permissions WHERE '.
-			'pid=%d',$pid)->fetch_all_arrays();
 		foreach ($gs as $g) {
 			$this->gs[$g['gid']] = array($g['vote'], $g['modify'],
 				$g['results']);
@@ -167,9 +180,9 @@ class Poll {
 	 */
 	public static function all_polls($loadq=TRUE) {
 		global $I2_SQL;
+		Poll::generate_cache();
 
-		$pids = $I2_SQL->query('SELECT pid FROM polls ORDER BY pid'.
-			' DESC')->fetch_all_single_values();
+		$pids = array_keys(self::$pollcache);
 		$polls = array();
 		foreach ($pids as $pid) {
 			$polls[] = new Poll($pid,$loadq);
@@ -177,6 +190,23 @@ class Poll {
 		return $polls;
 	}
 
+	/**
+	* Cache all of the polls.
+	*
+	* Saves about 1180 mysql requests every page load. :)
+	*
+	*/
+	private static function generate_cache() {
+		global $I2_SQL;
+		if(isset(self::$pollcache)) {
+			return;
+		}
+		self::$pollcache = $I2_SQL->query('SELECT name,introduction,startdt,'.
+			'enddt, visible, pid FROM polls ORDER BY pid DESC')->
+			fetch_all_arrays_keyed('pid',Result::ASSOC);
+		self::$permissionscache = $I2_SQL->query('SELECT * FROM poll_permissions')->
+			fetch_all_arrays_keyed_list('pid',Result::ASSOC);
+	}
 	/**
 	 * Returns all polls that the user can see.
 	 *
