@@ -60,6 +60,11 @@ class Logging {
 	private $debug_loglevel;
 	
 	/**
+	* Wheter or now profiling output should be shown
+	*/
+	private $debug_profile;
+
+	/**
 	* The Logging class constructor.
 	* 
 	* @access public
@@ -98,6 +103,7 @@ class Logging {
 		}
 		$this->default_debug_level = i2config_get('default_debug_level', 0, 'logging');
 		$this->debug_loglevel = i2config_get('debug_loglevel', 9, 'logging');
+		$this->debug_profile = i2config_get('debug_profile', false, 'logging');
 		$this->screen_debug = i2config_get('screen_debug', 1, 'logging');
 		
 		register_shutdown_function(array($this, 'flush_debug_output'));
@@ -181,13 +187,22 @@ class Logging {
 		if ($level === NULL) { /* If not set, get default debug level */
 			$level = $this->default_debug_level;
 		}
-		if ($level > $this->debug_loglevel) {
-			return;
-		}
-		if ($this->screen_debug) {
-			$this->log_screen('Level '.$level.' debug: '.$msg);
+		if(is_int($level)) {
+			if ($level > $this->debug_loglevel) {
+				return;
+			}
+			if ($this->screen_debug) {
+				$this->log_screen('Level '.$level.' debug: '.$msg);
+			} else {
+				$this->log_file($msg,$level);
+			}
 		} else {
-			$this->log_file($msg,$level);
+			if ($level == 'P' && $this->debug_profile)
+			if ($this->screen_debug) {
+				$this->log_screen('Level '.$level.' debug: '.$msg);
+			} else {
+				$this->log_file($msg,$level);
+			}
 		}
 	}
 
