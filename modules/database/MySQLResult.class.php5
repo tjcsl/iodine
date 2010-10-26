@@ -165,6 +165,14 @@ class MySQLResult implements Result {
 		return $sum;
 	}
 
+	function fetch_array_keyed($key,$val) {
+		$sum = array();
+		while ($arr = $this->fetch_array(MYSQL_ASSOC)) {
+			print_r($arr);
+			$sum[$arr[$key]]=$arr[$val];
+		}
+		return $sum;
+	}
 	/**
 	 * Go back to the beginning of the MySQL result resource
 	 * if this is possible.

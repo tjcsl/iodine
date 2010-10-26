@@ -31,6 +31,10 @@ class NewsItem {
 	private static $unfetched = array();
 
 	/**
+	* The list of what's shaded and what's not.
+	*/
+	private static $shadecache;
+	/**
 	 * The php magical __get method.
 	 *
 	 * Used as $newsitem-><field> to get a field, for example
@@ -62,12 +66,6 @@ class NewsItem {
 			case 'author':
 				return new User($this->__get('authorID'));
 			case 'text':
-				$res = $I2_SQL->query("SELECT `text` FROM news WHERE `id` = %d", $this->mynid);
-				if($res->num_rows() < 1) {
-					throw new I2Exception('Invalid NID accessed: '.$this->mynid);
-				}
-				return $res->fetch_single_value();
-
 			case 'title':
 			case 'authorID':
 			case 'posted':
@@ -586,12 +584,19 @@ class NewsItem {
 	 * @access public
 	 */
 	public function shaded() {
-		global $I2_SQL,$I2_USER;
-		$res = $I2_SQL->query('SELECT COUNT(*) FROM news_shaded_map WHERE uid=%d AND nid=%d', $I2_USER->uid, $this->mynid)->fetch_single_value();
-		if($res == 0)
-			return false;
-		return true;
+		if(!isset(self::$shadecache))
+			self::regenshadecache();
+		return in_array($this->nid,self::$shadecache);
 	}
 
+	/**
+	 * Generate a cache of all shaded news posts.
+	 *
+	 * @access private
+	 */
+	private static function regenshadecache(){
+		global $I2_SQL,$I2_USER;
+		self::$shadecache = $I2_SQL->query('SELECT nid FROM news_shaded_map WHERE uid=%d', $I2_USER->uid)->fetch_all_single_values(MYSQL_ASSOC);
+	}
 }
 ?>
