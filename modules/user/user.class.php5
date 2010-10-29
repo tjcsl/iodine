@@ -68,7 +68,7 @@ class User {
 					$this->info = &self::$cache[$uid];
 				} else {
 					$this->info = array();
-					$blah = $I2_LDAP->search(LDAP::get_user_dn_username($this->username),"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
+					$blah = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
 					foreach ($blah as $key=>$val) {
 						$this->info[strtolower($key)] = $val;
 					}
@@ -210,9 +210,10 @@ class User {
 
 		$name = strtolower($name);
 
-		if(isset($this->info[$name]))
+		if(isset($this->info[$name])){
 			return $this->info[$name];
-		if(in_array($name,$this->info['__nulls']))
+		}
+		if(is_array($this->info['__nulls']) && in_array($name,$this->info['__nulls']))
 			return;
 		/* pseudo-fields
 		** must use explicit __get calls here, since recursive implicit
@@ -340,20 +341,14 @@ class User {
 				@usort($cns, array("User", "sort_photos"));
 				return $cns;
 			case 'preferredphotoname':
-				$row = $I2_LDAP->search_base(LDAP::get_user_dn_username($this->username), 'preferredPhoto')->fetch_array();
-				if (!$row) {
-					return NULL;
-				}
-				if ($row['preferredPhoto'] == 'AUTO') {
+				$preferredPhoto = $this->__get('preferredPhoto');
+				if ($preferredphoto == 'AUTO') {
 					$photos = $this->__get('photoNames');
 					$preferredPhoto = array_pop($photos);
 				}
-				else {
-					$preferredPhoto = $row['preferredPhoto'];
-				}
 				return $preferredPhoto;
-			case 'preferredphoto':
-			case 'preferred_photo':
+			case 'preferredphotoimage':
+			case 'preferred_photo_image':
 				return $this->__get($this->__get('preferredPhotoName'));
 			case 'freshmanphoto':
 			case 'sophomorephoto':
@@ -386,12 +381,15 @@ class User {
 			case 'showbdate':
 			case 'showlocker':
 			case 'showlockerself':
-				/*$row = $I2_LDAP->search_base(LDAP::get_user_dn($this->username),$name);
-				if (!$row) {
-					return NULL;
+				if(!isset($this->info[$name])) {
+					$row = $I2_LDAP->search_base(LDAP::get_user_dn_username($this->username),$name);
+					if (!$row) {
+						return NULL;
+					}
+					$this->info[$name]=$row->fetch_single_value();
+					self::$cache[$this->myuid][$name][]=$this->info[$name];
 				}
-				return $row->fetch_single_value()=='TRUE'?TRUE:FALSE;*/
-				return $info[$name]=='TRUE'?TRUE:FALSE;
+				return $this->info[$name]=='TRUE'?TRUE:FALSE;
 				break;
 		}
 		
@@ -407,6 +405,7 @@ class User {
 		if (!$row) {
 			//$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->myuid.'` was used in obtaining information for '.$name);
 			$this->info['__nulls'][]=$name;
+			self::$cache[$this->myuid]['__nulls'][]=$name;
 			return NULL;
 		}
 		
@@ -423,10 +422,12 @@ class User {
 		if (!$res) {
 			d("$name not set!",6);
 			$this->info['__nulls'][]=$name;
+			self::$cache[$this->myuid]['__nulls'][]=$name;
 			return;
 		}
 
 		$this->info[$name] = $res;
+		self::$cache[$this->myuid][$name][]=$res;
 		d("VALID CACHE MISS: ".$name,3);
 		return $res;
 	}	
@@ -649,7 +650,7 @@ class User {
 		global $I2_LDAP, $I2_SQL;
 
 		$olduid = $this->myuid;
-		$I2_LDAP->modify_val(LDAP::get_user_dn_username($this), 'iodineUidNumber', $uidnumber);
+		$I2_LDAP->modify_val(LDAP::get_user_dn_username($this->username), 'iodineUidNumber', $uidnumber);
 		$this->myuid = $uidnumber;
 		$this->info['iodineuidnumber'] = $uidnumber;
 
@@ -710,7 +711,7 @@ class User {
 	*/
 	public static function get_by_uname($username) {
 		global $I2_LDAP;
-		$uid = $I2_LDAP->search_base(LDAP::get_user_dn(),array('iodineUidNumber'))->fetch_single_value();
+		$uid = $I2_LDAP->search_base(LDAP::get_user_dn($username),array('iodineUidNumber'))->fetch_single_value();
 		if(!$uid) {
 			return FALSE;
 		}
@@ -766,7 +767,7 @@ class User {
 			throw new I2Exception('Tried to retrieve information for nonexistent user!');
 		}
 		
-		$ret = $I2_LDAP->search(LDAP::get_user_dn_username($this->username),"iodineUid={$this->username}")->fetch_array(Result::ASSOC);
+		$ret = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid={$this->username}")->fetch_array(Result::ASSOC);
 
 		if( $ret === FALSE ) {
 			$I2_ERR->nonfatal_error('Warning: Invalid userid `'.$this->username.'` was used in obtaining information');
@@ -1047,7 +1048,7 @@ class User {
 				$preres = array();
 
 				while ($tok !== FALSE) {
-					$res = $I2_LDAP->search(LDAP::get_user_dn_username($this->username),
+					$res = $I2_LDAP->search(LDAP::get_user_dn(),
 					"(&(|(givenName=*$tok)(givenName=$tok*)(sn=*$tok)(sn=$tok*)(iodineUid=*$tok)(iodineUid=$tok*)(mname=*$tok)(mname=$tok*)(nickname=*$tok)(nickname=$tok*))$newgrades)"
 					,array('iodineUid'));
 

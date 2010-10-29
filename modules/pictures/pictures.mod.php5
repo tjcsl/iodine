@@ -62,7 +62,7 @@ class Pictures implements Module {
 			'juniorphoto', 
 			'seniorphoto' 
 		);
-		$photoname='preferredphoto';
+		$photoname='preferredphotoimage';
 		if (isset($I2_ARGS[2]) && in_array(strtolower($I2_ARGS[2]), $legal_args)) {
 			$photoname = strtolower($I2_ARGS[2]);
 		}
