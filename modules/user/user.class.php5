@@ -387,7 +387,7 @@ class User {
 						return NULL;
 					}
 					$this->info[$name]=$row->fetch_single_value();
-					self::$cache[$this->myuid][$name][]=$this->info[$name];
+					self::$cache[$this->myuid][$name]=$this->info[$name];
 				}
 				return $this->info[$name]=='TRUE'?TRUE:FALSE;
 				break;
@@ -427,7 +427,7 @@ class User {
 		}
 
 		$this->info[$name] = $res;
-		self::$cache[$this->myuid][$name][]=$res;
+		self::$cache[$this->myuid][$name]=$res;
 		d("VALID CACHE MISS: ".$name,3);
 		return $res;
 	}	
