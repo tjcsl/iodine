@@ -342,7 +342,7 @@ class User {
 				return $cns;
 			case 'preferredphotoname':
 				$preferredPhoto = $this->__get('preferredPhoto');
-				if ($preferredphoto == 'AUTO') {
+				if ($preferredPhoto == 'AUTO') {
 					$photos = $this->__get('photoNames');
 					$preferredPhoto = array_pop($photos);
 				}
