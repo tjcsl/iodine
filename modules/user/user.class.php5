@@ -461,6 +461,15 @@ class User {
 	}
 
 	/**
+	* Get the list of a user's friends.
+	*
+	* @return array The list of all of a student's intranet friends.
+	*/
+	public static function get_friends($gradyear) {
+		return array();// TJ students have no friends
+	}
+
+	/**
 	* Gets the graduation year of a student based on their current grade.
 	*
 	* @param int $grade The student's current grade
