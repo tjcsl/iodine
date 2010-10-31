@@ -23,6 +23,11 @@ class User {
 	private static $cache = array();
 	
 	/**
+	*
+	*/
+	private static $usernametouid = array();
+
+	/**
 	* Information about the user, only stored if this User object
 	* represents the current user logged in, since that information will
 	* probably be retrieved the most, so we cache it for speed.
@@ -64,8 +69,8 @@ class User {
 			if( isset($_SESSION['i2_username']) ) {
 				$this->username = $_SESSION['i2_username'];
 				$uid = $this->username;
-				if (isSet(self::$cache[$uid])) {
-					$this->info = &self::$cache[$uid];
+				if (isset(self::$usernametouid[$uid])&&isSet(self::$cache[self::$usernametouid[$uid]])) {
+					$this->info = &self::$cache[self::$usernametouid[$uid]];
 				} else {
 					$this->info = array();
 					$blah = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
@@ -118,11 +123,14 @@ class User {
 		*/
 		if(!isset($this->info['__nulls']))
 			$this->info['__nulls']=array();
-		//print_r($this->info['__nulls']);
 		/*
 		** Put info in cache
 		*/
 		self::$cache[$this->myuid] = &$this->info;
+		/*
+		** Cache the username->uid connection
+		*/
+		self::$usernametouid[$this->username]=$this->myuid;
 	}
 
 	public function is_valid() {
@@ -463,10 +471,13 @@ class User {
 	/**
 	* Get the list of a user's friends.
 	*
+	* @param int $uid The integer user id of the user whose friends are being queried.
 	* @return array The list of all of a student's intranet friends.
 	*/
-	public static function get_friends($gradyear) {
-		return array();// TJ students have no friends
+	public static function get_friends($uid) {
+		global $I2_SQL;
+		$list = $I2_SQL->query('SELECT distinct fid FROM friends WHERE uid=%d',$uid)->fetch_all_single_values();
+		return $list;
 	}
 
 	/**
