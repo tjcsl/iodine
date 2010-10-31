@@ -434,9 +434,9 @@ class User {
 
 	public function get_tjmail() {
 		if ($this->is_group_member('grade_staff')) {
-			return $this->__get('givenName').'.'.$this->__get('sn').'@fcps.edu';
+			return $this->__get('givenName').'.'.$this->__get('sn').i2config_get('staff_suffix','@fcps.edu','mail');
 		} else {
-			return $this->username . '@tjhsst.edu';
+			return $this->username . i2config_get('student_suffix','@tjhsst.edu','mail');
 		}
 	}
 
