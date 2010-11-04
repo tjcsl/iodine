@@ -243,6 +243,8 @@ class User {
 				$mid = $this->__get('mname');
 				return $this->__get('lname') . ', ' . $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . ($mid ? "$mid " : '');
 			case 'grad_year':
+			case 'gradyear':
+			case 'year':
 				return $this->__get('graduationYear');
 			case 'lname':
 				return $this->__get('sn');
@@ -399,6 +401,10 @@ class User {
 				}
 				return $this->info[$name]=='TRUE'?TRUE:FALSE;
 				break;
+			// Lots of aliases for different stuff in ldap
+			case 'studentid':
+			case 'fcpsstudentid':
+				return $this->__get('tjhsststudentid');
 		}
 		
 		//Check which table the information is in
@@ -408,6 +414,10 @@ class User {
 		}
 		
 		d("Missed cache, name was ".$name,6);
+		$this->info['__nulls'][]=$name;
+		self::$cache[$this->myuid]['__nulls'][]=$name;
+		return NULL;
+
 		$row = $I2_LDAP->search_base(LDAP::get_user_dn_username($this->username),$name);
 		
 		if (!$row) {
