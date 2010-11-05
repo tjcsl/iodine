@@ -202,7 +202,7 @@ class Homecoming implements Module {
 	function votees_all() {
 		global $I2_USER, $I2_SQL, $I2_ARGS;
 
-		if ((! $I2_USER->is_group_member('admin_homecoming')) && $I2_USER->uid != 12357) {
+		if (! $I2_USER->is_group_member('admin_homecoming')) {
 			throw new I2Exception("Error: operation not permitted");
 		}
 		
