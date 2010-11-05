@@ -21,16 +21,23 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, "search.ebscohost.com") ||
 		dnsDomainIs(host, "ehrafworldcultures.yale.edu") ||
 		dnsDomainIs(host, "infotrac.galegroup.com") ||
-		dnsDomainIs(host, "go-passport.grolier.com") ||
+		dnsDomainIs(host, "grolier.com") ||
 		dnsDomainIs(host, "jchemed.chem.wisc.edu") ||
 		dnsDomainIs(host, "www.jstor.org") ||
 		dnsDomainIs(host, "web.lexis-nexis.com") ||
 		dnsDomainIs(host, "www.noodletools.com") ||
 		dnsDomainIs(host, "dictionary.oed.com") ||
 		dnsDomainIs(host, "poll.orspub.com") ||
-		dnsDomainIs(host, "www.proquestk12.com") ||
+		dnsDomainIs(host, "proquestk12.com") ||
 		dnsDomainIs(host, "www.sciencedirect.com") ||
 		dnsDomainIs(host, "hwwilsonweb.com") ||
+		dnsDomainIs(host, "nature.com") ||
+		dnsDomainIs(host, "ebooks.abc-clio.com") ||
+		dnsDomainIs(host, "portal.bigchalk.com") ||
+		dnsDomainIs(host, "umi.com") ||
+		dnsDomainIs(host, "culturegrams.com") ||
+		dnsDomainIs(host, "tjhsst.edu") ||
+		dnsDomainIs(host, "acs.org") ||
 		dnsDomainIs(host, "www.worldbookonline.com")
 
 	)
