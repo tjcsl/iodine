@@ -54,6 +54,11 @@ class Group {
 	private static $admin_mysql = NULL;
 
 	/**
+	* Group membership cache.
+	*/
+	private static $group_cache = array();
+
+	/**
 	* The encapsulated Group backend object to use for Group database info.
 	*/
 	private $wrap;
