@@ -26,7 +26,7 @@ function checklength(area,error,count) {
 <ol class="poll_questions">
 [<foreach from=$poll->questions item=q>]
   <li>
- [<if count($q->answers) != 0 || $q->answertype == 'free_response'>]
+ [<if count($q->answers) != 0 || $q->answertype == 'free_response' || $q->answertype == 'short_response' >]
   [<$q->question>]<br />
   [<if $q->answertype == 'approval' || $q->answertype == 'split_approval'>]
    [<if $q->maxvotes == 0>]
