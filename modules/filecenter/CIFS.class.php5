@@ -34,16 +34,32 @@ class CIFS extends Filesystem {
 		$this->server = isset($server) ? $server : i2config_get('cifs_default_server', '', 'filecenter');
 		$this->share = isset($share) ? $share : i2config_get('cifs_default_share', '', 'filecenter');
 
-		$this->root_dir = i2config_get('cifs_base_dir', '/tmp/cifs/', 'filecenter') . $this->server . "_" . $this->share . "_" . $user;
+		$this->root_dir = i2config_get('cifs_base_dir', '/tmp/cifs/', 'filecenter') . $this->server . "/" . $this->share . "_" . $user;
+		d("filecenter using mount point ".$this->root_dir."for CIFS filesystem",5);
 
-		if (!(file_exists($this->root_dir) && isset($_SESSION["cifs_{$server}_{$share}_mounted"]))) {
+		if ( !($this->is_mounted()) ) {
 			$this->mount($user, $pass, $this->root_dir);
-			$_SESSION["cifs_{$server}_{$share}_mounted"] = TRUE;
+			$_SESSION["cifs_{$this->server}_{$this->share}_mounted"] = TRUE;
 			$_SESSION['logout_funcs'][] = array(
 				array('CIFS', 'umount'),
 				array($this->root_dir)
 			);
 		}
+	}
+
+	/**
+	 * Check if a CIFS share is mounted.
+	 *
+	 * @access private
+	 */
+	private function is_mounted() {
+		if(file_exists($this->root_dir))
+		{
+			if(isset($_SESSION["cifs_{$this->server}_{$this->share}_mounted"]))
+				return true;
+			//return true;
+		}
+		return false;
 	}
 
 	/**
@@ -71,7 +87,7 @@ class CIFS extends Filesystem {
 
 		$status = exec("/sbin/mount.cifs //{$this->server}/{$this->share} $mount_point -o username=\"$user\",password=$pass");
 
-		d("Mount status: $status");
+		d("Mount status: $status",7);
 		
 		if ($status != 0) {
 			throw new I2Exception("/sbin/mount.cifs exited with status $status");
@@ -89,7 +105,7 @@ class CIFS extends Filesystem {
 	 */
 	public static function umount($mount_point) {
 		d("Unmounting $mount_point");
-		exec("/sbin/umount.cifs $mount_point",$out,$status);
+		exec("/usr/bin/umount.cifs $mount_point",$out,$status);
 		d("Unmount status: $status");
 
 		if($status == "0") {
