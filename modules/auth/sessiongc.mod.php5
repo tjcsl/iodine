@@ -62,33 +62,43 @@ class SessionGC {
 	*/
 	public static function gc($max_lifetime) {
 		clearstatcache();
-		if($dh = opendir(self::SESS_DIR)) {
-			while(FALSE !== ($file = readdir($dh))) {
-				$file = self::SESS_DIR . $file;
-				if(is_file($file) && is_readable($file)) {
-					$contents = file_get_contents($file);
-					$sess = self::unserializesession($contents);
+		exec("date >>/tmp/gclog"); // This is temporary, until I can see that it works correctly.
+		foreach (glob(self::SESS_DIR."sess_*") as $filename) {
+			if(is_file($filename) && is_readable($filename)) {
+				$contents = file_get_contents($filename);
+				$sess = self::unserializesession($contents);
+				if(!$sess) {
+					// Invalid cache file, should delete
+					unlink($filename);
+					continue;
+				}
 
-					// If we have no login time, use the session last-modified time
-					if($sess && !isset($sess['i2_login_time'])) {
-						$sess['i2_login_time'] = filemtime($file);
-					}
-					if($sess && Auth::should_autologout($sess['i2_login_time'])) {
-						if(isset($sess['logout_funcs'])) {
-							foreach($sess['logout_funcs'] as $callback) {
-								if(is_callable($callback[0])) {
-									call_user_func_array($callback[0], $callback[1]);
-								}
-							}
-						}
-						unlink($file);
-					}
+				// If we have no login time, use the session last-modified time
+				if(!isset($sess['i2_login_time'])) {
+					$sess['i2_login_time'] = filemtime($filename);
+				}
+				if(Auth::should_autologout($sess['i2_login_time'])) {
+					self::logoutfuncs($sess);
+					unlink($filename);
 				}
 			}
-			return TRUE;
 		}
-		warn('Cannot open PHP session directory: ' . SESS_DIR . ', please contact the Intranetmaster about this issue!');
-		return FALSE;
+		return TRUE;
+	}
+
+	/**
+	* Run logout functions and so on.
+	*
+	* @param filename Session variables from session.
+	*/
+	public static function logoutfuncs($sess) {
+		if(isset($sess['logout_funcs'])) {
+			foreach($sess['logout_funcs'] as $callback) {
+				if(is_callable($callback[0])) {
+					call_user_func_array($callback[0], $callback[1]);
+				}
+			}
+		}
 	}
 
 	/**
