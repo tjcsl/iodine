@@ -36,8 +36,8 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, "portal.bigchalk.com") ||
 		dnsDomainIs(host, "umi.com") ||
 		dnsDomainIs(host, "culturegrams.com") ||
-		dnsDomainIs(host, "tjhsst.edu") ||
 		dnsDomainIs(host, "acs.org") ||
+		dnsDomainIs(host, "opticsinfobase.org") ||
 		dnsDomainIs(host, "www.worldbookonline.com")
 
 	)
