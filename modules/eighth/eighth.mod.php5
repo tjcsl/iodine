@@ -1555,6 +1555,7 @@ class Eighth implements Module {
 	* @param array $this->args The arguments for the operation.
 	*/
 	public function ent_attendance() {
+		return FALSE;
 		if($this->op == '') {
 			$this->setup_block_selection();
 			$this->template_args['op'] = "user";
