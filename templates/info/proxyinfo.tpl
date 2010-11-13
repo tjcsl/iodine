@@ -1,3 +1,7 @@
+[< assign var='proxyscript' value='https://iodine.tjhsst.edu/www/proxy.pac' >]
+[< assign var='proxyhost' value='local.border.tjhsst.edu' >]
+[< assign var='proxyport' value='8080' >]
+[< assign var='dbsite' value='http://www.tjhsst.edu/curriculum/library/databases.php' >]
 <h1 style="text-align: center; font-size: xx-large; font-weight: bold;">
   Internet Set-Up for Using TJHSST Library
   <br />Online Databases From Home
@@ -7,9 +11,7 @@
    By virtue of a proxy/authentication process that uses your TJ network
    account, you can now access from home a variety of resources at TJ.
    Currently, our library subscribes to online databases that are
-   available for research from school and home. Note too, that students
-   are running a student-based Intranet that is accessed off the 
-   <a href="http://www.tjhsst.edu/">TJ Home Page.</a>
+   available for research from school and home.
 </p>
 <p>
    Access to these resources is accomplished by configuring the proxy settings 
@@ -17,10 +19,9 @@
 </p>
          
 <p>In order to reach the library's
-   <a href="http://www.tjhsst.edu/%7Elibrary/database.htm">Online Databases</a>
-   you will need to point your Internet Explorer browser to
-   <a href="http://www.tjhsst.edu/%7Elibrary/database.htm">
-   http://www.tjhsst.edu/~library/database.htm</a>,
+   <a href="[<$dbsite>]">Online Databases</a>
+   you will need to point your web browser to
+   <a href="[<$dbsite>]">[<$dbsite>]</a>,
    where you will find links to these resources. These directions may vary
    slightly according to the version you are using, but should apply to both 
    Windows and Macintosh platforms. As Fairfax County revises access rules and
@@ -30,48 +31,87 @@
 <p>A proxy autoconfiguration script is available courtesy of William Yang. It
    will allow you to use the TJ proxy server to access the databases without
    changing your browser settings every time you need to access the rest of
-   the internet. To use it, copy the following URL into the "Proxy
-   Autoconfiguration Script" box in your browser's settings:
-   <b>[<$I2_ROOT>]www/proxy.pac</b> . This is the easiest way to use the TJ
-   proxy server; only continue if this does not work for you.
+   the internet. To use it, follow the Automatic Configuration Instructions below.  
+   This is the easiest way to use the TJ proxy server; only use the manual configuration 
+   if this does not work for you.
 </p>
-
 <br />
-<h3>PROXY USING INTERNET EXPLORER with a LAN (network, Cox Communications, 
-   DSL, etc.)</h3>
+
+<h3>Internet Explorer 8</h3>
 <ol>
-  <li> Open Internet Explorer. </li>
-  <li> Under the "Tools" menu, select "Internet Options," then click on the
-    "Connections" tab. </li>
-  <li> Click on "LAN Settings" and select the box that says "Use a proxy
-    server". </li>
-  <li> Click the "Advanced" button. </li>
-  <li> Under HTTP, enter <b>local.border.tjhsst.edu</b> and set the port to <b>8080</b>. </li>
-  <li> Click "OK" three times to return to the browser window. </li>
-  <li> Go to the <a href="http://www.tjhsst.edu/%7Elibrary/database.htm">
-    TJ Library Online Database</a> page and click "Reload". </li>
-  <li> After using the databases, go back to the settings and uncheck "Use a 
-    proxy server" to close the portal to TJ. </li>
+  <li> On the right side of the menu bar, click on "Tools", then on "Internet Options". </li>
+  <li> Select the "Connections" tab then click on "LAN settings". </li>
+  <li> Click on "LAN Settings" and select the box that says "Use a proxy server". </li>
+  <li> <font color="red">Dial-up Users</font>: Click on the "Settings" box instead of "LAN Settings". </li>
+  <li> Automatic Configuration </li>
+  <ul>
+  	<li> Check the box next to "Use automatic configuration script". </li>
+	<li> In the Address box, put in <b>[<$proxyscript>]</b>. </li>
+  </ul>
+  <li> Manual Configuration </li>
+  <ul>
+  	<li> Check the box next to "Use a proxy server for your LAN". Then click on the "Advanced" button. </li>
+	<li> In the HTTP box, put in <b>[<$proxyhost>]</b>. </li>
+	<li> In the Port box, put in <b>[<$proxyport>]</b>. </li>
+	<li> Click on OK to close the advanced settings window. </li>
+  </ul>
+  <li> Click on OK to close the proxy settings window, then click Ok to close the Internet Options window. </li>
+  <li> Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
+  <li> When prompted for a username and password, put in your Iodine username and password. </li>
+  <li> You should now have access to the TJHSST Databases. </li>
+  <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and uncheck the box next to "Use a proxy server" in order to access websites besides the databases.</li>
 </ol>
-
 <br />
-<h3>PROXY USING INTERNET EXPLORER WITH A DIAL-UP CONNECTION</h3>
+
+<h3>Google Chrome</h3>
 <ol>
-  <li> Open Internet Explorer. </li>
-  <li> Under the "Tools" menu, select "Internet Options," then click on the
-    "Connections" tab. </li>
-  <li> Click on "Settings" and select the box that says "Use a proxy server". </li>
-  <li> Click the "Advanced" button. </li>
-  <li> Under HTTP, enter <b>local.border.tjhsst.edu</b> and set the port to 
-    <b>8080</b>. </li>
-  <li> Click "OK" three times to return to the browser window. </li>
-  <li> Go to the <a href="http://www.tjhsst.edu/%7Elibrary/database.htm">TJ
-    Library Online Database</a> page and click "Reload". </li>
-  <li> After using the databases, go back to the settings and uncheck "Use a
-    proxy server" to close the portal to TJ.</li>
+  <li> Click on the wrench icon on the far right, then select the "Under the Hood" tab. </li>
+  <li> In the "Network" section, click on "Change Proxy Settings", then click on "LAN Settings". </li>
+  <li> Automatic Configuration </li>
+  <ul>
+  	<li> Check the box next to "Use automatic configuration script". </li>
+	<li> In the Address box, put in <b>[<$proxyscript>]</b>. </li>
+  </ul>
+  <li> Manual Configuration </li>
+  <ul>
+  	<li> Check the box next to "Use a proxy server for your LAN". Then click on the "Advanced" button. </li>
+	<li> In the HTTP box, put in <b>[<$proxyhost>]</b>. </li>
+	<li> In the Port box, put in <b>[<$proxyport>]</b>. </li>
+	<li> Click on OK to close the advanced settings window. </li>
+  </ul>
+  <li> Click on OK to close the proxy settings window, then click Ok to close the Internet Properties window, then click Close to close the Chrome Options window. </li>
+  <li> Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
+  <li> When prompted for a username and password, put in your Iodine username and password. </li>
+  <li> You should now have access to the TJHSST Databases. </li>
+  <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and uncheck the box next to "Use a proxy server" in order to access websites besides the databases.</li>
 </ol>
-
 <br />
+
+<h3>Mozilla Firefox 3.x</h3>
+<ol>
+  <li> For Windows, click on "Tools", then on "Options".  For Mac OS X/Linux, click on "Edit", then on "Preferences". </li>
+  <li> Select the "Advanced" tab, then the "Network" sub-tab. </li>
+  <li> In the "Connection" section, click on settings </li>
+  <li> Automatic Configuration </li>
+  <ul>
+  	<li> Select the radio button next to "Automatic proxy configuration URL". </li>
+	<li> In the Address box, put in <b>[<$proxyscript>]</b>. </li>
+  </ul>
+  <li> Manual Configuration </li>
+  <ul>
+  	<li> Select the radio button next to "Manual proxy configuration". </li>
+	<li> In the "HTTP Proxy" box, put in <b>[<$proxyhost>]</b>. </li>
+	<li> In the "Port" box, put in <b>[<$proxyport>]</b>. </li>
+	<li> Make sure the "Use this proxy server for all protocols" box is checked </li>
+  </ul>
+  <li> Click on OK to close the Connection settings window, then on OK to close the Firefox Options window. </li>
+  <li> Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
+  <li> When prompted for a username and password, put in your Iodine username and password. </li>
+  <li> You should now have access to the TJHSST Databases. </li>
+  <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and select the radio button next to "No Proxy" in order to access websites besides the databases. </li>
+</ol>
+<br />
+
 <h3>PROXY USING A MACINTOSH USING MAC OS X - Method 1</h3>
 <ol>
   <li> Click on the Apple Menu on the upper-left corner of the screen. </li>
@@ -84,16 +124,16 @@
   <li> Click on the "Proxies" tab. </li>
   <li> Check the box that says "Web Proxy (HTTP)" in the list under "Select a
     proxy server to configure:". </li>
-  <li> Under "Web Proxy Server", enter <b>local.border.tjhsst.edu</b>; after the
-    colon, set the port to <b>8080</b>. </li>
+  <li> Under "Web Proxy Server", enter <b>[<$proxyhost>]</b>; after the
+    colon, set the port to <b>[<$proxyport>]</b>. </li>
   <li> Click the "Apply Now" button at the lower-right of the window. </li>
-  <li> Go to the <a href="http://www.tjhsst.edu/%7Elibrary/database.htm">TJ
+  <li> Go to the <a href="[<$dbsite>]">TJ
     Library Online Database</a> page and refresh it (press Command-R). </li>
   <li> After using the databases, go back to the network settings and uncheck
     the box that says "Web Proxy (HTTP)" to close the portal to TJ. </li>
 </ol>
-
 <br />
+
 <h3>PROXY USING A MACINTOSH USING MAC OS X - Method 2</h3>
 <ol>
   <li> In Safari, click "Safari" on the toolbar. </li>
@@ -104,32 +144,68 @@
 	window). </li>
   <li> Check the box that says "Web Proxy (HTTP)" in the list under "Select a
     proxy server to configure:". </li>
-  <li> Under "Web Proxy Server", enter <b>local.border.tjhsst.edu</b>; after the
-    colon, set the port to <b>8080</b>. </li>
+  <li> Under "Web Proxy Server", enter <b>[<$proxyhost>]</b>; after the
+    colon, set the port to <b>[<$proxyport>]</b>. </li>
   <li> Click the "Apply Now" button at the lower-right of the window. </li>
   <li> Go back to Safari and close the "Advanced" settings window. </li>
-  <li> Go to the <a href="http://www.tjhsst.edu/%7Elibrary/database.htm">TJ
+  <li> Go to the <a href="[<$dbsite>]">TJ
     Library Online Database</a> page and refresh it (press Command-R). </li>
   <li> After using the databases, go back to the network settings and uncheck
     the box that says "Web Proxy (HTTP)" to close the portal to TJ. </li>
 </ol>
-
 <br />
-<h3>PROXY USING MOZILLA FIREFOX</h3>
+
+<h3>Opera 10</h3>
 <ol>
-  <li> If you are using Linux, select the Edit menu, then Preferences. If you
-    are using Windows, select Tools, then Options.</li>
-  <li> On the left, choose "General". </li>
-  <li> Click on "Connection Settings". </li>
-  <li> Select the radio bubble "Manual Proxy Configuration". </li>
-  <li> After "HTTP Proxy" type <b>local.border.tjhsst.edu</b> and set the port to
-    <b>8080</b>. </li>
-  <li> After using the databases, change the radio bubble back to "Direct
-    Connect to the Internet" to close the portal to TJ. </li>
+  <li> In the upper left, click on the Opera menu, then on settings, then on preferences. </li>
+  <li> Select the advanced tap, then the Network submenu, then click on "Proxy Servers". </li>
+  <li> Automatic Configuration </li>
+  <ul>
+  	<li> Check the "Use automatic proxy configuration" checkbox </li>
+	<li> In the box below it, put in <b>[<$proxyscript>]</b>. </li>
+  </ul>
+  <li> Manual Configuration </li>
+  <ul>
+  	<li> Check the "HTTP" box. </li>
+	<li> In the "HTTP" box, put in <b>[<$proxyhost>]</b>. </li>
+	<li> In the "Port" box, put in <b>[<$proxyport>]</b>. </li>
+  </ul>
+  <li> Click Ok to close the Proxy servers window, then Ok to close the Opera Preferences window. </li>
+  <li> Go to the <a href="[<$dbsite>]">
+    TJ Library Online Database</a> page. </li>
+  <li> When prompted for a username and password, put in your Iodine username and password. </li>
+  <li> You should now have access to the TJHSST Databases. </li>
+  <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and uncheck the checkbox next to "HTTP" in order to access websites besides the databases. </li>
 </ol>
-
 <br />
-<h3>PROXY USING AOL</h3>
+
+<h3>Konqueror</h3>
+<ol>
+  <li> Select "Settings", then "Configure Konqueror". </li>
+  <li> On the left, select the web browsing menu, then the proxy submenu. </li>
+  <li> Automatic Configuration </li>
+  <ul>
+  	<li> Select the radio button next to "Use proxy configuration URL". </li>
+	<li> In the Address box, put in <b>[<$proxyscript>]</b>. </li>
+  </ul>
+  <li> Manual Configuration </li>
+  <ul>
+  	<li> Select the radio button next to "Manually specify the proxy settings," then click "Setup". </li>
+	<li> In the "HTTP Proxy" box, put in <b>[<$proxyhost>]</b>. </li>
+	<li> In the "Port" box, put in <b>[<$proxyport>]</b>. </li>
+	<li> Make sure the "Use the same proxy server for all protocols" box is checked </li>
+	<li> Click Ok. </li>
+  </ul>
+  <li> Click Ok. </li>
+  <li> Go to the <a href="[<$dbsite>]">
+    TJ Library Online Database</a> page. </li>
+  <li> When prompted for a username and password, put in your Iodine username and password. </li>
+  <li> You should now have access to the TJHSST Databases. </li>
+  <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and select the radio button next to "Connect to the Internet Directly" in order to access websites besides the databases. </li>
+</ol>
+<br />
+
+<h3>AOL</h3>
 <ol>
   <li> On the Sign On Screen, click "Sign On Options". </li>
   <li> In the "America Online Setup" window, click "Expert Setup". </li>
@@ -143,52 +219,20 @@
   <li> In the Edit TCP/IP: LAN or ISP window, select "Manual Proxy 
     Configuration," then click "Next". </li>
   <li> In the "Edit Manual Proxy Configuration" window, enter 
-    <b>local.border.tjhsst.edu</b> and set the port to <b>8080</b>. Then click
-	"Next". </li>
+    <b>[<$proxyhost>]</b> and set the port to <b>[<$proxyport>]</b>. Then click "Next". </li>
   <li> In the "Summary" window, click "Sign On to AOL Now" to sign on
     immediately or click "Make More Changes" to make additional changes. </li>
 </ol>
-
 <br />
-<h3>PROXY USING KONQUEROR</h3>
-<ol>
-  <li> Select Settings, then Configure Konqueror</li>
-  <li> Scroll down until you get to proxy. Select proxy.</li>
-  <li> Select the bubble next to "Manually Specify the Proxy Settings,"
-    then click "Setup"</li>
-  <li> In the Servers box, next to HTTP, type <b>local.border.tjhsst.edu</b>
-    and set the port at <b>8080</b></li>
-</ol>
 
-<br />
-<h3>PROXY USING OPERA 8 (any OS)</h3>
-<ol>
-  <li> If you are using Mac OS X, select the "Preferences..." option from the
-    "Opera" menu on the toolbar. If you are using Windows or Linux, select the
-	"Preferences" option from the "Tools" menu.  Alternatively, press Command-,
-	in Mac OS X or Alt-P in Linux and Windows.</li>
-  <li> Click the "Advanced" tab at the top of the preferences window. </li>
-  <li> Click the "Proxy Servers" button near the top of the pane. </li>
-  <li> Check the box next to "HTTP" at the top of the window that comes up. 
-  </li>
-  <li> Click on the text box in the same row.  Type <b>local.border.tjhsst.edu</b>. 
-  </li>
-  <li> Click on the box on the right in the same row.  Type <b>8080</b>. </li>
-  <li> Click "OK" twice. </li>
-  <li> After using the databases, go back to the proxy servers settings and
-    uncheck the box next to "HTTP" to close the portal to TJ. </li>
-</ol>
-
-<br />
 <div style="text-align: center;">
 
 <p>
-  Please <a href="mailto:marsha.masone@tjhsst.edu">contact the school
-  librarians</a> with any questions, suggestions or to update information.
+  Please <a href="mailto:dbproxy@tjhsst.edu">contact the Proxy Admins</a> with any questions, suggestions or to update information.
 </p>
          
 <p>
-  [Last updated December 26, 2005] <br />
+  [Last updated November 12, 2010] <br />
 </p>
 
 </div>
