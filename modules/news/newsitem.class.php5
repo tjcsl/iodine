@@ -267,7 +267,7 @@ class NewsItem {
 		//We had some problems with people's vacation messages replying to alerts.
 		$headers .= "Reply-To: " . i2config_get('news', 'intranet-news@tjhsst.edu', 'suggestion') . "\r\n";
 		$headers .= "Content-Type: multipart/alternative; boundary=\"" . $separator . "\"";
-		$messagecontents = "Posted by " . $author->fullname . " to " . $groupstring . ":\r\n\r\n" . $text ."\r\n\r\n-----------------------------------------\r\nAutomatically sent by the Iodine news feed. Do not reply to this email.";
+		$messagecontents = "Posted by " . $author->fullname . " to " . $groupstring . ":\r\n\r\n" . $text ."<br /><br />-----------------------------------------<br />Automatically sent by the Iodine news feed. Do not reply to this email.";
 		$message = "--" . $separator . "\r\nContent-Type: text/plain; charset=\"iso-8859-1\"\r\n";
 		$message .= strip_tags($messagecontents);
 		$message .= "\r\n--" . $separator . "\r\nContent-Type: text/html; charset=\"iso-8859-1\"\r\n";

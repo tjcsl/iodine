@@ -39,9 +39,43 @@ AID: <input type="text" name="aid"/>
 		<td colspan="4">
 		</td>
 	</tr>
+	<script type="text/javascript">
+		blocks=[];
+		[<foreach from=$block_activities item="activity">]
+		blocks.push([[<$activity.block.date|date_format:"%w">],"[<$activity.block.block>]","check_[<$activity.block.bid>]"]);
+		[</foreach>]
+		function hideshow(el,ar) {
+			el=document.getElementById(el);
+			ar=document.getElementById(ar);
+			if(el.style.display=='none') {
+				el.style.display='block';
+				ar.src="[<$I2_ROOT>]www/pics/uparrow.gif";
+			} else {
+				el.style.display='none';
+				ar.src="[<$I2_ROOT>]www/pics/downarrow.gif";
+			}
+		}
+		function select(day,block) {
+			for(var n=0;n<blocks.length;n++) {
+				if(blocks[n][0]==day && blocks[n][1]==block)
+					document.getElementById(blocks[n][2]).checked="checked";
+				//else
+				//	document.getElementById(blocks[n][2]).checked=null;
+			}
+		}
+	</script>
 	<tr>
 		<td style="width:  20px; text-align: left;"><input type="checkbox" name="selectall" onclick="CA();" /></td>
-		<th style="padding: 5px; text-align: left; width: 120px;">Select All</th>
+		<th style="padding: 5px; text-align: left; width: 120px;">Select All 
+			<a onclick="hideshow('typelist','dropmenubutton')"><img id="dropmenubutton" alt="dropdown" src="https://iodine.tjhsst.edu/www/pics/downarrow.gif" /></a>
+			<div id="typelist" class="mainbox" style="display:none;background-color:#ffffff; float:right; left:auto; right:auto;top: auto;padding:1px 4px">
+				<a onclick="select(1,'A')">Monday A block</a><br />
+				<a onclick="select(3,'A')">Wednesday A block</a><br />
+				<a onclick="select(3,'B')">Wednesday B block</a><br />
+				<a onclick="select(5,'A')">Friday A block</a><br />
+				<a onclick="select(5,'B')">Friday B block</a>
+			</div>
+		</th>
 		<th style="padding: 5px; text-align: left;">Room(s)</th>
 		<td>&nbsp;</td>
 		<th style="padding: 5px; text-align: left;">Sponsor(s)</th>
