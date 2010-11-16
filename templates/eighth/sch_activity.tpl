@@ -69,7 +69,7 @@ AID: <input type="text" name="aid"/>
 		<th style="padding: 5px; text-align: left; width: 120px;">Select All 
 			<a onclick="hideshow('typelist','dropmenubutton')"><img id="dropmenubutton" alt="dropdown" src="https://iodine.tjhsst.edu/www/pics/downarrow.gif" /></a>
 			<div id="typelist" class="mainbox" style="display:none;background-color:#ffffff; float:right; left:auto; right:auto;top: auto;padding:1px 4px">
-				<a onclick="select(1,'A')">Monday A block</a><br />
+				<a onclick="select(1,'B')">Monday B block</a><br />
 				<a onclick="select(3,'A')">Wednesday A block</a><br />
 				<a onclick="select(3,'B')">Wednesday B block</a><br />
 				<a onclick="select(5,'A')">Friday A block</a><br />
