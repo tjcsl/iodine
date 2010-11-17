@@ -751,6 +751,57 @@ objectclass ( i2OC:2
 	)
 	)
 
+objectclass ( i2OC:2
+	NAME 'tjStarPresenter'
+	SUP inetOrgPerson STRUCTURAL
+	MUST (
+		cn $
+		iodineUid $
+		header $
+		style $
+		chrome $
+		startpage $
+		iodineUidNumber $
+		password $
+		sn
+	)
+	MAY (
+		displayName $
+		middlename $
+		group $
+		nickname $
+		birthday $
+		sex $
+		webpage $
+		header $
+		style $
+		chrome $
+		comments $
+		boxcolor $
+		counselor $
+		soundexlast $
+		soundexfirst $
+		metaphonelast $
+		metaphonefirst $
+		aim $ msn $ xfire $ yahoo $ googleTalk $ icq $ jabber $ xfire $ skype $
+		preferredPhoto $
+		mailMessages $
+		gidNumber $
+		afsid $
+		homeDirectory $
+		loginShell $
+		perm-showaddress-self $
+		perm-showtelephone-self $
+		perm-showbirthday-self $
+		perm-showpictures-self $
+		perm-showaddress $
+		perm-showtelephone $
+		perm-showbirthday $
+		perm-showpictures $
+		is-admin
+	)
+	)
+
 objectclass ( i2OC:4
 	NAME 'tjhsstClass'
 	MUST (

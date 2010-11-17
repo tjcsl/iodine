@@ -19,13 +19,15 @@ class I2File {
 
 	private $absolute_path;
 	private $relative_path;
+	private $base_name;
+	private $dir_name;
 
 	private $filesize;
 
 	private $type;
 	
 	private $last_modified;
-	
+
 	public function __construct($path, $file=NULL) {
 		if ($file != NULL) {
 			$path = $path . '/' . $file;
@@ -33,24 +35,27 @@ class I2File {
 		
 		$this->absolute_path = realpath($path);
 		$this->relative_path = $path;
+		$this->base_name = basename($this->relative_path);
+		$this->dir_name = dirname($this->absolute_path);
 		
 		if ($this->absolute_path !== FALSE) {
 			//TODO even though these use the relative path, they return the
 			//filesize and modify_date of the linked file. Why?
-			$this->filesize = filesize($this->relative_path);
-			$this->last_modified = filemtime($this->relative_path);
+			$data = stat($this->relative_path); //Possibly faster, as it gets the data in one go
 
 			if (is_link($this->relative_path)) {
-				if (is_dir($this->absolute_path)) {
+				if (($data['mode']&0x8000)==0) { //0x8000 is the "Am I a file?" bit
 					$this->type = self::LINKDIR;
 				} else {
 					$this->type = self::LINKFILE;
 				}
-			} else if (is_dir($this->absolute_path)) {
+			} else if (($data['mode']&0x8000)==0) {
 				$this->type = self::DIRECTORY;
 			} else {
 				$this->type = self::FILE;
 			}
+			$this->filesize = $data['size'];
+			$this->last_modified = $data['mtime'];
 		}
 	}
 
@@ -59,11 +64,11 @@ class I2File {
 	}
 	
 	public function get_name() {
-		return basename($this->relative_path);
+		return $this->base_name;
 	}
 	
 	public function get_parent() {
-		return dirname($this->absolute_path);
+		return $this->dir_name;
 	}
 	
 	public function get_size() {

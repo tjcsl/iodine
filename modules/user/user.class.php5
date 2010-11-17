@@ -373,6 +373,9 @@ class User {
 				return $this->get_news_forwarding();
 			case 'eighthalert':
 				return $this->get_eighth_alert_status();
+			case 'gradename'://Used for the windows file mounts, hence the capitolization
+				$convert=array(9=>'Freshman',10=>'Sophomore',11=>'Junior',12=>'Senior','staff'=>'Staff');
+				return $convert[$this->__get('grade')];
 			case 'showpictureself':
 			case 'showpicture':
 			case 'showpictures':
