@@ -3,8 +3,8 @@
 
 <form method="post" action="[<$I2_ROOT>]polls/add" class="boxform">
 Name: <input type="text" name="name" value="" maxlength="128" /><br />
-Start date/time:<input type="text" name="startdt" value="YYYY-MM-DD HH:MM:SS" /><br />
-End date/time:<input type="text" name="enddt" value="YYYY-MM-DD HH:MM:SS" /><br />
+Start date/time:<input type="text" name="startdt" value="[<$smarty.now|date_format:"%Y-%m-%d %G-%M-%S">]" /><br />
+End date/time:<input type="text" name="enddt" value="[<$smarty.now|date_format:"%Y-%m-%d %G-%M-%S">]" /><br />
 <input type="checkbox" name="visible" /> Visible<br />
 <table id="polls_groups_table" cellpadding="0">
 <thead>
