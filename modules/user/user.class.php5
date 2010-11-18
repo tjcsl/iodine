@@ -376,6 +376,8 @@ class User {
 			case 'gradename'://Used for the windows file mounts, hence the capitolization
 				$convert=array(9=>'Freshman',10=>'Sophomore',11=>'Junior',12=>'Senior','staff'=>'Staff');
 				return $convert[$this->__get('grade')];
+			case 'comments':
+				return $this->__get("eighthoffice-comments");
 			case 'showpictureself':
 			case 'showpicture':
 			case 'showpictures':
