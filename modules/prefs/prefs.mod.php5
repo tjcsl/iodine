@@ -128,8 +128,8 @@ class Prefs implements Module {
 		$this->prefs['showlockerself'] = $I2_USER->showlockerself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showlocker'] = $I2_USER->showlocker=='TRUE'?TRUE:FALSE;
 
-		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED)->fetch_all_arrays(Result::ASSOC);
-		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED)->fetch_all_arrays(Result::ASSOC);
+		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED);
+		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED);
 		
 		$this->themes = CSS::get_available_styles();
 

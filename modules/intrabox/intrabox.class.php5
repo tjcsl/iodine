@@ -191,7 +191,7 @@ class IntraBox {
 					 WHERE intrabox_map.uid=%d 
 					 ORDER BY intrabox_map.box_order ASC;'
 			,$uid);
-		$allowed_modules=$I2_SQL->query("SELECT module FROM allowed_modules WHERE userclass=%s",$I2_USER->objectclass)->fetch_all_single_values();
+		$allowed_modules=$I2_USER->allowed_modules;
 		$check=false;
 		if(!count($allowed_modules)==0) {
 			$check=true;
@@ -231,7 +231,7 @@ class IntraBox {
 		//This is possible to do in one query with subqueries in SQL, I believe, but not prior to MySQL 4.1 afaik. If anyone knows of a way to do this in one query, by all means do it
 		list($max) = $I2_SQL->query('SELECT MAX(box_order) FROM intrabox_map WHERE uid=%d', $I2_USER->uid)->fetch_array(Result::NUM);
 		
-		$boxinfo = self::get_boxes_info(self::USED)->fetch_all_arrays(Result::ASSOC);
+		$boxinfo = self::get_boxes_info(self::USED);
 		
 		foreach ($boxinfo as $box) {
 			if ($box['boxid'] == $boxid) {
@@ -280,12 +280,27 @@ class IntraBox {
 	*/
 	public static function get_boxes_info($boxes) {
 		global $I2_SQL, $I2_USER;
+		$allowed_modules=$I2_USER->allowed_modules;
+		$check=false;
+		if(!count($allowed_modules)==0) {
+			$check=true;
+		}
 		if( $boxes == self::USED ) {
-			return $I2_SQL->query('
-			SELECT intrabox.boxid AS boxid, intrabox.display_name AS display_name
+			$tmp = $I2_SQL->query('
+			SELECT intrabox.boxid AS boxid, intrabox.display_name AS display_name, intrabox.name AS name
 			FROM intrabox JOIN intrabox_map USING (boxid)
 			WHERE intrabox_map.uid = %d
-			ORDER BY intrabox_map.box_order;', $I2_USER->uid);
+			ORDER BY intrabox_map.box_order;', $I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
+			if($check) {
+				$ret=array();
+				foreach($tmp as $t) {
+					if(!$check||in_array($t['name'],$allowed_modules))
+						$ret[]=$t;
+				}
+				return $ret;
+			} else {
+				return $tmp;
+			}
 		}
 		elseif( $boxes == self::UNUSED ) {
 			//this is possible with one query with subqueries, but mysql < 4.1 doesn't support them
@@ -298,13 +313,23 @@ class IntraBox {
 				return $I2_SQL->query('
 				SELECT DISTINCT intrabox.boxid AS boxid, intrabox.display_name AS display_name
 				FROM intrabox LEFT JOIN intrabox_group_map USING (boxid)
-				WHERE gid IN (%D) OR gid IS NULL ORDER BY intrabox.display_name;', self::get_all_groups());
+				WHERE gid IN (%D) OR gid IS NULL ORDER BY intrabox.display_name;', self::get_all_groups())->fetch_all_arrays(Result::ASSOC);
 			}
-			return $I2_SQL->query('
-			SELECT DISTINCT intrabox.boxid AS boxid, intrabox.display_name AS display_name
+			$tmp= $I2_SQL->query('
+			SELECT DISTINCT intrabox.boxid AS boxid, intrabox.display_name AS display_name, intrabox.name AS name
 			FROM intrabox LEFT JOIN intrabox_map USING (boxid) LEFT JOIN intrabox_group_map USING (boxid)
 			WHERE intrabox.boxid NOT IN (%D) AND (gid IN (%D) OR gid IS NULL)
-			ORDER BY intrabox.display_name;', $ids, self::get_all_groups());
+			ORDER BY intrabox.display_name;', $ids, self::get_all_groups())->fetch_all_arrays(Result::ASSOC);
+			if($check){
+				$ret=array();
+				foreach($tmp as $t) {
+					if(in_array($t['name'],$allowed_modules))
+						$ret[]=$t;
+				}
+				return $ret;
+			} else {
+				return $tmp;
+			}
 		}
 		else {
 			throw new I2Exception('Invalid parameter passed to Intrabox::get_boxes_info()');

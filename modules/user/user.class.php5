@@ -230,6 +230,9 @@ class User {
 		switch( $name ) {
 			case 'info':
 				return $this->info;
+			case 'allowed_modules':
+				$this->info['allowed_modules']=$I2_SQL->query("SELECT module FROM allowed_modules WHERE userclass=%s",$this->__get("objectclass"))->fetch_all_single_values();
+				return $this->info['allowed_modules'];
 			case 'name':
 				$nick = $this->__get('nickname');
 				return $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . $this->__get('lname');

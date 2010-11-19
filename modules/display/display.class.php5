@@ -129,7 +129,7 @@ class Display {
 		}
 
 		// Limit users to certain modules. Used for TJStar users.
-		$allowed_modules=$I2_SQL->query("SELECT module FROM allowed_modules WHERE userclass=%s",$I2_USER->objectclass)->fetch_all_single_values();
+		$allowed_modules=$I2_USER->allowed_modules;
 		if(!count($allowed_modules)==0 && !in_array(strtolower($module),$allowed_modules)) {
 			redirect();
 			return;
