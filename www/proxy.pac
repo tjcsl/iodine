@@ -10,12 +10,9 @@
 function FindProxyForURL(url, host)
 {
 	if (
-		dnsDomainIs(host, "www.socialstudies.abc-clio.com") ||
+		dnsDomainIs(host, "abc-clio.com") ||
 		dnsDomainIs(host, "www.accessscience.com") ||
-		dnsDomainIs(host, "www.america.eb.com") ||
-		dnsDomainIs(host, "www.world.eb.com") ||
-		dnsDomainIs(host, "www.spanish.eb.com") ||
-		dnsDomainIs(host, "www.mwu.eb.com") ||
+		dnsDomainIs(host, "eb.com") ||
 		dnsDomainIs(host, "library.cqpress.com") ||
 		dnsDomainIs(host, "earthscape.org") ||
 		dnsDomainIs(host, "search.ebscohost.com") ||
@@ -32,7 +29,6 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, "www.sciencedirect.com") ||
 		dnsDomainIs(host, "hwwilsonweb.com") ||
 		dnsDomainIs(host, "nature.com") ||
-		dnsDomainIs(host, "ebooks.abc-clio.com") ||
 		dnsDomainIs(host, "portal.bigchalk.com") ||
 		dnsDomainIs(host, "umi.com") ||
 		dnsDomainIs(host, "culturegrams.com") ||
