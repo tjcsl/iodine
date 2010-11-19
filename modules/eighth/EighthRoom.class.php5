@@ -218,19 +218,21 @@ class EighthRoom {
 		//Eighth::start_undo_transaction();
 		// Get rid of all block references to the room
 		
-		$res = $I2_SQL->query("SELECT bid,activityid,rooms FROM eighth_block_map WHERE rooms LIKE '%%?%'");
-		$query = 'UPDATE eighth_activity_map SET rooms=%s WHERE bid=%d AND activityid=%d';
+		$res = new MySQLResult($I2_SQL->raw_query("SELECT bid,activityid,rooms FROM eighth_block_map WHERE rooms LIKE '%".mysql_real_escape_string($rid)."%'"),MYSQL::SELECT);
+		$query = 'UPDATE eighth_block_map SET rooms=%s WHERE bid=%d AND activityid=%d';
 		while ($row = $res->fetch_array(Result::ASSOC)) {
-				  $newrooms = array();
-				  foreach (explode(',',$row['rooms']) as $room) {
-							 if ($room != $rid) {
-										$newrooms[] = $rid;
-							 }
-				  }
-				  $queryarg = array(implode(',',$newrooms),$row['bid'],$row['activityid']);
-				  $invarg = array($row['rooms'],$row['bid'],$row['activityid']);
-				  $I2_SQL->query_arr($query,$queryarg);
-				  Eighth::push_undoable($query,$queryarg,$query,$invarg,'Delete Room [from block]');
+			$newrooms = array();
+			foreach (explode(',',$row['rooms']) as $room) {
+				if ($room != $rid) {
+					$newrooms[] = $room;
+				}
+			}
+			if($newrooms != $row['rooms']) {
+				$queryarg = array(implode(',',$newrooms),$row['bid'],$row['activityid']);
+				$invarg = array($row['rooms'],$row['bid'],$row['activityid']);
+				$I2_SQL->query_arr($query,$queryarg);
+				Eighth::push_undoable($query,$queryarg,$query,$invarg,'Delete Room [from block]');
+			}
 		}
 	
 		
