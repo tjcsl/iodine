@@ -31,7 +31,7 @@ IE7_PNG_SUFFIX = ".png";
  <div class="title"> [<if $I2_USER->borntoday()>]Happy Birthday[<else>]Welcome[</if>], [<$I2_USER->firstornick>]!</div>
  <div class="blurb">Today is [<$smarty.now|date_format:"%B %e, %Y">]. 
  [<if $date != "none">]
- 	[<if $I2_USER->is_group_member('grade_staff')>]
+ 	[<if $I2_USER->grade=="staff">]
 		<a href="[<$I2_ROOT>]eighth/vcp_attendance">View Eighth-period Rosters</a>
 		<form action="[<$I2_ROOT>]eighth/vcp_schedule" method="post" name="scheduleform" id="form" style="margin: 5px 0px;">
 			<input type="hidden" name="op" value="search" />
@@ -39,6 +39,7 @@ IE7_PNG_SUFFIX = ".png";
 			<input type="submit" value="View Eighth Period Schedule" />
 			<input type="submit" value="Search Student Directory" onclick="document.getElementById('form').action='[<$I2_ROOT>]StudentDirectory/search/';document.getElementById('query').name='studentdirectory_query';"/>
 		</form>
+	[<elseif $I2_USER->grade=="TJStar">]
 	[<else>]
 	 	The next 8th period is [<$date>], and you are currently signed up for 
  		[<foreach from=$activities item="activity" name="activities">]

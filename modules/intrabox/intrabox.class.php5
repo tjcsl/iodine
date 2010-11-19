@@ -185,16 +185,23 @@ class IntraBox {
 	* @return array The list of the boxids of the intraboxes.
 	*/
 	public static function get_user_boxes($uid) {
-		global $I2_SQL;
+		global $I2_SQL,$I2_USER;
 		$boxen = $I2_SQL->query( 'SELECT * FROM intrabox 
 					 JOIN intrabox_map USING (boxid) 
 					 WHERE intrabox_map.uid=%d 
 					 ORDER BY intrabox_map.box_order ASC;'
 			,$uid);
+		$allowed_modules=$I2_SQL->query("SELECT module FROM allowed_modules WHERE userclass=%s",$I2_USER->objectclass)->fetch_all_single_values();
+		$check=false;
+		if(!count($allowed_modules)==0) {
+			$check=true;
+		}
 		$ret = array();
 	
 		while ($boxen->more_rows()) {
-			$ret[] = new Intrabox($boxen->fetch_array(Result::ASSOC));
+			$tmp=$boxen->fetch_array(Result::ASSOC);
+			if(!$check || in_array($tmp['name'],$allowed_modules))
+				$ret[] = new Intrabox($tmp);
 		}
 
 		return $ret;

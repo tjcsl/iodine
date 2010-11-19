@@ -126,7 +126,7 @@
 [<if $I2_USER->grade != "staff">]
 <strong>Preferred Picture</strong><br />
 <em>Since the eighth period office and TJ faculty can always see your pictures, it is recommended that you choose your preferred picture even if you disable "Show Pictures" below.</em><br />
-<input type="radio" name="pref_preferredPhoto" value="AUTO" [<if $prefs.preferredPhoto == "AUTO">]checked="checked"[</if>]/>Auto-select the most recent photo<br />
+<input type="radio" name="pref_preferredPhoto" value="AUTO" [<if !isset($prefs.preferredPhoto) || $prefs.preferredPhoto == "AUTO">]checked="checked"[</if>]/>Auto-select the most recent photo<br />
 [<foreach from=$photonames key=photo item=text>]
 <input type="radio" name="pref_preferredPhoto" value="[<$photo>]" [<if $prefs.preferredPhoto == $photo>]checked="checked"[</if>]/>[<$text>] photo<br />
 [</foreach>]

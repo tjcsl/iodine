@@ -228,6 +228,8 @@ class User {
 		** __get calls apparently are not allowed.
 		*/
 		switch( $name ) {
+			case 'info':
+				return $this->info;
 			case 'name':
 				$nick = $this->__get('nickname');
 				return $this->__get('fname') . ' ' . ($nick ? "($nick) " : '') . $this->__get('lname');
@@ -273,6 +275,8 @@ class User {
 			case 'grade':
 				$grade = self::get_grade($this->__get('graduationYear'));
 				if ($grade < 0) {
+					if($this->__get('objectclass')=='tjStarPresenter')
+						return 'TJStar';
 					return 'staff';
 				}
 				return $grade;

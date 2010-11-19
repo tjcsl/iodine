@@ -122,9 +122,16 @@ class Display {
 	*                panel and give processing control to.
 	*/
 	public function display_loop($module) {
-		global $I2_ERR,$I2_USER,$I2_ARGS,$I2_LOG;
+		global $I2_ERR,$I2_USER,$I2_ARGS,$I2_LOG,$I2_SQL;
 
 		if (self::$display_stopped) {
+			return;
+		}
+
+		// Limit users to certain modules. Used for TJStar users.
+		$allowed_modules=$I2_SQL->query("SELECT module FROM allowed_modules WHERE userclass=%s",$I2_USER->objectclass)->fetch_all_single_values();
+		if(!count($allowed_modules)==0 && !in_array(strtolower($module),$allowed_modules)) {
+			redirect();
 			return;
 		}
 
