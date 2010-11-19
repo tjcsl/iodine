@@ -142,7 +142,7 @@ class Birthdays implements Module {
 				'grade' => $user->grade,
 				'age' => $year - ((int)substr($user->birthday, 0, 4))
 			);
-			if ($person['age'] > 0 && strpos($person['name'], "Withdrawn") == FALSE) {
+			if ($person['age'] >= 0 && strpos($person['name'], "Withdrawn") == FALSE) {
 				$people[] = $person;
 			}
 		}

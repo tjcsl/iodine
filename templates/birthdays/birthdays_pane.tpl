@@ -10,7 +10,7 @@
   <ul>
   [<foreach from=$birthday.people item=person>]
    <li>
-    <a href="[<$I2_ROOT>]studentdirectory/info/[<$person.uid>]">[<$person.name>]</a>, [<$person.grade>][<if $person.grade != "staff">]th grade[</if>], [<if $birthday.date < $today>]turned[<else>]turns[</if>] [<$person.age>]
+    <a href="[<$I2_ROOT>]studentdirectory/info/[<$person.uid>]">[<$person.name>]</a>, [<$person.grade>][<if $person.grade != "staff">]th grade[</if>], [<if $person.age == 0>][<if $birthday.date < $today>]was born[<else>]will be born[</if>][<else>][<if $birthday.date < $today>]turned[<else>]turns[</if>] [<$person.age>][</if>]
    </li>
   [</foreach>]
   </ul>
