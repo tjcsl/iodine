@@ -110,14 +110,14 @@ class Birthdays implements Module {
 		$this->tmp_ldap = $I2_LDAP;
 
 		for($i = -3; $i <= 3; $i+=1) {
-			$timestamp = $time + ($i * self::DAY);
+			$timestamp = strtotime(date("j F, Y",$time)." +$i days ");
 			$birthday = array();
 			$birthday['date'] = $timestamp;
 			$birthday['people'] = $this->get_birthdays($timestamp);
 			$birthdays[] = $birthday;
 		}
 		
-		$this->template_args['date'] = $time;
+		$this->template_args['date'] = strtotime(date("j F, Y",$time));
 		$this->template_args['today'] = time();
 		$this->template_args['birthdays'] = $birthdays;
 		return 'Birthdays';
