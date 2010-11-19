@@ -41,11 +41,12 @@ class TJStar implements Module {
 	}
 
 	function init_pane() {
-		return FALSE;
+		return "TJStar Information Page";
 	}
 
 	function display_pane($disp) {
-		//do nothing
+		$this->template_args['message']="O hai thar";
+		$disp->disp("tjstar_pane.tpl",$this->template_args);
 	}
 
 	function init_box() {
