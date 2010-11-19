@@ -1,15 +1,15 @@
 ###
 # General stuff
 ###
-
 # admins can do anything!
 access to *
-   by group/groupOfURLs/memberURL.base="cn=admins,dc=tjhsst,dc=edu" write
-   by * break
-
+	by group/groupOfURLs/memberURL.base="cn=admins,dc=tjhsst,dc=edu" write
+	by * break
 # Make sure authing to a password is allowed
+# Also make sure that users can change their password if it's stored in ldap
 access to attrs=userPassword
 	by anonymous auth
+	by self write
 	by * none
 
 # no one (except full admins) can adjust adminship
@@ -40,10 +40,14 @@ access to attrs=tjhsstStudentId
 	by self read
 	by * none
 
+access to filter="objectClass=tjhsstStudent"
+	by group/groupOfURLs/memberURL.base="cn=tjstarpresenters,dc=tjhsst,dc=edu" none
+	by * break
+
 # general user-readable data
 access to attrs=cn,sn,givenName,soundexFirst,soundexLast,displayName,mname,nickname,sex,title,graduationYear,tjhsstClassId,tjhsstSectionId,quarter,periodNumber,sponsorDn
-   	by users read
-	by * none
+   by users read
+   by * none
 
 
 ###
@@ -76,12 +80,12 @@ access to attrs=perm-showtelephone,perm-showbirthday,perm-showaddress,perm-showm
 ###
 
 access to attrs=homePhone,enrolledClass,counselor,street,birthday,st,street,l,postalCode,postalAddress,c,locker
-   	by self read
-   	by * none break
+   by self read
+   by * none break
 
 access to attrs=preferredPhoto
-   	by self write
-   	by * none break
+   by self write
+   by * none break
 
 access to dn.regex="^.*,iodineUid=([^,]+),ou=people,dc=tjhsst,dc=edu$"
 		attrs=jpegPhoto
@@ -95,7 +99,7 @@ access to dn.regex="^.*,iodineUid=([^,]+),ou=people,dc=tjhsst,dc=edu$"
 
 access to filter="(&(perm-showtelephone-self=TRUE)(perm-showtelephone=TRUE))"
 		attrs=homePhone
-   	by users read
+   by users read
 	by * none
 
 access to filter="(&(perm-showschedule-self=TRUE)(perm-showschedule=TRUE))"

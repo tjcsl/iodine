@@ -751,7 +751,7 @@ objectclass ( i2OC:2
 	)
 	)
 
-objectclass ( i2OC:2
+objectclass ( i2OC:3
 	NAME 'tjStarPresenter'
 	SUP inetOrgPerson STRUCTURAL
 	MUST (
@@ -762,7 +762,7 @@ objectclass ( i2OC:2
 		chrome $
 		startpage $
 		iodineUidNumber $
-		password $
+		userPassword $
 		sn
 	)
 	MAY (
