@@ -123,7 +123,7 @@
 <br />
 <strong><a href="[<$I2_ROOT>]calc">Calculator Registration</a></strong>
 <br /><br />
-[<if $I2_USER->grade != "staff">]
+[<if is_int($I2_USER->grade)>]
 <strong>Preferred Picture</strong><br />
 <em>Since the eighth period office and TJ faculty can always see your pictures, it is recommended that you choose your preferred picture even if you disable "Show Pictures" below.</em><br />
 <input type="radio" name="pref_preferredPhoto" value="AUTO" [<if !isset($prefs.preferredPhoto) || $prefs.preferredPhoto == "AUTO">]checked="checked"[</if>]/>Auto-select the most recent photo<br />
@@ -133,13 +133,13 @@
 <br />
 [</if>]
 <strong>Privacy Options</strong><br />
-[<if $I2_USER->grade != "staff">]
+[<if is_int($I2_USER->grade)>]
 <em>If your parent did not give permission on the "Intranet Posting Agreement" form to show specific personal information, other students will not be able to see that information regardless of your personal settings.</em><br />
 [<else>]
 <em>These options only have effect if the information is in the database.  The fact that these options are here does not indicate that Intranet necessarily has the information.</em><br />
 [</if>]
 <em>Note that all TJ staff can always view all of this information.</em><br />
-[<if $I2_USER->grade != "staff">]
+[<if is_int($I2_USER->grade)>]
 <table style="text-align: center;" cellpadding="1" cellspacing="0">
 <tr><td style="padding: 0ex .5ex; text-decoration: underline;">Parent</td><td style="padding: 0ex 2ex; text-decoration: underline;">You</td><td></td></tr>
 <tr><td><input type="checkbox" name="showaddress" [<if $prefs.showaddress>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Address</td></tr>
@@ -153,7 +153,7 @@
 </table>
 [<else>]
 <table style="text-align: center;" cellpadding="1" cellspacing="0">
-<tr><td style="padding: 0ex .5ex; text-decoration: underline;">Can Enable</td><td style="padding: 0ex 2ex; text-decoration: underline;">Your Setting</td><td></td></tr>
+<TR><TD style="padding: 0ex .5ex; text-decoration: underline;">Can Enable</td><td style="padding: 0ex 2ex; text-decoration: underline;">Your Setting</td><td></td></tr>
 <tr><td><input type="checkbox" name="showaddress" [<if $prefs.showaddress>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Address</td></tr>
 <tr><td><input type="checkbox" name="showbday" [<if $prefs.showbday>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Birthday</td></tr>
 <tr><td><input type="checkbox" name="showpicture" [<if $prefs.showpicture>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Pictures</td></tr>
@@ -161,16 +161,18 @@
 </table>
 [</if>]
 <br />
+[<if $I2_USER->grade != "TJStar">]
 <strong>Notification Options</strong><br />
 <table>
 <tr>
  <td>Send all news posts to my email address:</td>
  <td><input type="checkbox" name="newsforwarding"[<if $I2_USER->newsforwarding>] checked="checked"[</if>] /></td>
 </tr>
-[<if $I2_USER->grade!='staff'>]<tr>
+[<if is_int($I2_USER->grade)>]<tr>
  <td>Send an email to me at 11:30 on days with 8th periods if I haven't signed up yet:</td>
  <td><input type="checkbox" name="eighthalert"[<if $I2_USER->eighthalert>] checked="checked"[</if>] /></td>
 </tr>[</if>]
+[</if>]
 </table>
 <strong>Display Options</strong><br />
 <table>

@@ -726,7 +726,7 @@ objectclass ( i2OC:2
 		style $
 		chrome $
 		comments $
-		boxcolor $
+		boxcolor $ boxtitlecolor $
 		counselor $
 		soundexlast $
 		soundexfirst $
@@ -777,7 +777,7 @@ objectclass ( i2OC:3
 		style $
 		chrome $
 		comments $
-		boxcolor $
+		boxcolor $ boxtitlecolor $
 		counselor $
 		soundexlast $
 		soundexfirst $

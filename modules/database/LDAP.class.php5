@@ -336,7 +336,11 @@ class LDAP {
 		}
 		
 		d("LDAP modifying $dn: ".print_r($vals,TRUE),7);
-		return ldap_modify($bind,$dn,$vals);
+		$a=ldap_modify($bind,$dn,$vals);
+		if(!$a) {
+			d("LDAP modify fail on $dn: ".print_r($vals,TRUE),5);
+		}
+		return $a;
 	}
 
 	public function compare($dn,$attribute,$value,$bind=NULL) {
