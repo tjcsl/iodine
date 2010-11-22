@@ -12,7 +12,7 @@ function FindProxyForURL(url, host)
 	if (
 		dnsDomainIs(host, "abc-clio.com") ||
 		dnsDomainIs(host, "www.accessscience.com") ||
-		dnsDomainIs(host, "eb.com") ||
+		dnsDomainIs(host, ".eb.com") ||
 		dnsDomainIs(host, "library.cqpress.com") ||
 		dnsDomainIs(host, "earthscape.org") ||
 		dnsDomainIs(host, "search.ebscohost.com") ||
@@ -34,7 +34,8 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, "culturegrams.com") ||
 		dnsDomainIs(host, "acs.org") ||
 		dnsDomainIs(host, "opticsinfobase.org") ||
-		dnsDomainIs(host, "www.worldbookonline.com")
+		dnsDomainIs(host, "www.worldbookonline.com") ||
+		dnsDomainIs(host, ".marshallcavendishdigital.com")
 
 	)
 			return "PROXY local.border.tjhsst.edu:8080";
