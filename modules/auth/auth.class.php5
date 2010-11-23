@@ -501,6 +501,19 @@ class Auth {
 			$method
 		);
 	}
+
+	/**
+	 * Get the user's active kerberos realm.
+	 * When using multiple realms in the config, this lets afs know 
+	 * which you want to check against for login.
+	 *
+	 * $return string Realm name, or FALSE on failure.
+	 */
+	function get_realm() {
+		if($this->auth_type!="kerberos")
+			return FALSE;
+		return $this->auth->get_realm();
+	}
 }
 
 ?>

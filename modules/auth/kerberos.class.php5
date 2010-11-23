@@ -15,12 +15,13 @@
 */
 class Kerberos implements AuthType {
 	private $cache;
+	private $realms = array();
 	private $realm;
 
 	public function __construct($realm=NULL) {
-		$this->realm = $realm;
-		if ($this->realm == NULL) {
-			$this->realm = i2config_get('default_realm','LOCAL.TJHSST.EDU','kerberos');
+		$this->realms[] = $realm;
+		if ($this->realms[0] == NULL) {
+			$this->realms = explode(",",i2config_get('default_realm','LOCAL.TJHSST.EDU','kerberos'));
 		}
 		$this->cache = NULL;
 	}
@@ -30,7 +31,22 @@ class Kerberos implements AuthType {
 	*/
 	public function login($user, $pass, $realm=NULL) {
 		if ($realm === NULL) {
-			$realm = $this->realm;
+			foreach($this->realms as $realm) {
+				$this->cache = self::get_ticket($user, $pass, $realm);
+		
+				if(!$this->cache) {
+					continue;
+				}
+				else {
+					$this->realm=$realm;
+					$_SESSION['logout_funcs'][] = array(
+									array('Kerberos', 'destroy'),
+									array($this->cache)
+								);
+					return TRUE;
+				}
+			}
+			return FALSE;
 		}
 
 		$this->cache = self::get_ticket($user, $pass, $realm);
@@ -39,6 +55,7 @@ class Kerberos implements AuthType {
 			return FALSE;
 		}
 		else {
+			$this->realm=$realm;
 			$_SESSION['logout_funcs'][] = array(
 							array('Kerberos', 'destroy'),
 							array($this->cache)
@@ -123,6 +140,17 @@ class Kerberos implements AuthType {
 			}
 	   }
       return FALSE;	
+	}
+
+	/**
+	 * Gets the active realm for this object, or false otherwise.
+	 *
+	 * @return string The realm of the object, or FALSE.
+	 */
+	function get_realm() {
+		if(!isset($this->realm))
+			return FALSE;
+		return $this->realm;
 	}
 }
 
