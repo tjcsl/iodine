@@ -35,7 +35,7 @@ class CIFS extends Filesystem {
 		$this->share = isset($share) ? $share : i2config_get('cifs_default_share', '', 'filecenter');
 
 		$this->root_dir = i2config_get('cifs_base_dir', '/tmp/cifs/', 'filecenter') . $this->server . "/" . $this->share . "_" . $user;
-		d("filecenter using mount point ".$this->root_dir."for CIFS filesystem",5);
+		d("filecenter using mount point ".$this->root_dir." for CIFS filesystem",5);
 
 		if ( !($this->is_mounted()) ) {
 			$this->mount($user, $pass, $this->root_dir);
@@ -83,15 +83,27 @@ class CIFS extends Filesystem {
 		}
 
 		$user = isset($this->domain) ? $this->domain . "/" . $user : $user;
-		$pass = escapeshellarg($pass);
 
-		$status = exec("/sbin/mount.cifs //{$this->server}/{$this->share} $mount_point -o username=\"$user\",password=$pass");
-
-		d("Mount status: $status",7);
-		
-		if ($status != 0) {
-			throw new I2Exception("/sbin/mount.cifs exited with status $status");
+		//$status = exec("/sbin/mount.cifs //{$this->server}/{$this->share} $mount_point -o username=\"$user\",password=\"$pass\"");
+		$descriptors = array(
+			0=>array("pipe","r"),
+			1=>array("pipe","w"),
+			2=>array("file","/tmp/i2cifserr.log","a")
+		);
+		$pp=proc_open("/sbin/mount.cifs //{$this->server}/{$this->share} $mount_point -o username=\"$user\"", $descriptors,$pipes);
+		if(is_resource($pp)) {
+			fwrite($pipes[0],$pass);
+			fclose($pipes[0]);
+			d("mount.ciffs output: ".stream_get_contents($pipes[1]),7);
+			fclose($pipes[1]);
+			$retval = proc_close($pp);
+			if ($retval != 0) {
+				throw new I2Exception("/sbin/mount.cifs exited with status $retval");
+			}
+		} else {
+			throw new I2Exception("falied to start /sbin/mount.cifs process");
 		}
+
 
 	}
 
