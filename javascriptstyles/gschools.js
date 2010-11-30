@@ -7,10 +7,15 @@ function preload() {
 function changeToGSearch() {
 }
 function page_init() {
+	//alert("Begin page_init() stuffs"); // for debugging
+
+	// change "Logout" link to say "Sign out"
+	document.getElementById("menu_logout").innerHTML = "Sign out";
+
 	/* Begin top header */
 	var topheader = document.createElement("div");
 	topheader.className = "gtopbar";
-	topheader.innerHTML = "&nbsp;&nbsp;<b>Schools</b>&nbsp;&nbsp;<a href='http://postman.tjhsst.edu'>Calendar</a>&nbsp;&nbsp;<a href='[<$I2_ROOT>]filecenter'>Documents</a>&nbsp;&nbsp;<a href='https://webmail.tjhsst.edu'>Gmail</a>&nbsp;&nbsp;<a href='http://www.google.com'>Web</a>";
+	topheader.innerHTML = "&nbsp;&nbsp;<b>Schools</b>&nbsp;&nbsp;<a href='http://postman.tjhsst.edu'>Calendar</a>&nbsp;&nbsp;<a href='[<$I2_ROOT>]filecenter'>Documents</a>&nbsp;&nbsp;<a href='https://webmail.tjhsst.edu'>Mail</a>&nbsp;&nbsp;<a href='http://www.google.com'>Web</a>";
 	document.getElementById("body").appendChild(topheader);
 	/* End top header */
 	/* Begin side links */
@@ -62,6 +67,9 @@ function page_init() {
 	linksdiv.appendChild(maildiv);
 	document.getElementById("body").insertBefore(linksdiv,document.getElementById("intraboxes"));
 	/* End side links */
+
+//	alert("Glinks added!"); // for debugging
+
 	/* Begin top right stuff */
 	document.getElementById("menu").insertBefore(document.createTextNode(" "),document.getElementById("menu_home"));
 	var littlebar = document.createElement("span");

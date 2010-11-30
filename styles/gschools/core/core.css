@@ -45,7 +45,7 @@ div#menu span {
 .gtopbar {
 	width: 100%;
 	position: absolute;
-	border-bottom: 1px solid #aaaaaa;
+	border-bottom: 1px solid #C9D7F1;
 	top: 0px;
 	height: 20px;
 	z-index: 1;
@@ -61,18 +61,29 @@ div#menu span {
 	left: 10px;
 	position: absolute;
 	top: 140px;
-	width: 305px;
+	width: 300px;
 }
 div#glinks div {
-	width: 300px;
-	padding-left: 20px;
+	width: 293px;
+	padding-left: 15px;
+	padding-top:1px;
+	padding-bottom:1px;
+	margin-bottom:1px;
+	-moz-border-radius: 5px 0px 0px 5px;
+	     border-radius: 5px 0px 0px 5px;
+}
+.glinks a {
+	text-decoration:none;
+	color:black;
 }
 .glinks-selected {
-	background-color: #c9d7f1;
-	border-radius: 5px 0px 0px 5px;
-	-moz-border-radius: 5px 0px 0px 5px;
+	background-color: #BBCCFF;
 }
 .glinks-unselected {
+	background-color:transparent;
+}
+.glinks-unselected:hover {
+	background-color:#DDE5FF;
 }
 .username {
 	color: black;

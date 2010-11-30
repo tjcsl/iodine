@@ -1,6 +1,6 @@
 @extend {
 body {
-	font-family: courier, helvetica, verdana, sans-serif;
+	font-family: courier, monospace;
 	color: #008800;
 	background-color: #000000;
 	/*cursor: url(www/pics/l33tcursor.cur);*/
@@ -51,7 +51,7 @@ textarea {
 	background: transparent;
 }
 .c2 {
-	background: #006600;
+	background: #003800;
 }
 a:visited {
 	color: #007700;

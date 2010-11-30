@@ -2,22 +2,19 @@
 body {
 	margin: 0.5em 0em 2em 0em;
 	font-size: 100%;
-	font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+	font-family: Arial, Helvetica, "Lucida Grande", Verdana, sans-serif;
 	line-height: 1.1em;
 }
 
-a:hover {
-	color: black;
+a {
+	color:#0000CC;
+	text-decoration:underline;
 }
 
-a:link {
-	color: #2E668B;
-	text-decoration: none;
-}
-}
-
-a { }
 a:visited {
-	color: #2E668B;
-	text-decoration: none;
+	color: #OOOOCC;
+	text-decoration:underline;
+}
+a:active {
+	color:red;
 }
