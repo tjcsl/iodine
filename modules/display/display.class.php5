@@ -128,11 +128,13 @@ class Display {
 			return;
 		}
 
-		// Limit users to certain modules. Used for TJStar users.
-		$allowed_modules=$I2_USER->allowed_modules;
-		if(!count($allowed_modules)==0 && !in_array(strtolower($module),$allowed_modules)) {
-			redirect();
-			return;
+		if(isset($I2_USER)){ //Not set when using some modules, like Feeds-based stuff.
+			// Limit users to certain modules. Used for TJStar users.
+			$allowed_modules=$I2_USER->allowed_modules;
+			if(!count($allowed_modules)==0 && !in_array(strtolower($module),$allowed_modules)) {
+				redirect();
+				return;
+			}
 		}
 
 		// Allow nags to catch users after they log in
@@ -194,7 +196,7 @@ class Display {
 						$title = array( NULL, '&nbsp;' );
 					}
 				
-					$display_chrome = ($I2_USER->chrome=='TRUE'?TRUE:FALSE);
+					$display_chrome = (isset($I2_USER)?($I2_USER->chrome=='TRUE'?TRUE:FALSE):FALSE);
 
 					$this->global_header($title[0],$display_chrome,$nagging);
 					
@@ -443,7 +445,7 @@ class Display {
 		$this->smarty_assign(
 			array(
 					'title' => htmlspecialchars($title), 
-					'first_name' => $I2_USER->fname, 
+					'first_name' => (isset($I2_USER)?$I2_USER->fname:"Noman"), 
 					'chrome' => $chrome
 			)
 		);
