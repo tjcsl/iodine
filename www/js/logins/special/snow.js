@@ -53,6 +53,12 @@ var newx;
 var bucket;
 var snowsize;
 
+function set_flakes() {
+	var regex = new RegExp("[\\?&]flake=([^&#]*)");
+	var results = regex.exec( window.location.href );
+	if( results != null )
+		snowletter=results[1];
+}
 
 window.onresize=resize;
 resize();
@@ -85,6 +91,7 @@ function resize() {
 }
 
 function initsnow() {
+	set_flakes();
 	if(pile) {
 		for (var i=0; i<heightbuckets; i++) {
 			snowheight[i] = screenheight;
