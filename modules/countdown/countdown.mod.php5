@@ -18,7 +18,7 @@ Class Countdown implements Module
 	}
 	function display_box($disp)
 	{
-		$grad=1308094200;//unix timestamp for graduation date. will eventually put this in the config.ini file
+		$grad=i2config_get('gradtime',1308094200,'countdown'); //unix timestamp for graduation date.
 		$diff=$grad-time();
 		$years=floor($diff/31556926);
 		$diff=$diff%31556926;
