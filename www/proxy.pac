@@ -35,6 +35,7 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, ".acs.org") ||
 		dnsDomainIs(host, ".opticsinfobase.org") ||
 		dnsDomainIs(host, "www.worldbookonline.com") ||
+		dnsDomainIs(host, ".tumblebooks.com") ||
 		dnsDomainIs(host, ".marshallcavendishdigital.com")
 
 	)
