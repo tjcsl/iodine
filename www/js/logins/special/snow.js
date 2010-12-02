@@ -52,6 +52,17 @@ var heightacc = heightbuckets/screenwidth;
 var newx;
 var bucket;
 var snowsize;
+//Div holding everything, removes scroll bars.
+var container;
+
+//Non-denominational Red Deer-Pulled Guy
+var santaexists=true; //It's true! I've met him. He's a pretty cool guy.
+var santalink="www/pics/santa_xsnow.png";
+var santawidth=210;
+var santaheight=83;
+var santaspeed=5;
+var santax=-santawidth;
+var santa;
 
 function set_flakes() {
 	var regex = new RegExp("[\\?&]flake=([^&#]*)");
@@ -92,6 +103,22 @@ function resize() {
 
 function initsnow() {
 	set_flakes();
+	container=document.createElement("div");
+	container.style.position="absolute";
+	container.style.top="0px";
+	container.style.left="0px";
+	container.style.width="100%";
+	container.style.height="100%";
+	container.style.overflow="hidden";
+	document.body.appendChild(container);
+	if(santaexists) {
+		santa=document.createElement("img");
+		santa.src=santalink;
+		santa.style.position="absolute";
+		santa.style.top=Math.floor(Math.random()*screenheight)+"px";
+		santa.style.zIndex="-1";
+		container.appendChild(santa);
+	}
 	if(pile) {
 		for (var i=0; i<heightbuckets; i++) {
 			snowheight[i] = screenheight;
@@ -131,7 +158,7 @@ function initsnow() {
 		snowflakes[i].style.top=snowy[i] + "px";
 		snowflakes[i].fall=sinkspeed*snowsize/5;
 		snowflakes[i].style.zIndex="-2";
-		document.body.appendChild(snowflakes[i]);
+		container.appendChild(snowflakes[i]);
 	}
 	if(pile) {
 		setTimeout("movesnow_pile()",30);
@@ -142,6 +169,14 @@ function initsnow() {
 	}
 }
 function movesnow_pile() {
+	if (santaexists) {
+		santax+=santaspeed;
+		if(santax>=screenwidth+santawidth) {
+			santax=-santawidth;
+			santa.style.top=Math.floor(Math.random()*screenheight)+"px";
+		}
+		santa.style.left=santax+"px";
+	}
 	for (var i=0; i<=snowmax; i++) {
 		snowy[i]+=snowflakes[i].fall;
 		
@@ -166,13 +201,21 @@ function movesnow_pile() {
 				snowflakes[i].style.top=snowy[i] + "px";
 				snowflakes[i].fall=sinkspeed*snowsize/5;
 				snowflakes[i].style.zIndex="-1";
-				document.body.appendChild(snowflakes[i]);
+				container.appendChild(snowflakes[i]);
 			}
 		}
 	}
 	setTimeout("movesnow_pile()",60);
 }
 function movesnow_nopile() {
+	if (santaexists) {
+		santax+=santaspeed;
+		if(santax>=screenwidth+santawidth) {
+			santax=-santawidth;
+			santa.style.top=Math.floor(Math.random()*screenheight)+"px";
+		}
+		santa.style.left=santax+"px";
+	}
 	for (var i=0; i<=snowmax; i++) {
 		snowy[i]+=snowflakes[i].fall;
 		if(snowy[i] >=screenheight) {
@@ -185,6 +228,14 @@ function movesnow_nopile() {
 	setTimeout("movesnow_nopile()",60);
 }
 function movesnow_fastpile() {
+	if (santaexists) {
+		santax+=santaspeed;
+		if(santax>=screenwidth+santawidth) {
+			santax=-santawidth;
+			santa.style.top=Math.floor(Math.random()*screenheight)+"px";
+		}
+		santa.style.left=santax+"px";
+	}
 	for (var i=0; i<=snowmax; i++) {
 		snowy[i]+=snowflakes[i].fall;
 		if(snowy[i] >=screenheight) {
