@@ -110,6 +110,7 @@ function initsnow() {
 	container.style.width="100%";
 	container.style.height="100%";
 	container.style.overflow="hidden";
+	container.style.zIndex="-1";
 	document.body.appendChild(container);
 	if(santaexists) {
 		santa=document.createElement("img");
