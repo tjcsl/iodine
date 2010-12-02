@@ -244,18 +244,27 @@ function movesnow_fastpile() {
 		if(snowy[i] >=screenheight) {
 			snowy[i]=-snowflakes[i].size;
 			//incrementsnowheight;
-			if(navigator.appName != 'Microsoft Internet Explorer') {
-				fastfillheight-=0.02;
-				graphics.moveTo(0,fastfillheight);
-				graphics.lineTo(realscreenwidth+25,fastfillheight);
-				graphics.stroke();
-			}
+			setTimeout("iterfastpile()",10);
 		}
 		
 		snowflakes[i].style.top = snowy[i]+"px";
 		snowflakes[i].style.left = (snowflakes[i].x+10*Math.sin(snowy[i]/9))+"px";
 	}
 	setTimeout("movesnow_fastpile()",60);
+}
+var count=0;
+function iterfastpile() {
+	if(count<5) {
+		count++;
+		return;
+	}
+	count=0;
+	if(navigator.appName != 'Microsoft Internet Explorer') {
+		fastfillheight-=0.02*5;
+		graphics.moveTo(0,fastfillheight);
+		graphics.lineTo(realscreenwidth,fastfillheight);
+		graphics.stroke();
+	}
 }
 
 window.onload=initsnow;
