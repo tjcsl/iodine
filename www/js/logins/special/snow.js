@@ -126,17 +126,19 @@ function initsnow() {
 		}
 	}
 	if(fastpile) {
-		var background=document.createElement("canvas");
-		background.style.position="absolute";
-		background.style.left="0px";
-		background.style.top="0px";
-		background.style.width=realscreenwidth+"px";
-		background.style.height=realscreenheight +"px";
-		background.style.zIndex="-1";
-		graphics=background.getContext("2d");
-		document.body.appendChild(background);
-		graphics.lineWidth=2;
-		graphics.strokeStyle="#FFFFFF";
+		if(navigator.appName != 'Microsoft Internet Explorer') {
+			var background=document.createElement("canvas");
+			background.style.position="absolute";
+			background.style.left="0px";
+			background.style.top="0px";
+			background.style.width=realscreenwidth+"px";
+			background.style.height=realscreenheight +"px";
+			background.style.zIndex="-1";
+			graphics=background.getContext("2d");
+			document.body.appendChild(background);
+			graphics.lineWidth=2;
+			graphics.strokeStyle="#FFFFFF";
+		}
 	}
 	for (var i=0; i<=snowmax; i++) {
 		snowflakes[i]=document.createElement("span");
@@ -242,10 +244,12 @@ function movesnow_fastpile() {
 		if(snowy[i] >=screenheight) {
 			snowy[i]=-snowflakes[i].size;
 			//incrementsnowheight;
-			fastfillheight-=0.02;
-			graphics.moveTo(0,fastfillheight);
-			graphics.lineTo(realscreenwidth+25,fastfillheight);
-			graphics.stroke();
+			if(navigator.appName != 'Microsoft Internet Explorer') {
+				fastfillheight-=0.02;
+				graphics.moveTo(0,fastfillheight);
+				graphics.lineTo(realscreenwidth+25,fastfillheight);
+				graphics.stroke();
+			}
 		}
 		
 		snowflakes[i].style.top = snowy[i]+"px";
