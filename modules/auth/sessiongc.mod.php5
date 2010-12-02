@@ -77,7 +77,7 @@ class SessionGC {
 				if(!isset($sess['i2_login_time'])) {
 					$sess['i2_login_time'] = filemtime($filename);
 				}
-				if(Auth::should_autologout($sess['i2_login_time'])) {
+				if(Auth::should_autologout($sess['i2_login_time'],(isset($sess['i2_username'])?$sess['i2_username']:NULL))) {
 					self::logoutfuncs($sess);
 					unlink($filename);
 				}
