@@ -399,6 +399,7 @@ class User {
 		 	case 'showeighthself':
 		 	case 'showeighth':
 			case 'showbdayself':
+			case 'showbday':
 			case 'showbdateself':
 			case 'showbdate':
 			case 'showlocker':
