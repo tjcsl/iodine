@@ -1,13 +1,24 @@
 //TJHSST Intranet login page snow script
+if(navigator.appName == 'Microsoft Internet Explorer') {
+	var ie=true;
+} else {
+	var ie=false;
+}
 //Config
 //Number of flakes
 var snowmax=50;
 //Colors possible for flakes
 var snowcolor=new Array("#aaaacc","#ddddFF","#ccccDD");
+// Number of snowflake characters in following array
+var numsnowletters=3;
 //Fonts possible for flakes
 var snowtype=new Array("Arial Black","Arial Narrow","Times","Comic Sans MS");
-//Character to be used for flakes
-var snowletter="*";
+	if(!ie){
+	//Character to be used for flakes
+var snowletter=new Array("❄","❅","❆");
+}else{
+	var snowletter="*";
+}
 //Speed multiplyer for the snow falling
 var sinkspeed=1;
 //Maximum size of snowflakes
@@ -19,6 +30,7 @@ var snowminsize=8;
 var pile=false;
 //Should we use fast piling?
 var fastpile=true;
+fastpile=fastpile&&(!ie);//IE cannot do canvas
 //Resolution of snow depth data
 var heightbuckets = 200;
 //End Config
@@ -158,7 +170,7 @@ function initsnow() {
 		}
 	}
 	if(fastpile) {
-		if(navigator.appName != 'Microsoft Internet Explorer') {
+		if(!ie) {
 			var background=document.createElement("canvas");
 			background.style.position="absolute";
 			background.style.left="0px";
@@ -175,7 +187,11 @@ function initsnow() {
 	for (var i=0; i<=snowmax; i++) {
 		snowflakes[i]=document.createElement("span");
 		//snowflakes[i].id="flake_"+i;
-		snowflakes[i].innerHTML=snowletter;
+		if((typeof(snowletter)=='object')&&(snowletter instanceof Array)) {
+			snowflakes[i].innerHTML=snowletter[Math.floor(Math.random()*(numsnowletters))];
+		} else {
+			snowflakes[i].innerHTML=snowletter;
+		}
 		snowflakes[i].style.color=snowcolor[Math.floor(Math.random()*snowcolor.length)];
 		snowflakes[i].style.fontFamily=snowtype[Math.floor(Math.random()*snowtype.length)];
 		snowsize=Math.floor(Math.random()*snowsizerange)+snowminsize;
@@ -220,10 +236,11 @@ function movesnow_pile() {
 		snowflakes[i].style.left = newx+"px";
 		bucket=Math.floor((newx+(snowflakes[i].size/2))*heightacc);
 		if(snowy[i] + snowflakes[i].size > snowheight[bucket]) {
+			var tempsnowletter=snowflakes[i].innerHTML;
 			if((snowheight[bucket+1]-snowheight[bucket] < 5 && snowheight[bucket-1]-snowheight[bucket] < 5) || snowy[i]>= screenheight) {
 				snowheight[bucket]=(snowy[i]<snowheight[bucket]?snowy[i]:snowheight[bucket]);
 				snowflakes[i]=document.createElement("span");
-				snowflakes[i].innerHTML=snowletter;
+				snowflakes[i].innerHTML=tempsnowletter;
 				snowflakes[i].style.color=snowcolor[Math.floor(Math.random()*snowcolor.length)];
 				snowflakes[i].style.fontFamily=snowtype[Math.floor(Math.random()*snowtype.length)];
 				snowsize=Math.floor(Math.random()*snowsizerange)+snowminsize;
@@ -262,6 +279,7 @@ function movesnow_nopile() {
 	}
 	setTimeout("movesnow_nopile()",60);
 }
+var i=0;
 function movesnow_fastpile() {
 	if (santaexists) {
 		santax+=santaspeed;
@@ -271,7 +289,7 @@ function movesnow_fastpile() {
 		}
 		santa.style.left=santax+"px";
 	}
-	for (var i=0; i<=snowmax; i++) {
+	for (i=0; i<=snowmax; i++) {
 		snowy[i]+=snowflakes[i].fall;
 		if(snowy[i] >=screenheight) {
 			snowy[i]=-snowflakes[i].size;
@@ -291,7 +309,7 @@ function iterfastpile() {
 		return;
 	}
 	count=0;
-	if(navigator.appName != 'Microsoft Internet Explorer') {
+	if(!ie) {
 		fastfillheight-=0.02*5;
 		graphics.moveTo(0,fastfillheight);
 		graphics.lineTo(realscreenwidth,fastfillheight);
