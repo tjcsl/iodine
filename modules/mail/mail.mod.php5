@@ -276,6 +276,19 @@ class Mail implements Module {
 		unlink($this->cache_file);
 	}
 
+	public static function clear_mail_cache() {
+		global $I2_USER;
+
+		$cache_dir = i2config_get('cache_dir','/var/cache/iodine/','core') . 'mail/';
+
+		if(!is_dir($cache_dir)) {
+			mkdir($cache_dir, 0700, TRUE);
+		}
+
+		$cache_file = $cache_dir . hash('md5', $I2_USER->iodineUid);
+		unlink($cache_file);
+	}
+
 	private function get_cache() {
 		global $I2_USER;
 		if(!file_exists($this->cache_file)) {

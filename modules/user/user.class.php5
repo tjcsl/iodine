@@ -565,6 +565,8 @@ class User {
 			}
 		}
 
+		//Put the new value into the cache.
+		$this->info[$name]=$val;
 		switch ($name) {
 			case 'counselor_name':
 				$couns = $ldap->search_one('ou=people,dc=tjhsst,dc=edu',

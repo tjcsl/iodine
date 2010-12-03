@@ -63,6 +63,10 @@ class Prefs implements Module {
 		global $I2_USER,$I2_ARGS,$I2_SQL;
 
 		if( isset($_REQUEST['prefs_form']) ) {
+			$refreshmail=false;
+			if(isset($_REQUEST['pref_mailentries']) && $_REQUEST['pref_mailentries']!=$I2_USER->mailentries) {
+				$refreshmail=true;
+			}
 			//form submitted, update info
 			foreach($_REQUEST as $key=>$val) {
 				if(substr($key, 0, 5) == 'pref_' ) {
@@ -72,6 +76,9 @@ class Prefs implements Module {
 					$field = substr($key, 5);
 					$I2_USER->$field = $val;
 				}
+			}
+			if($refreshmail) {
+				Mail::clear_mail_cache();
 			}
 
 			if (is_int($I2_USER->grade)) {

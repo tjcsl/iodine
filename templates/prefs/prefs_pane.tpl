@@ -194,8 +194,8 @@
 	<tr>
 		<td>Mail messages to display in mail box:</td>
 		<td>
-			[<assign var="messages" value=$I2_USER->mailmessages>]
-			<select name="pref_mailmessages">
+			[<assign var="messages" value=$prefs.mailentries>]
+			<select name="pref_mailentries">
 				<option value="-1" [<if $messages == -1>]selected="selected"[</if>]>0</option>
 				<option value="1" [<if $messages == 1>]selected="selected"[</if>]>1</option>
 				<option value="2" [<if $messages == 2>]selected="selected"[</if>]>2</option>
