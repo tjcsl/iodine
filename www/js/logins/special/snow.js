@@ -69,7 +69,7 @@ var container;
 
 //Non-denominational Red Deer-Pulled Guy
 var santaexists=true; //It's true! I've met him. He's a pretty cool guy.
-var santalink="www/pics/santa_xsnow.png";
+var santalink="www/pics/santa_xsnow.gif";
 var santawidth=210;
 var santaheight=83;
 var santaspeed=5;

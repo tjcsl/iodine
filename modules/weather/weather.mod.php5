@@ -12,6 +12,11 @@ class Weather implements Module {
 
 	private function makeData($server = 'weather.tjhsst.edu', $port=8889) {
 		global $I2_CACHE;
+		$args=unserialize($I2_CACHE->read('Weather','template_args'));
+		if($args) {
+			$this->template_args = $args;
+			return;
+		}
 		$this->template_args=unserialize($I2_CACHE->read($this,'template_args'));
 		if($this->template_args===false) {
 			$connection = @fsockopen($server, $port, $errno, $errstr);
@@ -50,7 +55,7 @@ class Weather implements Module {
 			$this->template_args['wind_dir'] = $this->data[38];
 			$this->template_args['rain'] = $this->data[47];
 			$this->template_args['rain_int'] = $this->data[50];
-			$I2_CACHE->store($this,'template_args',serialize($this->template_args),60*5);
+			$I2_CACHE->store('Weather','template_args',serialize($this->template_args),60*5);
 		}
 	}
 

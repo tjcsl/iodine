@@ -85,15 +85,16 @@ class Cache {
 		if(gettype($module)=="string") $name=$module;
 		else $name=get_class($module);
 		$hash=sha1(i2config_get('database','iodine','mysql')."??".$name."::".$key);
-		d("reading $hash from memcache");
+		d("reading $hash from memcache",7);
 		if($hash===null) return false;
 		$val=$this->mcache->get($hash);
 		if($val===false)
 		{
-			d("$hash not found in memcache");
+			d("$hash not found in memcache",6);
 			return false;
 		}
-		d("memcache lookup $hash succeeded");
+		d("memcache lookup $hash succeeded",7);
+		d(print_r($val,true),7);
 		//$val2=unserialize($val);
 		//print_r($val);
 		//if($val2!==false) $val=$val2;
