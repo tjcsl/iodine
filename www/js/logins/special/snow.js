@@ -30,7 +30,15 @@ var snowminsize=8;
 var pile=false;
 //Should we use fast piling?
 var fastpile=true;
-fastpile=fastpile&&(!ie);//IE cannot do canvas
+// use real piling in Chrome
+//alert(navigator.userAgent); // for debugging
+//if (navigator.userAgent.toLowerCase().indexOf("webkit/") != -1 || navigator.userAgent.toLowerCase().indexOf("firefox/") != -1) {
+if (navigator.userAgent.toLowerCase().indexOf("chrome") != -1) {
+	pile = true;
+	fastpile = false;
+}
+//IE cannot do canvas
+fastpile=fastpile&&(!ie);
 //Resolution of snow depth data
 var heightbuckets = 200;
 //End Config
@@ -75,6 +83,20 @@ var santaheight=83;
 var santaspeed=5;
 var santax=-santawidth;
 var santa;
+
+// Tron Menorah
+var today = new Date(); // what day is it?
+var chanukahDay = 0; // which day of Chanukah?
+var menorah;
+var candles;
+if (today.getMonth() == 11 && today.getDate() <= 9) {
+	chanukahDay = (today.getDate() - 1); // how convenient!
+	if (today.getHours() > 18) { // because each "day" starts at sunset
+		chanukahDay ++;
+	}
+	candles = new Array(chanukahDay);
+}
+
 
 function set_flakes() {
 	var regex = new RegExp("[\\?&]flake=([^&#]*)");
@@ -143,6 +165,19 @@ function resize() {
 	if(fastpile) {
 		fastfillheight=150;
 	}
+	if (menorah) {
+		var loginTable = document.getElementsByTagName("table")[0];
+		menorah.style.left = (loginTable.offsetLeft + 37) + "px";
+		menorah.style.top = (loginTable.offsetTop - 253) + "px";
+		for (var i = 0; i < candles.length; i++) {
+			candles[i].style.top = (menorah.offsetTop + 15) + "px";
+			if (i < 4) {
+				candles[i].style.left = ((menorah.offsetLeft + 29) + (25 * (i))) + "px";
+			} else {
+				candles[i].style.left = ((menorah.offsetLeft + 207) + (25 * (i))) + "px";
+			}
+		}
+	}
 }
 
 function initsnow() {
@@ -163,6 +198,38 @@ function initsnow() {
 		santa.style.top=Math.floor(Math.random()*screenheight)+"px";
 		santa.style.zIndex="-1";
 		container.appendChild(santa);
+	}
+	if (chanukahDay != 0) { // no Chanukah = no candles
+		menorah = document.createElement("img");
+		menorah.src = "www/pics/menorah.png";
+		menorah.title = "Happy Chanukah!"
+		menorah.style.position = "absolute";
+		var loginTable = document.getElementsByTagName("table")[0];
+		loginTable.style.position = "relative";
+		loginTable.style.top = "100px";
+		menorah.style.left = (loginTable.offsetLeft + 37) + "px";
+		menorah.style.top = (loginTable.offsetTop - 253) + "px";
+		menorah.style.zIndex = "101";
+		container.appendChild(menorah);
+
+		for (var i = 0; i < candles.length; i++) {
+			candles[i] = document.createElement("img");
+			candles[i].src = "www/pics/flame.gif";
+//			candles[i].style.width = "14px";
+//			candles[i].style.height = "16px";
+
+			candles[i].style.position = "absolute";
+			candles[i].style.top = (menorah.offsetTop + 15) + "px";
+			if (i < 4) {
+				candles[i].style.left = ((menorah.offsetLeft + 29) + (25 * (i))) + "px";
+			} else {
+				candles[i].style.left = ((menorah.offsetLeft + 207) + (25 * (i))) + "px";
+			}
+//			candles[i].style.backgroundColor = "cyan";
+			candles[i].style.zIndex = "100";
+
+			container.appendChild(candles[i]);
+		}
 	}
 	if(pile) {
 		for (var i=0; i<heightbuckets; i++) {

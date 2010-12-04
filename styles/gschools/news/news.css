@@ -7,14 +7,15 @@
 .newstitle {
 	margin-top: 6pt;
 	font-size: 1.3em;
-	font-family: "Trebuchet MS", Arial, sans-serif;
+	font-family:Arial, sans-serif;
+/*	font-weight:bold;*/
 	border-bottom: 0.05em solid;
 	line-height: 1em;
 }
 
 @extend {
 .newsoptions {
-	font-size: 1.3em;
+/*	font-size: 1.3em;*/
 	margin-top: 0px;
 	padding: 0px;
 }
