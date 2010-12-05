@@ -109,7 +109,7 @@ var container;
 
 //Non-denominational Red Deer-Pulled Guy
 var santaexists=true; //It's true! I've met him. He's a pretty cool guy.
-var santalink="www/pics/santa_xsnow.gif";
+var santalink=i2root+"www/pics/santa_xsnow.gif";
 var santawidth=210;
 var santaheight=83;
 var santaspeed=5;
@@ -233,7 +233,7 @@ function initsnow() {
 	}
 	if (chanukahDay != 0) { // no Chanukah = no candles
 		menorah = document.createElement("img");
-		menorah.src = "www/pics/menorah.png";
+		menorah.src = i2root+"www/pics/menorah.png";
 		menorah.title = "Happy Chanukah!"
 		menorah.style.position = "absolute";
 		var loginTable = document.getElementsByTagName("table")[0];
@@ -246,7 +246,7 @@ function initsnow() {
 
 		for (var i = 0; i < candles.length; i++) {
 			candles[i] = document.createElement("img");
-			candles[i].src = "www/pics/flame.gif";
+			candles[i].src = i2root+"www/pics/flame.gif";
 //			candles[i].style.width = "14px";
 //			candles[i].style.height = "16px";
 

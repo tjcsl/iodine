@@ -7,6 +7,10 @@
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/login.css" />
 	<link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 	<link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
+	<script type="text/javascript">
+	//Set some variables so that any script can use them.
+	var i2root="[<$I2_ROOT>]";
+	</script>
 	[<if isset($bgjs)>]
 	<script type="text/javascript" src="[<$I2_ROOT>][<$bgjs>]"></script>
 	[</if>]
