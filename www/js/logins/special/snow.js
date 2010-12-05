@@ -4,36 +4,68 @@ if(navigator.appName == 'Microsoft Internet Explorer') {
 } else {
 	var ie=false;
 }
+var mobile=false;
+if(navigator.userAgent.toLowerCase().indexOf("android") != -1) {
+	var android=true;
+	var mobile=true;
+} else {
+	var android=false;
+}
+if(navigator.userAgent.toLowerCase().indexOf("chrome") != -1) {
+	var chrome=true;
+} else {
+	var chrome=false;
+}
+if(chrome || navigator.userAgent.toLowerCase().indexOf("firefox/4") != -1) {
+	var fastbrowser=true;
+} else {
+	var fastbrowser=false;
+}
 //Config
 //Number of flakes
-var snowmax=50;
+if(mobile) {
+	var snowmax=20;
+} else if (fastbrowser) {
+	var snowmax=60;
+} else {
+	var snowmax=50;
+}
 //Colors possible for flakes
 var snowcolor=new Array("#aaaacc","#ddddFF","#ccccDD");
 // Number of snowflake characters in following array
 var numsnowletters=3;
 //Fonts possible for flakes
 var snowtype=new Array("Arial Black","Arial Narrow","Times","Comic Sans MS");
-	if(!ie){
-	//Character to be used for flakes
-var snowletter=new Array("❄","❅","❆");
+//Character to be used for flakes
+if(!ie && !android){ // IE doesnt' like it for some reason, and android doesn't either.
+	var snowletter=new Array("❄","❅","❆");
 }else{
 	var snowletter="*";
 }
 //Speed multiplyer for the snow falling
-var sinkspeed=1;
-//Maximum size of snowflakes
-var snowmaxsize=22;
-//Miniumum size of snowflakes
-var snowminsize=8;
+if(fastbrowser) { // They have more elements and do piling. This increases the amount of time it takes for significant slowdown.
+	var sinkspeed=0.5;
+} else {
+	var sinkspeed=1
+}
+if(mobile) {
+	//Maximum size of snowflakes
+	var snowmaxsize=44;
+	//Miniumum size of snowflakes
+	var snowminsize=16;
+} else {
+	//Maximum size of snowflakes
+	var snowmaxsize=22;
+	//Miniumum size of snowflakes
+	var snowminsize=8;
+}
 
 //Should the snow pile up?
 var pile=false;
 //Should we use fast piling?
 var fastpile=true;
-// use real piling in Chrome
-//alert(navigator.userAgent); // for debugging
-//if (navigator.userAgent.toLowerCase().indexOf("webkit/") != -1 || navigator.userAgent.toLowerCase().indexOf("firefox/") != -1) {
-if (navigator.userAgent.toLowerCase().indexOf("chrome") != -1) {
+// use real piling in faster browsers
+if (fastbrowser) {
 	pile = true;
 	fastpile = false;
 }
@@ -195,7 +227,7 @@ function initsnow() {
 		santa=document.createElement("img");
 		santa.src=santalink;
 		santa.style.position="absolute";
-		santa.style.top=Math.floor(Math.random()*screenheight)+"px";
+		santa.style.top=Math.floor(Math.random()*screenheight-santaheight)+"px";
 		santa.style.zIndex="-1";
 		container.appendChild(santa);
 	}
@@ -291,7 +323,7 @@ function movesnow_pile() {
 		santax+=santaspeed;
 		if(santax>=screenwidth+santawidth) {
 			santax=-santawidth;
-			santa.style.top=Math.floor(Math.random()*screenheight)+"px";
+			santa.style.top=Math.floor(Math.random()*screenheight-santaheight)+"px";
 		}
 		santa.style.left=santax+"px";
 	}
@@ -331,7 +363,7 @@ function movesnow_nopile() {
 		santax+=santaspeed;
 		if(santax>=screenwidth+santawidth) {
 			santax=-santawidth;
-			santa.style.top=Math.floor(Math.random()*screenheight)+"px";
+			santa.style.top=Math.floor(Math.random()*screenheight-santaheight)+"px";
 		}
 		santa.style.left=santax+"px";
 	}
@@ -352,7 +384,7 @@ function movesnow_fastpile() {
 		santax+=santaspeed;
 		if(santax>=screenwidth+santawidth) {
 			santax=-santawidth;
-			santa.style.top=Math.floor(Math.random()*screenheight)+"px";
+			santa.style.top=Math.floor(Math.random()*screenheight-santaheight)+"px";
 		}
 		santa.style.left=santax+"px";
 	}
