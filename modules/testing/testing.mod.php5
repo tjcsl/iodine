@@ -47,7 +47,7 @@ class Testing implements Module {
 		$this->template_args['message']="";
 		if(isset($_POST['time']) && isset($_POST['type'])){
 			if(isset($_POST['update'])) {
-				$I2_SQL->query("UPDATE tests SET time=%s AND type=%s WHERE id=%i",$_POST['time'],$_POST['type'],$_POST['update']);
+				$I2_SQL->query("UPDATE tests SET time=%s, type=%s WHERE id=%i",$_POST['time'],$_POST['type'],$_POST['update']);
 				$this->template_args['message']="Test Updated";
 			} else {
 				$I2_SQL->query("INSERT INTO tests (time,type) VALUES(%s,%s)",$_POST['time'],$_POST['type']);

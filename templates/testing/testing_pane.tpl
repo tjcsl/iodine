@@ -7,6 +7,9 @@ Type:<input type="text" name="type" /><br />
 
 <table>
 [<foreach from=$tests item=test>]
-<tr><form action="testing" method="post"><td><input type="hidden" name="update" value="[<$test.id>]" /><input type="text" name="time" value="[<$test.time|date_format:"%b %e, %Y">]" /></td><td><input type="text" name="type" value="[<$test.type>]" /></td><td><input type="submit" value="Update" /></td></form></tr>
+<tr><form action="testing" method="post">
+	<td><input type="hidden" name="update" value="[<$test.id>]" /><input type="text" name="time" value="[<$test.time|date_format:"%Y-%m-%d %T">]" /></td>
+	<td><input type="text" name="type" value="[<$test.type>]" /></td><td><input type="submit" value="Update" /></td>
+</form></tr>
 [</foreach>]
 </table>
