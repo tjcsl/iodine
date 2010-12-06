@@ -204,9 +204,9 @@ function resize() {
 		for (var i = 0; i < candles.length; i++) {
 			candles[i].style.top = (menorah.offsetTop + 15) + "px";
 			if (i < 4) {
-				candles[i].style.left = ((menorah.offsetLeft + 29) + (25 * (i))) + "px";
+				candles[i].style.left = ((menorah.offsetLeft + 283) - (26 * (i))) + "px";
 			} else {
-				candles[i].style.left = ((menorah.offsetLeft + 207) + (25 * (i))) + "px";
+				candles[i].style.left = ((menorah.offsetLeft + 104) - (25 * (i - 4))) + "px";
 			}
 		}
 	}
@@ -236,31 +236,33 @@ function initsnow() {
 		menorah.src = i2root+"www/pics/menorah.png";
 		menorah.title = "Happy Chanukah!"
 		menorah.style.position = "absolute";
-		var loginTable = document.getElementsByTagName("table")[0];
-		loginTable.style.position = "relative";
-		loginTable.style.top = "100px";
-		menorah.style.left = (loginTable.offsetLeft + 37) + "px";
-		menorah.style.top = (loginTable.offsetTop - 253) + "px";
-		menorah.style.zIndex = "101";
-		container.appendChild(menorah);
+		var loginTable = document.getElementsByTagName("table")[0]; // get the login box
+		loginTable.style.position = "relative"; // ------------------- and shift
+		loginTable.style.top = "100px"; // --------------------------- it down
+		
+		menorah.style.left = (loginTable.offsetLeft + 37) + "px"; // position the menorah
+		menorah.style.top = (loginTable.offsetTop - 253) + "px"; //  on top of the login box
+		menorah.style.zIndex = "101"; // --------------------------- and make sure it is on top
 
-		for (var i = 0; i < candles.length; i++) {
-			candles[i] = document.createElement("img");
-			candles[i].src = i2root+"www/pics/flame.gif";
+		container.appendChild(menorah); // then add it to the container
+
+		for (var i = 0; i < candles.length; i++) { // -------- for each candle
+			candles[i] = document.createElement("img"); // create an <img>
+			candles[i].src = i2root+"www/pics/flame.gif"; // ---- get the candle animation
 //			candles[i].style.width = "14px";
 //			candles[i].style.height = "16px";
 
 			candles[i].style.position = "absolute";
-			candles[i].style.top = (menorah.offsetTop + 15) + "px";
+			candles[i].style.top = (menorah.offsetTop + 15) + "px"; // set the top so it lines up with the holders
 			if (i < 4) {
-				candles[i].style.left = ((menorah.offsetLeft + 29) + (25 * (i))) + "px";
+				candles[i].style.left = ((menorah.offsetLeft + 283) - (26 * (i))) + "px";
 			} else {
-				candles[i].style.left = ((menorah.offsetLeft + 207) + (25 * (i))) + "px";
+				candles[i].style.left = ((menorah.offsetLeft + 104) - (25 * (i - 4))) + "px";
 			}
 //			candles[i].style.backgroundColor = "cyan";
-			candles[i].style.zIndex = "100";
+			candles[i].style.zIndex = "100"; // make sure it is on top of most stuff, but under the menorah
 
-			container.appendChild(candles[i]);
+			container.appendChild(candles[i]); // add it to the container too
 		}
 	}
 	if(pile) {
