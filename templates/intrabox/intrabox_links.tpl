@@ -13,3 +13,4 @@ $this->assign('mode',i2config_get('mode','full','roster'));
 <a href="[<$I2_ROOT>]groups/">Groups</a><br />
 <a href="[<$I2_ROOT>]polls/">Polls</a><br />
 <a href="[<$I2_ROOT>]bugzilla/">Report a bug (Intranet or the CSL)</a><br />
+<a href="http://colonialathletics.org">TJ Athletics</a><br />
