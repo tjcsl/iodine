@@ -16,3 +16,12 @@ a:visited {
 a:active {
 	color: #004a2a;
 }
+
+.c1 {
+	background-color:#EEEEFF;
+	color:darkGreen;
+}
+.c2 {
+	background-color:white;
+	color:darkGreen;
+}
