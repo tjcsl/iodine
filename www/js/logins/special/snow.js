@@ -121,7 +121,7 @@ var today = new Date(); // what day is it?
 var chanukahDay = 0; // which day of Chanukah?
 var menorah;
 var candles;
-if (today.getMonth() == 11 && today.getDate() <= 9) {
+if (today.getMonth() == 11 && today.getDate() <= 9 && today.getHours() < 18) {
 	chanukahDay = (today.getDate() - 1); // how convenient!
 	if (today.getHours() > 18) { // because each "day" starts at sunset
 		chanukahDay ++;
