@@ -2316,7 +2316,6 @@ class Eighth implements Module {
 					$cids[$dat[$i]['cid']]=$tmpuser->name;
 				}
 			}
-			print_r($cids);
 			$this->template_args['cids']=$cids;
 			$this->template_args['data']=$dat;
 		} elseif ($this->op=='view') {

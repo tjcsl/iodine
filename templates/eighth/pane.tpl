@@ -22,7 +22,7 @@
 				<li>[<* P+ *>]<a href="[<$I2_ROOT>]eighth/vcp_attendance"><b>View, change, or print attendance data</b></a></li>
 				[<*<li><a href="[<$I2_ROOT>]eighth/ent_attendance"><b>Enter TA absences by student ID</b></a></li>*>]
 				<li>[<* P- TODO: Needs to not be completely broken! *>]<a href="[<$I2_ROOT>]eighth/vp_delinquent">View or print a list of delinquent students</a></li>
-				<li><a href="[<$I2_ROOT>]eighth/postsign">View a list of after-deadline signups and changes</a></li>
+				<li><a href="[<$I2_ROOT>]eighth/postsigns">View a list of after-deadline signups and changes</a></li>
 			</ol>
 		</td>
 	</tr>
