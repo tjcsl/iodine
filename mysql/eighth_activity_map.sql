@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS eighth_activity_map;
 CREATE TABLE eighth_activity_map (
-	aid MEDIUMINT UNSIGNED NOT NULL,
+	aid MEDIUMINT NOT NULL,
 
 	bid MEDIUMINT UNSIGNED NOT NULL,
 

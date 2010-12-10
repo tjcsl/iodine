@@ -47,7 +47,32 @@ class EighthActivity {
 			return;
 		}
 		if (! self::activity_exists($activityid)) {
-			throw new I2Exception('Tried to create an EighthActivity object for a nonexistent activity!');
+			if ($activityid==-3) {
+				$this->data['name']='Signed up for a different block at this time';
+				$this->data['description']='You are signed up for another eighth-period activity on this day that occurs at the same time. Because of this, you have been signed up for this activity.';
+				$this->data['restricted']=0;
+				$this->data['oneaday']=0;
+				$this->data['bothblocks']=0;
+				$this->data['sticky']=0;
+				$this->data['special']=0;
+				$this->data['sponsors'] = array();
+				$this->data['rooms'] = array();
+				$this->data['aid'] = $activityid;
+				if($blockid) {
+					$this->data['bid']=$blockid;
+					$this->data['block'] = new EighthBlock($blockid);
+					$this->data['cancelled']=0;
+					$this->data['attendancetaken']=0;
+					$this->data['roomchanged']=0;
+					$this->data['comment']='';
+					$this->data['advertisement']='';
+					$this->data['capacity']=9001;
+					$this->data['block_sponsors'] = array();
+					$this->data['block_rooms'] = array();
+				}
+				return;
+			}
+			throw new I2Exception('Tried to create an EighthActivity object for a nonexistent activity! (Activity id was '.$activityid.')');
 		}
 		if ($activityid != NULL && $activityid != '') {
 			$this->data = $I2_SQL->query('SELECT * FROM eighth_activities WHERE aid=%d', $activityid)->fetch_array(Result::ASSOC);
@@ -63,9 +88,9 @@ class EighthActivity {
 				$this->data['block_sponsors'] = (!empty($this->data['block_sponsors']) ? explode(',', $this->data['block_sponsors']) : array());
 				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(',', $this->data['block_rooms']) : array());
 			}
+			// Import favorites data. This is a _good_thing_. I think.
+			$this->data['favorite']=sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $activityid)->fetch_array(MYSQL_ASSOC))>1?TRUE:FALSE;
 		}
-		// Import favorites data. This is a _good_thing_.
-		$this->data['favorite']=sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $activityid)->fetch_array(MYSQL_ASSOC))>1?TRUE:FALSE;
 	}
 
 	/**
@@ -1043,7 +1068,7 @@ class EighthActivity {
 		$ret = array();
 		foreach($activityids as $activityid) {
 			if(is_array($activityid)) {
-				if($exceptionsok || EighthSchedule::is_activity_valid($activityid[0], $activityid[1]))
+				if($exceptionsok || EighthSchedule::is_activity_valid($activityid[0], $activityid[1])||$activityid[0]==-3)
 					$ret[] = new EighthActivity($activityid[0], $activityid[1]);
 				else {
 					d("Activity $activityid[0] not scheduled for block $activityid[1], returning EighthActivity object with CANCELLED handler.");

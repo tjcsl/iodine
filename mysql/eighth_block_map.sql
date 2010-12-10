@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS eighth_block_map;
 CREATE TABLE eighth_block_map (
 	bid MEDIUMINT UNSIGNED NOT NULL,
 
-	activityid MEDIUMINT UNSIGNED NOT NULL,
+	activityid MEDIUMINT NOT NULL,
 
 	sponsors VARCHAR(127) NOT NULL,
 
