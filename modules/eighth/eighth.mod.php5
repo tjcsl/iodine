@@ -2062,7 +2062,7 @@ class Eighth implements Module {
 				$status = array();
 				$bids = explode(',', $this->args['bids']);
 				foreach($bids as $bid) {
-					if(true||EighthSchedule::is_activity_valid($this->args['aid'], $bid)) {
+					if(EighthSchedule::is_activity_valid($this->args['aid'], $bid)) {
 						$activity = new EighthActivity($this->args['aid'], $bid);
 						
 						self::start_undo_transaction();
