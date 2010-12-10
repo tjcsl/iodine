@@ -2297,6 +2297,31 @@ class Eighth implements Module {
 		global $I2_SQL;
 		return $I2_SQL->query('SELECT ip FROM eighth_printers WHERE is_selected=1')->fetch_single_value();
 	}
+
+	/**
+	 *
+	 */
+	public function postsigns() {
+		global $I2_SQL;
+
+		if($this->op == '') {
+			$dat=$I2_SQL->query('SELECT * FROM eighth_postsigns')->fetch_all_arrays(Result::ASSOC);
+			$this->template='postsigns.tpl';
+			$cids=array();
+			for($i=0;$i<count($dat);$i++) {
+				$tmpuser=new User($dat[$i]['uid']);
+				$dat[$i]['username']=$tmpuser->name;
+				if(!in_array($dat[$i]['cid'],array_keys($cids))) {
+					$tmpuser=new User($dat[$i]['cid']);
+					$cids[$dat[$i]['cid']]=$tmpuser->name;
+				}
+			}
+			print_r($cids);
+			$this->template_args['cids']=$cids;
+			$this->template_args['data']=$dat;
+		} elseif ($this->op=='view') {
+		}
+	}
 }
 
 ?>
