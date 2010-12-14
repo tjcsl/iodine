@@ -130,11 +130,15 @@ if (today.getMonth() == 11 && today.getDate() <= 9 && today.getHours() < 18) {
 }
 
 
-function set_flakes() {
+function set_urlvars() {
 	var regex = new RegExp("[\\?&]flake=([^&#]*)");
 	var results = regex.exec( window.location.href );
 	if( results != null )
 		snowletter=url_decode(results[1]);
+	var regex = new RegExp("[\\?&]colors=([^&#]*)");
+	var results = regex.exec( window.location.href );
+	if( results != null )
+		snowcolor=extract_color(url_decode(results[1]));
 }
 
 function url_decode(utftext) {
@@ -168,7 +172,23 @@ function url_decode(utftext) {
 	string = string.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 	return string;
 }
-
+function extract_color(urlstr) {
+	var tmp=urlstr.split(':');
+	var hex='0123456789abcdef';
+	if(!tmp[1]) return Array('#'+tmp[0]);
+	outarr=[];
+	for(var i=0;i<1000;i++) {
+		c='';
+		var pos=Math.random();
+		for(var j=0;j<tmp[0].length;j++)
+		{
+			var a=parseInt(tmp[0][j],16),b=parseInt(tmp[1][j],16);
+			c+=hex[(Math.floor(pos*a+(1.0-pos)*b))];
+		}
+		outarr.push('#'+c);
+	}
+	return outarr;
+}
 window.onresize=resize;
 resize();
 function resize() {
@@ -213,7 +233,7 @@ function resize() {
 }
 
 function initsnow() {
-	set_flakes();
+	set_urlvars();
 	container=document.createElement("div");
 	container.style.position="absolute";
 	container.style.top="0px";

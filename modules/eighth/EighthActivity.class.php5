@@ -215,6 +215,29 @@ class EighthActivity {
 			// have to take them out of the other block
 			$signup_bothblocks = -1;
 		}
+		if ($signup_bothblocks != 0 && $otheract->sticky && !$force) { // Fix a loophole where the both blocks system circumvents the 
+			$ret |= EighthActivity::STICKY;
+		}
+
+		$query_excludes = $I2_SQL->query('SELECT * FROM eighth_excludes WHERE bid = %d',$blockid)->fetch_all_arrays(Result::ASSOC);	// mutually exclusive blocks
+		$excludes = array();
+		foreach($query_excludes as $r) {
+			$exclude_bid=$r['target_bid'];
+			$exclude_aid=EighthSchedule::get_activities_by_block($userid,$exclude_bid);
+			if(self::activity_exists($exclude_aid)) {
+				try {
+					$excludes[] = array("activity"=>(new EighthActivity($exclude_aid,$exclude_bid)), "aid"=>($r['aid']?$r['aid']:-3));
+				} catch (I2Exception $e) {
+					warn($e);
+				}
+			}
+		}
+
+		foreach($excludes as $exclude) {		// can't use mutex blocks to get out of a sticky
+			if($exclude['activity']->sticky && !$force) {
+				$ret |= EighthActivity::STICKY;
+			}
+		}
 
 		if (!$ret || $force) {
 			//Postsign stuff, helpw the 8th office track trends.
@@ -238,6 +261,11 @@ class EighthActivity {
 				//EighthActivity::add_member_to_activity($defaid, $user, $force, $otheract->bid);
 			}
 
+			foreach($excludes as $exclude) {
+				$spid=new EighthActivity($exclude['aid'],$exclude['activity']->blockid);
+				$spid->add_member($userid,1);
+			}
+
 			if (!$oldaid) {
 				$inverse = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d';
 				$invargs = $args;
@@ -250,11 +278,11 @@ class EighthActivity {
 			if(mysql_error()) {
 				$ret = -1;
 			}
+			if (isSet($this->data['member_count'])) {
+				$this->data['member_count']++;
+			}
 		}
 
-		if (isSet($this->data['member_count'])) {
-			$this->data['member_count']++;
-		}
 		if($force && $ret != -1) {
 			return 0;
 		}
