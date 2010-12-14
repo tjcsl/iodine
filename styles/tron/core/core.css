@@ -1,0 +1,56 @@
+.logo {
+	position: absolute;
+	top:28px;
+	left:10px;
+	width:99%;
+	height:99%;
+	background: url(/www/pics/tron/tron_logo.png) no-repeat;
+}
+/*.logo a {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 255px;
+	height: 105px;
+}*/
+.title {
+	font-size:10pt;
+	font-weight: bold;
+	font-family:Arial, Helvetica, sans-serif;
+	color:#C2DAD4;
+	line-height:140%;
+/*	border-bottom: 1px solid #c9d7f1;*/
+}
+
+.date {
+	position: absolute;
+	top:11px;
+	right:11px;
+	color: white;
+	z-index: 99;
+}
+#menu {
+	width: 100%;
+	text-align: right;
+/*	padding-top: 5px;*/
+}
+div#menu span {
+	display: inline-block;
+	width: 0px;
+	border-right: 1px solid black;
+	font-size: 95%;
+	line-height: 1em;
+	left: -0.5em;
+}
+.header {
+	left:330px;
+	position: absolute;
+	right:10px;
+	top:32px;
+}
+
+.searchformdiv {
+	position: absolute;
+	left: 347px;
+	top: 105px;
+}

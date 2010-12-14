@@ -1,0 +1,154 @@
+.boxes {
+	position: absolute;
+	top:120px;
+	left12px;
+	width:300px;
+}
+.intrabox {
+	background-color:#C2DAD4;
+	background-image:url(www/pics/tron/tron_window_bg.gif);
+
+	border-style:solid;
+	border-width:1px;
+	border-color:black;
+	-webkit-border-radius:3px;
+	   -moz-border-radius:3px;
+	        border-radius:3px;
+/*	margin-right: 5px;*/
+	margin-bottom: 12pt;
+	
+	padding:0px;
+/*	margin-left:12px;*/
+
+	width:300px;
+}
+
+.boxheader {
+	background-color:#DAE6E2;
+	background-image:url(www/pics/tron/tron_title_bar.gif);
+	
+	color:black;
+	
+	font-size:7pt;
+	text-transform:uppercase;
+	text-align:center;
+	
+/*	padding: 0px 4px 4px 13px;*/
+	padding:1px 0px 0px 8px;
+	height:13px;
+/*	margin-left:-4px;*/
+	border-bottom-style:solid;
+	border-bottom-width:1px;
+	border-bottom-color:rgba(0,0,0,0.7);
+	 -webkit-border-top-left-radius:3px;
+	-webkit-border-top-right-radius:3px;
+	     -moz-border-radius-topleft:3px;
+	    -moz-border-radius-topright:3px;
+	         border-top-left-radius:3px;
+		border-top-right-radius:3px;
+
+	cursor:default;
+}
+
+.boxbuttons {
+	float:right;
+	margin-left:0px;
+	margin-right:0px;
+	margin-top:0px;
+	padding:0px;
+	background-image:url(www/pics/tron/tron_window_bg.gif);
+	-webkit-border-top-right-radius:3px;
+	    -moz-border-radius-topright:3px;
+		border-top-right-radius:3px;
+}
+.boxbuttons span {
+	display:inline-block;
+	width:14px;
+	height:14px;
+`	
+	-webkit-user-select:none;
+	   -moz-user-select:none;
+	        user-select:none;
+}
+.boxbuttons span a img {
+	text-decoration:none;
+	width:14px;
+	height:14px;
+
+	border-left-style:solid;
+	border-left-width:1px;
+	border-left-color:rgba(0,0,0,0.7);
+	border-bottom-style:solid;
+	border-bottom-width:1px;
+	border-bottom-color:rgba(0,0,0,0.7);
+}
+.rmbutton {
+	background-image:url(www/pics/tron/tron_title_btns.png);
+	background-position:-45px 0px;
+	
+	-webkit-border-top-right-radius:3px;
+	    -moz-border-radius-topright:3px;
+		border-top-right-radius:3px;
+}
+.rmbutton span a img {
+	-webkit-border-top-right-radius:3px;
+	    -moz-border-radius-topright:3px;
+		border-top-right-radius:3px;
+}
+.mnbutton {
+	background-image:url(www/pics/tron/tron_title_btns.png);
+	background-position:-30px 0px;
+
+	margin-right:-3px;
+}
+.upbutton {
+	background-image:url(www/pics/tron/tron_title_btns.png);
+	background-position:-15px 0px;
+
+	margin-right:-3px;
+}
+.dnbutton {
+	background-image:url(www/pics/tron/tron_title_btns.png);
+
+	margin-right:-3px;
+}
+
+.boxcontent {
+	background-color:black;
+	color:#D0F0FF;
+	/*border: solid #7f7f7f;*/
+	/*border-width:0 1px 1px 0;*/
+	padding-left: 6px;
+	padding-right: 6px;
+	padding-bottom:3px;
+
+	margin-top:13px;
+	margin-left:2px;
+	margin-right:2px;
+	margin-bottom:2px;
+}
+
+.mainbox {
+	background-color:#C2DAD4;
+	background-image:url(www/pics/tron/tron_window_bg.gif);
+	color:#D0F0FF;
+	-webkit-border-radius:3px;
+	   -moz-border-radius:3px;
+	        border-radius:3px;
+	position: absolute;
+	top:120px;
+	left:320px;
+	right:12px;
+
+	padding:0px;
+	margin-bottom: 12pt;
+}
+
+@extend {
+.mainbox_noheader {
+	border: none;
+	background-color:white;
+	border-right: 0.18em solid #4284B5;
+	border-bottom: 0.16em solid #4284B5;
+	margin-bottom: 10pt;
+}

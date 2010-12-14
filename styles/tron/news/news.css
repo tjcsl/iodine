@@ -1,0 +1,22 @@
+.newsitem {
+	font-family: arial, helvetica, verdana, sans-serif;
+	font-size: 10pt;
+	margin-bottom: 10pt;
+}
+
+.newstitle {
+	margin-top: 6pt;
+	font-size: 1.3em;
+	font-family:Arial, sans-serif;
+/*	font-weight:bold;*/
+	border-bottom: 0.05em solid;
+	line-height: 1em;
+}
+
+@extend {
+.newsoptions {
+/*	font-size: 1.3em;*/
+	margin-top: 0px;
+	padding: 0px;
+}
+}
