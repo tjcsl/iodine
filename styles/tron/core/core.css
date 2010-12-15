@@ -6,19 +6,20 @@
 	height:99%;
 	background: url(/www/pics/tron/tron_logo.png) no-repeat;
 }
-/*.logo a {
+.logo a {
 	position: absolute;
-	top: 0px;
-	left: 0px;
-	width: 255px;
-	height: 105px;
-}*/
+	top:0px;
+	left:0px;
+	width:300px;
+	height:66px;
+}
 .title {
-	font-size:10pt;
+	font-size:12pt;
 	font-weight: bold;
 	font-family:Arial, Helvetica, sans-serif;
-	color:#C2DAD4;
-	line-height:140%;
+	color:#B0D4D4;
+	text-shadow:0px 0px 3px #AAD4D4;
+	line-height:175%;
 /*	border-bottom: 1px solid #c9d7f1;*/
 }
 
@@ -46,7 +47,7 @@ div#menu span {
 	left:330px;
 	position: absolute;
 	right:10px;
-	top:32px;
+	top:26px;
 }
 
 .searchformdiv {
