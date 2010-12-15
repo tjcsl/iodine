@@ -39,3 +39,18 @@ button, input[type=button], input[type=submit] {
 	   -moz-border-radius:2px;
 	        border-radius:2px;
 }
+button:active, input[type=button]:active, input[type=submit]:active {
+	color:black;
+	background-color:#C2DAD4;
+	border-color:#C2DAD4;
+}
+
+
+
+/* 8th pd list */
+.c1 {
+	background-color:#070809;
+}
+.c2 {
+	background-color:#000102;
+}
