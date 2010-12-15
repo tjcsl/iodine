@@ -1869,7 +1869,6 @@ class Eighth implements Module {
 	*/
 	public function ar_excludes() {
 		global $I2_SQL;
-		if
 		if($this->op == '') {
 			$this->template = 'blockexcludes.tpl';
 			$this->template_args['excludes'] = $I2_SQL->query("SELECT * FROM eighth_excludes")->fetch_all_arrays();
