@@ -1859,6 +1859,31 @@ class Eighth implements Module {
 			redirect('eighth/ar_block#add');
 		}
 	}
+
+	/**
+	* Add or remove 8th period block exclusion rules
+	*
+	* @access public
+	* @param string $this->op The operation to do.
+	* @param string $this->args The arguments for the operation.
+	*/
+	public function ar_excludes() {
+		global $I2_SQL;
+		if
+		if($this->op == '') {
+			$this->template = 'blockexcludes.tpl';
+			$this->template_args['excludes'] = $I2_SQL->query("SELECT * FROM eighth_excludes")->fetch_all_arrays();
+			$this->title = 'Add/Remove Block Exclusions';
+		}
+		else if($this->op == 'add') {
+			$I2_SQL->query("INSERT INTO eighth_excludes (bid,target_bid,aid) VALUES (%d,%d,%d)",$this->args['bid'],$this->args['target_bid'],$this->args['aid']);
+			redirect('eighth/ar_excludes');
+		}
+		else if($this->op == 'remove') {
+			$I2_SQL->query("DELETE FROM eighth_excludes WHERE bid=%d AND target_bid=%d",$this->args['bid'],$this->args['target_bid']);
+			redirect('eighth/ar_excludes');
+		}
+	}
 	
 	/**
 	* Repair broken schedules
