@@ -173,16 +173,22 @@ function url_decode(utftext) {
 	return string;
 }
 function extract_color(urlstr) {
-	var tmp=urlstr.split(':');
 	var hex='0123456789abcdef';
-	if(!tmp[1]) return Array('#'+tmp[0]);
-	outarr=[];
-	for(var i=0;i<1000;i++) {
+	var ranges=urlstr.split(',');
+	for(var i=0;i<ranges.length;i++)
+		ranges[i]=ranges[i].split(':');
+	var outarr=[];
+	for(var i=0;i<500*ranges.length;i++) {
+		var r=ranges[Math.floor(Math.random()*ranges.length)];
+		if(!r[1]) {
+			outarr.push('#'+r[0]);
+			continue;
+		}
 		c='';
 		var pos=Math.random();
-		for(var j=0;j<tmp[0].length;j++)
+		for(var j=0;j<r[0].length;j++)
 		{
-			var a=parseInt(tmp[0][j],16),b=parseInt(tmp[1][j],16);
+			var a=parseInt(r[0][j],16),b=parseInt(r[1][j],16);
 			c+=hex[(Math.floor(pos*a+(1.0-pos)*b))];
 		}
 		outarr.push('#'+c);
