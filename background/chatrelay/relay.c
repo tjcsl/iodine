@@ -14,6 +14,7 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <netdb.h>
+#include <sys/fcntl.h>
 
 #define NUMSOCKS 1000
 //Just using this for testing right now, something more permanent later.
@@ -24,7 +25,7 @@ int main (void) {
 
         key_t recipckey, sendipckey;
         int rec_mq_id,send_mq_id;
-        struct { long type; char text[1000]; } recmsg,sendmsg;
+        struct { long type; char text[MAXSTRLENGTH]; } recmsg,sendmsg;
         int received;
 	struct { long id; int sock; } sockets[NUMSOCKS];
 	struct hostent *hp;
@@ -62,10 +63,11 @@ int main (void) {
 	while (1) { // Main loop
 		// Handle all incoming messages
 		while((received = msgrcv(rec_mq_id, &recmsg, sizeof(recmsg), 0, IPC_NOWAIT))!=-1) {
-			//printf("%s (%d) (%d)\n", recmsg.text, received,recmsg.type);
+			printf("%s (%d) (%d), %d\n", recmsg.text, received,recmsg.type,recmsg.text[100]);
 
 			int j=0,count=0,k;
-			char number[10],stringbuffer[1000];
+			char number[10];
+			char stringbuffer[1000];
 			memset(number,0,10);
 			memset(stringbuffer,0,1000);
 			while(recmsg.text[j]!=':'){j++;} // Read the php variable header
@@ -77,6 +79,7 @@ int main (void) {
 			for(k=j+2;k<count+j+2;k++) {
 				stringbuffer[k-j-2]=recmsg.text[k];
 			}
+			//memcpy(stringbuffer, recmsg.text,1000);
 			//stringbuffer[k-j-1]='\r';
 			//stringbuffer[k-j]='\n';
 			printf("string recieved from php: %s\n",stringbuffer);
@@ -103,6 +106,8 @@ int main (void) {
 					sockets[i].id=recmsg.type;
 					sockets[i].sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 					setsockopt(sockets[i].sock, IPPROTO_TCP, TCP_NODELAY, (const char *)&on, sizeof(int));
+					int x=fcntl(sockets[i].sock,F_GETFL,0);
+					fcntl(sockets[i].sock,F_SETFL,x | O_NONBLOCK);
 					if(connect(sockets[i].sock, (struct sockaddr *)&address, sizeof(struct sockaddr_in)) == -1){
 						marker=0;
 					}
@@ -117,13 +122,22 @@ int main (void) {
 			}
 		}
 		int i;
+		int q;
+		memset(buffer,0,1000);
 		for(i=0;i<NUMSOCKS;i++) {
 			if(sockets[i].id!=0) {
 				//printf("%i\n",sockets[i].id);
-				if(read(sockets[i].sock, buffer, MAXSTRLENGTH - 1) != 0) {
+				if(read(sockets[i].sock, buffer, MAXSTRLENGTH - 1)>0) {
+					//int len = strlen(buffer);
+					//int lenlen=(int)log10(len);
 					memset(sendmsg.text, 0, 1000); /* Clear out the space */
+					/*sendmsg.text[0]='s';
+					sendmsg.text[1]=':';
+					sendmsg.text[*/
 					strcpy(sendmsg.text, buffer); // Just for testing 
-					printf("string recieved from soc: %s\n",buffer);
+					//sprintf(sendmsg.text,"s:%d:\"%s\"",len,buffer);
+					printf("string recieved from soc: %s\n",sendmsg.text);
+					printf("length of message is %d\n",strlen(buffer));
 					sendmsg.type = sockets[i].id;
 					msgsnd(send_mq_id, &sendmsg, sizeof(sendmsg), IPC_NOWAIT);
 					memset(buffer,0,1000);

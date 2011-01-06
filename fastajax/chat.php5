@@ -19,5 +19,9 @@ $thowawayint=0;
 $message="";
 //returns true if has message, false if not. The NOWAIT part makes it timeout immediately if there is no message for it.
 while(msg_receive($recievequeue,$_SESSION['chatkey']*0,$throwawayint,4096,$message,false,MSG_IPC_NOWAIT))
-	echo "<br />".$message;
+{
+	$message=substr($message,0,stripos($message,chr(0)));
+	if(strlen($message)>0)
+		echo "<br />".$message;
+}
 ?>
