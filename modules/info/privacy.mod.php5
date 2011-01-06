@@ -64,9 +64,7 @@ class Privacy implements Module {
 		if (isSet($_REQUEST['update'])) {
 			$user = new User($_REQUEST['uid']);
 			$prefs = array(
-				'showaddressself','showphoneself','showbdayself','showscheduleself','showpictureself','showlockerself','showeighthself',
-				'showaddress','showphone','showbdate','showschedule','showpictures','showlocker','showeighth'
-			);
+				'showaddressself','showphoneself','showbdayself','showscheduleself','showpictureself','showfreshmanpictureself','showsophomorepictureself','showjuniorpictureself','showseniorpictureself','showlockerself','showeighthself','showaddress','showphone','showbdate','showschedule','showpictures','showlocker','showeighth');
 			foreach ($prefs as $pref) {
 				if (isSet($_REQUEST['perm_'.$pref])) {
 					$user->$pref = 'TRUE';
@@ -81,6 +79,13 @@ class Privacy implements Module {
 			$this->template = 'master.tpl';
 			if (isSet($I2_ARGS[1])) {
 				$this->template_args['user'] = new User($I2_ARGS[1]);
+				$photonames = $this->template_args['user']->photonames;
+				$this->photonames = array();
+				foreach ($photonames as $photo) {
+					$text = ucfirst(strtolower(substr($photo, 0, -5)));
+					$this->photonames[$photo] = $text;
+				}
+				$this->template_args['photonames'] = $this->photonames;
 			} else {
 				$res = Search::get_results();
 				if ($res) {
@@ -90,6 +95,13 @@ class Privacy implements Module {
 			return array('Privacy','Change privacy settings');
 		} else {
 			$this->template_args['user'] = $I2_USER;
+			$photonames = $this->template_args['user']->photonames;
+			$this->photonames = array();
+			foreach ($photonames as $photo) {
+				$text = ucfirst(strtolower(substr($photo, 0, -5)));
+				$this->photonames[$photo] = $text;
+			}
+			$this->template_args['photonames'] = $this->photonames;
 			return array('Privacy','Your privacy info');
 		}
 	}
