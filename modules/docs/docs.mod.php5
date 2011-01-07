@@ -113,7 +113,7 @@ class Docs implements Module {
 		global $I2_USER, $I2_ARGS;
 		$doc = new Doc($I2_ARGS[2]);
 		if($doc->can_see()) {
-			$content_types = array('.txt' => 'text/plain', '.rtf' => 'application/rtf', '.doc' => 'application/msword', '.docx' => 'application/vnd.ms-excel', '.pdf' => 'application/pdf', '.jpg' => 'image/jpeg');
+			$content_types = array('.txt' => 'text/plain', '.rtf' => 'application/rtf', '.doc' => 'application/msword', '.docx' => 'application/vnd.ms-excel', '.pdf' => 'application/pdf', '.jpg' => 'image/jpeg','.iso' =>'binary');
 			$filename = substr(strrchr($doc->path,'/'),1);
 			$ext = strrchr($filename,'.');
 			header('Pragma: '); // IE won't download over SSL with default "Pragma: no-cache"
