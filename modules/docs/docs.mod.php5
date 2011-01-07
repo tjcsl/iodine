@@ -113,15 +113,41 @@ class Docs implements Module {
 		global $I2_USER, $I2_ARGS;
 		$doc = new Doc($I2_ARGS[2]);
 		if($doc->can_see()) {
-			$content_types = array('.txt' => 'text/plain', '.rtf' => 'application/rtf', '.doc' => 'application/msword', '.docx' => 'application/vnd.ms-excel', '.pdf' => 'application/pdf', '.jpg' => 'image/jpeg','.iso' =>'binary');
+			$size=filesize("$doc->path");
+			$begin=0;
+			$end=$size;
 			$filename = substr(strrchr($doc->path,'/'),1);
-			$ext = strrchr($filename,'.');
+			if(isset($_SERVER['HTTP_RANGE'])) {
+				if(preg_match('/bytes=\h*(\d+)-(\d*)[\D.*]?/i', $_SERVER['HTTP_RANGE'], $matches)) {
+					$begin=intval($matches[0]);
+					if(!empty($matches[1]))
+						$end=intval($matches[1]);
+				}
+			}
+			 
+			if($begin>0||$end<$size)
+				header('HTTP/1.0 206 Partial Content');
+			else
+				header('HTTP/1.0 200 OK');  
+			header('Content-Description: File Transfer');
+			header('Expires: 0');
+			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 			header('Pragma: '); // IE won't download over SSL with default "Pragma: no-cache"
-			header('Content-Length: '.filesize("$doc->path"));
-			header('Content-Type: '.$content_types[$ext]);
+			header('Content-Length: '.($end-$begin));	
+			header('Accept-Ranges: bytes');
+			header("Content-Range: bytes $begin-$end/$size");
+			header('Content-Transfer-Encoding: binary\n');
+			header('Content-Type: '.$doc->type);
 			header('Content-Disposition: attachment; filename="'.$filename.'"');
-			readfile($doc->path);
-			die;
+	
+			// For _really_ big files, like Mathematica ISOs, set the time limit to 2 hours.
+			set_time_limit(10800);
+			$f=fopen($doc->path,'rb');
+			while(!feof($f)&&$cur<$end&&(connection_status()==0)) {
+				print fread($f,min(1024*16,$end-$cur));
+				$cur+=1024*16;
+			}
+			exit;
 		}
 		else {
 			$this->home();
