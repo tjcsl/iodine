@@ -13,5 +13,7 @@
 
 	RewriteRule ^fastajax/ - [L]
 
+	RewriteRule ^robots.txt - [L]
+
 	RewriteRule ^(.*)$ /var/www/iodine/core.php5?$1?%{QUERY_STRING} [L]
 </IfModule>
