@@ -128,6 +128,7 @@ function addchatwindow(targetname) {
 	// Here comes a big formatting block. It might help to move some of this to CSS later on.
 	var bigholder=document.createElement("div");
 	bigholder.id="chat_bigholderbox"+targetname;
+	bigholder.style.zIndex='999';
 	bigholder.style.position="relative";
 	bigholder.style.cssFloat="left";
 	bigholder.style.width="255px";
@@ -166,6 +167,8 @@ function addchatwindow(targetname) {
 	otherarea.id="chat_windowarea"+targetname;
 	var text=document.createElement("div");
 	text.id="chat_textbox"+targetname;
+	text.style.overflowY="scroll";
+	text.style.height="180px";
 	var textinside=document.createTextNode("Chat created");
 	text.appendChild(textinside);
 	var input=document.createElement("textarea");
