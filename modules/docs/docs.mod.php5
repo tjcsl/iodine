@@ -144,8 +144,9 @@ class Docs implements Module {
 			set_time_limit(10800);
 			$f=fopen($doc->path,'rb');
 			while(!feof($f)&&$cur<$end&&(connection_status()==0)) {
-				print fread($f,min(1024*16,$end-$cur));
-				$cur+=1024*16;
+				print fread($f,min(1024*1024*2,$end-$cur));
+				$cur+=1024*1024*2;
+				sleep(1);
 			}
 			exit;
 		}
