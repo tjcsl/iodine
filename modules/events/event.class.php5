@@ -52,15 +52,20 @@ class Event {
 			case 'enddt':
 				$this->info[$var] = $I2_SQL->query('SELECT %c FROM events WHERE id=%d', $var, $this->myeid)->fetch_single_value();
 				break;
-			case 'blocks':
-				$bids = $I2_SQL->query('SELECT bid FROM event_block_map WHERE eid=%d', $this->myeid)->fetch_col('bid');
-				$this->info[$var] = array();
-				foreach ($bids as $bid) {
-					$this->info[$var][] = new EventBlock($bid);
-				}
-				break;
+			case 'admingroups':
 			case 'admins':
-				$uids = $I2_SQL->query('SELECT uid FROM event_admins WHERE eid=%d', $this->myeid)->fetch_col('uid');
+				$ids = $I2_SQL->query('SELECT gidoruid,id,permissions FROM event_permissions WHERE eid=%d',$this->myeid)->fetch_all_arrays(Result::ASSOC);
+				$this->info['admins']=array();
+				$this->info['admingroups']=array();
+				foreach ($ids as $id) {
+					if(($id['permissions']&1)!=0) {
+						if($id['gidoruid']==0) { // gid
+							$this->info['admingroups'][]=new Group($id['id']);
+						} else { // uid
+							$this->info['admins'][]=new User($id['id']);
+						}
+					}
+				}
 				$this->info[$var] = array();
 				foreach ($uids as $uid) {
 					$this->info[$var][] = new User($uid);
@@ -429,7 +434,7 @@ class Event {
 	 * @param User $user The user to test; defaults to the current user
 	 * @param EventBlock $block Optional; the block to check
 	 */
-	public function user_can_sign_up(User $user = NULL, EventBlock $block = NULL) {
+	public function user_can_sign_up(User $user = NULL) {
 		global $I2_SQL, $I2_USER;
 
 		if ($user == NULL) {
@@ -445,20 +450,7 @@ class Event {
 			return FALSE;
 		}
 
-		// no block passed, so we don't care if the user can sign up for any block specifically
-		if ($block == NULL) {
-			return TRUE;
-		}
-
-		// get the other blocks the user is signed up for; if any overlap the requsted block, 
-		$res = $I2_SQL->query('SELECT bid FROM event_signups WHERE uid=%d', $user->uid);
-		foreach ($res->fetch_col('bid') as $bid) {
-			$otherblock = new EventBlock($bid);
-			if ($block->overlaps($otherblock)) {
-				return FALSE;
-			}
-		}
-		return TRUE;
+		return $this->has_permission('signup',$user);
 	}
 
 	/**
@@ -468,7 +460,7 @@ class Event {
 	 * @param User $verifier The person who is allowed to verify payment
 	 * @param User $user The person being signed up (defaults to the current user)
 	 */
-	public function sign_up(EventBlock $block, User $verifier, User $user=NULL) {
+	public function sign_up(User $verifier, User $user=NULL) {
 		global $I2_SQL, $I2_USER;
 
 		if ($user == NULL) {
@@ -477,10 +469,6 @@ class Event {
 
 		if (! $this->user_can_sign_up($user)) {
 			throw new I2Exception('You are not allowed to sign up for event #'.$this->myeid);
-		}
-
-		if (! $this->has_block($block)) {
-			throw new I2Exception('This event will not be occuring during block #'.$block->bid);
 		}
 
 		$I2_SQL->query('INSERT INTO event_signups SET eid=%d, bid=%d, uid=%d, vid=%d, paid=0, vname=%s', $this->myeid, $block->bid, $user->uid, $verifier->uid, $verifier->name_comma);
@@ -533,33 +521,6 @@ class Event {
 	}
 
 	/**
-	 * Get the users's verifier
-	 *
-	 * @param User $user Defaults to the current user
-	 * @return User $verifier
-	 */
-	public function get_user_verifier(User $user = NULL) {
-		global $I2_USER, $I2_SQL;
-
-		if ($user == NULL) {
-			$user = $I2_USER;
-		}
-		elseif (! $this->user_is_admin()) {
-			throw new I2Exception('You do not have permission to see the payment verifiers for this user');
-		}
-
-		$vid = $I2_SQL->query('SELECT vid FROM event_signups WHERE uid=%d AND eid=%d', $user->uid, $this->eid)->fetch_single_value();
-		try {
-			$verifier = new User($vid);
-		}
-		catch(I2Exception $e) {
-			// Invalid uid, this is a problem in the tables sadly, as teacher uids are recycled and teacher accounts are removed after a while.
-			$verifier = new FakeUser($vid,$I2_SQL->query('SELECT vname FROM event_signups WHERE uid=%d AND eid=%d', $user->uid, $this->eid)->fetch_single_value());
-		}
-		return $verifier;
-	}
-
-	/**
 	 * Delete the event
 	 */
 	public function del_event() {
@@ -570,9 +531,7 @@ class Event {
 		}
 
 		$I2_SQL->query('DELETE FROM events WHERE id=%d', $this->myeid);
-		$I2_SQL->query('DELETE FROM event_block_map WHERE eid=%d', $this->myeid);
-		$I2_SQL->query('DELETE FROM event_admins WHERE eid=%d', $this->myeid);
-		$I2_SQL->query('DELETE FROM event_verifiers WHERE eid=%d', $this->myeid);
+		$I2_SQL->query('DELETE FROM event_permissions WHERE eid=%d', $this->myeid);
 		$I2_SQL->query('DELETE FROM event_signups WHERE eid=%d', $this->myeid);
 	}
 
@@ -644,73 +603,81 @@ class Event {
 	}
 
 	/**
-	 * Get all the events the user is signed up for
-	 * 
-	 * @param User $user The user; defaults to the current user
-	 * @return array
-	 */
-	public static function user_events($user = NULL) {
-		global $I2_USER, $I2_SQL;
-
-		if ($user == NULL) {
-			$user = $I2_USER;
-		}
-
-		$ret = array();
-		$res = $I2_SQL->query('SELECT eid FROM event_signups WHERE uid = %d', $user->uid);
-		foreach ($res->fetch_col('eid') as $id) {
-			$ret[] = new Event($id);
-		}
-		return $ret;
-	}
-
-	/**
-	 * Get all the events the user is not signed up for but may sign up for
+	 * Get all available events a User can see or sign up for
 	 *
-	 * @param User $user The user; defaults to the current user
-	 * @return array
+	 * @return array An array of all Event objects that fulfill conditions.
 	 */
-	public static function non_user_events($user = NULL) {
+	public static function user_events($user=NULL) {
 		global $I2_USER;
-
-		if ($user == NULL) {
-			$user = $I2_USER;
-		}
-
-		$all = self::all_events();
-		$user = self::user_events($user);
-
-		$ret = array();
-		foreach ($all as $event) {
-			foreach ($user as $uevent) {
-				if ($event->eid != $uevent->eid && $event->user_can_sign_up($user)) {
-					$ret[] = $event;
-				}
+		if($user==NULL)
+			$user=$I2_USER;
+		$events=Event::all_events();
+		$ret=array();
+		foreach($events as $event) {
+			if($event->has_permission('view') || $event->has_permission('signup')) {
+				$ret[]=$event;
 			}
 		}
 		return $ret;
 	}
 
 	/**
-	 * Get all the events the user is a verifier for
-	 * 
-	 * @param User $verifier The user; defaults to the current user
-	 * @return array
+	 * Check if a user has a permission for an event
+	 *
+	 * @param String $perm The permission to check for
+	 * @param User $user The user to check permissions for
+	 * @return Boolean True if the user has the permission, False otherwise
 	 */
-	public static function verifier_events($verifier = NULL) {
-		global $I2_USER, $I2_SQL;
+	public function has_permission($perm,$user=NULL) {
+		global $I2_USER,$I2_SQL;
+		if($user==NULL)
+			$user=$I2_USER;
+		if(!isset($perm))
+			return FALSE;
+		if($user->is_group_member('admin_events'))
+			return TRUE;
 
-		if ($verifier == NULL) {
-			$verifier = $I2_USER;
+		$permlist=$I2_SQL->query('SELECT * FROM event_permissions WHERE eid=%d',$this->id)->fetch_all_arrays(Resut::ASSOC);
+		foreach($permlist as $entry) {
+			if($entry['gidoruid']==0) { //gid
+				$entryhasperm=FALSE;
+				switch($perm) {
+					case 'admin':
+						$entryhasperm=(1&$entry['permissions'])!=0;
+						break;
+					case 'view':
+						$entryhasperm=(2&$entry['permissions'])!=0;
+						break;
+					case 'signup':
+						$entryhasperm=(4&$entry['permissions'])!=0;
+						break;
+				}
+				if($entryhasperm) {// If the group has the permission
+					if($user->is_group_member($entry['id'])){
+						return TRUE;
+					}
+				}
+			} else { //uid
+				if($entry['id']==$user->uid) {
+					$entryhasperm=FALSE;
+					switch($perm) {
+						case 'admin':
+							$entryhasperm=(1&$entry['permissions'])!=0;
+							break;
+						case 'view':
+							$entryhasperm=(2&$entry['permissions'])!=0;
+							break;
+						case 'signup':
+							$entryhasperm=(4&$entry['permissions'])!=0;
+							break;
+					}
+					if($entryhasperm){
+						return TRUE;
+					}
+				}
+			}
 		}
-
-		$ret = array();
-		$res = $I2_SQL->query('SELECT eid FROM event_verifiers WHERE uid = %d', $verifier->uid);
-		foreach ($res->fetch_col('eid') as $id) {
-			$ret[] = new Event($id);
-		}
-		return $ret;
+		return FALSE;
 	}
-
 }
 ?>
