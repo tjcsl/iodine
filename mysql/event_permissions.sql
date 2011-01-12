@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS event_permissions;
+CREATE TABLE event_permissions(
+	eid INTEGER UNSIGNED NOT NULL,
+	uidorgid TINYINT(1) NOT NULL,
+	id INTEGER UNSIGNED NOT NULL,
+	permissions INTEGER UNSIGNED NOT NULL
+);
