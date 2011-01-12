@@ -4,8 +4,5 @@ CREATE TABLE events(
 	PRIMARY KEY(id),
 	title VARCHAR(255) NOT NULL,
 	description TEXT NOT NULL,
-	amount DECIMAL(5, 2) NOT NULL,
-	startdt DATETIME NOT NULL,
-	enddt DATETIME NOT NULL,
-	public TINYINT(1) NOT NULL DEFAULT 1
+	startdt DATETIME NOT NULL
 );

@@ -18,6 +18,7 @@
 
 #define NUMSOCKS 1000
 //Just using this for testing right now, something more permanent later.
+//#define IRCSERVER "remote.tjhsst.edu"
 #define IRCSERVER "blackhole.homelinux.com"
 #define MAXSTRLENGTH 1000
 
@@ -37,7 +38,8 @@ int main (void) {
 	if((hp = gethostbyname(IRCSERVER)) == NULL){ //If we can't find the host
 		exit(128);
 	}
-	bcopy(hp->h_addr, &address.sin_addr, hp->h_length);
+	bzero((char*)&address,sizeof(address));
+	bcopy((char*)hp->h_addr, (char*)&address.sin_addr.s_addr, hp->h_length);
 	address.sin_port = htons(6667);
 	address.sin_family = AF_INET;
 	
@@ -110,6 +112,7 @@ int main (void) {
 					fcntl(sockets[i].sock,F_SETFL,x | O_NONBLOCK);
 					if(connect(sockets[i].sock, (struct sockaddr *)&address, sizeof(struct sockaddr_in)) == -1){
 						marker=0;
+						printf("ERROR: Could not create socket.\n");
 					}
 					//printf("Created Socket\n");
 				}
@@ -118,7 +121,7 @@ int main (void) {
 				write(sockets[i].sock,stringbuffer);
 			}
 			if(marker==0) {
-				printf("ERROR: Could not create socket.");
+				printf("ERROR: Could not write to a socket.\n");
 			}
 		}
 		int i;

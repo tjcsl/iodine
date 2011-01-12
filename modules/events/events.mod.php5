@@ -95,7 +95,7 @@ class Events implements Module {
 		$this->template = 'events_home.tpl';
 		$this->template_args['signed_up'] = Event::user_events();
 		//$this->template_args['may_sign_up'] = Event::non_user_events();
-		$this->template_args['verifier_events'] = Event::verifier_events();
+		//$this->template_args['verifier_events'] = Event::verifier_events();
 	}
 
 	public function view() {
@@ -103,14 +103,13 @@ class Events implements Module {
 
 		$event = new Event($I2_ARGS[2]);
 
-		if (! ($event->user_can_sign_up() || $event->user_signed_up())) {
-			$this->template = 'events_error.tpl';
-			return 'Permission denied';
+		if ( $event->has_permission('view') || $event->user_signed_up()) {
+			$this->template_args['event']=$event;
+			$this->template = 'events_view.tpl';
+			return 'Events: View Event';
 		}
-
-		$this->template_args['event'] = $event;
-		$this->template = 'events_view.tpl';
-		return 'Events: View Event';
+		$this->template = 'events_error.tpl';
+		return 'Permission denied';
 	}
 
 	/**
@@ -119,8 +118,15 @@ class Events implements Module {
 	public function signup() {
 		global $I2_USER, $I2_ARGS;
 
+		if (! isset($I2_ARGS[2]))
+			redirect('events');
 		$event = new Event($I2_ARGS[2]);
 
+		if (! $event->has_permission('view') ) {
+			warn('You are not allowed to view or sign up for this activity!');
+			$this->template='events_error.tpl';
+			return 'Permission denied';
+		}
 		if (! $event->user_can_sign_up()) {
 			warn('You are not allowed to sign up for this activity!');
 			$this->template = 'events_error.tpl';
@@ -128,15 +134,10 @@ class Events implements Module {
 		}
 
 		if (isset($_REQUEST['event_sign_up'])) {
-			$block = new EventBlock($_REQUEST['event_block']);
-			if (! $event->user_can_sign_up($I2_USER, $block)) {
-				warn('You are not allowed to sign up for this activity in the selected time period!');
-				$this->template = 'events_error.tpl';
-				return 'Permission denied';
-			}
-			$verifier = new User($_REQUEST['event_verifier']);
-			$event->sign_up($block, $verifier);
-			redirect('events');
+			$this->template_args['signup_status']=$event->handle_signup();
+			$this->template_args['event'] = $event;
+			$this->template='events_signup.tpl';
+			return 'Event Signup: '.$event->title;
 		}
 
 		$this->template_args['event'] = $event;
@@ -148,7 +149,6 @@ class Events implements Module {
 		global $I2_USER, $I2_ARGS;
 
 		if (isset($I2_ARGS[2])) {
-			d('here');
 			$event = new Event($I2_ARGS[2]);
 
 			if (! $event->user_is_admin()) {
@@ -159,9 +159,28 @@ class Events implements Module {
 			$this->template = 'event_single_admin.tpl';
 			$this->template_args['event'] = $event;
 			return 'Event Admin: '.$event->title;
+		} else {
+			if(!$I2_USER->is_group_member('admin_events')) {
+				$this->template='events_error.tpl';
+				return 'Permission denied';
+			}
+			$this->template='events_admin.tpl';
+			return 'Events Admin';
 		}
 	}
 
+	public function create() {
+		global $I2_USER, $I2_ARGS;
+
+		if (isset($_REQUEST['event_name'])) {
+			$val=$events->create_event();
+			redirect('edit/'.$val);
+			die();
+		}
+		$this->template='event_edit.tpl'; //Yeah, we're being efficient.
+		$this->template_args['action']='create';
+		return 'Create Event';
+	}
 	/**
 	 * Verify users' payment
 	 */
@@ -192,6 +211,23 @@ class Events implements Module {
 		}
 
 		return 'Events: Verify Payment';
+	}
+
+	/**
+	* Delete an Event.
+	*/
+	public function remove() {
+		global $I2_USER,$I2_ARGS;
+		if(!isset($I2_ARGS[2]))
+			redirect('events');
+		$event= new Event($I2_ARGS[2]);
+		if(!$event->has_permissions('admin')) {
+			$this->template='events_error.tpl';
+			return 'Permission denied';
+		}
+		$this->template = 'events_remove.tpl';
+		return 'Remove Event: '.$event->title;
+		//TODO: finish this
 	}
 
 	/**
