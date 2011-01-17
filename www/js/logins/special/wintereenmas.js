@@ -34,9 +34,9 @@ window.onload = function() {
 		wemasTxtPanel.style.padding = "5px 15px 5px 24px";
 		
 		if (today.getDate() >= 25 && today.getDate() <= 31) {
-			wemasTxtPanel.innerHTML = "Happy&nbsp;Wintereenmas!";
+			wemasTxtPanel.innerHTML = "Happy&nbsp;<a href='http://wintereenmas.com' target='_blank' style='color:white; text-decoration:none;'>Wintereenmas</a>!";
 		} else {
-			wemasTxtPanel.innerHTML = (25 - today.getDate()) + "&nbsp;days&nbsp;until&nbsp;Wintereenmas";
+			wemasTxtPanel.innerHTML = (25 - today.getDate()) + "&nbsp;days&nbsp;until&nbsp;<a href='http://wintereenmas.com' target='_blank' style='color:white; text-decoration:none;'>Wintereenmas</a>";
 		}
 		
 		wemasPanel.appendChild(wemasTxtPanel);
