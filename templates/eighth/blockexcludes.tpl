@@ -8,11 +8,22 @@ Excluded Block: <input type='text' name='targetblock' /><br />
 </form>
 <br />
 <table>
+<th>From Block</th>
+<th>To Block</th>
+<th>Into Activity</th>
 [<foreach from=$excludes item=exclude>]
 <tr>
-<td>[<$exclude.block>]</td>
-<td>[<$exclude.targetblock>]</td>
-<td><form action='' method='post'><input type='hidden' name='block' value="[<$exclude.block>]"/><input type='hidden' name='targetblock' value="[<$exclude.targetblock>]"/><input type='hidden' name='action' value='remove'/><input type='submit' value='Remove'/></form></td>
+<td>[<$exclude.bid>]</td>
+<td>[<$exclude.target_bid>]</td>
+<td>[<$exclude.aid>]</td>
+<td>
+<form action='' method='post'>
+<input type='hidden' name='block' value="[<$exclude.bid>]"/>
+<input type='hidden' name='targetblock' value="[<$exclude.target_bid>]"/>
+<input type='hidden' name='action' value='remove'/>
+<input type='submit' value='Remove'/>
+</form>
+</td>
 </tr>
 [</foreach>]
 </table>

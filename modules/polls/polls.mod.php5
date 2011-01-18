@@ -374,7 +374,7 @@ class Polls implements Module {
 						}
 						$_POST[$q->qid] = $ans;
 					}
-					if ($q->answertype == 'free_response' &&
+					if (($q->answertype == 'free_response' || $q->answertype=='short_response' || $q->answertype=='standard_other')&&
 						strlen($_POST[$q->qid]) == 0)
 						continue;
 					$q->vote($_POST[$q->qid],$uid);
@@ -531,6 +531,7 @@ class Polls implements Module {
 				case 'approval':
 				case 'split_approval':
 				case 'short_response':
+				case 'standard_other':
 					// Escape the quotes, they break csv file format
 					$list[$q->qid] = '"'.str_replace('"','“',$q->question).'"';
 			}
@@ -556,6 +557,12 @@ class Polls implements Module {
 						break;
 					case 'standard':
 						$responses[] = '"'.str_replace('"','“',$info[1][$answer]).'"';
+						break;
+					case 'standard_other':
+						if(is_int($info[1][$answer]))
+							$responses[] = '"'.str_replace('"','“',$info[1][$answer]).'"';
+						else
+							$responses[] = '"'.str_replace('"','“',$answer).'"';
 						break;
 					case 'approval':
 					case 'split_approval':

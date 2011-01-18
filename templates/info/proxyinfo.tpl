@@ -8,32 +8,32 @@
 </h1>
 
 <p>
-   By virtue of a proxy/authentication process that uses your TJ network
-   account, you can now access from home a variety of resources at TJ.
-   Currently, our library subscribes to online databases that are
-   available for research from school and home.
-</p>
-<p>
-   Access to these resources is accomplished by configuring the proxy settings 
-   on your browser according the step by step directions below.
-</p>
-         
-<p>In order to reach the library's
+Our library subscribes to online databases with high quality, authoritative resources that are
+essential for your high school research. On campus, they open automatically because the
+database providers can tell the search is coming from a school that has paid for the service.
+The databases can also be accessed from home. But students need to set up their browser
+(for example Mozilla Firefox or Internet Explorer) to connect to our school's server so that the
+databases "think" you are actually on campus when you go to those database sites. This is
+called "configuring your proxy settings" and it's easy to reconfigure your internet browser to link to
+the databases via our TJ server (which is also called Zeus on which there runs software for the
+intranet known as Iodine.)
+<br /><br />
+For the following directions, use the Automatic Configuration options. Only use the Manual Configuration
+options if the Automatic Configuration fails completely. If that happens, please report it to the TJ 
+Sysadmins at <a href="mailto:sysadmins@lists.tjhsst.edu">sysadmins@lists.tjhsst.edu</a>.
+<br /><br />
+The Manual Configuration options have to be set every time you want to access a database and unset every
+time you want to access something else; the Automatic Configuration only needs to be set once.
+<br /><br />
+You can access the databases at the Library's
    <a href="[<$dbsite>]">Online Databases</a>
-   you will need to point your web browser to
-   <a href="[<$dbsite>]">[<$dbsite>]</a>,
-   where you will find links to these resources. These directions may vary
-   slightly according to the version you are using, but should apply to both 
-   Windows and Macintosh platforms. As Fairfax County revises access rules and
-   applications, there will be some variations in the screens you see.
-</p>
-
-<p>A proxy autoconfiguration script is available courtesy of William Yang. It
-   will allow you to use the TJ proxy server to access the databases without
-   changing your browser settings every time you need to access the rest of
-   the internet. To use it, follow the Automatic Configuration Instructions below.  
-   This is the easiest way to use the TJ proxy server; only use the manual configuration 
-   if this does not work for you.
+   web page. You will need to go to 
+   <a href="[<$dbsite>]">[<$dbsite>]</a>.
+<br /><br />
+When you connect to a database through the proxy, you will need to log in. Use the same password that you
+use for the TJHSST Intranet.
+<br /><br />
+If you are asked to log in by a particular database, please <strong>report it to the TJ Librarians</strong> so that they can fix problems with subscriptions.
 </p>
 <br />
 
@@ -43,18 +43,19 @@
   <li> Select the "Connections" tab then click on "LAN settings". </li>
   <li> Click on "LAN Settings" and select the box that says "Use a proxy server". </li>
   <li> <font color="red">Dial-up Users</font>: Click on the "Settings" box instead of "LAN Settings". </li>
-  <li> Automatic Configuration </li>
+  <li> Automatic Configuration 
   <ul>
   	<li> Check the box next to "Use automatic configuration script". </li>
 	<li> In the Address box, put in <b>[<$proxyscript>]</b>. </li>
   </ul>
-  <li> Manual Configuration </li>
+  <em>OR</em> Manual Configuration
   <ul>
   	<li> Check the box next to "Use a proxy server for your LAN". Then click on the "Advanced" button. </li>
 	<li> In the HTTP box, put in <b>[<$proxyhost>]</b>. </li>
 	<li> In the Port box, put in <b>[<$proxyport>]</b>. </li>
 	<li> Click on OK to close the advanced settings window. </li>
   </ul>
+  </li>
   <li> Click on OK to close the proxy settings window, then click Ok to close the Internet Options window. </li>
   <li> Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
   <li> When prompted for a username and password, put in your Iodine username and password. </li>
@@ -67,18 +68,19 @@
 <ol>
   <li> Click on the wrench icon on the far right, then select the "Under the Hood" tab. </li>
   <li> In the "Network" section, click on "Change Proxy Settings", then click on "LAN Settings". </li>
-  <li> Automatic Configuration </li>
+  <li> Automatic Configuration
   <ul>
   	<li> Check the box next to "Use automatic configuration script". </li>
 	<li> In the Address box, put in <b>[<$proxyscript>]</b>. </li>
   </ul>
-  <li> Manual Configuration </li>
+  <em>OR</em> Manual Configuration 
   <ul>
   	<li> Check the box next to "Use a proxy server for your LAN". Then click on the "Advanced" button. </li>
 	<li> In the HTTP box, put in <b>[<$proxyhost>]</b>. </li>
 	<li> In the Port box, put in <b>[<$proxyport>]</b>. </li>
 	<li> Click on OK to close the advanced settings window. </li>
   </ul>
+  </li>
   <li> Click on OK to close the proxy settings window, then click Ok to close the Internet Properties window, then click Close to close the Chrome Options window. </li>
   <li> Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
   <li> When prompted for a username and password, put in your Iodine username and password. </li>
@@ -92,18 +94,19 @@
   <li> For Windows, click on "Tools", then on "Options".  For Mac OS X/Linux, click on "Edit", then on "Preferences". </li>
   <li> Select the "Advanced" tab, then the "Network" sub-tab. </li>
   <li> In the "Connection" section, click on settings </li>
-  <li> Automatic Configuration </li>
+  <li> Automatic Configuration 
   <ul>
   	<li> Select the radio button next to "Automatic proxy configuration URL". </li>
 	<li> In the Address box, put in <b>[<$proxyscript>]</b>. </li>
   </ul>
-  <li> Manual Configuration </li>
+  <em>OR</em> Manual Configuration
   <ul>
   	<li> Select the radio button next to "Manual proxy configuration". </li>
 	<li> In the "HTTP Proxy" box, put in <b>[<$proxyhost>]</b>. </li>
 	<li> In the "Port" box, put in <b>[<$proxyport>]</b>. </li>
 	<li> Make sure the "Use this proxy server for all protocols" box is checked </li>
   </ul>
+  </li>
   <li> Click on OK to close the Connection settings window, then on OK to close the Firefox Options window. </li>
   <li> Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
   <li> When prompted for a username and password, put in your Iodine username and password. </li>
@@ -159,17 +162,18 @@
 <ol>
   <li> In the upper left, click on the Opera menu, then on settings, then on preferences. </li>
   <li> Select the advanced tap, then the Network submenu, then click on "Proxy Servers". </li>
-  <li> Automatic Configuration </li>
+  <li> Automatic Configuration
   <ul>
   	<li> Check the "Use automatic proxy configuration" checkbox </li>
 	<li> In the box below it, put in <b>[<$proxyscript>]</b>. </li>
   </ul>
-  <li> Manual Configuration </li>
+  <em>OR</em> Manual Configuration
   <ul>
   	<li> Check the "HTTP" box. </li>
 	<li> In the "HTTP" box, put in <b>[<$proxyhost>]</b>. </li>
 	<li> In the "Port" box, put in <b>[<$proxyport>]</b>. </li>
   </ul>
+  </li>
   <li> Click Ok to close the Proxy servers window, then Ok to close the Opera Preferences window. </li>
   <li> Go to the <a href="[<$dbsite>]">
     TJ Library Online Database</a> page. </li>
@@ -183,12 +187,12 @@
 <ol>
   <li> Select "Settings", then "Configure Konqueror". </li>
   <li> On the left, select the web browsing menu, then the proxy submenu. </li>
-  <li> Automatic Configuration </li>
+  <li> Automatic Configuration
   <ul>
   	<li> Select the radio button next to "Use proxy configuration URL". </li>
 	<li> In the Address box, put in <b>[<$proxyscript>]</b>. </li>
   </ul>
-  <li> Manual Configuration </li>
+  <em>OR</em> Manual Configuration 
   <ul>
   	<li> Select the radio button next to "Manually specify the proxy settings," then click "Setup". </li>
 	<li> In the "HTTP Proxy" box, put in <b>[<$proxyhost>]</b>. </li>
@@ -196,6 +200,7 @@
 	<li> Make sure the "Use the same proxy server for all protocols" box is checked </li>
 	<li> Click Ok. </li>
   </ul>
+  </li>
   <li> Click Ok. </li>
   <li> Go to the <a href="[<$dbsite>]">
     TJ Library Online Database</a> page. </li>

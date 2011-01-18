@@ -10,6 +10,17 @@ function checklength(area,error,count) {
 		error.innerHTML ="<font color='red' style='text-weight: strong'>Over by " + (-lengthleft) + " characters! Extra characters will be truncated.</font>";
 	}
 }
+function checklength_andcopy(area,error,count,to) {
+	error = document.getElementById(error);
+	var lengthleft = count - area.value.length - area.value.split("\n").length +1;
+	if(lengthleft >=0) {
+		error.innerHTML ="(" + (lengthleft) + " characters left)";
+	} else {
+		error.innerHTML ="<font color='red' style='text-weight: strong'>Over by " + (-lengthleft) + " characters! Extra characters will be truncated.</font>";
+	}
+	to=document.getElementById(to);
+	to.value=area.value;
+}
 </script>
 <strong>[<$poll->name>]</strong><br /><br />
 
@@ -61,6 +72,19 @@ function checklength(area,error,count) {
   <input type="text" id="input_[<$q->qid>]" name="[<$q->qid>]" onkeyup="checklength(this,'error_[<$q->qid>]',1000)" value="[<if $q->user_voted_for(0)>][<$q->get_response()>][</if>]" /><br />
   <script type="text/javascript">
 	checklength(document.getElementById('input_[<$q->qid>]'),'error_[<$q->qid>]',1000);
+  </script>
+ [<elseif $q->answertype=='standard_other'>]
+  [<assign var="oneselected" value="0">]
+  <input type="radio" name="[<$q->qid>]" value="" [<if $q->get_response()=="">][<assign var="oneselected" value="1">]checked="checked" [</if>]/><em>Clear Vote</em><br />
+  [<foreach from=$q->answers key=aid item=answer>]
+   <input type="radio" name="[<$q->qid>]" value="[<$answer>]" [<if $q->get_response()==$answer>][<assign var="oneselected" value="1">]checked="checked" [</if>]/>[<$answer>]<br />
+  [</foreach>]
+  <input type="radio" name="[<$q->qid>]" id="radioother_[<$q->qid>]" value="[<$q->get_response()>]" [<if $oneselected=='0'>]checked="checked"[</if>]>
+   Other: <input type="text" name="other_[<$q->qid>]" value="[<if $oneselected=='0'>][<$q->get_response()>][</if>]" onkeyup="checklength_andcopy(this,'error_[<$q->qid>]',100,'radioother_[<$q->qid>]')"/>
+   <div id="error_[<$q->qid>]">(100 characters left)</div>
+  </input>
+  <script type="text/javascript">
+	checklength(document.getElementById('other_[<$q->qid>]'),'error_[<$q->qid>]',1000);
   </script>
  [</if>]
   </li>

@@ -94,8 +94,8 @@ function initSession() {
 	container.appendChild(inbox);
 	
 	sendMessage("");//Wake up the relay, tell it about our presence
-	setTimeout(function() {sendMessage("NICK i" + username)},200);
-	setTimeout(function() {sendMessage("USER i" + username + " 4 * : " +name)},500);// Do this to prevent errors with the second one coming back before the first one can be handled.
+	setTimeout(function() {sendMessage("NICK i" + username)},300);
+	setTimeout(function() {sendMessage("USER i" + username + " 4 * : " +name)},800);// Do this to prevent errors with the second one coming back before the first one can be handled.
 }
 initSession();
 function responseRecieved(responseContent) {
@@ -128,6 +128,7 @@ function addchatwindow(targetname) {
 	// Here comes a big formatting block. It might help to move some of this to CSS later on.
 	var bigholder=document.createElement("div");
 	bigholder.id="chat_bigholderbox"+targetname;
+	bigholder.style.zIndex='999';
 	bigholder.style.position="relative";
 	bigholder.style.cssFloat="left";
 	bigholder.style.width="255px";
@@ -166,6 +167,8 @@ function addchatwindow(targetname) {
 	otherarea.id="chat_windowarea"+targetname;
 	var text=document.createElement("div");
 	text.id="chat_textbox"+targetname;
+	text.style.overflowY="scroll";
+	text.style.height="180px";
 	var textinside=document.createTextNode("Chat created");
 	text.appendChild(textinside);
 	var input=document.createElement("textarea");

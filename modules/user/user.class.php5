@@ -414,6 +414,30 @@ class User {
 				}
 				return $this->info[$name]=='TRUE'?TRUE:FALSE;
 				break;
+			case 'showfreshmanpicture':
+				return $this->get_photo_perm("freshmanPhoto","showpicture");
+				break;
+			case 'showsophomorepicture':
+				return $this->get_photo_perm("sophomorePhoto","showpicture");
+				break;
+			case 'showjuniorpicture':
+				return $this->get_photo_perm("juniorPhoto","showpicture");
+				break;
+			case 'showseniorpicture':
+				return $this->get_photo_perm("seniorPhoto","showpicture");
+				break;
+			case 'showfreshmanpictureself':
+				return $this->get_photo_perm("freshmanPhoto","showpictureself");
+				break;
+			case 'showsophomorepictureself':
+				return $this->get_photo_perm("sophomorePhoto","showpictureself");
+				break;
+			case 'showjuniorpictureself':
+				return $this->get_photo_perm("juniorPhoto","showpictureself");
+				break;
+			case 'showseniorpictureself':
+				return $this->get_photo_perm("seniorPhoto","showpictureself");
+				break;
 			// Lots of aliases for different stuff in ldap
 			case 'studentid':
 			case 'fcpsstudentid':
@@ -626,15 +650,53 @@ class User {
 			case 'showlockerself':
 				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';
 				break;
-			case 'showpictureself':
 			case 'showpicture':
+			case 'showpictures':
+			case 'perm_showpicture':
+			case 'perm_showpictures':
 				// Set all the pictures' attributes to match the parent user's
 				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';
-				$res = $ldap->search_one(LDAP::get_user_dn_username($this->__get('username')),'objectClass=iodinePhoto',array('cn'));
-				while ($row = $res->fetch_array()) {
-					$ldap->modify_val(LDAP::get_pic_dn($row['cn'],$this),$name,$val);
-				}
+				$this->set("showfreshmanpicture",$val);
+				$this->set("showsophomorepicture",$val);
+				$this->set("showjuniorpicture",$val);
+				$this->set("showseniorpicture",$val);
 				break;
+			case 'showpictureself':
+			case 'perm_showpictureself':
+				$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';
+				break;
+			case 'showfreshmanpicture':
+			case 'perm_showfreshmanpicture':
+				$this->set_photo_perm("freshmanPhoto","showpicture",$val);
+				return;
+			case 'showsophomorepicture':
+			case 'perm_showsophomorepicture':
+				$this->set_photo_perm("sophomorePhoto","showpicture",$val);
+				return;
+			case 'showjuniorpicture':
+			case 'perm_showjuniorpicture':
+				$this->set_photo_perm("juniorPhoto","showpicture",$val);
+				return;
+			case 'showseniorpicture':
+			case 'perm_showseniorpicture':
+				$this->set_photo_perm("seniorPhoto","showpicture",$val);
+				return;
+			case 'showfreshmanpictureself':
+			case 'perm_showfreshmanpictureself':
+				$this->set_photo_perm("freshmanPhoto","showpictureself",$val);
+				return;
+			case 'showsophomorepictureself':
+			case 'perm_showsophomorepictureself':
+				$this->set_photo_perm("sophomorePhoto","showpictureself",$val);
+				return;
+			case 'showjuniorpictureself':
+			case 'perm_showjuniorpictureself':
+				$this->set_photo_perm("juniorPhoto","showpictureself",$val);
+				return;
+			case 'showseniorpictureself':
+			case 'perm_showseniorpictureself':
+				$this->set_photo_perm("seniorPhoto","showpictureself",$val);
+				return;
 			case 'webpage':
 				//TODO: less hacky... someone might theoretically want to use ftp or something
 				if (is_array($val)) {
@@ -702,6 +764,42 @@ class User {
 		foreach (Newimport::$sqltables as $table => $field) {
 			$I2_SQL->query('UPDATE %c SET %c=%d WHERE %c=%d', $table, $field, $uidnumber, $field, $olduid);
 		}
+	}
+
+	/**
+	* Set the permission bits on a photo.
+	*/
+	public function set_photo_perm($photoname,$perm,$val,$ldap=NULL) {
+		global $I2_LDAP;
+		if ($ldap === NULL) {
+			$ldap = $I2_LDAP;
+		}
+		$val = ($val=='on'||$val=='TRUE')?'TRUE':'FALSE';
+		if (in_array($photoname, $this->__get("photonames"))) {
+			$ldap->modify_val(LDAP::get_pic_dn($photoname,$this),$perm,$val);
+		}
+		else {
+			d("$photoname is not currently imported", 8);
+		}
+	}
+
+	/**
+	* Get the permission bits on a photo.
+	*/
+	public function get_photo_perm($photoname,$perm,$ldap=NULL) {
+		global $I2_LDAP;
+		if ($ldap === NULL) {
+			$ldap = $I2_LDAP;
+		}
+		if (in_array($photoname, $this->__get("photonames"))) {
+			d("searching for permissions on $photoname",8);
+			$row = $ldap->search_base(LDAP::get_pic_dn($photoname,$this),array($perm));
+			if(!$row)
+				return NULL;
+			$result = $row->fetch_single_value();
+			return $result=='TRUE'?TRUE:FALSE;
+		}
+		return NULL;
 	}
 
 	/**

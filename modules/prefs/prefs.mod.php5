@@ -82,7 +82,7 @@ class Prefs implements Module {
 			}
 
 			if (is_int($I2_USER->grade)) {
-				foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showeighthself','showmapself','showpictureself','showlockerself','newsforwarding','eighthalert') as $pref) {
+				foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showeighthself','showmapself','showpictureself','showfreshmanpictureself','showsophomorepictureself','showjuniorpictureself','showseniorpictureself','showlockerself','newsforwarding','eighthalert') as $pref) {
 					$I2_USER->$pref = isSet($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';
 				}
 			} else {
@@ -117,7 +117,6 @@ class Prefs implements Module {
 			$text = ucfirst(strtolower(substr($photo, 0, -5)));
 			$this->photonames[$photo] = $text;
 		}
-
 		$this->prefs['showaddressself'] = $I2_USER->showaddressself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showaddress'] = $I2_USER->showaddress=='TRUE'?TRUE:FALSE;
 		$this->prefs['showscheduleself'] = $I2_USER->showscheduleself=='TRUE'?TRUE:FALSE;
@@ -125,6 +124,14 @@ class Prefs implements Module {
 		$this->prefs['showeighthself'] = $I2_USER->showeighthself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showeighth'] = $I2_USER->showeighth=='TRUE'?TRUE:FALSE;
 		$this->prefs['showpictureself'] = $I2_USER->showpictureself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showfreshmanpicture'] = $I2_USER->showfreshmanpicture=='TRUE'?TRUE:FALSE;
+		$this->prefs['showsophomorepicture'] = $I2_USER->showsophomorepicture=='TRUE'?TRUE:FALSE;
+		$this->prefs['showjuniorpicture'] = $I2_USER->showjuniorpicture=='TRUE'?TRUE:FALSE;
+		$this->prefs['showseniorpicture'] = $I2_USER->showseniorpicture=='TRUE'?TRUE:FALSE;
+		$this->prefs['showfreshmanpictureself'] = $I2_USER->showfreshmanpictureself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showsophomorepictureself'] = $I2_USER->showsophomorepictureself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showjuniorpictureself'] = $I2_USER->showjuniorpictureself=='TRUE'?TRUE:FALSE;
+		$this->prefs['showseniorpictureself'] = $I2_USER->showseniorpictureself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showpicture'] = $I2_USER->showpicture=='TRUE'?TRUE:FALSE;
 		$this->prefs['showbdayself'] = $I2_USER->showbdayself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showbday'] = $I2_USER->showbday=='TRUE'?TRUE:FALSE;

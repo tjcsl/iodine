@@ -17,11 +17,5 @@ Registration for this event costs $[<$event->amount>].<br />
 <input type="hidden" name="event_verifier" value="[<$event->verifiers[0]->uid>]" />
 [</if>]
 
-[<if count($event->blocks) > 1>]
- [<*FIXME FIXME FIXME*>]
-[<else>]
-<input type="hidden" name="event_block" value="[<$event->blocks[0]->bid>]" />
-[</if>]
-
 <input type="submit" name="event_sign_up" value="Sign up" />
 </form>
