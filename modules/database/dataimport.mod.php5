@@ -1640,6 +1640,15 @@ class dataimport implements Module {
 	public function display_box($disp) {
 	}
 
+	/**
+	* We don't really support this yet, but make it look like we do.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function api($disp) {
+		return false;
+	}
+
 	public function init_pane() {
 		global $I2_ARGS,$I2_USER;
 

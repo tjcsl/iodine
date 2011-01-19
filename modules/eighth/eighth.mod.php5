@@ -413,6 +413,15 @@ class Eighth implements Module {
 	}
 
 	/**
+	* We don't really support this yet, but make it look like we do.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function api($disp) {
+		return false;
+	}
+
+	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
@@ -1301,6 +1310,8 @@ class Eighth implements Module {
 		else if($this->op == 'view') {
 			$this->template = 'vp_room_view.tpl';
 			$this->template_args['block'] = new EighthBlock($this->args['bid']);
+			if(!isset($this->args['include']))
+				$this->args['include']=array();
 			$this->template_args['utilizations'] = EighthRoom::get_utilization($this->args['bid'], $this->args['include'], 
 					  !empty($this->args['overbooked']),$this->args['sort']);
 			$inc = array();

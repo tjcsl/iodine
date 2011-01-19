@@ -45,6 +45,15 @@ class Welcome implements Module {
 		return FALSE;
 	}
 
+	/**
+	* We don't really support this yet, but make it look like we do.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function api($disp) {
+		return false;
+	}
+
 	function init_box() {
 		return FALSE;
 	}

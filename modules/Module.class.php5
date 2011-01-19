@@ -48,6 +48,14 @@ interface Module {
 	function display_cli($disp);
 
 	/**
+	* Returns text to be displayed for the api.
+	*
+	* @param Display $disp The Display object to use. Don't use it.
+	* @abstract
+	*/
+	function api($disp);
+
+	/**
 	* Gets the module's name.
 	*
 	* @returns string The name of the module.

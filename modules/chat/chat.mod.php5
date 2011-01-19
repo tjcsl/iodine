@@ -41,6 +41,15 @@ class Chat implements Module {
 		return FALSE;
 	}
 
+	/**
+	* We don't really support this yet, but make it look like we do.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function api($disp) {
+		return false;
+	}
+
 	public function init_box() {
 		GLOBAL $I2_USER, $I2_SQL;
 		$this->template_args['friends'] = $I2_SQL->query('SELECT fid FROM friends WHERE uid=%d',$I2_USER->uid)->fetch_array();
