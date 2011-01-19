@@ -2326,24 +2326,97 @@ class Eighth implements Module {
 	 *
 	 */
 	public function postsigns() {
-		global $I2_SQL;
+		global $I2_SQL,$I2_ARGS,$I2_QUERY;
 
 		if($this->op == '') {
 			$dat=$I2_SQL->query('SELECT * FROM eighth_postsigns')->fetch_all_arrays(Result::ASSOC);
 			$this->template='postsigns.tpl';
 			$cids=array();
+			$acts=array();
 			for($i=0;$i<count($dat);$i++) {
+				if(!in_array($dat[$i]['fromaid'],$acts)) {
+					try{
+						$acts[$dat[$i]['fromaid']]=new EighthActivity($dat[$i]['fromaid'],$dat[$i]['bid']);
+					} catch(I2Exception $e) {
+						//TODO: figure out what what happens here
+					}
+				}
+				if(!in_array($dat[$i]['toaid'],$acts)) {
+					try{
+						$acts[$dat[$i]['toaid']]=new EighthActivity($dat[$i]['toaid'],$dat[$i]['bid']);
+					} catch(I2Exception $e) {
+						//TODO: figure out what what happens here
+					}
+				}
+				$dat[$i]['sponsors']=$acts[$dat[$i]['toaid']]->block_sponsors_comma;
+				$dat[$i]['fromaidname']=$acts[$dat[$i]['fromaid']]->name;
+				$dat[$i]['toaidname']=$acts[$dat[$i]['toaid']]->name;
 				$tmpuser=new User($dat[$i]['uid']);
-				$dat[$i]['username']=$tmpuser->name;
+				$dat[$i]['username']=$tmpuser->name_comma;
 				if(!in_array($dat[$i]['cid'],array_keys($cids))) {
 					$tmpuser=new User($dat[$i]['cid']);
 					$cids[$dat[$i]['cid']]=$tmpuser->name;
 				}
 			}
+			if(isset($I2_QUERY['sort'])) {
+				switch ($I2_QUERY['sort']) {
+					case 'time':
+						usort($dat,'Eighth::equals_time');
+						$this->template_args['sort']='time';
+						break;
+					case 'sponsors':
+						usort($dat,'Eighth::equals_sponsors');
+						$this->template_args['sort']='sponsors';
+						break;
+					case 'username':
+						usort($dat,'Eighth::equals_username');
+						$this->template_args['sort']='username';
+						break;
+					case 'fromaid':
+						usort($dat,'Eighth::equals_fromaid');
+						$this->template_args['sort']='fromaid';
+						break;
+					case 'toaid':
+						usort($dat,'Eighth::equals_toaid');
+						$this->template_args['sort']='toaid';
+						break;
+				}
+			}
 			$this->template_args['cids']=$cids;
 			$this->template_args['data']=$dat;
+			$this->template_args['acts']=$acts;
 		} elseif ($this->op=='view') {
 		}
+	}
+	/**
+	* Sort by time, used for field sorting in the usort()s above.
+	*/
+	static function equals_time($f1,$f2) {
+		return strnatcmp($f1['time'],$f2['time']);
+	}
+	/**
+	* Sort by sponsors, used for field sorting in the usort()s above.
+	*/
+	static function equals_sponsors($f1,$f2) {
+		return strnatcmp($f1['sponsors'],$f2['sponsors']);
+	}
+	/**
+	* Sort by username, used for field sorting in the usort()s above.
+	*/
+	static function equals_username($f1,$f2) {
+		return strnatcmp($f1['username'],$f2['username']);
+	}
+	/**
+	* Sort by fromaid, used for field sorting in the usort()s above.
+	*/
+	static function equals_fromaid($f1,$f2) {
+		return strnatcmp($f1['fromaid'],$f2['fromaid']);
+	}
+	/**
+	* Sort by toaid, used for field sorting in the usort()s above.
+	*/
+	static function equals_toaid($f1,$f2) {
+		return strnatcmp($f1['toaid'],$f2['toaid']);
 	}
 }
 
