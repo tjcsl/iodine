@@ -6,10 +6,20 @@ Type:<input type="text" name="type" /><br />
 [<$message>]
 
 <table>
+<tr>
+<th>Time</th>
+<th>Type</th>
+<th>Cost</th>
+</tr>
 [<foreach from=$tests item=test>]
 <tr><form action="testing" method="post">
-	<td><input type="hidden" name="update" value="[<$test.id>]" /><input type="text" name="time" value="[<$test.time|date_format:"%Y-%m-%d %T">]" /></td>
-	<td><input type="text" name="type" value="[<$test.type>]" /></td><td><input type="submit" value="Update" /></td>
+	<td>
+		<input type="hidden" name="update" value="[<$test.id>]" />
+		<input type="text" name="time" value="[<$test.time|date_format:"%Y-%m-%d %T">]" />
+	</td>
+	<td><input type="text" name="type" value="[<$test.type>]" /></td>
+	<td><input type="cost" name="cost" value="[<$test.cost>]" /></td>
+	<td><input type="submit" value="Update" /></td>
 </form></tr>
 [</foreach>]
 </table>
