@@ -20,7 +20,7 @@ function show_comment_dialog(e, bid) {
 	title.style.fontWeight = "bold";
 	dialog.appendChild(title);
 	var comment_area = document.createElement("textarea");
-	comment_area.id = "comment_area";
+	comment_area.id = "comment_area_"+bid;
 	comment_area.style.width = "288px";
 	comment_area.style.height = "85px";
 	comment_area.style.backgroundColor = "#FFFFCC";
@@ -47,7 +47,7 @@ function show_comment_dialog(e, bid) {
 	set_button.style.cursor = "default";
 	set_button.onmousedown = function() {
 		add_comment();
-		dialog.style.display = "none";
+		document.body.removeChild(dialog);
 	};
 	dialog.appendChild(set_button);
 	var cancel_button = document.createElement("div");
@@ -74,7 +74,7 @@ function show_comment_dialog(e, bid) {
 function add_comment() {
 	if(comment_bid != -1) {
 		var comment_field = document.getElementById("comment_" + comment_bid);
-		var new_comment = document.getElementById("comment_area").value;
+		var new_comment = document.getElementById("comment_area_"+comment_bid).value;
 		if(comment_field.value != new_comment) {
 			var check = document.getElementById("check_" + comment_bid);
 			check.checked = "true";
