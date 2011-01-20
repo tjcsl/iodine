@@ -1,7 +1,8 @@
 <form action="testing" method="post">
 Time:<input type="text" name="time" value="0000-00-00 00:00:00"/><br />
 Type:<input type="text" name="type" /><br />
-<input type="submit" />
+Cost:<input type="text" name="cost" /><br />
+<input type="submit" value="Add" />
 </form>
 [<$message>]
 
