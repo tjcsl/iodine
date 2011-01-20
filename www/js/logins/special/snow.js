@@ -107,8 +107,12 @@ var snowsize;
 //Div holding everything, removes scroll bars.
 var container;
 
+var today = new Date(); // what day is it?
+
 //Non-denominational Red Deer-Pulled Guy
-var santaexists=true; //It's true! I've met him. He's a pretty cool guy.
+if (today.getMonth() == 11 && today.getDate() <= 25) { // Do not show Red Deer-Pulled Guy after the 25th
+	var santaexists=true; //It's true! I've met him. He's a pretty cool guy.
+}
 var santalink=i2root+"www/pics/santa_xsnow.gif";
 var santawidth=210;
 var santaheight=83;
@@ -117,7 +121,6 @@ var santax=-santawidth;
 var santa;
 
 // Tron Menorah
-var today = new Date(); // what day is it?
 var chanukahDay = 0; // which day of Chanukah?
 var menorah;
 var candles;
@@ -445,6 +448,57 @@ function iterfastpile() {
 	}
 }
 
-
+/*
+function winterEenMas() {
+	if (window.innerHeight < 550 || (navigator.userAgent.indexOf("MSIE") != -1 && navigator.userAgent.indexOf("MSIE 9") == -1)) {
+		return;
+	}
+	
+	var today = new Date();
+	if (today.getMonth() == 0) {
+		// the <div> that will contain all this
+		var wemasPanel = document.createElement("div");
+		wemasPanel.style.position = "fixed";
+		wemasPanel.style.left = "0px";
+		wemasPanel.style.bottom = "0px";
+		
+		// the <div> that will contain the text
+		var wemasTxtPanel = document.createElement("div");
+		wemasTxtPanel.style.position = "absolute";
+		wemasTxtPanel.style.left = "130px";
+		wemasTxtPanel.style.bottom = "113px";
+		
+		wemasTxtPanel.style.backgroundColor = "#5379A8";
+		
+		wemasTxtPanel.style.borderStyle = "solid";
+		wemasTxtPanel.style.borderWidth = "10px";
+		wemasTxtPanel.style.borderColor = "white";
+		wemasTxtPanel.style.WebkitBorderRadius = "20px";
+		wemasTxtPanel.style.MozBorderRadius = "20px";
+		wemasTxtPanel.style.borderRadius = "20px";
+		
+		wemasTxtPanel.style.color = "white";
+		wemasTxtPanel.style.fontSize = "36pt";
+		wemasTxtPanel.style.fontFamily = "Arial, Helvetica, sans-serif";
+		wemasTxtPanel.style.fontWeight = "bold";
+		
+		wemasTxtPanel.style.padding = "5px 15px 5px 24px";
+		
+		wemasTxtPanel.innerHTML = (25 - today.getDate()) + "&nbsp;days&nbsp;until&nbsp;<a href='http://wintereenmas.com' target='_blank' style='color:white; text-decoration:none;'>Wintereenmas</a>";
+		
+		wemasPanel.appendChild(wemasTxtPanel);
+		
+		// pic of Ethan as Wintereenmas king
+		var ethanImg = document.createElement("img");
+		ethanImg.src = "www/pics/wemas/ethan_cape.png";
+		ethanImg.style.position = "absolute";
+		ethanImg.style.left = "0px";
+		ethanImg.style.bottom = "0px";
+		
+		wemasPanel.appendChild(ethanImg);
+		
+		document.getElementsByTagName("body")[0].appendChild(wemasPanel);
+	}
+}*/
 
 window.onload=initsnow;
