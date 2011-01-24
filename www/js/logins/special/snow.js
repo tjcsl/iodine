@@ -448,7 +448,7 @@ function iterfastpile() {
 	}
 }
 
-/*
+
 function winterEenMas() {
 	if (window.innerHeight < 550 || (navigator.userAgent.indexOf("MSIE") != -1 && navigator.userAgent.indexOf("MSIE 9") == -1)) {
 		return;
@@ -499,6 +499,6 @@ function winterEenMas() {
 		
 		document.getElementsByTagName("body")[0].appendChild(wemasPanel);
 	}
-}*/
+}
 
 window.onload=initsnow;
