@@ -7,7 +7,7 @@ function winterEenMas() {
 	wemasPanel.style.bottom = "0px";
 	
 	// do not celebrate Wintereenmas if the window is too small or if it has been disabled
-	if (window.innerHeight < 550 || !localStorage || !localStorage.wemas || localStorage.wemas != "1")) {
+	if (window.innerHeight < 550 || !localStorage || !localStorage.wemas || localStorage.wemas != "1") {
 		var wemasEnableBtn = document.createElement("button");
 		wemasEnableBtn.style.position = "absolute";
 		wemasEnableBtn.style.left = "2px";
