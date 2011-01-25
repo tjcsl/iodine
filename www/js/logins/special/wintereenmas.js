@@ -12,6 +12,7 @@ function winterEenMas() {
 		wemasEnableBtn.style.position = "absolute";
 		wemasEnableBtn.style.left = "2px";
 		wemasEnableBtn.style.bottom = "2px";
+		wemasEnableBtn.style.opacity = "0.85";
 		wemasEnableBtn.innerHTML = "Enable Wintereenmas in this browser";
 		wemasEnableBtn.onclick = function() {
 			localStorage.wemas = "1";
@@ -58,6 +59,8 @@ function winterEenMas() {
 		wemasDisableBtn.style.position = "absolute";
 		wemasDisableBtn.style.left = "2px";
 		wemasDisableBtn.style.bottom = "2px";
+		wemasDisableBtn.style.whiteSpace = "nowrap";
+		wemasDisableBtn.style.opacity = "0.6";
 		wemasDisableBtn.innerHTML = "Disable Wintereenmas in this browser";
 		wemasDisableBtn.onclick = function() {
 			localStorage.wemas = "0";
