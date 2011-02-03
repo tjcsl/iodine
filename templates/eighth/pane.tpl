@@ -51,6 +51,7 @@
 				<li>[<* TODO: Needs to pull users from LDAP, not MySQL *>]<a href="[<$I2_ROOT>]eighth/rep_schedules">Repair broken schedules</a></li>
 				<li><a href="[<$I2_ROOT>]eighth/export_csv">Export out of school schedules</a></li>
 				<li><a href="[<$I2_ROOT>]eighth/edit_printers">Edit printer settings</a></li>
+				<li><a href="[<$I2_ROOT>]eighth/move_block">Move a block</a></li>
 			</ol>
 		</td>
 	</tr>

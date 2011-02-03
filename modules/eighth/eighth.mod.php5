@@ -1872,6 +1872,39 @@ class Eighth implements Module {
 	}
 
 	/**
+	* Move a block to a different date/block
+	*
+	* @access public
+	* @param string $this->op
+	* @param array $this->args
+	*/
+	public function move_block() {
+		if($this->op=='') {
+			$this->template='move_block.tpl';
+			$start_date = $this->args['start_date'];
+			$this->template_args['blocks']=EighthBlock::get_all_blocks($start_date);
+			$this->title='Move Block';
+		}
+		else if($this->op=='move') {
+			if(isset($this->args['block_number']) && isset($this->args['move_block']) && isset($this->args['move_date']))
+			{
+				self::start_undo_transaction();
+				$block = new EighthBlock($this->args['block_number']);
+				$block->date=$this->args['move_date'];
+				$block->block=$this->args['move_block'];
+				self::end_undo_transaction();
+				redirect('eighth/move_block');
+			} else {
+				$this->template='move_block.tpl';
+				$start_date = $this->args['start_date'];
+				$this->template_args['blocks']=EighthBlock::get_all_blocks($start_date);
+				$this->title='Move Block';
+				$this->template_args['error']="Not all required fields were specified";
+			}
+		}
+	}
+
+	/**
 	* Add or remove 8th period block exclusion rules
 	*
 	* @access public
