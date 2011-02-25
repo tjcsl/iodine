@@ -51,7 +51,7 @@ Phone number(s):
 <br />
 [<if $user->mail>]
 E-mail address(es): 
-[<foreach from=$user->mail item="email" name="emails">]
+[<foreach from=$maillist item="email" name="emails">]
 	[<if $smarty.foreach.emails.last and not $smarty.foreach.emails.first>]
 		and
 	[<elseif not $smarty.foreach.emails.first>]

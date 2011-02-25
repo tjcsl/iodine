@@ -235,6 +235,16 @@ class StudentDirectory implements Module {
 					}
 
 				}
+
+				$tempmaillist = $user->mail;
+				if(is_array($tempmaillist)) {
+					$this->template_args['maillist']=array();
+					foreach($tempmaillist as $email) {
+						$this->template_args['maillist'][] = str_replace("?","",$email);
+					}
+				} else {
+					$this->template_args['maillist']=str_replace("?","",$tempmaillist);
+				}
 				
 				$eighth = EighthActivity::id_to_activity(EighthSchedule::get_activities($user->uid));
 
