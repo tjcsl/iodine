@@ -40,6 +40,7 @@ Sponsor(s): [<$activity->block_sponsors_comma_short>]<br />
 				[<else>]
 					[<assign var="mail" value=$member->mail.0>]
 				[</if>]
+				[<assign var="mail" value=$mail|replace:'?':''>]
 				[<mailto address=$mail encode="hex">]
 			[<else>]&nbsp;[</if>]
 		</td>

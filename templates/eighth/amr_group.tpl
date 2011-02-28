@@ -31,6 +31,7 @@
 				[<else>]
 					[<assign var="mail" value=$member->mail.0>]
 				[</if>]
+				[<assign var="mail" value=$mail|replace:'?':''>]
 				[<mailto address=$mail encode="hex">]
 			[<else>]&nbsp;[</if>]
 		</td>

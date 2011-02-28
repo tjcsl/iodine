@@ -853,6 +853,7 @@ class Eighth implements Module {
 						print "{$mem->$att},";
 					}
 					$mail = $mem->mail;
+					$mail = str_replace("?","",$mail); //TODO: actually make email validation work instead of doing hacks like this
 					if (count($mail)) {
 						print ((count($mail) == 1) ? $mail : $mail[0]);
 					}
