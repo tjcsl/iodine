@@ -380,6 +380,8 @@ class User {
 				return $this->get_news_forwarding();
 			case 'eighthalert':
 				return $this->get_eighth_alert_status();
+			case 'eighthnightalert':
+				return $this->get_eighth_night_alert_status();
 			case 'gradename'://Used for the windows file mounts, hence the capitolization
 				$convert=array(9=>'Freshman',10=>'Sophomore',11=>'Junior',12=>'Senior','staff'=>'Staff');
 				return $convert[$this->__get('grade')];
@@ -633,6 +635,9 @@ class User {
 			case 'eighthalert':
 				$this->set_eighth_alert_status($val);
 				return;
+			case 'eighthnightalert':
+				$this->set_eighth_night_alert_status($val);
+				return;
 			case 'showmapself':
 			case 'showmap':
 			case 'showbdayself':
@@ -844,6 +849,27 @@ class User {
 		global $I2_SQL;
 		return count($I2_SQL->query('SELECT * FROM eighth_alerts WHERE userid=%d',$this->myuid)->fetch_all_single_values())>0;
 	}
+	/**
+	* Change a user's night-before eighth alert status.
+	*/
+	public function set_eighth_night_alert_status($val) {
+		global $I2_SQL;
+		if ($val == 'TRUE' || $val == 'on') {
+			if (!$this->get_eighth_night_alert_status())
+				$I2_SQL->query('INSERT INTO eighth_night_alerts VALUES (%d)',$this->myuid);
+		} else {
+			$I2_SQL->query('DELETE FROM eighth_night_alerts WHERE userid=%d',$this->myuid);
+		}
+	}
+
+	/**
+	* Get a user's night-before eighth alert status.
+	*/
+	public function get_eighth_night_alert_status() {
+		global $I2_SQL;
+		return count($I2_SQL->query('SELECT * FROM eighth_night_alerts WHERE userid=%d',$this->myuid)->fetch_all_single_values())>0;
+	}
+
 	/**
 	* Get a user by their username.
 	*

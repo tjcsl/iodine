@@ -11,14 +11,24 @@ if(!isset($date)) {
 	//echo "There are no scheduled eighth periods. Closing...\r\n";
 	exit();
 }
-if($date!=date("Y-m-d")) {
-	//echo "There are no scheduled eighth periods today. Closing...\r\n";
-	exit();
+
+$userquery = ""
+if (date("H") == 11 && date("i") > 30 && $date == date("Y-m-d")) {
+	$userquery = "SELECT userid FROM eighth_alerts";
+} else {
+	$tomorrow mktime(0,0,0,date("m"),date("d")+1,date("Y"));
+	if (date("H") == 21 && $date == date("Y-m-d", $tomorrow)) {
+		$userquery = "SELECT userid FROM eighth_night_alerts";
+	} else {
+		exit();
+	}
 }
+
 $subj = "[Iodine-eighth] Signup Alert";
 $separator = "MAIL-" . md5(date("r",time()));
 $def_aid=i2config_get('default_aid', 999, 'eighth');
-foreach($I2_SQL->query("SELECT userid FROM eighth_alerts")->fetch_all_single_values() as $id) {
+
+foreach($I2_SQL->query($userquery)->fetch_all_single_values() as $id) {
 	//echo $id."\r\n";
 	try {
 		$activities = EighthSchedule::get_activities($id, $date, 1,TRUE);
@@ -36,7 +46,8 @@ foreach($I2_SQL->query("SELECT userid FROM eighth_alerts")->fetch_all_single_val
 		continue;
 	// Mail out the news post to any users who have subscribed to the news and can read it.
 	$headers = "From: " . i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion') . "\r\n";
-	$headers .= "Reply-To: " . i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion') . "\r\n";
+	'
+
 	$headers .= "Content-Type: multipart/alternative; boundary=\"" . $separator . "\"";
 	$messagecontents = "As of the time that this message is being sent, you have not signed up for one or more eighth periods on $date.\r\n";
 	$message = "--" . $separator . "\r\nContent-Type: text/plain; charset=\"iso-8859-1\"\r\n";
