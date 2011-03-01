@@ -30,7 +30,7 @@ You can access the databases at the Library's
    web page. You will need to go to 
    <a href="[<$dbsite>]">[<$dbsite>]</a>.
 <br /><br />
-When you connect to a database through the proxy, you will need to log in. Use the same password that you
+When you connect to a database through the proxy, you will need to log in. Use the same username and password that you
 use for the TJHSST Intranet.
 <br /><br />
 If you are asked to log in by a particular database, please <strong>report it to the TJ Librarians</strong> so that they can fix problems with subscriptions.
@@ -58,7 +58,7 @@ If you are asked to log in by a particular database, please <strong>report it to
   </li>
   <li> Click on OK to close the proxy settings window, then click Ok to close the Internet Options window. </li>
   <li> Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
-  <li> When prompted for a username and password, put in your Iodine username and password. </li>
+  <li> When prompted for a username and password, put in your Intranet username and password. </li>
   <li> You should now have access to the TJHSST Databases. </li>
   <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and uncheck the box next to "Use a proxy server" in order to access websites besides the databases.</li>
 </ol>
@@ -83,7 +83,7 @@ If you are asked to log in by a particular database, please <strong>report it to
   </li>
   <li> Click on OK to close the proxy settings window, then click Ok to close the Internet Properties window, then click Close to close the Chrome Options window. </li>
   <li> Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
-  <li> When prompted for a username and password, put in your Iodine username and password. </li>
+  <li> When prompted for a username and password, put in your Intranet username and password. </li>
   <li> You should now have access to the TJHSST Databases. </li>
   <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and uncheck the box next to "Use a proxy server" in order to access websites besides the databases.</li>
 </ol>
@@ -109,7 +109,7 @@ If you are asked to log in by a particular database, please <strong>report it to
   </li>
   <li> Click on OK to close the Connection settings window, then on OK to close the Firefox Options window. </li>
   <li> Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
-  <li> When prompted for a username and password, put in your Iodine username and password. </li>
+  <li> When prompted for a username and password, put in your Intranet username and password. </li>
   <li> You should now have access to the TJHSST Databases. </li>
   <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and select the radio button next to "No Proxy" in order to access websites besides the databases. </li>
 </ol>
@@ -177,7 +177,7 @@ If you are asked to log in by a particular database, please <strong>report it to
   <li> Click Ok to close the Proxy servers window, then Ok to close the Opera Preferences window. </li>
   <li> Go to the <a href="[<$dbsite>]">
     TJ Library Online Database</a> page. </li>
-  <li> When prompted for a username and password, put in your Iodine username and password. </li>
+  <li> When prompted for a username and password, put in your Intranet username and password. </li>
   <li> You should now have access to the TJHSST Databases. </li>
   <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and uncheck the checkbox next to "HTTP" in order to access websites besides the databases. </li>
 </ol>
@@ -204,7 +204,7 @@ If you are asked to log in by a particular database, please <strong>report it to
   <li> Click Ok. </li>
   <li> Go to the <a href="[<$dbsite>]">
     TJ Library Online Database</a> page. </li>
-  <li> When prompted for a username and password, put in your Iodine username and password. </li>
+  <li> When prompted for a username and password, put in your Intranet username and password. </li>
   <li> You should now have access to the TJHSST Databases. </li>
   <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and select the radio button next to "Connect to the Internet Directly" in order to access websites besides the databases. </li>
 </ol>

@@ -1,5 +1,5 @@
 <a href="http://fcps.blackboard.com/">FCPS Blackboard</a><br />
-<a href="[<$I2_ROOT>]info/resources">Online Research Resources</a><br />
+<a href="[<$I2_ROOT>]info/resources">Proxy and Library Databases</a><br />
 <a href="http://academics.tjhsst.edu/careercenter/">College &amp; Career Center</a><br />
 [<if $I2_USER->objectclass == 'tjhsstTeacher' || $I2_USER->is_group_member('admin_calc')>]<a href="[<$I2_ROOT>]findcalc">Identify Lost Calculator</a><br />[</if>]
 [<php>]
