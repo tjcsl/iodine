@@ -2374,7 +2374,21 @@ class Eighth implements Module {
 		global $I2_SQL,$I2_ARGS,$I2_QUERY;
 
 		if($this->op == '') {
-			$dat=$I2_SQL->query('SELECT * FROM eighth_postsigns')->fetch_all_arrays(Result::ASSOC);
+			$curtime  =time();
+			if(!isset($_GET['starttime'])) {
+				$starttime=date("Y-m-d H:i:s",$curtime-(7*24*60*60));
+			} else {
+				$starttime=$_GET['starttime'];
+			}
+			if(!isset($_GET['endtime'])) {
+				$endtime  =date("Y-m-d H:i:s",$curtime);
+			} else {
+				$endtime =$_GET['endtime'];
+			}
+			$this->template_args['starttime']=$starttime;
+			$this->template_args['endtime']=$endtime;
+			$this->template_args['start_date']=strtotime($starttime,$curtime);
+			$dat=$I2_SQL->query('SELECT * FROM eighth_postsigns WHERE time>%T AND time<%T',$starttime,$endtime)->fetch_all_arrays(Result::ASSOC);
 			$this->template='postsigns.tpl';
 			$cids=array();
 			$acts=array();
