@@ -83,7 +83,7 @@ class CSLProxy {
 			$peer =  $I2_FS_ROOT . 'bin/cslhelper.php5';
 	
 			$AFS_CELL = i2config_get('cell','csl.tjhsst.edu','afs');
-			if (!isSet($this->kerberos_realm)) {
+			if (!isSet($this->kerberos_realm) || $this->kerberos_realm==FALSE) {
 				$this->kerberos_realm = i2config_get('afs_realm','CSL.TJHSST.EDU','kerberos');
 			}
 
@@ -148,7 +148,7 @@ class CSLProxy {
 		$peer =  $I2_FS_ROOT . 'bin/cslhelper.php5';
 
 		$AFS_CELL = i2config_get('cell','csl.tjhsst.edu','afs');
-		if (!isSet($this->kerberos_realm)) {
+		if (!isSet($this->kerberos_realm) || $this->kerberos_realm==FALSE) {
 			$this->kerberos_realm = i2config_get('afs_realm','CSL.TJHSST.EDU','kerberos');
 		}
 
