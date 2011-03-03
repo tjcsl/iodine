@@ -629,9 +629,11 @@ class User {
 				return;
 			case 'newsforwarding':
 				$this->set_news_forwarding($val);
+				$this->info[$name]=($val=='TRUE');
 				return;
 			case 'eighthalert':
 				$this->set_eighth_alert_status($val);
+				$this->info[$name]=($val=='TRUE');
 				return;
 			case 'showmapself':
 			case 'showmap':
