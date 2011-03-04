@@ -170,12 +170,16 @@
 <strong>Notification Options</strong><br />
 <table>
 <tr>
- <td>Send all news posts to my email address:</td>
- <td><input type="checkbox" name="newsforwarding"[<if $I2_USER->newsforwarding>] checked="checked"[</if>] /></td>
+ <td><input type="checkbox" id="newsforwarding" name="newsforwarding"[<if $I2_USER->newsforwarding>] checked="checked"[</if>] /></td>
+ <td><label for="newsforwarding" style="cursor:text;">Send all news posts to me by e-mail</label></td>
 </tr>
 [<if is_int($I2_USER->grade)>]<tr>
- <td>Send an email to me at 11:30 on days with 8th periods if I haven't signed up yet:</td>
- <td><input type="checkbox" name="eighthalert"[<if $I2_USER->eighthalert>] checked="checked"[</if>] /></td>
+ <td><input type="checkbox" id="eighthalert" name="eighthalert"[<if $I2_USER->eighthalert>] checked="checked"[</if>] /></td>
+ <td><label for="eighthalert" style="cursor:text;">Send an e-mail to me at 11:30 on days with 8th periods if I have not signed up yet</label></td>
+</tr>
+<tr>
+ <td><input type="checkbox" id="eighthnightalert" name="eighthnightalert"[<if $I2_USER->eighthnightalert>] checked="checked"[</if>] /></td>
+ <td><label for="eighthnightalert" style="cursor:text;">Send an e-mail to me at 21:00 the night before an 8th period day if I have not signed up yet</label></td>
 </tr>[</if>]
 [</if>]
 </table>

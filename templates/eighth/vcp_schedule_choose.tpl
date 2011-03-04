@@ -1,5 +1,8 @@
 <script language="javascript" type="text/javascript">
 	var olddesc = null;
+
+	var activities = [];
+
 	function changeDescription(aid) {
 		var desc = document.getElementById('desc_' + aid);
 		if(olddesc) {
@@ -9,9 +12,32 @@
 		olddesc = desc;
 		document.getElementById('aid_box').value = aid;
 	}
+
+	function filterList(txt) {
+		txt = txt.toLowerCase();
+		txt = txt.split(" or ");
+
+		var currentList = document.getElementById("select_activity");
+		currentList.innerHTML = "";
+		
+//		var listItems = savedList.getElementsByTagName("option");
+		var listItems = savedList.options;
+		for (var i = 0; i < listItems.length; i++) {
+			for (var j = 0; j < txt.length; j++) {
+				if (listItems[i].innerHTML.toLowerCase().indexOf(txt[j]) != -1) {
+					currentList.appendChild(listItems[i].cloneNode(true));
+					break;
+				}
+			}
+		}
+		
+//		currentList.innerHTML = newList.innerHTML;
+	}
 </script>
+<input type="search" results="0" placeholder=" Search for an activity" onchange="filterList(value);" onkeyup="filterList(value);" onsearch="filterList(value);" style="margin-top:3px; width:256px;"/>
+&larr; OMG SEARCH BOX!
 <form name="activity_select_form" action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$uid>]/bids/[<$bids>][<if $start_date != NULL>]/start_date/[<$start_date>][</if>]" method="post">
-	<select name="aid" id="select_activity" size="15" style="width:100%; margin-top:3px;" onchange="changeDescription(this.options[this.selectedIndex].value)">
+	<select name="aid" id="select_activity" size="15" style="width:100%; margin-top:0px;" onchange="changeDescription(this.options[this.selectedIndex].value)">
 	[<assign var=check value="false">]
 	[<foreach from=$favorites item="activity" key="key">]
 		[<assign var=capacity value=$activity->capacity>]
@@ -81,4 +107,6 @@
 		document.getElementById('aid_box').value = "[<$favorites[0]->aid>]";
 	[</if>]
 	document.getElementById('aid_box').select();
+
+	var savedList = select_activity.cloneNode(true);
 </script>

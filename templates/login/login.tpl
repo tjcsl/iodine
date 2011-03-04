@@ -20,6 +20,7 @@ IE7_PNG_SUFFIX = ".png";
 </script>
 <script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 <![endif]-->
+
 </head>
 <body background="[<$I2_ROOT>][<$bg>]">
 <div class="logo"></div>
@@ -73,3 +74,28 @@ IE7_PNG_SUFFIX = ".png";
 <td width="100" align="center" valign="top"><script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=iodine.tjhsst.edu&amp;size=S&amp;use_flash=NO&amp;use_transparent=YES&amp;lang=en"></script><br />
 </table>
 </div>
+
+<!-- Chrome app notification -->
+<script type="text/javascript">
+	<!--
+	if (chrome && chrome.app && !chrome.app.isInstalled) {
+		var chromeLink = document.createElement("a");
+		chromeLink.href = "[<$I2_ROOT>]www/chrome/iodine_chrome_app.crx";
+		chromeLink.type = "application/x-chrome-extension";
+
+		var chromeBox = document.createElement("div");
+		chromeBox.style.position = "fixed";
+		chromeBox.style.top = "8px";
+		chromeBox.style.right = "8px";
+		chromeBox.style.padding = "4px";
+		chromeBox.style.border = "1px solid #343433";
+		chromeBox.style.backgroundColor = "#F8F8F7";
+		chromeBox.style.opacity = "0.85";
+		
+		chromeBox.innerHTML = "<img src=\"[<$I2_ROOT>]www/pics/chrome_icon_32.png\" style=\"float:left; margin-right:4px;\" alt=\"\"/>Install the TJ Intranet app for Chrome";
+
+		chromeLink.appendChild(chromeBox);
+		document.getElementsByTagName("body")[0].appendChild(chromeLink);
+	}
+	//-->
+</script>

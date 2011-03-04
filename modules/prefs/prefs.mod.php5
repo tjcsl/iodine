@@ -91,7 +91,7 @@ class Prefs implements Module {
 			}
 
 			if (is_int($I2_USER->grade)) {
-				foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showeighthself','showmapself','showpictureself','showfreshmanpictureself','showsophomorepictureself','showjuniorpictureself','showseniorpictureself','showlockerself','newsforwarding','eighthalert') as $pref) {
+				foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showeighthself','showmapself','showpictureself','showfreshmanpictureself','showsophomorepictureself','showjuniorpictureself','showseniorpictureself','showlockerself','newsforwarding','eighthalert','eighthnightalert') as $pref) {
 					$I2_USER->$pref = isSet($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';
 				}
 			} else {
