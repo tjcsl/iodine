@@ -95,7 +95,8 @@ class CSLProxy {
 			$filepath = '/afs/csl.tjhsst.edu/' . $args[0];
 			$process= proc_open("pagsh", $descriptors, $pipes, $I2_FS_ROOT, $env);
 			if(is_resource($process)) {
-				fwrite($pipes[0],"aklog -c $AFS_CELL -k {$this->kerberos_realm};usergroups=`echo \`pts groups {$this->username} | grep -v Groups\` system:authuser system:anyuser {$this->username} | sed 's/ /\\\\\\|/g'`; fs la \"$filepath\" | grep -v \"Access list for\|Normal rights\" | grep \"\$usergroups\" | sed 's/^ *[0-9A-Za-z\:]*//g'");
+				fwrite($pipes[0],"aklog;usergroups=`echo \`pts groups {$this->username} | grep -v Groups\` system:authuser system:anyuser {$this->username} | sed 's/ /\\\\\\|/g'`; fs la \"$filepath\" | grep -v \"Access list for\|Normal rights\" | grep \"\$usergroups\" | sed 's/^ *[0-9A-Za-z\:]*//g'");
+				//fwrite($pipes[0],"aklog -c $AFS_CELL -k {$this->kerberos_realm};usergroups=`echo \`pts groups {$this->username} | grep -v Groups\` system:authuser system:anyuser {$this->username} | sed 's/ /\\\\\\|/g'`; fs la \"$filepath\" | grep -v \"Access list for\|Normal rights\" | grep \"\$usergroups\" | sed 's/^ *[0-9A-Za-z\:]*//g'");
 				fclose($pipes[0]);
 				$out=stream_get_contents($pipes[1]);
 				fclose($pipes[1]);
@@ -158,7 +159,8 @@ class CSLProxy {
 			2 => array('pipe', 'w'),
 		);
 
-		$process = proc_open("pagsh -c \"aklog -c $AFS_CELL -k {$this->kerberos_realm}; $peer {$this->kerberos_realm}\"", $descriptors, $pipes, $I2_FS_ROOT, $env);
+		$process = proc_open("pagsh -c \"aklog; $peer {$this->kerberos_realm}\"", $descriptors, $pipes, $I2_FS_ROOT, $env);
+		//$process = proc_open("pagsh -c \"aklog -c $AFS_CELL -k {$this->kerberos_realm}; $peer {$this->kerberos_realm}\"", $descriptors, $pipes, $I2_FS_ROOT, $env);
 		if(is_resource($process)) {
 			fwrite($pipes[0], serialize(array($function, $args)));
 			fclose($pipes[0]);

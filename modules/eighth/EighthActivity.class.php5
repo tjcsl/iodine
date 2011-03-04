@@ -806,6 +806,7 @@ class EighthActivity {
 		$query = 'DELETE FROM eighth_activities WHERE aid=%d';
 		$queryarg = array($activityid);
 		$I2_SQL->query_arr($query,$queryarg);
+		$wasscheduled = $I2_SQL->query('SELECT bid FROM eighth_block_map WHERE activityid=%d',$activityid)->fetch_col('bid');
 		$I2_SQL->query('DELETE FROM eighth_block_map WHERE activityid=%d', $activityid);
 		$I2_SQL->query('INSERT INTO eighth_activity_id_holes SET aid=%d', $activityid);
 		$people = $I2_SQL->query('SELECT bid,userid FROM eighth_activity_map WHERE aid=%d',$activityid);
@@ -818,6 +819,15 @@ class EighthActivity {
 			$queryarg = array($defaid,$row['bid'],$row['userid']);
 			$I2_SQL->query_arr($query,$queryarg);
 		}
+		/*
+		** Remove from the calendar.
+		*/
+		/*
+		if($old['special']==1) {
+			foreach($wasscheduled as $bid) {
+				Calendar::remove_event('eighthspecial_'.$bid.'_'.$activityid);
+			}
+		}*/
 	}
 
 	/**
