@@ -639,6 +639,7 @@ class User {
 				return;
 			case 'eighthnightalert':
 				$this->set_eighth_night_alert_status($val);
+				$this->info[$name]=($val=='TRUE');
 				return;
 			case 'showmapself':
 			case 'showmap':
