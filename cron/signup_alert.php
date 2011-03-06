@@ -12,11 +12,11 @@ if(!isset($date)) {
 	exit();
 }
 
-$userquery = ""
+$userquery = "";
 if (date("H") == 11 && date("i") > 30 && $date == date("Y-m-d")) {
 	$userquery = "SELECT userid FROM eighth_alerts";
 } else {
-	$tomorrow mktime(0,0,0,date("m"),date("d")+1,date("Y"));
+	$tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
 	if (date("H") == 21 && $date == date("Y-m-d", $tomorrow)) {
 		$userquery = "SELECT userid FROM eighth_night_alerts";
 	} else {
@@ -46,7 +46,6 @@ foreach($I2_SQL->query($userquery)->fetch_all_single_values() as $id) {
 		continue;
 	// Mail out the news post to any users who have subscribed to the news and can read it.
 	$headers = "From: " . i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion') . "\r\n";
-	'
 
 	$headers .= "Content-Type: multipart/alternative; boundary=\"" . $separator . "\"";
 	$messagecontents = "As of the time that this message is being sent, you have not signed up for one or more eighth periods on $date.\r\n";
