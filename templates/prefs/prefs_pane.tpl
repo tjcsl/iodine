@@ -7,7 +7,7 @@
 <table>
 	<tr>
 		<td>Cell Phone:</td>
-		<td><input type="text" name="pref_mobile" value="[<$I2_USER->mobile>]" /></td>
+		<td><input type="text" name="pref_phone_cell" value="[<$I2_USER->phone_cell>]" /></td>
 	</tr>
 	<tr>
 		<td>Other Phone #(s):</td>
