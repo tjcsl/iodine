@@ -73,6 +73,11 @@ class EighthSchedule {
 			$invquery = 'DELETE FROM eighth_block_map WHERE activityid=%d and bid=%d';
 			$invarg = array($activityid, $blockid);
 		}
+		$specialquery = $I2_SQL->query('SELECT special,name,description FROM eighth_activities WHERE aid=%d',$activityid)->fetch_array(Result::ASSOC);
+		if($specialquery && $specialquery['special']==1) {
+			$blockquery = $I2_SQL->query('SELECT date FROM eighth_block WHERE bid=%d',$blockid)->fetch_array(Result::ASSOC);
+			Calendar::add_event('eigthspecial_'.$blockid.'_'.$activityid,strtotime($blockquery['date']),$specialquery['name'],$specialquery['description']);
+		}
 		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Schedule Activity');
 	}
 
@@ -93,6 +98,10 @@ class EighthSchedule {
 		$result = $I2_SQL->query_arr($query,$queryarg);
 		$invquery = "REPLACE INTO eighth_block_map (bid,activityid,sponsors,rooms,comment,attendancetaken,cancelled,advertisement) VALUES (%d,%d,'%D','%D',%s,%d,%d,%s)";
 		$invarg = array($old['bid'],$old['activityid'],explode(',',$old['sponsors']),explode(',',$old['rooms']),$old['comment'],$old['attendancetaken'],$old['cancelled'],$old['advertisement']);
+		$specialquery = $I2_SQL->query('SELECT special,name,description FROM eighth_activities WHERE aid=%d',$activityid)->fetch_array(Result::ASSOC);
+		if($specialquery && $specialquery['special']==1) {
+			Calendar::remove_event('eigthspecial_'.$blockid.'_'.$activityid);
+		}
 		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Unschedule Activity');
 	}
 
