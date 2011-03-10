@@ -75,8 +75,8 @@ class EighthSchedule {
 		}
 		$specialquery = $I2_SQL->query('SELECT special,name,description FROM eighth_activities WHERE aid=%d',$activityid)->fetch_array(Result::ASSOC);
 		if($specialquery && $specialquery['special']==1) {
-			$blockquery = $I2_SQL->query('SELECT date FROM eighth_block WHERE bid=%d',$blockid)->fetch_array(Result::ASSOC);
-			Calendar::add_event('eigthspecial_'.$blockid.'_'.$activityid,strtotime($blockquery['date']),$specialquery['name'],$specialquery['description']);
+			$blockquery = $I2_SQL->query('SELECT date FROM eighth_blocks WHERE bid=%d',$blockid)->fetch_array(Result::ASSOC);
+			Calendar::add_event('eighthspecial_'.$blockid.'_'.$activityid,strtotime($blockquery['date']),$specialquery['name'],$specialquery['description']);
 		}
 		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Schedule Activity');
 	}

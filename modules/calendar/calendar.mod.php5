@@ -123,12 +123,10 @@ class Calendar implements Module {
 		}
 		$endtime =$starttime+24*60*60*7*5;
 		$enddate =date("Y-m-d",$endtime);
-		echo $startdate." ".$enddate;
 		$this->template_args['startdate']=$startdate;
 		$this->template_args['enddate']=$enddate;
 
 		$data = $I2_SQL->query('SELECT * FROM calendar')->fetch_all_arrays_keyed_list('day',MYSQL_ASSOC);
-		print_r($data);
 		$weeks=array();
 		$thisdate=$starttime;
 		for($i=0;$i<5;$i++) {
@@ -140,7 +138,7 @@ class Calendar implements Module {
 				$text="";
 				if(isset($data[date("Y-m-d",$thisdate)])) {
 					foreach($data[date("Y-m-d",$thisdate)] as $row) {
-						$text.=$row['text']."<br />";
+						$text.=$row['title']."<br />";
 					}
 				}
 				$weeks[$i][$j]['text']=$text;
@@ -160,7 +158,7 @@ class Calendar implements Module {
 			d("Event already exists, skipping...",5);
 			return false;
 		}
-		$I2_SQL->query("INSERT INTO calendar (id,day,text) VALUES (%s,%s,%s)",$eventid,date("m-d-Y",$datestamp),$text);
+		$I2_SQL->query("INSERT INTO calendar (id,day,text,title) VALUES (%s,%s,%s,%s)",$eventid,date("Y-m-d",$datestamp),$text,$title);
 		return true;
 	}
 	/**
@@ -181,6 +179,18 @@ class Calendar implements Module {
 			return false;
 		}
 		$I2_SQL->query("DELETE FROM calendar WHERE id=%s",$eventid);
+		return true;
+	}
+	/**
+	* Modify an event
+	*/
+	static function modify_event($eventid,$datestamp,$title,$text) {
+		global $I2_SQL;
+		if(!Calendar::event_exists($eventid)) {
+			d("Event doesn't exist, skipping...",5);
+			return false;
+		}
+		$I2_SQL->query("UPDATE calendar SET day=%s,text=%s,title=%s WHERE id=%s",date("Y-m-d",$datestamp),$text,$title,$eventid);
 		return true;
 	}
 }

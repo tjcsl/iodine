@@ -1067,16 +1067,40 @@ class Eighth implements Module {
 		else if($this->op == 'modify') {
 			$activity = new EighthActivity($this->args['aid']);
 			self::start_undo_transaction();
+			$usedtobename = $activity->name;
 			$activity->name = $this->args['name'];
 			$activity->sponsors = $this->args['sponsors'];
 			$activity->rooms = $this->args['rooms'];
+			$usedtobedescription=$activity->description;
 			$activity->description = $this->args['description'];
 			$activity->restricted = ($this->args['restricted'] == 'on');
 			$activity->presign = ($this->args['presign'] == 'on');
 			$activity->oneaday = ($this->args['oneaday'] == 'on');
 			$activity->bothblocks = ($this->args['bothblocks'] == 'on');
 			$activity->sticky = ($this->args['sticky'] == 'on');
+			$usedtobespecial=$activity->special;
 			$activity->special = ($this->args['special'] == 'on');
+			if(($usedtobespecial != $activity->special) || ($usedtobename!=$activity->name) || ($usedtobedescription!=$activity->description)) {
+				global $I2_SQL;
+				// This is all the data that can be changed here that the calendar
+				// module usees, so re-evealuate if any of these change.
+				if(!$activity->special) {
+					$blocks=$I2_SQL->query("SELECT bid FROM eighth_block_map WHERE activityid=%d",$this->args['aid'])->fetch_all_arrays(Result::ASSOC);
+					foreach($blocks as $block) {
+						Calendar::remove_event('eighthspecial_'.$block['bid'].'_'.$this->args['aid']);
+					}
+				} elseif ($activity->special && !$usedtobespecial) {
+					$blocks=$I2_SQL->query("SELECT bid,date FROM eighth_blocks WHERE bid IN (SELECT bid FROM eighth_block_map WHERE activityid=%d);",$this->args['aid'])->fetch_all_arrays(Result::ASSOC);
+					foreach($blocks as $block) {
+						Calendar::add_event('eighthspecial_'.$block['bid'].'_'.$this->args['aid'],strtotime($block['date']),$activity->name,$activity->description);
+					}
+				} else {
+					$blocks=$I2_SQL->query("SELECT bid,date FROM eighth_blocks WHERE bid IN (SELECT bid FROM eighth_block_map WHERE activityid=%d);",$this->args['aid'])->fetch_all_arrays(Result::ASSOC);
+					foreach($blocks as $block) {
+						Calendar::modify_event('eighthspecial_'.$block['bid'].'_'.$this->args['aid'],strtotime($block['date']),$activity->name,$activity->description);
+					}
+				}
+			}
 			self::end_undo_transaction();
 			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
