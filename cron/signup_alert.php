@@ -6,7 +6,6 @@ $I2_ERR = new Error();
 $I2_SQL = new MySQL();
 $I2_LDAP= LDAP::get_generic_bind();
 $date = EighthSchedule::get_next_date();
-//echo $date;
 if(!isset($date)) {
 	//echo "There are no scheduled eighth periods. Closing...\r\n";
 	exit();
@@ -15,16 +14,17 @@ if(!isset($date)) {
 $userquery = "";
 if (date("H") == 11 && date("i") > 30 && $date == date("Y-m-d")) {
 	$userquery = "SELECT userid FROM eighth_alerts";
+	$subj = "[Iodine-eighth] Signup Alert";
 } else {
 	$tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
 	if (date("H") == 21 && $date == date("Y-m-d", $tomorrow)) {
 		$userquery = "SELECT userid FROM eighth_night_alerts";
+		$subj = "[Iodine-eighth] Night Signup Alert";
 	} else {
 		exit();
 	}
 }
 
-$subj = "[Iodine-eighth] Signup Alert";
 $separator = "MAIL-" . md5(date("r",time()));
 $def_aid=i2config_get('default_aid', 999, 'eighth');
 
