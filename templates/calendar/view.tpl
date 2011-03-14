@@ -1,5 +1,4 @@
 <script type='text/javascript'>
-alert("beginning load");
 var event_strings = new Array();
 [<foreach from=$weeks item=week>]
 [<foreach from=$week item=day name=dayloop>]
@@ -8,7 +7,6 @@ event_strings["[<$event.id>]"]="[<$event.text|escape:'javascript'>]";
 [</foreach>]
 [</foreach>]
 [</foreach>]
-alert("loaded array");
 function showevent($id) {
 	var disp = document.getElementById('popupdiv');
 	disp.style.display='block';
