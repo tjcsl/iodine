@@ -135,13 +135,17 @@ class Calendar implements Module {
 				$weeks[$i][]=array();
 				$weeks[$i][$j]['day']=date("j",$thisdate);
 				$weeks[$i][$j]['monthodd']=(date("n",$thisdate)%2)*35+220;
-				$text="";
+				/*$text="";
 				if(isset($data[date("Y-m-d",$thisdate)])) {
 					foreach($data[date("Y-m-d",$thisdate)] as $row) {
 						$text.=$row['title']."<br />";
 					}
+				}*/
+				if(isset($data[date("Y-m-d",$thisdate)])) {
+					$weeks[$i][$j]['info']=$data[date("Y-m-d",$thisdate)];
+				} else {
+					$weeks[$i][$j]['info']=array(array('text'=>'hi!','title'=>'','id'=>0));
 				}
-				$weeks[$i][$j]['text']=$text;
 				$thisdate+=24*60*60;
 			}
 		}

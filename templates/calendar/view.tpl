@@ -1,3 +1,20 @@
+<script type='text/javascript'>
+alert("beginning load");
+var event_strings = new Array();
+[<foreach from=$weeks item=week>]
+[<foreach from=$week item=day name=dayloop>]
+[<foreach from=$day.info item=event >]
+event_strings["[<$event.id>]"]="[<$event.text|escape:'javascript'>]";
+[</foreach>]
+[</foreach>]
+[</foreach>]
+alert("loaded array");
+function showevent($id) {
+	var disp = document.getElementById('popupdiv');
+	disp.style.display='block';
+	disp.innerHTML=event_strings[$id];
+}
+</script>
 <div class='calholder'>
 	<div style='width:100%'>
 		<div style='text-align:center;width:14%;padding-bottom:5px;padding-top:5px;float:left;border-top: 1px solid black;background-color:rgb(200,200,200);border-left:1px solid black;border-bottom:1px solid black;'>Sunday</div>
@@ -18,10 +35,13 @@
 		[</if>]
 			<div style='float:right;border-left:1px solid black;border-bottom:1px solid black;border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;width:25px;height:20px;text-align:center;font-size:13pt'>[<$day.day>]</div>
 			<div style='margin-top:3px;margin-left:6px;margin-right:6px'>
-				[<$day.text>]
+				[<foreach from=$day.info item=event >]
+					<a onclick="showevent('[<$event.id>]')">[<$event.title>]</a>
+				[</foreach>]
 			</div>
 		</div>
 	[</foreach>]
 	</div>
 [</foreach>]
 </div>
+<div id='popupdiv'></div>
