@@ -28,6 +28,8 @@ Class Countdown implements Module
 	{
 		$grad=i2config_get('gradtime',1308094200,'countdown'); //unix timestamp for graduation date.
 		$diff=$grad-time();
+		if($diff<0) $negative=1;
+			else $negative=0;
 		$years=floor($diff/31556926);
 		$diff=$diff%31556926;
 		$days=floor($diff/86400);
@@ -48,6 +50,7 @@ Class Countdown implements Module
 		$template_args['mins']=$mins;
 		$template_args['secs']=$secs;
 		$template_args['underclass']=$underclass;
+		$template_args['negative']=$negative;
 		$disp->disp('countdown.tpl',$template_args);
 	}
 }
