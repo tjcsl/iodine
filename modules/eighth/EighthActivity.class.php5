@@ -419,10 +419,15 @@ class EighthActivity {
 				return array();
 			}
 		}
-		$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d', $blockid, $this->data['aid']);
+		$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d', $blockid, $this->data['aid'])->fetch_all_arrays(Result::ASSOC);
+		$tocache=array();
+		foreach($res as $row) {
+			$tocache[]=$row['userid'];
+		}
+		User::cache_users($tocache);
 		$ret = array();
 		// Only show students who want to be found.
-		while ($row = $res->fetch_array(Result::ASSOC)) {
+		foreach ($res as $row) {
 			$user = new User($row['userid']);
 			if (EighthSchedule::can_view_schedule($user)) {
 				$ret[] = $user->uid;
