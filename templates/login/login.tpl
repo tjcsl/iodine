@@ -20,7 +20,6 @@ IE7_PNG_SUFFIX = ".png";
 </script>
 <script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 <![endif]-->
-
 </head>
 <body background="[<$I2_ROOT>][<$bg>]">
 <div class="logo"></div>
