@@ -1,36 +1,8 @@
 // TJHSST Intranet login page clover snow script
 // modded by Zachary "Gamer_Z." Yaro
-if(navigator.appName == 'Microsoft Internet Explorer') {
-	var ie=true;
-} else {
-	var ie=false;
-}
-var mobile=false;
-if(navigator.userAgent.toLowerCase().indexOf("android") != -1) {
-	var android=true;
-	var mobile=true;
-} else {
-	var android=false;
-}
-if(navigator.userAgent.toLowerCase().indexOf("chrome") != -1) {
-	var chrome=true;
-} else {
-	var chrome=false;
-}
-if(chrome || navigator.userAgent.toLowerCase().indexOf("firefox/4") != -1) {
-	var fastbrowser=true;
-} else {
-	var fastbrowser=false;
-}
-//Config
-//Number of flakes
-if(mobile) {
-	var snowmax=20;
-} else if (fastbrowser) {
-	var snowmax=60;
-} else {
-	var snowmax=50;
-}
+
+var snowmax=50;
+
 //Colors possible for flakes
 var snowcolor=["#00BB00","#00FF00","#88FF88","#BBFFBB"];
 //Fonts possible for flakes
@@ -38,22 +10,11 @@ var snowtype=["Arial"];
 //Character to be used for flakes
 var snowletter=["&#9827","&#9752"];
 //Speed multiplyer for the snow falling
-if(fastbrowser) { // They have more elements and do piling. This increases the amount of time it takes for significant slowdown.
-	var sinkspeed=0.5;
-} else {
-	var sinkspeed=1
-}
-if(mobile) {
-	//Maximum size of snowflakes
-	var snowmaxsize=44;
-	//Miniumum size of snowflakes
-	var snowminsize=16;
-} else {
-	//Maximum size of snowflakes
-	var snowmaxsize=22;
-	//Miniumum size of snowflakes
-	var snowminsize=8;
-}
+var sinkspeed=0.5;
+//Maximum size of snowflakes
+var snowmaxsize=44;
+//Miniumum size of snowflakes
+var snowminsize=8;
 
 
 //Range of snow flake sizes
