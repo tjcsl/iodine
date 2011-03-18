@@ -32,13 +32,14 @@ Intranet Maintainers:
 	<li>Victor Mircea (2007)</li>
 	<li>Josiah Boning (2008)</li>
 </ul>
-</td>
-<td valign="top">
+
 Intranet2 (Codename Iodine) Development Initiative:
 <ul>
 	<li>Aman Gupta (2004)</li>
 	<li>Evan Danaher (2004)</li>
 </ul>
+</td>
+<td valign="top">
 
 I2 Development Team:
 <ul>
@@ -54,6 +55,10 @@ I2 Development Team:
 	<li>Jack "jbreese" Breese (2008)</li>
 	<li>Nathan Watson (2008)</li>
 	<li>William "wyang" Yang (2008)</li>
+	<li>Michael Kremer (2009)</li>
+	<li>Andrew Imm (2010)</li>
+	<li>Peter Godofsky (2011)</li>
+	<li>Derek "bugzapper" Morris (2011)</li>
 </ul>
 
 I2 User Experience Technicians:
@@ -74,4 +79,5 @@ Special Thanks to:
 	<li>Mr. Joshua Strong</li>
 	<li>Mr. Shane Torbert</li>
 	<li>Ms. Marie Lauducci</li>
+	<li>Ms. Jean Stevens</li>
 </ul>
