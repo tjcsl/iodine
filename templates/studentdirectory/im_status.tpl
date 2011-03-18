@@ -6,6 +6,16 @@
          <li>[<if $status !== FALSE>]<img src="[<$im_icons>][<$status>]" />[</if>]
 	 [<if $network == 'aim'>]
 	   <a href=aim:goim?screenname=[<$sn|escape:'url'>]> [<$sn|escape:'html'>]</a>
+	 [<elseif $network == 'googletalk'>]
+	   <a href="gtalk:chat?jid=[<$sn|escape:'url'>]"> [<$sn|escape:'html'>]</a>
+	 [<elseif $network == 'skype' >]
+	   <a href="skype:[<$sn|escape:'url'>]"> [<$sn|escape:'html'>]</a>
+	 [<elseif $network == 'xfire' >]
+	   <a href="xfire:add_friend?user=[<$sn|escape:'url'>]"> [<$sn|escape:'html'>]</a>
+	 [<elseif $network == 'msn' >]
+	   <a href="mnsim:chat?contact=[<$sn|escape:'url'>]"> [<$sn|escape:'html'>]</a>
+	 [<elseif $network == 'yahoo' >]
+	   <a href="ymsgr:sendIM?[<$sn|escape:'url'>]"> [<$sn|escape:'html'>]</a>
 	 [<else>]
 	   [<$sn|escape:'html'>]
 	 [</if>]
