@@ -1,1 +1,1 @@
-ForceType application/x-chrome-extension
+AddType application/x-chrome-extension crx
