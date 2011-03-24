@@ -12,12 +12,12 @@ if(!isset($date)) {
 }
 
 $userquery = "";
-if (date("H") == 11 && date("i") > 30 && $date == date("Y-m-d")) {
+if (date("H") == 11 && date("i") >= 28 && $date == date("Y-m-d")) {
 	$userquery = "SELECT userid FROM eighth_alerts";
 	$subj = "[Iodine-eighth] Signup Alert";
 } else {
 	$tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
-	if (date("H") == 21 && $date == date("Y-m-d", $tomorrow)) {
+	if ((date("H") == 21 || (date("H") == 20 && date('i')>=58)) && $date == date("Y-m-d", $tomorrow)) {
 		$userquery = "SELECT userid FROM eighth_night_alerts";
 		$subj = "[Iodine-eighth] Night Signup Alert";
 	} else {

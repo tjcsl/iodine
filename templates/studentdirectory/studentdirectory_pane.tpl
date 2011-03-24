@@ -29,9 +29,9 @@ Username: [<$user->iodineuid>]<br />
 [<if $user->homePhone || $user->phone_cell || count($user->phone_other)>]
 Phone number(s):
  <ul class="none">
- [<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]<li>[<$phone>] (Home)</li>[</foreach>][</if>]
- [<if $user->phone_cell>]<li>[<$user->phone_cell>] (Cell)</li>[</if>]
- [<if count($user->phone_other)>][<foreach from=$user->phone_other item=phone_other>]<li>[<$phone_other>] (Other)</li>[</foreach>][</if>]
+ [<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]<li><a href="tel:[<$user->phone_home|replace:' ':''>]">[<$phone>] (Home)</a></li>[</foreach>][</if>]
+ [<if $user->phone_cell>]<li><a href="tel:[<$user->phone_cell|replace:' ':''>]">[<$user->phone_cell>] (Cell)</a></li>[</if>]
+ [<if count($user->phone_other)>][<foreach from=$user->phone_other item=phone_other>]<li><a href="tel:[<$user->phone_other|replace:' ':''>]">[<$phone_other>] (Other)</a></li>[</foreach>][</if>]
  </ul>
 [</if>]
 [<if $user->street>]

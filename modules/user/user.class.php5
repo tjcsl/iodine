@@ -1375,6 +1375,37 @@ class User {
 		return date('md', time()) == date('md',strtotime($this->__get('bdate')));
 	}
 
+	/**
+	* Cache all users whose uids are in the specified array or int.
+	*/
+	public static function cache_users($arr) {
+		global $I2_LDAP;
+		if(!is_array($arr)) {
+			throw new I2Exception('Non-array passed to User::cache_users!');
+			return false;
+		}
+		if(empty($arr)) {
+			return true;
+		}
+		$query= "(|";
+		foreach($arr as $id) {
+			$query .= "(iodineUidNumber=$id)";
+		}
+		$data = $I2_LDAP->search(LDAP::get_user_dn(),$query.")",'*');
+		while($row=$data->fetch_array(Result::ASSOC)) {
+			$index=$row['iodineUidNumber'];
+			$info=array();
+			foreach($row as $key=>$val) {
+				$info[strtolower($key)]=$val;
+			}
+			if(!isset($info['nickname']))//Reduce some spam a little
+				$info['__nulls'][]='nickname';
+			self::$cache[$index] = $info;
+			self::$usernametouid[$row['iodineUid']]=&$index;
+		}
+		//print_r(self::$cache);
+		return true;
+	}
 }
 
 ?>
