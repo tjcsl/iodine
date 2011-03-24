@@ -74,6 +74,7 @@ class NewsItem {
 			case 'groups':
 			case 'read':
 			case 'public':
+			case 'liked':
 				self::fetch_data();
 				break;
 		}
@@ -128,6 +129,11 @@ class NewsItem {
 			$item->info['text'] = $row['text'];
 		}
 		
+		// check if the user has "liked" the news post
+		foreach($I2_SQL->query('SELECT `nid` FROM news_likes WHERE `uid` = %d AND `nid` IN (%D)', $I2_USER->uid, array_keys(self::$unfetched)) as $row) {
+			self::$unfetched[$row['nid']]->info['liked'] = TRUE;
+		}
+
 		self::$unfetched = array();
 	}
 

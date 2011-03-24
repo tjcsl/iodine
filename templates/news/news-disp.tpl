@@ -20,4 +20,9 @@
  [</if>]
  Posted by [<$story->author->name>] on [<$story->posted|date_format:'%a %B %e, %Y at %l:%M %p'>] to [<$story->groupsstring>].</div>
  <div id="newsitem_[<$story->nid>]"[<if $story->shaded()>] style="display: none;"[</if>]>[<$story->text>]</div>
+ <!-- class name from Mike -->
+ <!-- Lydia gets her name in a comment too -->
+ <div class="newsresponsebar">
+	[<if $story->liked>]Unlike[<else>]Unlike[</if>]
+ </div>
 </div>
