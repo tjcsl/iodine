@@ -22,7 +22,9 @@
  <div id="newsitem_[<$story->nid>]"[<if $story->shaded()>] style="display: none;"[</if>]>[<$story->text>]</div>
  <!-- class name from Mike -->
  <!-- Lydia gets her name in a comment too -->
+ <!--
  <div class="newsresponsebar">
-	[<if $story->liked>]Unlike[<else>]Unlike[</if>]
+	[<if $story->liked==1>]Unlike[<else>]Unlike[</if>]
  </div>
+ --!>
 </div>
