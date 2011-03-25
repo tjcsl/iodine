@@ -1,0 +1,83 @@
+.logo {
+	position: absolute;
+	top:0px;
+	left:0px;
+	width:120px;
+	height:50px;
+
+	z-index:99;
+}
+.logo a {
+	background-color:#3B5998;
+	background-image:url(/www/pics/intrabook.png);
+	background-repeat:no-repeat;
+	background-position:7px 6px;
+	
+	display:block;
+
+	position: absolute;
+	left:16px;
+	top:10px;
+	width:103px;
+	height:31px;
+
+}
+.logo a:hover {
+	background-color:#4B67A1;
+}
+
+.date {
+	position: absolute;
+	left:0px;
+	right:0px;
+	top:0px;
+	height:41px;
+	vertical-align:bottom;
+	background-color:#3B5998;
+	color:white;
+/*	z-index:99;*/
+}
+#menu {
+	position:absolute;
+	bottom:0px;
+	left:292px;
+	right:10px;
+/*	height:30px;*/
+	text-align: right;
+
+	background-color:#627AAD;
+	border:1px solid #1D4088;
+}
+#menu span {
+	display:none;
+}
+#menu a {
+	display:inline-block;
+
+	color:white;
+	font-weight:bold;
+	text-decoration:none;
+
+	padding:8px 10px 0px 10px;
+	
+	height:22px;
+}
+#menu a:hover, #menu a:focus, #menu a:active {
+	background-color:#6d86b7;
+	outline:none;
+}
+.header {
+	position: absolute;
+	left:294px;
+	right:12px;
+	top:48px;
+}
+.title {
+	font-size:1.2em;
+	font-weight:bold;
+	font-family:"lucida grande", tahoma, verdana, arial, sans-serif;
+	color:black;
+	line-height:1em;
+	padding-bottom:2px;
+        border-bottom: 1px solid #EEE;
+}
