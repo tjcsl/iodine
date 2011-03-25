@@ -1,0 +1,11 @@
+.directory-field {
+	width:192px;
+	border:1px solid #BDC7D8;
+	font-size:11px;
+}
+.directory-button {
+	width:auto;
+}
+#livesearch {
+	display:none;
+}
