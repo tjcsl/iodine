@@ -127,6 +127,7 @@ class NewsItem {
 			$item->info['visible'] = $row['visible'];
 			$item->info['public'] = $row['public'];
 			$item->info['text'] = $row['text'];
+			$item->info['liked'] = FALSE;
 		}
 		
 		// check if the user has "liked" the news post
