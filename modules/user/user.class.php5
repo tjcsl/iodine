@@ -91,6 +91,7 @@ class User {
 			*/
 			$this->myuid = $uid->uid;
 			$this->username = $uid->username;
+			$this->info = $uid->info;
 			return $uid;
 		} else {
 			$uid = self::to_uidnumber($uid);
@@ -221,7 +222,7 @@ class User {
 		if(isset($this->info[$name])){
 			return $this->info[$name];
 		}
-		if(is_array($this->info['__nulls']) && in_array($name,$this->info['__nulls']))
+		if(isset($this->info['__nulls']) && is_array($this->info['__nulls']) && in_array($name,$this->info['__nulls']))
 			return;
 		/* pseudo-fields
 		** must use explicit __get calls here, since recursive implicit
