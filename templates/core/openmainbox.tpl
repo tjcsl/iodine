@@ -1,4 +1,4 @@
-<div class="[<$mainbox_class>]">
+<div class="[<$mainbox_class>]" id="mainbox">
 	<div class="boxheader">
   [<if isset($error) && $error>]
    Error
@@ -8,7 +8,7 @@
    [<$title>]
   [</if>]
  </div>
- <div class="boxcontent">
+ <div class="boxcontent" id="boxcontent">
  [<if isset($error) && $error>]
   There was an error initializing the module you requested. Look at the error messages below for more information. If you don't see any error messages, contact the intranetmaster about this error.
  [<elseif isset($no_module)>]
