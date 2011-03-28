@@ -10,6 +10,7 @@ var i2root="[<$I2_ROOT>]";
 var username="[<$I2_USER->username>]";
 var name="[<$I2_USER->name>]";
 var fullname="[<$I2_USER->fullname>]";
+var userid=[<$I2_USER->iodineUIDNumber>];
 </script>
 <script type="text/javascript" src="[<$I2_JS>]" ></script>
 <link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />

@@ -62,6 +62,8 @@ ajaxChatRequest.onreadystatechange = function(){
 }
 
 function sendMessage(message) {
+	if(message.length<=0)
+		return;
 	message="message="+encodeURI(message);
 	ajaxChatRequest.open("POST",i2root+"fastajax/chat.php5",false);
 	ajaxChatRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -94,9 +96,10 @@ function initSession() {
 	container.appendChild(inbox);
 	
 	sendMessage("");//Wake up the relay, tell it about our presence
-	sendMessage("NICK i" + username);
-	sendMessage("USER i" + username + " 4 * : " +name);// Do this to prevent errors with the second one coming back before the first one can be handled.
+	sendMessage("NICK i" + userid);
+	sendMessage("USER i" + userid + " 4 * : " +fullname);// Do this to prevent errors with the second one coming back before the first one can be handled.
 	joinChannel("#newchan");
+	sendMessage("WHO dmorris");
 	window.onunload=function() {sendMessage("QUIT")};;
 }
 initSession();
@@ -133,9 +136,11 @@ function responseRecieved(responseContent) {
 		} else {
 			printChat(parts[1],parts.slice(2).join(" "));
 		}
+	//} else if(parts[
 	} else {
 		printChat("#server",responseContent);
 	}
+	
 }
 function formatAndSend(textobject,event) {
 	if((event.keyCode ? event.keyCode : event.which ? event.which : event.charCode)!=13)
@@ -149,7 +154,9 @@ function formatAndSend(textobject,event) {
 	return false;
 }
 function lookupUID(uidstr) {
-	//TODO
+	if(uidstr.length==0)
+		return "NULL_STRING_PASSED";
+	sendMessage("WHO "+uidstr);
 }
 function addchatwindow(targetname) {
 	// targetname is the name of the channel or user with which the chat window should correspond
