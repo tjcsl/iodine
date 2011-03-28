@@ -1,5 +1,5 @@
 #!/bin/bash
 
 # lrt is for librt, the thing that allows message queues
-gcc relay.c -lrt -o Relay
-gcc master.c -lrt -o Master
+# lpthread is for libpthread, which allows pthread usage
+gcc relay.c -lrt -lpthread -o Relay

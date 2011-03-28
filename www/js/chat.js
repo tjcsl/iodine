@@ -63,7 +63,7 @@ ajaxChatRequest.onreadystatechange = function(){
 
 function sendMessage(message) {
 	message="message="+encodeURI(message);
-	ajaxChatRequest.open("POST",i2root+"fastajax/chat.php5",true);
+	ajaxChatRequest.open("POST",i2root+"fastajax/chat.php5",false);
 	ajaxChatRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	ajaxChatRequest.setRequestHeader("Content-Length", message.length);
 	ajaxChatRequest.setRequestHeader("Connection", "close");
@@ -71,9 +71,9 @@ function sendMessage(message) {
 }
 
 function lookformessages() {
-	ajaxChatRequest.open("GET",i2root+"fastajax/chat.php5",true);
+	ajaxChatRequest.open("GET",i2root+"fastajax/chat.php5",false);
 	ajaxChatRequest.send(null);
-	setTimeout(lookformessages,500);
+	setTimeout(lookformessages,1000);
 }
 setTimeout(lookformessages,1000);
 
@@ -94,21 +94,48 @@ function initSession() {
 	container.appendChild(inbox);
 	
 	sendMessage("");//Wake up the relay, tell it about our presence
-	setTimeout(function() {sendMessage("NICK i" + username)},300);
-	setTimeout(function() {sendMessage("USER i" + username + " 4 * : " +name)},800);// Do this to prevent errors with the second one coming back before the first one can be handled.
+	sendMessage("NICK i" + username);
+	sendMessage("USER i" + username + " 4 * : " +name);// Do this to prevent errors with the second one coming back before the first one can be handled.
+	joinChannel("#newchan");
+	window.onunload=function() {sendMessage("QUIT")};;
 }
 initSession();
+function joinChannel(channame) {
+	sendMessage("JOIN "+channame);
+	addchatwindow(channame);
+}
 function responseRecieved(responseContent) {
 	if(responseContent.substr(0,4).toUpperCase()=="PING")
 	{
 		sendMessage("PONG"+responseContent.substr(4));
 		return;
 	}
+	if(responseContent.substr(0,4).toUpperCase()=="PONG")
+		return;
 	//TODO: Figure out who sender is, what channel, and put into correct chat window.
 	//var correctwindow="disp-"+senderid;
 	//var correctchat="disp-"+"onlyone";
 	//var textdivobj;
-	printChat("#newchan",responseContent);
+	var parts=responseContent.split(" ");
+	if(parts[1].toUpperCase() == "PRIVMSG") {
+		//It's a message
+		if(parts[2]=="i"+username.substring(0,7)) {
+			//Private message to us
+			printChat(parts[0],parts.slice(3).join(" "));
+		} else {
+			printChat(parts[2],parts.slice(3).join(" "));
+		}
+	} else if(parts[0].toUpperCase() == "PRIVMSG") {
+		//It's a message that we just sent
+		if(parts[1]=="i"+username.substring(0,7)) {
+			//Private message to us, from us
+			printChat(parts[0],parts.slice(2).join(" "));
+		} else {
+			printChat(parts[1],parts.slice(2).join(" "));
+		}
+	} else {
+		printChat("#server",responseContent);
+	}
 }
 function formatAndSend(textobject,event) {
 	if((event.keyCode ? event.keyCode : event.which ? event.which : event.charCode)!=13)
@@ -121,6 +148,9 @@ function formatAndSend(textobject,event) {
 	setTimeout(function(){textobject.value=""},1);
 	return false;
 }
+function lookupUID(uidstr) {
+	//TODO
+}
 function addchatwindow(targetname) {
 	// targetname is the name of the channel or user with which the chat window should correspond
 	if(document.getElementById("chat_bigholderbox"+targetname))
@@ -128,11 +158,7 @@ function addchatwindow(targetname) {
 	// Here comes a big formatting block. It might help to move some of this to CSS later on.
 	var bigholder=document.createElement("div");
 	bigholder.id="chat_bigholderbox"+targetname;
-	bigholder.style.zIndex='999';
-	bigholder.style.position="relative";
-	bigholder.style.cssFloat="left";
-	bigholder.style.width="255px";
-	bigholder.style.height="100%";
+	bigholder.className="bigholder";
 	var holder=document.createElement("div");
 	holder.style.position="absolute";
 	holder.style.bottom="0";
@@ -169,8 +195,8 @@ function addchatwindow(targetname) {
 	text.id="chat_textbox"+targetname;
 	text.style.overflowY="scroll";
 	text.style.height="180px";
-	var textinside=document.createTextNode("Chat created");
-	text.appendChild(textinside);
+	/*var textinside=document.createTextNode("Chat created");
+	text.appendChild(textinside);*/
 	var input=document.createElement("textarea");
 	input.id="chat_inputbox"+targetname;
 	input.style.width="98%";
@@ -191,9 +217,15 @@ function minimizetoggle(boxname) { // Exactly what's implied by the function nam
 		box.style.display="none";
 	}
 }
+function hasText(channel) {
+	return document.getElementById("chat_textbox"+channel).innerHTML.length>0;
+}
 function printChat(channel,message) {
 	if(message.length == 0)
 		return;
 	addchatwindow(channel);
-	document.getElementById("chat_textbox"+channel).innerHTML += "<br />" + message;
+	if(hasText(channel))
+		document.getElementById("chat_textbox"+channel).innerHTML += "<br />" + message;
+	else
+		document.getElementById("chat_textbox"+channel).innerHTML += message;
 }

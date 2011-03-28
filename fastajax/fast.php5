@@ -20,7 +20,8 @@ if(!isset($_SESSION['i2_username']) || (time()>$_SESSION['i2_login_time']+600 &&
 {
 	session_destroy();
 	unset($_SESSION);
-	header("Location: $I2_ROOT");
+	//header("Location: $I2_ROOT");
+	echo "ERROR_NOSESS";
 }
 
 //Update the login time so that we don't autologout all of the time.

@@ -1,0 +1,7 @@
+div.bigholder {
+	z-index:999;
+	position: relative;
+	float: left;
+	width: 255px;
+	height: 100%;
+}
