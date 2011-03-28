@@ -181,7 +181,7 @@ class Aphorisms implements Module {
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'edit') {
 		}
 		if (isSet($_REQUEST['posting'])) {
-		   if (strlen(ereg_replace("\n| |\t|\r\n","",$_REQUEST['aphorism'])) >= 205) {
+		   if (strlen(preg_replace("\n| |\t|\r\n","",$_REQUEST['aphorism'])) >= 205) {
 				throw new I2Exception('Your aphorism may not be longer than 200 characters, excluding spaces!');
 			}
 		/*	$I2_SQL->query('REPLACE INTO aphorisms SET uid=%d,college=%s,nationalmeritsemifinalist=%d,nationalmeritfinalist=%d,

@@ -224,8 +224,15 @@ function printChat(channel,message) {
 	if(message.length == 0)
 		return;
 	addchatwindow(channel);
-	if(hasText(channel))
-		document.getElementById("chat_textbox"+channel).innerHTML += "<br />" + message;
-	else
+	if(hasText(channel)) {
+		var textbox=document.getElementById("chat_textbox"+channel);
+		if(textbox.scrollTop==textbox.scrollHeight) {
+			textbox.innerHTML += "<br />" + message;
+			textbox.scrollTop=textbox.scrollHeight;
+		} else {
+			textbox.innerHTML += "<br />" + message;
+		}
+	} else {
 		document.getElementById("chat_textbox"+channel).innerHTML += message;
+	}
 }
