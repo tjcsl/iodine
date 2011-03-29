@@ -26,5 +26,5 @@
  <div class="newsresponsebar">
 	[<if $story->liked==1>]Unlike[<else>]Unlike[</if>]
  </div>
- --!>
+ -->
 </div>

@@ -36,11 +36,11 @@ void *socklistener(void* descriptor) {
 	char buffer[MAXSTRLENGTH];
 	struct { long type; char text[MAXSTRLENGTH]; } sendmsg;
 	memset(buffer,0,MAXSTRLENGTH);
+	sendmsg.type = sockets[mynum].id;
 	while(read(sockets[mynum].sock,buffer,MAXSTRLENGTH-1) > 0) {
 		memset(sendmsg.text, 0, MAXSTRLENGTH); /* Clear out the space */
 		strcpy(sendmsg.text, buffer); // Just for testing 
-		printf("string recieved from soc: %s\n",buffer);
-		sendmsg.type = sockets[mynum].id;
+		printf("string recieved from soc, sending to user %li: %s\n",sockets[mynum].id,buffer);
 		msgsnd(send_mq_id, &sendmsg, sizeof(sendmsg), IPC_NOWAIT);
 		memset(buffer,0,MAXSTRLENGTH);
 	}
