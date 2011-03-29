@@ -55,9 +55,16 @@ try {
 	}
 }
 
-ajaxChatRequest.onreadystatechange = function(){
-	if(ajaxChatRequest.readyState == 4){
+ff35check=/Firefox\/3\.5/g; // There's ajax issues with this under certain conditions.
+if(ff35check.test(navigator.userAgent)) {
+	ajaxChatRequest.onload=ajaxChatRequest.onerror=ajaxChatRequest.onabort = function(){
 		responseRecieved(ajaxChatRequest.responseText);
+	}
+} else {
+	ajaxChatRequest.onreadystatechange = function(){
+		if(ajaxChatRequest.readyState == 4){
+			responseRecieved(ajaxChatRequest.responseText);
+		}
 	}
 }
 
@@ -121,26 +128,26 @@ function responseRecieved(responseContent) {
 	//var textdivobj;
 	var parts=responseContent.split(" ");
 	if(parts[1].toUpperCase() == "PRIVMSG") {
-		//It's a message
-		if(parts[2]=="i"+username.substring(0,7)) {
+		//It's a message!
+		if(parts[2]==("i"+userid)) {
 			//Private message to us
-			printChat(parts[0],parts.slice(3).join(" "));
+			printChat(stripUser(parts[0]),parts.slice(3).join(" ").substr(1),stripUser(parts[0]));
 		} else {
-			printChat(parts[2],parts.slice(3).join(" "));
+			printChat(parts[2],parts.slice(3).join(" ").substr(1),stripUser(parts[0]));
 		}
 	} else if(parts[0].toUpperCase() == "PRIVMSG") {
 		//It's a message that we just sent
 		if(parts[1]=="i"+username.substring(0,7)) {
 			//Private message to us, from us
-			printChat(parts[0],parts.slice(2).join(" "));
+			//Kinda silly, but w/e
+			printChat(parts[0],parts.slice(2).join(" ").substr(1),"i"+userid);
 		} else {
-			printChat(parts[1],parts.slice(2).join(" "));
+			printChat(parts[1],parts.slice(2).join(" ").substr(1),"i"+userid);
 		}
 	//} else if(parts[
 	} else {
-		printChat("#server",responseContent);
+		printChat("#server",responseContent,"Server");
 	}
-	
 }
 function formatAndSend(textobject,event) {
 	if((event.keyCode ? event.keyCode : event.which ? event.which : event.charCode)!=13)
@@ -157,6 +164,9 @@ function lookupUID(uidstr) {
 	if(uidstr.length==0)
 		return "NULL_STRING_PASSED";
 	sendMessage("WHO "+uidstr);
+}
+function stripUser(str) {
+	return str.substr(1,str.indexOf("!")-1);
 }
 function addchatwindow(targetname) {
 	// targetname is the name of the channel or user with which the chat window should correspond
@@ -227,19 +237,40 @@ function minimizetoggle(boxname) { // Exactly what's implied by the function nam
 function hasText(channel) {
 	return document.getElementById("chat_textbox"+channel).innerHTML.length>0;
 }
-function printChat(channel,message) {
+function printChat(channel,message,user) {
 	if(message.length == 0)
 		return;
 	addchatwindow(channel);
 	if(hasText(channel)) {
 		var textbox=document.getElementById("chat_textbox"+channel);
 		if(textbox.scrollTop==textbox.scrollHeight) {
-			textbox.innerHTML += "<br />" + message;
+			if(textbox.lastUser==user)
+				textbox.lastChild.innerHTML += "<br />" + message;
+			else {
+				textbox.lastUser = user;
+				var newcontainer = document.createElement("div");
+				newcontainer.innerHTML="<b>"+user+":</b> ";
+				textbox.appendChild(newcontainer);
+				textbox.lastChild.innerHTML += message;
+			}
 			textbox.scrollTop=textbox.scrollHeight;
 		} else {
-			textbox.innerHTML += "<br />" + message;
+			if(textbox.lastUser==user)
+				textbox.lastChild.innerHTML += "<br />" + message;
+			else {
+				textbox.lastUser = user;
+				var newcontainer = document.createElement("div");
+				newcontainer.innerHTML="<b>"+user+":</b> ";
+				textbox.appendChild(newcontainer);
+				textbox.lastChild.innerHTML += message;
+			}
 		}
 	} else {
-		document.getElementById("chat_textbox"+channel).innerHTML += message;
+		var textbox=document.getElementById("chat_textbox"+channel);
+		textbox.lastUser = user;
+		var newcontainer = document.createElement("div");
+		newcontainer.innerHTML="<b>"+user+":</b> ";
+		textbox.appendChild(newcontainer);
+		textbox.lastChild.innerHTML += message;
 	}
 }

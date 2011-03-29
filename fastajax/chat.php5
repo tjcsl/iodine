@@ -23,7 +23,7 @@ if(isset($_POST['message'])) { //We have something to send.
 	/*if(!isset($_SESSION['number']))
 		$_SESSION['number']=0;
 	echo $_SESSION['number']++;*/
-	if(msg_receive($recievequeue,$_SESSION['chatkey']*0,$throwawayint,4096,$message,false,MSG_IPC_NOWAIT))
+	if(msg_receive($recievequeue,$_SESSION['chatkey'],$throwawayint,4096,$message,false,MSG_IPC_NOWAIT))
 	{
 		$message=substr($message,0,stripos($message,chr(0)));
 		fwrite($fh,$_SESSION['number']."-".strlen($message));
