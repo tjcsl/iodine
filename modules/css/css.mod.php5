@@ -176,7 +176,7 @@ class CSS implements Module {
 		global $I2_DISP;
 		$this->style_sheet = new StyleSheet();
 		$this->load_style('default');
-		if ($this->current_style != 'default' && $this->current_style !='facebook') {
+		if ($this->current_style != 'default') {
 			$this->load_style($this->current_style);
 		}
 
@@ -211,7 +211,7 @@ class CSS implements Module {
 		closedir($handle);
 
 		sort($styles);
-		return array_filter($styles,function($a){return $a!='facebook';});
+		return array_filter($styles,function($a){return TRUE;});
 	}
 
 	private function load_style($style) {

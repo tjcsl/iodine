@@ -13,6 +13,26 @@
 	line-height:1.1em;
 }
 
+.newslikebtn {
+	display:inline-block;
+	padding-left:16px;
+	padding-top:1px;
+	background-image:url(/www/pics/fb/like.png);
+	background-repeat:no-repeat;
+	
+	color:#3B5998;
+	text-decoration:none;
+	cursor:pointer;
+}
+.newslikebtn:hover {
+	color:#3B5998;
+	text-decoration:underline;
+}
+.newslikebtn:active {
+	color:#3B5998;
+	text-decoration:underline;
+}
+
 @extend {
 .newsoptions {
 	font-size:12px;

@@ -15,7 +15,7 @@ function doNewsShade(nid) {
 	return false;
 }
 function newsSendReq(info) {
-	http.open('GET', news_root + info);
+	http.open('GET', news_root + info); // To whoever wrote this line, you are missing an argument.  Sincerely, Zachary Yaro
 	http.onreadystatechange = newsHandleResponse;
 	http.send(null);
 }
@@ -23,4 +23,29 @@ function newsHandleResponse() {
 	if(http.readyState == 4) {
 		var response = http.responseText;
 	}
+}
+
+function newsLike(nid) {
+	var likeXHR;
+	if (window.XMLHttpRequest) { // try a normal XHR
+		likeXHR = new XMLHttpRequest();
+	} else if (window.ActiveXObject) { // for IE version 6 and older
+		likeXHR = new ActiveXObject("Microsoft.XMLHTTP");
+	} else { // this should never happen
+		alert("You cannot like news posts because your browser does not support XMLHttpRequests.  Please try a different browser.");
+	}
+	likeXHR.open("GET", news_root + "like/" + nid, true);
+	likeXHR.onreadystatechange = function() {
+		if (likeXHR.readyState == 4) {
+			if (likeXHR.status == 200) {
+				var likeBtnElem = document.getElementById("likebtn" + nid);
+				if (likeBtnElem.innerHTML.indexOf("Un") == -1) {
+					likeBtnElem.innerHTML = "Unlike";
+				} else {
+					likeBtnElem.innerHTML = "Like";
+				}
+			}
+		}
+	}
+	likeXHR.send(null);
 }

@@ -38,7 +38,24 @@
 	padding: 2px;
 }
 
+.newsresponsebar span {
+	margin:0px 2px;
+}
+
+.newslikebtn {
+	color:#0000ff;
+	text-decoration:none;
+	cursor:pointer;
+}
+.newslikebtn:active {
+	color:#004a2a;
+}
+.newslikebtn:hover {
+	text-decoration:underline;
+}
+
 .newsresponsebar {
+	margin-top:4px;
 	
 }
 

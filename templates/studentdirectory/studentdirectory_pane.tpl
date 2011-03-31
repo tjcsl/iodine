@@ -20,6 +20,12 @@ Username: [<$user->iodineuid>]<br />
 [<if $user->grade != 'staff'>]
 [<if $homecoming_may_vote>]<br /><br /><strong><a href="[<$I2_ROOT>]homecoming/vote/[<$user->uid>]">Vote for this person<br />for homecoming court</a></strong>[</if>]
 [</if>]
+
+<br/>
+<br/>
+In a relationship with:
+[<$user->relationship>]
+
 </td>
 <td valign="top">
 [<$user->fullname>][<if $user->grade != 'staff'>], Grade [<$user->grade>][<else>], on staff[</if>]<br />

@@ -9,17 +9,17 @@
 }
 .logo a {
 	background-color:#3B5998;
-	background-image:url(/www/pics/intrabook.png);
+	background-image:url(/www/pics/fb/logo.png);
 	background-repeat:no-repeat;
-	background-position:7px 6px;
+	background-position:7px 4px;
 	
 	display:block;
 
 	position: absolute;
 	left:16px;
-	top:10px;
-	width:103px;
-	height:31px;
+	top:8px;
+	width:123px;
+	height:33px;
 
 }
 .logo a:hover {

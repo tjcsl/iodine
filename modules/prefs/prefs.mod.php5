@@ -94,6 +94,7 @@ class Prefs implements Module {
 				foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showeighthself','showmapself','showpictureself','showfreshmanpictureself','showsophomorepictureself','showjuniorpictureself','showseniorpictureself','showlockerself','newsforwarding','eighthalert','eighthnightalert') as $pref) {
 					$I2_USER->$pref = isSet($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';
 				}
+				$I2_USER->relationship = $_REQUEST['relationship'];
 			} else {
 				foreach (array('showaddressself','showphoneself','showbdayself','showpictureself') as $pref) {
 					$I2_USER->$pref = isSet($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';

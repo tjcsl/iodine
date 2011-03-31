@@ -22,9 +22,26 @@
  <div id="newsitem_[<$story->nid>]"[<if $story->shaded()>] style="display: none;"[</if>]>[<$story->text>]</div>
  <!-- class name from Mike -->
  <!-- Lydia gets her name in a comment too -->
- <!--
  <div class="newsresponsebar">
-	[<if $story->liked==1>]Unlike[<else>]Unlike[</if>]
+	 <span class="newslikebtn" onclick="newsLike([<$story->nid>]);" id="likebtn[<$story->id>]">
+	 	[<if $story->liked==1>]
+			Unlike
+		[<else>]
+			Like
+		[</if>]
+	</span>
+	<span class="newslikecount">
+		<script type="text/javascript">
+			var likecount = [<$story->likecount>];
+			likecount = Math.round(Math.random() * 100);
+			document.write(likecount + " ");
+			if (likecount == 1) {
+				document.write("person");
+			} else {
+				document.write("people");
+			}
+		</script>
+		liked this
+	</span>
  </div>
- -->
 </div>

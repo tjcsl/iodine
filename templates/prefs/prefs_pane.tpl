@@ -131,6 +131,21 @@
 <input type="radio" name="pref_preferredPhoto" value="[<$photo>]" [<if $prefs.preferredPhoto == $photo>]checked="checked"[</if>]/>[<$text>] photo<br />
 [</foreach>]
 <br />
+
+<strong><span style="color:red;">NEW!</span> Relationship status:</strong>
+<br/>
+In a relationship with:
+<select name="relationship">
+	<option value="no one">no one</option>
+	<option value="calculator"  [<if $I2_USER->relationship == "calculator">]selected[</if>]>calculator</option>
+	<option value="computer"    [<if $I2_USER->relationship == "computer">]selected[</if>]>computer</option>
+	<option value="phone"       [<if $I2_USER->relationship == "phone">]selected[</if>]>phone</option>
+	<option value="music player"[<if $I2_USER->relationship == "music player">]selected[</if>]>music player</option>
+	<option value="game system" [<if $I2_USER->relationship == "game system">]selected[</if>]>game system</option>
+</select>
+<br/>
+<br/>
+
 [</if>]
 <strong>Privacy Options</strong><br />
 [<if is_int($I2_USER->grade)>]

@@ -4,18 +4,26 @@ function preload() {
 	document.title = "Facebook - " + document.title.substring(18);
 	/* End title stuff */
 }
-function changeToGSearch() {
-}
 function page_init() {
-	document.getElementById('boxcontent').style.paddingRight='284px';
+//	document.getElementById('boxcontent').style.paddingRight='284px';
+	document.getElementById('mainbox').style.right='264px';
 	rightbar = document.createElement("div");
-	rightbar.style.right='20px';
-	rightbar.style.top='30px';
+	rightbar.style.right='10px';
+	rightbar.style.top='96px';
 	rightbar.style.width='244px';
 	rightbar.style.position='absolute';
 	rightbar.id='rightbar';
-	document.getElementById('mainbox').appendChild(rightbar);
-	add_rightbox('People You May Know',"This is a testing rightbox");
+	document.getElementById('mainbox').parentElement.appendChild(rightbar);
+	var peopleTxt = "<img src='http://26.media.tumblr.com/avatar_759afa21b3c4_64.png' title='webass, y u so annoying?'> ";
+	peopleTxt += "<img src='http://30.media.tumblr.com/avatar_97572dc2ad28_64.png' title='Modding the eighth module  is suicide?  Challenge accepted.'> ";
+	peopleTxt += "<a href='[<$I2_ROOT>]studentdirectory/info/14079'><img src='http://stevesastre.com/wp-content/uploads/2010/07/trollface_hd-64x64.jpg' title='Sreenath Are'></a>"
+/*	for (var i = 0; i < 5; i++) {
+		var possFriendId = Math.round(Math.random() * 12000) + 2000;
+		peopleTxt += "<a href='[<$I2_ROOT>]studentdirectory/info/" + possFriendId + "'>";
+		peopleTxt += "<img src='[<$I2_ROOT>]pictures/" + possFriendId + "' style='width:36px; height:48px;'/>";
+		peopleTxt += "</a>";
+	}*/
+	add_rightbox('People You May Know', peopleTxt);
 }
 function add_rightbox(title, contents) {
 	container=document.createElement('div');

@@ -355,6 +355,15 @@ class News implements Module {
 					$I2_SQL->query('INSERT INTO news_shaded_map SET uid=%d, nid=%d;', $I2_USER->uid, $nid);
 				// Redirect to the page the user was just viewing.
 				redirect(str_replace($I2_ROOT,'',$_SERVER['HTTP_REFERER']));
+			case 'like':
+				$nid = $I2_ARGS[2];
+				
+				$liked = $I2_SQL->query("SELECT COUNT(*) FROM news_likes WHERE uid=%d AND nid=%d;", $I2_USER->uid, $nid)->fetch_single_value();
+				if ($liked) {
+					$I2_SQL->query("DELETE FROM news_likes WHERE uid=%d AND nid=%d;", $I2_USER->uid, $nid);
+				} else {
+					$I2_SQL->query("INSERT INTO news_likes SET uid=%d, nid=%d;", $I2_USER->uid, $nid);
+				}
 
 	   		default:
 				return self::display_news(false);

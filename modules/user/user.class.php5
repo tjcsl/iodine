@@ -383,6 +383,8 @@ class User {
 				return $this->get_eighth_alert_status();
 			case 'eighthnightalert':
 				return $this->get_eighth_night_alert_status();
+			case 'relationship':
+				return $this->get_relationship_status();
 			case 'gradename'://Used for the windows file mounts, hence the capitolization
 				$convert=array(9=>'Freshman',10=>'Sophomore',11=>'Junior',12=>'Senior','staff'=>'Staff');
 				return $convert[$this->__get('grade')];
@@ -656,6 +658,10 @@ class User {
 				$this->set_eighth_night_alert_status($val);
 				$this->info[$name]=($val=='TRUE');
 				return;
+			case 'relationship':
+				$this->set_relationship_status($val);
+				$this->info[$name]=$val;
+				return;
 			case 'showmapself':
 			case 'showmap':
 			case 'showbdayself':
@@ -889,6 +895,30 @@ class User {
 	public function get_eighth_night_alert_status() {
 		global $I2_SQL;
 		return count($I2_SQL->query('SELECT * FROM eighth_night_alerts WHERE userid=%d',$this->myuid)->fetch_all_single_values())>0;
+	}
+
+	/**
+	* Set a user's "relationship" status
+	*/
+	public function set_relationship_status($val) {
+		global $I2_SQL;
+		
+		if ($I2_SQL->query('SELECT COUNT(*) FROM relationships WHERE uid=%d', $this->myuid)->fetch_single_value() > 0) {
+			$I2_SQL->query('UPDATE relationships SET device=%s WHERE uid=%d', $val, $this->myuid);
+		} else {
+			$I2_SQL->query('INSERT INTO relationships (device, uid) VALUES (%s, %d)', $val, $this->myuid);
+		}
+	}
+	/**
+	* Get a user's "relationship" status
+	*/
+	public function get_relationship_status() {
+		global $I2_SQL;
+		if ($I2_SQL->query('SELECT COUNT(*) FROM relationships WHERE uid=%d', $this->myuid)->fetch_single_value() > 0) {
+			return $I2_SQL->query('SELECT device FROM relationships WHERE uid=%d', $this->myuid)->fetch_single_value();
+		} else {
+			return "no one";
+		}
 	}
 
 	/**
