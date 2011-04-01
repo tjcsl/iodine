@@ -80,7 +80,7 @@ function add_rightbox(title, contents) {
 	titlearea.style.fontWeight="bold";
 	titlearea.style.fontSize="11px";
 	var seealldiv=document.createElement("div");
-	seealldiv.innerHTML="<a href='javscript://null();'>see all</a>";
+	seealldiv.innerHTML="<a href='javascript://null();'>see all</a>";
 	seealldiv.id="seealldiv";
 	seealldiv.style.cssFloat='right';
 	seealldiv.style.margin='3px 7px 3px 3px';
