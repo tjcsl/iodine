@@ -27,7 +27,7 @@ IE7_PNG_SUFFIX = ".png";
 <div id="chat_area" style="float:right; height:100%">
 </div>
 </div>
-<div class="logo"><a href="[<$I2_ROOT>]"><span id="logotext">Intranet 2</span></a></div>
+<div id="logo" class="logo"><a href="[<$I2_ROOT>]"><span id="logotext">Intranet 2</span></a></div>
 <div class="header">
  <div class="title"> [<if $I2_USER->borntoday()>]Happy Birthday[<else>]Welcome[</if>], [<$I2_USER->firstornick>]!</div>
  <div class="blurb">Today is [<$smarty.now|date_format:"%B %e, %Y">]. 

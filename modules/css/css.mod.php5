@@ -211,7 +211,7 @@ class CSS implements Module {
 		closedir($handle);
 
 		sort($styles);
-		return array_filter($styles,function($a){return TRUE;});
+		return $styles;
 	}
 
 	private function load_style($style) {

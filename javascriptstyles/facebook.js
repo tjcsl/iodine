@@ -41,6 +41,19 @@ function add_rightbox(title, contents) {
 	container.appendChild(bodyarea);
 	document.getElementById('rightbar').appendChild(container);
 }
+function add_jewels() {
+	jeweldiv=document.getElementById("logo");
+	friendreq=createJewel("Friend Requests","friends.png");
+	jeweldiv.appendChild(friendreq);
+	alert("added jewels");
+}
+function createJewel(title,img) {
+	jewel=document.createElement("div");
+	jeweliconcontainer=document.createElement("div");
+	jeweliconcontainer.innerHTML="friend reqs";
+	jewel.appendChild(jeweliconcontainer);
+	return jewel;
+}
 function intrabox_onmouseover(div_id) {
 }
 function intrabox_onmouseout(div_id) {

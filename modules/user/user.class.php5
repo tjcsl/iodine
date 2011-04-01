@@ -79,6 +79,7 @@ class User {
 					}
 				}
 				$this->myuid = $this->info['iodineuidnumber'];
+				$_SESSION['i2_userid']=$this->myuid;
 			}
 			else {
 				$I2_ERR->fatal_error('Your password and username were correct, but you don\'t appear to exist in our database. If this is a mistake, please contact the intranetmaster about it.');
@@ -268,7 +269,7 @@ class User {
 				return $this->get_tjmail();
 		   	case 'uid':
 		   	case 'uidnumber':
-			case 'iodineUidNumber':
+			case 'iodineuidnumber':
 				return $this->myuid;
 				// Cut down on the LDAP queries. myuid is set in the constructor already.
 				//return $this->__get('iodineUidNumber');

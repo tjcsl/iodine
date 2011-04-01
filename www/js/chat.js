@@ -55,7 +55,7 @@ try {
 	}
 }
 
-ff35check=/Firefox\/3\.5/g; // There's ajax issues with this under certain conditions.
+ff35check=/Firefox/g; // There's ajax issues with this under certain conditions.
 if(ff35check.test(navigator.userAgent)) {
 	ajaxChatRequest.onload=ajaxChatRequest.onerror=ajaxChatRequest.onabort = function(){
 		responseRecieved(ajaxChatRequest.responseText);
@@ -122,12 +122,15 @@ function responseRecieved(responseContent) {
 	}
 	if(responseContent.substr(0,4).toUpperCase()=="PONG")
 		return;
+	//if(responseContent.length>0)
+	//	alert("recieved the following: "+responseContent);
+	
 	//TODO: Figure out who sender is, what channel, and put into correct chat window.
 	//var correctwindow="disp-"+senderid;
 	//var correctchat="disp-"+"onlyone";
 	//var textdivobj;
 	var parts=responseContent.split(" ");
-	if(parts[1].toUpperCase() == "PRIVMSG") {
+	if(parts[1] && parts[1].toUpperCase() == "PRIVMSG") {
 		//It's a message!
 		if(parts[2]==("i"+userid)) {
 			//Private message to us
@@ -152,6 +155,8 @@ function responseRecieved(responseContent) {
 function formatAndSend(textobject,event) {
 	if((event.keyCode ? event.keyCode : event.which ? event.which : event.charCode)!=13)
 		return true;
+	if(textobject.value.length <= 0)
+		return false;
 	var message = "PRIVMSG ";
 	message += textobject.id.substr(13);
 	message += " :";
