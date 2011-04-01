@@ -24,7 +24,7 @@ function page_init() {
 		peopleTxt += "</a>";
 	}*/
 	add_rightbox('People You May Know', gen_youMayKnow());
-	add_jewels();
+	//add_jewels();
 }
 function gen_youMayKnow() {
 	var outputdiv=document.createElement("div");
