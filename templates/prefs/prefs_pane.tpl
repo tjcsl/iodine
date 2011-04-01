@@ -157,19 +157,78 @@ In a relationship with:
 <em>Note that all TJ staff can always view all of this information.</em><br />
 [<if is_int($I2_USER->grade)>]
 <table style="text-align: center;" cellpadding="1" cellspacing="0">
-<tr><td style="padding: 0ex .5ex; text-decoration: underline;">Parent</td><td style="padding: 0ex 2ex; text-decoration: underline;">You</td><td></td></tr>
-<tr><td><input type="checkbox" name="showaddress" [<if $prefs.showaddress>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Address</td></tr>
-<tr><td><input type="checkbox" name="showbday" [<if $prefs.showbday>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Birthday</td></tr>
+<tr>
+	<td style="padding: 0ex .5ex; text-decoration: underline;">Parent<br/>permission</td>
+	<td style="padding: 0ex 2ex; text-decoration: underline;">Seen by<br/>everyone</td>
+	<td style="padding:0ex 2ex; text-decoration:underline;">Seen by<br/>friends<td></td>
+</tr>
+<tr>
+	<td><input type="checkbox" name="showaddress" [<if $prefs.showaddress>]checked="checked"[</if>] disabled="disabled" /></td>
+	<td><input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>] onclick="var checkIt=checked;if(confirm('Are you sure?  After all, we would not want you getting confused about privacy settings :)'))checked=checkIt;else checked=!checkIt;"/></td>
+	<td><input type="checkbox" name="showaddressfriends" onmouseover="style.opacity=0.3;" onmouseout="style.opacity=1;" onclick="checked=false;" title="Disabled for your safety"/></td>
+	<td style="text-align: left">Show Address</td>
+</tr>
+<tr>
+	<td><input type="checkbox" name="showbday" [<if $prefs.showbday>]checked="checked"[</if>] disabled="disabled" /></td>
+	<td><input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>] onclick="var checkIt=checked;if(confirm('Are you sure?  After all, we would not want you getting confused about privacy settings :)'))checked=checkIt;else checked=!checkIt;"/></td>
+	<td><input type="checkbox" name="showbdayfriends" onmouseover="style.opacity=0.3;" onmouseout="style.opacity=1;" onclick="checked=false;" title="Disabled for your safety"/></td>
+	<td style="text-align: left">Show Birthday</td>
+</tr>
 [<*<tr><td><input type="checkbox" name="showmap" [<if $prefs.showmap>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showmapself" [<if $prefs.showmapself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Map Links</td></tr>*>]
-<tr><td><input type="checkbox" name="showpicture" [<if $prefs.showpicture>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Pictures on Import</td></tr>
-[<if !empty($photonames.freshmanPhoto) >]<tr><td><input type="checkbox" name="showfreshmanpicture" [<if $prefs.showfreshmanpicture>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showfreshmanpictureself" [<if $prefs.showfreshmanpictureself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Freshman Picture</td></tr>[</if>]
-[<if !empty($photonames.sophomorePhoto) >]<tr><td><input type="checkbox" name="showsophomorepicture" [<if $prefs.showsophomorepicture>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showsophomorepictureself" [<if $prefs.showsophomorepictureself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Sophomore Picture</td></tr>[</if>]
-[<if !empty($photonames.juniorPhoto) >]<tr><td><input type="checkbox" name="showjuniorpicture" [<if $prefs.showjuniorpicture>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showjuniorpictureself" [<if $prefs.showjuniorpictureself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Junior Picture</td></tr>[</if>]
-[<if !empty($photonames.seniorPhoto) >]<tr><td><input type="checkbox" name="showseniorpicture" [<if $prefs.showseniorpicture>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showseniorpictureself" [<if $prefs.showseniorpictureself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Senior Picture</td></tr>[</if>]
-<tr><td><input type="checkbox" name="showphone" [<if $prefs.showphone>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Home Telephone Number</td></tr>
-<tr><td><input type="checkbox" name="showschedule" [<if $prefs.showschedule>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showscheduleself" [<if $prefs.showscheduleself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Class Schedule</td></tr>
-<tr><td><input type="checkbox" name="showeighth" [<if $prefs.showeighth>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showeighthself" [<if $prefs.showeighthself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Eighth Period Schedule</td></tr>
-<tr><td><input type="checkbox" name="showlocker" [<if $prefs.showlocker>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showlockerself" [<if $prefs.showlockerself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Locker Number</td></tr>
+<tr>
+	<td><input type="checkbox" name="showpicture" [<if $prefs.showpicture>]checked="checked"[</if>] disabled="disabled" /></td>
+	<td><input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>] onclick="var checkIt=checked;if(confirm('Are you sure?  After all, we would not want you getting confused about privacy settings :)'))checked=checkIt;else checked=!checkIt;"/></td>
+	<td><input type="checkbox" name="showpicturefriends" onmouseover="style.opacity=0.3;" onmouseout="style.opacity=1;" onclick="checked=false;" title="Disabled for your safety"/></td>
+	<td style="text-align: left">Show Pictures on Import</td>
+</tr>
+[<if !empty($photonames.freshmanPhoto) >]<tr>
+	<td><input type="checkbox" name="showfreshmanpicture" [<if $prefs.showfreshmanpicture>]checked="checked"[</if>] disabled="disabled" /></td>
+	<td><input type="checkbox" name="showfreshmanpictureself" [<if $prefs.showfreshmanpictureself>]checked="checked"[</if>] onclick="var checkIt=checked;if(confirm('Are you sure?  After all, we would not want you getting confused about privacy settings :)'))checked=checkIt;else checked=!checkIt;"/></td>
+	<td><input type="checkbox" name="showfreshmanfriends" onmouseover="style.opacity=0.3;" onmouseout="style.opacity=1;" onclick="checked=false;" title="Disabled for your safety"/></td>
+	<td style="text-align: left">Show Freshman Picture</td>
+</tr>[</if>]
+[<if !empty($photonames.sophomorePhoto) >]<tr>
+	<td><input type="checkbox" name="showsophomorepicture" [<if $prefs.showsophomorepicture>]checked="checked"[</if>] disabled="disabled" /></td>
+	<td><input type="checkbox" name="showsophomorepictureself" [<if $prefs.showsophomorepictureself>]checked="checked"[</if>] onclick="var checkIt=checked;if(confirm('Are you sure?  After all, we would not want you getting confused about privacy settings :)'))checked=checkIt;else checked=!checkIt;"/></td>
+	<td><input type="checkbox" name="showsophomorepicturefriends" onmouseover="style.opacity=0.3;" onmouseout="style.opacity=1;" onclick="checked=false;" title="Disabled for your safety"/></td>
+	<td style="text-align: left">Show Sophomore Picture</td>
+</tr>[</if>]
+[<if !empty($photonames.juniorPhoto) >]<tr>
+	<td><input type="checkbox" name="showjuniorpicture" [<if $prefs.showjuniorpicture>]checked="checked"[</if>] disabled="disabled" /></td>
+	<td><input type="checkbox" name="showjuniorpictureself" [<if $prefs.showjuniorpictureself>]checked="checked"[</if>] onclick="var checkIt=checked;if(confirm('Are you sure?  After all, we would not want you getting confused about privacy settings :)'))checked=checkIt;else checked=!checkIt;"/></td>
+	<td><input type="checkbox" name="showjuniorpicturefriends" onmouseover="style.opacity=0.3;" onmouseout="style.opacity=1;" onclick="checked=false;" title="Disabled for your safety"/></td>
+	<td style="text-align: left">Show Junior Picture</td>
+</tr>[</if>]
+[<if !empty($photonames.seniorPhoto) >]<tr>
+	<td><input type="checkbox" name="showseniorpicture" [<if $prefs.showseniorpicture>]checked="checked"[</if>] disabled="disabled" /></td>
+	<td><input type="checkbox" name="showseniorpictureself" [<if $prefs.showseniorpictureself>]checked="checked"[</if>] onclick="var checkIt=checked;if(confirm('Are you sure?  After all, we would not want you getting confused about privacy settings :)'))checked=checkIt;else checked=!checkIt;"/></td>
+	<td><input type="checkbox" name="showseniorpicturefriends" onmouseover="style.opacity=0.3;" onmouseout="style.opacity=1;" onclick="checked=false;" title="Disabled for your safety"/></td>
+	<td style="text-align: left">Show Senior Picture</td>
+</tr>[</if>]
+<tr>
+	<td><input type="checkbox" name="showphone" [<if $prefs.showphone>]checked="checked"[</if>] disabled="disabled" /></td>
+	<td><input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>] onclick="var checkIt=checked;if(confirm('Are you sure?  After all, we would not want you getting confused about privacy settings :)'))checked=checkIt;else checked=!checkIt;"/></td>
+	<td><input type="checkbox" name="showphonefriends" onmouseover="style.opacity=0.3;" onmouseout="style.opacity=1;" onclick="checked=false;" title="Disabled for your safety"/></td>
+	<td style="text-align: left">Show Home Telephone Number</td>
+</tr>
+<tr>
+	<td><input type="checkbox" name="showschedule" [<if $prefs.showschedule>]checked="checked"[</if>] disabled="disabled" /></td>
+	<td><input type="checkbox" name="showscheduleself" [<if $prefs.showscheduleself>]checked="checked"[</if>] onclick="var checkIt=checked;if(confirm('Are you sure?  After all, we would not want you getting confused about privacy settings :)'))checked=checkIt;else checked=!checkIt;"/></td>
+	<td><input type="checkbox" name="showschedulefriends" onmouseover="style.opacity=0.3;" onmouseout="style.opacity=1;" onclick="checked=false;" title="Disabled for your safety"/></td>
+	<td style="text-align: left">Show Class Schedule</td>
+</tr>
+<tr>
+	<td><input type="checkbox" name="showeighth" [<if $prefs.showeighth>]checked="checked"[</if>] disabled="disabled" /></td>
+	<td><input type="checkbox" name="showeighthself" [<if $prefs.showeighthself>]checked="checked"[</if>] onclick="var checkIt=checked;if(confirm('Are you sure?  After all, we would not want you getting confused about privacy settings :)'))checked=checkIt;else checked=!checkIt;"/></td>
+	<td><input type="checkbox" name="showeighthfriends" onmouseover="style.opacity=0.3;" onmouseout="style.opacity=1;" onclick="checked=false;" title="Disabled for your safety"/></td>
+	<td style="text-align: left">Show Eighth Period Schedule</td>
+</tr>
+<tr>
+	<td><input type="checkbox" name="showlocker" [<if $prefs.showlocker>]checked="checked"[</if>] disabled="disabled" /></td>
+	<td><input type="checkbox" name="showlockerself" [<if $prefs.showlockerself>]checked="checked"[</if>] onclick="var checkIt=checked;if(confirm('Are you sure?  After all, we would not want you getting confused about privacy settings :)'))checked=checkIt;else checked=!checkIt;"/></td>
+	<td><input type="checkbox" name="showlockerfriends" onmouseover="style.opacity=0.3;" onmouseout="style.opacity=1;" onclick="checked=false;" title="Disabled for your safety"/></td>
+	<td style="text-align: left">Show Locker Number</td>
+</tr>
 </table>
 [<else>]
 <table style="text-align: center;" cellpadding="1" cellspacing="0">
