@@ -69,7 +69,7 @@ class Chat implements Module {
 	}
 
 	function get_name() {
-		return 'Scratchpad';
+		return 'Chat';
 	}
 
 	function is_intrabox() {

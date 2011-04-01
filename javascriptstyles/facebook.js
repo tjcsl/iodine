@@ -61,7 +61,7 @@ function gen_youMayKnow() {
 		picdiv.style.marginRight="10px";
 		entry.appendChild(picdiv);
 		var textdiv=document.createElement("div");
-		textdiv.innerHTML="<b>"+person[0]+"</b><br /><a href='javascript://null();'>Add as Friend</a>";
+		textdiv.innerHTML="<b>"+person[0]+"</b><br /><a href='javascript://null();'><img src='"+i2root+"www/pics/fb/add_friend.gif'/> Add as friend</a>";
 		entry.appendChild(textdiv);
 		outputdiv.appendChild(entry);
 		var flowfixer= document.createElement("div");
