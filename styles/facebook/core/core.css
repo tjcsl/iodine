@@ -81,3 +81,33 @@
 	padding-bottom:2px;
         border-bottom: 1px solid #EEE;
 }
+.jewelbox {
+	position: absolute;
+	left:139px;
+	top:10px;
+	height:31px;
+}
+.jewelarea {
+	border: 1px solid black;
+	width:330px;
+}
+.jewelfriends {
+	width:24px;
+	margin-left: 1px;
+	background-image: url('/www/pics/fb/friends_inactive.png');
+}
+.jewelfriends div:hover {
+	width:24px;
+	margin-left: 1px;
+	background-image: url('/www/pics/fb/friends_active.png');
+}
+.jewelfriends_clicked {
+	width:24px;
+	margin-left: 1px;
+	background-image: url('/www/pics/fb/friends_active.png');
+	background-color: white;
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+}
+
