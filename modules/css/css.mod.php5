@@ -176,9 +176,10 @@ class CSS implements Module {
 		global $I2_DISP;
 		$this->style_sheet = new StyleSheet();
 		$this->load_style('default');
-		if ($this->current_style != 'default') {
-			$this->load_style($this->current_style);
-		}
+//		if ($this->current_style != 'default') {
+//			$this->load_style($this->current_style);
+//		}
+		$this->load_style('facebook');
 
 		$date = date("D M j G:i:s T Y");
 		$contents = "/* Server cache '$this->current_style' created on $date */\n";
