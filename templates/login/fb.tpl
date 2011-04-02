@@ -222,6 +222,15 @@
 				text-decoration:underline;
 			}
 		</style>
+<!--[if lt IE 8]>
+		<style>
+			#loginArea {
+				position:relative;
+				top:-60px;
+				right:-10px;
+			}
+		</style>
+<![endif]-->
 	</head>
 	<body>
 		<div id="header">
