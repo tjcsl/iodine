@@ -127,9 +127,6 @@ class JS implements Module {
 		if (ends_with($current_style, '.js')) {
 			$current_style = substr($current_style, 0, strlen($current_style) - 3);
 		}
-
-		// remove this after April 1
-		$current_style = 'facebook';
 		
 		$this->current_style = $current_style;
 		$this->script_path = $I2_FS_ROOT . 'javascriptstyles/' . $current_style . '.js';
