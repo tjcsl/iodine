@@ -367,8 +367,8 @@ class Auth {
 		}
 		$template_args['posts']=$str;
 		$disp = new Display('login');
-		//$disp->disp('login.tpl', $template_args); 
-		$disp->disp('fb.tpl', $template_args); 
+		$disp->disp('login.tpl', $template_args); 
+		//$disp->disp('fb.tpl', $template_args); 
 
 		return FALSE;
 	}
