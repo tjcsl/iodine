@@ -31,16 +31,12 @@
 		[</if>]
 	</span>
 	<span class="newslikecount">
-		<script type="text/javascript">
-			var likecount = [<$story->likecount>];
-			likecount = Math.round(Math.random() * 100);
-			document.write(likecount + " ");
-			if (likecount == 1) {
-				document.write("person");
-			} else {
-				document.write("people");
-			}
-		</script>
+		[<$story->likecount>]
+		[<if $story->likecount == 1>]
+			person
+		[<else>]
+			people
+		[</if>]
 		liked this
 	</span>
  </div>
