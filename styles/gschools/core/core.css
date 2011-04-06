@@ -2,9 +2,9 @@
 	position: absolute;
 	top: 32px;
 	left: 16px;
-	width: 99%;
-	height: 99%;
-	background: url(/www/pics/gschools_logo.jpg) no-repeat;
+	width:251px;
+	height:100px;
+	background: url(/www/pics/google/logo.png) no-repeat;
 }
 .logo a {
 	position: absolute;

@@ -41,8 +41,10 @@ function newsLike(nid) {
 				var likeBtnElem = document.getElementById("likebtn" + nid);
 				if (likeBtnElem.innerHTML.indexOf("Un") == -1) {
 					likeBtnElem.innerHTML = "Unlike";
+					likeBtnElem.className = "newslikebtn newslikebtnliked";
 				} else {
 					likeBtnElem.innerHTML = "Like";
+					likeBtnElem.className = "newslikebtn newslikebtnunliked";
 				}
 			}
 		}

@@ -1,7 +1,22 @@
+.newspost {
+	-webkit-border-radius:7px;
+	   -moz-border-radius:7px;
+	        border-radius:7px;
+	border-width:1px;
+	border-style:solid;
+	border-color:#BCBCBC;
+	-webkit-box-shadow:0px 1px 1px 0px #E2E2E2;
+	   -moz-box-shadow:0px 1px 1px 0px #E2E2E2;
+	        box-shadow:0px 1px 1px 0px #E2E2E2;
+	
+	padding:0px 8px;
+	margin-bottom:12px;
+}
+
 .newsitem {
-	font-family: arial, helvetica, verdana, sans-serif;
-	font-size: 10pt;
-	margin-bottom: 10pt;
+	font-family:arial, helvetica, verdana, sans-serif;
+	font-size:10pt;
+	margin-bottom:0px;
 }
 
 .newstitle {
@@ -13,9 +28,47 @@
 	line-height: 1em;
 }
 
+.newsresponsebar {
+	background-color:#F2F2F2;
+	border-width:1px;
+	border-style:solid;
+	border-color:#E2E2E2;
+	 -webkit-border-bottom-left-radius:6px;
+	-webkit-border-bottom-right-radius:6px;
+	     -moz-border-radius-bottomleft:6px;
+	    -moz-border-radius-bottomright:6px;
+	         border-bottom-left-radius:6px;
+	        border-bottom-right-radius:6px;
+
+	margin:4px -8px 0px -8px;
+	padding:4px;
+}
+
+.newslikebtn {
+	display:inline-block;
+	padding-left:18px;
+	padding-top:0px;
+	background-repeat:no-repeat;
+	
+	color:#0547C0;
+	text-decoration:underline;
+	cursor:pointer;
+	vertical-align:center;
+}
+.newslikebtnliked {
+	background-image:url(/www/pics/google/like_selected.gif);
+}
+.newslikebtnunliked {
+	background-image:url(/www/pics/google/like_deselected.gif);
+}
+
+.newslikecount {
+	color:#888888;
+}
+
 @extend {
 .newsoptions {
-/*	font-size: 1.3em;*/
+	font-size:11pt;
 	margin-top: 0px;
 	padding: 0px;
 }
