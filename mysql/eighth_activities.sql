@@ -21,5 +21,7 @@ CREATE TABLE eighth_activities (
 
 	sticky TINYINT(1) NOT NULL DEFAULT '0',
 
-	special TINYINT(1) NOT NULL DEFAULT '0'
+	special TINYINT(1) NOT NULL DEFAULT '0',
+
+	calendar TINYINT(1) NOT NULL DEFAULT '0'
 );

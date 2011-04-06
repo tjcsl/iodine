@@ -229,3 +229,39 @@ function CCA(CB){
 	}
 	frm.selectall.checked=(TO == TB) ? true : false;
 }
+function filterList(txt,el) {
+	txt = txt.toLowerCase();
+	txt = txt.split(" or ");
+
+	var currentList = document.getElementById(el);
+	currentList.innerHTML = "";
+	
+	var listItems = savedRoomList.options;
+	for (var i = 0; i < listItems.length; i++) {
+		for (var j = 0; j < txt.length; j++) {
+			if (listItems[i].innerHTML.toLowerCase().indexOf(txt[j]) != -1) {
+				currentList.appendChild(listItems[i].cloneNode(true));
+				break;
+			}
+		}
+	}
+	
+}
+function filterList2(txt,el) {
+	txt = txt.toLowerCase();
+	txt = txt.split(" or ");
+
+	var currentList = document.getElementById(el);
+	currentList.innerHTML = "";
+	
+	var listItems = savedSponsorList.options;
+	for (var i = 0; i < listItems.length; i++) {
+		for (var j = 0; j < txt.length; j++) {
+			if (listItems[i].innerHTML.toLowerCase().indexOf(txt[j]) != -1) {
+				currentList.appendChild(listItems[i].cloneNode(true));
+				break;
+			}
+		}
+	}
+	
+}

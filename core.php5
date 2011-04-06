@@ -25,6 +25,13 @@ define('I2_VERSION', 1.00);
 define('CONFIG_FILENAME', 'config.ini');
 
 /**
+* The information about the memcache server.
+*/
+define('MEMCACHE_SERVER', 'localhost');
+define('MEMCACHE_PORT', '11211');
+define('MEMCACHE_DEFAULT_TIMEOUT', '120');
+
+/**
 * A few helpful globals, which need to be generated, so they cannot simply be define()'d.
 */
 $I2_SELF = $_SERVER['REDIRECT_URL'];

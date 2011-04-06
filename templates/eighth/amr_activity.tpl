@@ -89,6 +89,10 @@
 			<td>Special:</td>
 			<td><input type="checkbox" name="special"[<if $activity->special >] checked="checked"[</if>] /></td>
 		</tr>
+		<tr>
+			<td>Show in Calendar:</td>
+			<td><input type="checkbox" name="calendar"[<if $activity->calendar >] checked="checked"[</if>] /></td>
+		</tr>
 	</table><br />
 	<input type="submit" value="Modify" />
 	<a href="[<$I2_ROOT>]eighth/amr_activity/remove/aid/[<$activity->aid>]"><input type="button" value="Remove" /></a>

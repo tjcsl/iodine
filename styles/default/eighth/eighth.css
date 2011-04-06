@@ -131,7 +131,7 @@
 #eighth_room_pane {
 	position: absolute;
 	width: 200px;
-	height: 180px;
+	height: 200px;
 	border: 3px outset #000000;
 	background-color: #FFFF99;
 	text-align: center;
@@ -141,10 +141,13 @@
 	border: none;
 	width: 100%;
 }
+#eighth_room_filter {
+	width: 194px;
+}
 #eighth_sponsor_pane {
 	position: absolute;
 	width: 200px;
-	height: 180px;
+	height: 200px;
 	border: 3px outset #000000;
 	background-color: #FFFF99;
 	text-align: center;
@@ -153,6 +156,9 @@
 #eighth_sponsor_list {
 	border: none;
 	width: 100%;
+}
+#eighth_sponsor_filter {
+	width: 194px;
 }
 .c1 {
 	background-color: #EEEEFF;
