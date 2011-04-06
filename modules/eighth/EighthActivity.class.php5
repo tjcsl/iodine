@@ -55,6 +55,7 @@ class EighthActivity {
 				$this->data['bothblocks']=0;
 				$this->data['sticky']=0;
 				$this->data['special']=0;
+				$this->data['calendar']=0;
 				$this->data['sponsors'] = array();
 				$this->data['rooms'] = array();
 				$this->data['aid'] = $activityid;
@@ -170,8 +171,7 @@ class EighthActivity {
 
 		$oldaid = EighthSchedule::get_activities_by_block($userid, $blockid);
 		if ($oldaid == $this->data['aid']) {
-			// The user is already in this activity
-			return;
+			// The user is already in this activcalendarreturn;
 		}
 		if (self::activity_exists($oldaid)) {
 			try {
@@ -827,7 +827,7 @@ class EighthActivity {
 		/*
 		** Remove from the calendar.
 		*/
-		if($old['special']==1) {
+		if($old['calendar']==1) {
 			foreach($wasscheduled as $bid) {
 				Calendar::remove_event('eighthspecial_'.$bid.'_'.$activityid);
 			}
@@ -1044,6 +1044,7 @@ class EighthActivity {
 				case 'bothblocks':
 				case 'sticky':
 				case 'special':
+				case 'calendar':
 				case 'presign':
 					if ($this->data[$name] == $value) {
 						//Nothing to do

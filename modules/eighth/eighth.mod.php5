@@ -1078,18 +1078,19 @@ class Eighth implements Module {
 			$activity->oneaday = ($this->args['oneaday'] == 'on');
 			$activity->bothblocks = ($this->args['bothblocks'] == 'on');
 			$activity->sticky = ($this->args['sticky'] == 'on');
-			$usedtobespecial=$activity->special;
+			$usedtobecalendar=$activity->calendar;
 			$activity->special = ($this->args['special'] == 'on');
-			if(($usedtobespecial != $activity->special) || ($usedtobename!=$activity->name) || ($usedtobedescription!=$activity->description)) {
+			$activity->calendar = ($this->args['calendar'] == 'on');
+			if(($usedtobecalendar != $activity->calendar) || ($usedtobename!=$activity->name) || ($usedtobedescription!=$activity->description)) {
 				global $I2_SQL;
 				// This is all the data that can be changed here that the calendar
 				// module usees, so re-evealuate if any of these change.
-				if(!$activity->special) {
+				if(!$activity->calendar) {
 					$blocks=$I2_SQL->query("SELECT bid FROM eighth_block_map WHERE activityid=%d",$this->args['aid'])->fetch_all_arrays(Result::ASSOC);
 					foreach($blocks as $block) {
 						Calendar::remove_event('eighthspecial_'.$block['bid'].'_'.$this->args['aid']);
 					}
-				} elseif ($activity->special && !$usedtobespecial) {
+				} elseif ($activity->calendar && !$usedtobecalendar) {
 					$blocks=$I2_SQL->query("SELECT bid,date FROM eighth_blocks WHERE bid IN (SELECT bid FROM eighth_block_map WHERE activityid=%d);",$this->args['aid'])->fetch_all_arrays(Result::ASSOC);
 					foreach($blocks as $block) {
 						Calendar::add_event('eighthspecial_'.$block['bid'].'_'.$this->args['aid'],strtotime($block['date']),$activity->name,$activity->description);

@@ -154,6 +154,23 @@ class Calendar implements Module {
 	}
 
 	/**
+	* Add an event, interface
+	*/
+
+	function add() {
+		global $I2_USER, $I2_ARGS, $I2_SQL;
+		if(isset($_POST['action'])) {
+			
+		} else {
+			$this->template_args['groups']=array();
+			$I2_SQL->query('SELECT * FROM calendar_permissions_groups')->fetch_all_rows();
+		}
+	}
+
+	/**
+	* Get the groups a user can post to.
+	*/
+	/**
 	* Add an event
 	*/
 	static function add_event($eventid, $datestamp, $title, $text) {

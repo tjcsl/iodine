@@ -13,6 +13,7 @@ function showevent($id) {
 	disp.innerHTML=event_strings[$id];
 }
 </script>
+<a href="[<$I2_ROOT>]calendar/add">Add Event</a>
 <div class='calholder'>
 	<div style='width:100%'>
 		<div style='text-align:center;width:14%;padding-bottom:5px;padding-top:5px;float:left;border-top: 1px solid black;background-color:rgb(200,200,200);border-left:1px solid black;border-bottom:1px solid black;'>Sunday</div>
@@ -34,7 +35,7 @@ function showevent($id) {
 			<div style='float:right;border-left:1px solid black;border-bottom:1px solid black;border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;width:25px;height:20px;text-align:center;font-size:13pt'>[<$day.day>]</div>
 			<div style='margin-top:3px;margin-left:6px;margin-right:6px'>
 				[<foreach from=$day.info item=event >]
-					<a onclick="showevent('[<$event.id>]')">[<$event.title>]</a>
+					<a onclick="showevent('[<$event.id>]')">[<$event.title>]</a><br />
 				[</foreach>]
 			</div>
 		</div>
