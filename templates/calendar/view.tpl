@@ -10,11 +10,27 @@ event_strings["[<$event.id>]"]="[<$event.text|escape:'javascript'>]";
 function showevent($id) {
 	var disp = document.getElementById('popupdiv');
 	disp.style.display='block';
+	var disp = document.getElementById('popupdivcontent');
 	disp.innerHTML=event_strings[$id];
+	var holder= document.getElementById('calholder');
+	holder.style.top='-122px';
+}
+function hideevent() {
+	var disp = document.getElementById('popupdiv');
+	disp.style.display='none';
+	var holder= document.getElementById('calholder');
+	holder.style.top='0px';
 }
 </script>
-<a href="[<$I2_ROOT>]calendar/add">Add Event</a>
-<div class='calholder'>
+[<if $I2_USER->iodineUIDNumber != 9999>]
+	<a href="[<$I2_ROOT>]calendar/add">Add Event</a>
+[</if>]
+[<$extraline>]
+<div id='popupdiv'>
+<div id='popupdivcloser' onclick="hideevent()" style="float:right">X</div>
+<div id='popupdivcontent'></div>
+</div>
+<div id='calholder' class='calholder'>
 	<div style='width:100%'>
 		<div style='text-align:center;width:14%;padding-bottom:5px;padding-top:5px;float:left;border-top: 1px solid black;background-color:rgb(200,200,200);border-left:1px solid black;border-bottom:1px solid black;'>Sunday</div>
 		<div style='text-align:center;width:14%;padding-bottom:5px;padding-top:5px;float:left;border-top: 1px solid black;background-color:rgb(200,200,200);border-left:1px solid black;border-bottom:1px solid black;'>Monday</div>
@@ -43,4 +59,3 @@ function showevent($id) {
 	</div>
 [</foreach>]
 </div>
-<div id='popupdiv'></div>

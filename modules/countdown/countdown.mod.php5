@@ -51,7 +51,7 @@ Class Countdown implements Module
 		$template_args['secs']=$secs;
 		$template_args['underclass']=$underclass;
 		$template_args['negative']=$negative;
-		$disp->disp('countdown-joke.tpl',$template_args);
+		$disp->disp('countdown.tpl',$template_args);
 	}
 }
 ?>

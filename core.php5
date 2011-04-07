@@ -186,8 +186,10 @@ try {
 	 *
 	 * @global LDAP $I2_LDAP
 	 */
-	if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='feeds') {
+	if(isset($I2_ARGS[0]) && ($I2_ARGS[0]=='feeds' || ($I2_ARGS[0]=='calendar' && !$I2_AUTH->is_authenticated(TRUE)))) {
 		//don't try to bind when you're in generic mode.
+		$I2_LDAP = LDAP::get_generic_bind();
+		$I2_USER = new User(9999);
 	} else {
 		$I2_LDAP = LDAP::get_user_bind();
 

@@ -110,7 +110,7 @@ class Calendar implements Module {
 	*/
 
 	function view() {
-		global $I2_USER, $I2_ARGS, $I2_SQL;
+		global $I2_USER, $I2_ARGS, $I2_SQL, $I2_ROOT;
 		$curtime  =time();
 		if(!isset($_GET['startdate'])) {
 			$starttime=$curtime;
@@ -127,6 +127,13 @@ class Calendar implements Module {
 		$this->template_args['enddate']=$enddate;
 
 		$data = $I2_SQL->query('SELECT * FROM calendar')->fetch_all_arrays_keyed_list('day',MYSQL_ASSOC);
+		if(isset($I2_USER) && $I2_USER->iodineUIDNumber !=9999) {
+			$userdata = $I2_SQL->query('SELECT * FROM calendar_user WHERE uid=%s',$I2_USER->iodineUIDNumber)->fetch_all_arrays_keyed_list('day',MYSQL_ASSOC);
+			$data = array_merge($data,$userdata);
+			$this->template_args['extraline']='';
+		} else {
+			$this->template_args['extraline']='<link type="text/css" rel="stylesheet" href="'.$I2_ROOT.'www/extra-css/defaultnoauth.css" />';
+		}
 		$weeks=array();
 		$thisdate=$starttime;
 		for($i=0;$i<5;$i++) {
@@ -159,17 +166,83 @@ class Calendar implements Module {
 
 	function add() {
 		global $I2_USER, $I2_ARGS, $I2_SQL;
+		$this->template_args['error']='';
 		if(isset($_POST['action'])) {
-			
+			$allowed=self::get_allowed_targets();
+			$obid=time();
+			foreach($_POST['add_groups'] as $group) {
+				if(!in_array($group,$allowed)) {
+					$this->template_args['error'].="Can't post to ".$group."<br />";
+					return;
+				}
+				if($group=='self') {
+					self::add_user_event('userevent_'.$I2_USER->iodineUIDNumber.$obid,strtotime($_POST['time']),$_POST['title'],$_POST['text'],$I2_USER->iodineUIDNumber);
+				} else {
+					self::add_event('manualevent_'.$obid,strtotime($_POST['time']),$_POST['title'],$_POST['text']);
+				}
+			}
+			redirect('calendar');
 		} else {
-			$this->template_args['groups']=array();
-			$I2_SQL->query('SELECT * FROM calendar_permissions_groups')->fetch_all_rows();
+			$this->template_args['groups']=self::get_allowed_targets();
 		}
+		$this->template='add.tpl';
 	}
 
 	/**
 	* Get the groups a user can post to.
 	*/
+	static function get_allowed_targets() {
+		global $I2_USER, $I2_SQL;
+		$ret=array('self');
+		if($I2_USER->is_group_member('admin_calendar'))
+			$ret[]='1';
+		//$I2_SQL->query('SELECT * FROM calendar_permissions_groups')->fetch_all_rows();
+		return $ret;
+	}
+	/**
+	* Add a user event
+	*/
+	static function add_user_event($eventid, $datestamp, $title, $text, $uid) {
+		global $I2_SQL;
+		if(Calendar::user_event_exists($eventid)) {
+			d("Event already exists, skipping...",5);
+			return false;
+		}
+		$I2_SQL->query("INSERT INTO calendar_user (id,day,text,title,uid) VALUES (%s,%s,%s,%s,%s)",$eventid,date("Y-m-d",$datestamp),$text,$title,$uid);
+		return true;
+	}
+	/**
+	* Check if a user event exists
+	*/
+	static function user_event_exists($eventid,$uid) {
+		global $I2_SQL;
+		$data=$I2_SQL->query("SELECT * FROM calendar_user WHERE id=%s and uid=%s",$eventid,$uid)->fetch_all_arrays();
+		return count($data)>0;
+	}
+	/**
+	* Remove a user event
+	*/
+	static function remove_user_event($eventid, $uid) {
+		global $I2_SQL;
+		if(!is_string($eventid)) {
+			throw new I2Exception("Non-string event id passed to Calendar's remove_event!");
+			return false;
+		}
+		$I2_SQL->query("DELETE FROM calendar_user WHERE id=%s and uid=%s",$eventid,$uid);
+		return true;
+	}
+	/**
+	* Modify a user event
+	*/
+	static function modify_user_event($eventid,$datestamp,$title,$text,$uid) {
+		global $I2_SQL;
+		if(!Calendar::user_event_exists($eventid,$uid)) {
+			d("Event doesn't exist, skipping...",5);
+			return false;
+		}
+		$I2_SQL->query("UPDATE calendar_user SET day=%s,text=%s,title=%s,uid=%s WHERE id=%s",date("Y-m-d",$datestamp),$text,$title,$uid,$eventid);
+		return true;
+	}
 	/**
 	* Add an event
 	*/

@@ -85,9 +85,9 @@ class Auth {
 	*
 	* @return bool True if user is authenticated, False otherwise.
 	*/
-	public function is_authenticated() {
+	public function is_authenticated($skipcheck=FALSE) {
 		global $I2_ARGS;
-		if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='feeds')
+		if(!$skipcheck &&isset($I2_ARGS[0]) && ($I2_ARGS[0]=='feeds' || ($I2_ARGS[0]=='calendar')))
 			return true;
 		$this->is_master = FALSE;
 		/*
