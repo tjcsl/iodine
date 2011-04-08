@@ -124,7 +124,7 @@ class Aphorisms implements Module {
 	function init_pane() {
 		global $I2_USER,$I2_SQL,$I2_ARGS;
 		$uidnumber = FALSE;
-		$admin = $I2_USER->is_group_member('aphorisms');
+		$admin = $I2_USER->is_group_member('admin_aphorisms');
 		$this->template_args['username'] = $I2_USER->name;
 		$this->template_args['admin_aphorisms'] = $admin;
 		if (isSet($I2_ARGS[1])) {
@@ -139,6 +139,10 @@ class Aphorisms implements Module {
 				$this->template_args['info'] = Search::get_results();
 				return 'Search Results';
 			} else if($I2_ARGS[1] == 'data') {
+				if(!$admin) {
+					redirect('aphorisms');
+					return;
+				}
 				$this->template = 'data.tpl';
 				$data = $I2_SQL->query('SELECT * FROM aphorisms ORDER BY uid')->fetch_all_arrays(Result::ASSOC);
 				$this->template_args['data'] = array();
@@ -149,6 +153,10 @@ class Aphorisms implements Module {
 				}
 				usort($this->template_args['users'], array('User', 'name_cmp'));
 			} else if ($I2_ARGS[1] == 'csv') {
+				if(!$admin) {
+					redirect('aphorisms');
+					return;
+				}
 				$in_data = $I2_SQL->query('SELECT * FROM aphorisms ORDER BY uid')->fetch_all_arrays(Result::ASSOC);
 				$data = array();
 				$users = array();
