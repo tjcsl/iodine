@@ -39,6 +39,14 @@ class PollQuestion {
 			return $this->myquestion;
 		case 'answers':
 			return $this->myanswers;
+		case 'answers_randomsort':
+			$keys=array_keys($this->myanswers);
+			shuffle($keys);
+			$ret=array();
+			foreach($keys as $key) {
+				$ret[$key]=$this->myanswers[$key];
+			}
+			return $ret;
 		case 'answertype':
 			return $this->myanswertype;
 		default:
@@ -164,7 +172,7 @@ class PollQuestion {
 			$uid = $I2_USER->uid;
 		if ($this->myanswertype == 'free_response' || $this->myanswertype == 'short_response' || $this->myanswertype =='standard_other')
 			return $I2_SQL->query('SELECT written FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d',$this->mypid,$this->myqid,$uid)->fetch_single_value();
-		else if ($this->myanswertype == 'standard')
+		else if ($this->myanswertype == 'standard' || $this->myanswertype == 'standard_election')
 			return $I2_SQL->query('SELECT aid FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d',$this->mypid,$this->myqid,$uid)->fetch_single_value();
 		else if ($this->myanswertype == 'approval')
 			return $I2_SQL->query('SELECT aid FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d ORDER BY aid DESC',$this->mypid,$this->myqid,$uid)->fetch_all_single_values();
@@ -201,6 +209,7 @@ class PollQuestion {
 				$this->mypid, $this->myqid, $uid, $post);
 			break;
 		case 'standard':
+		case 'standard_election':
 			if($post >= 0) {
 				$I2_SQL->query('INSERT INTO poll_votes SET pid=%d,qid=%d,uid=%d,aid=%d',
 					$this->mypid, $this->myqid, $uid, $post);
@@ -236,6 +245,7 @@ class PollQuestion {
 		switch ($this->myanswertype) {
 		case 'standard':
 		case 'approval':
+		case 'standard_election':
 			return $I2_SQL->query('SELECT COUNT(*) FROM poll_votes '
 				.'WHERE pid=%d AND qid=%d AND aid=%d AND '.
 				'grade=%s'.$gender, $this->mypid, $this->myqid,

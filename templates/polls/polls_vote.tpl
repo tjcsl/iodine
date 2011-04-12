@@ -55,6 +55,11 @@ function checklength_andcopy(area,error,count,to) {
   [<foreach from=$q->answers key=aid item=answer>]
    <input type="radio" name="[<$q->qid>]" value="[<$aid>]" [<if $q->user_voted_for($aid)>]checked="checked" [</if>]/>[<$answer>]<br />
   [</foreach>]
+ [<elseif $q->answertype == 'standard_election'>]
+  <input type="radio" name="[<$q->qid>]" value="-1" [<if $q->user_voted_for(0)>]checked="checked" [</if>]/><em>Clear Vote</em><br />
+  [<foreach from=$q->answers_randomsort key=aid item=answer>]
+   <input type="radio" name="[<$q->qid>]" value="[<$aid>]" [<if $q->user_voted_for($aid)>]checked="checked" [</if>]/>[<$answer>]<br />
+  [</foreach>]
  [<elseif $q->answertype == 'approval' || $q->answertype == 'split_approval'>]
   [<foreach from=$q->answers key=aid item=answer>]
    <input type="checkbox" name="[<$q->qid>][]" value="[<$aid>]" [<if $q->user_voted_for($aid)>]checked="checked" [</if>]/>[<$answer>]<br />
