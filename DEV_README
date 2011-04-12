@@ -41,7 +41,7 @@ Summary of things you need installed to work on AND RUN i2 from home:
 - Python 2.3
 - Meld, xxdiff, kdiff3, or some type of decent merge program 
 - Mercurial
-- MySQL: you need the user iodine, with password 'br0m1n3', and the database 'iodine'.
+- MySQL: you need the user iodine, with the correct password, and the database 'iodine'.
 
 
 You'll only be able to log in as 'guest', unless you hack kinit.  Remember to source the MySQL files in mysql/ to create the necessary databases.
