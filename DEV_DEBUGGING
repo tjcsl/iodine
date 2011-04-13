@@ -34,3 +34,8 @@ Things 5 and above will probably always be logged to a file.
 	- Authentication babble
 9: Module loading
 	- "Loading Module XYZ"
+
+P: Profiling debug commands
+	- These are called to tell the amount of time a particular operation took server-side.
+	- Mainly for optimization
+	- enable with debug_profile = true in config.ini
