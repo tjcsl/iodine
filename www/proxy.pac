@@ -38,6 +38,10 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, ".tumblebooks.com") ||
 		dnsDomainIs(host, "hsus.cambridge.org") ||
 		dnsDomainIs(host, ".aps.org") ||
+		dnsDomainIs(host, "Rm124Camera1.tjhsst.edu") ||
+		dnsDomainIs(host, "Rm124Camera2.tjhsst.edu") ||
+		dnsDomainIs(host, "Rm124Camera3.tjhsst.edu") ||
+		dnsDomainIs(host, "Rm124IpVideo.tjhsst.edu") ||
 		dnsDomainIs(host, ".marshallcavendishdigital.com")
 
 	)

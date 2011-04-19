@@ -367,7 +367,11 @@ class Auth {
 		}
 		$template_args['posts']=$str;
 		$disp = new Display('login');
-		$disp->disp('login.tpl', $template_args); 
+		if(isset($I2_ARGS[1]) && $I2_ARGS[1]=='api') {
+			$disp->disp('login_api.tpl', $template_args);
+		} else {
+			$disp->disp('login.tpl', $template_args);
+		}
 		//$disp->disp('fb.tpl', $template_args); 
 
 		return FALSE;
