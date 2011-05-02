@@ -16,7 +16,7 @@ AID: <input type="text" name="aid"/>
 
 <form name="activities" action="[<$I2_ROOT>]eighth/sch_activity/modify/aid/[<$act->aid>]" method="post">
 <div id="eighth_room_pane">
-	<input type="text" id="eighth_room_filter" onchange="filterList(value,'eighth_room_list');" onkeyup="filterList(value,'eighth_room_list');" onsearch="filterList(value,'eighth_room_list');"/>
+	<input type="text" id="eighth_room_filter" autocomplete="off" onchange="filterList(value,'eighth_room_list');" onkeyup="filterList(value,'eighth_room_list');" onsearch="filterList(value,'eighth_room_list');"/>
 	<select id="eighth_room_list" name="rooms" size="10" multiple="multiple" onchange="do_action('add_room', 0, this.options[this.selectedIndex]); void(this.selectedIndex=-1);">
 [<foreach from=$rooms item='room'>]
 		<option value="[<$room.rid>]">[<$room.name>]</option>
@@ -25,7 +25,7 @@ AID: <input type="text" name="aid"/>
 	<span style="text-decoration: underline; cursor: pointer;" onclick="void(this.parentNode.style.display='none');">Close</span>
 </div>
 <div id="eighth_sponsor_pane">
-	<input type="text" id="eighth_sponsor_filter" onchange="filterList2(value,'eighth_sponsor_list');" onkeyup="filterList2(value,'eighth_sponsor_list');" onsearch="filterList2(value,'eighth_sponsor_list');"/>
+	<input type="text" id="eighth_sponsor_filter" autocomplete="off" onchange="filterList2(value,'eighth_sponsor_list');" onkeyup="filterList2(value,'eighth_sponsor_list');" onsearch="filterList2(value,'eighth_sponsor_list');"/>
 	<select id="eighth_sponsor_list" name="sponsors" size="10" multiple="multiple" onchange="do_action('add_sponsor', 0, this.options[this.selectedIndex]); void(this.selectedIndex=-1);">
 [<foreach from=$sponsors item='sponsor'>]
 	<option value="[<$sponsor.sid>]">[<$sponsor.name_comma>]</option>
