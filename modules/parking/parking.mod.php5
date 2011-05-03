@@ -179,7 +179,7 @@ class Parking implements Module {
 
 			$validform = true;
 			if(isset($_REQUEST['email'])) {
-				if(!ereg("^[^@]{1,64}@[^@]{1,255}$", $eaddr)) {
+				if(!preg_match("^[^@]{1,64}@[^@]{1,255}$", $eaddr)) {
 					$validform = false;
 				}
 			}
