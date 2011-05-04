@@ -121,6 +121,9 @@ class Aphorisms implements Module {
 	*                return FALSE.
 	* @abstract
 	*/
+	function ec($str) {
+		return str_replace('"','“',$str);
+	}
 	function init_pane() {
 		global $I2_USER,$I2_SQL,$I2_ARGS;
 		$uidnumber = FALSE;
@@ -165,11 +168,14 @@ class Aphorisms implements Module {
 					$data[$row['uid']] = $row;
 				}
 				usort($users, array('User', 'name_cmp'));
+				header('Pragma: ');
+				header('Content-type: text/csv; charset=utf-8');
+				header('Content-Disposition: attachment; filename="aphorisms.csv"');
 				Display::stop_display();
-				echo "|Student|\t|College|\t|College Plans|\t|National Merit Semi-finalist|\t|National Merit Finalist|\t|National Achievement|\t|Hispanic Achievement|\t|First Honor|\t|Second Honor|\t|Third Honor|\t|Aphorism|\n";
+				echo "\"Student\",\"College\",\"College Plans\",\"National Merit Semi-finalist\",\"National Merit Finalist\",\"National Achievement\",\"Hispanic Achievement\",\"First Honor\",\"Second Honor\",\"Third Honor\",\"Aphorism\"\n";
 				foreach($users as $user) {
 					$uid = $user->uid;
-					echo "|{$user->name}|\t|{$data[$uid]['college']}|\t|{$data[$uid]['collegeplans']}|\t|" . ($data[$uid]['nationalmeritsemifinalist'] ? 'Yes' : 'No') . "|\t|" . ($data[$uid]['nationalmeritfinalist'] ? 'Yes' : 'No') . "|\t|" . ($data[$uid]['nationalachievement'] ? 'Yes' : 'No') . "|\t|" . ($data[$uid]['hispanicachievement'] ? 'Yes' : 'No') . "|\t|{$data[$uid]['honor1']}|\t|{$data[$uid]['honor2']}|\t|{$data[$uid]['honor3']}|\t|{$data[$uid]['aphorism']}|\n";
+					echo "\"".$this->ec($user->name)."\",\"".$this->ec($data[$uid]['college'])."\",\"".$this->ec($data[$uid]['collegeplans'])."\",\"" . ($data[$uid]['nationalmeritsemifinalist'] ? 'Yes' : 'No') . "\",\"" . ($data[$uid]['nationalmeritfinalist'] ? 'Yes' : 'No') . "\",\"" . ($data[$uid]['nationalachievement'] ? 'Yes' : 'No') . "\",\"" . ($data[$uid]['hispanicachievement'] ? 'Yes' : 'No') . "\",\"".$this->ec($data[$uid]['honor1'])."\",\"".$this->ec($data[$uid]['honor2'])."\",\"".$this->ec($data[$uid]['honor3'])."\",\"".$this->ec($data[$uid]['aphorism'])."\"\n";
 				}
 			} else {
 				$uidnumber = $I2_ARGS[1];
