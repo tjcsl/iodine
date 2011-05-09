@@ -194,7 +194,7 @@ try {
 		try {
 			$I2_LDAP = LDAP::get_user_bind();
 		} catch(I2Exception $e) {
-			warn("Write access disabled...attempting to use generic user because of " . $e);
+			warn("Full directory access not working...attempting to use generic user because of " . $e);
 			$I2_LDAP = LDAP::get_generic_bind();
 		}
 
