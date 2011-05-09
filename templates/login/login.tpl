@@ -56,9 +56,6 @@ IE7_PNG_SUFFIX = ".png";
 					<tr>
 						<td align="right" colspan="2"><input type="submit" value="Login" /></td>
 					</tr>
-					<tr>
-						<td colspan="2" style="width:320px">UPDATE: Intranet is operating in a limited capacity due to residual issues from a power outage on 5/8. We are working on resolving this issue. If you have trouble logging in or accessing files, use one of the other methods documented on <a href="http://www.tjhsst.edu/admin/livedoc/index.php/Accessing_Your_TJ_Files_Remotely">this page</a>.<br /></td>
-					</tr>
 				</table>
 			</form>
 			<script language="javascript" type="text/javascript">
