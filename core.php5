@@ -191,7 +191,9 @@ try {
 		$I2_LDAP = LDAP::get_generic_bind();
 		$I2_USER = new User(9999);
 	} else {
-		$I2_LDAP = LDAP::get_user_bind();
+		//$I2_LDAP = LDAP::get_user_bind();
+		//temporary emergency measure
+		$I2_LDAP = LDAP::get_generic_bind();
 
 	/**
 	 * The global user info mechanism.
