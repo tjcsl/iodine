@@ -56,6 +56,9 @@ IE7_PNG_SUFFIX = ".png";
 					<tr>
 						<td align="right" colspan="2"><input type="submit" value="Login" /></td>
 					</tr>
+					<tr>
+						<td>Intranet is not currently operational, due to damage from a power outage on 5/8. We are working on resolving this issue. If you need to access files, use one of the other methods documented on <a href="http://www.tjhsst.edu/admin/livedoc/index.php/Accessing_Your_TJ_Files_Remotely">this page</a>.</td>
+					</tr>
 				</table>
 			</form>
 			<script language="javascript" type="text/javascript">

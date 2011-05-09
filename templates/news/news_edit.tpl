@@ -47,12 +47,17 @@ Your news post has been changed.<br />
  <script type="text/javascript">
 	window.onload = function() {
 		formfield = document.getElementById("RichForm").contentWindow.document;
+		if(!formfield) {
+			formfield = document.getElementById("RichForm").contentDocument;
+		}
+		alert(formfield);
 		formfield.designMode='on';
 		fillinarea();
 		page_init();
 	}
 	function fillinarea() {
 		formfield.execCommand("inserthtml",false,"[<$newsitem->text|replace:'"':"'"|replace:"\n":'<br />'>]");
+		alert("ran command");
 		var subhead = formfield.getElementsByTagName("head")[0];
 		var css = formfield.createElement("link");
 		css.setAttribute("rel", "stylesheet");
