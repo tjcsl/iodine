@@ -22,7 +22,7 @@ define('I2_VERSION', 1.00);
 /**
 * The path to the master Iodine configuration file.
 */
-define('CONFIG_FILENAME', 'config.ini');
+define('CONFIG_FILENAME', 'config.ini.php5');
 
 /**
 * The information about the memcache server.

@@ -1,6 +1,6 @@
 (^|/)\.hg($|/)
 (^|/)\.htaccess$
-(^|/)config\.ini$
+(^|/)config\.ini\.php5$
 ^update$
 ^commit$
 ^test$

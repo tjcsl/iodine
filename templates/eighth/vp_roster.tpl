@@ -1,5 +1,5 @@
 [<include file="eighth/header.tpl">]
-<div style="font-family: courier;">
+<div style="font-family: monospace;">
 Activity:&nbsp;&nbsp;&nbsp;[<if $activity->special>]SPECIAL: [</if>][<$activity->name>][<if $activity->restricted >] (R)[</if>] ([<$activity->aid>])<br />
 Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<$activity->block->date|date_format:"%B %e, %Y">], [<$activity->block->block>] block<br />
 Room(s):&nbsp;&nbsp;&nbsp;&nbsp;[<$activity->block_rooms_comma>]<br />

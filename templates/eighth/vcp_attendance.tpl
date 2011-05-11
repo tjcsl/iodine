@@ -5,7 +5,7 @@
 [<include file="eighth/block_selection.tpl" header="FALSE" title='' method='vcp_attendance' op='view' field='bid' bid=$block->bid>]
 [<include file="eighth/include_list_close.tpl">]
 </td><td style="vertical-align: top;">
-<span style="font-family: courier;">
+<span style="font-family: monospace;">
 Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<$act->block->date|date_format>], [<$act->block->block>] block<br />
 Room(s):&nbsp;&nbsp;&nbsp;&nbsp;[<$act->block_rooms_comma>]<br />
 Sponsor(s):&nbsp;[<$act->block_sponsors_comma>]<br />
