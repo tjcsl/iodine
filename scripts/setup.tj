@@ -25,12 +25,12 @@ else
 	cat .htaccess.user | sed "s/<username>/`whoami`/g" | sed "s'<home>'${HOME}'g" > .htaccess
 	echo ".htaccess created"
 fi
-if [ -f config.ini ]
+if [ -f config.ini.php5 ]
 then
-	echo "I found your config.ini, so I'll leave it alone."
+	echo "I found your config.ini.php5, so I'll leave it alone."
 else
-	cat config.user.ini | sed "s/<username>/`whoami`/g" | sed "s'<home>'${HOME}'g" > config.ini
-	echo "config.ini created"
+	cat config.user.ini | sed "s/<username>/`whoami`/g" | sed "s'<home>'${HOME}'g" > config.ini.php5
+	echo "config.ini.php5 created"
 fi
 cp scripts/update.tj update
 chmod +x update

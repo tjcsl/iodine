@@ -25,15 +25,13 @@ else
 	cat scripts/hgrc.home | sed s/\<username\>/$username/g > ${HOME}/.hgrc
 	echo "~/.hgrc created"
 fi
-if [ -f config.ini ]
+if [ -f config.ini.php5 ]
 then
-	echo "I found your config.ini, so I'll leave it alone."
+	echo "I found your config.ini.php5, so I'll leave it alone."
 else
-	sed "s/<username>/$username/g" config.user.ini > config.ini
-	#sed -i s/https://iodine\.tjhsst\.edu/http://io/g config.ini
-	sed -i -e s-\<home\>-${HOME}- config.ini
-	rm -f config.ini.tmp
-	echo "config.ini created"
+	sed "s/<username>/$username/g" config.user.ini > config.ini.php5
+	sed -i -e s-\<home\>-${HOME}- config.ini.php5
+	echo "config.ini.php5 created"
 fi
 rm -rf ${HOME}/smartycompile
 mkdir ${HOME}/smartycompile
