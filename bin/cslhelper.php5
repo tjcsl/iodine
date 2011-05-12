@@ -7,7 +7,7 @@
 * @subpackage Filecenter
 */
 
-define('CONFIG_FILENAME', 'config.ini');
+define('CONFIG_FILENAME', 'config.ini.php5');
 
 require_once('functions.inc.php5');
 

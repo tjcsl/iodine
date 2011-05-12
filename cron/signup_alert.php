@@ -1,6 +1,6 @@
 <?php
 include_once("./functions.inc.php5");
-define('CONFIG_FILENAME','config.ini');
+define('CONFIG_FILENAME','config.ini.php5');
 load_module_map();
 $I2_ERR = new Error();
 $I2_SQL = new MySQL();

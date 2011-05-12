@@ -9,7 +9,7 @@
 * @filesource
 */
 	
-define('CONFIG_FILENAME', 'config.ini');
+define('CONFIG_FILENAME', 'config.ini.php5');
 
 require_once('functions.inc.php5');
 require_once('modules/admin/modulesmapper.class.php5');

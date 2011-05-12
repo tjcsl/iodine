@@ -85,7 +85,7 @@ class Highlight implements Module {
 				  throw new I2Exception('Highlight cannot be used to read arbitrary files from the server!');
 		}
 		
-		if (strpos($filename,'config.ini')) {
+		if (strpos($filename,'config.ini.php5')) {
 				  throw new I2Exception('Highlight cannot be used to read the server config file!');
 		}
 

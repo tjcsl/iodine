@@ -8,7 +8,7 @@ $I2_FS_ROOT = substr($_SERVER['SCRIPT_FILENAME'],0,-($namelen+9));
 
 //Get the session variables from normal iodine, so that we can check authentication.
 //include $I2_FS_ROOT."modules/auth/sessiongc.mod.php5";
-define('CONFIG_FILENAME', $I2_FS_ROOT.'config.ini');
+define('CONFIG_FILENAME', $I2_FS_ROOT.'config.ini.php5');
 include $I2_FS_ROOT."functions.inc.php5";
 load_module_map();
 session_set_save_handler(array('SessionGC','open'),array('SessionGC','close'),array('SessionGC','read'),array('SessionGC','write'),array('SessionGC','destroy'),array('SessionGC','gc'));

@@ -5,7 +5,7 @@ import string
 import os
 import sys
 
-if not os.path.exists("config.ini"):
+if not os.path.exists("config.ini.php5"):
    sys.stderr.write("This program must be run from the root directory of iodine.\n")
    sys.exit(1)
 
