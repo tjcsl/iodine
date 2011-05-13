@@ -16,7 +16,7 @@ function page_init() {
 	var topheader = document.createElement("div");
 	topheader.className = "gtopbar";
 	topheader.innerHTML = "&nbsp;&nbsp;<b>Schools</b>&nbsp;&nbsp;<a href='http://postman.tjhsst.edu' target='_blank'>Calendar</a>&nbsp;&nbsp;<a href='[<$I2_ROOT>]filecenter'>Documents</a>&nbsp;&nbsp;<a href='https://webmail.tjhsst.edu' target='_blank'>Mail</a>&nbsp;&nbsp;<a href='http://publications.tjhsst.edu/tjtoday' target='_blank'>News</a>&nbsp;&nbsp;<a href='http://tjhsst.edu' target='_blank'>Web</a>";
-	document.getElementById("body").appendChild(topheader);
+	document.getElementsByTagName("body")[0].appendChild(topheader);
 	/* End top header */
 	/* Begin side links */
 	// Figure out what page we're on
@@ -65,7 +65,7 @@ function page_init() {
 	linksdiv.appendChild(eighthdiv);
 	linksdiv.appendChild(polldiv);
 	linksdiv.appendChild(maildiv);
-	document.getElementById("body").insertBefore(linksdiv,document.getElementById("intraboxes"));
+	document.getElementsByTagName("body")[0].insertBefore(linksdiv,document.getElementById("intraboxes"));
 	/* End side links */
 
 //	alert("Glinks added!"); // for debugging
@@ -86,14 +86,6 @@ function page_init() {
 	usernametext.id = "menu_username";
 	document.getElementById("menu").insertBefore(usernametext,document.getElementById("menu").firstChild);
 	/* End top right stuff */
-	/* Begin disclaimer */
-	var disclaimerdiv = document.createElement("div");
-	disclaimerdiv.appendChild(document.createElement("br"));
-	var disclaimertext = document.createElement("center");
-	disclaimertext.innerHTML = "'Google' is a registered trademark of Google Inc.";
-	disclaimerdiv.appendChild(disclaimertext);
-	document.getElementById("body").childNodes[6].appendChild(disclaimerdiv);
-	/* End disclaimer */
 	/* Begin search bar */
 	var searchformdiv = document.createElement("div");
 	searchformdiv.className = "searchformdiv";
@@ -106,6 +98,9 @@ function page_init() {
 	textfield.id="searchbox";
 	textfield.name="studentdirectory_query";
 	textfield.style.width = "300px";
+	textfield.style.outlineColor = "lightBlue";
+	textfield.style.borderWidth = "1px";
+	textfield.style.padding = "2px";
 	var searchbutton = document.createElement("input");
 	searchbutton.type="submit";
 	searchbutton.value = "Search Directory";
@@ -123,7 +118,7 @@ function page_init() {
 	searchform.appendChild(searchbutton);
 	searchform.appendChild(gsearchbutton);
 	searchformdiv.appendChild(searchform);
-	document.body.appendChild(searchformdiv);
+	document.getElementsByTagName("body")[0].appendChild(searchformdiv);
 	//document.getElementById("gsearchbutton").onclick = changeToGSearch;
 	/* End search bar */
 }

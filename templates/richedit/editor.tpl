@@ -23,14 +23,13 @@
 <script type="text/javascript">
 var formfield = null;
 var form = "form";
-window.onload = function() {
+window.addEventListener("load", function() {
 	formfield = document.getElementById('RichForm').contentWindow.document;
 	document.getElementById('RichForm').contentWindow.document.designMode='on';
-	// Need the next line for ie support :(
+	// Need the next line for IE support :(
 	formfield = document.getElementById('RichForm').contentWindow.document;
-	// End of ie redundancy
-	page_init(); // Allow the theme-specific stuff to run.
-}
+	// End of IE redundancy
+}, false);
 function doonsubmit() {
 	if(form == "form")
 		document.getElementById("text").value=formfield.body.innerHTML;

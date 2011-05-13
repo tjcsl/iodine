@@ -22,7 +22,10 @@ IE7_PNG_SUFFIX = ".png";
 <script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 <![endif]-->
 </head>
-<body onload="page_init()" id="body">
+<body>
+<script type="text/javascript">
+	window.addEventListener("load", page_init, false);
+</script>
 <div style="height:100%; width:100%; position: fixed; top:0; left: 0; visibility: hidden; z-index:3">
 <div id="chat_area" style="float:right; height:100%">
 </div>

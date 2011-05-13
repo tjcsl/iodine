@@ -45,7 +45,7 @@ Your news post has been changed.<br />
  [<include file="richedit/editor.tpl">]
  <input type="hidden" id="text" name="edit_text" />
  <script type="text/javascript">
-	window.onload = function() {
+	window.addEventListener("load", function() {
 		formfield = document.getElementById("RichForm").contentWindow.document;
 		if(!formfield) {
 			formfield = document.getElementById("RichForm").contentDocument;
@@ -53,8 +53,7 @@ Your news post has been changed.<br />
 		alert(formfield);
 		formfield.designMode='on';
 		fillinarea();
-		page_init();
-	}
+	}, false);
 	function fillinarea() {
 		formfield.execCommand("inserthtml",false,"[<$newsitem->text|replace:'"':"'"|replace:"\n":'<br />'>]");
 		alert("ran command");

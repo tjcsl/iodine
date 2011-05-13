@@ -29,7 +29,8 @@ if (window.ActiveXObject) {
 } else if (window.XMLHttpRequest) {
 	http = new XMLHttpRequest();
 }
-window.onload = function(){
+//window.onload = function(){
+window.addEventListener("load", function() {
 	// Set up tab functions
 	tabInfo.list = document.getElementById("tabs");
 	tabInfo.values = new Array();
@@ -58,9 +59,9 @@ window.onload = function(){
 	};
 	http.open('GET', load_page, true);
 	http.send(null);
-}
+}, false);
 
-window.onunload = function(){
+window.addEventListener("unload", function() {
 	if (tabInfo.all == null) // We did not download anything
 		return;
 	for (var i=0;i<tabInfo.list.childNodes.length;i++) {
@@ -83,7 +84,7 @@ window.onunload = function(){
 		arr[i] = str;
 	}
 	http.send(arr.join('&'));
-}
+}, false);
 
 // TAB FUNCTIONS
 var tabInfo = new Object();
