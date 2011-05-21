@@ -1,9 +1,8 @@
 var raptureImg;
+var raptureWidth = 700; // the width and height of the rapture img
+var raptureHeight = 483; // these should be changed if a different img is used later
 
 window.addEventListener("load", function() {
-	var raptureWidth = 700; // the width and height of the rapture img
-	var raptureHeight = 483; // these should be changed if a different img is used later
-	
 	var body = document.getElementsByTagName("body")[0];
 	body.style.WebkitBackgroundSize = "cover"; // old Safari
 	body.style.KhtmlBackgroundSize = "cover";
