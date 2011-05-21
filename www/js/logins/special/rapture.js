@@ -16,6 +16,7 @@ window.addEventListener("load", function() {
 	raptureImg.src = "http://iodine.tjhsst.edu/~2012zyaro/i2/www/pics/rapture.png";
 	raptureImg.style.width = raptureWidth + "px";
 	raptureImg.style.height = raptureHeight + "px";
+	raptureImg.style.borderWidth = "0px";
 	
 	var loginTable = document.getElementsByTagName("table")[0]; // get the login box
 	loginTable.style.position = "relative"; // ------------------- and shift
@@ -23,7 +24,7 @@ window.addEventListener("load", function() {
 
 	raptureImg.style.position = "absolute";
 	raptureImg.style.left = Math.round((window.innerWidth / 2.0) - (raptureWidth / 2.0)) + "px";
-	raptureImg.style.top = (loginTable.offsetTop - raptureHeight + 20) + "px";
+	raptureImg.style.top = (loginTable.offsetTop - raptureHeight + 17) + "px";
 
 	body.appendChild(raptureImg);
 }, false);
@@ -31,5 +32,5 @@ window.addEventListener("load", function() {
 window.addEventListener("resize", function() {
 	var loginTable = document.getElementsByTagName("table")[0];
 	raptureImg.style.left = Math.round((window.innerWidth / 2.0) - (raptureWidth / 2.0)) + "px";
-	raptureImg.style.top = (loginTable.offsetTop - raptureHeight + 20) + "px";
+	raptureImg.style.top = (loginTable.offsetTop - raptureHeight + 17) + "px";
 }, false);
