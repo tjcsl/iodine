@@ -16,6 +16,7 @@
 
 class EighthActivity {
 
+	static $membercache = array();
 	private $data = array();
 	const CANCELLED = 1;
 	const PERMISSIONS = 2;
@@ -419,12 +420,14 @@ class EighthActivity {
 				return array();
 			}
 		}
+		if(isset(self::$membercache[$this->data['aid']][$blockid]))
+			return self::$membercache[$this->data['aid']][$blockid];
 		$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d', $blockid, $this->data['aid'])->fetch_all_arrays(Result::ASSOC);
 		$tocache=array();
 		foreach($res as $row) {
 			$tocache[]=$row['userid'];
 		}
-		User::cache_users($tocache);
+		User::cache_users($tocache,array('nickname','mail','sn','givenname','graduationyear'));
 		$ret = array();
 		// Only show students who want to be found.
 		foreach ($res as $row) {
@@ -433,6 +436,7 @@ class EighthActivity {
 				$ret[] = $user->uid;
 			}
 		}
+		self::$membercache[$this->data['aid']][$blockid]=$ret;
 		return $ret;
 	}
 

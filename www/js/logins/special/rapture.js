@@ -12,7 +12,7 @@ window.addEventListener("load", function() {
 	body.style.backgroundSize = "cover"; // everything up-to-date that does not fail
 	
 	raptureImg = document.createElement("img");
-	raptureImg.src = "http://iodine.tjhsst.edu/~2012zyaro/i2/www/pics/rapture.png";
+	raptureImg.src = i2root+"www/pics/rapture.png";
 	raptureImg.style.width = raptureWidth + "px";
 	raptureImg.style.height = raptureHeight + "px";
 	raptureImg.style.borderWidth = "0px";

@@ -77,6 +77,7 @@ class User {
 					foreach ($blah as $key=>$val) {
 						$this->info[strtolower($key)] = $val;
 					}
+					$this->info['allset']=True;
 				}
 				$this->myuid = $this->info['iodineuidnumber'];
 				$_SESSION['i2_userid']=$this->myuid;
@@ -108,6 +109,7 @@ class User {
 					foreach ($blah as $key=>$val) {
 						$this->info[strtolower($key)] = $val;
 					}
+					$this->info['allset']=True;
 				} else {
 					throw new I2Exception('Invalid iodineUidNumber '.$uid);
 					//warn('Invalid iodineUidNumber '.$uid);
@@ -457,9 +459,11 @@ class User {
 		}
 		
 		d("Missed cache, name was ".$name,6);
-		$this->info['__nulls'][]=$name;
-		self::$cache[$this->myuid]['__nulls'][]=$name;
-		return NULL;
+		if($this->info['allset']) { //If all the information is initiallized, short the checks.
+			$this->info['__nulls'][]=$name;
+			self::$cache[$this->myuid]['__nulls'][]=$name;
+			return NULL;
+		}
 
 		$row = $I2_LDAP->search_base(LDAP::get_user_dn_username($this->username),$name);
 		
@@ -1410,7 +1414,7 @@ class User {
 	/**
 	* Cache all users whose uids are in the specified array or int.
 	*/
-	public static function cache_users($arr) {
+	public static function cache_users($arr,$vars=NULL) {
 		global $I2_LDAP;
 		if(!is_array($arr)) {
 			throw new I2Exception('Non-array passed to User::cache_users!');
@@ -1419,17 +1423,35 @@ class User {
 		if(empty($arr)) {
 			return true;
 		}
+		$attributes='*';
+		$allset=True;
+		if($vars && is_array($vars)) {
+			for($i=0;$i<count($vars);$i++)
+				$vars[$i]=strtolower($vars[$i]);
+			if(!in_array('iodineuidnumber',$vars))
+				$vars[]='iodineuidnumber';
+			if(!in_array('iodineuid',$vars))
+				$vars[]='iodineuid';
+			$attributes=$vars;//implode(',',$vars);
+			$allset=False;
+		}
 		$query= "(|";
 		foreach($arr as $id) {
 			$query .= "(iodineUidNumber=$id)";
 		}
-		$data = $I2_LDAP->search(LDAP::get_user_dn(),$query.")",'*');
+		$data = $I2_LDAP->search(LDAP::get_user_dn(),$query.")",$attributes);
 		while($row=$data->fetch_array(Result::ASSOC)) {
 			$index=$row['iodineUidNumber'];
 			$info=array();
 			foreach($row as $key=>$val) {
 				$info[strtolower($key)]=$val;
 			}
+			if($vars && is_array($vars)) {
+				foreach(array_diff($vars,array_keys($info)) as $var)
+					$info['__nulls'][]=$var;
+						
+			}
+			$info['allset']=$allset;
 			if(!isset($info['nickname']))//Reduce some spam a little
 				$info['__nulls'][]='nickname';
 			self::$cache[$index] = $info;
