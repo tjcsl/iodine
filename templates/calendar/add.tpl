@@ -1,16 +1,16 @@
 <!-- interface coded by Zachary "Gamer_Z." Yaro...yeah, I know it sucks -->
 <script type="text/javascript">
-	function formatDate() {
-		var year = document.getElementById("year").value;
-		var month = document.getElementById("month").value;
-		var day = document.getElementById("date").value;
-		var starttime = document.getElementById("starttimetxt").value;
-		starttime = starttime.replace(/:/g, "-");
-		var endtime = document.getElementById("endtimetxt").value;
-		endtime = endtime.replace(/:/g, "-");
+	function formatDate() { // takes input from drop-down menus and formats it the way PHP wants
+		var year = document.getElementById("year").value; // - get the year
+		var month = document.getElementById("month").value; // get the month number
+		var day = document.getElementById("date").value; // -- get the date
+		var starttime = document.getElementById("starttimetxt").value; // get the start time
+		starttime = starttime.replace(/:/g, "-"); // -------------------- replace colons with dashes
+		var endtime = document.getElementById("endtimetxt").value; // get the end time
+		endtime = endtime.replace(/:/g, "-"); // -------------------- replace those colons too
 
-		document.getElementById("starttime").value = year + "-" + month + "-" + day + " " + starttime;
-		document.getElementById("endtime").value = year + "-" + month + "-" + day + " " + endtime;
+		document.getElementById("starttime").value = year + "-" + month + "-" + day + " " + starttime; // put everything together
+		document.getElementById("endtime").value = year + "-" + month + "-" + day + " " + endtime; // --- and save the value to the hidden elements
 	}
 </script>
 <form action="[<$I2_SELF>]" method="post">
