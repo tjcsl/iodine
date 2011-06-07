@@ -18,8 +18,8 @@ called "configuring your proxy settings" and it's easy to reconfigure your inter
 the databases via our TJ server (which is also called Zeus on which there runs software for the
 intranet known as Iodine.)
 <br /><br />
-For the following directions, use the Automatic Configuration options. Only use the Manual Configuration
-options if the Automatic Configuration fails completely. If that happens, please report it to the TJ 
+For the following directions, use the Automatic Configuration options. <font color="red">Only use the Manual Configuration
+options if the Automatic Configuration fails completely.</font> If that happens, please report it to the TJ 
 Sysadmins at <a href="mailto:sysadmins@lists.tjhsst.edu">sysadmins@lists.tjhsst.edu</a>.
 <br /><br />
 The Manual Configuration options have to be set every time you want to access a database and unset every
