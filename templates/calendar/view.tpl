@@ -59,3 +59,10 @@ function hideevent() {
 	</div>
 [</foreach>]
 </div>
+<div id='dayholder' class='dayholder'>
+	[<section name=hours loop=24 start=0>]
+	<div class='hourholder' style='width:100%'>
+		[<$smarty.section.hours.iteration>]
+	</div>
+	[</section>]
+</div>

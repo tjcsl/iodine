@@ -126,14 +126,39 @@ class Calendar implements Module {
 		$this->template_args['startdate']=$startdate;
 		$this->template_args['enddate']=$enddate;
 
-		$data = $I2_SQL->query('SELECT * FROM calendar')->fetch_all_arrays_keyed_list('day',MYSQL_ASSOC);
-		if(isset($I2_USER) && $I2_USER->iodineUIDNumber !=9999) {
+		$data_time = $I2_SQL->query('SELECT * FROM calendar WHERE blocknottime=0')->fetch_all_arrays(MYSQL_ASSOC);
+		$data_block = $I2_SQL->query('SELECT * FROM calendar WHERE blocknottime=1')->fetch_all_arrays_keyed_list('blockdate',MYSQL_ASSOC);
+
+		$blocksraw = $I2_SQL->query('SELECT * FROM calendar_schedule')->fetch_all_arrays(MYSQL_ASSOC);
+		$blocks = array();
+		foreach($blocksraw as $block) {
+			$blocklist = explode('|',$block['blocksarray']);
+			//print_r($blocklist);
+			$addarray=array();
+			foreach($blocklist as $shard) {
+				$blockparts = explode(',',$shard);
+				$ret=array();
+				$ret['name']=$blockparts[0];
+				//echo "(".$block['day'].' '.$blockparts[1].")\r\n";
+				$ret['starttime']=strtotime($block['day'].' '.$blockparts[1]);
+				$ret['endtime']=strtotime($block['day'].' '.$blockparts[2]);
+				$addarray[]=$ret;
+			}
+			$blocks[$block['day']]=$addarray;
+		}
+		//print_r($blocks);
+		// TODO: Get working
+		/*if(isset($I2_USER) && $I2_USER->iodineUIDNumber !=9999) {
 			$userdata = $I2_SQL->query('SELECT * FROM calendar_user WHERE uid=%s',$I2_USER->iodineUIDNumber)->fetch_all_arrays_keyed_list('day',MYSQL_ASSOC);
 			$data = array_merge($data,$userdata);
 			$this->template_args['extraline']='';
 		} else {
 			$this->template_args['extraline']='<link type="text/css" rel="stylesheet" href="'.$I2_ROOT.'www/extra-css/defaultnoauth.css" />';
-		}
+		}*/
+		
+		$data = array();
+		
+
 		$weeks=array();
 		$thisdate=$starttime;
 		for($i=0;$i<5;$i++) {
@@ -246,13 +271,24 @@ class Calendar implements Module {
 	/**
 	* Add an event
 	*/
-	static function add_event($eventid, $datestamp, $title, $text) {
+	static function add_event($eventid,$isablock, $firsttimearg, $secondtimearg, $title, $text,$tags) {
 		global $I2_SQL;
 		if(Calendar::event_exists($eventid)) {
 			d("Event already exists, skipping...",5);
 			return false;
 		}
-		$I2_SQL->query("INSERT INTO calendar (id,day,text,title) VALUES (%s,%s,%s,%s)",$eventid,date("Y-m-d",$datestamp),$text,$title);
+		if(!is_bool($isablock)) {
+			throw new I2Exception("Invalid argument type! (isablock)");
+			return false;
+		}
+		if(is_array($tags)) {
+			$tags=implode(" ",$tags);
+		}
+		if($isablock) { // Timeslot is locked to a block, as opposed to an actual time.
+			$I2_SQL->query("INSERT INTO calendar (id,blocknottime,blockdate,startblock,endblock,title,text,tags) VALUES (%s,%i,%s,%s,%s,%s,%s,%s)",$eventid,1,date("Y-m-d",$firsttimearg),$secondtimearg[0],$secondtimearg[1],$title,$text,$tags);
+		} else { // Timeslot is locked to an actual start and end time
+			$I2_SQL->query("INSERT INTO calendar (id,blocknottime,starttime,endtime,title,text,tags) VALUES (%s,%i,%s,%s,%s,%s,%s)",$eventid,0,date("Y-m-d H:i:s",$firsttimearg),date("Y-m-d H:i:s",$secondtimearg),$title,$text,$tags);
+		}
 		return true;
 	}
 	/**
@@ -278,13 +314,74 @@ class Calendar implements Module {
 	/**
 	* Modify an event
 	*/
-	static function modify_event($eventid,$datestamp,$title,$text) {
+	static function modify_event($eventid, bool $isablock, $firsttimearg, $secondtimearg, $title, $text) {
 		global $I2_SQL;
 		if(!Calendar::event_exists($eventid)) {
 			d("Event doesn't exist, skipping...",5);
 			return false;
 		}
-		$I2_SQL->query("UPDATE calendar SET day=%s,text=%s,title=%s WHERE id=%s",date("Y-m-d",$datestamp),$text,$title,$eventid);
+		if(!is_bool($isablock)) {
+			throw new I2Exception("Invalid argument type! (isablock)");
+			return false;
+		}
+		if($isablock) { // Timeslot is locked to a block, as opposed to an actual time.
+			$I2_SQL->query("UPDATE calendar SET blocknottime=1, blockdate=%s, startblock=%s, endblock=%s, title=%s, text=%s WHERE id=%s",date("Y-m-d",$firsttimearg),$secondtimearg[0],$secondtimearg[1],$title,$text,$tags,$eventid);
+		} else { // Timeslot is locked to an actual start and end time
+			$I2_SQL->query("UPDATE calendar SET blocknottime=0, starttime=%s, endtime=%s, title=%s, text=%s WHERE id=%s",date("Y-m-d H:i:s",$firsttimearg),date("Y-m-d H:i:s",$secondtimearg),$title,$text,$eventid);
+		}
+		return true;
+	}
+	/**
+	* Add tag to an event
+	*/
+	static function set_tags($eventid,$tags) {
+		global $I2_SQL;
+		if(!Calendar::event_exists($eventid)) {
+			d("Event doesn't exist, skipping...",5);
+			return false;
+		}
+		if(!is_array($tags)) {
+			d("Tags have to be strings, skipping...",5);
+			return false;
+		}
+		//init_kittens();
+		$I2_SQL->query("UPDATE calendar SET tags=%s WHERE id=%s",implode(" ",$tags));
+		return true;
+	}
+	/**
+	* Add tag to an event
+	*/
+	static function add_tag($eventid,$tag) {
+		global $I2_SQL;
+		if(!Calendar::event_exists($eventid)) {
+			d("Event doesn't exist, skipping...",5);
+			return false;
+		}
+		if(!is_string($tag)) {
+			d("Tags have to be strings, skipping...",5);
+			return false;
+		}
+		$oldtags = $I2_SQL->query("SELECT tags FROM calendar WHERE id=%s",$eventid)->fetch_single_value();
+		$I2_SQL->query("UPDATE calendar SET tags=%s WHERE id=%s",$oldtags." ".$tag);
+		//Commented out for speed.
+		//$I2_SQL->raw_query("CREATE TABLE kittens (varchar(30) name, PRIMARY KEY('name'),INTEGER fluffiness)");
+		return true;
+	}
+	/**
+	* Remove a tag from an event
+	*/
+	static function remove_tag($eventid,$tag) {
+		global $I2_SQL;
+		if(!Calendar::event_exists($eventid)) {
+			d("Event doesn't exist, skipping...",5);
+			return false;
+		}
+		if(!is_string($tag)) {
+			d("Tags have to be strings, skipping...",5);
+			return false;
+		}
+		$oldtags = $I2_SQL->query("SELECT tags FROM calendar WHERE id=%s",$eventid)->fetch_single_value();
+		$I2_SQL->query("UPDATE calendar SET tags=%s WHERE id=%s",preg_replace(array("/".$tag." /","/ ".$tag."/","/^$tag$/"),"",$oldtags)); // KITTENS!!!!!
 		return true;
 	}
 }

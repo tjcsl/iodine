@@ -831,10 +831,8 @@ class EighthActivity {
 		/*
 		** Remove from the calendar.
 		*/
-		if($old['calendar']==1) {
-			foreach($wasscheduled as $bid) {
-				Calendar::remove_event('eighthspecial_'.$bid.'_'.$activityid);
-			}
+		foreach($wasscheduled as $bid) {
+			Calendar::remove_event('eighthspecial_'.$bid.'_'.$activityid);
 		}
 	}
 

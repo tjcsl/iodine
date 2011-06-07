@@ -1,8 +1,14 @@
 DROP TABLE IF EXISTS calendar;
 CREATE TABLE calendar (
 	id VARCHAR(30) UNIQUE NOT NULL,
-	day DATE NOT NULL,
-	title MEDIUMTEXT NOT NULL,
-	text MEDIUMTEXT NOT NULL,
-	PRIMARY KEY(`id`)
+	PRIMARY KEY(`id`),
+	blocknottime TINYINT(1) NOT NULL DEFAULT 0,
+	blockdate DATE,
+	startblock VARCHAR(3),
+	endblock VARCHAR(3),
+	starttime DATETIME,
+	endtime DATETIME,
+	title MEDIUMTEXT NOT NULL DEFAULT '',
+	text MEDIUMTEXT NOT NULL DEFAULT '',
+	tags MEDIUMTEXT NOT NULL DEFAULT ''
 );

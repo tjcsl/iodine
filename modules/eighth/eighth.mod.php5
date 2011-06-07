@@ -1078,30 +1078,74 @@ class Eighth implements Module {
 			$activity->oneaday = ($this->args['oneaday'] == 'on');
 			$activity->bothblocks = ($this->args['bothblocks'] == 'on');
 			$activity->sticky = ($this->args['sticky'] == 'on');
-			$usedtobecalendar=$activity->calendar;
+			$usedtobespecial=$activity->special;
 			$activity->special = ($this->args['special'] == 'on');
+			// This is marking it as _always_ calendarworthy
+			// Normally, you should use the individual block's calendarworthiness setting
+			$usedtobecalendar=$activity->calendar;
 			$activity->calendar = ($this->args['calendar'] == 'on');
-			if(($usedtobecalendar != $activity->calendar) || ($usedtobename!=$activity->name) || ($usedtobedescription!=$activity->description)) {
+			// All 8th period activities should have calendar events
+			// Handle the permamarking removal or addition
+			global $I2_SQL;
+			if($usedtobecalendar && !$activity->calendar) {
+				$blocks=$I2_SQL->query("SELECT bid,date FROM eighth_blocks WHERE bid IN (SELECT bid FROM eighth_block_map WHERE activityid=%d);",$this->args['aid'])->fetch_all_arrays(Result::ASSOC);
+				$blockcal=$I2_SQL->query("SELECT bid,calendar FROM eighth_block_map WHERE activityid=%d",$this->args['aid'])->fetch_array_keyed('bid','calendar');
+				foreach($blocks as $block)
+					if(!$blockcal[$block])
+						Calendar::remove_tag('eighth_'.$block['bid'].'_'.$this->args['aid'],'eighthcalendar');
+			} elseif (!$usedtobecalendar && $activity->calendar) {
+				$blocks=$I2_SQL->query("SELECT bid,date FROM eighth_blocks WHERE bid IN (SELECT bid FROM eighth_block_map WHERE activityid=%d);",$this->args['aid'])->fetch_all_arrays(Result::ASSOC);
+				foreach($blocks as $block)
+					Calendar::add_tag('eighth_'.$block['bid'].'_'.$this->args['aid'],'eighthcalendar');
+			}
+			// Special 8th periods have their own tag for the calendar
+			// It's really special
+			// Just like kittens
+			// Except not as cute or fluffy
+			if($usedtobespecial && !$activity->special) {
+				$blocks=$I2_SQL->query("SELECT bid,date FROM eighth_blocks WHERE bid IN (SELECT bid FROM eighth_block_map WHERE activityid=%d);",$this->args['aid'])->fetch_all_arrays(Result::ASSOC);
+				foreach($blocks as $block)
+					Calendar::remove_tag('eighth_'.$block['bid'].'_'.$this->args['aid'],'eighthspecial');
+			} elseif (!$usedtobespecial && $activity->special) {
+				$blocks=$I2_SQL->query("SELECT bid,date FROM eighth_blocks WHERE bid IN (SELECT bid FROM eighth_block_map WHERE activityid=%d);",$this->args['aid'])->fetch_all_arrays(Result::ASSOC);
+				foreach($blocks as $block)
+					Calendar::add_tag('eighth_'.$block['bid'].'_'.$this->args['aid'],'eighthspecial');
+			}
+			/*
+			if(!Calendar::has_matches(array('eighthspecial_',$this->args['aid']))) {
+				global $I2_SQL;
+				$blocks=$I2_SQL->query("SELECT bid,date FROM eighth_blocks WHERE bid IN (SELECT bid FROM eighth_block_map WHERE activityid=%d);",$this->args['aid'])->fetch_all_arrays(Result::ASSOC);
+				$specials=$I2_SQL->query("SELECT bid,calendar FROM eighth_block_map WHERE activityid=%d");
+				$tags=array('eighth_'.$this->args['aid']);
+				if($activity->special)
+					$tags[]='eighthspecial';
+				$tagsspecial=$tags;
+				$tagsspecial[]=array('eighth_'.$block['bid'],'eighthcalendar');
+				foreach($blocks as $block) {
+					Calendar::add_event('eighth_'.$block['bid'].'_'.$this->args['aid'],strtotime($block['date']),$activity->name,$activity->description);
+				}
+			}*/
+			/*if(($usedtobecalendar != $activity->calendar) || ($usedtobename!=$activity->name) || ($usedtobedescription!=$activity->description)) {
 				global $I2_SQL;
 				// This is all the data that can be changed here that the calendar
 				// module usees, so re-evealuate if any of these change.
 				if(!$activity->calendar) {
 					$blocks=$I2_SQL->query("SELECT bid FROM eighth_block_map WHERE activityid=%d",$this->args['aid'])->fetch_all_arrays(Result::ASSOC);
 					foreach($blocks as $block) {
-						Calendar::remove_event('eighthspecial_'.$block['bid'].'_'.$this->args['aid']);
+						Calendar::remove_event('eighth_'.$block['bid'].'_'.$this->args['aid']);
 					}
 				} elseif ($activity->calendar && !$usedtobecalendar) {
 					$blocks=$I2_SQL->query("SELECT bid,date FROM eighth_blocks WHERE bid IN (SELECT bid FROM eighth_block_map WHERE activityid=%d);",$this->args['aid'])->fetch_all_arrays(Result::ASSOC);
 					foreach($blocks as $block) {
-						Calendar::add_event('eighthspecial_'.$block['bid'].'_'.$this->args['aid'],strtotime($block['date']),$activity->name,$activity->description);
+						Calendar::add_event('eighth_'.$block['bid'].'_'.$this->args['aid'],strtotime($block['date']),$activity->name,$activity->description);
 					}
 				} else {
 					$blocks=$I2_SQL->query("SELECT bid,date FROM eighth_blocks WHERE bid IN (SELECT bid FROM eighth_block_map WHERE activityid=%d);",$this->args['aid'])->fetch_all_arrays(Result::ASSOC);
 					foreach($blocks as $block) {
-						Calendar::modify_event('eighthspecial_'.$block['bid'].'_'.$this->args['aid'],strtotime($block['date']),$activity->name,$activity->description);
+						Calendar::modify_event('eighth_'.$block['bid'].'_'.$this->args['aid'],strtotime($block['date']),$activity->name,$activity->description);
 					}
 				}
-			}
+			}*/
 			self::end_undo_transaction();
 			redirect("eighth/amr_activity/view/aid/{$this->args['aid']}");
 		}
