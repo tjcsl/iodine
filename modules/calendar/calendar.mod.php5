@@ -204,6 +204,11 @@ class Calendar implements Module {
 					self::add_user_event('userevent_'.$I2_USER->iodineUIDNumber.$obid,strtotime($_POST['time']),$_POST['title'],$_POST['text'],$I2_USER->iodineUIDNumber);
 				} else {
 					self::add_event('manualevent_'.$obid,strtotime($_POST['time']),$_POST['title'],$_POST['text']);
+					if($_POST['isablock'] && $_POST['isablock']==True) { // Locked to a block for start and end
+						self::add_event('manualevent_'.$obid,True, $_POST['date'], array($_POST['startblock'],$_POST['endblock']), $_POST['title'], $_POST['text'],$_POST['tags']);
+					} else { // Locked to a particular time
+						self::add_event('manualevent_'.$obid,False, $_POST['starttime'], $_POST['endtime'], $_POST['title'], $_POST['text'],$_POST['tags']);
+					}
 				}
 			}
 			redirect('calendar');
