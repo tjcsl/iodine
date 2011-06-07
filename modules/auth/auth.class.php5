@@ -74,301 +74,301 @@ class Auth {
 		if( !$this->is_authenticated() && !$this->login() ) {
 			die();
 		}
-	}
+		}
 
-	public function cache() {
-		return $this->cache;
-	}
+		public function cache() {
+			return $this->cache;
+		}
 
-	/**
-	* Checks the user's authentication status.
-	*
-	* @return bool True if user is authenticated, False otherwise.
-	*/
-	public function is_authenticated($skipcheck=FALSE) {
-		global $I2_ARGS;
-		if(!$skipcheck &&isset($I2_ARGS[0]) && ($I2_ARGS[0]=='feeds' || ($I2_ARGS[0]=='calendar')))
-			return true;
-		$this->is_master = FALSE;
-		/*
-		** mod_auth_kerb/WebAuth authentication
-		*/
-		if (isSet($_SERVER['REMOTE_USER'])) {
-			$_SESSION['i2_login_time'] = time();
+		/**
+		 * Checks the user's authentication status.
+		 *
+		 * @return bool True if user is authenticated, False otherwise.
+		 */
+		public function is_authenticated($skipcheck=FALSE) {
+			global $I2_ARGS;
+			if(!$skipcheck &&isset($I2_ARGS[0]) && ($I2_ARGS[0]=='feeds' || ($I2_ARGS[0]=='calendar')))
+				return true;
+			$this->is_master = FALSE;
 			/*
-			** Strip kerberos realm if necessary
-			*/
-			$user = $_SERVER['REMOTE_USER'];
-			$atpos = strpos($user,'@');
-			if ($atpos !== -1) {
-				$user = substr($user,0,$atpos);
+			 ** mod_auth_kerb/WebAuth authentication
+			 */
+			if (isSet($_SERVER['REMOTE_USER'])) {
+				$_SESSION['i2_login_time'] = time();
+				/*
+				 ** Strip kerberos realm if necessary
+				 */
+				$user = $_SERVER['REMOTE_USER'];
+				$atpos = strpos($user,'@');
+				if ($atpos !== -1) {
+					$user = substr($user,0,$atpos);
+				}
+				//$_SESSION['i2_uid'] = strtolower($user);
+				$_SESSION['i2_username'] = strtolower($user);
+				//$_SESSION['i2_uid'] = $_SERVER['WEBAUTH_LDAP_IODINEUIDNUMBER'];
+				d('Kerberos pre-auth succeeded for principal '.$_SERVER['REMOTE_USER'],8);
+				$this->cache = getenv('KRB5CCNAME');
+				return TRUE;
 			}
-			//$_SESSION['i2_uid'] = strtolower($user);
-			$_SESSION['i2_username'] = strtolower($user);
-			//$_SESSION['i2_uid'] = $_SERVER['WEBAUTH_LDAP_IODINEUIDNUMBER'];
-			d('Kerberos pre-auth succeeded for principal '.$_SERVER['REMOTE_USER'],8);
-			$this->cache = getenv('KRB5CCNAME');
+			/*
+			 ** Iodine proprietary authentication (of all kinds)
+			 */
+			//if (	isset($_SESSION['i2_uid']) 
+			if (	isset($_SESSION['i2_username']) 
+					&& isset($_SESSION['i2_login_time'])) {
+
+				$this->auth_type = $_SESSION['auth_type'];
+				$this->auth = $_SESSION['auth'];
+				$this->auth->reload();
+
+				if (self::should_autologout($_SESSION['i2_login_time'])) {
+					$this->log_out();
+					return FALSE;
+				}
+
+				$_SESSION['i2_login_time'] = time();
+				return TRUE;
+			}
+			return FALSE;
+		}
+
+		/**
+		 * Determines whether a user should be logged out.
+		 *
+		 * @param int $login_time The Unix timestamp of the user's login time.
+		 * @return bool TRUE if the user should be automatically logged out, FALSE otherwise.
+		 */
+		public static function should_autologout($login_time,$i2_username=NULL) {
+			if ($_SESSION['i2_username'] == 'eighthoffice'||$i2_username=='eighthoffice') {
+				return FALSE;
+			}
+			return ( time() > $login_time + i2config_get('timeout',600,'login') );
+		}
+
+		/**
+		 * Low-level check of a username against a password.
+		 *
+		 * This will check if $password is valid for user $user, using
+		 * the authentication method(s) specified in config.ini under the
+		 * 'Auth' section.
+		 *
+		 * The config.ini file contains a 'methods =' directive, which should
+		 * give a comma-seperated list of authentication methods. Each method
+		 * must be the name of a class implelementing the AuthType interface.
+		 * The methods will be tried in the order listed until one succeeds.
+		 *
+		 * @param string $user The username to log in.
+		 * @param string $password The password to use.
+		 * @return bool	TRUE is the user has been logged in successfully, FALSE
+		 *		otherwise.
+		 */
+		private static function validate($user,$password) {
+			global $I2_LOG;
+			$auth_methods = explode(',', i2config_get('methods',NULL,'auth'));
+
+			foreach ($auth_methods as $auth_method) {
+				if( get_i2module($auth_method) === FALSE ) {
+					throw new I2Exception(
+							'Internal error: Unimplemented authentication method '.$auth_method.' specified in the Iodine configuration.');
+				}
+
+				$auth = new $auth_method();
+				if ($auth->login($user, $password)) {
+					$_SESSION['auth_type'] = $auth_method;
+					$_SESSION['auth'] = $auth;
+					self::log_auth($user, TRUE, $auth_method);
+					return TRUE;
+				}
+			}
+
+			self::log_auth($user, FALSE, 'overall'); return FALSE;
+		}
+
+		/**
+		 * Logs a user out of the Iodine system.
+		 *
+		 * This logs out a user, performing the following tasks:
+		 * <ul>
+		 *  <li>Calls all of the functions in the $_SESSION['logout_funcs'] array</li>
+		 *  <li>Destroys all session information associated with the user</li>
+		 * </ul>
+		 *
+		 * Each item in the $_SESSION['logout_funcs'] is an array with two things:
+		 * The first index is the callback, either a function name or a callback in the
+		 * form of array('class','method');. The second index is an array of parameters.
+		 * So, if you wanted to call Class::stuff(1,2); when a user logs out, do:
+		 * <pre>$_SESSION['logout_funcs'][] = array(array('class','stuff'),array(1,2));</pre>
+		 *
+		 * The callbacks in logout_funcs are called when the user clicks the 'logout' link
+		 * or if their session times out and they try to access a page.
+		 *
+		 * @return bool TRUE if the user was successfully logged out.
+		 */
+		private function log_out() {
+			global $I2_LOG;
+
+			foreach($_SESSION['logout_funcs'] as $callback) {
+				if( is_callable($callback[0]) ) {
+					call_user_func_array($callback[0], $callback[1]);
+				}
+				else {
+					$I2_LOG->log_file('Invalid callback in the logout_funcs SESSION array, skipping it. Callback: '.print_r($callback,TRUE));
+				}
+			}
+
+			session_destroy();
+			unset($_SESSION);
+
 			return TRUE;
 		}
-		/*
-		** Iodine proprietary authentication (of all kinds)
-		*/
-		//if (	isset($_SESSION['i2_uid']) 
-		if (	isset($_SESSION['i2_username']) 
-			&& isset($_SESSION['i2_login_time'])) {
 
-			$this->auth_type = $_SESSION['auth_type'];
-			$this->auth = $_SESSION['auth'];
-			$this->auth->reload();
-			
-			if (self::should_autologout($_SESSION['i2_login_time'])) {
-				$this->log_out();
+		/**
+		 * Medium-level check of a password against a certain user.
+		 *
+		 * This method merely checks if the specified master password, and if
+		 * not, then it just calls {@link validate()} on the specified username
+		 * and password.
+		 *
+		 * @param string $user The username of the user you want to check
+		 * @param string $password The user's password
+		 * @return bool	TRUE, FALSE otherwise.
+		 */
+		public function check_user($user, $password) {
+			global $modauth_loginfailed;
+
+			// The admin should be using the master password and approved above
+			// If it gets to here, their login fails and we don't want kerberos even trying
+			if ($user == 'admin') {
 				return FALSE;
 			}
 
-			$_SESSION['i2_login_time'] = time();
-			return TRUE;
-		}
-		return FALSE;
-	}
-
-	/**
-	* Determines whether a user should be logged out.
-	*
-	* @param int $login_time The Unix timestamp of the user's login time.
-	* @return bool TRUE if the user should be automatically logged out, FALSE otherwise.
-	*/
-	public static function should_autologout($login_time,$i2_username=NULL) {
-		if ($_SESSION['i2_username'] == 'eighthoffice'||$i2_username=='eighthoffice') {
-			return FALSE;
-		}
-		return ( time() > $login_time + i2config_get('timeout',600,'login') );
-	}
-
-	/**
-	* Low-level check of a username against a password.
-	*
-	* This will check if $password is valid for user $user, using
-	* the authentication method(s) specified in config.ini under the
-	* 'Auth' section.
-	*
-	* The config.ini file contains a 'methods =' directive, which should
-	* give a comma-seperated list of authentication methods. Each method
-	* must be the name of a class implelementing the AuthType interface.
-	* The methods will be tried in the order listed until one succeeds.
-	*
-	* @param string $user The username to log in.
-	* @param string $password The password to use.
-	* @return bool	TRUE is the user has been logged in successfully, FALSE
-	*		otherwise.
-	*/
-	private static function validate($user,$password) {
-		global $I2_LOG;
-		$auth_methods = explode(',', i2config_get('methods',NULL,'auth'));
-
-		foreach ($auth_methods as $auth_method) {
-			if( get_i2module($auth_method) === FALSE ) {
-				throw new I2Exception(
-					'Internal error: Unimplemented authentication method '.$auth_method.' specified in the Iodine configuration.');
-			}
-
-			$auth = new $auth_method();
-			if ($auth->login($user, $password)) {
-				$_SESSION['auth_type'] = $auth_method;
-				$_SESSION['auth'] = $auth;
-				self::log_auth($user, TRUE, $auth_method);
+			if(self::validate($user,$password)) {
 				return TRUE;
 			}
-		}
 
-		self::log_auth($user, FALSE, 'overall'); return FALSE;
-	}
-
-	/**
-	* Logs a user out of the Iodine system.
-	*
-	* This logs out a user, performing the following tasks:
-	* <ul>
-	*  <li>Calls all of the functions in the $_SESSION['logout_funcs'] array</li>
-	*  <li>Destroys all session information associated with the user</li>
-	* </ul>
-	*
-	* Each item in the $_SESSION['logout_funcs'] is an array with two things:
-	* The first index is the callback, either a function name or a callback in the
-	* form of array('class','method');. The second index is an array of parameters.
-	* So, if you wanted to call Class::stuff(1,2); when a user logs out, do:
-	* <pre>$_SESSION['logout_funcs'][] = array(array('class','stuff'),array(1,2));</pre>
-	*
-	* The callbacks in logout_funcs are called when the user clicks the 'logout' link
-	* or if their session times out and they try to access a page.
-	*
-	* @return bool TRUE if the user was successfully logged out.
-	*/
-	private function log_out() {
-		global $I2_LOG;
-		
-		foreach($_SESSION['logout_funcs'] as $callback) {
-			if( is_callable($callback[0]) ) {
-				call_user_func_array($callback[0], $callback[1]);
-			}
-			else {
-				$I2_LOG->log_file('Invalid callback in the logout_funcs SESSION array, skipping it. Callback: '.print_r($callback,TRUE));
-			}
-		}
-		
-		session_destroy();
-		unset($_SESSION);
-		
-		return TRUE;
-	}
-	
-	/**
-	* Medium-level check of a password against a certain user.
-	*
-	* This method merely checks if the specified master password, and if
-	* not, then it just calls {@link validate()} on the specified username
-	* and password.
-	*
-	* @param string $user The username of the user you want to check
-	* @param string $password The user's password
-	* @return bool	TRUE, FALSE otherwise.
-	*/
-	public function check_user($user, $password) {
-		global $modauth_loginfailed;
-
-		// The admin should be using the master password and approved above
-		// If it gets to here, their login fails and we don't want kerberos even trying
-		if ($user == 'admin') {
+			$modauth_loginfailed = 1;
 			return FALSE;
 		}
-		
-		if(self::validate($user,$password)) {
-			return TRUE;
+
+		/**
+		 * Get an appropriate LDAP bind
+		 *
+		 * Asks the auth method that the user was logged in with to get the
+		 * correct bind from LDAP. This is because the bind is dependant on the
+		 * auth method; for example, Kerberos will get a bind using GSSAPI,
+		 * while the master password will get a simple bind.
+		 *
+		 * @return LDAP An LDAP object representing an appropriate LDAP bind
+		 */
+		public function get_ldap_bind() {
+			return $this->auth->get_ldap_bind();
 		}
 
-		$modauth_loginfailed = 1;
-		return FALSE;
-	}
+		/**
+		 * High-level interface to log a user in to the system.
+		 *
+		 * Displays the login box if the user is not logged in, and then returns
+		 * FALSE. Returns TRUE if the user had successfully logged in on the
+		 * last attempt with the login box.
+		 *
+		 * @returns bool Whether or not the user has successfully logged in.
+		 */
+		public function login() {
+			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $modauth_loginfailed;
 
-	/**
-	* Get an appropriate LDAP bind
-	*
-	* Asks the auth method that the user was logged in with to get the
-	* correct bind from LDAP. This is because the bind is dependant on the
-	* auth method; for example, Kerberos will get a bind using GSSAPI,
-	* while the master password will get a simple bind.
-	*
-	* @return LDAP An LDAP object representing an appropriate LDAP bind
-	*/
-	public function get_ldap_bind() {
-		return $this->auth->get_ldap_bind();
-	}
-
-	/**
-	* High-level interface to log a user in to the system.
-	*
-	* Displays the login box if the user is not logged in, and then returns
-	* FALSE. Returns TRUE if the user had successfully logged in on the
-	* last attempt with the login box.
-	*
-	* @returns bool Whether or not the user has successfully logged in.
-	*/
-	public function login() {
-		global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $modauth_loginfailed;
-
-		// the log function uses this to tell if the login was successful
-		// if login fails, something else will set it
-		$modauth_loginfailed = FALSE;
-
-		if(!isSet($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
-			$_SESSION['logout_funcs'] = array();
-		}
-		//$this->cache_password($_REQUEST['login_password']);
-			
-		if (isset($_REQUEST['login_username']) && isset($_REQUEST['login_password'])) {
-		
-			if (($check_result = $this->check_user($_REQUEST['login_username'],$_REQUEST['login_password']))) {
-
-				//$_SESSION['i2_uid'] = strtolower($_REQUEST['login_username']);
-				$_SESSION['i2_username'] = strtolower($_REQUEST['login_username']);
-				//$_SERVER['REMOTE_USER'] = $_REQUEST['login_username'];
-					
-				// Do not cache the password if the master password was used.
-				if($this->auth_type != 'master') {
-					$this->cache_password($_REQUEST['login_password']);
-				}
-				else {
-					$_SESSION['i2_password'] = FALSE;
-					$this->is_master = TRUE;
-				}
-					
-				//unset($_REQUEST['login_password']);
-					
-				$_SESSION['i2_login_time'] = time();
-				
-				session_regenerate_id(TRUE);
-				setcookie('PHPSESSID', '', 1, '/', '.tjhsst.edu'); /* Should fix accursed login bug */
-				setcookie('fortune',exec("fortune -s"),1,'/','.tjhsst.edu');
-
-				$redir="";
-				if(isset($_SERVER['REDIRECT_QUERY_STRING'])) {
-					$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
-					$redir = substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index);
-				}
-				redirect($redir,sizeof($_POST)>2);//If we have additional post fields, prompt to allow relay, and relay if allowed.
-				return TRUE; //never reached
-			} else {
-				// Attempted login failed
-				// $modauth_loginfailed is now set where it fails so we know why.
-				$uname = $_REQUEST['login_username'];
-			}
-		} else {
+			// the log function uses this to tell if the login was successful
+			// if login fails, something else will set it
 			$modauth_loginfailed = FALSE;
-			$uname='';
-		}
-		
-		// try to get a special image for a holiday, etc.
-		$imagearr = self::getSpecialBG();
-		$image = $imagearr[0];
-		$imagejs = $imagearr[1];
 
-		// if no special image, get a random normal one
-		if (! isset($image)) {
+			if(!isSet($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
+				$_SESSION['logout_funcs'] = array();
+			}
+			//$this->cache_password($_REQUEST['login_password']);
 
-			$images = array();
-			$dirpath = $I2_FS_ROOT . 'www/pics/logins';
-			$dir = opendir($dirpath);
-			while ($file = readdir($dir)) {
-				if (! is_dir($dirpath . '/' . $file)) {
-					$images[] = $file;
+			if (isset($_REQUEST['login_username']) && isset($_REQUEST['login_password'])) {
+
+				if (($check_result = $this->check_user($_REQUEST['login_username'],$_REQUEST['login_password']))) {
+
+					//$_SESSION['i2_uid'] = strtolower($_REQUEST['login_username']);
+					$_SESSION['i2_username'] = strtolower($_REQUEST['login_username']);
+					//$_SERVER['REMOTE_USER'] = $_REQUEST['login_username'];
+
+					// Do not cache the password if the master password was used.
+					if($this->auth_type != 'master') {
+						$this->cache_password($_REQUEST['login_password']);
+					}
+					else {
+						$_SESSION['i2_password'] = FALSE;
+						$this->is_master = TRUE;
+					}
+
+					//unset($_REQUEST['login_password']);
+
+					$_SESSION['i2_login_time'] = time();
+
+					session_regenerate_id(TRUE);
+					setcookie('PHPSESSID', '', 1, '/', '.tjhsst.edu'); /* Should fix accursed login bug */
+					setcookie('fortune',exec("fortune -s"),1,'/','.tjhsst.edu');
+
+					$redir="";
+					if(isset($_SERVER['REDIRECT_QUERY_STRING'])) {
+						$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
+						$redir = substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index);
+					}
+					redirect($redir,sizeof($_POST)>2);//If we have additional post fields, prompt to allow relay, and relay if allowed.
+					return TRUE; //never reached
+				} else {
+					// Attempted login failed
+					// $modauth_loginfailed is now set where it fails so we know why.
+					$uname = $_REQUEST['login_username'];
 				}
+			} else {
+				$modauth_loginfailed = FALSE;
+				$uname='';
 			}
 
-			$image = 'www/pics/logins/' . $images[rand(0,count($images)-1)];
-		}
-	
-		// Show the login box
-		$template_args = array(
-			'failed' => $modauth_loginfailed,
-			'uname' => $uname,
-			'bg' => $image,
-			'bgjs' => $imagejs);
-		// Save any post data that we get and pass it to the html. (except for a password field)
-		$str="";
-		foreach (array_keys($_POST) as $post) {
-			if($post!="password" && $post!="login_password")
-				if(is_array($_POST[$post])) {
-					foreach($_POST[$post] as $p) {
-						$str.="<input type='hidden' name='".$post."[]' value='".$p."' />";
+			// try to get a special image for a holiday, etc.
+			$imagearr = self::getSpecialBG();
+			$image = $imagearr[0];
+			$imagejs = $imagearr[1];
+
+			// if no special image, get a random normal one
+			if (! isset($image)) {
+
+				$images = array();
+				$dirpath = $I2_FS_ROOT . 'www/pics/logins';
+				$dir = opendir($dirpath);
+				while ($file = readdir($dir)) {
+					if (! is_dir($dirpath . '/' . $file)) {
+						$images[] = $file;
 					}
-				} else {
-					$str.="<input type='hidden' name='".$post."' value='".$_POST[$post]."' />";
 				}
-		}
-		$template_args['posts']=$str;
-		$disp = new Display('login');
-		if(isset($I2_ARGS[1]) && $I2_ARGS[1]=='api') {
-			$disp->disp('login_api.tpl', $template_args);
+
+				$image = 'www/pics/logins/' . $images[rand(0,count($images)-1)];
+			}
+
+			// Show the login box
+			$template_args = array(
+					'failed' => $modauth_loginfailed,
+					'uname' => $uname,
+					'bg' => $image,
+					'bgjs' => $imagejs);
+			// Save any post data that we get and pass it to the html. (except for a password field)
+			$str="";
+			foreach (array_keys($_POST) as $post) {
+				if($post!="password" && $post!="login_password")
+					if(is_array($_POST[$post])) {
+						foreach($_POST[$post] as $p) {
+							$str.="<input type='hidden' name='".$post."[]' value='".$p."' />";
+						}
+					} else {
+						$str.="<input type='hidden' name='".$post."' value='".$_POST[$post]."' />";
+					}
+			}
+			$template_args['posts']=$str;
+			$disp = new Display('login');
+			if(isset($I2_ARGS[1]) && $I2_ARGS[1]=='api') {
+				$disp->disp('login_api.tpl', $template_args);
 		} else {
 			$disp->disp('login.tpl', $template_args);
 		}
