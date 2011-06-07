@@ -1,4 +1,4 @@
-In order for the following links to work as expected, <b>if you are at home</b>, you first need to set your browser's proxy to <b>local.border.tjhsst.edu</b> on port <b>8080</b> (<a href="[<$I2_ROOT>]info/proxyinfo">Detailed directions</a>).
+In order for the following links to work as expected, <b>if you are at home</b>, you first need to <a href="[<$I2_ROOT>]info/proxyinfo">set your browser's proxy</a>.
 <ul>
 
 The links have been moved to the <a href="http://www.tjhsst.edu/curriculum/library/databases.php">TJHSST Library's database page</a>
