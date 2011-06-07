@@ -5,12 +5,13 @@
 		var month = document.getElementById("month").value; // get the month number
 		var day = document.getElementById("date").value; // -- get the date
 		var starttime = document.getElementById("starttimetxt").value; // get the start time
-		starttime = starttime.replace(/:/g, "-"); // -------------------- replace colons with dashes
+		//starttime = starttime.replace(/:/g, "-"); // -------------------- replace colons with dashes
 		var endtime = document.getElementById("endtimetxt").value; // get the end time
-		endtime = endtime.replace(/:/g, "-"); // -------------------- replace those colons too
+		//endtime = endtime.replace(/:/g, "-"); // -------------------- replace those colons too
 
 		document.getElementById("starttime").value = year + "-" + month + "-" + day + " " + starttime; // put everything together
 		document.getElementById("endtime").value = year + "-" + month + "-" + day + " " + endtime; // --- and save the value to the hidden elements
+		document.getElementById("justthedate").value = year + "-" + month + "-" + day;
 	}
 </script>
 <form action="[<$I2_SELF>]" method="post">
@@ -20,6 +21,7 @@
 	<br/>
 	<br/>
 	Date:
+	<input type="hidden" name="justthedate"/>
 	<select id="month" onchange="formatDate();">
 		<option value="01">January</option>
 		<option value="02">February</option>
@@ -72,21 +74,32 @@
 		<option value="2012">2012</option>
 	</select>
 	<br/>
+	<div style="border:1px solid black;margin:5px;padding:5px;width:-moz-max-content">
+	Time aligned: <input type='radio' name='blocknottime' value='false' checked='checked' /><br />
 	Start time:
 	<input type="text" value="00:00:00" id="starttimetxt" onchange="formatDate();" onkeyup="formatDate();"/>
 	&nbsp;&nbsp;&nbsp;
 	End time:
 	<input type="text" value="23:59:59" id="endtimetxt" onchange="formatDate();" onkeyup="formatDate();"/>
-	<input type="hidden" name="starttime" id="starttime" value="2011-01-01 00-00-00">
-	<input type="hidden" name="endtime" id="endtime" value="2011-01-01 23-59-59">
-	<br/>
+	<input type="hidden" name="starttime" id="starttime" value="2011-01-01 00:00:00">
+	<input type="hidden" name="endtime" id="endtime" value="2011-01-01 23:59:59">
+	</div>
+	<div style="border:1px solid black;margin:5px;padding:5px;width:-moz-max-content">
+	Block aligned: <input type='radio' name='blocknottime' value='true' /><br />
+	Starts at the start of block:
+	<input type="text" value="" id="startblock"/>
+	&nbsp;&nbsp;&nbsp;
+	Ends at the end of block:
+	<input type="text" value="" id="endblock"/>
+	</div>
+	[<*<br/>
 	<br/>
 	Groups:
 	<select id="groups" class="groups_list" name="add_groups[]">
 		[<foreach from=$groups item=group>]
 			<option value="[<$group->gid>]">[<$group->name>]</option>
 		[</foreach>]
-	</select>
+	</select>*>]
 	<br/>
 	<br/>
 	Event description:

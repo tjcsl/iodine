@@ -110,14 +110,14 @@ class Calendar implements Module {
 	*/
 
 	function view() {
-		global $I2_USER, $I2_ARGS, $I2_SQL, $I2_ROOT;
+		global $I2_USER, $I2_ARGS, $I2_SQL, $I2_ROOT, $I2_QUERY;
 		$curtime  =time();
-		if(!isset($_GET['startdate'])) {
+		if(!isset($I2_QUERY['startdate'])) {
 			$starttime=$curtime;
 			$starttime=$starttime-date('w',$starttime)*60*60*24;
 			$startdate=date("Y-m-d",$starttime);
 		} else {
-			$starttime=strtotime($_GET['startdate'],$curtime);
+			$starttime=strtotime($I2_QUERY['startdate'],$curtime);
 			$starttime=$starttime-date('w',$starttime)*60*60*24;
 			$startdate=date("Y-m-d",$starttime);
 		}
@@ -146,6 +146,11 @@ class Calendar implements Module {
 			}
 			$blocks[$block['day']]=$addarray;
 		}
+		$data = array();
+		foreach($data_time as $row) {
+			$data[date("Y-m-d",strtotime($row['starttime']))][]=array('title'=>$row['title'],'id'=>$row['id'],'text'=>$row['text']);
+		}
+		//print_r($data);
 		//print_r($blocks);
 		// TODO: Get working
 		/*if(isset($I2_USER) && $I2_USER->iodineUIDNumber !=9999) {
@@ -156,7 +161,6 @@ class Calendar implements Module {
 			$this->template_args['extraline']='<link type="text/css" rel="stylesheet" href="'.$I2_ROOT.'www/extra-css/defaultnoauth.css" />';
 		}*/
 		
-		$data = array();
 		
 
 		$weeks=array();
@@ -193,9 +197,14 @@ class Calendar implements Module {
 		global $I2_USER, $I2_ARGS, $I2_SQL;
 		$this->template_args['error']='';
 		if(isset($_POST['action'])) {
-			$allowed=self::get_allowed_targets();
+			//$allowed=self::get_allowed_targets();
 			$obid=time();
-			foreach($_POST['add_groups'] as $group) {
+			if($_POST['blocknottime'] && $_POST['blocknottime']=='true') { // Locked to a block for start and end
+				self::add_event('manualevent_'.$obid,True, $_POST['justthedate'], array($_POST['startblock'],$_POST['endblock']), $_POST['title'], $_POST['text'],'');
+			} else { // Locked to a particular time
+				self::add_event('manualevent_'.$obid,False, $_POST['starttime'], $_POST['endtime'], $_POST['title'], $_POST['text'],'');
+			}
+			/*foreach($_POST['add_groups'] as $group) {
 				if(!in_array($group,$allowed)) {
 					$this->template_args['error'].="Can't post to ".$group."<br />";
 					return;
@@ -203,15 +212,16 @@ class Calendar implements Module {
 				if($group=='self') {
 					self::add_user_event('userevent_'.$I2_USER->iodineUIDNumber.$obid,strtotime($_POST['time']),$_POST['title'],$_POST['text'],$I2_USER->iodineUIDNumber);
 				} else {
-					self::add_event('manualevent_'.$obid,strtotime($_POST['time']),$_POST['title'],$_POST['text']);
+					//self::add_event('manualevent_'.$obid,strtotime($_POST['time']),$_POST['title'],$_POST['text']);
 					if($_POST['isablock'] && $_POST['isablock']==True) { // Locked to a block for start and end
 						self::add_event('manualevent_'.$obid,True, $_POST['date'], array($_POST['startblock'],$_POST['endblock']), $_POST['title'], $_POST['text'],$_POST['tags']);
 					} else { // Locked to a particular time
 						self::add_event('manualevent_'.$obid,False, $_POST['starttime'], $_POST['endtime'], $_POST['title'], $_POST['text'],$_POST['tags']);
 					}
 				}
-			}
+			}*/
 			redirect('calendar');
+			return;
 		} else {
 			$this->template_args['groups']=self::get_allowed_targets();
 		}
@@ -282,8 +292,16 @@ class Calendar implements Module {
 			d("Event already exists, skipping...",5);
 			return false;
 		}
+		if(is_string($firsttimearg)) {
+			$firsttimearg=strtotime($firsttimearg,time());
+			echo $firsttimearg;
+		}
+		if(is_string($secondtimearg)) {
+			$secondtimearg=strtotime($secondtimearg,time());
+			echo $secondtimearg;
+		}
 		if(!is_bool($isablock)) {
-			throw new I2Exception("Invalid argument type! (isablock)");
+			throw new I2Exception("Invalid argument type! (isabool)");
 			return false;
 		}
 		if(is_array($tags)) {

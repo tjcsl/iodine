@@ -25,7 +25,7 @@ function hideevent() {
 [<if $I2_USER->iodineUIDNumber != 9999>]
 	<a href="[<$I2_ROOT>]calendar/add">Add Event</a>
 [</if>]
-[<$extraline>]
+[<*[<$extraline>]*>]
 <div id='popupdiv'>
 <div id='popupdivcloser' onclick="hideevent()" style="float:right">X</div>
 <div id='popupdivcontent'></div>
@@ -59,10 +59,11 @@ function hideevent() {
 	</div>
 [</foreach>]
 </div>
+[<*
 <div id='dayholder' class='dayholder'>
 	[<section name=hours loop=24 start=0>]
 	<div class='hourholder' style='width:100%'>
 		[<$smarty.section.hours.iteration>]
 	</div>
 	[</section>]
-</div>
+</div>*>]
