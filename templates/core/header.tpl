@@ -4,6 +4,35 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>TJHSST Intranet2[<if $title != "" >]: [<$title>][</if>]</title>
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
+<style>
+#MMcontainer {
+		position:fixed;
+bottom:0px;
+left:0px;
+right:0px;
+	  text-align:center;
+}
+#MMinner {
+		background-color: rgba(0, 0, 0, 0.5);
+		padding-top: 10px;
+		border-top-left-radius: 15px;
+		border-top-right-radius: 15px;
+display:inline-block;
+}
+#MMclock {
+width:256px;
+height:128px;
+	   background-image:url('https://www.tjhsst.edu/~2011dladwig/majoraclock/background.png');
+padding:0;
+margin:0;
+position:relative;
+}
+#MMclock img {
+position: absolute;
+}
+.MMhide { display:none; }
+</style>
+
 <script type="text/javascript">
 //Set some variables so that any script can use them.
 var i2root="[<$I2_ROOT>]";
@@ -22,7 +51,11 @@ IE7_PNG_SUFFIX = ".png";
 <script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 <![endif]-->
 </head>
+<!--<body style="background-image:url('[<$I2_ROOT>]www/pics/moon.png');
+	background-position: 79% 50%; background-repeat: no-repeat;
+	background-attachment: fixed; background-size: 20%;">-->
 <body>
+<!--<img src='[<$I2_ROOT>]www/pics/moon.png' style="margin-left:40%; position:fixed;"/>-->
 <script type="text/javascript">
 	window.addEventListener("load", page_init, false);
 </script>
