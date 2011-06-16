@@ -1,3 +1,4 @@
+[<if $I2_USER->iodineUIDNumber != 9999>]
 <div id="MMcontainer" class="MMhide">
 		<div id="MMinner">
 			<div id="MMclock">
@@ -57,3 +58,4 @@
 	</script>
 
 <embed src="http://www.tjhsst.edu/~2011pgodofsk/zelda/1-08%20Clock%20Town_%20Day%201.mp3" loop="true" autostart="true" type="text/mpeg" hidden="true" volume="70"/>
+[</if>]
