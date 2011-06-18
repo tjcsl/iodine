@@ -170,7 +170,7 @@ class Calendar implements Module {
 			for($j=0;$j<7;$j++) {
 				$weeks[$i][]=array();
 				$weeks[$i][$j]['day']=date("j",$thisdate);
-				$weeks[$i][$j]['monthodd']=(date("n",$thisdate)%2)*35+220;
+				$weeks[$i][$j]['monthodd']=date("n",$thisdate)%2;
 				/*$text="";
 				if(isset($data[date("Y-m-d",$thisdate)])) {
 					foreach($data[date("Y-m-d",$thisdate)] as $row) {

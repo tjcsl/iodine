@@ -6,7 +6,7 @@
 [<if $I2_USER->objectclass == 'tjhsstStudent'>]<a href="http://shares.tjhsst.edu/upload2.php">Upload to Windows files</a><br />[</if>]
 <a href="http://shares.tjhsst.edu/">View all Windows files</a><br />
 <a href="[<$I2_ROOT>]filecenter/main/[<if $I2_USER->objectclass == 'tjhsstStudent'>]students/[<$grad_year>][<elseif $I2_USER->objectclass == 'tjhsstTeacher'>]staff[</if>]/[<$i2_username>]/">Access your UNIX files</a><br />
-<a href="[<$I2_ROOT>]filecenter/csl/user/[<$csl_username>]/">Access your old Systems Lab files</a><br />*>]
+[<*<a href="[<$I2_ROOT>]filecenter/csl/user/[<$csl_username>]/">Access your old Systems Lab files</a><br />*>]
 [<foreach from=$otherdirs item=dir>]
 <a href="[<$dir.path>]">[<$dir.name>]</a><br />
 [</foreach>]
