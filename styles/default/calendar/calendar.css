@@ -1,0 +1,49 @@
+.calhead > div {
+	text-align:center;
+	width:14%;
+	padding-bottom:5px;
+	padding-top:5px;
+	float:left;
+	border-top: 1px solid black;
+	background-color:#ddd;
+	border-left:1px solid black;
+	border-bottom:1px solid black;
+}
+
+.calhead > div:last-child , .calweek>div:last-child {
+	border-right:1px solid black;
+}
+
+.calweek > div {
+	width:14%;
+	height:120px;
+	float:left;
+	/*background-color:rgb([<$day.monthodd>],[<$day.monthodd>],[<$day.monthodd>]);*/
+	border-left:1px solid black;
+	border-bottom:1px solid black;
+}
+
+.calweek > div.even {
+	background-color:#ddd;
+}
+
+.calholder > div:last-child {
+	border-bottom:1px solid black;
+}
+
+.calday {
+	float:right;
+	border-left:1px solid black;
+	border-bottom:1px solid black;
+	border-bottom-left-radius:5px;
+	-moz-border-radius-bottomleft:5px;
+	width:25px;
+	height:20px;
+	text-align:center;
+	font-size:13pt;
+}
+.calevents {
+	margin-top:3px;
+	margin-left:6px;
+	margin-right:6px;
+}

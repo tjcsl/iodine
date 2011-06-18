@@ -1,0 +1,23 @@
+#MMcontainer {
+	text-align:center;
+	margin:10px 6px 10px 0px;
+	background-color:rgba(0,0,0,.7);
+	border-radius:10px;
+}
+#MMclock {
+	width:256px;
+	height:128px;
+	padding:0;
+	margin:0;
+	margin-top:12px;
+	position:relative;
+}
+#MMclock img {
+	position: absolute;
+}
+#MMfinished {
+	padding: 10px;
+}
+.MMhide {
+	display:none;
+}
