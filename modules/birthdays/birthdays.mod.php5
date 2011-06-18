@@ -119,7 +119,7 @@ class Birthdays implements Module {
 		$this->tmp_ldap = $I2_LDAP;
 
 		for($i = -3; $i <= 3; $i+=1) {
-			$timestamp = strtotime(date("j F, Y",$time)." +$i days ");
+			$timestamp = strtotime("+$i day",$time);
 			$birthday = array();
 			$birthday['date'] = $timestamp;
 			$birthday['people'] = $this->get_birthdays($timestamp);
