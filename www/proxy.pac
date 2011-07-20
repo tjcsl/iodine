@@ -43,6 +43,8 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, "Rm124Camera3.tjhsst.edu") ||
 		dnsDomainIs(host, "Rm124IpVideo.tjhsst.edu") ||
 		dnsDomainIs(host, ".humanitiesebook.org") ||
+		dnsDomainIs(host, ".lib.umich.edu") ||
+		dnsDomainIs(host, ".hdl.handle.net") ||
 		dnsDomainIs(host, ".marshallcavendishdigital.com")
 
 	)
