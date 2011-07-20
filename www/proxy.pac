@@ -45,6 +45,7 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, ".humanitiesebook.org") ||
 		dnsDomainIs(host, ".lib.umich.edu") ||
 		dnsDomainIs(host, ".hdl.handle.net") ||
+		dnsDomainIs(host, ".jove.com") ||
 		dnsDomainIs(host, ".marshallcavendishdigital.com")
 
 	)
