@@ -284,6 +284,8 @@ class User {
 				if ($grade < 0) {
 					if($this->__get('objectclass')=='tjStarPresenter')
 						return 'TJStar';
+					else if($this->__get('objectclass')=='tjhsstStudent')
+						return 'graduate';
 					return 'staff';
 				}
 				return $grade;
