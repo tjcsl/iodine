@@ -1461,23 +1461,31 @@ class Eighth implements Module {
 	* @param array $this->args The arguments for the operation.
 	*/
 	public function vp_sponsor() {
-		if($this->op == '') {
-			$this->setup_sponsor_selection();
-		}
-		else if($this->op == 'view') {
-			$sponsor = new EighthSponsor($this->args['sid']);
-			$this->template = 'vp_sponsor.tpl';
-			$this->template_args['sponsor'] = $sponsor;
-			$start_date = $this->args['start_date'];
-			$this->template_args['activities'] = EighthSponsor::get_schedule($sponsor->sid,$start_date);
-			$this->template_args['print_url'] = "sid/{$this->args['sid']}";
-			$this->title = 'View Sponsor Schedule';
-		}
-		else if($this->op == 'format') {
-			$this->setup_format_selection('vp_sponsor', 'Sponsor Schedule', array('sid' => $this->args['sid']));
-		}
-		else if($this->op == 'print') {
-			EighthPrint::print_sponsor_schedule($this->args['sid'], $this->args['format']);
+		switch($this->op) {
+			case 'view':
+				if(!isset($this->args['sid']) || !is_numeric($this->args['sid'])) {
+					redirect('eighth/vp_sponsor');
+					return;
+				}
+				$sponsor = new EighthSponsor($this->args['sid']);
+				$this->template = 'vp_sponsor.tpl';
+				$this->template_args['sponsor'] = $sponsor;
+				$start_date = $this->args['start_date'];
+				$this->template_args['activities'] = EighthSponsor::get_schedule($sponsor->sid,$start_date);
+				$this->template_args['print_url'] = "sid/{$this->args['sid']}";
+				$this->title = 'View Sponsor Schedule';
+				break;
+			case 'format':
+				$this->setup_format_selection('vp_sponsor', 'Sponsor Schedule', array('sid' => $this->args['sid']));
+				break;
+			case 'print':
+				EighthPrint::print_sponsor_schedule($this->args['sid'], $this->args['format']);
+				break;
+			case '':
+				$this->setup_sponsor_selection();
+				break;
+			default:
+				redirect('eighth/vp_sponsor');
 		}
 	}
 

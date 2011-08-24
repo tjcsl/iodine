@@ -62,7 +62,7 @@ class MySQL {
 	/**
 	* A string representing all custom printf tags for mysql queries which require an argument. Each character represents a different tag.
 	*/
-	const TAGS_ARG = 'acdistTDIS';
+	const TAGS_ARG = 'acdistTDISX';
 
 	/**
 	* A string representing all custom printf tags for mysql queries which do not require an argument. Each character represents a different tag.
@@ -289,6 +289,9 @@ class MySQL {
 			case 's':
 				return '\''.mysql_real_escape_string($arg).'\'';
 				//return '\''.mysql_escape($arg).'\'';
+			case 'X':
+				// UNQUOTED STRING, use as sparingly as possible. Basically, just if the quotes mess up a regex.
+				return mysql_real_escape_string($arg);
 
 			/* array of strings */
 			case 'S':

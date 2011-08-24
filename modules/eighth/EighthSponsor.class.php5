@@ -102,24 +102,45 @@ class EighthSponsor {
 	* @return array An array of EighthActivity objects.
 	*/
 	public static function get_schedule($thissponsor,$startdate=NULL) {
-			  global $I2_SQL;
-			  if (!$startdate) {
-						 $startdate = date('Y-m-d');
-			  }
-			$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date>=%t ORDER BY eighth_blocks.date,eighth_blocks.block',$startdate);
+			global $I2_SQL;
+			if (!$startdate) {
+				$startdate = date('Y-m-d');
+			}
+			$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date>=%t AND eighth_block_map.sponsors REGEXP \'(^|,)(%d)($|,)\' ORDER BY eighth_blocks.date,eighth_blocks.block',$startdate,$thissponsor)->fetch_all_arrays(MYSQL_ASSOC);
 			$activities = array();
 			foreach($result as $activity) {
-				$sponsors = explode(',', $activity['sponsors']);
-				foreach($sponsors as $sponsor) {
-					if($sponsor == $thissponsor) {
-						$activities[] = new EighthActivity($activity['activityid'], $activity['bid']);
-					}
-				}
+				$activities[] = new EighthActivity($activity['activityid'], $activity['bid']);
 			}
 			return $activities;
-
 	}
 	
+	/**
+	* Gets a sponsor's schedule on the given date
+	* Can also handle an array of sponsors
+	*
+	* @param int $sponsor The sponsorID, can also be int[]
+	* @param string $date The date to check, in Y-m-d format
+	* @return array An array of EighthActivity objects.
+	*/
+	public static function get_schedule_on($thissponsor,$date=NULL) {
+			global $I2_SQL;
+			if (!$date) {
+				$date = date('Y-m-d');
+			}
+			if(is_array($thissponsor)) {
+				if(empty($thissponsor))
+					return array();
+				$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date=%t AND eighth_block_map.sponsors REGEXP "(^|,)(%X)($|,)" ORDER BY eighth_blocks.date,eighth_blocks.block',$date,implode("|",$thissponsor))->fetch_all_arrays(MYSQL_ASSOC);
+			} else {
+				$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date=%t AND eighth_block_map.sponsors REGEXP \'(^|,)(%d)($|,)\' ORDER BY eighth_blocks.date,eighth_blocks.block',$date,$thissponsor)->fetch_all_arrays(MYSQL_ASSOC);
+			}
+			$activities = array();
+			foreach($result as $activity) {
+				$activities[] = new EighthActivity($activity['activityid'], $activity['bid']);
+			}
+			return $activities;
+	}
+
 	/**
 	* Adds a sponsor to the list.
 	*

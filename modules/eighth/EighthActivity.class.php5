@@ -292,7 +292,7 @@ class EighthActivity {
 
 	public function num_members() {
 		global $I2_SQL;
-		return $I2_SQL->query('SELECT COUNT(bid) FROM eighth_activity_map WHERE aid=%d',$this->data['aid']);
+		return $I2_SQL->query('SELECT COUNT(bid) FROM eighth_activity_map WHERE aid=%d AND bid=%d',$this->data['aid'],$this->data['bid'])->fetch_single_value();
 	}
 
 	public static function add_members_to_activity($aid,$userids,$force = FALSE, $blockid = NULL) {

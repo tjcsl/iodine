@@ -15,7 +15,7 @@
 			<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/vp_roster/view/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_r>] - [<$activity->aid>]</a></td>
 			<td style="padding: 0px 5px;">[<$activity->comment_notsoshort>]</td>
 			<td style="padding: 0px 5px; text-align: center;">[<$activity->block_rooms_comma>]</td>
-			<td style="padiing: 0px 5px; text-align: center;">[<php>] echo count($this->_tpl_vars['activity']->members); [</php>]</td>
+			<td style="padding: 0px 5px; text-align: center;">[<$activity->num_members()>]</td>
 		</tr>
 	[</foreach>]
 	</table><br />

@@ -7,5 +7,7 @@ CREATE TABLE eighth_sponsors (
 
 	lname VARCHAR(127) NOT NULL,
 
-	pickup VARCHAR(5)
+	pickup VARCHAR(5),
+
+	userid MEDIUMINT(8) UNIQUE NOT NULL
 );
