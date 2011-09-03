@@ -42,6 +42,7 @@ IE7_PNG_SUFFIX = ".png";
 [<else>]
 			Please type your username and password to login to the Intranet.
 [</if>]
+			<div style="color:darkRed;width:400px;margin:8px 0px;text-align:center;">Note: Passwords have been reset as of 2011-09-02.  Please log in at TJ to reset your password.</div>
 			<form name="login_form" action="[<$I2_SELF>]" method="post">
 				[<$posts>]
 				<table id="login_box">
