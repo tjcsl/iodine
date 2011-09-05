@@ -132,7 +132,8 @@
 [</foreach>]
 <br />
 
-<!--<strong><span style="color:red;">NEW!</span> Relationship status:</strong>
+<span id="intrabookRelationshipStatus" style="display:none;">
+<strong><span style="color:red;">NEW!</span> Relationship status:</strong>
 <br/>
 In a relationship with:
 <select name="relationship">
@@ -144,7 +145,8 @@ In a relationship with:
 	<option value="game system" [<if $I2_USER->relationship == "game system">]selected[</if>]>game system</option>
 </select>
 <br/>
-<br/>-->
+<br/>
+</span>
 
 [</if>]
 <strong>Privacy Options</strong><br />

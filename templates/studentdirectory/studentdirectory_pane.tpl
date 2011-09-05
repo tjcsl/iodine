@@ -22,11 +22,13 @@ Username: [<$user->iodineuid>]<br />
 [</if>]
 
 <!-- April Fools' Day 2011 relationship status -->
-<!--<br/>
+<span id="intrabookRelationshipStatus" style="display:none;">
+<br/>
 <br/>
 In a relationship with:
 [<$user->relationship>]
--->
+</span>
+
 </td>
 <td valign="top">
 [<$user->fullname>][<if $user->grade != 'staff'>], Grade [<$user->grade>][<else>], on staff[</if>]<br />
