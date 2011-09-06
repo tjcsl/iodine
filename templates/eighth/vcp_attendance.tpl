@@ -27,7 +27,7 @@ Sponsor(s):&nbsp;[<$act->block_sponsors_comma>]<br />
 		</tr>
 [</foreach>]
 	</table><br />
-	[<if $is_admin>]<input type="submit" value="Update" />[</if>]
+	[<if $is_admin || $is_sponsor>]<input type="submit" value="Update" />[</if>]
 </form>
 </td></tr></table>
 <script language="javascript" type="text/javascript">

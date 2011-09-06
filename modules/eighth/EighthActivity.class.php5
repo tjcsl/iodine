@@ -429,22 +429,46 @@ class EighthActivity {
 		}
 		User::cache_users($tocache,array('nickname','mail','sn','givenname','graduationyear'));
 		$ret = array();
-		// Only show students who want to be found.
-		foreach ($res as $row) {
-			$user = new User($row['userid']);
-			if (EighthSchedule::can_view_schedule($user)) {
-				$ret[] = $user->uid;
+		// Only show students who want to be found, unless the person asking is the activity sponsor
+		if($this->is_user_sponsor($I2_USER)) {
+			foreach ($res as $row) {
+				$ret[] = $row['userid'];
+			}
+		} else {
+			foreach ($res as $row) {
+				$user = new User($row['userid']);
+				if (EighthSchedule::can_view_schedule($user)) {
+					$ret[] = $user->uid;
+				}
 			}
 		}
+		
 		self::$membercache[$this->data['aid']][$blockid]=$ret;
 		return $ret;
 	}
 
 	public static function remove_all_from_activity($aid, $blockid = NULL) {
-			  $act = new EighthActivity($aid);
-			  $act->remove_all($blockid);
+		$act = new EighthActivity($aid);
+		$act->remove_all($blockid);
 	}
 
+	/**
+	* Checks if the user is a sponsor for the activity.
+	*
+	* @access public
+	* @param int $blockid The block ID to remove them from.
+	*/
+	public function is_user_sponsor($user) {
+		global $I2_SQL;
+		if($user instanceOf User) {
+			$user=$user->iodineUIDNumber;
+		}
+		if(!(is_int($user)||(is_string($user)&&ctype_digit($user)))) {
+			throw new I2Exception("Tried to check user id for something invalid! Value was $user");
+		}
+		$hosts = $I2_SQL->query("SELECT sid FROM eighth_sponsors WHERE userid=%d",$user)->fetch_col('sid');
+		return count(array_intersect($hosts,$this->data['sponsors']))>0; // fancy obscure functions save you speed and help remove slow loops!
+	}
 	/**
 	* Removes all members from the activity.
 	*
@@ -1003,8 +1027,9 @@ class EighthActivity {
 	* @param mixed $value The value to assign to the field.
 	*/
 	public function __set($name, $value) {
-		global $I2_SQL;
-		Eighth::check_admin();
+		global $I2_SQL,$I2_USER;
+		if(!(Eighth::is_admin() || ($this->is_user_sponsor($I2_USER) && $name='attendancetaken')))
+			throw new I2Exception('Attempted to perform an unauthorized 8th-period action!');
 		if($name == 'name') {
 			$oldname = $I2_SQL->query('SELECT name FROM eighth_activities WHERE aid=%d',$this->data['aid'])->fetch_single_value();
 			$query = 'UPDATE eighth_activities SET name=%s WHERE aid=%d';

@@ -78,7 +78,7 @@ class Eighth implements Module {
 	/**
 	* The modules normal users should be able to access.
 	*/
-	private $safe_modules = array('vcp_schedule');
+	private $safe_modules = array('vcp_schedule','vcp_attendance');
 
 	/**
 	* Array to mark the beginning of an undo or redo transaction.
@@ -439,6 +439,7 @@ class Eighth implements Module {
 		
 		if(count($I2_ARGS) <= 1) {
 			if (!$this->admin) {
+				redirect();
 				return FALSE;
 			}
 			$this->template = 'pane.tpl';
@@ -1591,15 +1592,23 @@ class Eighth implements Module {
 	* @param array $this->args The arguments for the operation.
 	*/
 	public function vcp_attendance() {
+		global $I2_USER;
 		if($this->op == '') {
 			$this->setup_block_selection();
 			$this->template_args['op'] = 'activity';
 		}
 		else if($this->op == 'activity') {
+			if(!isset($this->args['bid']))
+				redirect('eighth/vcp_attendance');
 			$this->setup_activity_selection(FALSE, $this->args['bid']);
 			$this->template_args['op'] = "view/bid/{$this->args['bid']}";
 		}
 		else if($this->op == 'view') {
+			if(!isset($this->args['aid']) || !isset($this->args['bid']))
+				redirect('eighth/vcp_attendance');
+			$this->template_args['act'] = new EighthActivity($this->args['aid'], $this->args['bid']);
+			if(!(self::is_admin() || $this->template_args['act']->is_user_sponsor($I2_USER)))
+				redirect('eighth/vcp_attendance');
 			$this->setup_block_selection();
 			$this->template = 'vcp_attendance.tpl';
 			$this->template_args['op'] = "view/bid/{$this->args['bid']}";
@@ -1610,18 +1619,25 @@ class Eighth implements Module {
 			$this->template_args['absentees'] = EighthSchedule::get_absentees($this->args['bid'], $this->args['aid']);
 			$this->template_args['print_url'] = "bid/{$this->args['bid']}/aid/{$this->args['aid']}";
 			$this->template_args['is_admin'] = self::is_admin();
+			$this->template_args['is_sponsor'] = $this->template_args['act']->is_user_sponsor($I2_USER);
 			$this->title = 'View Attendance';
 		}
 		else if($this->op == 'update') {
+			if(!isset($this->args['aid']) || !isset($this->args['bid']))
+				redirect('eighth/vcp_attendance');
+			$this->template_args['act'] = new EighthActivity($this->args['aid'], $this->args['bid']);
+			$issponsor=$this->template_args['act']->is_user_sponsor($I2_USER);
+			if(!(self::is_admin() || $issponsor))
+				redirect('eighth/vcp_attendance');
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$members = $activity->members;
 			self::start_undo_transaction();
 			foreach($members as $member) {
 				if(isSet($this->args['absentees']) && is_array($this->args['absentees']) && in_array($member, $this->args['absentees'])) {
-					EighthSchedule::add_absentee($this->args['bid'], $member);
+					EighthSchedule::add_absentee($this->args['bid'], $member, $issponsor);
 				}
 				else {
-					EighthSchedule::remove_absentee($this->args['bid'], $member);
+					EighthSchedule::remove_absentee($this->args['bid'], $member, $issponsor);
 				}
 			}
 			$activity->attendancetaken = TRUE;
@@ -1629,9 +1645,19 @@ class Eighth implements Module {
 			redirect("eighth/vcp_attendance/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
 		}
 		else if($this->op == 'format') {
+			if(!isset($this->args['aid']) || !isset($this->args['bid']))
+				redirect('eighth/vcp_attendance');
+			$this->template_args['act'] = new EighthActivity($this->args['aid'], $this->args['bid']);
+			if(!(self::is_admin() || $this->template_args['act']->is_user_sponsor($I2_USER)))
+				redirect('eighth/vcp_attendance');
 			$this->setup_format_selection('vcp_attendance', 'Attendance Data', array('aid' => $this->args['aid'], 'bid' => $this->args['bid']));
 		}
 		else if($this->op == 'print') {
+			if(!isset($this->args['aid']) || !isset($this->args['bid']))
+				redirect('eighth/vcp_attendance');
+			$this->template_args['act'] = new EighthActivity($this->args['aid'], $this->args['bid']);
+			if(!(self::is_admin() || $this->template_args['act']->is_user_sponsor($I2_USER)))
+				redirect('eighth/vcp_attendance');
 			EighthPrint::print_attendance_data($this->args['aid'], $this->args['bid'], $this->args['format']);
 		}
 	}

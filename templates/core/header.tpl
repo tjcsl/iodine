@@ -45,7 +45,7 @@ IE7_PNG_SUFFIX = ".png";
 			[<elseif not $smarty.foreach.activities.first>]
 				,
 			[</if>]
-			<a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$I2_USER->uid>]/bids/[<$activity->bid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>[</foreach>].[</if>]
+			<a href="[<$I2_ROOT>]eighth/vcp_attendance/view/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>[</foreach>].[</if>]
 		<form action="[<$I2_ROOT>]eighth/vcp_schedule" method="post" name="scheduleform" id="form" style="margin: 5px 0px;">
 			<input type="hidden" name="op" value="search" />
 			Name/Student ID: <input type="text" name="name_id" id="query"/>
@@ -55,6 +55,14 @@ IE7_PNG_SUFFIX = ".png";
 	[<elseif $I2_USER->grade=="TJStar">]
 	[<elseif $I2_USER->grade=="graduate">]
 		<!--Whoohoo! An Alumn who reads the source code! You're pretty cool! --!>
+	 	[<if !empty($hosting)>]The next 8th period is [<$date>], and you are currently sponsoring 
+ 		[<foreach from=$hosting item="activity" name="activities">]
+ 			[<if $smarty.foreach.activities.last and not $smarty.foreach.activities.first>]
+				and
+			[<elseif not $smarty.foreach.activities.first>]
+				,
+			[</if>]
+			<a href="[<$I2_ROOT>]eighth/vcp_attendance/view/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>[</foreach>].[</if>]
 	[<else>]
 	 	The next 8th period is [<$date>], and you are currently signed up for 
  		[<foreach from=$activities item="activity" name="activities">]
@@ -70,7 +78,7 @@ IE7_PNG_SUFFIX = ".png";
 			[<elseif not $smarty.foreach.activities.first>]
 				,
 			[</if>]
-			<a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$I2_USER->uid>]/bids/[<$activity->bid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>[</foreach>].
+			<a href="[<$I2_ROOT>]eighth/vcp_attendance/view/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>[</foreach>].
 		[</if>]
 	[</if>]
  [</if>]

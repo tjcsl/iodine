@@ -112,9 +112,12 @@ class EighthSchedule {
 	* @param int $blockid The block ID.
 	* @param int $userid The student's user ID.
 	*/
-	public static function add_absentee($blockid, $userid) {
+	public static function add_absentee($blockid, $userid, $issponsor=FALSE) {
 		global $I2_SQL;
-		Eighth::check_admin();
+		//Eighth::check_admin();
+		$block=new EighthBlock($blockid);
+		if(!(Eighth::is_admin() || ($issponsor && strtotime($block->date) >= time()-24*60*60)))
+			throw new I2Exception('Attempted to perform an unauthorized 8th-period action!');
 		$user = new User($userid);
 		$userid = $user->uid;
 		$old = $I2_SQL->query('SELECT userid FROM eighth_absentees WHERE bid=%d AND userid=%d',$blockid,$userid)->fetch_single_value();
@@ -136,9 +139,11 @@ class EighthSchedule {
 	* @param int $blockid The block ID.
 	* @param int $userid The student's user ID.
 	*/
-	public static function remove_absentee($blockid, $userid) {
+	public static function remove_absentee($blockid, $userid, $issponsor=FALSE) {
 		global $I2_SQL;
-		Eighth::check_admin();
+		$block=new EighthBlock($blockid);
+		if(!(Eighth::is_admin() || ($issponsor && strtotime($block->date) >= time()-24*60*60)))
+			throw new I2Exception('Attempted to perform an unauthorized 8th-period action!');
 		$user = new User($userid);
 		$userid = $user->uid;
 		$old = $I2_SQL->query('SELECT userid FROM eighth_absentees WHERE bid=%d AND userid=%d', $blockid, $userid)->fetch_single_value();
