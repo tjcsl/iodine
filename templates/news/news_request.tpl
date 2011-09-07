@@ -15,7 +15,7 @@
 		<strong>Specifications for News Posts:</strong><br />
 		To increase the chances that your post comes up quickly, please mind the following:<br />
 		<ol>
-		<li>Use correct English grammar, punctuation, and spelling; <strong>do not</strong> use all caps; keep posts concise when possible.  Posts get sent out to a few hundred people via email and are viewed several thousand times. Therefore, please be at least a little professional when requesting them.</li>
+		<li>Use correct English grammar, punctuation, and spelling; <strong>do not</strong> use all caps; keep posts concise when possible, and use active voice for better clarity.  Posts get sent out to a few hundred people via email and are viewed several thousand times. Therefore, please be at least a little professional when requesting them.</li>
 		<li>If you'd like us to attach a file to the post or put in an image, please leave a note to us in the note field. If you put a publicly-accessible URL there, we'll copy the file over to intranet's servers for hosting.</li>
 		<li>If you have a link to an external website in your post, make sure that it can be accessed without having to register for that site. Facebook links that require you to have registered cannot be used for this reason, and may be omitted. This is to improve compliance with the FCPS Network User Guidelines.</li>
 		<li>If you are talking about a club, activity, or event in your post, please put the location and time in your post body. Otherwise people will have no idea where or when it is.  Please also try to make your post unique; we do not need twenty posts all titled "Free food!"</li>
