@@ -239,7 +239,13 @@ class EighthSchedule {
 	*/
 	public static function get_activities($userid, $starting_date = NULL, $number_of_days = 14,$permission_override=FALSE) {
 		global $I2_SQL, $I2_USER;
-		$user = new User($userid);
+		if(is_numeric($userid)) {
+			$user = new User($userid);
+		} else if ($userid instanceof User) {
+			$user = $userid;
+		} else {
+			throw new I2Exception("Invalid user data sent to EighthSchedule\-\>get_activities()");
+		}
 		// Only show students who want to be found.
 		if($permission_override===TRUE||EighthSchedule::can_view_schedule($user))
 		{
@@ -250,6 +256,37 @@ class EighthSchedule {
 			return $I2_SQL->query('SELECT aid,eighth_blocks.bid FROM eighth_activity_map LEFT JOIN eighth_blocks USING (bid) WHERE userid=%d AND date >= %t AND date < ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block', $userid, $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::NUM);
 		}
 		return array();  // I guess this person doesn't want to be found.
+	}
+
+	/**
+	* Gets the activities a sponsor is sponsoring on a specific date.
+	*
+	* @access public
+	* @param $userid The user ID.
+	* @param $date The date to get activities for.
+	* @return array An array of ActivityIDs and BlockIDs.
+	*/
+	public static function get_activities_sponsored($userid, $starting_date = NULL, $number_of_days = 14,$permission_override=FALSE) {
+		global $I2_SQL, $I2_USER;
+		if ($userid instanceof User) {
+			$userid = $userid->iodineUIDNumber;
+		} else if(!is_numeric($userid)) {
+			throw new I2Exception("Invalid user data sent to EighthSchedule\-\>get_activities()");
+		}
+		$hosts = $I2_SQL->query("SELECT sid FROM eighth_sponsors WHERE userid=%d",$userid)->fetch_col('sid');
+		if($starting_date == NULL) {
+			$starting_date = date('Y-m-d');
+		}
+		$res=$I2_SQL->query('SELECT activityid,eighth_blocks.bid FROM eighth_block_map LEFT JOIN eighth_blocks USING (bid) WHERE sponsors REGEXP "(^|,)(%X)($|,)" AND date >= %t AND date < ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block',implode("|",$hosts), $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::NUM);
+		// We do not want the Z-HASNOTSELECTED links in this, so we'll filter them out.
+		$ret=array();
+		$default_aid=i2config_get('default_aid','999','eighth');
+		foreach($res as $r) { // There's probably a more efficient function that does this...
+			if($r[0]!=$default_aid)
+				$ret[]=$r;
+		}
+		return $ret;
+		//return $I2_SQL->query('SELECT aid,eighth_blocks.bid FROM eighth_activity_map LEFT JOIN eighth_blocks USING (bid) WHERE userid=%d AND date >= %t AND date < ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block', $userid, $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::NUM);
 	}
 
 	/**

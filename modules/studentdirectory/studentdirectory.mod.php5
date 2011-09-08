@@ -251,6 +251,7 @@ class StudentDirectory implements Module {
 				}
 				
 				$eighth = EighthActivity::id_to_activity(EighthSchedule::get_activities($user->uid));
+				$eighthhosting = EighthActivity::id_to_activity(EighthSchedule::get_activities_sponsored($user->uid));
 
 				$this->template = 'studentdirectory_pane.tpl';
 				$this->template_args['schedule'] = $sched;
@@ -259,6 +260,7 @@ class StudentDirectory implements Module {
 				$this->template_args['im_networks'] = $im_networks;
 				$this->template_args['im_icons'] = $I2_ROOT . 'www/status/';
 				$this->template_args['eighth'] = $eighth;
+				$this->template_args['eighthhosting'] = $eighthhosting;
 				
 				if($I2_ARGS[1] == "preview")
 					$this->template_args['homecoming_may_vote'] = false;// Don't show this in the preview

@@ -393,3 +393,20 @@ To view this user's portfolio click <a href="https://shares.tjhsst.edu/PORTFOLIO
  [</foreach>]
  </table>
 [</if>]
+[<if $eighthhosting>]
+ <br /><span class="bold">Sponsoring Eighth Periods:</span><br />
+ <table cellspacing="0">
+  <tr>
+   <th>Date</th>
+   <th>Activity</th>
+   <th>Room(s)</th>
+  </tr>
+ [<foreach from=$eighthhosting item=activity>]
+  <tr class="[<cycle values="c1,c2">]">
+   <td class="directory-table">[<$activity->block->date|date_format>], [<$activity->block->block>] Block</td>
+   <td class="directory-table">[<if $activity->aid != 999>]<a href="[<$I2_ROOT>]eighth/vcp_schedule/roster/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_full_r>]</a>[<else>]HAS NOT SELECTED AN ACTIVITY[</if>]</td>
+   <td class="directory-table">[<$activity->block_rooms_comma>]</td>
+  </tr>
+ [</foreach>]
+ </table>
+[</if>]
