@@ -1266,7 +1266,7 @@ class Eighth implements Module {
 			if($this->args['is_remove']) {
 				EighthSponsor::remove_sponsor($sid);
 			} else {
-				EighthSponsor::add_sponsor($this->args['fname'], $this->args['lname'], $this->args['pickup'], $sid);
+				EighthSponsor::add_sponsor($this->args['fname'], $this->args['lname'], $this->args['pickup'], $sid, $this->args['userid']);
 			}
 			self::end_undo_transaction();
 			redirect('eighth/amr_sponsor');

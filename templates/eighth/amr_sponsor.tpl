@@ -4,6 +4,7 @@ function sponsorSelect(sid) {
         document.getElementById("fname").value = sponsorData[sid][0];
         document.getElementById("lname").value = sponsorData[sid][1];
         document.getElementById("pickup").value = sponsorData[sid][2];
+	document.getElementById("userid").value = sponsorData[sid][3];
         document.getElementById("submit").value = "Change " + sponsorData[sid][1];
 	document.getElementById("sid").value = sid;
 	document.getElementById("remove").style.visibility = "visible";
@@ -11,7 +12,7 @@ function sponsorSelect(sid) {
 }
 var sponsorData = Array();
 [<foreach from=$sponsors item='sponsor'>]
-	sponsorData[[<$sponsor.sid>]] = Array("[<$sponsor.fname>]", "[<$sponsor.lname>]", "[<$sponsor.pickup>]");
+	sponsorData[[<$sponsor.sid>]] = Array("[<$sponsor.fname>]", "[<$sponsor.lname>]", "[<$sponsor.pickup>]", "[<$sponsor.userid>]");
 [</foreach>]
 </script>
 <br /><br />
@@ -25,6 +26,8 @@ var sponsorData = Array();
 	  <td><input type="text" name="lname" id="lname" /></td></tr>
 	<tr><td>Pickup Location:</td>
 	  <td><input type="text" name="pickup" id="pickup" /></td></tr>
+	<tr><td>Iodine User ID:</td>
+	  <td><input type="text" name="userid" id="userid" /></td></tr>
 </table>
 	<input type="submit" id="submit" value="Add Sponsor" />
 	<input type="submit" id="remove" onclick="document.getElementById('is_remove').value = true" style="visibility:hidden;" />

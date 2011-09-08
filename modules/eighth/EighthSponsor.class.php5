@@ -43,7 +43,7 @@ class EighthSponsor {
 	*/
 	public static function get_all_sponsors() {
 		global $I2_SQL;
-		return $I2_SQL->query("SELECT sid,pickup,fname,lname,CONCAT(lname,', ',fname) 
+		return $I2_SQL->query("SELECT sid,pickup,fname,lname,userid,CONCAT(lname,', ',fname) 
 			AS name_comma FROM eighth_sponsors ORDER BY lname,fname")->fetch_all_arrays(Result::ASSOC);
 	}
 
@@ -150,12 +150,12 @@ class EighthSponsor {
 	* @param int $sid The SponsorID number.
 	* @return int The ID of the (potentially new) sponsor.
 	*/
-	public static function add_sponsor($fname, $lname, $pickup = NULL, $sid = NULL) {
+	public static function add_sponsor($fname, $lname, $pickup = NULL, $sid = NULL, $userid = 0) {
 		global $I2_SQL;
 		Eighth::check_admin();
 		if (!$sid) {
-			$query = 'REPLACE INTO eighth_sponsors (fname,lname,pickup) VALUES (%s,%s,%s)';
-			$queryarg = array($fname,$lname,$pickup);
+			$query = 'REPLACE INTO eighth_sponsors (fname,lname,pickup,userid) VALUES (%s,%s,%s,%d)';
+			$queryarg = array($fname,$lname,$pickup,$userid);
 			$result = $I2_SQL->query_arr($query, $queryarg);
 			$id = $result->get_insert_id();
 			$invquery = 'DELETE FROM eighth_sponsors WHERE sid=%d';
@@ -163,9 +163,9 @@ class EighthSponsor {
 			Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Add Sponsor');
 			return $id;
 		} else {
-			$old = $I2_SQL->query('SELECT fname,lname,pickup FROM eighth_sponsors WHERE sid=%d',$sid)->fetch_array(Result::ASSOC);
-			$query = 'REPLACE INTO eighth_sponsors (fname,lname,pickup,sid) VALUES (%s,%s,%s,%d)';
-			$queryarg = array($fname, $lname,$pickup, $sid);
+			$old = $I2_SQL->query('SELECT fname,lname,pickup,userid FROM eighth_sponsors WHERE sid=%d',$sid)->fetch_array(Result::ASSOC);
+			$query = 'REPLACE INTO eighth_sponsors (fname,lname,pickup,sid,userid) VALUES (%s,%s,%s,%d,%d)';
+			$queryarg = array($fname, $lname,$pickup, $sid, $userid);
 			$I2_SQL->query_arr($query, $queryarg);
 			$id = $sid;
 			if (!$old) {
@@ -173,7 +173,7 @@ class EighthSponsor {
 				$invarg = array($sid);
 			} else {
 				$invquery = $query;
-				$invarg = array($old['fname'],$old['lname'],$old['pickup'],$sid);
+				$invarg = array($old['fname'],$old['lname'],$old['pickup'],$sid,$old['userid']);
 			}
 			Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Modify Sponsor');
 			return $sid;
