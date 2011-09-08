@@ -7,9 +7,9 @@
       Eighth period is an opportunity for students to meet with other students who share a common interest, (such as intramural sports, clubs or academic teams, etc.) under the supervision of a faculty/staff representative. Teachers within each department also offer tutoring and make up work in curricular subjects at this time.  Study halls are available for those who wish to work on assignments. These activities are offered as a part of the school day so that every student may participate in some activity that interests him/her. Regular buses do not leave until after eighth period.  
 </p>
 
-<p>
-      On anchor day 8th periods (called "TA" and normally held on Mondays), students are assigned to a specific teacher/advisor (TA) within grade level. The time is used for administrative, guidance, or BBC (Building a Better Community) activities, class meetings, assemblies, video presentations, and discussions.  
-</p>
+[<*<p>
+      On anchor day 8th periods (called "TA" and normally held on Mondays), students are assigned to a specific teacher/advisor (TA) within grade level. The time is used for administrative, guidance, or BBC (Building a Better Community) activities, class meetings, assemblies, video presentations, and discussions. 
+</p>*>]
 
 <p>
       On red days (Wed. and Fri.) students sign up for a different activity for A-block (2:20PM - 3:00PM) and B-block (3:10PM - 3:50PM) or decide to participate in the same activity for both blocks. More than 150 activities are offered and the list changes from year to year and during the year depending upon student interest.  Some activities are bi-weekly, some are monthly; in general there are 70 - 80 choices for each block on any given day. The schedule is revised every eight weeks.  Most activities are student-led with the faculty/staff representative as an observer, which provides many opportunities for leadership roles for students within activities that interest them. 
