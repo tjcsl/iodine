@@ -968,6 +968,8 @@ class EighthActivity {
 					$temp_sponsors[] =  $sponsor->lname . ($sponsor->fname ? ', ' . substr($sponsor->fname, 0, 1) . '.' : '');
 				}
 				return implode(', ', $temp_sponsors);
+			case 'sponsors_obj':
+				return $sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
 			case 'pickups_comma':
 				$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
 				$temp_pickups = array();

@@ -1,7 +1,20 @@
 Roster for <b>[<$activity->name|escape:"html">]</b><br />
 Room: [<$activity->block_rooms_comma>]<br />
 Date: <b>[<$activity->block->date|date_format:"%A, %B %e %Y">]</b> Block <b>[<$activity->block->block>]</b><br />
-Sponsor(s): [<$activity->block_sponsors_comma_short>]<br />
+Sponsor(s): 
+[<foreach from=$activity->sponsors_obj item="sponsor" name="sponsors">]
+[<if $sponsor->userid != 0>]<a href="[<$I2_ROOT>]studentdirectory/info/[<$sponsor->userid>]">[</if>]
+[<$sponsor->lname>]
+[<if $sponsor->fname>]
+, [<$sponsor->fname|substr:0:1>]
+[</if>]
+[<if $sponsor->userid != 0>]</a>[</if>]
+[<if $smarty.foreach.sponsors.last and not $smarty.foreach.sponsors.first>]
+	and
+[<elseif not $smarty.foreach.sponsors.first>]
+	, 
+[</if>]
+[</foreach>]<br />
 [<assign var='inthisactivity' value=0>]
 [<foreach from=$activity->members_obj item="member">]
 	[<if $member->uid==$I2_USER->uid>]
