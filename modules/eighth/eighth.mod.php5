@@ -527,7 +527,7 @@ class Eighth implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function display_box($display) {
-		$display->disp('box-joke.tpl', $this->template_args);
+		$display->disp('box.tpl', $this->template_args);
 	}
 	
 	/**
