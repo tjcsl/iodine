@@ -274,7 +274,7 @@ class NewsItem {
 		foreach($groups as $group)
 			$groupstring .= $group->name . ", ";
 		$groupstring = substr($groupstring, 0,-2);
-		$subj = "[Iodine-news] {$title}";
+		$subj = "[Iodine-news] ".strip_tags($title);
 		$separator = "MAIL-" . md5(date("r",time()));
 		$headers = "From: " . i2config_get('news', 'intranet-news@tjhsst.edu', 'suggestion') . "\r\n";
 		//We had some problems with people's vacation messages replying to alerts.
