@@ -3035,23 +3035,57 @@ function addimage() {
 	table.insertBefore(image,table.firstChild);
 	var scroller = document.createElement("div");
 	names.sort(function() {return 0.5-Math.random()});
+	var leftFade = document.createElement("div");
+	leftFade.style.position = "absolute";
+	leftFade.style.left = "0px";
+	leftFade.style.bottom = "0px";
+	leftFade.style.height = "16px";
+	leftFade.style.width = "32px";
+	leftFade.style.display = "inline-block";
+	if (navigator.userAgent.indexOf("WebKit") != -1) {
+		leftFade.style.backgroundImage = "-webkit-linear-gradient(left, white, rgba(255,255,255,0))";
+	} else if (navigator.userAgent.indexOf("Gecko") != -1) {
+		leftFade.style.backgroundImage = "-moz-linear-gradient(left, white, rgba(255,255,255,0))";
+	} else if (navigator.userAgent.indexOf("MSIE") != -1) {
+		leftFade.style.backgroundImage = "-ms-linear-gradient(left, white, rgba(255,255,255,0))";
+	} else {
+		leftFade.style.backgroundImage = "linear-gradient(left, white, rgba(255,255,255,0))";
+	}
+	var rightFade = document.createElement("div");
+	rightFade.style.position = "absolute";
+	rightFade.style.right = "0px";
+	rightFade.style.bottom = "0px";
+	rightFade.style.height = "16px";
+	rightFade.style.width = "32px";
+	rightFade.style.display = "inline-block";
+	if (navigator.userAgent.indexOf("WebKit") != -1) {
+		rightFade.style.backgroundImage = "-webkit-linear-gradient(right, white, rgba(255,255,255,0))";
+	} else if (navigator.userAgent.indexOf("Gecko") != -1) {
+		rightFade.style.backgroundImage = "-moz-linear-gradient(right, white, rgba(255,255,255,0))";
+	} else if (navigator.userAgent.indexOf("MSIE") != -1) {
+		rightFade.style.backgroundImage = "-ms-linear-gradient(right, white, rgba(255,255,255,0))";
+	} else {
+		rightFade.style.backgroundImage = "linear-gradient(right, white, rgba(255,255,255,0))";
+	}
 	var namebox= document.createElement("marquee");
 	namebox.style.position="relative";
 	namebox.style.whiteSpace="nowrap";
-	namebox.setAttribute("scrollAmount","2");
-	namebox.setAttribute("scrollDelay","50");
+	namebox.setAttribute("scrollamount","1");
+	namebox.setAttribute("scrolldelay","1");
 	namebox.innerHTML = names.join("\t&middot;\t");
-	scroller.style.backgroundColor="#DDDDDD";
+	scroller.style.backgroundColor="white";
 	scroller.style.overflow="hidden";
 	scroller.style.position="fixed";
 	scroller.style.zIndex="-1";
-	scroller.style.width="100%";
 	scroller.style.height="20px";
 	scroller.style.bottom="0px";
-	scroller.style.left="0px";
+	scroller.style.left="32px";
+	scroller.style.right="32px";
 	scroller.id="scroller";
 	scroller.appendChild(namebox);
+	scroller.appendChild(leftFade);
+	scroller.appendChild(rightFade);
 	document.body.appendChild(scroller);
 	document.getElementById("verisign_box").style.bottom="30px";
 }
-window.onload=addimage;
+window.addEventListener("load", addimage);
