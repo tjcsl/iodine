@@ -3023,9 +3023,6 @@ var names = ["Gordon M. Aamoth, Jr.",
 "Deborah Ann Jacobs Welsh",
 "Kristin Gould White"];
 
-var namebox;
-var pos=0;//window.innerWidth;
-
 function addimage() {
 	var table=document.body.childNodes[7];
 	var image = document.createElement("img");
@@ -3038,9 +3035,11 @@ function addimage() {
 	table.insertBefore(image,table.firstChild);
 	var scroller = document.createElement("div");
 	names.sort(function() {return 0.5-Math.random()});
-	namebox= document.createElement("div");
+	var namebox= document.createElement("marquee");
 	namebox.style.position="relative";
 	namebox.style.whiteSpace="nowrap";
+	namebox.setAttribute("scrollAmount","2");
+	namebox.setAttribute("scrollDelay","50");
 	namebox.innerHTML = names.join("\t&middot;\t");
 	scroller.style.backgroundColor="#DDDDDD";
 	scroller.style.overflow="hidden";
@@ -3054,11 +3053,5 @@ function addimage() {
 	scroller.appendChild(namebox);
 	document.body.appendChild(scroller);
 	document.getElementById("verisign_box").style.bottom="30px";
-	window.setTimeout("scroll()",50);
-}
-function scroll() {
-	pos-=2;
-	namebox.style.left=pos+"px";
-	window.setTimeout("scroll()",50);
 }
 window.onload=addimage;
