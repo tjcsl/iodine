@@ -67,7 +67,7 @@ IE7_PNG_SUFFIX = ".png";
 		</td>
 	</tr>
 </table>
-<div class="box" style="position: fixed; bottom: 10px; right: 10px; padding: 0px;">
+<div id="verisign_box" class="box" style="position: fixed; bottom: 10px; right: 10px; padding: 0px;">
 <table width="100" border="0" cellpadding="2" cellspacing="0" title="Click to Verify - This site chose VeriSign SSL for secure confidential communications.">
 <tr>
 <td width="100" align="center" valign="top"><script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=iodine.tjhsst.edu&amp;size=S&amp;use_flash=NO&amp;use_transparent=YES&amp;lang=en"></script><br />
