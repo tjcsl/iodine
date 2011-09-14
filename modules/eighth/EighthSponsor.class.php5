@@ -153,8 +153,13 @@ class EighthSponsor {
 	public static function add_sponsor($fname, $lname, $pickup = NULL, $sid = NULL, $userid = 0) {
 		global $I2_SQL;
 		Eighth::check_admin();
+		if(is_int($userid)) {
+			$userid="".$userid;
+		}elseif(!is_numeric($userid)) {
+			$userid="0";
+		}
 		if (!$sid) {
-			$query = 'REPLACE INTO eighth_sponsors (fname,lname,pickup,userid) VALUES (%s,%s,%s,%d)';
+			$query = 'REPLACE INTO eighth_sponsors (fname,lname,pickup,userid) VALUES (%s,%s,%s,%s)';
 			$queryarg = array($fname,$lname,$pickup,$userid);
 			$result = $I2_SQL->query_arr($query, $queryarg);
 			$id = $result->get_insert_id();
