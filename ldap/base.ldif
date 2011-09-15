@@ -30,6 +30,19 @@ objectClass: organizationalUnit
 ou: rooms
 description: Rooms in the building
 
+dn: cn=admins,dc=tjhsst,dc=edu
+objectClass: groupOfURLs
+cn: admins
+memberURL: ldap:///ou=people,dc=tjhsst,dc=edu??one?is-admin=TRUE
+description: Superhuman beings
+
+dn: cn=teachers,dc=tjhsst,dc=edu
+objectClass: top
+objectClass: groupOfURLs
+cn: teachers
+memberURL: ldap:///ou=people,dc=tjhsst,dc=edu??one?objectclass=tjhsstTeacher
+description: Teachers
+
 dn: iodineUid=admin,ou=people,dc=tjhsst,dc=edu
 objectClass: fakeUser
 iodineUid: admin
