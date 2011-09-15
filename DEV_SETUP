@@ -57,3 +57,20 @@ PHP Configuration:
 Current issues:
    * The following warning in CLI PHP can be ignored:
 	  PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20060613+lfs/sybase_ct.so' - /usr/lib/php5/20060613+lfs/sybase_ct.so: cannot open shared object file: No such file or directory in Unknown on line 0
+
+LDAP Configuration:
+   In order to have LDAP not barf all over you, you have to have the 
+   following schema included:
+   * core
+   * cosine (if you have sound support)
+   * nis
+   * inetorgperson
+   * dyngroup
+   * iodine
+   If you fail to have one of these imported, slapd will segfault
+   without any error messages. You then need to add a line to include
+   intranet's slapd.acl. This also has a possibility of bringing
+   about silent segfaults; it is recommended to do this one step at
+   a time.
+
+   TODO: Add notes on setting up authentication.
