@@ -96,7 +96,7 @@ If you are asked to log in by a particular database, please <strong>report it to
 
 <h3>Mozilla Firefox 3.x and 4.x</h3>
 <ol>
-  <li>For Windows, click on the &ldquo;Tools&rdquo; or &ldquo;Firefox&rdquo; <span style="font-size:smaller;">(FF4 only)</span> menu, then on &ldquo;Options.&rdquo;  For Mac OS X/Linux, click on the &ldquo;Edit&rdquo; or &ldquo;Firefox&rdquo; <span style="font-size:smaller;">(FF4 only)</span> menu, then on &ldquo;Preferences.&rdquo;</li>
+  <li>For Windows, click on the &ldquo;Tools&rdquo; or &ldquo;Firefox&rdquo; menu, then on &ldquo;Options.&rdquo;  For Mac OS X/Linux, click on the &ldquo;Edit&rdquo; or &ldquo;Firefox&rdquo; menu, then on &ldquo;Preferences.&rdquo;</li>
   <li>Select the &ldquo;Advanced&rdquo; tab, then the &ldquo;Network&rdquo; sub-tab.</li>
   <li>In the &ldquo;Connection&rdquo; section, click the &ldquo;Settings...&rdquo; button.</li>
   <li>Automatic Configuration:
