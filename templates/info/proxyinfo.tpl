@@ -58,7 +58,7 @@ If you are asked to log in by a particular database, please <strong>report it to
   </li>
   <li> Click on OK to close the proxy settings window, then click Ok to close the Internet Options window. </li>
   <li> Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
-  <li> When prompted for a username and password, put in your Intranet username and password. </li>
+  <li> When prompted for a username and password, put in your Intranet username and password. <span style="color:red;font-weight:bold">IMPORTANT if you are running Windows Vista or Windows 7</span>: you will need to enter LOCAL\username (eg: LOCAL\jdoe). This is specific to Internet Explorer on Windows Vista/7.</li>
   <li> You should now have access to the TJHSST Databases. </li>
   <li> <span style="color:red;font-weight:bold;">Manual Configuration ONLY</span>: when you are done using the TJHSST Databases, you will need to go back and uncheck the box next to "Use a proxy server" in order to access websites besides the databases.</li>
 </ol>
