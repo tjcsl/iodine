@@ -6,7 +6,7 @@
 [<include file="eighth/include_list_close.tpl">]
 </td><td style="vertical-align: top;">
 <div style="position:relative;top:-2.5ex;">
-Call-in numbers: x5046 x 2023 x5076 x5078
+Call-in numbers: x5046 x2023 x5076 x5078
 </div>
 <div style="font-family: monospace;">
 Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<$act->block->date|date_format>], [<$act->block->block>] block<br />
