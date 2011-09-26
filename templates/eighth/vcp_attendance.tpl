@@ -5,11 +5,14 @@
 [<include file="eighth/block_selection.tpl" header="FALSE" title='' method='vcp_attendance' op='view' field='bid' bid=$block->bid>]
 [<include file="eighth/include_list_close.tpl">]
 </td><td style="vertical-align: top;">
-<span style="font-family: monospace;">
+<div style="position:relative;top:-2.5ex;">
+Call-in numbers: x5046 x 2023 x5076 x5078
+</div>
+<div style="font-family: monospace;">
 Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<$act->block->date|date_format>], [<$act->block->block>] block<br />
 Room(s):&nbsp;&nbsp;&nbsp;&nbsp;[<$act->block_rooms_comma>]<br />
 Sponsor(s):&nbsp;[<$act->block_sponsors_comma>]<br />
-</span>
+</div>
 <br />
 <form name="vcp_attendance_form" action="[<$I2_ROOT>]eighth/vcp_attendance/update/bid/[<$act->bid>]/aid/[<$act->aid>]" method="post">
 	<input type="button" value="Select All" onclick="CA();" name="selectall" /> [<if $is_admin>]<input type="submit" value="Update" />[</if>]<br />
