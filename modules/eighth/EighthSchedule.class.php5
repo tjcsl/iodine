@@ -274,6 +274,9 @@ class EighthSchedule {
 			throw new I2Exception("Invalid user data sent to EighthSchedule\-\>get_activities()");
 		}
 		$hosts = $I2_SQL->query("SELECT sid FROM eighth_sponsors WHERE userid=%d",$userid)->fetch_col('sid');
+		// If they don't host anything, don't bother with further checks.
+		if(empty($hosts))
+			return array();
 		if($starting_date == NULL) {
 			$starting_date = date('Y-m-d');
 		}
