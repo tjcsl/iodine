@@ -467,7 +467,7 @@ class EighthActivity {
 			throw new I2Exception("Tried to check user id for something invalid! Value was $user");
 		}
 		$hosts = $I2_SQL->query("SELECT sid FROM eighth_sponsors WHERE userid=%d",$user)->fetch_col('sid');
-		return count(array_intersect($hosts,$this->data['sponsors']))>0; // fancy obscure functions save you speed and help remove slow loops!
+		return count(array_intersect($hosts,$this->data['sponsors']))>0||count(array_intersect($hosts,$this->data['block_sponsors']))>0; // fancy obscure functions save you speed and help remove slow loops!
 	}
 	/**
 	* Removes all members from the activity.
