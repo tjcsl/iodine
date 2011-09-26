@@ -53,3 +53,15 @@ style: default
 startPage: dataimport
 header: FALSE
 chrome: FALSE
+
+#The ACLs use this group to determine who is a 'user'.  This is done so that
+#otherwise-valid kerberos principals do not provide access to data that should
+#be restricted to iodine account holders only
+dn: cn=iodineusers,dc=tjhsst,dc=edu
+cn: iodineusers
+memberURL: ldap:///ou=people,dc=tjhsst,dc=edu??one?objectClass=tjhsstTeacher
+memberURL: ldap:///ou=people,dc=tjhsst,dc=edu??one?objectClass=tjhsstStudent
+memberURL: ldap:///ou=people,dc=tjhsst,dc=edu??one?objectClass=simpleUser
+objectClass: groupOfURLs
+objectClass: top
+

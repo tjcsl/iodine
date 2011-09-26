@@ -2,7 +2,7 @@
 [< assign var='proxyhost' value='local.border.tjhsst.edu' >]
 [< assign var='proxyport' value='8080' >]
 [< assign var='dbsite' value='http://www.tjhsst.edu/curriculum/library/databases.php' >]
-<h1 style="text-align: center; font-size: xx-large; font-weight: bold;">
+<h1 style="text-align: center; font-weight: bold; line-height:95%;">
   Internet Set-Up for Using TJHSST Library
   <br />Online Databases From Home
 </h1>
@@ -18,8 +18,8 @@ called "configuring your proxy settings" and it's easy to reconfigure your inter
 the databases via our TJ server (which is also called Zeus on which there runs software for the
 intranet known as Iodine.)
 <br /><br />
-For the following directions, use the Automatic Configuration options. <font color="red">Only use the Manual Configuration
-options if the Automatic Configuration fails completely.</font> If that happens, please report it to the TJ 
+For the following directions, use the Automatic Configuration options. <span style="color:red;">Only use the Manual Configuration
+options if the Automatic Configuration fails completely.</span> If that happens, please report it to the TJ 
 Sysadmins at <a href="mailto:sysadmins@lists.tjhsst.edu">sysadmins@lists.tjhsst.edu</a>.
 <br /><br />
 The Manual Configuration options have to be set every time you want to access a database and unset every
@@ -42,7 +42,7 @@ If you are asked to log in by a particular database, please <strong>report it to
   <li> On the right side of the menu bar, click on "Tools", then on "Internet Options". </li>
   <li> Select the "Connections" tab then click on "LAN settings". </li>
   <li> Click on "LAN Settings" and select the box that says "Use a proxy server". </li>
-  <li> <font color="red">Dial-up Users</font>: Click on the "Settings" box instead of "LAN Settings". </li>
+  <li> <span style="color:red;">Dial-up Users</span>: Click on the "Settings" box instead of "LAN Settings". </li>
   <li> Automatic Configuration 
   <ul>
   	<li> Check the box next to "Use automatic configuration script". </li>
@@ -58,60 +58,65 @@ If you are asked to log in by a particular database, please <strong>report it to
   </li>
   <li> Click on OK to close the proxy settings window, then click Ok to close the Internet Options window. </li>
   <li> Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
-  <li> When prompted for a username and password, put in your Intranet username and password. </li>
+  <li> When prompted for a username and password, put in your Intranet username and password. <span style="color:red;font-weight:bold">IMPORTANT if you are running Windows Vista or Windows 7</span>: you will need to enter LOCAL\username (eg: LOCAL\jdoe). This is specific to Internet Explorer on Windows Vista/7.</li>
   <li> You should now have access to the TJHSST Databases. </li>
-  <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and uncheck the box next to "Use a proxy server" in order to access websites besides the databases.</li>
+  <li> <span style="color:red;font-weight:bold;">Manual Configuration ONLY</span>: when you are done using the TJHSST Databases, you will need to go back and uncheck the box next to "Use a proxy server" in order to access websites besides the databases.</li>
 </ol>
 <br />
 
-<h3>Google Chrome</h3>
+<h3>Google Chrome / Chromium</h3>
 <ol>
-  <li> Click on the wrench icon on the far right, then select the "Under the Hood" tab. </li>
-  <li> In the "Network" section, click on "Change Proxy Settings", then click on "LAN Settings". </li>
-  <li> Automatic Configuration
+  <li>Open a tab and go to <a href="chrome://settings/advanced" target="_blank">chrome://settings/advanced</a>.</li>
+  <li>In the &ldquo;Network&rdquo; section, click on &ldquo;Change Proxy Settings...,&rdquo; then click on &ldquo;LAN Settings.&rdquo;</li>
+  <li>Automatic Configuration - Windows
   <ul>
-  	<li> Check the box next to "Use automatic configuration script". </li>
-	<li> In the Address box, put in <b>[<$proxyscript>]</b>. </li>
+  	<li>Check the box next to &ldquo;Use automatic configuration script.&rdquo;</li>
+	<li>In the Address box, put in <b>[<$proxyscript>]</b>.</li>
+  </ul>
+  <em>OR</em> Automatic Configuration - Linux
+  <ul>
+  	<li>Click the radio button next to &ldquo;Automatic proxy configuration.&rdquo;</li>
+	<li>In the &ldquo;Autoconfiguration URL&rdquo; box, put in <b>[<$proxyscript>]</b>.</li>
   </ul>
   <em>OR</em> Manual Configuration 
   <ul>
-  	<li> Check the box next to "Use a proxy server for your LAN". Then click on the "Advanced" button. </li>
-	<li> In the HTTP box, put in <b>[<$proxyhost>]</b>. </li>
-	<li> In the Port box, put in <b>[<$proxyport>]</b>. </li>
-	<li> Click on OK to close the advanced settings window. </li>
+  	<li>Check the box next to "Use a proxy server for your LAN". Then click on the "Advanced" button.</li>
+	<li>In the HTTP box, put in <b>[<$proxyhost>]</b>. </li>
+	<li>In the Port box, put in <b>[<$proxyport>]</b>. </li>
+	<li>Click on OK to close the advanced settings window. </li>
   </ul>
   </li>
-  <li> Click on OK to close the proxy settings window, then click Ok to close the Internet Properties window, then click Close to close the Chrome Options window. </li>
-  <li> Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
-  <li> When prompted for a username and password, put in your Intranet username and password. </li>
-  <li> You should now have access to the TJHSST Databases. </li>
-  <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and uncheck the box next to "Use a proxy server" in order to access websites besides the databases.</li>
+  <li>Click on OK to close the proxy settings window, then click Ok to close the Internet Properties window, then click Close to close the Chrome Options window. </li>
+  <li>Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
+  <li>When prompted for a username and password, put in your Intranet username and password. </li>
+  <li>You should now have access to the TJHSST Databases. </li>
+  <li><span style="color:red;font-weight:bold;">Manual Configuration ONLY</span>: when you are done using the TJHSST Databases, you will need to go back and uncheck the box next to "Use a proxy server" in order to access websites besides the databases.</li>
 </ol>
 <br />
 
-<h3>Mozilla Firefox 3.x</h3>
+<h3>Mozilla Firefox 3.x and 4.x</h3>
 <ol>
-  <li> For Windows, click on "Tools", then on "Options".  For Mac OS X/Linux, click on "Edit", then on "Preferences". </li>
-  <li> Select the "Advanced" tab, then the "Network" sub-tab. </li>
-  <li> In the "Connection" section, click on settings </li>
-  <li> Automatic Configuration 
+  <li>For Windows, click on the &ldquo;Tools&rdquo; or &ldquo;Firefox&rdquo; menu, then on &ldquo;Options.&rdquo;  For Mac OS X/Linux, click on the &ldquo;Edit&rdquo; or &ldquo;Firefox&rdquo; menu, then on &ldquo;Preferences.&rdquo;</li>
+  <li>Select the &ldquo;Advanced&rdquo; tab, then the &ldquo;Network&rdquo; sub-tab.</li>
+  <li>In the &ldquo;Connection&rdquo; section, click the &ldquo;Settings...&rdquo; button.</li>
+  <li>Automatic Configuration:
   <ul>
-  	<li> Select the radio button next to "Automatic proxy configuration URL". </li>
-	<li> In the Address box, put in <b>[<$proxyscript>]</b>. </li>
+  	<li>Select the radio button next to &ldquo;Automatic proxy configuration URL.&rdquo; </li>
+	<li>In the Address box, put in <b>[<$proxyscript>]</b>.</li>
   </ul>
-  <em>OR</em> Manual Configuration
+  <em>OR</em> Manual Configuration:
   <ul>
-  	<li> Select the radio button next to "Manual proxy configuration". </li>
-	<li> In the "HTTP Proxy" box, put in <b>[<$proxyhost>]</b>. </li>
-	<li> In the "Port" box, put in <b>[<$proxyport>]</b>. </li>
-	<li> Make sure the "Use this proxy server for all protocols" box is checked </li>
+  	<li>Select the radio button next to "Manual proxy configuration". </li>
+	<li>In the "HTTP Proxy" box, put in <b>[<$proxyhost>]</b>. </li>
+	<li>In the "Port" box, put in <b>[<$proxyport>]</b>. </li>
+	<li>Make sure the "Use this proxy server for all protocols" box is checked </li>
   </ul>
   </li>
-  <li> Click on OK to close the Connection settings window, then on OK to close the Firefox Options window. </li>
-  <li> Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
-  <li> When prompted for a username and password, put in your Intranet username and password. </li>
-  <li> You should now have access to the TJHSST Databases. </li>
-  <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and select the radio button next to "No Proxy" in order to access websites besides the databases. </li>
+  <li>Click on OK to close the Connection settings window, then on OK to close the Firefox Options window. </li>
+  <li>Go to the <a href="[<$dbsite>]">TJ Library Online Database</a> page. </li>
+  <li>When prompted for a username and password, put in your Intranet username and password. </li>
+  <li>You should now have access to the TJHSST Databases. </li>
+  <li><span style="color:red;font-weight:bold;">Manual Configuration ONLY</span>: when you are done using the TJHSST Databases, you will need to go back and select the radio button next to "No Proxy" in order to access websites besides the databases. </li>
 </ol>
 <br />
 
@@ -179,7 +184,7 @@ If you are asked to log in by a particular database, please <strong>report it to
     TJ Library Online Database</a> page. </li>
   <li> When prompted for a username and password, put in your Intranet username and password. </li>
   <li> You should now have access to the TJHSST Databases. </li>
-  <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and uncheck the checkbox next to "HTTP" in order to access websites besides the databases. </li>
+  <li> <span style="color:red;font-weight:bold;">Manual Configuration ONLY</span>: when you are done using the TJHSST Databases, you will need to go back and uncheck the checkbox next to "HTTP" in order to access websites besides the databases. </li>
 </ol>
 <br />
 
@@ -206,7 +211,7 @@ If you are asked to log in by a particular database, please <strong>report it to
     TJ Library Online Database</a> page. </li>
   <li> When prompted for a username and password, put in your Intranet username and password. </li>
   <li> You should now have access to the TJHSST Databases. </li>
-  <li> <font color="red"><b>Manual Configuration ONLY</b></font>: when you are done using the TJHSST Databases, you will need to go back and select the radio button next to "Connect to the Internet Directly" in order to access websites besides the databases. </li>
+  <li> <span style="color:red;font-weight:bold;">Manual Configuration ONLY</span>: when you are done using the TJHSST Databases, you will need to go back and select the radio button next to "Connect to the Internet Directly" in order to access websites besides the databases. </li>
 </ol>
 <br />
 
