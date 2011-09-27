@@ -1663,6 +1663,35 @@ class Eighth implements Module {
 	}
 
 	/**
+	* Electronic Attendance management pages
+	*
+	* @access public
+	* @param string $this->op The operation to do.
+	* @param array $this->args The arguments for the operation.
+	*/
+	public function adm_attendance() {
+		global $I2_SQL;
+		switch($this->op) {
+			case 'acts_taken':
+				if(!isset($this->args['bid'])) {
+					$this->setup_block_selection();
+					$this->template_args['op'] = 'acts_taken';
+					break;
+				}
+				$aidlist=$I2_SQL->query('SELECT activityid FROM eighth_block_map WHERE bid=%d AND attendancetaken=0',$this->args['bid'])->fetch_all_single_values();
+				$actlist=array();
+				foreach($aidlist as $aid)
+					$actlist[]=new EighthActivity($aid,$this->args['bid']);
+				$this->template_args['acts']=$actlist;
+				$this->template='adm_attendance_acts_taken.tpl';
+				break;
+			default:
+				redirect('eighth');
+				break;
+		}
+	}
+
+	/**
 	* Enter TA absences by student ID
 	*
 	* @access public
