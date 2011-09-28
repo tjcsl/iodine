@@ -1,6 +1,11 @@
 [<if !isset($header) || $header!='FALSE'>]
 [<include file="eighth/header.tpl">]
 [</if>]
+[<if isset($allowstartdatechange) && $allowstartdatechange==TRUE>]
+<form method='get' target=''>
+Start Date: <input type='text' name='start_date' value='[<$start_date>]'/><br/>
+</form>
+[</if>]
 <span style="font-weight: bold; font-size: 125%;">[<$title|default:"">]</span><br />
 <table cellspacing="0" style="border: 0px; margin: 0px; padding: 0px;">
 [<foreach from=$blocks item='block'>]

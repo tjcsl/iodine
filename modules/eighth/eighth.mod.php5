@@ -569,11 +569,13 @@ class Eighth implements Module {
 	*
 	* @access private
 	* @param bool $add Whether to include the add field or not.
+	* @param string $field What argument the selection should be fed into.
 	* @param string $title The title for the block list.
 	* @param date $start_date The date from which to show blocks.
 	* @param int $daysf  The number of days forward to show blocks.
+	* @param bool $asdc Whether or not to Allow Start Date Changes.
 	*/
-	private function setup_block_selection($add = FALSE, $field = NULL, $title = NULL, $start_date = NULL, $daysf = NULL) {
+	private function setup_block_selection($add = FALSE, $field = NULL, $title = NULL, $start_date = NULL, $daysf = NULL, $asdc = FALSE) {
 		if ($field === NULL) {
 			$field = 'bid';
 		}
@@ -591,6 +593,8 @@ class Eighth implements Module {
 		$blocks = EighthBlock::get_all_blocks($start_date, $daysf);
 		$this->template = 'block_selection.tpl';
 		$this->template_args['blocks'] = $blocks;
+		$this->template_args['start_date']=$start_date;
+		$this->template_args['allowstartdatechange']=$asdc;
 		if($add) {
 			$this->template_args['add'] = TRUE;
 		}
@@ -1674,7 +1678,7 @@ class Eighth implements Module {
 		switch($this->op) {
 			case 'acts_taken':
 				if(!isset($this->args['bid'])) {
-					$this->setup_block_selection();
+					$this->setup_block_selection(FALSE,NULL,'Select Block for Attendance Taken Check',NULL,NULL,TRUE);
 					$this->template_args['op'] = 'acts_taken';
 					break;
 				}
