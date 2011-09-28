@@ -17,7 +17,7 @@ class TopBar {
 	public static function display($disp, $chrome, $nagging) {
 		global $I2_USER, $I2_SQL;
 		if($I2_USER->header=='TRUE' && $chrome && !$nagging) {
-			$date = EighthSchedule::get_next_date();
+			$date = EighthSchedule::get_next_date(2*60*60);
 			$arr = array();
 			if($date) {
 			        $activities = EighthActivity::id_to_activity(EighthSchedule::get_activities($I2_USER->uid, $date, 1), FALSE);
@@ -34,7 +34,7 @@ class TopBar {
 				}
 				// Make a list of all the teacher slots this person is assigned to for 8th
 				$hosts = $I2_SQL->query("SELECT sid FROM eighth_sponsors WHERE userid=%d",$I2_USER->uid)->fetch_col('sid');
-				$arr['hosting'] = EighthSponsor::get_schedule_on($hosts,$date-2*60*60); //Delay by 2 hours, give them a little more time
+				$arr['hosting'] = EighthSponsor::get_schedule_on($hosts,$date); //Delay by 2 hours, give them a little more time
 		        } else {
 			        $arr['date'] = 'none';
 			}

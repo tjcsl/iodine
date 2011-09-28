@@ -218,10 +218,11 @@ class EighthSchedule {
 	* Get the next eighth period date.
 	*
 	* @access public
+	* @param int $delay Amount to delay the rollover.
 	*/
-	public static function get_next_date() {
+	public static function get_next_date($delay=0) {
 		global $I2_SQL;
-		if(date('Hi')>1550) {
+		if(date('Hi')>1550+$delay) {
 			$date = $I2_SQL->query('SELECT date FROM eighth_blocks WHERE date > %t ORDER BY date,block LIMIT 1', date('Y-m-d'))->fetch_array(Result::NUM);
 		} else {
 			$date = $I2_SQL->query('SELECT date FROM eighth_blocks WHERE date >= %t ORDER BY date,block LIMIT 1', date('Y-m-d'))->fetch_array(Result::NUM);
