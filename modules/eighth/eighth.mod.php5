@@ -1610,9 +1610,10 @@ class Eighth implements Module {
 		else if($this->op == 'view') {
 			if(!isset($this->args['aid']) || !isset($this->args['bid']))
 				redirect('eighth/vcp_attendance');
-			$this->template_args['act'] = new EighthActivity($this->args['aid'], $this->args['bid']);
-			if(!(self::is_admin() || $this->template_args['act']->is_user_sponsor($I2_USER)))
+			//Only staff and admins (staff can see other rosters, but not change attendance data if they're not sponsor)
+			if(!(self::is_admin() || $I2_USER->grade=='staff'))
 				redirect('eighth/vcp_attendance');
+			$this->template_args['act'] = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->setup_block_selection();
 			$this->template = 'vcp_attendance.tpl';
 			$this->template_args['op'] = "view/bid/{$this->args['bid']}";

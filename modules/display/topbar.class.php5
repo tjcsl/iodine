@@ -34,7 +34,7 @@ class TopBar {
 				}
 				// Make a list of all the teacher slots this person is assigned to for 8th
 				$hosts = $I2_SQL->query("SELECT sid FROM eighth_sponsors WHERE userid=%d",$I2_USER->uid)->fetch_col('sid');
-				$arr['hosting'] = EighthSponsor::get_schedule_on($hosts,$date);
+				$arr['hosting'] = EighthSponsor::get_schedule_on($hosts,$date-2*60*60); //Delay by 2 hours, give them a little more time
 		        } else {
 			        $arr['date'] = 'none';
 			}
