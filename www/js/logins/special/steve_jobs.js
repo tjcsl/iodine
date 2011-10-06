@@ -9,7 +9,10 @@ window.addEventListener("load", function() {
 	loginBox.style.bottom = "98px";
 	loginBox.style.left = "8px";
 	loginBox.style.height = "auto";
-	var msgBox = document.createElement("div");
+	document.getElementById("verisign_box").style.right = "auto";
+	document.getElementById("verisign_box").style.left = "10px";
+	var msgBox = document.createElement("a");
+	msgBox.style.display = "block";
 	msgBox.style.position = "fixed";
 	msgBox.style.top = "30%";
 	msgBox.style.right = "60%";
@@ -17,11 +20,10 @@ window.addEventListener("load", function() {
 	msgBox.style.fontSize = "28px";
 	msgBox.style.color = "black";
 	msgBox.style.textAlign = "center";
+	msgBox.style.textDecoration = "none";
 	msgBox.style.whiteSpace = "nowrap";
-	msgBox.innerHTML = "<span style=\"font-size:larger;font-weight:bold;\">Steve&nbsp;Jobs</span><br/>1955-2011";
+	msgBox.target = "_blank";
+	msgBox.href = "http://apple.com/stevejobs";
+	msgBox.innerHTML = "<span style=\"font-size:larger;font-weight:bold;font-family:Helvetica, 'Trebuchet MS', Arial, sans-serif;\">Steve&nbsp;Jobs</span><br/>1955-2011";
 	body.appendChild(msgBox);
-	console.log(msgBox);
-	console.dir(msgBox);
-	document.getElementById("verisign_box").style.right = "auto";
-	document.getElementById("verisign_box").style.left = "10px";
 }, false);
