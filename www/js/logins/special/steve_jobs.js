@@ -1,0 +1,27 @@
+window.addEventListener("load", function() {
+	var body = document.getElementsByTagName("body")[0];
+	body.style.backgroundRepeat = "no-repeat";
+	body.style.backgroundAttachment = "fixed";
+	body.style.backgroundPosition = "right bottom";
+	body.style.backgroundColor = "white";
+	var loginBox = document.getElementsByClassName("middle")[0];
+	loginBox.style.position = "fixed";
+	loginBox.style.bottom = "98px";
+	loginBox.style.left = "8px";
+	loginBox.style.height = "auto";
+	var msgBox = document.createElement("div");
+	msgBox.style.position = "fixed";
+	msgBox.style.top = "30%";
+	msgBox.style.right = "60%";
+	msgBox.style.fontFamily = "Helvetica, 'Trebuchet MS', Arial, sans-serif";
+	msgBox.style.fontSize = "28px";
+	msgBox.style.color = "black";
+	msgBox.style.textAlign = "center";
+	msgBox.style.whiteSpace = "nowrap";
+	msgBox.innerHTML = "<span style=\"font-size:larger;font-weight:bold;\">Steve&nbsp;Jobs</span><br/>1955-2011";
+	body.appendChild(msgBox);
+	console.log(msgBox);
+	console.dir(msgBox);
+	document.getElementById("verisign_box").style.right = "auto";
+	document.getElementById("verisign_box").style.left = "10px";
+}, false);
