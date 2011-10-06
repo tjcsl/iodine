@@ -16,7 +16,7 @@ window.addEventListener("load", function() {
 	msgBox.style.position = "fixed";
 	msgBox.style.top = "30%";
 	msgBox.style.right = "60%";
-	msgBox.style.fontFamily = "Helvetica, 'Trebuchet MS', Arial, sans-serif";
+	msgBox.style.fontFamily = "'Trebuchet MS', Helvetica, Arial, sans-serif";
 	msgBox.style.fontSize = "28px";
 	msgBox.style.color = "black";
 	msgBox.style.textAlign = "center";
@@ -24,6 +24,6 @@ window.addEventListener("load", function() {
 	msgBox.style.whiteSpace = "nowrap";
 	msgBox.target = "_blank";
 	msgBox.href = "http://apple.com/stevejobs";
-	msgBox.innerHTML = "<span style=\"font-size:larger;font-weight:bold;font-family:Helvetica, 'Trebuchet MS', Arial, sans-serif;\">Steve&nbsp;Jobs</span><br/>1955-2011";
+	msgBox.innerHTML = "<span style=\"font-size:larger;font-weight:bold;font-family:'Trebuchet MS', Helvetica, Arial, sans-serif;\">Steve&nbsp;Jobs</span><br/>1955-2011";
 	body.appendChild(msgBox);
 }, false);
