@@ -132,7 +132,7 @@ class LDAPInterface implements Module {
 
 		// Only available to people with LDAP admin privs
 		// TODO: It may be permissible to allow non-admins with user bind
-		if (! $I2_USER->is_ldap_admin()) {
+		if (! $I2_USER->is_group_member('admin_all')) {
 			return FALSE;
 		}
 		
