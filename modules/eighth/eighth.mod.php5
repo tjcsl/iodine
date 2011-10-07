@@ -2272,6 +2272,7 @@ class Eighth implements Module {
 						$activity = new EighthActivity($this->args['aid'], $bid);
 						
 						self::start_undo_transaction();
+						EighthSchedule::remove_absentee($bid, $this->args['uid']);
 						$ret = $activity->add_member(new User($this->args['uid']), isset($this->args['force']));
 						self::end_undo_transaction();
 						
