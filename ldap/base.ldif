@@ -54,6 +54,15 @@ startPage: dataimport
 header: FALSE
 chrome: FALSE
 
+#This DN is used for generic binds for things like generating the birthdays
+#intrabox cache
+dn: cn=authuser,dc=tjhsst,dc=edu
+cn: authuser
+objectClass: inetOrgPerson
+givenName: Authenticated
+sn: User
+userPassword: youshouldpickabetterpassword
+
 #The ACLs use this group to determine who is a 'user'.  This is done so that
 #otherwise-valid kerberos principals do not provide access to data that should
 #be restricted to iodine account holders only
@@ -62,6 +71,7 @@ cn: iodineusers
 memberURL: ldap:///ou=people,dc=tjhsst,dc=edu??one?objectClass=tjhsstTeacher
 memberURL: ldap:///ou=people,dc=tjhsst,dc=edu??one?objectClass=tjhsstStudent
 memberURL: ldap:///ou=people,dc=tjhsst,dc=edu??one?objectClass=simpleUser
+memberURL: ldap:///dc=tjhsst,dc=edu??one?cn=authuser
 objectClass: groupOfURLs
 objectClass: top
 
