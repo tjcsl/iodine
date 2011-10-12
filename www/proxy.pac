@@ -46,7 +46,8 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, ".lib.umich.edu") ||
 		dnsDomainIs(host, ".hdl.handle.net") ||
 		dnsDomainIs(host, ".jove.com") ||
-		dnsDomainIs(host, ".marshallcavendishdigital.com")
+		dnsDomainIs(host, ".marshallcavendishdigital.com") ||
+		dnsDomainIs(host, ".salempress.com")
 
 	)
 			return "PROXY local.border.tjhsst.edu:8080";
