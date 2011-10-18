@@ -457,8 +457,18 @@ class News implements Module {
 	private function get_new_message() {
 		// HTTPS because otheriwse it gets cached by the proxy, which is bad.
 		// It endangers kittens because they don't get information quickly enough.
-		$url = "https://www.fcps.edu/emergency.htm"; // FCPS Emergency announcement _really_ short summary page.
+		$url = i2config_get('emerg_url','https://www.fcps.edu/content/emergencyContent.html','emergency'); // FCPS Emergency announcement _really_ short summary page.
 		if( $str = $this->curl_file_get_contents($url) ) { // Returns false if can't get anything.
+			$starter= i2config_get('emerg_starter','<h3 >','emergency');
+			$ender  = i2config_get('emerg_ender','</h3>','emergency');
+			if(!stristr($str,$starter) || !stristr($str,$ender))
+				return "<!-- ERROR: FCPS's page doesn't parse correctly, because they changed the format. -->";
+			$startpos = strpos($str,$starter)+strlen($starter);
+			$endpos = strpos($str,$ender);
+			$length = $endpos-$startpos;
+			$str=substr($str,$startpos,$length);
+			if(trim($str)==i2config_get('emerg_default','There are no emergency announcements at this time.','emergency'))
+				return "<!-- No emergency announements -->";
 			$str=preg_replace("/<!--.*-->/s","",$str); // Remove all commented stuff.
 			$str=str_replace("<p","<p style='color: red' ",$str); // They use <p> tags for their formatting. We hijack that to do this!
 			$str=str_replace("href=\"","href=\"http://www.fcps.edu/",$str); // Their links are relative, so we have to do this. A better way to reliably do this would be good.

@@ -6,8 +6,7 @@
 [<if $newsadmin || $maypost>]
 	<a href="[<$I2_ROOT>]news/add">Post a news article</a>
 [</if>]
-<!-- [<$weatherstatus>] -->
-<!-- ^^removed because the FCPS site redesign broke this feature -->
+[<$weatherstatus>]
 [<if !$newsadmin >]
 	<a href="[<$I2_ROOT>]news/request">Submit a news article for posting</a>
 [</if>]
