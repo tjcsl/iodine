@@ -34,7 +34,7 @@
 //		currentList.innerHTML = newList.innerHTML;
 	}
 </script>
-<input type="search" results="0" placeholder=" Search for an activity" onchange="filterList(value);" onkeyup="filterList(value);" onsearch="filterList(value);" style="margin-top:3px; width:256px;"/>
+<input type="search" results="0" placeholder=" Search for an activity" onchange="filterList(value);" oninput="filterList(value);" onsearch="filterList(value);" style="margin-top:3px; width:256px;"/>
 &larr; OMG SEARCH BOX!
 <form name="activity_select_form" action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$uid>]/bids/[<$bids>][<if $start_date != NULL>]/start_date/[<$start_date>][</if>]" method="post">
 	<select name="aid" id="select_activity" size="15" style="width:100%; margin-top:0px;" onchange="changeDescription(this.options[this.selectedIndex].value)">
