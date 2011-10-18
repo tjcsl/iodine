@@ -444,7 +444,7 @@ attributetype ( i2Attr:50
 #	SYNTAX jpegSyntax
 #	SINGLE-VALUE
 #	)
-
+	
 #attributetype ( i2Attr:54
 #	NAME ('seniorPicture' 'seniorPhoto' 'pictureGrade12' 'photoGrade12')
 #	DESC 'The senior picture of a user'
@@ -640,6 +640,21 @@ attributetype ( i2Attr:78
 	SINGLE-VALUE
 	)
 
+attributetype ( i2Attr:79
+	NAME ('friend')
+	DESC 'the identifier of a friend users cn'
+	EQUALITY caseExactMatch
+	SYNTAX stringSyntax
+	)
+
+attributetype ( i2Attr:80
+	NAME ('perm-showtelephone-friend' 'showtelephonefriend' 'showphonefriend' 'showphonenumberfriend')
+	DESC 'Whether the telephone number(s) should be visible to friends'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+
 objectclass ( i2OC:1
 	NAME 'tjhsstStudent'
 	SUP inetOrgPerson STRUCTURAL
@@ -672,6 +687,8 @@ objectclass ( i2OC:1
 		perm-showmap-self $
 		perm-showeighth-self $
       perm-showlocker-self $
+		friend $
+		perm-showtelephone-friend $
 		displayName $
 		middlename $
 		nickname $
