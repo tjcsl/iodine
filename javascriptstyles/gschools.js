@@ -94,13 +94,11 @@ function page_init() {
 	searchform.action = "[<$I2_ROOT>]studentdirectory/search/";
 	searchform.id= "searchform";
 	var textfield = document.createElement("input");
-	textfield.type="text";
+	textfield.type="search";
 	textfield.id="searchbox";
 	textfield.name="studentdirectory_query";
 	textfield.style.width = "300px";
-	textfield.style.outlineColor = "lightBlue";
-	textfield.style.borderWidth = "1px";
-	textfield.style.padding = "2px";
+	textfield.results = 0;
 	var searchbutton = document.createElement("input");
 	searchbutton.type="submit";
 	searchbutton.value = "Search Directory";
