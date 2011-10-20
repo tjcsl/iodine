@@ -112,9 +112,16 @@
 		<input type="text" name="aid" id="aid_box" maxlength="4" size="4" />
 		<input size="30" id='filterActivities' type="search" results="0" placeholder=" Search for an activity" onchange="filterList(value);" onkeyup="filterList(value);" onsearch="filterList(value);"/>
 		<input type="submit" name="submit" value="Change" />
-	
-		<b>Color Key: </b>
-		<span class="selectedAR even actkey">your choice</span> <span class="fillingAR odd actkey">almost full</span> <span class="fullAR odd actkey">full</span> <span class="cancelledAR odd actkey">cancelled</span> <span class="restrictedAR odd actkey">restricted</span> <span class="generalAR odd actkey">normal</span> <span class="favoriteAR odd actkey">your favorite</span>
+		<div style="margin-top:4px;">
+			<b>Color Key:</b>
+			<span class="selectedAR even actkey">your choice</span>
+			<span class="generalAR odd actkey">normal</span>
+			<span class="fillingAR odd actkey">almost full</span>
+			<span class="fullAR odd actkey">full</span>
+			<span class="cancelledAR odd actkey">cancelled</span>
+			<span class="restrictedAR odd actkey">restricted</span>
+			<span class="favoriteAR odd actkey">favorite</span>
+		</div>
 	</div>
 </form>
 

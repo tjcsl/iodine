@@ -45,11 +45,7 @@
 	padding: .5em;
 }
 
-.selectedAR.odd {
-	background-color: #541;
-}
-
-.selectedAR.even {
+.selectedAR {
 	background-color: #761;
 }
 
@@ -94,7 +90,7 @@
 }
 
 .generalAR.even {
-	background-color: #667;
+	background-color: #484878;
 }
 
 .favoriteAR.odd {
@@ -102,7 +98,7 @@
 }
 
 .favoriteAR.even {
-	background-color: #272;
+	background-color: #1E671E;
 }
 
 .clickedAR {
