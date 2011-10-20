@@ -109,6 +109,7 @@ class Calendar implements Module {
 	* View the files you are authorized to access
 	*/
 
+
 	function view() {
 		global $I2_USER, $I2_ARGS, $I2_SQL, $I2_ROOT, $I2_QUERY;
 		$curtime  =time();

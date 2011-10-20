@@ -1159,6 +1159,34 @@ class EighthActivity {
 		Eighth::check_admin();
 		$I2_SQL->query("UPDATE eighth_block_map SET cancelled=1 WHERE bid=%d AND activityid=%d", $blockid, $activityid);
 	}
+
+	/**
+	* Returns the display class for the pretty activity list
+	*
+	* @access public
+	* @param int $selectedaid The current AID the user has selected for this block
+	*/
+	public function displayClass($selectedaid) {
+		if($this->cancelled)
+			return "cancelledAR";
+
+		if($selectedaid == $this->data['aid'])
+			return "selectedAR";
+
+		if($this->restricted)
+			return "restrictedAR";
+
+		if($this->member_count>=$this->capacity)
+			return "fullAR";
+
+		if($this->member_count>=$this->capacity*.9)
+			return "fillingAR";
+
+		if($this->favorite)
+			return "favoriteAR";
+
+		return "generalAR";
+	}
 }
 
 ?>

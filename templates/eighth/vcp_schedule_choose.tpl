@@ -1,112 +1,131 @@
-<script language="javascript" type="text/javascript">
-	var olddesc = null;
-
-	var activities = [];
-
-	function changeDescription(aid) {
-		var desc = document.getElementById('desc_' + aid);
-		if(olddesc) {
-			olddesc.style.display = 'none';
-		}
-		desc.style.display = 'block';
-		olddesc = desc;
-		document.getElementById('aid_box').value = aid;
-	}
+<script type="text/javascript">
+	var openedRow = null;
 
 	function filterList(txt) {
 		txt = txt.toLowerCase();
 		txt = txt.split(" or ");
-
-		var currentList = document.getElementById("select_activity");
-		currentList.innerHTML = "";
 		
-//		var listItems = savedList.getElementsByTagName("option");
-		var listItems = savedList.options;
+		var currentList = document.getElementById("activityList");
+		var listItems = currentList.childNodes;
 		for (var i = 0; i < listItems.length; i++) {
+			if(listItems[i].nodeType != 1 || listItems[i].className.indexOf('activityRow')==-1)
+				continue;
+			
+			var selected = false;
+			
 			for (var j = 0; j < txt.length; j++) {
 				if (listItems[i].innerHTML.toLowerCase().indexOf(txt[j]) != -1) {
-					currentList.appendChild(listItems[i].cloneNode(true));
+					selected = true;
+					listItems[i].selected = true;
 					break;
 				}
 			}
+
+			if(listItems[i] == openedRow && !selected) {
+				activityRowClear();
+			}
+
+			if(!selected)
+				listItems[i].style.display = 'none';
+			else
+				listItems[i].style.display = 'block';
 		}
+	}
+
+	function nextRealSibling(row) {
+		while(row && row.nodeType != 1)
+			row = row.nextSibling;
+		return row;
+	}
+
+	function activityRowSelect(row) {
+		activityRowClear();
 		
-//		currentList.innerHTML = newList.innerHTML;
+		openedRow = row;
+		if(!row.baseClassName)
+			row.baseClassName = row.className;
+		row.className += " clickedAR";
+		var ns = nextRealSibling(row.nextSibling);
+		ns.style.height = nextRealSibling(ns.firstChild).scrollHeight+'px';
+		document.getElementById('aid_box').value = row.className.substring(0, row.className.indexOf('_AID'));
+	}
+
+	function activityRowClear() {
+		if(openedRow) {
+			openedRow.className = openedRow.baseClassName;
+			nextRealSibling(openedRow.nextSibling).style.height = '0';
+			openedRow = null;
+		}
+	}
+
+	function activityRowClicked(row) {
+		if(openedRow != row) {
+			activityRowSelect(row);
+		} else {
+			activityRowClear();
+		}
 	}
 </script>
-<input type="search" results="0" placeholder=" Search for an activity" onchange="filterList(value);" oninput="filterList(value);" onsearch="filterList(value);" style="margin-top:3px; width:256px;"/>
-&larr; OMG SEARCH BOX!
+<!-- 	Note to I2 devs: identifying information (###_AID) is stored in the class name rather than in the ID because rows can be repeated and thus ###_AID would not be unique. 
+	I could have used a nonstandard attribute or added a nonce to the ###_AID formation, but I think both of those would have been uglier than the current solution.		-->
 <form name="activity_select_form" action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$uid>]/bids/[<$bids>][<if $start_date != NULL>]/start_date/[<$start_date>][</if>]" method="post">
-	<select name="aid" id="select_activity" size="15" style="width:100%; margin-top:0px;" onchange="changeDescription(this.options[this.selectedIndex].value)">
-	[<assign var=check value="false">]
-	[<foreach from=$favorites item="activity" key="key">]
-		[<assign var=capacity value=$activity->capacity>]
-		<option value="[<$activity->aid>]" [<if $key == 0>]selected="selected"[<assign var=check value="true">][</if>]
-		[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"
-		[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"
-		[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"
-		[<elseif $capacity != -1 && $activity->percent_full >= 90 >] style="color: #00878D; font-weight: bold;" 
-		[<elseif $activity->favorite>] style="color: #008800; font-weight: bold;"
-		[</if>]>[<$activity->aid>]: [<$activity->name_comment_r|escape:html>][<if $activity->favorite>] --Favorited[</if>]</option>
-	[</foreach>] 
-	[<foreach from=$activities item="activity" key="key">]
-		[<assign var=capacity value=$activity->capacity>]
-		<option value="[<$activity->aid>]" [<if $key == 0 && $check=="false">]selected="selected"[</if>]
-		[<if $activity->cancelled >] style="color: #FF0000; font-weight: bold;"
-		[<elseif $activity->restricted >] style="color: #FF6600; font-weight: bold;"
-		[<elseif $capacity != -1 && $activity->member_count >= $capacity>] style="color: #0000FF; font-weight: bold;"
-		[<elseif $capacity != -1 && $activity->percent_full >= 90 >] style="color: #00878D; font-weight: bold;" 
-		[<elseif $activity->favorite>] style="color: #008800; font-weight: bold;"
-		[</if>]>[<$activity->aid>]: [<$activity->name_comment_r|escape:html>][<if $activity->favorite>] --Favorited[</if>]</option>
-	[</foreach>] 
-	</select><br />
-	<input type="text" name="aid" id="aid_box" maxlength="4" size="4" />
-	<input type="submit" name="submit" value="Change" />
-	[<if empty($manybids)>]
-		<input type="submit" name="submit" value="View Roster" />
-	[</if>]
-</form>
-[<foreach from=$activities item="activity">]
-	[<assign var=capacity value=$activity->capacity>]
-	[<assign var=members value=$activity->member_count>]
-	<div id="desc_[<$activity->aid>]" style="display: none; border: solid thin; padding: 5px; margin-top:2px; margin-bottom:3px">
-		<a href="[<$I2_ROOT>]eighth/vcp_schedule/favorite/uid/[<$activity->aid>]/bids/[<$bids>]">[<if $activity->favorite>]Unfavorite this activity[<else>]Favorite this activity[</if>]</a><br />
-		[<$activity->name|escape:html>]
-		[<if $activity->comment>]
-			<br /><b>[<$activity->comment|escape:html>]</b>
+	<input type="hidden" name="aid" id="aidInput" />
+	<div id="activityList">
+		[<if $selected>]
+			[<include file="eighth/vcp_schedule_choose_section.tpl"
+				sTitle="Selected"
+				activities=$selected>]
 		[</if>]
-		[<if $activity->description>]
-			<br /><br /><b>Description:</b> [<$activity->description|escape:html>]
+		[<if $favorites>]
+			[<include file="eighth/vcp_schedule_choose_section.tpl"
+				sTitle="Favorites"
+				activities=$favorites>]
 		[</if>]
-		[<if $activity->block_sponsors_comma_short>]
-			<br /><br /><b>Sponsor:</b> [<$activity->block_sponsors_comma_short>]
+		[<if $filling>]
+			[<include file="eighth/vcp_schedule_choose_section.tpl"
+				sTitle="Almost Full"
+				activities=$filling>]
 		[</if>]
-		<br /><br />[<$members>] student[<if $members == 1>] is[<else>]s are[</if>] signed up [<if $capacity != -1>]out of [<$capacity>] allowed [</if>]for this activity.<br />
-		[<if $activity->cancelled>]
-			<br /><span class="bold" style="color: #FF0000;">CANCELLED</span>
+		[<if $general>]
+			[<include file="eighth/vcp_schedule_choose_section.tpl"
+				sTitle="All Activities"
+				activities=$general>]
 		[</if>]
-		[<if $capacity != -1 && $activity->member_count >= $capacity>]
-			<br /><span class="bold" style="color: #0000FF;">CAPACITY FULL</span>
+		[<if $full>]
+			[<include file="eighth/vcp_schedule_choose_section.tpl"
+				sTitle="Filled"
+				activities=$full>]
 		[</if>]
-		[<if $activity->restricted>]
-			<br /><span class="bold" style="color: #FF6600;">RESTRICTED</span>
+		[<if $restricted>]
+			[<include file="eighth/vcp_schedule_choose_section.tpl"
+				sTitle="Restricted"
+				activities=$restricted>]
 		[</if>]
-	</div>
-[</foreach>]
-<script language="javascript" type="text/javascript">
-	var select_activity = document.getElementById("select_activity");
-	changeDescription(select_activity.options[select_activity.selectedIndex].value);
-	document.getElementById('aid_box').focus();
-	[<if count($favorites) == 0>]
-		[<if count($activities) == 0>]
-			document.getElementById('aid_box').value = "";
-		[<else>]
-			document.getElementById('aid_box').value = "[<$activities[0]->aid>]";
+		[<if $cancelled>]
+			[<include file="eighth/vcp_schedule_choose_section.tpl"
+				sTitle="Cancelled"
+				activities=$cancelled>]
 		[</if>]
-	[<else>]
-		document.getElementById('aid_box').value = "[<$favorites[0]->aid>]";
-	[</if>]
-	document.getElementById('aid_box').select();
 
-	var savedList = select_activity.cloneNode(true);
+	</div>
+	<div style="padding:.5em;">
+		<input type="text" name="aid" id="aid_box" maxlength="4" size="4" />
+		<input size="30" id='filterActivities' type="search" results="0" placeholder=" Search for an activity" onchange="filterList(value);" onkeyup="filterList(value);" onsearch="filterList(value);"/>
+		<input type="submit" name="submit" value="Change" />
+	
+		<b>Color Key: </b>
+		<span class="selectedAR even actkey">your choice</span> <span class="fillingAR odd actkey">almost full</span> <span class="fullAR odd actkey">full</span> <span class="cancelledAR odd actkey">cancelled</span> <span class="restrictedAR odd actkey">restricted</span> <span class="generalAR odd actkey">normal</span> <span class="favoriteAR odd actkey">your favorite</span>
+	</div>
+</form>
+
+<script type="text/javascript">
+	// If the client is a mobile device,
+	// get rid of the scrolling on the activities list
+	// since that's a bit hard to use on iOS or Android
+	
+	if(navigator.userAgent.indexOf('Mobile')!=-1) {
+		var al = document.getElementById('activityList');
+		al.style.height = 'auto';
+		al.style.overflow = 'visible';
+	}
 </script>

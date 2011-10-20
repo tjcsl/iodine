@@ -1,0 +1,119 @@
+#activityList {
+	height: 405px;
+	overflow-y: scroll;
+	padding:0;
+	margin-top:1em; 
+	border: 1px solid #ddd;
+	border-right: 4px double #ddd;
+}
+
+#activityList :first-child {
+	border-top: none;
+}
+
+.activityHead {
+	font-family: Trebuchet MS, Trebuchet, sans-serif;
+	padding: .5em;
+	font-weight: bold;
+	background-color: #eee;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+}
+
+.activityRow {
+	font-family: Trebuchet MS, sans-serif;
+	padding: .25em .5em .25em .5em;
+	cursor: pointer;
+}
+
+.activityInfo {
+	font-family: Trebuchet MS, sans-serif;
+	padding: 0;
+	height: 0px;
+	overflow: hidden;
+	transition: height .5s;
+	-moz-transition: height .5s;
+	-webkit-transition: height .5s;
+	-o-transition: height .5s;
+}
+
+.activityInfoInner {
+	background-color: rgba(255,255,255,.3);
+	margin-left: .5em;
+	border-top: 1px solid white;
+	border-left: 1px solid white;
+	padding: .5em;
+}
+
+.selectedAR.odd {
+	background-color: #dd8;
+}
+
+.selectedAR.even {
+	background-color: #ff8;
+}
+
+.fillingAR.odd {
+	background-color: #88d;
+}
+
+.fillingAR.even {
+	background-color: #aaf;
+}
+
+.fullAR.odd {
+	background-color: #222;
+	color: white;
+}
+
+.fullAR.even {
+	background-color: #333;
+	color:white;
+}
+
+.cancelledAR.odd {
+	background-color: #222;
+	color: red;
+}
+
+.cancelledAR.even {
+	background-color: #333;
+	color: red;
+}
+
+.restrictedAR.odd {
+	background-color: #fa7;
+}
+
+.restrictedAR.even {
+	background-color: #fca;
+}
+
+.generalAR.odd {
+	background-color: #ccf;
+}
+
+.generalAR.even {
+	background-color: #eef;
+}
+
+.favoriteAR.odd {
+	background-color: #ada;
+}
+
+.favoriteAR.even {
+	background-color: #afa;
+}
+
+.clickedAR {
+	outline: 1px solid black;
+	box-shadow: inset 0 0 15px black;
+	-moz-box-shadow: inset 0 0 15px black;
+	-o-box-shadow: inset 0 0 15px black;
+	-webkit-box-shadow: inset 0 0 15px black;
+}
+
+.actkey {
+	font-family: Trebuchet MS, Trebuchet, sans-serif;	
+	padding: 6px;
+}

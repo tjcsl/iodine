@@ -2230,15 +2230,47 @@ class Eighth implements Module {
 		else if($this->op == 'choose') {
 			$valids = array();
 			$validdata = array();
-			$this->template_args['activities'] = EighthActivity::get_all_activities($this->args['bids'],FALSE);
-			$arr = array();
-			foreach ($this->template_args['activities'] as $i) {
+			$activities = EighthActivity::get_all_activities($this->args['bids'],FALSE);
+			$selected_aid = EighthSchedule::get_activities_by_block($this->args['uid'],$this->args['bids']);
+
+			$faves = array();
+			$restricted = array();
+			$general = array();
+			$full = array();
+			$filling = array();
+			$selected = array();
+			$cancelled = array();
+			foreach ($activities as $i) {
+				if($i->aid == $selected_aid)
+					$selected[] = $i;
+					
 				if($i->favorite)
-					$arr[] = $i;
+					$faves[] = $i;
+				if($i->restricted)
+					$restricted[] = $i;
+				
+				if($i->member_count>=$i->capacity)
+					$full[] = $i;
+				else if($i->member_count>=$i->capacity*.9)
+					$filling[] = $i;
+				
+				if($i->cancelled)
+					$cancelled[] = $i;
+
+				$general[] = $i;
 			}
-			$this->template_args['favorites'] = $arr;
+			
+			$this->template_args['selected_aid']=$selected_aid;
+			$this->template_args['selected']=$selected;
+			$this->template_args['restricted']=$restricted;
+			$this->template_args['favorites'] = $faves;
+			$this->template_args['general'] = $general;
+			$this->template_args['filling'] = $filling;
+			$this->template_args['cancelled'] = $cancelled;
+			$this->template_args['full'] = $full;
 			$this->template_args['uid'] = $this->args['uid'];
 			$this->template = 'vcp_schedule_choose.tpl';
+
 			if(!is_array($this->args['bids'])) {
 				$this->template_args['bids'] = $this->args['bids'];
 				$blockdate = ' for ';

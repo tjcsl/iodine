@@ -1,0 +1,116 @@
+#activityList {
+	overflow-y: scroll;
+	padding:0;
+	margin-top:1em; 
+	border: 1px solid green;
+	border-right: 4px double green;
+	height: 405px;
+}
+
+#activityList :first-child {
+	border-top: none;
+}
+
+.activityHead {
+	padding: .5em;
+	font-weight: bold;
+	background-color: black;
+	border-top: 1px solid green;
+	border-bottom: 1px solid green;
+}
+
+.activityRow {
+	padding: .25em .5em .25em .5em;
+	cursor: pointer;
+}
+
+.activityInfo {
+	padding: 0;
+	height: 0px;
+	overflow: hidden;
+	transition: height .5s;
+	-moz-transition: height .5s;
+	-webkit-transition: height .5s;
+	-o-transition: height .5s;
+}
+
+.activityInfoInner {
+	background-color: rgba(0,0,0,.3);
+	margin-left: .5em;
+	border-top: 1px solid green;
+	border-left: 1px solid green;
+	padding: .5em;
+}
+
+.selectedAR.odd {
+	background-color: #320;
+}
+
+.selectedAR.even {
+	background-color: #540;
+}
+
+.fillingAR.odd {
+	background-color: #003;
+}
+
+.fillingAR.even {
+	background-color: #005;
+}
+
+.fullAR.odd {
+	background-color: #ddd;
+	color: black;
+}
+
+.fullAR.even {
+	background-color: #ccc;
+	color: black;
+}
+
+.cancelledAR.odd {
+	background-color: #ddd;
+	color: red;
+}
+
+.cancelledAR.even {
+	background-color: #ccc;
+	color: red;
+}
+
+.restrictedAR.odd {
+	background-color: #500;
+}
+
+.restrictedAR.even {
+	background-color: #410;
+}
+
+.generalAR.odd {
+	background-color: #115;
+}
+
+.generalAR.even {
+	background-color: #445;
+}
+
+.favoriteAR.odd {
+	background-color: #030;
+}
+
+.favoriteAR.even {
+	background-color: #252;
+}
+
+.clickedAR {
+	outline: 1px solid green;
+	box-shadow: inset 0 0 10px green;
+	-moz-box-shadow: inset 0 0 10px green;
+	-o-box-shadow: inset 0 0 10px green;
+	-webkit-box-shadow: inset 0 0 10px green;
+}
+
+.actkey {
+	font-family: Trebuchet MS, Trebuchet, sans-serif;	
+	padding: 6px;
+}
