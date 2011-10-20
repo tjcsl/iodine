@@ -1,5 +1,5 @@
 [<if $usermail>]
-<form method="post" class="boxform" action="[<$I2_ROOT>]news/request">
+<form method="post" class="boxform" id="post_form" action="[<$I2_ROOT>]news/request">
 [</if>]
 [<if isSet($mailed)>]
 	[<if $mailed>]
@@ -25,14 +25,27 @@
 		<li>Keep it SFW.</li>
 		</ol>
 		<strong>We reserve the power to edit requests at our discretion.  If your news post does not comply with our requirements, we may modify it or ask you to revise it.</strong><br/><br/>
-		Title*:<br /><input type="text" name="submit_title" style="width:98%" required="required"/><br />
+		Title*:<br /><input type="text" name="submit_title" id="post_title" style="width:98%" required="required"/><br />
 		Expiration Date* (the news post will be removed at midnight on this date):<br /><input type="text" name="submit_expdate" style="width:98%" required="required"/><br />
 		Contents*:<br />
-		<textarea name="submit_box" style="width:98%;height:150px" required="required"></textarea><br />
+		<textarea name="submit_box" id="post_contents" style="width:98%;height:150px" required="required"></textarea><br />
 		Notes:<br />
 		<textarea name="notes_box" style="width:98%;height:35px"></textarea><br />
-		<input type="submit" value="Submit" name="submit_form" />
+		<input type="submit" value="Submit" name="submit_form"/>
 		</form>
+		<script type="text/javascript">
+			document.getElementById("post_form").onsubmit = function(e) {
+				if (document.getElementById("post_title").value.indexOf("!!!!") != -1) {
+					alert("Your post has been rejected because you have more than three consecutive exclamation points in your title.  Please revise your title and re-submit.");
+					if (e.preventDefault()) e.preventDefault();
+					return false;
+				} else if (document.getElementById("post_contents").value.indexOf("!!!!") != -1) {
+					alert("Your post has been rejected because you have more than three consecutive exclamation points in the body of your post.  Please revise your post and re-submit.");
+					if (e.preventDefault()) e.preventDefault();
+					return false;
+				}	
+			}
+		</script>
 	[<else>]
 		<br />
 		Oops...it looks like you didn't enter an e-mail address in your preferences.<br />
