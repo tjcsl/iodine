@@ -2231,7 +2231,10 @@ class Eighth implements Module {
 			$valids = array();
 			$validdata = array();
 			$activities = EighthActivity::get_all_activities($this->args['bids'],FALSE);
-			$selected_aid = EighthSchedule::get_activities_by_block($this->args['uid'],$this->args['bids']);
+			if(count($this->args['bids'])==1)
+				$selected_aid = EighthSchedule::get_activities_by_block($this->args['uid'],$this->args['bids']);
+			else
+				$selected_aid = "";
 
 			$faves = array();
 			$restricted = array();

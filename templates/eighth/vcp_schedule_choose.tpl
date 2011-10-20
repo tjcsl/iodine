@@ -109,7 +109,7 @@
 
 	</div>
 	<div style="padding:.5em;">
-		<input type="text" name="aid" id="aid_box" maxlength="4" size="4" />
+		<input type="text" name="aid" id="aid_box" maxlength="4" size="4" value="[<$selected_aid>]" />
 		<input type="submit" name="submit" value="Change"/>
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<script type="text/javascript">
@@ -120,7 +120,7 @@
 		<input size="50" id='filterActivities' type="search" results="0" placeholder=" Search for an activity" onchange="filterList(value);" onkeyup="filterList(value);" onsearch="filterList(value);"/>
 		<div style="margin-top:4px;">
 			<b>Color Key:</b>
-			<span class="selectedAR even actkey">your choice</span>
+			[<if empty($manybids)>]<span class="selectedAR even actkey">your choice</span>[</if>]
 			<span class="generalAR odd actkey">normal</span>
 			<span class="fillingAR odd actkey">almost full</span>
 			<span class="fullAR odd actkey">full</span>

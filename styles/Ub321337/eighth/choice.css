@@ -47,11 +47,11 @@
 }
 
 .fillingAR.odd {
-	background-color: #003;
+	background-color: #113;
 }
 
 .fillingAR.even {
-	background-color: #005;
+	background-color: #114;
 }
 
 .fullAR.odd {
@@ -62,6 +62,15 @@
 .fullAR.even {
 	background-color: #ccc;
 	color: black;
+}
+
+.fullAR > .activityInfoInner, .cancelledAR > .activityInfoInner {
+	color:black;
+}
+
+.fullAR input, .cancelledAR input {
+	color:black;
+	border:1px solid black;
 }
 
 .cancelledAR.odd {
@@ -83,19 +92,19 @@
 }
 
 .generalAR.odd {
-	background-color: #114;
+	background-color: #070717;
 }
 
 .generalAR.even {
-	background-color: #112;
+	background-color: #070720;
 }
 
 .favoriteAR.odd {
-	background-color: #010;
+	background-color: #051a05;
 }
 
 .favoriteAR.even {
-	background-color: #051a05;
+	background-color: #102010;
 }
 
 .clickedAR {
