@@ -110,8 +110,14 @@
 	</div>
 	<div style="padding:.5em;">
 		<input type="text" name="aid" id="aid_box" maxlength="4" size="4" />
-		<input size="30" id='filterActivities' type="search" results="0" placeholder=" Search for an activity" onchange="filterList(value);" onkeyup="filterList(value);" onsearch="filterList(value);"/>
-		<input type="submit" name="submit" value="Change" />
+		<input type="submit" name="submit" value="Change"/>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<script type="text/javascript">
+			if (document.createElement("input").placeholder == null) { // if placeholder text will not show up,
+				document.write("<label for=\"filterActivities\">Search</label>"); // ----------------- display a label
+			}
+		</script>
+		<input size="50" id='filterActivities' type="search" results="0" placeholder=" Search for an activity" onchange="filterList(value);" onkeyup="filterList(value);" onsearch="filterList(value);"/>
 		<div style="margin-top:4px;">
 			<b>Color Key:</b>
 			<span class="selectedAR even actkey">your choice</span>
