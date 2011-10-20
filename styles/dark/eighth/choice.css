@@ -68,13 +68,13 @@
 }
 
 .cancelledAR.odd {
-	background-color: #ddd;
-	color: red;
+	background-color: #D00;
+	color: white;
 }
 
 .cancelledAR.even {
-	background-color: #ccc;
-	color: red;
+	background-color: #E00;
+	color: white;
 }
 
 .restrictedAR.odd {
