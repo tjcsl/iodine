@@ -30,8 +30,8 @@ input[type=text], input[type=search] {
 
 button, input[type=button], input[type=submit] {
 	color:#D0F0FF;
-	background-color:#040404;
-
+	/*background-color:#040404;*/
+	background-color:transparent;
 	border-style:solid;
 	border-width:1px;
 	border-color:#D0F0FF;

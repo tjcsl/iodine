@@ -21,7 +21,7 @@
 }
 
 .activityRow {
-	font-family: Trebuchet MS, sans-serif;
+	font-family:Arial, Helvetica, sans-serif;
 	padding: .25em .5em .25em .5em;
 	cursor: pointer;
 }
@@ -45,11 +45,7 @@
 	padding: .5em;
 }
 
-.selectedAR.odd {
-	background-color: #541;
-}
-
-.selectedAR.even {
+.selectedAR {
 	background-color: #761;
 }
 
@@ -94,7 +90,7 @@
 }
 
 .generalAR.even {
-	background-color: #667;
+	background-color: #484878;
 }
 
 .favoriteAR.odd {
@@ -102,18 +98,19 @@
 }
 
 .favoriteAR.even {
-	background-color: #272;
+	background-color: #1E671E;
 }
 
 .clickedAR {
-	outline: 1px solid white;
-	box-shadow: inset 0 0 10px white;
-	-moz-box-shadow: inset 0 0 10px white;
-	-o-box-shadow: inset 0 0 10px white;
-	-webkit-box-shadow: inset 0 0 10px white;
+	outline: 1px solid #D0F0FF;
+	-webkit-box-shadow: inset 0 0 10px #D0F0FF;
+	-moz-box-shadow: inset 0 0 10px #D0F0FF;
+	-o-box-shadow: inset 0 0 10px #D0F0FF;
+	box-shadow: inset 0 0 10px #D0F0FF;
+	font-weight:bold;
 }
 
 .actkey {
-	font-family: Trebuchet MS, Trebuchet, sans-serif;	
-	padding: 6px;
+	font-family:Arial, Helvetica, sans-serif;	
+	padding:2px 6px;
 }

@@ -100,10 +100,11 @@
 
 .clickedAR {
 	outline: 1px solid green;
-	box-shadow: inset 0 0 10px green;
+	-webkit-box-shadow: inset 0 0 10px green;
 	-moz-box-shadow: inset 0 0 10px green;
 	-o-box-shadow: inset 0 0 10px green;
-	-webkit-box-shadow: inset 0 0 10px green;
+	box-shadow: inset 0 0 10px green;
+	font-weight:bold;
 }
 .actkey {
 	font-family:Courier, monospace;
