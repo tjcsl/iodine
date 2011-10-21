@@ -3,8 +3,8 @@
 	overflow-y: scroll;
 	padding:0;
 	margin-top:1em; 
-	border: 1px solid #ddd;
-	border-right: 4px double #ddd;
+	border: 1px solid #FCC303;
+	border-right: 4px double #FCC303;
 }
 
 #activityList :first-child {
@@ -15,9 +15,10 @@
 	font-family: Trebuchet MS, sans-serif;
 	padding: .5em;
 	font-weight: bold;
+	color:white;
 	background-color: black;
-	border-top: 1px solid #ddd;
-	border-bottom: 1px solid #ddd;
+	border-top: 1px solid #FCC303;
+	border-bottom: 1px solid #FCC303;
 }
 
 .activityRow {
