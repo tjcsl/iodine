@@ -2,6 +2,13 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<!-- prevents errors due to caching; remove soon-ish -->
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="CACHE-CONTROL" content="NO-CACHE"/>
+
+
 <title>TJHSST Intranet2[<if $title != "" >]: [<$title>][</if>]</title>
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
 
