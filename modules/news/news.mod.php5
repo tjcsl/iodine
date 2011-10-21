@@ -141,7 +141,7 @@ class News implements Module {
 				$string.="</div>\n";
 				return $string;
 			default:
-				return "<div>Error: unregognisable input</div>\n";
+				return "<div>Error: unrecognizable input</div>\n";
 		}
 	}
 

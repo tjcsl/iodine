@@ -14,11 +14,6 @@
 <br/>
 </div>
 <div>
-
-[<if $I2_USER->uid == 12359>]
-<p style="color:red; font-size:larger; font-weight:bold;">Please do not abuse the Iodine mailing list.</p>
-[</if>]
-
 [<foreach from=$stories item=story>]
 		[<include file="news/news-disp.tpl">]
 [</foreach>]

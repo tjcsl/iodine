@@ -2249,16 +2249,19 @@ class Eighth implements Module {
 					
 				if($i->favorite)
 					$faves[] = $i;
-				if($i->restricted)
-					$restricted[] = $i;
 				
-				if($i->member_count>=$i->capacity)
-					$full[] = $i;
-				else if($i->member_count>=$i->capacity*.9)
-					$filling[] = $i;
+				if($I2_USER->uid!=9999) { // Eighth office doesn't need sections
+					if($i->restricted)
+						$restricted[] = $i;
 				
-				if($i->cancelled)
-					$cancelled[] = $i;
+					if($i->member_count>=$i->capacity)
+						$full[] = $i;
+					else if($i->member_count>=$i->capacity*.9)
+						$filling[] = $i;
+					
+					if($i->cancelled)
+						$cancelled[] = $i;
+				}
 
 				$general[] = $i;
 			}
