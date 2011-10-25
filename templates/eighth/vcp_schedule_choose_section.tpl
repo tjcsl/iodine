@@ -1,4 +1,4 @@
-<div class="activityHead">[<$sTitle>]</div>
+<div class="activityHead" id="section_[<$sID>]">[<$sTitle>]</div>
 [<foreach from=$activities item=activity key=key>]
 	<div onclick="activityRowClicked(this)" class="[<$activity->aid>]_AID [<if $key%2==1>]odd[<else>]even[</if>] [<$activity->displayClass($selected_aid)>] activityRow" [<if $activity->block_rooms_comma>]data-room="[<$activity->block_rooms_comma>]"[</if>] [<if $activity->block_sponsors_comma_short>]data-sponsor="[<$activity->block_sponsors_comma_short>]"[</if>]>
 		<div class="alIndicator"></div>

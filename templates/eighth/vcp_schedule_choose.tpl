@@ -8,27 +8,29 @@
 		var currentList = document.getElementById("activityList");
 		var listItems = currentList.childNodes;
 		for (var i = 0; i < listItems.length; i++) {
-			if(listItems[i].nodeType != 1 || listItems[i].className.indexOf('activityRow')==-1)
+			if(listItems[i].nodeType != 1 || listItems[i].className.indexOf('activityRow') == -1) {
 				continue;
+			}
 			
 			var selected = false;
 			
 			for (var j = 0; j < txt.length; j++) {
-				if (listItems[i].innerHTML.toLowerCase().indexOf(txt[j]) != -1) {
+				if ((listItems[i].innerHTML.toLowerCase().indexOf(txt[j]) != -1) || // check the activity name
+				    (listItems[i].getAttribute("data-room") != null && listItems[i].getAttribute("data-room").toLowerCase().indexOf(txt[j]) != -1) || // check the room number
+				    (listItems[i].getAttribute("data-sponsor") != null && listItems[i].getAttribute("data-sponsor").toLowerCase().indexOf(txt[j]) != -1)) { // check the sponsor
 					selected = true;
-					listItems[i].selected = true;
 					break;
 				}
 			}
 
-			if(listItems[i] == openedRow && !selected) {
-				activityRowClear();
+			if (!selected) {
+				listItems[i].style.display = "none";
+				if (listItems[i] == openedRow) {
+					activityRowClear();
+				}
+			} else {
+				listItems[i].style.display = "block";
 			}
-
-			if(!selected)
-				listItems[i].style.display = 'none';
-			else
-				listItems[i].style.display = 'block';
 		}
 	}
 
@@ -74,36 +76,43 @@
 		[<if $selected>]
 			[<include file="eighth/vcp_schedule_choose_section.tpl"
 				sTitle="Selected"
+				sID="selected"
 				activities=$selected>]
 		[</if>]
 		[<if $favorites>]
 			[<include file="eighth/vcp_schedule_choose_section.tpl"
 				sTitle="Favorites"
+				sID="favs"
 				activities=$favorites>]
 		[</if>]
 		[<if $filling>]
 			[<include file="eighth/vcp_schedule_choose_section.tpl"
 				sTitle="Almost Full"
+				sID="filling"
 				activities=$filling>]
 		[</if>]
 		[<if $general>]
 			[<include file="eighth/vcp_schedule_choose_section.tpl"
 				sTitle="All Activities"
+				sID="general"
 				activities=$general>]
 		[</if>]
 		[<if $full>]
 			[<include file="eighth/vcp_schedule_choose_section.tpl"
 				sTitle="Filled"
+				sID="full"
 				activities=$full>]
 		[</if>]
 		[<if $restricted>]
 			[<include file="eighth/vcp_schedule_choose_section.tpl"
 				sTitle="Restricted"
+				sID="restricted"
 				activities=$restricted>]
 		[</if>]
 		[<if $cancelled>]
 			[<include file="eighth/vcp_schedule_choose_section.tpl"
 				sTitle="Cancelled"
+				sID="cancelled"
 				activities=$cancelled>]
 		[</if>]
 
@@ -118,15 +127,16 @@
 			}
 		</script>
 		<input size="50" id='filterActivities' type="search" results="0" placeholder=" Search for an activity" onchange="filterList(value);" onkeyup="filterList(value);" onsearch="filterList(value);"/>
+		<span style="display:none;">&larr; OMG SEARCH BOX!</span>
 		<div style="margin-top:4px;">
 			<b>Color Key:</b>
-			[<if empty($manybids)>]<span class="selectedAR even actkey">your choice</span>[</if>]
-			<span class="generalAR odd actkey">normal</span>
-			<span class="fillingAR odd actkey">almost full</span>
-			<span class="fullAR odd actkey">full</span>
-			<span class="cancelledAR odd actkey">cancelled</span>
-			<span class="restrictedAR odd actkey">restricted</span>
-			<span class="favoriteAR odd actkey">favorite</span>
+			[<if empty($manybids)>]<span class="selectedAR even actkey"[<if $selected>] onclick="document.getElementById('section_selected').scrollIntoView(true);" style="cursor:pointer;"[</if>]>your choice</span>[</if>]
+			<span class="generalAR odd actkey"[<if $general>] onclick="document.getElementById('section_general').scrollIntoView(true);" style="cursor:pointer;"[</if>]>normal</span>
+			<span class="fillingAR odd actkey" [<if $filling>]onclick="document.getElementById('section_filling').scrollIntoView(true);" style="cursor:pointer;"[</if>]>almost full</span>
+			<span class="fullAR odd actkey" [<if $full>]onclick="document.getElementById('section_full').scrollIntoView(true);" style="cursor:pointer;"[</if>]>full</span>
+			<span class="cancelledAR odd actkey" [<if $cancelled>]onclick="document.getElementById('section_cancelled').scrollIntoView(true);" style="cursor:pointer;"[</if>]>cancelled</span>
+			<span class="restrictedAR odd actkey"[<if $restricted>] onclick="document.getElementById('section_restricted').scrollIntoView(true);" style="cursor:pointer;"[</if>]>restricted</span>
+			<span class="favoriteAR odd actkey"[<if $favorites>] onclick="document.getElementById('section_favs').scrollIntoView(true);" style="cursor:pointer;"[</if>]>favorite</span>
 		</div>
 	</div>
 </form>
