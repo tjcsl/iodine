@@ -163,6 +163,20 @@
 			<span class="restrictedAR odd actkey"[<if $restricted>] onclick="scrollToSection('section_restricted');" style="cursor:pointer;"[</if>]>restricted</span>
 			<span class="favoriteAR odd actkey"[<if $favorites>] onclick="scrollToSection('section_favs');" style="cursor:pointer;"[</if>]>favorite</span>
 		</div>
+		<br/>
+		<div>
+			<b>Search tips:</b>
+			<br/>
+			Search for an activity name <i>e.g. &ldquo;Awesome Association&rdquo;</i>
+			<br/>
+			Search by sponsor <i>e.g. &ldquo;Torbert&rdquo;</i>
+			<br/>
+			Search by room number <i>e.g. &ldquo;115&rdquo; or &ldquo;gym&rdquo;</i>
+			<br/>
+			Search by flags <i>e.g. &ldquo;restricted&rdquo; or &ldquo;cancelled&rdquo;</i>
+			<br/>
+			Exclude results <i>e.g. &ldquo;-restricted&rdquo; or &ldquo;-lab&rdquo;</i>
+		</div>
 	</div>
 </form>
 
