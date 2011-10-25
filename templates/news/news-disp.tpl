@@ -23,22 +23,8 @@
 	 <!-- class name from Mike -->
 	 <!-- Lydia gets her name in a comment too -->
 	 <div class="newsresponsebar">
-		 <span class="newslikebtn [<if $story->liked==1>]newslikebtnliked[<else>]newslikebtnunliked[</if>]" onclick="newsLike([<$story->nid>]);" id="likebtn[<$story->id>]">
-		 	[<if $story->liked==1>]
-				Unlike
-			[<else>]
-				Like
-			[</if>]
-		</span>
-		<span class="newslikecount">
-			[<$story->likecount>]
-			[<if $story->likecount == 1>]
-				person
-			[<else>]
-				people
-			[</if>]
-			liked this
-		</span>
+		 <span class="newslikebtn [<if $story->liked==1>]newslikebtnliked[<else>]newslikebtnunliked[</if>]" onclick="newsLike([<$story->nid>]);" id="likebtn[<$story->id>]">[<if $story->liked==1>]Unlike[<else>]Like[</if>]</span>
+		<span class="newslikecount" id="likecount[<$story->id>]">[<$story->likecount>] [<if $story->likecount == 1>]person[<else>]people[</if>] liked this</span>
 	 </div>
 	</div>
 </div>
