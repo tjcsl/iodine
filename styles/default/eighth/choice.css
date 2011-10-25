@@ -50,11 +50,11 @@
 }
 
 .fillingAR.odd {
-	background-color: #88d;
+	background-color: #8989F5;
 }
 
 .fillingAR.even {
-	background-color: #aaf;
+	background-color: #9191F8;
 }
 
 .fullAR.odd {
@@ -63,22 +63,22 @@
 }
 
 .fullAR.even {
-	background-color: #333;
+	background-color: #292929;
 	color:white;
 }
 
 .cancelledAR.odd {
-	background-color: #222;
-	color: red;
+	background-color: #C30000;
+	color: white;
 }
 
 .cancelledAR.even {
-	background-color: #333;
-	color: red;
+	background-color: #C00;
+	color: white;
 }
 
 .restrictedAR.odd {
-	background-color: #fa7;
+	background-color: #FDC5A0;
 }
 
 .restrictedAR.even {
@@ -86,19 +86,19 @@
 }
 
 .generalAR.odd {
-	background-color: #ccf;
+	background-color: #ECECFF;
 }
 
 .generalAR.even {
-	background-color: #eef;
+	background-color: #F0F0FE;
 }
 
 .favoriteAR.odd {
-	background-color: #ada;
+	background-color: #B3F4B3;
 }
 
 .favoriteAR.even {
-	background-color: #afa;
+	background-color: #BCF9B3;
 }
 
 .clickedAR {
