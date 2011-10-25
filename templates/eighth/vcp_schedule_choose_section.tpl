@@ -1,6 +1,7 @@
 <div class="activityHead" id="section_[<$sID>]">[<$sTitle>]</div>
 [<foreach from=$activities item=activity key=key>]
-	<div onclick="activityRowClicked(this)" class="[<$activity->aid>]_AID [<if $key%2==1>]odd[<else>]even[</if>] [<$activity->displayClass($selected_aid)>] activityRow"
+	<div onclick="activityRowClicked(this)" class="[<if $key%2==1>]odd[<else>]even[</if>] [<$activity->displayClass($selected_aid)>] activityRow"
+		data-aid="[<$activity->aid>]"
 		[<if $activity->block_rooms_comma>]data-room="[<$activity->block_rooms_comma>]"[</if>]
 		[<if $activity->block_sponsors_comma_short>]data-sponsor="[<$activity->block_sponsors_comma_short>]"[</if>]
 		[<if $activity->restricted || $activity->cancelled>]data-type="[<if $activity->restricted>]restricted[</if>][<if $activity->cancelled>][<if $activity->restricted>] [</if>]cancelled[</if>]"[</if>]>
