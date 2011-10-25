@@ -2,6 +2,7 @@
 	var openedRow = null;
 
 	function filterList(txt) {
+		console.log("txt = " + txt);
 		txt = txt.toLowerCase();
 		txt = txt.split(" or ");
 		
@@ -15,11 +16,21 @@
 			var selected = false;
 			
 			for (var j = 0; j < txt.length; j++) {
-				if ((listItems[i].innerHTML.toLowerCase().indexOf(txt[j]) != -1) || // check the activity name
-				    (listItems[i].getAttribute("data-room") != null && listItems[i].getAttribute("data-room").toLowerCase().indexOf(txt[j]) != -1) || // check the room number
-				    (listItems[i].getAttribute("data-sponsor") != null && listItems[i].getAttribute("data-sponsor").toLowerCase().indexOf(txt[j]) != -1)) { // check the sponsor
-					selected = true;
+				var negated = false;
+				var query = txt[j];
+				console.log("query = " + query);
+				while (query.charAt(0) == "-") {
+					query = query.substring(1);
+					negated = !negated;
+					console.log("query is now " + query + " after un-negation");
+				}
+				if ((listItems[i].innerHTML.toLowerCase().indexOf(query) != -1) || // check the activity name
+				    (listItems[i].getAttribute("data-room") != null && listItems[i].getAttribute("data-room").toLowerCase().indexOf(query) != -1) || // check the room number
+				    (listItems[i].getAttribute("data-sponsor") != null && listItems[i].getAttribute("data-sponsor").toLowerCase().indexOf(query) != -1)) { // check the sponsor
+					selected = !negated;
 					break;
+				} else {
+					selected = negated;
 				}
 			}
 
@@ -126,7 +137,7 @@
 				document.write("<label for=\"filterActivities\">Search</label>"); // ----------------- display a label
 			}
 		</script>
-		<input size="50" id='filterActivities' type="search" results="0" placeholder=" Search for an activity" onchange="filterList(value);" onkeyup="filterList(value);" onsearch="filterList(value);"/>
+		<input size="50" id='filterActivities' type="search" results="0" placeholder=" Search for an activity" oninput="filterList(value);" onsearch="filterList(value);"/>
 		<span style="display:none;">&larr; OMG SEARCH BOX!</span>
 		<div style="margin-top:4px;">
 			<b>Color Key:</b>
