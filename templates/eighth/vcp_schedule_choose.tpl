@@ -3,9 +3,15 @@
 	var mobileNoScroll = false;
 
 	function filterList(txt) {
-		console.log("txt = " + txt);
 		txt = txt.toLowerCase();
 		txt = txt.split(" or ");
+		// code for "AND" operator; not useful if text is not split every space
+		/*for (var i = 0; i < txt.length - 2; i++) {
+			if (txt[i + 1] == "and") {
+				txt[i] = txt[i] + " " + txt[i + 2];
+				txt.splice((i + 1), 2);
+			}
+		}*/
 		
 		var currentList = document.getElementById("activityList");
 		var listItems = currentList.childNodes;
@@ -19,11 +25,9 @@
 			for (var j = 0; j < txt.length; j++) {
 				var negated = false;
 				var query = txt[j];
-				console.log("query = " + query);
 				while (query.charAt(0) == "-") {
 					query = query.substring(1);
 					negated = !negated;
-					console.log("query is now " + query + " after un-negation");
 				}
 				if ((listItems[i].innerHTML.toLowerCase().indexOf(query) != -1) || // check the activity name
 				    (listItems[i].getAttribute("data-room") != null && listItems[i].getAttribute("data-room").toLowerCase().indexOf(query) != -1) || // check the room number
