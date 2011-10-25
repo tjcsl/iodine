@@ -24,7 +24,15 @@ IE7_PNG_SUFFIX = ".png";
 <body background="[<$I2_ROOT>][<$bg>]">
 <div class="logo"></div>
 <br /><br /><br />
-<table class="middle">
+<table class="middle" style="margin:auto;">
+	<tr> <!-- remove this TR and the above style attribute -->
+		<td title="R.I.P. John McCarthy, coiner of the term &ldquo;artificial intelligence&rdquo; and inventer of the Lisp programming language">
+			<img src="[<$I2_ROOT>]www/pics/john_mccarthy.png" alt="R.I.P. John McCarthy"/>
+			<br/>
+			<div style="text-shadow:0px 0px 5px white;text-align:center;font-size:larger;">
+				<b>John McCarthy</b><br/>1927-2011</td>
+			</div>
+	</tr>
 	<tr>
 		<td class="box">
 [<if $failed eq 1>]
