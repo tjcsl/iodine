@@ -29,9 +29,11 @@
 					query = query.substring(1);
 					negated = !negated;
 				}
+
 				if ((listItems[i].innerHTML.toLowerCase().indexOf(query) != -1) || // check the activity name
 				    (listItems[i].getAttribute("data-room") != null && listItems[i].getAttribute("data-room").toLowerCase().indexOf(query) != -1) || // check the room number
-				    (listItems[i].getAttribute("data-sponsor") != null && listItems[i].getAttribute("data-sponsor").toLowerCase().indexOf(query) != -1)) { // check the sponsor
+				    (listItems[i].getAttribute("data-sponsor") != null && listItems[i].getAttribute("data-sponsor").toLowerCase().indexOf(query) != -1) ||
+				    (listItems[i].getAttribute("data-flags") != null && listItems[i].getAttribute("data-flags").toLowerCase().split(" ").indexOf(query) != -1)) { // check the flags
 					selected = !negated;
 					break;
 				} else {

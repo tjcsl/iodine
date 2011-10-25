@@ -4,7 +4,7 @@
 		data-aid="[<$activity->aid>]"
 		[<if $activity->block_rooms_comma>]data-room="[<$activity->block_rooms_comma>]"[</if>]
 		[<if $activity->block_sponsors_comma_short>]data-sponsor="[<$activity->block_sponsors_comma_short>]"[</if>]
-		[<if $activity->restricted || $activity->cancelled>]data-type="[<if $activity->restricted>]restricted[</if>][<if $activity->cancelled>][<if $activity->restricted>] [</if>]cancelled[</if>]"[</if>]>
+		[<if $activity->restricted || $activity->cancelled>]data-flags="[<if $activity->restricted>]restricted[</if>][<if $activity->cancelled>][<if $activity->restricted>] [</if>]cancelled[</if>]"[</if>]>
 		<div class="alIndicator"></div>
 		[<$activity->aid>]: [<$activity->name_comment_r|escape:html>]
 	</div>
