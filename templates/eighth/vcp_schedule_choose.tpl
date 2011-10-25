@@ -79,8 +79,6 @@
 		}
 	}
 </script>
-<!-- 	Note to I2 devs: identifying information (###_AID) is stored in the class name rather than in the ID because rows can be repeated and thus ###_AID would not be unique. 
-	I could have used a nonstandard attribute or added a nonce to the ###_AID formation, but I think both of those would have been uglier than the current solution.		-->
 <form name="activity_select_form" action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$uid>]/bids/[<$bids>][<if $start_date != NULL>]/start_date/[<$start_date>][</if>]" method="post">
 	<input type="hidden" name="aid" id="aidInput" />
 	<div id="activityList">
