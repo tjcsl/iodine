@@ -132,9 +132,9 @@
 			<b>Color Key:</b>
 			[<if empty($manybids)>]<span class="selectedAR even actkey"[<if $selected>] onclick="document.getElementById('section_selected').scrollIntoView(true);" style="cursor:pointer;"[</if>]>your choice</span>[</if>]
 			<span class="generalAR odd actkey"[<if $general>] onclick="document.getElementById('section_general').scrollIntoView(true);" style="cursor:pointer;"[</if>]>normal</span>
-			<span class="fillingAR odd actkey" [<if $filling>]onclick="document.getElementById('section_filling').scrollIntoView(true);" style="cursor:pointer;"[</if>]>almost full</span>
-			<span class="fullAR odd actkey" [<if $full>]onclick="document.getElementById('section_full').scrollIntoView(true);" style="cursor:pointer;"[</if>]>full</span>
-			<span class="cancelledAR odd actkey" [<if $cancelled>]onclick="document.getElementById('section_cancelled').scrollIntoView(true);" style="cursor:pointer;"[</if>]>cancelled</span>
+			<span class="fillingAR odd actkey"[<if $filling>] onclick="document.getElementById('section_filling').scrollIntoView(true);" style="cursor:pointer;"[</if>]>almost full</span>
+			<span class="fullAR odd actkey"[<if $full>] onclick="document.getElementById('section_full').scrollIntoView(true);" style="cursor:pointer;"[</if>]>full</span>
+			<span class="cancelledAR odd actkey"[<if $cancelled>] onclick="document.getElementById('section_cancelled').scrollIntoView(true);" style="cursor:pointer;"[</if>]>cancelled</span>
 			<span class="restrictedAR odd actkey"[<if $restricted>] onclick="document.getElementById('section_restricted').scrollIntoView(true);" style="cursor:pointer;"[</if>]>restricted</span>
 			<span class="favoriteAR odd actkey"[<if $favorites>] onclick="document.getElementById('section_favs').scrollIntoView(true);" style="cursor:pointer;"[</if>]>favorite</span>
 		</div>
