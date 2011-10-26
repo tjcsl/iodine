@@ -4,9 +4,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <!-- prevents errors due to caching; remove soon-ish -->
-<meta http-equiv="Pragma" content="no-cache"/>
-<meta http-equiv="Expires" content="-1"/>
-<meta http-equiv="CACHE-CONTROL" content="NO-CACHE"/>
+<!-- <meta http-equiv="Pragma" content="no-cache"/> -->
+<!-- <meta http-equiv="Expires" content="-1"/> -->
+<!-- <meta http-equiv="CACHE-CONTROL" content="NO-CACHE"/> -->
 
 
 <title>TJHSST Intranet2[<if $title != "" >]: [<$title>][</if>]</title>
