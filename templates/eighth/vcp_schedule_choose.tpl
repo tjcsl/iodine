@@ -176,6 +176,8 @@
 			Search by flags <i>e.g. &ldquo;restricted&rdquo; or &ldquo;cancelled&rdquo;</i>
 			<br/>
 			Exclude results <i>e.g. &ldquo;-restricted&rdquo; or &ldquo;-lab&rdquo;</i>
+			<br/>
+			Combine queries <i>e.g. &ldquo;Stueben OR Gabor</i>
 		</div>
 	</div>
 </form>
