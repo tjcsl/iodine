@@ -14,38 +14,51 @@ a {
 }
 }
 
-input {
-	font-family: courier, helvetica, verdana, sans-serif;
+input, textarea {
+	font-family: courier, monospace;
 	color: #008800;
 	background: transparent;
 	border-style: solid;
 	border-width: 1px;
 	border-color: #007700;
+	outline:transparent none 0px;
 }
-
 select {
-	color: #008800;
-	background: #000000;
+	font-family: courier, monospace;
+	color:#008800;
+	background-color:black;
+	background:-webkit-linear-gradient(150deg, #008800, black 25px);
+	background-image:-ms-linear-gradient(150deg, #008800 black 25px);
+	background-image:-o-linear-gradient(150deg, #008800 black 25px);
+	background-image:linear-gradient(150deg, #008800 black 25px);
+	background-image:-moz-linear-gradient(150deg, #008800 black 25px);
+	border-style:solid;
+	border-width:1px;
+	border-color:#007700;
+	outline:transparent none 0px;
 /*	scrollbar-3dlight: green;
 	scrollbar-arrow: green;
 	scrollbar-base: black;
 	scrollbar-shadow: green;*/
-	border-style: solid;
-	border-width: 0px;
-	border-color: 007700;
 }
+input[type=search] {
+	-webkit-appearance:none;
+}
+input:focus, textarea:focus {
+	border-color:#009900;
+}
+input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, button:hover, select:hover {
+	border-color:#009900;
+}
+input[type=button]:active, input[type=submit]:active, input[type=reset]:active, button:active, select:active {
+	border-color:#007700;
+}
+
 
 option {
 	color: #008800;
 	background: #000000;
 	border-width: 0px;
-}
-textarea {
-	color: #008800;
-	background: #000000;
-	border-style: solid;
-	border-width: 1px;
-	border-color: #007700;
 }
 .c1 {
 	background: transparent;
