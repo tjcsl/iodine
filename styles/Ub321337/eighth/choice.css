@@ -22,6 +22,7 @@
 .activityRow {
 	padding: .25em .5em .25em .5em;
 	cursor: pointer;
+	color:#0C0;
 }
 
 .activityInfo {
@@ -43,68 +44,59 @@
 }
 
 .selectedAR {
-	background-color: #320;
+	background-color:#292200;
 }
 
 .fillingAR.odd {
-	background-color: #113;
+	background-color:#07073C;
 }
 
 .fillingAR.even {
-	background-color: #114;
+	background-color:#0B0B3F;
 }
 
 .fullAR.odd {
-	background-color: #ddd;
-	color: black;
+	background-color:#D1D1D1;
+	color:black;
 }
 
 .fullAR.even {
-	background-color: #ccc;
-	color: black;
-}
-
-.fullAR > .activityInfoInner, .cancelledAR > .activityInfoInner {
+	background-color:#ccc;
 	color:black;
-}
-
-.fullAR input, .cancelledAR input {
-	color:black;
-	border:1px solid black;
 }
 
 .cancelledAR.odd {
-	background-color: #D00;
-	color: white;
+	background-color:#BB0000;
+	color:white;
 }
 
 .cancelledAR.even {
-	background-color: #E00;
-	color: white;
+	background-color:#C10000;
+	color:white;
 }
 
 .restrictedAR.odd {
-	background-color: #500;
+	background-color:#470700;
 }
 
 .restrictedAR.even {
-	background-color: #410;
+	background-color:#520A00;
 }
 
 .generalAR.odd {
-	background-color: #070717;
+	background-color:#16161D;
 }
 
 .generalAR.even {
-	background-color: #070720;
+	background-color:#181820;
 }
 
 .favoriteAR.odd {
-	background-color: #051a05;
+	background-color:#112D10;
 }
 
 .favoriteAR.even {
-	background-color: #102010;
+	background-color:#0F330F;
 }
 
 .clickedAR {
@@ -117,5 +109,6 @@
 }
 .actkey {
 	font-family:Courier, monospace;
+	color:#0C0;
 	padding:2px 6px;
 }

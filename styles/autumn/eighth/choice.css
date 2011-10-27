@@ -48,59 +48,59 @@
 }
 
 .selectedAR {
-	background-color: #761;
+	background-color:#756200;
 }
 
 .fillingAR.odd {
-	background-color: #005;
+	background-color:#0A0A5C;
 }
 
 .fillingAR.even {
-	background-color: #227;
+	background-color:#10105B;
 }
 
 .fullAR.odd {
-	background-color: #ddd;
-	color: black;
+	background-color:#D1D1D1;
+	color:black;
 }
 
 .fullAR.even {
-	background-color: #ccc;
-	color: black;
+	background-color:#ccc;
+	color:black;
 }
 
 .cancelledAR.odd {
-	background-color: #ddd;
-	color: red;
+	background-color:#BB0000;
+	color:white;
 }
 
 .cancelledAR.even {
-	background-color: #ccc;
-	color: red;
+	background-color:#C10000;
+	color:white;
 }
 
 .restrictedAR.odd {
-	background-color: #720;
+	background-color:#7A0C00;
 }
 
 .restrictedAR.even {
-	background-color: #730;
+	background-color:#800F00;
 }
 
 .generalAR.odd {
-	background-color: #337;
+	background-color:#363649;
 }
 
 .generalAR.even {
-	background-color: #484878;
+	background-color:#3C3C51;
 }
 
 .favoriteAR.odd {
-	background-color: #252;
+	background-color:#225A20;
 }
 
 .favoriteAR.even {
-	background-color: #1E671E;
+	background-color:#1D631D;
 }
 
 .clickedAR {
