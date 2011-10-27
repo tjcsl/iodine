@@ -148,7 +148,7 @@
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<script type="text/javascript">
 			if (document.createElement("input").placeholder == null) { // if placeholder text will not show up,
-				document.write("<label for=\"filterActivities\">Search</label>"); // ----------------- display a label
+				document.write("<label for=\"filterActivities\">Search</label>"); // display a label
 			}
 		</script>
 		<input size="50" id='filterActivities' type="search" results="0" placeholder=" Search for an activity" oninput="filterList(value);" onsearch="filterList(value);"/>
