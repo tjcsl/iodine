@@ -30,14 +30,14 @@ button, input[type=button], input[type=submit] {
 	background-image:   -moz-linear-gradient(#F9F9F9 40%, #E3E3E3 60%);
 	color: black;
 	font-family:Arial, sans-serif;
-	font-size:12px;
+	font-size:13px;
 	
 	border-style:solid;
 	border-width:1px;
 	border-color:#BBB;
-	        border-radius:3px;
-	   -moz-border-radius:3px;
 	-webkit-border-radius:3px;
+	   -moz-border-radius:3px;
+	        border-radius:3px;
 	
 	padding:2px 6px;
 	margin-top:0px;
@@ -68,10 +68,17 @@ button:disabled, input[type=button]:disabled, input[type=submit]:disabled {
 }
 
 input[type=text], input[type=search], input[type=email], textarea {
-	outline-color:lightBlue;
 	border-width:1px;
 	border-style:inset;
 	border-color:#EEEEEE;
 	padding:2px;
 	-webkit-appearance:none;
+}
+
+input[type=text]:focus, input[type=search]:focus, input[type=email]:focus, textarea:focus {
+	outline-color:lightBlue;
+	outline-style:solid;
+	outline-width:1px;
+	border-style:solid;
+	border-color:lightBlue;
 }
