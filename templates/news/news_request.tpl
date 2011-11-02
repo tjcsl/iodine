@@ -35,15 +35,44 @@
 		</form>
 		<script type="text/javascript">
 			document.getElementById("post_form").onsubmit = function(e) {
-				if (document.getElementById("post_title").value.indexOf("!!!!") != -1) {
+				var postTitle = document.getElementById("post_title").value;
+				var postContents = document.getElementById("post_contents").value;
+				if (postTitle.indexOf("!!!!") != -1) {
 					alert("Your post has been rejected because you have more than three consecutive exclamation points in your title.  Please revise your title and re-submit.");
-					if (e.preventDefault()) e.preventDefault();
+					if (e.preventDefault) e.preventDefault();
 					return false;
-				} else if (document.getElementById("post_contents").value.indexOf("!!!!") != -1) {
+				} else if (postContents.indexOf("!!!!") != -1) {
 					alert("Your post has been rejected because you have more than three consecutive exclamation points in the body of your post.  Please revise your post and re-submit.");
-					if (e.preventDefault()) e.preventDefault();
+					if (e.preventDefault) e.preventDefault();
 					return false;
-				}	
+				}
+				
+				// check for excessive caps
+
+				var capsRegex = /[A-Z]/g;
+				var caps = 0;
+				/*for (var i = 0; i < titleChars.length; i++) {
+					if (titleChars.charCodeAt(i) >= 65 && titleChars.charCodeAt(i) <= 90) {
+						caps++;
+					}
+				}*/
+				while (capsRegex.test(postTitle)) {
+					caps++;
+				}
+				if ((caps * 1.0) / postTitle.length > 0.4) {
+					alert("Your post has been rejected because you have too many capital letters in your title.  Please revise your title and re-submit.  If you honestly believe your use of capital letters was valid, e-mail [<$iodinemail>].");
+					if (e.preventDefault) e.preventDefault();
+					return false;
+				}
+				caps = 0;
+				while (capsRegex.test(postContents)) {
+					caps++;
+				}
+				if ((caps * 1.0) / postContents.length > 0.4) {
+					alert("Your post has been rejected because you have too many capital letters in the body of your post.  Please revise your post and re-submit.  If you honestly believe your use of capital letters was valid, e-mail [<$iodinemail>].");
+					if (e.preventDefault) e.preventDefault();
+					return false;
+				}
 			}
 		</script>
 	[<else>]
