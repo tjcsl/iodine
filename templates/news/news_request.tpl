@@ -23,8 +23,9 @@
 		<li>If there's a well-defined group, such as "The class of 2012" or "Only male students" that you'd like to limit your post to, add that as a note in the notes field.  If we have that group in the system, then we will post it to that group; otherwise, we will e-mail you to try to get it worked out.  If you do not specify a group, your news post will be visible to all students if it is about an eighth period activity or to everyone if it is about anything else.</li>
 		<li>DO NOT make requests for lost-and-found-type notices.  Due to volume, we won't post these.  Instead, go to lost-and-found in the school.</li>
 		<li>Keep it SFW.</li>
+		<li>If you have a link to an outside poll where you request any student information (even "just their name"), your post will likely be rejected. This is because FCPS regulations regarding student network use and data handling. If you would like to run a poll that requests this data, just put the poll description (a list of (question, questiontype)) in the comments section, or send us an email with the desired poll to [<mailto address=$iodinemail encode=hex >].</li>
 		</ol>
-		<strong>We reserve the power to edit requests at our discretion.  If your news post does not comply with our requirements, we may modify it or ask you to revise it.</strong><br/><br/>
+		<strong>We reserve the power to edit requests at our discretion. If your news post does not comply with our requirements, we may modify it, ask you to revise it, or in some cases reject it.</strong><br/><br/>
 		Title*:<br /><input type="text" name="submit_title" id="post_title" style="width:98%" required="required"/><br />
 		Expiration Date* (the news post will be removed at midnight on this date):<br /><input type="text" name="submit_expdate" style="width:98%" required="required"/><br />
 		Contents*:<br />
