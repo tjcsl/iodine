@@ -36,23 +36,27 @@ window.addEventListener("load", function() {
 	tabInfo.values = new Array();
 	tabInfo.names = new Array();
 	tabInfo.num = 0;
-	for (var i=0;i<tabInfo.list.childNodes.length;i++) {
+	for (var i = 0; i < tabInfo.list.childNodes.length; i++) {
 		tabInfo.list.childNodes.item(i).onclick = selectTab;
 	}
 	
 	// load the text dynamically
 	http.onreadystatechange = function() {
 		try {
-		if(http.readyState == 4 && http.status == 200) {
-			var all = http.responseText.split("&");
-			for (var i=0;i<all.length;i++) {
-				var junk = all[i].split("=");
-				makeTab(decodeURIComponent(junk[0]),decodeURIComponent(junk[1]));
+			if(http.readyState == 4 && http.status == 200) {
+				var all = http.responseText.split("&");
+				for (var i = 0; i < all.length; i++) {
+					var junk = all[i].split("=");
+					makeTab(decodeURIComponent(junk[0]),decodeURIComponent(junk[1]));
+				}
+				tabInfo.all = all; // This is our changeflag
+				if (tabInfo.values[0] != null && tabInfo.values[0] != "undefined") {
+					document.getElementById("text").value = tabInfo.values[0];
+				} else {
+					document.getElementById("text").value = "";
+				}
+				tabInfo.list.childNodes.item(0).className = "active";
 			}
-			tabInfo.all = all; // This is our changeflag
-			document.getElementById("text").value = tabInfo.values[0];
-			tabInfo.list.childNodes.item(0).className = "active";
-		}
 		} catch (e) {
 			window.onunload = null;
 		}
@@ -157,7 +161,11 @@ function deleteTab(img) {
 		t.index--;
 	if (tab.nextSibling != tabInfo.list.lastChild && tab.className == "active") {
 		tab.nextSibling.className = "active";
-		document.getElementById("text").value = tabInfo.values[tab.index];
+		if (tabInfo.values[tab.index] != null && tabInfo.values[tab.index] != "undefined") {
+			document.getElementById("text").value = tabInfo.values[tab.index];
+		} else {
+			document.getElementById("text").value = "";
+		}
 	}
 	tab.parentElement.removeChild(tab);
 	chflag = 1;
@@ -179,6 +187,10 @@ function selectTab(ev) {
 			}
 		}
 		tab.className = "active";
-		document.getElementById("text").value = tabInfo.values[index];
+		if (tabInfo.values[index] != null && tabInfo.values[index] != "undefined") {
+			document.getElementById("text").value = tabInfo.values[index];
+		} else {
+			document.getElementById("text").value = "";
+		}
 	}
 }

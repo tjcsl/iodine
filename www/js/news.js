@@ -39,13 +39,18 @@ function newsLike(nid) {
 		if (likeXHR.readyState == 4) {
 			if (likeXHR.status == 200) {
 				var likeBtnElem = document.getElementById("likebtn" + nid);
+				var likeCountElem = document.getElementById("likecount" + nid);
+				var likeCount = parseInt(likeCountElem.innerHTML.substring(0, likeCountElem.innerHTML.indexOf(" ")));
 				if (likeBtnElem.innerHTML.indexOf("Un") == -1) {
 					likeBtnElem.innerHTML = "Unlike";
 					likeBtnElem.className = "newslikebtn newslikebtnliked";
+					likeCount++;
 				} else {
 					likeBtnElem.innerHTML = "Like";
 					likeBtnElem.className = "newslikebtn newslikebtnunliked";
+					likeCount--;
 				}
+				likeCountElem.innerHTML = likeCount + " " + (likeCount == 1 ? "person" : "people") + " liked this";
 			}
 		}
 	}

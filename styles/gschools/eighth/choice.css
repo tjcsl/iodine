@@ -1,0 +1,10 @@
+.activityRow {
+	font-family:Arial, Helvetica, sans-serif;
+	padding: .25em .5em .25em .5em;
+	cursor: pointer;
+}
+
+.actkey {
+	font-family:Arial, Helvetica, sans-serif;
+	padding:2px 6px;
+}
