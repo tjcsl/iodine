@@ -3,4 +3,7 @@
 	<app appid="apljcbgllcdiagbeknndiijlcgnhedbp">
 		<updatecheck codebase="https://iodine.tjhsst.edu/www/chrome/iodine_chrome_app.crx" version="2"/>
 	</app>
+	<app appid="bljdebkpffadcacldnfkbcncjdnlkkho">
+		<updatecheck codebase="https://iodine.tjhsst.edu/www/chrome/iodine_antp_widget.crx" version="1"/>
+	</app>
 </gupdate>
