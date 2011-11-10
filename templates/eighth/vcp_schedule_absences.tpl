@@ -1,6 +1,11 @@
 [<include file="eighth/header.tpl">]
 [<php>] $this->_tpl_vars['count'] = count($this->_tpl_vars['absences']); [</php>]
 Absence information for <a href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]">[<$user->fullname_comma>] ([<$user->studentid>])</a>: [<$count>] absence[<if $count != 1 >]s[</if>]<br /><br />
+[<if $user->iodineUIDNumber == $I2_USER->iodineUIDNumber>]
+To clear an absence print this page. Have the teacher listed sign next to the activity to indicate that you were present. If you went to another activity, that teacher will need to sign as well as indicating what activity you attended as an alternative to the one that shows up in intranet. Bring the signed page to the 8th period office within two weeks of an absence to clear it.
+<br />
+<br />
+[</if>]
 <table cellspacing="0" cellpadding="0" style="padding: 0; spacing: 0; border: none">
 	<tr>
 		<th style="padding: 0px 10px;">Date</th>
