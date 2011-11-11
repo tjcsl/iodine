@@ -1,24 +1,24 @@
-<input type="button" style="font-style: italic; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('italic')" value="Italic" />
-<input type="button" style="font-weight: bold; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('bold')" value="Bold" />
-<input type="button" style="text-decoration: underline; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('underline')" value="Underline" />
-<input type="button" style="text-decoration: line-through; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('strikethrough')" value="Strikethrough" />
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('inserthorizontalrule')" value="Horizontal Rule" />
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('superscript')" value="Superscript" />
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('subscript')" value="Subscript" />
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="dohref()" value="Hyperlink" />
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('unlink')" value="Unlink text" />
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doimg()" value="Image" /><br /><br />
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="docolor('forecolor')" value="Text Color" />
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="docolor('backcolor')" value="Back Color" />
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="docolor('hilitecolor')" value="Highlight Color" /><br /><br />
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyleft')" value="Justify Left" />
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyright')" value="Justify Right" />
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifycenter')" value="Justify Center" />
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyfull')" value="Justify Full"/>
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('insertorderedlist')" value="Ordered List" />
-<input type="button" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('insertunorderedlist')" value="Unordered List" />
-<input type="button" id="htmlswitcher" style="border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="edithtml()" value="Edit HTML" /><br /><br />
-<textarea id="RichHTML" style="visibility: hidden; width: 99%; height: 0px" rows="10" cols="400"></textarea>
+<button type="button" style="height:25px; font-style: italic; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('italic')">I</button>
+<button type="button" style="height:25px; font-weight: bold; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('bold')">B</button>
+<button type="button" style="height:25px; text-decoration: underline; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('underline')">U</button>
+<button type="button" style="height:25px; text-decoration: line-through; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('strikethrough')">St</button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('inserthorizontalrule')">HR</button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('superscript')">x<sup>y<sup></button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('subscript')">x<sub>y</sub></button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left; text-decoration: underline; color:blue" onclick="dohref()">link</button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('unlink')">Unlink</button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doimg()">Image</button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left; color: red" onclick="docolor('forecolor')">T</button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="docolor('backcolor')"><div style="width:11px; height:11px; border: 1px solid black; padding:2px; background-color:red"></div></button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="docolor('hilitecolor')"><div style="width:16px; height:16px; border: padding:2px; background-color:yellow">T</div></button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyleft')"><img src="[<$I2_ROOT>]www/pics/richedit/left-align.gif"/></button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyright')"><img src="[<$I2_ROOT>]www/pics/richedit/right-align.gif"/></button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifycenter')"><img src="[<$I2_ROOT>]www/pics/richedit/center-align.gif"/></button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('justifyfull')"><img src="[<$I2_ROOT>]www/pics/richedit/justified-align.gif"/></button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('insertorderedlist')"><img src="[<$I2_ROOT>]www/pics/richedit/numbered-list.gif"/></button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="doit('insertunorderedlist')"><img src="[<$I2_ROOT>]www/pics/richedit/bulleted-list.gif"/></button>
+<button type="button" style="height:25px; border: 1px solid; padding-left: 2px; padding-right: 2px; float: left" onclick="edithtml()" id="htmlswitcher">&lt;html&gt;</button>
+<textarea id="RichHTML" style="visibility: hidden; width: 99%; height: 0px; padding:0px; margin:0px; border-width:0px" rows="10" cols="400"></textarea>
 <iframe id="RichForm" width="99%" height="200" src="[<$I2_ROOT>]richedit"></iframe><br />
 <script type="text/javascript">
 var formfield = null;
