@@ -1,12 +1,17 @@
 var interval;
 var clockContainer, clock;
-var eleven = new Date(2011, 10, 10, 22, 56, 00, 111);
+var eleven = new Date(2011, 10, 11, 11, 11, 11, 111);
 // year, month, date, hour, minute, second, millis
 // months start at 0, so 10 -> 11
 
 window.addEventListener("load", function() {
 	document.getElementsByClassName("middle")[0].style.marginTop = "-60px";
 	document.getElementsByClassName("middle")[0].style.paddingTop = "0px";
+	
+	var confettiScript = document.createElement("script");
+	confettiScript.type = "text/javascript";
+	confettiScript.src = "/~2012zyaro/i2/www/js/logins/special/confettisnow.js";
+	document.getElementsByTagName("head")[0].appendChild(confettiScript);
 	
 	clockContainer = document.createElement("div");
 	clockContainer.style.position = "fixed";
@@ -34,11 +39,14 @@ window.addEventListener("load", function() {
 	document.body.appendChild(clockContainer);
 
 	incrementCountdown();
-	interval = setInterval(incrementCountdown, 500);
+	interval = setInterval(incrementCountdown, 100);
 	
 	var now = new Date();
-	if (eleven.getTime() < now.getTime() && ((now.getTime() - eleven.getTime()) < 3600000)) { // show confetti if 11-11-11 11:11:11.111 was less than an hour ago
-		startConfetti();
+	console.log("now = " + now.getTime() + " | eleven = " + eleven.getTime() + " | now - eleven = " + (now.getTime() - eleven.getTime()));
+	if (eleven.getTime() < now.getTime() && ((now.getTime() - eleven.getTime()) < 3600000)) {
+		// show confetti if 11-11-11 11:11:11.111 was less than an hour ago
+		// the code for this is in I2_ROOT/www/js/logins/special/confettisnow.js
+		setTimeout("initsnow();", 1000);
 	}
 }, false);
 
@@ -61,12 +69,15 @@ function incrementCountdown() {
 	}
 
 
-	if (diff / 1000.0 <= 11 && diff / 1000.0 > 0) {
+	if (diff / 1000.0 <= 11 && diff / 1000.0 >= 0) {
 		clock.style.fontWeight = "bold";
 		var scaleFactor = ((11 - (diff / 1000.0)) / 11.0);
 		clock.style.fontSize = (320 + Math.round(100 * scaleFactor)) + "px";
 		clock.style.color = "rgb(0," + Math.round(255 * scaleFactor) + ",0)";
 		clock.innerHTML = "<span style=\"font-size:" + (320 - Math.round(200 * scaleFactor)) + "px\">" + hr + ":" + min + ":</span>" + sec;
+		if (Math.round(diff / 1000.0) == 0 && !snowing) {
+			initsnow();
+		}
 	} else {
 		clock.innerHTML = hr + ":" + min + ":" + sec;
 		msg.innerHTML = "until 11-11-11 11:11:11.111";
@@ -77,7 +88,7 @@ function incrementCountdown() {
 			msg.innerHTML = "since 11-11-11 11:11:11.111<br/><br/>Come back next century!";
 		}
 	}
-}
-function startConfetti() {
-	
+	if (!!window.snowing && snowing) {
+		movesnow();
+	}
 }
