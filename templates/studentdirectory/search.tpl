@@ -3,11 +3,11 @@
 [<else>]
 [<if $query == 'do a barrel roll'>]
 <script type="text/javascript">
-	document.body.style.WebkitTransitionDuration = "1.5s";
-	document.body.style.MozTransitionDuration = "1.5s";
-	document.body.style.MsTransitionDuration = "1.5s";
-	document.body.style.OTransitionDuration = "1.5s";
-	document.body.style.transitionDuration = "1.5s";
+	document.body.style.WebkitTransitionDuration = "5s";
+	document.body.style.MozTransitionDuration = "5s";
+	document.body.style.MsTransitionDuration = "5s";
+	document.body.style.OTransitionDuration = "5s";
+	document.body.style.transitionDuration = "5s";
 	document.body.style.WebkitTransitionTimingFunction = "linear";
 	document.body.style.MozTransitionTimingFunction = "linear";
 	document.body.style.MsTransitionTimingFunction = "linear";
