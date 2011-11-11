@@ -28,6 +28,10 @@ window.addEventListener("load", function() {
 	clock.style.verticalAlign = "middle";
 	clock.style.marginBottom = "-36px";
 	clock.style.WebkitTransitionDuration = "0.5s";
+	clock.style.MozTransitionDuration = "0.5s";
+	clock.style.MsTransitionDuration = "0.5s";
+	clock.style.OTransitionDuration = "0.5s";
+	clock.style.transitionDuration = "0.5s";
 
 	msg = document.createElement("span");
 	msg.style.fontSize = "32px";
