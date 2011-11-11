@@ -70,3 +70,14 @@
 #news_groups_table td {
 	padding-right: 3px;
 }
+
+.toolbarbtn { /* for editor */
+	height:25px;
+	min-width:27px;
+	border:1px solid;
+	padding-left:6px;
+	padding-right:6px;
+	margin-left:0px;
+	margin-right:1px;
+	float:left;
+}

@@ -42,7 +42,7 @@ window.addEventListener("load", function() {
 	interval = setInterval(incrementCountdown, 100);
 	
 	var now = new Date();
-	console.log("now = " + now.getTime() + " | eleven = " + eleven.getTime() + " | now - eleven = " + (now.getTime() - eleven.getTime()));
+	//console.log("now = " + now.getTime() + " | eleven = " + eleven.getTime() + " | now - eleven = " + (now.getTime() - eleven.getTime()));
 	if (eleven.getTime() < now.getTime() && ((now.getTime() - eleven.getTime()) < 3600000)) {
 		// show confetti if 11-11-11 11:11:11.111 was less than an hour ago
 		// the code for this is in I2_ROOT/www/js/logins/special/confettisnow.js
