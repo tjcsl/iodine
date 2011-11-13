@@ -33,7 +33,7 @@
 		box.getElementsByTagName("a")[5].style.marginTop = "10em";
 		// left eye
 		box.getElementsByTagName("a")[0].style.position = "absolute";
-		box.getElementsByTagName("a")[0].style.left = "7em";
+		box.getElementsByTagName("a")[0].style.left = "8.25em";
 		box.getElementsByTagName("a")[0].style.top = "3.1em";
 		box.getElementsByTagName("a")[0].style.width = "6em";
 		box.getElementsByTagName("a")[0].style.display = "block";
@@ -41,7 +41,7 @@
 		
 		// right eye
 		box.getElementsByTagName("a")[1].style.position = "absolute";
-		box.getElementsByTagName("a")[1].style.left = "17em";
+		box.getElementsByTagName("a")[1].style.left = "18.25em";
 		box.getElementsByTagName("a")[1].style.top = "3.1em";
 		box.getElementsByTagName("a")[1].style.width = "6em";
 		box.getElementsByTagName("a")[1].style.display = "block";
@@ -75,6 +75,7 @@
 		
 		// add message
 		var msg = document.createElement("div");
+		msg.style.fontSize = "105%";
 		msg.innerHTML = "<br/>Stop being sad and be awesome instead :)";
 
 		box.insertBefore(msg, box.getElementsByTagName("br")[box.getElementsByTagName("br").length - 2]);
