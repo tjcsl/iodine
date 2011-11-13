@@ -73,7 +73,7 @@ class StudentDirectory implements Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_ROOT,$I2_ARGS,$I2_USER,$I2_LDAP;
+		global $I2_ROOT,$I2_ARGS,$I2_USER,$I2_LDAP,$I2_QUERY;
 
 		$this->user = NULL;
 
@@ -99,23 +99,23 @@ class StudentDirectory implements Module {
 				$this->template_args['user'] = $user;
 				return array('Pictures: '.$user->fname.' '.$user->lname, $user->fname.' '.$user->lname);
 			case 'search':
-				if( !isSet($_REQUEST['studentdirectory_query']) || $_REQUEST['studentdirectory_query'] == '') {
+				if( !isSet($I2_QUERY['q']) || $I2_QUERY['q'] == '') {
 					$this->template = 'studentdirectory_help.tpl';
 					return array('Directory Help', 'Searching Help');
 				} else {
-					$info = $I2_USER->search_info($_REQUEST['studentdirectory_query']);
+					$info = $I2_USER->search_info($I2_QUERY['q']);
 					
 					if( count($info) == 1 ) {
 						redirect('studentdirectory/info/'.$info[0]->uid);
 					} 
 					$this->template_args['info'] = $info;
 					$fp=fopen('/tmp/i2srclog',"a");
-					fwrite($fp,$I2_USER->iodineUID.' -> '.$_REQUEST['studentdirectory_query']);
+					fwrite($fp,$I2_USER->iodineUID.' -> '.$I2_QUERY['q']);
 					fclose($fp);
 					$this->template_args['numresults'] = count($info);
-					$this->template_args['query']=$_REQUEST['studentdirectory_query'];
+					$this->template_args['query']=$I2_QUERY['q'];
 					$this->template = 'search.tpl';
-					return array('Directory search results for "'.$_REQUEST['studentdirectory_query'].'"', 'Search results for "'.$_REQUEST['studentdirectory_query'].'"');
+					return array('Directory search results for "'.$I2_QUERY['q'].'"', 'Search results for "'.$I2_QUERY['q'].'"');
 				}
 				break;
 			case 'class':

@@ -1,4 +1,4 @@
-<form action="[<$I2_ROOT>]StudentDirectory/search/" method="post" class="directory">
+<form action="[<$I2_ROOT>]StudentDirectory/search/" method="get" class="directory">
 <table width="100%">
 <tr>
 <td align="center">
@@ -36,10 +36,10 @@
 	}
 </script>
 <!-- Add onkeyup="showResult(this.value)" for suggestions -->
-<input name="studentdirectory_query" type="text" class="directory-field" id="studentdirectory_query"/>
+<input name="q" type="text" class="directory-field" id="studentdirectory_query"/>
 <div id="livesearch" style="margin:0px; width:194px; align=left;"></div>
 </td><td align="center">
-<input name="Submit" type="submit" value="Search" class="directory-button" />
+<input type="submit" value="Search" class="directory-button" />
 </td>
 </tr>
 </table>
