@@ -114,6 +114,7 @@ class StudentDirectory implements Module {
 					fclose($fp);
 					$this->template_args['numresults'] = count($info);
 					$this->template_args['query']=$I2_QUERY['q'];
+					$this->template_args['math_eval']=math_eval($I2_QUERY['q']);
 					$this->template = 'search.tpl';
 					return array('Directory search results for "'.$I2_QUERY['q'].'"', 'Search results for "'.$I2_QUERY['q'].'"');
 				}
@@ -278,6 +279,9 @@ class StudentDirectory implements Module {
 		}
 	}
 	
+	function math_eval($input) {
+		return false;
+	}
 	function unknown_statuses($sns) {
 		foreach(array_keys($sns) as $sn) {
 			$sns[$sn] = self::IM_UNKNOWN;

@@ -90,13 +90,13 @@ function page_init() {
 	var searchformdiv = document.createElement("div");
 	searchformdiv.className = "searchformdiv";
 	var searchform = document.createElement("form");
-	searchform.method = "post";
+	searchform.method = "get";
 	searchform.action = "[<$I2_ROOT>]studentdirectory/search/";
 	searchform.id= "searchform";
 	var textfield = document.createElement("input");
 	textfield.type="search";
 	textfield.id="searchbox";
-	textfield.name="studentdirectory_query";
+	textfield.name="q";
 	textfield.style.width = "300px";
 	textfield.results = 0;
 	var searchbutton = document.createElement("input");
