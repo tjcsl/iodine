@@ -24,7 +24,7 @@
 	}, false);
 </script>
 [</if>]
-[<if $query == "i am sad">]
+[<if $query == "i am sad" || $query == "I am sad">]
 <script type="text/javascript">
 	window.addEventListener("load", function() {
 		var box = document.getElementById("boxcontent");
@@ -74,9 +74,10 @@
 		box.getElementsByTagName("a")[4].style.display = "block";
 		
 		// add message
+		var msgs = ["Stop being sad and be awesome instead", "Don't worry; be happy"];
 		var msg = document.createElement("div");
 		msg.style.fontSize = "105%";
-		msg.innerHTML = "<br/>Stop being sad and be awesome instead :)";
+		msg.innerHTML = "<br/>" + msgs[Math.floor(Math.random() * msgs.length)] + " :)";
 
 		box.insertBefore(msg, box.getElementsByTagName("br")[box.getElementsByTagName("br").length - 2]);
 	}, false);
