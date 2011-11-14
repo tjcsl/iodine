@@ -279,35 +279,62 @@ class StudentDirectory implements Module {
 		}
 	}
 	
-	function math_eval($input) {
+	function math_eval($input) { //TODO: Parse mathematical stuff, return output (or false if not valid)
 		return false;
 	}
 
 	function logic_eval($input) {
-		//if(preg_match($input[0]
+		// http://en.wikipedia.org/wiki/Logical_connective
+		$vartable = array(); //TODO: finish parse_logicelement, make display nicer
+		if(has_unlogical($input))
+			return false;
+		$rootnode = parse_logicelement($input,$vartable);
+		if($rootnode==false)
+			return false;
+		$numvars=count($vartable);
+		if($numvars==0)
+			return $rootnode->evaluate();
+		if($numvars>4) //Sanity cap
+			return false;
+		for($i=2^$numvars;$i<2^($numvars+1);$i++) {
+			$varstr=decbin($i);
+			for($j=1;$j<=$numvars;$j++) {
+				$vartable[$j-1]=$varstr[$j];
+			}
+			$output[]=$rootnode->evaluate();
+		}
+		$numtopvars=floor($numvars/2);
+		$numleftvars=ceil($numvars/2);
+		$retstring="<table><tr><td colspan=".($numleftvars*2)." rowspan=".($numtopvars*2)."> </td>";
+		$vars=array_keys($vartable);
+		for($i=0;$i<$numtopvars;$i++) {
+			for($j=0;$j<2^$i;$j++)
+				$retstring.="<th colspan=".(($numtopvars-$i)*2).">".($vars[$i])."</th>";
+			$retstring.="</tr><tr>";
+			for($j=0;$j<2^$i;$j++)
+				$retstring.="<th colspan=".(($numtopvars-$i-1)*2).">0</th><th colspan=".(($numtopvars-$i-1)*2).">1</th>";
+		}
+		for($i=0;$i<$numleftvars;$i++)
+			for($j=0;$j<$numtopvars;$j++) {
+				$retstring.="<td>".$output[$i*$numtopvars+$j]."</td>";
+			}
+		return $retstring;
+	}
+
+	function has_unlogical($input) {
+		foreach(explode("",$input) as $char) {
+			if($char!='1'&&$char!='0'&&!in_array($char,logicelement::onearg)&&!in_array($char,logicelement::twoarg))
+				return true;
+		}
 		return false;
 	}
-	/*class logicelement {
-		private $type;
-		private $arg1;
-		private $arg2;
-		function __construct($type,$arg1,$arg2) {
-			if()
-		}
-		function eval() {
-			switch($type) {
-				case 'C':
-				case 'C':
-				case 'C':
-				case 'C':
-				case 'C':
-				case 'C':
-				case 'C':
-				case 'C':
-				case 'C':
-			}
-		}
-	}*/
+
+	function parse_logicelement($input,&$vartable) {
+		$temparg1=null;
+		$temparg2=null;
+		$i=0;
+		//TODO: MAKE THIS WORK
+	}
 
 	function unknown_statuses($sns) {
 		foreach(array_keys($sns) as $sn) {
@@ -542,6 +569,71 @@ class StudentDirectory implements Module {
 		return 0;
 	}
 
+}
+class logicelement {
+	private $type;
+	private $arg1;
+	private $arg2;
+	private $vartable;
+	public static $onearg = array('N');
+	public static $twoarg = array('I','F','G','K','D','A','X','L','C','M','B','J','E');
+	function __construct($type,$arg1,$arg2,&$vartable) {
+		$this->type=$type;
+		if(ctype_lower($type)) {
+			if(!array_key_exists($type,$vartable))
+				$vartable[$type]=false;
+		} elseif(in_array($type,$onearg)) {
+			$this->arg1=$arg1;
+		} elseif(in_array($type,$twoarg)) {
+			$this->arg1=$arg1;
+			$this->arg2=$arg2;
+		}
+		$this->vartable=$vartable;
+	}
+	function evaluate() {
+		if(ctype_lower($this->type))
+			return $this->vartable[$this->type];
+		if($type=='1')
+			return true;
+		if($type=='0')
+			return false;
+		switch($this->type) {
+			case 'N':
+				return !$this->arg1->evaluate();
+			case 'O':
+				return false;
+			case 'V':
+				return true;
+			case 'I':
+				return $this->arg1->evaluate();
+			case 'F':
+				return !$this->arg1->evaluate();
+			case 'H':
+				return $this->arg2->evaluate();
+			case 'G':
+				return !$this->arg2->evaluate();
+			case 'K':
+				return $this->arg1->evaluate() && $this->arg2->evaluate();
+			case 'D':
+				return !($this->arg1->evaluate() && $this->arg2->evaluate());
+			case 'A':
+				return $this->arg1->evaluate() || $this->arg2->evaluate();
+			case 'X':
+				return !($this->arg1->evaluate() || $this->arg2->evaluate());
+			case 'L':
+				return $this->arg1->evaluate() && (!$this->arg2->evaluate());
+			case 'C':
+				return !($this->arg1->evaluate() && (!$this->arg2->evaluate()));
+			case 'M':
+				return !($this->arg1->evaluate() || (!$this->arg2->evaluate()));
+			case 'B':
+				return $this->arg1->evaluate() || (!$this->arg2->evaluate());
+			case 'J':
+				return $this->arg1->evaluate() xor $this->arg2->evaluate();
+			case 'E':
+				return !($this->arg1->evaluate() xor $this->arg2->evaluate());
+		}
+	}
 }
 
 ?>
