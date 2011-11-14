@@ -1,5 +1,5 @@
 [<if $query == "sex:lots" || $query == "sex: lots" || $query == "sex :lots">]
-<iframe width="425" height="349" src="http://www.youtube.com/embed/QH2-TGUlwu4?autoplay=1" frameborder="0" allowfullscreen></iframe>
+<iframe width="425" height="349" src="http://www.youtube.com/embed/QH2-TGUlwu4?autoplay=1" frameborder="0" allowfullscreen></iframe><br/>
 [<else>]
 [<if $query == "do a barrel roll">]
 <script type="text/javascript">
@@ -23,7 +23,7 @@
 		}, 200);
 	}, false);
 </script>
-[</if>]
+[<else>]
 [<if $query == "i am sad" || $query == "I am sad">]
 <script type="text/javascript">
 	window.addEventListener("load", function() {
@@ -82,10 +82,15 @@
 		box.insertBefore(msg, box.getElementsByTagName("br")[box.getElementsByTagName("br").length - 2]);
 	}, false);
 </script>
+[<else>]
+[<if $query == "can has sleep" || $query == "can has sleep?">]
+<iframe width="560" height="315" src="http://www.youtube.com/embed/gvdf5n-zI14?autoplay=1" frameborder="0" allowfullscreen></iframe><br/>
+[</if>]
+[</if>]
+[</if>]
 [</if>]
 [<if $info>]
 [<include file="search/search_results_pane.tpl" results_destination="StudentDirectory/info/">]
 [<else>]
 There were no results matching your query.
-[</if>]
 [</if>]
