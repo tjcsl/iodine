@@ -1176,11 +1176,12 @@ class EighthActivity {
 		if($this->restricted)
 			return "restrictedAR";
 
-		if($this->member_count>=$this->capacity)
-			return "fullAR";
-
-		if($this->member_count>=$this->capacity*.9)
-			return "fillingAR";
+		if($this->capacity != -1) {
+			if($this->member_count>=$this->capacity)
+				return "fullAR";
+			if($this->member_count>=$this->capacity*.9)
+				return "fillingAR";
+		}
 
 		if($this->favorite)
 			return "favoriteAR";

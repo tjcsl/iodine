@@ -2254,11 +2254,13 @@ class Eighth implements Module {
 					if($i->restricted)
 						$restricted[] = $i;
 				
-					if($i->member_count>=$i->capacity)
-						$full[] = $i;
-					else if($i->member_count>=$i->capacity*.9)
-						$filling[] = $i;
-					
+					if($i->capacity != -1) {
+						if($i->member_count>=$i->capacity)
+							$full[] = $i;
+						else if($i->member_count>=$i->capacity*.9)
+							$filling[] = $i;
+					}
+
 					if($i->cancelled)
 						$cancelled[] = $i;
 				}
