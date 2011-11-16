@@ -98,3 +98,5 @@ IE7_PNG_SUFFIX = ".png";
 	}
 	//-->
 </script>
+
+<a style="width:261px;height:80px;vertical-align:middle;text-align:center;background-color:#000;position:absolute;z-index:5555;top:16px;left:2px;background-image:url(http://americancensorship.org/images/stop-censorship-small.png);background-position:center center;background-repeat:no-repeat;" href="http://americancensorship.org" target="_blank"></a>

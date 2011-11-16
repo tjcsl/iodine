@@ -39,6 +39,8 @@ IE7_PNG_SUFFIX = ".png";
 </div>
 </div>
 <div id="logo" class="logo"><a href="[<$I2_ROOT>]"><span id="logotext">Intranet 2</span></a></div>
+<a style="width:261px;height:80px;vertical-align:middle;text-align:center;background-color:#000;position:absolute;z-index:5555;top:16px;left:2px;background-image:url(http://americancensorship.org/images/stop-censorship-small.png);background-position:center center;background-repeat:no-repeat;" href="http://americancensorship.org" target="_blank"></a>
+
 <div class="header">
  <div class="title"> [<if $I2_USER->borntoday()>]Happy Birthday[<else>]Welcome[</if>], [<if $I2_USER->uid == 12937>]compressed-air-abuser[<else>][<$I2_USER->firstornick>][</if>]!</div>
  <div class="blurb">Today is [<$smarty.now|date_format:"%B %e, %Y">]. 
