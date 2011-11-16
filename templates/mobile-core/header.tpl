@@ -29,7 +29,7 @@ IE7_PNG_SUFFIX = ".png";
 			<input type="hidden" name="op" value="search" />
 			Name/Student ID: <input type="text" name="name_id" id="query"/>
 			<input type="submit" value="View Eighth Period Schedule" />
-			<input type="submit" value="Search Student Directory" onclick="document.getElementById('form').action='[<$I2_ROOT>]StudentDirectory/search/';document.getElementById('query').name='studentdirectory_query';"/>
+			<input type="submit" value="Search Student Directory" onclick="document.getElementById('form').action='[<$I2_ROOT>]StudentDirectory/search/';document.getElementById('query').name='q';document.getElementById('form').method='get';"/>
 		</form>
 	[<else>]
 	 	The next 8th period is [<$date>], and you are currently signed up for 
