@@ -9,7 +9,7 @@
 	[</if>]
 [<else>]
 	Do you want to post an informational news article or announcement on Intranet? This page allows you to easily submit news for approval.<br />
-	<p style="color:red;font-weight:bold;">Due to a recent policy change, all news posts must be submitted or approved by staff members before they will be posted.</p>
+	<h2 style="color:red;font-weight:bold;">Due to a recent policy change, all news posts must be submitted or approved by staff members before they will be posted.</h2>
 	[<if $usermail>]
 		We will follow up with you at <strong>[<$usermail>]</strong> if needed.  If this e-mail address is incorrect, please update your preferences, or feel free to send an e-mail directly to [<mailto address=$iodinemail encode=hex >].  If you send us an e-mail directly, make sure you include the title, content, expiration date, and other notes for your news post, and don't forget to tell us who you are!<br />
 		<br />
