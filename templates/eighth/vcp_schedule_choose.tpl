@@ -177,7 +177,7 @@
 			<br/>
 			Exclude results <i>e.g. &ldquo;-restricted&rdquo; or &ldquo;-lab&rdquo;</i>
 			<br/>
-			Combine queries <i>e.g. &ldquo;Stueben OR Gabor</i>
+			Combine queries <i>e.g. &ldquo;Stueben OR Gabor&rdquo;</i>
 		</div>
 	</div>
 </form>
