@@ -286,7 +286,9 @@ class User {
 						return 'TJStar';
 					else if($this->__get('objectclass')=='tjhsstStudent')
 						return 'graduate';
-					return 'staff';
+					else if($this->__get('objectclass')=='tjhsstTeacher')
+						return 'staff';
+					return 'none';
 				}
 				return $grade;
 			case 'phone_home':
