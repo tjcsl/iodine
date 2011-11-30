@@ -6,33 +6,22 @@ Directory hierarchy:
 /smarty/ -- PHP files for defining custom smarty tags and functions.
 functions.inc.php5 -- globally available functions and such.
 
-We are currently using Mercurial for source management.  DO NOT use cvs.
-To pull from a remote location, the command is 'hg pull http://iodine.tjhsst.edu/hg'.
+We have switch to using Git for source management. 
 
 To get started:
-mkdir intranet2
-cd intranet2
-hg init
-hg pull http://iodine.tjhsst.edu/hg
-hg update
+git clone /shared/git/intranet2.git intranet2
 
 To commit:
 ./commit
-Arguments passed to ./commit will be passed to hg commit ([options] [filenames])
+Arguments passed to ./commit will be passed to git commit ([options] [filenames])
 
 To update:
 ./update
-Arguments passed to ./update will be passed to hg update ([options] [revision to get])
+Arguments passed to ./update will be passed to git pull.
 
 Note that these tools will update or commit your ENTIRE repository.  ./commit can be passed filenames or directories as arguments, but ./update cannot.  So, please exercise caution.
 
-Also, note that files you create won't be committed until you use 'hg add' on them.
-
-DO NOT use 'hg addremove'.  It will commit your personal config files to the global repository.  Please don't do that.
-
-The shortcuts 'i2' and 'intranet2' are available for your use.  You can type 'hg pull i2', 'hg push intranet2', etc.  The default may also be i2, so you can try typing 'hg pull' and seeing what happens.
-
-The suggested way of working is to 'hg pull ssh://[username]@iodine.tjhsst.edu//shared/hg/intranet2' from home, and push the same way.  You obviously need to install hg (and preferably meld) on your home computer to do this.  Mercurial depends on Python 2.3 or better.  By the time you are reading this, the entire system should be available on the CSL workstations for your working pleasure.  Remember to change config.ini's ROOT setting to the appropriate access URL if you're not working on "iodine".
+Also, note that files you create won't be committed until you use 'git add' on them.
 
 Summary of things you need installed to work on AND RUN i2 from home:
 - Apache
@@ -40,35 +29,11 @@ Summary of things you need installed to work on AND RUN i2 from home:
 - mod_rewrite  
 - Python 2.3
 - Meld, xxdiff, kdiff3, or some type of decent merge program 
-- Mercurial
+- Git
 - MySQL: you need the user iodine, with the correct password, and the database 'iodine'.
 
 
 You'll only be able to log in as 'guest', unless you hack kinit.  Remember to source the MySQL files in mysql/ to create the necessary databases.
-
-If you only wish to code at home, and to test at school, you may take advantage of a feature of Mercurial: repository-to-repository pushing.  At home, you can run 'hg push ssh://[username]@iodine.tjhsst.edu/intranet2' to push changes into your iodine home directory.  HOWEVER, this only pushes to the .hg repository over there.  It won't update your working copy.  So, you can either run 'hg update' on iodine or use './test' (after running setup.home) to rsync a testing version up.  You need rsync, obviously.  Remember to 'hg commit' before pushing.  When you're ready to push your changes to the global repository, push to iodine's /shared/hg/intranet2 dir as before.
-
-If you work from home this way, all you'll need is a merge program and Mercurial (which, remember, requires Python >= 2.3).  If you're using Windows it may work for you, but Cygwin (http://www.cygwin.com) is advisable.
-
-To make things easier, go ahead and set up an hgrc file, or just run setup.home to have one made automagically for you.  See 'man hgrc'.  Verbose=true under the UI section is highly recommended.  If you have setup.home do it, 'hg push testing' or just 'hg push' will push to your personal iodine repository, while 'hg push i2' will have your code go global.  If your username at home is different from at school, you'll need to edit ~/.hgrc and fix the references to be your iodine username.
-
-Additionally, there are two ways to PULL the current Intranet2 copy: HTTP and SSH.  'hg pull http://iodine.tjhsst.edu/hg' will get the latest via HTTP - SSH is detailed above.  You cannot push to http, but since it doesn't require a password and is faster, you should use it for all your pulls.  After running ./setup.home, 'hg pull' will be HTTP, 'hg pull i2' will be SSH.  Try 'hg paths' to take a look at what's available to you.  'default' is what you get with 'hg pull'; 'default-push' is what you get with 'hg push'.
-
-If you make changes and somebody else has already made changes at the same time, 'hg update' will tell you that there are multiple branches.  You have two choices at this point: 'hg update -C' will forget ALL your changes and take the local-repository version instead.  Usually, you won't want to do this.  Instead, 'hg update -m' will merge your changes.  If you don't have a merge program on the computer you're using, you'll get a VERY ugly console merge program.  The idea is this: make the repository look like the end result you want, and then run 'hg commit'.  It'll say it's a "branch merge".  Everything will be happy.  A quick summary to merging changes:
-
-1. hg pull
-2. hg update -m
-3. Merge the changes
-4. hg commit the result
-5. hg push
-
-Voila, you're done!  This method will let you merge as many branches as you like into one.
-
-IMPORTANT:
-	If you haven't actually changed anything you want to keep, use 'hg update -C'.
-	Also, what you commit is EXACTLY what gets pushed into the repository!  This means you should ALWAYS update to the latest version of everything before you make a new commit and then push!
-
-IMPORTANT:  Use 'ssh -X' if you insist on working on iodine!  Mercurial uses a very confusing vim-based merge if it doesn't have a GUI available.  So make sure to have meld accessible.  It's installed on iodine for you.
 
 Config:
 
