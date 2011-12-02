@@ -840,6 +840,57 @@ objectclass ( i2OC:4
 	)
 	)
 
+objectclass ( i2OC:5
+	NAME 'tjhsstUser'
+	SUP inetOrgPerson STRUCTURAL
+	MUST (
+		cn $
+		iodineUid $
+		header $
+		style $
+		chrome $
+		startpage $
+		iodineUidNumber $
+		userPassword $
+		sn
+	)
+	MAY (
+		displayName $
+		middlename $
+		group $
+		nickname $
+		birthday $
+		sex $
+		webpage $
+		header $
+		style $
+		chrome $
+		comments $
+		boxcolor $ boxtitlecolor $
+		counselor $
+		soundexlast $
+		soundexfirst $
+		metaphonelast $
+		metaphonefirst $
+		aim $ msn $ xfire $ yahoo $ googleTalk $ icq $ jabber $ xfire $ skype $
+		preferredPhoto $
+		mailMessages $
+		gidNumber $
+		afsid $
+		homeDirectory $
+		loginShell $
+		perm-showaddress-self $
+		perm-showtelephone-self $
+		perm-showbirthday-self $
+		perm-showpictures-self $
+		perm-showaddress $
+		perm-showtelephone $
+		perm-showbirthday $
+		perm-showpictures $
+		is-admin
+	)
+	)
+
 objectclass ( i2OC:8
 	NAME 'syslabUser'
 	SUP posixAccount AUXILIARY

@@ -75,3 +75,10 @@ memberURL: ldap:///dc=tjhsst,dc=edu??one?cn=authuser
 objectClass: groupOfURLs
 objectClass: top
 
+#The ACLs use this group to determine who is a 'student' since not all iodine users
+#should have student level access to directory information
+dn: cn=students,dc=tjhsst,dc=edu
+cn: students
+memberURL: ldap:///ou=people,dc=tjhsst,dc=edu??one?objectClass=tjhsstStudent
+objectClass: groupOfURLs
+objectClass: top
