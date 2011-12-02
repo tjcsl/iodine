@@ -382,8 +382,9 @@ class EighthSchedule {
 		if($I2_USER->is_group_member('admin_eighth') || $I2_USER->grade=='staff')
 			//I am someone who should always see the schedule.
 			return TRUE;
-		if($user->showeighthself && $user->showeighth)
+		if($user->showeighthself && $user->showeighth && $I2_USER->objectClass=='tjhsstStudent')
 			//This person both wants to show and has parental permission.
+			//And the requesting user is a student.
 			return TRUE;
 		if($user->uid == $I2_USER->uid)
 			//It's a me!  Mario!

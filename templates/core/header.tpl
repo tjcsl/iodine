@@ -71,21 +71,31 @@ IE7_PNG_SUFFIX = ".png";
 			[</if>]
 			<a href="[<$I2_ROOT>]eighth/vcp_attendance/view/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>[</foreach>].[</if>]
 	[<else>]
-	 	The next 8th period is [<$date>], and you are currently signed up for 
- 		[<foreach from=$activities item="activity" name="activities">]
- 			[<if $smarty.foreach.activities.last and not $smarty.foreach.activities.first>]
-				and
-			[<elseif not $smarty.foreach.activities.first>]
-				,
-			[</if>]
-			<a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$I2_USER->uid>]/bids/[<$activity->bid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>[</foreach>][<if empty($hosting)>].[<else>] and are sponsoring 
+		The next 8th period is [<$date>][<if !empty($activities) || !empty($hosting)>], and you are currently[</if>]
+
+		[<if !empty($activities)>] signed up for
+			[<foreach from=$activities item="activity" name="activities">]
+				[<if $smarty.foreach.activities.last and not $smarty.foreach.activities.first>]
+					and
+				[<elseif not $smarty.foreach.activities.first>]
+					,
+				[</if>]
+				<a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$I2_USER->uid>]/bids/[<$activity->bid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>
+			[</foreach>][<if empty($hosting)>].[</if>]
+		[</if>]
+
+		[<if !empty($hosting)>]
+			[<if !empty($activities)>] and are [</if>]
+		sponsoring
+
  		[<foreach from=$hosting item="activity" name="activities">]
  			[<if $smarty.foreach.activities.last and not $smarty.foreach.activities.first>]
 				and
 			[<elseif not $smarty.foreach.activities.first>]
 				,
 			[</if>]
-			<a href="[<$I2_ROOT>]eighth/vcp_attendance/view/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>[</foreach>].
+			<a href="[<$I2_ROOT>]eighth/vcp_attendance/view/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>
+		[</foreach>].
 		[</if>]
 	[</if>]
  [</if>]

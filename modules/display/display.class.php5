@@ -132,6 +132,7 @@ class Display {
 			// Limit users to certain modules. Used for TJStar users.
 			$allowed_modules=$I2_USER->allowed_modules;
 			if(!count($allowed_modules)==0 && !in_array(strtolower($module),$allowed_modules)) {
+				$I2_ERR->nonfatal_error("User tried to access the unauthorized module $module");
 				redirect();
 				return;
 			}
