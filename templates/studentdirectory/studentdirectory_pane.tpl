@@ -38,23 +38,32 @@ In a relationship with:
 [<if $user->homePhone || $user->phone_cell || count($user->phone_other)>]
 Phone number(s):
  <ul class="none">
- [<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]<li><a href="tel:[<$user->phone_home|replace:' ':''>]">[<$phone>] (Home)</a></li>[</foreach>][</if>]
- [<if $user->phone_cell>]<li><a href="tel:[<$user->phone_cell|replace:' ':''>]">[<$user->phone_cell>] (Cell)</a></li>[</if>]
- [<if count($user->phone_other)>][<foreach from=$user->phone_other item=phone_other>]<li><a href="tel:[<$user->phone_other|replace:' ':''>]">[<$phone_other>] (Other)</a></li>[</foreach>][</if>]
+ [<if $user->homePhone>][<foreach from=$user->phone_home item=phone>]<li><a href="tel:[<$user->phone_home|replace:' ':''>]">[<$phone|escape:'html'>] (Home)</a></li>[</foreach>][</if>]
+ [<if $user->phone_cell>]<li><a href="tel:[<$user->phone_cell|replace:' ':''>]">[<$user->phone_cell|escape:'html'>] (Cell)</a></li>[</if>]
+ [<if count($user->phone_other)>][<foreach from=$user->phone_other item=phone_other>]<li><a href="tel:[<$user->phone_other|replace:' ':''>]">[<$phone_other|escape:'html'>] (Other)</a></li>[</foreach>][</if>]
  </ul>
 [</if>]
 [<if $user->street>]
- [<$user->street>]<br />
- [<$user->l>], [<$user->st>] [<$user->postalCode>]<br />
+ [<$user->street|escape:'html'>]
+ <br/>
+ [<$user->l|escape:'html'>],
+ [<$user->st|escape:'html'>]
+ [<$user->postalCode|escape:'html'>]<br/>
  [<if $user->address2_street>]
   2nd address:<br />
-  [<$user->address2_street>]<br />
-  [<$user->address2_city>], [<$user->address2_state>] [<$user->address2_zip>]<br />
+  [<$user->address2_street|escape:'html'>]
+  <br/>
+  [<$user->address2_city|escape:'html'>],
+  [<$user->address2_state|escape:'html'>]
+  [<$user->address2_zip|escape:'html'>]<br/>
  [</if>]
  [<if $user->address3_street>]
   3rd address:<br />
-  [<$user->address3_street>]<br />
-  [<$user->address3_city>], [<$user->address3_state>] [<$user->address3_zip>]<br />
+  [<$user->address3_street|escape:'html'>]
+  <br/>
+  [<$user->address3_city|escape:'html'>],
+  [<$user->address3_state|escape:'html'>]
+  [<$user->address3_zip|escape:'html'>]<br />
  [</if>]
 [</if>]
 <br />
@@ -87,7 +96,7 @@ To view this user's portfolio click <a href="https://shares.tjhsst.edu/PORTFOLIO
 [<if count($user->webpage)>]
  <ul>
  [<foreach from=$user->webpage key=id item=webpage>]
-  <li><a href="[<$webpage|escape:'html'>]" id="webpage_display_[<$id>]">[<$webpage>]</a></li>
+  <li><a href="[<$webpage|escape:'html'>]" id="webpage_display_[<$id>]">[<$webpage|escape:'htmlall'>]</a></li>
  [</foreach>]
  </ul>
  <script src="[<$I2_ROOT>]www/js/ajax.js"></script>
