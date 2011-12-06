@@ -124,8 +124,9 @@ var santa;
 var chanukahDay = 0; // which day of Chanukah?
 var menorah;
 var candles;
-if (today.getMonth() == 11 && today.getDate() <= 9 && today.getHours() < 18) {
-	chanukahDay = (today.getDate() - 1); // how convenient!
+if (today.getMonth() == 11 && today.getDate() >= 20 && today.getDate() <= 28) {
+	chanukahDay = (today.getDate() - 20); // Chanukah starts on the evening of the 20th
+	                                      // chanukahDay = 0 until 18:00 when the code below will increment it
 	if (today.getHours() > 18) { // because each "day" starts at sunset
 		chanukahDay ++;
 	}
@@ -260,7 +261,7 @@ function initsnow() {
 		santa.style.zIndex="-1";
 		container.appendChild(santa);
 	}
-	if (chanukahDay != 0) { // no Chanukah = no candles
+	if (chanukahDay > 0 && chanukahDay <= 8) { // no Chanukah = no candles
 		menorah = document.createElement("img");
 		menorah.src = i2root+"www/pics/menorah.png";
 		menorah.title = "Happy Chanukah!"
