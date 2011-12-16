@@ -100,7 +100,7 @@ int main (void) {
 			}
 			//stringbuffer[k-j-1]='\r';
 			//stringbuffer[k-j]='\n';
-			printf("string recieved from php: %s\n",stringbuffer);
+			printf("string recieved from php (%li): %s\n",recmsg.type,stringbuffer);
 			//strcpy(recmsg.text,stringbuffer);
 
 			int i;
@@ -113,6 +113,10 @@ int main (void) {
 				}
 			}
 			if(marker==0) { //We don't have a socket for this one yet
+				if(stringbuffer[0]=='Q'&&stringbuffer[1]=='U'&&stringbuffer[2]=='I'&&stringbuffer[3]=='T') { //It's a quit message, so don't bother opening a connection for it.
+					printf("quit message recieved without connection, ignoring...\n");
+					continue;
+				}
 				for(i=0;i<NUMSOCKS;i++) {
 					if(sockets[i].id==0) {
 						unused=i;
