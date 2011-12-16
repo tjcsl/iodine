@@ -1,9 +1,0 @@
-(^|/)\.hg($|/)
-(^|/)\.htaccess$
-(^|/)config\.ini\.php5$
-^update$
-^commit$
-^test$
-^convert$
-^runtime/
-^uploads/
