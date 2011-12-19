@@ -130,7 +130,7 @@ try {
 	*
 	* Should be a fairly large speedup.
 	*/
-	if($I2_ARGS[0]=='css' && CSS::showCSS()) {
+	if(count($I2_ARGS) > 0 && $I2_ARGS[0]=='css' && CSS::showCSS()) {
 		exit();
 	}
 		
