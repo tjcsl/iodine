@@ -122,13 +122,12 @@ var santa;
 
 // Tron Menorah
 var chanukahDay = 0; // which day of Chanukah?
-var menorah;
-var candles;
+var menorah, candles, candleParticle;
 if (today.getMonth() == 11 && today.getDate() >= 20 && today.getDate() <= 28) {
 	chanukahDay = (today.getDate() - 20); // Chanukah starts on the evening of the 20th
 	                                      // chanukahDay = 0 until 18:00 when the code below will increment it
-	if (today.getHours() > 18) { // because each "day" starts at sunset
-		chanukahDay ++;
+	if (today.getHours() >= 18) { // because each "day" starts at sunset
+		chanukahDay++;
 	}
 	candles = new Array(chanukahDay);
 }
@@ -239,6 +238,12 @@ function resize() {
 				candles[i].style.left = ((menorah.offsetLeft + 104) - (25 * (i - 4))) + "px";
 			}
 		}
+		candleParticle.style.top = (menorah.offsetTop + 15) + "px"; // set the top so it lines up with the holders
+		if (chanukahDay - 1 < 4) {
+			candleParticle.style.left = ((menorah.offsetLeft + 283) - (26 * (chanukahDay - 1))) + "px";
+		} else {
+			candleParticle.style.left = ((menorah.offsetLeft + 104) - (25 * (chanukahDay - 5))) + "px";
+		}
 	}
 }
 
@@ -261,7 +266,7 @@ function initsnow() {
 		santa.style.zIndex="-1";
 		container.appendChild(santa);
 	}
-	if (chanukahDay > 0 && chanukahDay <= 8) { // no Chanukah = no candles
+	if (chanukahDay >= 0 && chanukahDay <= 8) { // no Chanukah = no candles
 		menorah = document.createElement("img");
 		menorah.src = i2root+"www/pics/menorah.png";
 		menorah.title = "Happy Chanukah!"
@@ -272,7 +277,7 @@ function initsnow() {
 		
 		menorah.style.left = (loginTable.offsetLeft + 37) + "px"; // position the menorah
 		menorah.style.top = (loginTable.offsetTop - 253) + "px"; //  on top of the login box
-		menorah.style.zIndex = "101"; // --------------------------- and make sure it is on top
+		menorah.style.zIndex = "99"; // --------------------------- and make sure it is on top
 
 		container.appendChild(menorah); // then add it to the container
 
@@ -281,7 +286,6 @@ function initsnow() {
 			candles[i].src = i2root+"www/pics/flame.gif"; // ---- get the candle animation
 //			candles[i].style.width = "14px";
 //			candles[i].style.height = "16px";
-
 			candles[i].style.position = "absolute";
 			candles[i].style.top = (menorah.offsetTop + 15) + "px"; // set the top so it lines up with the holders
 			if (i < 4) {
@@ -290,10 +294,22 @@ function initsnow() {
 				candles[i].style.left = ((menorah.offsetLeft + 104) - (25 * (i - 4))) + "px";
 			}
 //			candles[i].style.backgroundColor = "cyan";
-			candles[i].style.zIndex = "100"; // make sure it is on top of most stuff, but under the menorah
+			candles[i].style.zIndex = "100"; // make sure it is on top of most stuff
 
 			container.appendChild(candles[i]); // add it to the container too
 		}
+		candleParticle = document.createElement("img"); // create an <img>
+		candleParticle.src = i2root+"www/pics/flame_particles.gif"; // ---- get the particle animation
+		candleParticle.style.position = "absolute";
+		candleParticle.style.top = (menorah.offsetTop + 15) + "px"; // set the top so it lines up with the holders
+		if (chanukahDay - 1 < 4) {
+			candleParticle.style.left = ((menorah.offsetLeft + 283) - (26 * (chanukahDay - 1))) + "px";
+		} else {
+			candleParticle.style.left = ((menorah.offsetLeft + 104) - (25 * (chanukahDay - 5))) + "px";
+		}
+		candleParticle.style.zIndex = "101"; // make sure it is on top of most stuff
+
+		container.appendChild(candleParticle); // add it to the container too
 	}
 	if(pile) {
 		for (var i=0; i<heightbuckets; i++) {
