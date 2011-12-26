@@ -67,11 +67,14 @@ IE7_PNG_SUFFIX = ".png";
 		</td>
 	</tr>
 </table>
-<div id="verisign_box" class="box" style="position: fixed; bottom: 10px; right: 10px; padding: 0px;">
-<table width="100" border="0" cellpadding="2" cellspacing="0" title="Click to Verify - This site chose VeriSign SSL for secure confidential communications.">
-<tr>
-<td width="100" align="center" valign="top"><script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=iodine.tjhsst.edu&amp;size=S&amp;use_flash=NO&amp;use_transparent=YES&amp;lang=en"></script><br />
-</table>
+<div id="verisign_box" class="box">
+	<table width="100" border="0" cellpadding="2" cellspacing="0" title="Click to Verify - This site chose VeriSign SSL for secure confidential communications.">
+		<tr>
+			<td width="100" align="center" valign="top">
+				<script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=iodine.tjhsst.edu&amp;size=S&amp;use_flash=NO&amp;use_transparent=YES&amp;lang=en"></script><br/>
+			</td>
+		</tr>
+	</table>
 </div>
 
 <!-- Chrome app notification -->
@@ -83,15 +86,13 @@ IE7_PNG_SUFFIX = ".png";
 		chromeLink.type = "application/x-chrome-extension";
 
 		var chromeBox = document.createElement("div");
-		chromeBox.style.position = "fixed";
+		chromeBox.className = "box";
+		chromeBox.style.position = "absolute";
 		chromeBox.style.top = "8px";
 		chromeBox.style.right = "8px";
 		chromeBox.style.padding = "4px";
-		chromeBox.style.border = "1px solid #343433";
-		chromeBox.style.backgroundColor = "#F8F8F7";
-		chromeBox.style.opacity = "0.85";
 		
-		chromeBox.innerHTML = "<img src=\"[<$I2_ROOT>]www/pics/chrome_icon_32.png\" style=\"float:left; margin-right:4px;\" alt=\"\"/>Install the TJ Intranet app for Chrome";
+		chromeBox.innerHTML = "<img src=\"[<$I2_ROOT>]www/pics/chrome_icon_32.png\" style=\"float:left; margin-right:4px;\" alt=\"Google Chrome logo\"/>Install the TJ Intranet app for Chrome";
 
 		chromeLink.appendChild(chromeBox);
 		document.getElementsByTagName("body")[0].appendChild(chromeLink);

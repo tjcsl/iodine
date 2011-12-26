@@ -9,7 +9,7 @@
 .middle {
         height: 100%;
         margin: 10% auto auto auto;
-		padding-top: 15px;
+	padding-top: 15px;
 }
 .box {
 	padding: 10px;
@@ -30,4 +30,11 @@ form, div, p, span, td, th, i {
 }
 .right {
 	text-align: right;
+}
+
+#verisign_box {
+	position:absolute;
+	bottom:8px;
+	right:8px;
+	padding:0px;
 }
