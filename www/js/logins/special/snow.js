@@ -121,7 +121,7 @@ var santax=-santawidth;
 var santa;
 
 // Tron Menorah
-var chanukahDay = 0; // which day of Chanukah?
+var chanukahDay = -1; // which day of Chanukah?
 var menorah, candles, candleParticle;
 if (today.getMonth() == 11 && today.getDate() >= 20 && today.getDate() <= 28) {
 	chanukahDay = (today.getDate() - 20); // Chanukah starts on the evening of the 20th
