@@ -23,50 +23,42 @@ IE7_PNG_SUFFIX = ".png";
 </head>
 <body background="[<$I2_ROOT>][<$bg>]">
 <div class="logo"></div>
-<br /><br /><br />
-<table class="middle">
-	<tr>
-		<td class="box">
-[<if $failed eq 1>]
-			<div id="login_failed">
-				Your login as [<$uname|escape>] failed.  Maybe your password is incorrect?<br />
-			</div>
-[<elseif $failed eq 2>]
-			<div id="login_failed">
-				Your password and username were correct, but you don't appear to exist in our database. If this is a mistake, please contact the intranetmaster about it.
-			</div>
-[<elseif $failed>]
-			<div id="login_failed">
-				An unidentified error has occurred. Please contact the intranetmaster and tell him you received this error message immediately.
-			</div>
-[<else>]
-			Please type your username and password to login to the Intranet.
-[</if>]
-			<form name="login_form" action="[<$I2_SELF>]" method="post">
-				[<$posts>]
-				<table id="login_box">
-					<tr>
-						<td>Username:</td>
-					   	<td><input name="login_username" type="text" size="25" value="[<$uname|escape>]" /></td>
-					</tr>
-					<tr>
-						<td>Password:</td>
-						<td><input name="login_password" type="password" size="25" /></td>
-					</tr>
-					<tr>
-						<td align="right" colspan="2"><input type="submit" value="Login" /></td>
-					</tr>
-				</table>
-			</form>
-			<script language="javascript" type="text/javascript">
-				document.login_form.login_username.focus();
-			</script>
-			<div style="text-align: right">
-				<a href="http://www.tjhsst.edu/">TJHSST</a> &ndash; <a href="https://webmail.tjhsst.edu/">Mail</a> &ndash; <a href="http://postman.tjhsst.edu/">Postman (Calendar)</a>
-			</div>
-		</td>
-	</tr>
-</table>
+<div class="login box">
+	[<if $failed eq 1>]
+	<div id="login_failed">
+		Your login as [<$uname|escape>] failed.  Maybe your password is incorrect?<br />
+	</div>
+	[<elseif $failed eq 2>]
+	<div id="login_failed">
+		Your password and username were correct, but you don't appear to exist in our database. If this is a mistake, please contact the intranetmaster about it.
+	</div>
+	[<elseif $failed>]
+	<div id="login_failed">
+		An unidentified error has occurred. Please contact the intranetmaster and tell him you received this error message immediately.
+	</div>
+	[<else>]
+	Please type your username and password to login to the Intranet.
+	[</if>]
+	<form name="login_form" action="[<$I2_SELF>]" method="post">
+		[<$posts>]
+		<table id="login_box">
+			<tr>
+				<td>Username:</td>
+				<td><input name="login_username" type="text" size="25" value="[<$uname|escape>]" /></td>
+			</tr>
+			<tr>
+				<td>Password:</td>
+				<td><input name="login_password" type="password" size="25" /></td>
+			</tr>
+			<tr>
+				<td align="right" colspan="2"><input type="submit" value="Login" /></td>
+			</tr>
+		</table>
+	</form>
+	<div style="text-align: right">
+		<a href="http://www.tjhsst.edu/">TJHSST</a> &ndash; <a href="https://webmail.tjhsst.edu/">Mail</a> &ndash; <a href="http://postman.tjhsst.edu/">Postman (Calendar)</a>
+	</div>
+</div>
 <div id="verisign_box" class="box">
 	<table width="100" border="0" cellpadding="2" cellspacing="0" title="Click to Verify - This site chose VeriSign SSL for secure confidential communications.">
 		<tr>
@@ -80,7 +72,7 @@ IE7_PNG_SUFFIX = ".png";
 <!-- Chrome app notification -->
 <script type="text/javascript">
 	<!--
-	if (chrome && chrome.app && !chrome.app.isInstalled) {
+	if (!!chrome && !!chrome.app && !chrome.app.isInstalled) {
 		var chromeLink = document.createElement("a");
 		chromeLink.href = "[<$I2_ROOT>]www/chrome/iodine_chrome_app.crx";
 		chromeLink.type = "application/x-chrome-extension";
@@ -97,5 +89,8 @@ IE7_PNG_SUFFIX = ".png";
 		chromeLink.appendChild(chromeBox);
 		document.getElementsByTagName("body")[0].appendChild(chromeLink);
 	}
+	
+	
+	document.login_form.login_username.focus();
 	//-->
 </script>
