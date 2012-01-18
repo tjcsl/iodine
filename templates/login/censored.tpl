@@ -34,6 +34,11 @@ IE7_PNG_SUFFIX = ".png";
 			text-align:center;
 			font-family:serif;
 		}
+		#disclaimer{
+			margin-left:auto;
+			margin-right:auto;
+			text-align:center;
+		}
 		#login {
 			position:fixed;
 			bottom:16px;
@@ -41,16 +46,8 @@ IE7_PNG_SUFFIX = ".png";
 		}
 		#verisign_box {
 			position:fixed;
-			bottom:12px;
-			left:6px;
-		}
-		#disclaimer {
-			position:fixed;
 			bottom:0px;
-			left:1px;
-			font-size:8px;
-			text-align:left;
-			color:#808080;
+			left:6px;
 		}
 		input {
 			background-color:black;
@@ -82,19 +79,6 @@ IE7_PNG_SUFFIX = ".png";
 	<br/><br/>
 	<p>If you do not want to see more pages like this, <a href="http://www.sopastrike.com/strike" target="_blank">tell your representatives and senators to stop SOPA and PIPA</a>.
 </div>
-<div id="disclaimer">
-	This temporary modification to the TJHSST Student Intranet was created by the student Intranet maintainers.</br>
-	This in no way constitutes an official statement, endorsement, or policy by Fairfax County Public Schools or Thomas Jefferson High School.
-</div>
-<div id="verisign_box" class="box">
-	<table width="100" border="0" cellpadding="2" cellspacing="0" title="Click to Verify - This site chose VeriSign SSL for secure confidential communications.">
-		<tr>
-			<td width="100" align="center" valign="top">
-				<script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=iodine.tjhsst.edu&amp;size=S&amp;use_flash=NO&amp;use_transparent=YES&amp;lang=en"></script><br/>
-			</td>
-		</tr>
-	</table>
-</div>
 <div id="login">
 	[<if $failed eq 1>]
 	<div id="login_failed">
@@ -117,4 +101,17 @@ IE7_PNG_SUFFIX = ".png";
 		<input name="login_password" type="password" size="25"/>
 		<button type="submit">Login</button>
 	</form>
+</div>
+<div id="disclaimer">
+	This temporary modification to the TJHSST Student Intranet was created by the student Intranet maintainers. </br>
+	This in no way constitutes an official statement, endorsement, or policy by Fairfax County Public Schools or Thomas Jefferson High School.
+</div>
+<div id="verisign_box" class="box">
+	<table width="100" border="0" cellpadding="2" cellspacing="0" title="Click to Verify - This site chose VeriSign SSL for secure confidential communications.">
+		<tr>
+			<td width="100" align="center" valign="top">
+				<script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=iodine.tjhsst.edu&amp;size=S&amp;use_flash=NO&amp;use_transparent=YES&amp;lang=en"></script><br/>
+			</td>
+		</tr>
+	</table>
 </div>
