@@ -30,7 +30,7 @@ IE7_PNG_SUFFIX = ".png";
 <script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 <![endif]-->
 </head>
-<body style="display:none;"> <!-- remove this after Jan 18 -->
+<body>
 <script type="text/javascript">
 	window.addEventListener("load", page_init, false);
 </script>

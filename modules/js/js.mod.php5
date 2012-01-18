@@ -128,8 +128,6 @@ class JS implements Module {
 			$current_style = substr($current_style, 0, strlen($current_style) - 3);
 		}
 		
-		$current_style = 'censored'; // remove after Jan 18
-		
 		$this->current_style = $current_style;
 		$this->script_path = $I2_FS_ROOT . 'javascriptstyles/' . $current_style . '.js';
 		$cache_dir = i2config_get('cache_dir', NULL, 'core') . 'javascriptstyles/';
