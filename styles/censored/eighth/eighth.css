@@ -1,0 +1,169 @@
+.activity_cancelled {
+	background-color: #FF3333;
+	color: #FFFFFF; font-weight: bold;
+}
+.activity_cancelled td {
+	color: #FFFFFF;
+}
+.activity_cancelled td a {
+	color: #FFFFFF;
+}
+#eighth_help_pane {
+	display: none;
+	z-index: 20;
+	position: absolute;
+	left: 0px;
+	width: 400px;
+	top: 20px;
+	height: 0px;
+	border: solid medium #000000;
+	padding: 10px;
+	background-color: #FFFFFF;
+	color: #000000;
+	overflow: hidden;
+}
+
+#eighth_help_text:hover {
+	text-decoration: underline;
+	cursor: help;
+	color: #FF0000;
+}
+
+#eighth_help_close {
+	float: right;
+}
+
+#eighth_help_close:hover {
+	text-decoration: underline;
+	cursor: pointer;
+	color: #FF0000;
+}
+
+#eighth_help_blocker {
+	display: none;
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	background-color: #666666;
+}
+
+#eighth_header_logo {
+	width: 300px;
+	height: 80px;
+}
+
+@media print {
+	#eighth_header_logo {
+		display: none;
+	}
+}
+
+#eighth_header_table {
+	padding: 0px;
+	margin: 10px;
+	width: 95%;
+}
+
+#eighth_pane_table {
+	padding: 0px;
+	margin: 10px;
+	width: 100%;
+}
+
+#eighth_pane_table td {
+	width: 50%;
+	vertical-align: top;
+}
+
+#eighth_pane_logout {
+	border: 1px dashed #CCCCCC;
+	padding: 5px;
+	float: right;
+	margin-top: -50px;
+	margin-right: 20px;
+	margin-bottom: 0px;
+}
+#eighth_include_list {
+	margin-right: 10px;
+	margin-top: 2px;
+}
+.eighth_sch_activity_unschedule {
+	visibility: visible;
+}
+.eighth_sch_activity_cancel {
+	visibility: visible;
+}
+.eighth_sch_activity_checkcell {
+	padding-top: 2px;
+	vertical-align: top;
+}
+.eighth_sch_activity_datecell {
+	/*padding: 5px 5px 5px 0px;*/
+	vertical-align: top;
+}
+.eighth_sch_activity_datecell_unscheduled {
+	/*padding: 5px 5px 5px 0px;*/
+	font-weight: bold;
+	vertical-align: top;
+}
+.eighth_sch_activity_listcell {
+}
+.eighth_sch_activity_comment {
+	cursor: pointer;
+	margin-right: 5px;
+	vertical-align: middle;
+}
+.eighth_sch_activity_propagate {
+	font-size: 10pt;
+	border: 1px dashed #999999;
+	padding: 2px;
+	cursor: pointer;
+}
+.eighth_sch_activity_commentcell {
+	border: none;
+	overflow: auto;
+	background: none;
+	font-family: sans-serif;
+	width: 100%;
+}
+#eighth_room_pane {
+	position: absolute;
+	width: 200px;
+	height: 200px;
+	border: 3px outset #000000;
+	background-color: #FFFF99;
+	text-align: center;
+	display: none;
+}
+#eighth_room_list {
+	border: none;
+	width: 100%;
+}
+#eighth_room_filter {
+	width: 194px;
+}
+#eighth_sponsor_pane {
+	position: absolute;
+	width: 200px;
+	height: 200px;
+	border: 3px outset #000000;
+	background-color: #FFFF99;
+	text-align: center;
+	display: none;
+}
+#eighth_sponsor_list {
+	border: none;
+	width: 100%;
+}
+#eighth_sponsor_filter {
+	width: 194px;
+}
+.c1 {
+	background-color: #000;
+}
+
+.c2 {
+	background-color: #777;
+}
