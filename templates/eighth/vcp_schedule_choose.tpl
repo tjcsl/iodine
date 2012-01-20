@@ -152,7 +152,6 @@
 			}
 		</script>
 		<input size="50" id='filterActivities' type="search" results="0" placeholder=" Search for an activity" oninput="filterList(value);" onsearch="filterList(value);"/>
-		<span style="display:none;">&larr; OMG SEARCH BOX!</span>
 		<div style="margin-top:4px;">
 			<b>Color Key:</b>
 			[<if empty($manybids)>]<span class="selectedAR even actkey"[<if $selected>] onclick="scrollToSection('section_selected');" style="cursor:pointer;"[</if>]>your choice</span>[</if>]

@@ -7,8 +7,7 @@
 </select>
 <br/>
 <!-- begin search box code -->
-<input type="search" results="0" placeholder=" Search for an activity" onchange="filterList(value);" oninput="filterList(value);" onsearch="filterList(value);" style="margin-top:3px; width:256px;"/>
-&larr; OMG SEARCH BOX!
+Search: <input type="search" results="0" placeholder=" Search for an activity" onchange="filterList(value);" oninput="filterList(value);" onsearch="filterList(value);" style="margin-top:3px; width:256px;"/>
 <script type="text/javascript">
 	var activities = [];
 	function filterList(txt) {
