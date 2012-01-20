@@ -40,6 +40,7 @@
 				<li><a href="[<$I2_ROOT>]eighth/room_sanity">Room assignment sanity check</a></li>
 				<li>[<* P+ *>]<a href="[<$I2_ROOT>]eighth/vp_sponsor">View or print sponsor schedule</a></li>
 				<li>[<* P- *>]<a href="[<$I2_ROOT>]eighth/vp_activity">View or print activity schedule</a></li>
+				<li><a href="[<$I2_ROOT>]eighth/restrictionlists">Add, modify, or remove activity group restriction lists</a></li>
 			</ol>
 		</td>
 		<td>

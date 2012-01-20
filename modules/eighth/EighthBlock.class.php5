@@ -17,16 +17,21 @@
 class EighthBlock {
 
 	private $data = array();
+	private $restrictionlists = array(); //Lists of group-specific restrictions.
 
 	/**
 	* The constructor for the {@link EighthBlock} class.
 	*
 	* @access public
-	* @param int $activityid The activity ID.
+	* @param int $blockid The block ID.
 	*/
 	public function __construct($blockid) {
 		global $I2_SQL;
 		$this->data = $I2_SQL->query('SELECT * FROM eighth_blocks WHERE bid=%d', $blockid)->fetch_array(Result::ASSOC);
+		$temp= $I2_SQL->query('SELECT * FROM eighth_activity_restrictionlists WHERE bid=%d',$blockid)->fetch_all_arrays(Result::ASSOC);
+		foreach($temp as $entry) {
+			$restrictionlists[] = array('gid'=>$temp['gid'], 'aidlist'=>explode(',',$temp['aidlist']));
+		}
 	}
 
 	/**
@@ -84,6 +89,7 @@ class EighthBlock {
 		global $I2_SQL;
 		Eighth::check_admin();
 		$result = $I2_SQL->query('DELETE FROM eighth_blocks WHERE bid=%d', $blockid);
+		$result2= $I2_SQL->query('DELETE FROM eighth_activity_restrictionlists WHERE bid=%d', $blockid);
 		//FIXME: Deal with removing a block
 	}
 
@@ -120,6 +126,8 @@ class EighthBlock {
 	public function __get($name) {
 		if(array_key_exists($name, $this->data)) {
 			return $this->data[$name];
+		} else if($name == 'restrictionlists') {
+			return $this->restrictionlists;
 		}
 	}
 

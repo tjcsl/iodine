@@ -26,6 +26,7 @@ class EighthActivity {
 	const PRESIGN = 32;
 	const LOCKED = 64;
 	const PAST = 128;
+	const RESTRICTLIST = 256;
 
 	/**
 	* The constructor for the {@link EighthActivity} class
@@ -168,6 +169,22 @@ class EighthActivity {
 		}
 		if ($block->locked) {
 			$ret |= EighthActivity::LOCKED;
+		}
+		if (!empty($block->restrictionlists)) {
+			foreach ($block->restrictionlists as $restrctionentry) {
+				if(in_array($this->data['aid'],$restrictionentry['aidlist'])) {
+					if($user->is_group_member($restrictionentry['gid'])) {
+						$ret = $ret & (!EighthActivity::RESTRICTLIST);
+						//See below comment as to why we need this.
+						break;
+					} else {
+						$ret |= EighthActivity::RESTRICTLIST;
+						//Don't break, because if the activity is allowed by one group
+						//in which the user has membership, they should be allowed to
+						//join it.
+					}
+				}
+			}
 		}
 
 		$oldaid = EighthSchedule::get_activities_by_block($userid, $blockid);
