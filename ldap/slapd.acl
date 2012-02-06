@@ -99,39 +99,39 @@ access to dn.regex="^.*,iodineUid=([^,]+),ou=people,dc=tjhsst,dc=edu$"
 
 access to filter="(&(perm-showtelephone-self=TRUE)(perm-showtelephone=TRUE))"
 		attrs=homePhone
-	by group/groupOfURLs/memberURL.base="cn=students,dc=tjhsst,dc=edu" read
-	by * none break
+	by group/groupOfURLs/memberURL.base="cn=iodineusers,dc=tjhsst,dc=edu" read
+	by * none
 
 access to filter="(&(perm-showschedule-self=TRUE)(perm-showschedule=TRUE))"
 		attrs=enrolledclass,counselor
-	by group/groupOfURLs/memberURL.base="cn=students,dc=tjhsst,dc=edu" read
-	by * none break
+	by group/groupOfURLs/memberURL.base="cn=iodineusers,dc=tjhsst,dc=edu" read
+	by * none
 
-access to filter="(&(perm-showpictures-self=TRUE)(perm-showpictures=TRUE))"
+access to filter="perm-showpictures=TRUE"
 		attrs=preferredPhoto
-	by group/groupOfURLs/memberURL.base="cn=students,dc=tjhsst,dc=edu" read
-	by * none break
+	by group/groupOfURLs/memberURL.base="cn=iodineusers,dc=tjhsst,dc=edu" read
+	by * none
 
 access to dn.regex="^.*,iodineUid=([^,]+),ou=people,dc=tjhsst,dc=edu$"
 		filter="(&(perm-showpictures-self=TRUE)(perm-showpictures=TRUE))"
 		attrs=jpegPhoto
-	by group/groupOfURLs/memberURL.base="cn=students,dc=tjhsst,dc=edu" read
-	by * none break
+	by group/groupOfURLs/memberURL.base="cn=iodineusers,dc=tjhsst,dc=edu" read
+	by * none
 
 access to filter="(&(perm-showbirthday-self=TRUE)(perm-showbirthday=TRUE))"
 		attrs=bday
-	by group/groupOfURLs/memberURL.base="cn=students,dc=tjhsst,dc=edu" read
-	by * none break
+	by group/groupOfURLs/memberURL.base="cn=iodineusers,dc=tjhsst,dc=edu" read
+	by * none
 
 access to filter="(&(perm-showaddress-self=TRUE)(perm-showaddress=TRUE))"
 		attrs=st,street,l,postalCode,postalAddress,c
-	by group/groupOfURLs/memberURL.base="cn=students,dc=tjhsst,dc=edu" read
-	by * none break
+	by group/groupOfURLs/memberURL.base="cn=iodineusers,dc=tjhsst,dc=edu" read
+	by * none
 
 access to filter="(&(perm-showlocker-self=TRUE)(perm-showlocker=TRUE))"
 		attrs=locker
-	by group/groupOfURLs/memberURL.base="cn=students,dc=tjhsst,dc=edu" read
-	by * none break
+	by group/groupOfURLs/memberURL.base="cn=iodineusers,dc=tjhsst,dc=edu" read
+	by * none
 
 #access to filter="(|(perm-showpicture-self=FALSE)(perm-showpicture=FALSE))"
 #		attrs=preferredPhoto
@@ -142,8 +142,8 @@ access to filter="(&(perm-showlocker-self=TRUE)(perm-showlocker=TRUE))"
 # Changeable student info
 access to attrs=mobile,aim,msn,icq,googletalk,yahoo,telephoneNumber,webpage,jabber,mail,xfire,children,skype
 	by self write
-	by group/groupOfURLs/memberURL.base="cn=students,dc=tjhsst,dc=edu" read
-	by * none break
+	by group/groupOfURLs/memberURL.base="cn=iodineusers,dc=tjhsst,dc=edu" read
+	by * none
 
 # teachers can read anything
 # changed teachers from read continue to read to fix teacher override not
@@ -157,10 +157,6 @@ access to *
 
 # Block access to sensitive info unless it was explicitly allowed above
 access to attrs=homePhone,enrolledClass,counselor,street,preferredPhoto,jpegPhoto,birthday,st,street,l,postalCode,postalAddress,c,locker
-	by * none
-
-#BLock access to student information unless allowed above
-access to attrs=mobile,aim,msn,icq,googletalk,yahoo,telephoneNumber,webpage,jabber,mail,xfire,children,skype
 	by * none
 
 # Catch-all clause
