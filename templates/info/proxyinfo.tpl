@@ -35,7 +35,7 @@ use for the TJHSST Intranet.
 <br /><br />
 If you are asked to log in by a particular database, please <strong>report it to the TJ Librarians</strong> so that they can fix problems with subscriptions.
 </p>
-<p><strong>For a full PDF pictorial guide, see <a href="https://iodine.tjhsst.edu/docs/view/171">this link</a>.</strong></p>
+<p><strong>For a full PDF pictorial guide, see <a href="[<$I2_ROOT>]www/info/dbproxy.pdf">this link</a>.</strong></p>
 <br />
 
 <h3>Internet Explorer 8</h3>
