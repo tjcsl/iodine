@@ -1,0 +1,22 @@
+@extend {
+.mainbox, .intrabox {
+	background-color:#0A0A0A;
+	border-style:solid;
+	border-width:1px;
+	border-color:#202020;
+}
+.boxcontent {
+	color:#C0C0C0;
+}
+.boxform {
+	color:#C0C0C0;
+}
+}
+.boxheader {
+	color:#C0C0C0;
+	font-weight:bold;
+	background-color:#0A0A0A;
+}
+.boxbuttons {
+	display:none;
+}
