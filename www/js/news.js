@@ -1,5 +1,5 @@
 function doNewsShade(nid) {
-	var content = document.getElementById("newsitem_" + nid);
+	var content = document.getElementById("newsitem_" + nid).parentElement;
 	if(content.style.display == "none") {
 		content.style.display = "block";
 	} else {
