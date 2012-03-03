@@ -11,7 +11,7 @@
 			[</if>]
 		</div>
 	</div>
-	 <div class="newsitem">
+	 <div class="newsitem"[<if $story->shaded()>] style="display: none;"[</if>]>
 	 <div class="newsgroups">
 	 [<if $story->editable()>]
 	  <a href="[<$I2_ROOT>]news/edit/[<$story->id>]">Edit</a>
@@ -19,7 +19,7 @@
 	  --
 	 [</if>]
 	 Posted by [<$story->author->name>] on [<$story->posted|date_format:'%a %B %e, %Y at %l:%M %p'>] to [<$story->groupsstring>].</div>
-	 <div id="newsitem_[<$story->nid>]"[<if $story->shaded()>] style="display: none;"[</if>]>[<$story->text>]</div>
+	 <div id="newsitem_[<$story->nid>]">[<$story->text>]</div>
 	 <!-- class name from Mike -->
 	 <!-- Lydia gets her name in a comment too -->
 	 <div class="newsresponsebar">
