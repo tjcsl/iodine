@@ -310,10 +310,10 @@ Add/Remove intraboxes:<br />
   <td>
    <table>
     <tr>
-     <td><input type="submit" name="add_intrabox" value="&lt;--" /></td>
+     <td><input type="submit" name="add_intrabox" value="&larr;" /></td>
     </tr>
     <tr>
-     <td><input type="submit" name="delete_intrabox" value="--&gt;" /></td>
+     <td><input type="submit" name="delete_intrabox" value="&rarr;" /></td>
     </tr>
    </table>
   </td>
