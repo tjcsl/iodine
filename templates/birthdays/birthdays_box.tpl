@@ -13,7 +13,7 @@
 		</tr>
 	[</foreach>]
 	[<else>]
-		<tr><td>No birthdays today.</td></tr>
+		<tr><td colspan="3">No birthdays today.</td></tr>
 	[</if>]
 	[<if count($tomorrow) >]
 		<tr>
@@ -29,7 +29,7 @@
 			</tr>
 		[</foreach>]
 	[<else>]
-		<tr><td>No birthdays tomorrow.</td></tr>
+		<tr><td colspan="3">No birthdays tomorrow.</td></tr>
 	[</if>]
 </table>
 <b><a href="[<$I2_ROOT>]birthdays/">More birthdays</a></b>
