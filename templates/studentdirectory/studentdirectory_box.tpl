@@ -36,7 +36,7 @@
 	}
 </script>
 <!-- Add onkeyup="showResult(this.value)" for suggestions -->
-<input name="q" type="text" class="directory-field" id="studentdirectory_query"/>
+<input name="q" type="search" results="0" placeholder="Search the Directory" class="directory-field" id="studentdirectory_query"/>
 <div id="livesearch" style="margin:0px; width:194px; align=left;"></div>
 </td><td align="center">
 <input type="submit" value="Search" class="directory-button" />
@@ -47,11 +47,8 @@
 <script language="javascript" type="text/javascript">
 	if(navigator.userAgent.indexOf('Safari') != -1) {
 		var s = document.getElementById('studentdirectory_query')
-		s.setAttribute("type", "search");
-		s.setAttribute("results", "5");
-		s.setAttribute("placeholder", "Search the Directory");
 		s.setAttribute("autosave", "iodine-studentdirectory-search");
 	}
-	document.getElementById("studentdirectory_query").setAttribute("autocomplete","off");
+	//document.getElementById("studentdirectory_query").setAttribute("autocomplete","off");
 </script>
 <span style="font-style: italic;"><a href="[<$I2_ROOT>]StudentDirectory/search/">Help</a> | <a href="[<$I2_ROOT>]studentdirectory/info/[<$I2_UID>]">Your info</a></span>
