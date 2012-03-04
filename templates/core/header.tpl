@@ -10,6 +10,7 @@
 
 
 <title>TJHSST Intranet2[<if $title != "" >]: [<$title>][</if>]</title>
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
 
 <script type="text/javascript">
