@@ -160,75 +160,75 @@ In a relationship with:
 [<if is_int($I2_USER->grade)>]
 <table style="text-align: center;" cellpadding="1" cellspacing="0">
 <tr>
-	<td style="padding: 0ex .5ex; text-decoration: underline;">Parent<br/>permission</td>
-	<td style="padding: 0ex 2ex; text-decoration: underline;">Seen by<br/>everyone</td>
-	<td style="padding:0ex 2ex; text-decoration:underline;">Seen by<br/>friends<td></td>
+	<td style="padding: 0ex .5ex; text-decoration: underline;">Parent<br />permission</td>
+	<td style="padding: 0ex 2ex; text-decoration: underline;">Seen by<br />everyone</td>
+<!--	<td style="padding:0ex 2ex; text-decoration:underline;">Seen by<br />friends<td></td>-->
 </tr>
 <tr>
 	<td><input type="checkbox" name="showaddress" [<if $prefs.showaddress>]checked="checked"[</if>] disabled="disabled" /></td>
 	<td><input type="checkbox" name="showaddressself" [<if $prefs.showaddressself>]checked="checked"[</if>]/></td>
-	<td><input type="checkbox" name="showaddressfriends" title="Coming soon" disabled/></td>
+<!--	<td><input type="checkbox" name="showaddressfriends" title="Coming soon" disabled/></td>-->
 	<td style="text-align: left">Show Address</td>
 </tr>
 <tr>
 	<td><input type="checkbox" name="showbday" [<if $prefs.showbday>]checked="checked"[</if>] disabled="disabled" /></td>
 	<td><input type="checkbox" name="showbdayself" [<if $prefs.showbdayself>]checked="checked"[</if>]/></td>
-	<td><input type="checkbox" name="showbdayfriends" title="Coming soon" disabled/></td>
+<!--	<td><input type="checkbox" name="showbdayfriends" title="Coming soon" disabled/></td>-->
 	<td style="text-align: left">Show Birthday</td>
 </tr>
 [<*<tr><td><input type="checkbox" name="showmap" [<if $prefs.showmap>]checked="checked"[</if>] disabled="disabled" /></td><td><input type="checkbox" name="showmapself" [<if $prefs.showmapself>]checked="checked"[</if>]/></td><td style="text-align: left">Show Map Links</td></tr>*>]
 <tr>
 	<td><input type="checkbox" name="showpicture" [<if $prefs.showpicture>]checked="checked"[</if>] disabled="disabled" /></td>
 	<td><input type="checkbox" name="showpictureself" [<if $prefs.showpictureself>]checked="checked"[</if>]/></td>
-	<td><input type="checkbox" name="showpicturefriends" title="Coming soon" disabled/></td>
+<!--	<td><input type="checkbox" name="showpicturefriends" title="Coming soon" disabled/></td>-->
 	<td style="text-align: left">Show Pictures on Import</td>
 </tr>
 [<if !empty($photonames.freshmanPhoto) >]<tr>
 	<td><input type="checkbox" name="showfreshmanpicture" [<if $prefs.showfreshmanpicture>]checked="checked"[</if>] disabled="disabled" /></td>
 	<td><input type="checkbox" name="showfreshmanpictureself" [<if $prefs.showfreshmanpictureself>]checked="checked"[</if>]/></td>
-	<td><input type="checkbox" name="showfreshmanfriends" title="Coming soon" disabled/></td>
+<!--	<td><input type="checkbox" name="showfreshmanfriends" title="Coming soon" disabled/></td>-->
 	<td style="text-align: left">Show Freshman Picture</td>
 </tr>[</if>]
 [<if !empty($photonames.sophomorePhoto) >]<tr>
 	<td><input type="checkbox" name="showsophomorepicture" [<if $prefs.showsophomorepicture>]checked="checked"[</if>] disabled="disabled" /></td>
 	<td><input type="checkbox" name="showsophomorepictureself" [<if $prefs.showsophomorepictureself>]checked="checked"[</if>]/></td>
-	<td><input type="checkbox" name="showsophomorepicturefriends" title="Coming soon" disabled/></td>
+<!--	<td><input type="checkbox" name="showsophomorepicturefriends" title="Coming soon" disabled/></td>-->
 	<td style="text-align: left">Show Sophomore Picture</td>
 </tr>[</if>]
 [<if !empty($photonames.juniorPhoto) >]<tr>
 	<td><input type="checkbox" name="showjuniorpicture" [<if $prefs.showjuniorpicture>]checked="checked"[</if>] disabled="disabled" /></td>
 	<td><input type="checkbox" name="showjuniorpictureself" [<if $prefs.showjuniorpictureself>]checked="checked"[</if>]/></td>
-	<td><input type="checkbox" name="showjuniorpicturefriends" title="Coming soon" disabled/></td>
+<!--	<td><input type="checkbox" name="showjuniorpicturefriends" title="Coming soon" disabled/></td>-->
 	<td style="text-align: left">Show Junior Picture</td>
 </tr>[</if>]
 [<if !empty($photonames.seniorPhoto) >]<tr>
 	<td><input type="checkbox" name="showseniorpicture" [<if $prefs.showseniorpicture>]checked="checked"[</if>] disabled="disabled" /></td>
 	<td><input type="checkbox" name="showseniorpictureself" [<if $prefs.showseniorpictureself>]checked="checked"[</if>]/></td>
-	<td><input type="checkbox" name="showseniorpicturefriends" title="Coming soon" disabled/></td>
+<!--	<td><input type="checkbox" name="showseniorpicturefriends" title="Coming soon" disabled/></td>-->
 	<td style="text-align: left">Show Senior Picture</td>
 </tr>[</if>]
 <tr>
 	<td><input type="checkbox" name="showphone" [<if $prefs.showphone>]checked="checked"[</if>] disabled="disabled" /></td>
 	<td><input type="checkbox" name="showphoneself" [<if $prefs.showphoneself>]checked="checked"[</if>]/></td>
-	<td><input type="checkbox" name="showphonefriends" title="Coming soon" disabled/></td>
+<!--	<td><input type="checkbox" name="showphonefriends" title="Coming soon" disabled/></td>-->
 	<td style="text-align: left">Show Home Telephone Number</td>
 </tr>
 <tr>
 	<td><input type="checkbox" name="showschedule" [<if $prefs.showschedule>]checked="checked"[</if>] disabled="disabled" /></td>
 	<td><input type="checkbox" name="showscheduleself" [<if $prefs.showscheduleself>]checked="checked"[</if>]/></td>
-	<td><input type="checkbox" name="showschedulefriends" title="Coming soon" disabled/></td>
+<!--	<td><input type="checkbox" name="showschedulefriends" title="Coming soon" disabled/></td>-->
 	<td style="text-align: left">Show Class Schedule</td>
 </tr>
 <tr>
 	<td><input type="checkbox" name="showeighth" [<if $prefs.showeighth>]checked="checked"[</if>] disabled="disabled" /></td>
 	<td><input type="checkbox" name="showeighthself" [<if $prefs.showeighthself>]checked="checked"[</if>]/></td>
-	<td><input type="checkbox" name="showeighthfriends" title="Coming soon" disabled/></td>
+<!--	<td><input type="checkbox" name="showeighthfriends" title="Coming soon" disabled/></td>-->
 	<td style="text-align: left">Show Eighth Period Schedule</td>
 </tr>
 <tr>
 	<td><input type="checkbox" name="showlocker" [<if $prefs.showlocker>]checked="checked"[</if>] disabled="disabled" /></td>
 	<td><input type="checkbox" name="showlockerself" [<if $prefs.showlockerself>]checked="checked"[</if>]/></td>
-	<td><input type="checkbox" name="showlockerfriends" title="Coming soon" disabled/></td>
+<!--	<td><input type="checkbox" name="showlockerfriends" title="Coming soon" disabled/></td>-->
 	<td style="text-align: left">Show Locker Number</td>
 </tr>
 </table>
