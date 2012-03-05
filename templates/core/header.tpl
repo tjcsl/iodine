@@ -3,7 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<!-- prevents errors due to caching; remove soon-ish -->
+<!-- Automatically zooms on mobile devices in certain (mobile-optimized) themes. -->
+<!-- This list of themes should really not be hard-coded, but it is for now.  Sue me. -->
+[<if $I2_CSS == "`$I2_ROOT`css/i3-light.css/`$I2_USER->iodineUIDNumber`" || $I2_CSS == "`$I2_ROOT`css/i3-dark.css/`$I2_USER->iodineUIDNumber`">]
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+[</if>]
+
+<!-- prevents errors due to caching-->
 <!-- <meta http-equiv="Pragma" content="no-cache"/> -->
 <!-- <meta http-equiv="Expires" content="-1"/> -->
 <!-- <meta http-equiv="CACHE-CONTROL" content="NO-CACHE"/> -->
