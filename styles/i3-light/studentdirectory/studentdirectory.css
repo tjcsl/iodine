@@ -1,0 +1,24 @@
+.directory {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.directory > table {
+	margin-left:-4px;
+}
+td.directory-table {
+	padding: 2px 5px;
+}
+
+.directory-field {
+	/*width:200px;*/
+	width:160px;
+}
+
+.directory-button {
+	/*width:75px;*/
+	width:auto;
+	padding:4px 6px !important;
+}
+#livesearch {
+	width:160px !important;
+}

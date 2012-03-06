@@ -1,0 +1,107 @@
+.newspost {
+	padding:4px 1px;
+	max-width:800px;
+	border-bottom-style:solid;
+	border-bottom-width:1px;
+	border-bottom-color:#D0D0EF;
+}
+.newspost:first-child {
+	border-top-style:solid;
+	border-top-width:1px;
+	border-top-color:#D0D0EF;
+}
+.newstitle {
+	font-family:"Open Sans", Arial, Helvetica, Roboto, "Droid Sans", sans-serif;
+	font-size:120%;
+	font-weight:bold;
+	margin-top:0px;
+	padding:0px;
+	border-style:none;
+	border-width:0px;
+}
+
+	
+.newsitem {
+	font-family:"Open Sans", Arial, Helvetica, Roboto, "Droid Sans", sans-serif;
+	font-size:100%;
+	padding:0px;
+	border-style:none;
+	border-width:0px;
+}
+
+.newsposted {
+	font-size: 9pt;
+	margin-left: 1px;
+	margin-top: 6pt;
+	font-style: italic;
+}
+
+.newsgroups {
+	font-size:80%;
+	color: #AAAAAA;
+}
+.newsgroups a {
+	font-size:inherit;
+}
+
+.newsoptions {
+	font-size:12pt;
+	font-weight:bold;
+	float:right;
+	margin-top:-2px;
+	margin-right:2px;
+	padding:2px;
+}
+
+.newsresponsebar {
+	margin-top:4px;
+	padding:4px;
+	-webkit-border-radius:4px;
+	   -moz-border-radius:4px;
+	        border-radius:4px;
+	background-color:#E6E6F0;
+}
+
+.newsresponsebar span {
+	margin:0px 2px;
+}
+
+.newslikebtn {
+	color:#0000ff;
+	text-decoration:none;
+	cursor:pointer;
+}
+.newslikebtn:active {
+	color:#004a2a;
+}
+.newslikebtn:hover {
+	text-decoration:underline;
+}
+
+#news_add_text {
+	width: 90%;
+}
+
+#news_groups_table {
+	border-spacing: 0px 3px;
+}
+
+#news_groups_table td {
+	padding-right: 3px;
+}
+
+.toolbarbtn { /* for editor */
+	height:25px;
+	min-width:27px;
+	border:1px solid;
+	padding-left:6px;
+	padding-right:6px;
+	margin-left:0px;
+	margin-right:1px;
+	float:left;
+}
+@media (max-width:575px) {
+	.newsgroups {
+		display:none;
+	}
+}
