@@ -71,7 +71,7 @@ function page_init() {
 //	alert("Glinks added!"); // for debugging
 
 	/* Begin top right stuff */
-	document.getElementById("menu").insertBefore(document.createTextNode(" "),document.getElementById("menu_home"));
+	document.getElementById("menu").insertBefore(document.createTextNode(" "),document.getElementById("menu").firstChild);
 	var littlebar = document.createElement("span");
 	littlebar.className = "bold";
 	littlebar.innerHTML = "·";

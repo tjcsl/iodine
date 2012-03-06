@@ -26,9 +26,9 @@
 }
 }
 
-#menu_home, #menu_cred, #menu_help, #menu span {
-	display:none;
-}
-#menu_prefs, #menu_suggest {
+#menu a {
 	color:#505080;
+}
+#menu_cred, #menu_help, #menu span {
+	display:none;
 }
