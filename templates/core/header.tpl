@@ -60,12 +60,6 @@ IE7_PNG_SUFFIX = ".png";
 				,
 			[</if>]
 			<a href="[<$I2_ROOT>]eighth/vcp_attendance/view/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>[</foreach>].[</if>]
-		<form action="[<$I2_ROOT>]eighth/vcp_schedule" method="post" name="scheduleform" id="form" style="margin: 5px 0px;">
-			<input type="hidden" name="op" value="search" />
-			Name/Student ID: <input type="text" name="name_id" id="query"/>
-			<input type="submit" value="View Eighth Period Schedule" />
-			<input type="submit" value="Search Student Directory" onclick="document.getElementById('form').action='[<$I2_ROOT>]StudentDirectory/search/';document.getElementById('query').name='q';document.getElementById('form').method='get';"/>
-		</form>
 	[<elseif $I2_USER->grade=="TJStar">]
 	[<elseif $I2_USER->grade=="graduate">]
 		<!--Whoohoo! An Alumn who reads the source code! You're pretty cool! --!>
@@ -107,5 +101,25 @@ IE7_PNG_SUFFIX = ".png";
 	[</if>]
  [</if>]
  </div>
+<!-- <div id="searchcontainer">-->
+ 	[<if $I2_USER->grade == "staff">]
+ 		<form action="[<$I2_ROOT>]eighth/vcp_schedule" method="post" name="scheduleform" id="form" style="margin: 1px 0px;">
+ 			<input type="hidden" name="op" value="search" />
+ 			Name/Student ID:
+ 			<input type="search"name="name_id" id="query" results="0"/>
+ 			<input type="submit" value="View Eighth Schedule" />
+ 			<input type="submit" value="Search Directory" onclick="document.getElementById('form').action='[<$I2_ROOT>]StudentDirectory/search/';document.getElementById('query').name='q';document.getElementById('form').method='get';"/>
+ 		</form>
+ 	[<elseif $I2_USER->grade == "TJStar">]
+ 	[<else>]
+		<form action="[<$I2_ROOT>]studentdirectory/search/" method="get" id="form" style="margin: 1px 0px;">
+			<input type="hidden" name="op" value="search" />
+			<div>
+				<input type="search" name="q" id="query" results="0" placeholder="Search the directory" />
+			</div>
+			<input type="submit" value="Search" id="studentsearchbtn" />
+		</form>
+ 	[</if>]
+<!-- </div>-->
 </div>
 <div class="date">[<include file='core/menu.tpl'>]</div>
