@@ -117,7 +117,7 @@ IE7_PNG_SUFFIX = ".png";
 			<div>
 				<input type="search" name="q" id="query" results="0" placeholder="Search the directory" />
 			</div>
-			<input type="submit" value="Search" id="studentsearchbtn" />
+			<button type="submit" id="studentsearchbtn">Search</button>
 		</form>
  	[</if>]
 <!-- </div>-->
