@@ -33,24 +33,30 @@
 		box.getElementsByTagName("a")[5].style.marginTop = "10em";
 		// left eye
 		box.getElementsByTagName("a")[0].style.position = "absolute";
-		box.getElementsByTagName("a")[0].style.left = "8.25em";
-		box.getElementsByTagName("a")[0].style.top = "3.1em";
+		//box.getElementsByTagName("a")[0].style.left = "8.25em";
+		box.getElementsByTagName("a")[0].style.left = "111px";
+		//box.getElementsByTagName("a")[0].style.top = "10.1em";
+		box.getElementsByTagName("a")[0].style.top = (box.offsetTop + 28) + "px";
 		box.getElementsByTagName("a")[0].style.width = "6em";
 		box.getElementsByTagName("a")[0].style.display = "block";
 		box.getElementsByTagName("a")[0].style.textAlign = "center";
 		
 		// right eye
 		box.getElementsByTagName("a")[1].style.position = "absolute";
-		box.getElementsByTagName("a")[1].style.left = "18.25em";
-		box.getElementsByTagName("a")[1].style.top = "3.1em";
+		//box.getElementsByTagName("a")[1].style.left = "18.25em";
+		box.getElementsByTagName("a")[1].style.left = "244px";
+		//box.getElementsByTagName("a")[1].style.top = "10.1em";
+		box.getElementsByTagName("a")[1].style.top = (box.offsetTop + 28) + "px";
 		box.getElementsByTagName("a")[1].style.width = "6em";
 		box.getElementsByTagName("a")[1].style.display = "block";
 		box.getElementsByTagName("a")[1].style.textAlign = "center";
 		
 		// mouth
 		box.getElementsByTagName("a")[2].style.position = "absolute";
-		box.getElementsByTagName("a")[2].style.left = "0.25em";
-		box.getElementsByTagName("a")[2].style.top = "14em";
+		//box.getElementsByTagName("a")[2].style.left = "0.25em";
+		box.getElementsByTagName("a")[2].style.left = "4px";
+		//box.getElementsByTagName("a")[2].style.top = "21em";
+		box.getElementsByTagName("a")[2].style.top = (box.offsetTop + 173) + "px";
 		box.getElementsByTagName("a")[2].style.WebkitTransform = "rotate(35deg)";
 		box.getElementsByTagName("a")[2].style.MozTransform = "rotate(35deg)";
 		box.getElementsByTagName("a")[2].style.MsTransform = "rotate(35deg)";
@@ -59,13 +65,17 @@
 		box.getElementsByTagName("a")[2].style.display = "block";
 
 		box.getElementsByTagName("a")[3].style.position = "absolute";
-		box.getElementsByTagName("a")[3].style.left = "6.7em";
-		box.getElementsByTagName("a")[3].style.top = "16em";
+		//box.getElementsByTagName("a")[3].style.left = "6.7em";
+		box.getElementsByTagName("a")[3].style.left = "90px";
+		//box.getElementsByTagName("a")[3].style.top = "23em";
+		box.getElementsByTagName("a")[3].style.top = (box.offsetTop + 200) + "px";
 		box.getElementsByTagName("a")[3].style.display = "block";
 
 		box.getElementsByTagName("a")[4].style.position = "absolute";
-		box.getElementsByTagName("a")[4].style.left = "24em";
-		box.getElementsByTagName("a")[4].style.top = "13.75em";
+		//box.getElementsByTagName("a")[4].style.left = "24em";
+		box.getElementsByTagName("a")[4].style.left = "321px";
+		//box.getElementsByTagName("a")[4].style.top = "20.75em";
+		box.getElementsByTagName("a")[4].style.top = (box.offsetTop + 170) + "px";
 		box.getElementsByTagName("a")[4].style.WebkitTransform = "rotate(-35deg)";
 		box.getElementsByTagName("a")[4].style.MozTransform = "rotate(-35deg)";
 		box.getElementsByTagName("a")[4].style.MsTransform = "rotate(-35deg)";
