@@ -1,7 +1,13 @@
 <div id="menu" onmouseover="menu_onmouseover()" onmouseout="menu_onmouseout()">
   <a id="menu_news" href="[<$I2_ROOT>]news" style="opacity: 1;" onmouseover="menuitem_onmouseover('menu_news','menu_eighth','menu_polls','menu_prefs','menu_suggest','menu_cred','menu_help','menu_logout')" onmouseout="menuitem_onmouseout('menu_news')">News</a>
   <span class="bold">&middot;</span>
-  <a id="menu_eighth" href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$I2_UID>]" style="opacity: 1;" onmouseover="menuitem_onmouseover('menu_eighth','menu_news','menu_polls','menu_prefs','menu_suggest','menu_cred','menu_help','menu_logout')" onmouseout="menuitem_onmouseout('menu_eighth')">Eighth</a>
+  <a id="menu_eighth" 
+    [<if $I2_USER->grade != 'staff'>]
+      href="[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$I2_USER->uid>]"
+    [<else>]
+      href="[<$I2_ROOT>]eighth/vcp_attendance"
+    [</if>]
+    style="opacity: 1;" onmouseover="menuitem_onmouseover('menu_eighth','menu_news','menu_polls','menu_prefs','menu_suggest','menu_cred','menu_help','menu_logout')" onmouseout="menuitem_onmouseout('menu_eighth')">Eighth</a>
   <span class="bold">&middot;</span>
   <a id="menu_polls" href="[<$I2_ROOT>]polls" style="opacity: 1;" onmouseover="menuitem_onmouseover('menu_polls','menu_news','menu_eighth','menu_prefs','menu_suggest','menu_cred','menu_help','menu_logout')" onmouseout="menuitem_onmouseout('menu_polls')">Polls</a>
   <span class="bold">&middot;</span>
