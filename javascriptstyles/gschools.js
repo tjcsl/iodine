@@ -87,7 +87,7 @@ function page_init() {
 	document.getElementById("menu").insertBefore(usernametext,document.getElementById("menu").firstChild);
 	/* End top right stuff */
 	/* Begin search bar */
-	var searchformdiv = document.createElement("div");
+	/*var searchformdiv = document.createElement("div");
 	searchformdiv.className = "searchformdiv";
 	var searchform = document.createElement("form");
 	searchform.method = "get";
@@ -101,23 +101,33 @@ function page_init() {
 	textfield.results = 0;
 	var searchbutton = document.createElement("input");
 	searchbutton.type="submit";
-	searchbutton.value = "Search Directory";
-	var gsearchbutton = document.createElement("input");
-	gsearchbutton.type="submit";
-	gsearchbutton.value = "Search Web";
-	gsearchbutton.id = "gsearchbutton";
-	gsearchbutton.onclick = function() {
-		var form = document.getElementById("searchform");
-		form.method="get";
-		form.action="http://www.google.com/search";
-		document.getElementById("searchbox").name="q";
+	searchbutton.value = "Search Directory";*/
+	if(!!document.getElementById("form")) {
+		if(document.getElementsByName("q").length > 0) {
+			document.getElementsByName("q")[0].placeholder = "";
+			document.getElementsByName("q")[0].parentElement.style.width = "400px";
+		}
+		if(!!document.getElementById("studentsearchbtn")) {
+			document.getElementById("studentsearchbtn").innerHTML = "Search Directory";
+		}
+		var gsearchbutton = document.createElement("button");
+		gsearchbutton.type = "submit";
+		gsearchbutton.innerHTML = "Search Web";
+		gsearchbutton.id = "gsearchbutton";
+		gsearchbutton.onclick = function() {
+			//var form = document.getElementById("searchform");
+			var form = document.getElementById("form");
+			form.method = "get";
+			form.action = "http://www.google.com/search";
+		}
+		document.getElementById("form").appendChild(gsearchbutton);
 	}
-	searchform.appendChild(textfield);
+	/*searchform.appendChild(textfield);
 	searchform.appendChild(searchbutton);
 	searchform.appendChild(gsearchbutton);
 	searchformdiv.appendChild(searchform);
 	document.getElementsByTagName("body")[0].appendChild(searchformdiv);
-	//document.getElementById("gsearchbutton").onclick = changeToGSearch;
+	//document.getElementById("gsearchbutton").onclick = changeToGSearch;*/
 	/* End search bar */
 }
 function intrabox_onmouseover(div_id) {
