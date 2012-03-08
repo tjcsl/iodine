@@ -105,10 +105,10 @@ IE7_PNG_SUFFIX = ".png";
  	[<if $I2_USER->grade == "staff">]
  		<form action="[<$I2_ROOT>]eighth/vcp_schedule" method="post" name="scheduleform" id="form" style="margin: 1px 0px;">
  			<input type="hidden" name="op" value="search" />
- 			Name/Student ID:
- 			<input type="search"name="name_id" id="query" results="0"/>
- 			<input type="submit" value="View Eighth Schedule" />
- 			<input type="submit" value="Search Directory" onclick="document.getElementById('form').action='[<$I2_ROOT>]StudentDirectory/search/';document.getElementById('query').name='q';document.getElementById('form').method='get';"/>
+ 			<label for="query">Name/Student ID:</label>
+ 			<input type="search" name="name_id" id="query" results="0"/>
+ 			<button type="submit">View Eighth Schedule</button>
+ 			<button type="submit" onclick="document.getElementById('form').action='[<$I2_ROOT>]StudentDirectory/search/';document.getElementById('query').name='q';document.getElementById('form').method='get';">Search Directory</button>
  		</form>
  	[<elseif $I2_USER->grade == "TJStar">]
  	[<else>]
