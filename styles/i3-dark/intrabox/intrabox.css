@@ -123,7 +123,7 @@
 	right:0px;
 	top:0px;
 	min-height:100%;
-	padding:82px 8px 6px;
+	padding:108px 8px 6px;
 	-webkit-transition-duration:0.2s;
 	   -moz-transition-duration:0.2s;
 	    -ms-transition-duration:0.2s;
@@ -167,7 +167,7 @@
 	border-style:none;
 }
 
-@media (min-width:945px) {
+@media (min-width:1005px) {
 	.mainbox {
 		left:280px;
 		border-left-color:#808080;
@@ -179,7 +179,7 @@
 		padding-right:14px;
 	}
 }
-@media (max-width:945px) {
+@media (max-width:1005px) {
 	.mainbox {
 		left:0px;
 	}
@@ -193,6 +193,11 @@
 		display:none;
 	}
 }*/
+@media (max-width:645px) {
+	.mainbox {
+		padding-top:78px;
+	}
+}
 @media print {
 	div.boxheader, div.intrabox, div.header, div.date, div.logo {
 		display: none;

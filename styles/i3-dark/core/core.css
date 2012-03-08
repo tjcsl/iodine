@@ -35,9 +35,12 @@
 	left:0px;
 	right:0px;
 	top:0px;
-	height:72px;
-	box-sizing:border-box;
+	height:98px;
+	-webkit-box-sizing:border-box;
+	   -moz-box-sizing:border-box;
+	        box-sizing:border-box;
 	padding-left:268px;
+	padding-right:4px;
 	
 	background-color:#0A0A0A;
 	background-image:    -ms-linear-gradient(#202020, #0A0A0A);
@@ -73,7 +76,6 @@
 	border-width:0px;
 	border-style:none;
 }
-
 .date {
 	position:fixed;
 	top:0px;
@@ -111,7 +113,7 @@
 #menu a:hover {
 	background-color:rgba(128,128,128,0.1);
 }
-@media (max-width:945px) {
+@media (max-width:1005px) {
 	.logo a {
 		background-size:25px 28px;
 		/*width:72px;
@@ -124,8 +126,7 @@
 		font-size:18px;
 	}
 	.header {
-		padding-left:4px;
-		padding-top:28px;
+		padding:28px 4px 0px;
 	}
 	.title {
 		display:none;
@@ -157,11 +158,36 @@
 	.blurb {
 		display:none;
 	}
+	.header {
+		height:72px;
+	}
 }
-@media (max-width:575px) {
+@media (max-width:600px) {
 	#logotext {
 		font-size:0px;
 		color:transparent;
+	}
+	#form {
+		display:block;
+	}
+	#form > div {
+		display:block;
+		width:auto;
+		margin-right:58px;
+	}
+	#form > button {
+		padding:4px 5px;
+		font-size:95%;
+		float:right;
+		margin:2px 2px 0px;
+	}
+	#form > button#studentsearchbtn {
+		margin-right:2px;
+		float:right;
+		margin-top:-30px;
+	}
+	#form label {
+		display:none;
 	}
 }
 @media (max-width:525px) {
