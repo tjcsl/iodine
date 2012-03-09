@@ -18,6 +18,10 @@ tt {
 	font-family: monospace, courier;
 }
 
+sup, sub {
+	font-size:70%;
+}
+
 a {
 	color: #0000ff;
 	text-decoration: none;
