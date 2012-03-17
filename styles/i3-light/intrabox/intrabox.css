@@ -84,16 +84,16 @@
 	height:16px;
 }
 .upbutton {
-	background:url(www/pics/i3/up-light.png) center no-repeat;
+	background:url(www/pics/styles/i3/up-light.png) center no-repeat;
 }
 .dnbutton {
-	background:url(www/pics/i3/down-light.png) center no-repeat;
+	background:url(www/pics/styles/i3/down-light.png) center no-repeat;
 }
 .mnbutton {
-	background:url(www/pics/i3/min-light.png) center no-repeat;
+	background:url(www/pics/styles/i3/min-light.png) center no-repeat;
 }
 .rmbutton {
-	background:url(www/pics/i3/x-light.png) center no-repeat;
+	background:url(www/pics/styles/i3/x-light.png) center no-repeat;
 }
 .intrabox:hover .boxheader, .intrabox:hover .boxbuttons {
 	opacity:1;

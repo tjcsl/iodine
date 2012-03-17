@@ -6,7 +6,7 @@
 }
 .intrabox {
 	background-color:#C2DAD4;
-	background-image:url(www/pics/tron/tron_window_bg.gif);
+	background-image:url(www/pics/styles/tron/tron_window_bg.gif);
 
 	border-style:solid;
 	border-width:1px;
@@ -25,7 +25,7 @@
 
 .boxheader {
 	background-color:#DAE6E2;
-	background-image:url(www/pics/tron/tron_title_bar.gif);
+	background-image:url(www/pics/styles/tron/tron_title_bar.gif);
 	
 	color:black;
 	
@@ -56,7 +56,7 @@
 	margin-right:0px;
 	margin-top:0px;
 	padding:0px;
-	background-image:url(www/pics/tron/tron_window_bg.gif);
+	background-image:url(www/pics/styles/tron/tron_window_bg.gif);
 	-webkit-border-top-right-radius:3px;
 	    -moz-border-radius-topright:3px;
 		border-top-right-radius:3px;
@@ -83,7 +83,7 @@
 	border-bottom-color:rgba(0,0,0,0.7);
 }
 .rmbutton {
-	background-image:url(www/pics/tron/tron_title_btns.png);
+	background-image:url(www/pics/styles/tron/tron_title_btns.png);
 	background-position:-45px 0px;
 	
 	-webkit-border-top-right-radius:3px;
@@ -96,21 +96,18 @@
 		border-top-right-radius:3px;
 }
 .mnbutton {
-	background-image:url(www/pics/tron/tron_title_btns.png);
+	background-image:url(www/pics/styles/tron/tron_title_btns.png);
 	background-position:-30px 0px;
-
-	margin-right:-3px;
+	margin-right:-4px;
 }
 .upbutton {
-	background-image:url(www/pics/tron/tron_title_btns.png);
-
-	margin-right:-3px;
+	background-image:url(www/pics/styles/tron/tron_title_btns.png);
+	margin-right:-4px;
 }
 .dnbutton {
-	background-image:url(www/pics/tron/tron_title_btns.png);
+	background-image:url(www/pics/styles/tron/tron_title_btns.png);
 	background-position:-15px 0px;
-
-	margin-right:-3px;
+	margin-right:-4px;
 }
 
 .boxcontent {
@@ -134,7 +131,7 @@
 
 .mainbox {
 	background-color:#C2DAD4;
-	background-image:url(www/pics/tron/tron_window_bg.gif);
+	background-image:url(www/pics/styles/tron/tron_window_bg.gif);
 	color:#D0F0FF;
 	-webkit-border-radius:3px;
 	   -moz-border-radius:3px;

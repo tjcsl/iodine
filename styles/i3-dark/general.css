@@ -143,12 +143,12 @@ input[type="radio"]:hover:not(:disabled), input[type="radio"]:focus:not(:disable
 }
 input[type="radio"]:checked {
 	text-shadow:0px 1px 0px white;
-	background:#282828 url(www/pics/i3/radiodot-dark.png) center center no-repeat;
-	background-image:url(www/pics/i3/radiodot-dark.png), -webkit-linear-gradient(#303030, #202020);
+	background:#282828 url(www/pics/styles/i3/radiodot-dark.png) center center no-repeat;
+	background-image:url(www/pics/styles/i3/radiodot-dark.png), -webkit-linear-gradient(#303030, #202020);
 }
 input[type="radio"]:checked:hover:not(:disabled), input[type="radio"]:checked:focus:not(:disabled) {
-	background:#303030 url(www/pics/i3/radiodot-dark.png) center center no-repeat;
-	background-image:url(www/pics/i3/radiodot-dark.png), -webkit-linear-gradient(#353535, #282828);
+	background:#303030 url(www/pics/styles/i3/radiodot-dark.png) center center no-repeat;
+	background-image:url(www/pics/styles/i3/radiodot-dark.png), -webkit-linear-gradient(#353535, #282828);
 }
 input[type="radio"]:active:not(:disabled) {
 	background-color:#1C1C1C;
@@ -160,8 +160,8 @@ input[type="radio"]:active:not(:disabled) {
 	border-bottom-color:rgba(0,0,0,0.3);
 }
 input[type="radio"]:checked:active:not(:disabled) {
-	background:#1C1C1C url(www/pics/i3/radiodot-dark.png) center center no-repeat;
-	background-image:url(www/pics/i3/radiodot-dark.png), -webkit-linear-gradient(#181818, #202020);
+	background:#1C1C1C url(www/pics/styles/i3/radiodot-dark.png) center center no-repeat;
+	background-image:url(www/pics/styles/i3/radiodot-dark.png), -webkit-linear-gradient(#181818, #202020);
 }
 
 input[type="checkbox"] {
@@ -189,14 +189,14 @@ input[type="checkbox"]:hover:not(:disabled), input[type="checkbox"]:focus:not(:d
 	background: -webkit-linear-gradient(#353535, #282828);
 }
 input[type="checkbox"]:checked {
-	background:#282828 url(www/pics/i3/check-dark.png) center center no-repeat;
-	background-image:url(www/pics/i3/check-dark.png), -webkit-linear-gradient(#303030, #202020);
+	background:#282828 url(www/pics/styles/i3/check-dark.png) center center no-repeat;
+	background-image:url(www/pics/styles/i3/check-dark.png), -webkit-linear-gradient(#303030, #202020);
 	background-repeat:no-repeat;
 	background-position:center center;
 }
 input[type="checkbox"]:checked:hover:not(:disabled), input[type="checkbox"]:checked:focus:not(:disabled) {
-	background:#303030 url(www/pics/i3/check-dark.png) center center no-repeat;
-	background-image:url(www/pics/i3/check-dark.png), -webkit-linear-gradient(#353535, #282828);
+	background:#303030 url(www/pics/styles/i3/check-dark.png) center center no-repeat;
+	background-image:url(www/pics/styles/i3/check-dark.png), -webkit-linear-gradient(#353535, #282828);
 }
 input[type="checkbox"]:active:not(:disabled) {
 	background-color:#1C1C1C;
@@ -208,8 +208,8 @@ input[type="checkbox"]:active:not(:disabled) {
 	border-bottom-color:rgba(0,0,0,0.3);
 }
 input[type="checkbox"]:checked:active:not(:disabled) {
-	background:#1C1C1C url(www/pics/i3/check-dark.png) center center no-repeat;
-	background-image:url(www/pics/i3/check-dark.png), -webkit-linear-gradient(#181818, #202020);
+	background:#1C1C1C url(www/pics/styles/i3/check-dark.png) center center no-repeat;
+	background-image:url(www/pics/styles/i3/check-dark.png), -webkit-linear-gradient(#181818, #202020);
 }
 
 input:not([type]), input[type="text"], input[type="email"], input[type="search"], input[type="password"] {

@@ -144,16 +144,16 @@ input[type="radio"]:hover:not(:disabled), input[type="radio"]:focus:not(:disable
 input[type="radio"]:checked {
 	color:#404040;
 	text-shadow:0px 1px 0px white;
-	background:#E0E0E0 url(www/pics/i3/radiodot-light.png) center center no-repeat;
-	background-image:url(www/pics/i3/radiodot-light.png), -webkit-linear-gradient(#E8E8E8, #D8D8D8);
+	background:#E0E0E0 url(www/pics/styles/i3/radiodot-light.png) center center no-repeat;
+	background-image:url(www/pics/styles/i3/radiodot-light.png), -webkit-linear-gradient(#E8E8E8, #D8D8D8);
 }
 input[type="radio"]:checked:hover:not(:disabled), input[type="radio"]:checked:focus:not(:disabled) {
-	background:#E8E8E8 url(www/pics/i3/radiodot-light.png) center center no-repeat;
-	background-image:url(www/pics/i3/radiodot-light.png), -webkit-linear-gradient(#F0F0F0, #E0E0E0);
+	background:#E8E8E8 url(www/pics/styles/i3/radiodot-light.png) center center no-repeat;
+	background-image:url(www/pics/styles/i3/radiodot-light.png), -webkit-linear-gradient(#F0F0F0, #E0E0E0);
 }
 input[type="radio"]:active:not(:disabled) {
 	background-color:#DCDCDC;
-	background:#DCDCDC url(www/pics/i3/radiodot-light.png) center center no-repeat;
+	background:#DCDCDC url(www/pics/styles/i3/radiodot-light.png) center center no-repeat;
 	background-image:-webkit-linear-gradient(#D6D6D6, #E0E0E0);
 	-webkit-box-shadow:inset 0px 1px 4px -1px rgba(0,0,0,0.3);
 	box-shadow:inset 0px 1px 4px -1px rgba(0,0,0,0.3);
@@ -161,8 +161,8 @@ input[type="radio"]:active:not(:disabled) {
 	border-bottom-color:rgba(0,0,0,0.05);
 }
 input[type="radio"]:checked:active:not(:disabled) {
-	background:#DCDCDC url(www/pics/i3/radiodot-light.png) center center no-repeat;
-	background-image:url(www/pics/i3/radiodot-light.png), -webkit-linear-gradient(#D6D6D6, #E0E0E0);
+	background:#DCDCDC url(www/pics/styles/i3/radiodot-light.png) center center no-repeat;
+	background-image:url(www/pics/styles/i3/radiodot-light.png), -webkit-linear-gradient(#D6D6D6, #E0E0E0);
 }
 
 input[type="checkbox"] {
@@ -190,14 +190,14 @@ input[type="checkbox"]:hover:not(:disabled), input[type="checkbox"]:focus:not(:d
 	background-image:-webkit-linear-gradient(#F0F0F0, #E0E0E0);
 }
 input[type="checkbox"]:checked {
-	background:#E0E0E0 url(www/pics/i3/check-light.png) center center no-repeat;
-	background-image:url(www/pics/i3/check-light.png), -webkit-linear-gradient(#E8E8E8, #D8D8D8);
+	background:#E0E0E0 url(www/pics/styles/i3/check-light.png) 1px 1px no-repeat;
+	background-image:url(www/pics/styles/i3/check-light.png), -webkit-linear-gradient(#E8E8E8, #D8D8D8);
 	background-repeat:no-repeat;
 	background-position:1px 1px;
 }
 input[type="checkbox"]:checked:hover:not(:disabled), input[type="checkbox"]:checked:focus:not(:disabled) {
-	background:#E8E8E8 url(www/pics/i3/check-light.png) center center no-repeat;
-	background-image:url(www/pics/i3/check-light.png), -webkit-linear-gradient(#F0F0F0, #E0E0E0);
+	background:#E8E8E8 url(www/pics/styles/i3/check-light.png) 1px 1px no-repeat;
+	background-image:url(www/pics/styles/i3/check-light.png), -webkit-linear-gradient(#F0F0F0, #E0E0E0);
 }
 input[type="checkbox"]:active:not(:disabled) {
 	background-color:#DCDCDC;
@@ -209,8 +209,8 @@ input[type="checkbox"]:active:not(:disabled) {
 	border-bottom-color:rgba(0,0,0,0.05);
 }
 input[type="checkbox"]:checked:active:not(:disabled) {
-	background:#DCDCDC url(www/pics/i3/check-light.png) center center no-repeat;
-	background-image:url(www/pics/i3/check-light.png), -webkit-linear-gradient(#D6D6D6, #E0E0E0);
+	background:#DCDCDC url(www/pics/styles/i3/check-light.png) 1px 1px no-repeat;
+	background-image:url(www/pics/styles/i3/check-light.png), -webkit-linear-gradient(#D6D6D6, #E0E0E0);
 }
 
 input:not([type]), input[type="text"], input[type="email"], input[type="search"], input[type="password"], textarea, select[size]:not([size="1"]) {
