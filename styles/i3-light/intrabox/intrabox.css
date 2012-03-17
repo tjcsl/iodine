@@ -37,6 +37,8 @@
 	border-top-style:solid;
 	border-top-width:1px;
 	border-top-color:#E0E0FF;
+	
+	width:228px;
 }
 .intrabox:hover {
 	-webkit-border-radius:4px;
