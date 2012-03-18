@@ -1,5 +1,6 @@
 .logo {
-	position: absolute;
+	/*position:absolute;*/
+	position:fixed;
 	top:0px;
 	left:0px;
 	width:120px;
@@ -15,7 +16,7 @@
 	
 	display:block;
 
-	position: absolute;
+	position:absolute;
 	left:16px;
 	top:8px;
 	width:123px;
@@ -27,7 +28,8 @@
 }
 
 .date {
-	position: absolute;
+	/*position:absolute;*/
+	position:fixed;
 	left:0px;
 	right:0px;
 	top:0px;
@@ -35,7 +37,7 @@
 	vertical-align:bottom;
 	background-color:#3B5998;
 	color:white;
-/*	z-index:99;*/
+	z-index:98;
 }
 #menu {
 	position:absolute;
@@ -67,7 +69,7 @@
 	outline:none;
 }
 .header {
-	position: absolute;
+	position:absolute;
 	left:294px;
 	right:12px;
 	top:48px;

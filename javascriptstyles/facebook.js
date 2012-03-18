@@ -9,7 +9,7 @@ function page_init() {
 	document.getElementById('mainbox').style.right='264px';
 	rightbar = document.createElement("div");
 	rightbar.style.right='10px';
-	rightbar.style.top='110px';
+	rightbar.style.top='124px';
 	rightbar.style.width='244px';
 	rightbar.style.position='absolute';
 	rightbar.id='rightbar';

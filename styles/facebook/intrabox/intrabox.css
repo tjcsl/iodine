@@ -6,8 +6,8 @@
 }
 .intrabox {
 	border-top:1px solid #E2E2E2;
-	background-color: white;
-	/*margin-bottom: 10pt;*/
+	background-color:white;
+	/*margin-bottom:10pt;*/
 	padding:0px 4px 4px 4px;
 	width:272px;
 	font-size:11px;
@@ -65,7 +65,7 @@
 	border:1px solid #B3B3B3;
 
 	position: absolute;
-	top:110px;
+	top:124px;
 	left:292px;
 	right:10px;
 	margin-bottom:10pt;
