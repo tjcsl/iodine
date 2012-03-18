@@ -26,7 +26,9 @@ var username="[<$I2_USER->username>]";
 var name="[<$I2_USER->name>]";
 var fullname="[<$I2_USER->fullname>]";
 var userid=[<$I2_USER->iodineUIDNumber>];
+window.addEventListener("load", page_init, false);
 </script>
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/collapse.js"></script>
 <script type="text/javascript" src="[<$I2_JS>]" ></script>
 <link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
@@ -38,9 +40,6 @@ IE7_PNG_SUFFIX = ".png";
 <![endif]-->
 </head>
 <body>
-<script type="text/javascript">
-	window.addEventListener("load", page_init, false);
-</script>
 <div style="height:100%; width:100%; position: fixed; top:0; left: 0; visibility: hidden; z-index:3">
 <div id="chat_area" style="float:right; height:100%">
 </div>

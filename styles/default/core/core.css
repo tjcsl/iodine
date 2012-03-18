@@ -172,3 +172,16 @@
 #color_chooser_cancel_button:active {
 	border-style: inset;
 }
+
+.collapsible {
+	-webkit-transition-duration:1s;
+	   -moz-transition-duration:1s;
+	    -ms-transition-duration:1s;
+	     -o-transition-duration:1s;
+	        transition-duration:1s;
+}
+.collapsed {
+	height:0 !important;
+	padding:0 !important;
+	overflow:hidden;
+}
