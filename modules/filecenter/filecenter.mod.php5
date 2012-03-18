@@ -521,7 +521,7 @@ class Filecenter implements Module {
 			$this->box_args['csl_username'] = $_SESSION['i2_username'];
 		}
 		d('grade: ' . $I2_USER->grade);
-		if ($I2_USER->grade != "staff") {
+		if ($I2_USER->grade != "staff" && $I2_USER->grade != "graduate") {
 			$this->box_args['tj01path'] = 'students/' . self::$standing[$I2_USER->grade] . '/' . $_SESSION['i2_username'];
 		}
 		// This is where most of the directories are loaded from mysql/
