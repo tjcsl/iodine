@@ -7,6 +7,12 @@ body {
 	line-height: 14px;
 }
 
+p {
+	font-family:"lucida grande", tahoma, verdana, arial, sans-serif;
+	font-family:inherit;
+	font-size:100%;
+}
+
 a {
 	color:#3B5998;
 	text-decoration:none;
