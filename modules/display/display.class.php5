@@ -324,11 +324,11 @@ class Display {
 	* Assigns all I2 variables which we want available in all templates.
 	*/
 	private function assign_i2vals() {
-		global $I2_USER,$I2_ROOT,$I2_SELF,$I2_ARGS;
+		global $I2_USER,$I2_ROOT,$I2_SELF,$I2_ARGS,$module;
 		$this->smarty->assign('I2_ROOT', $I2_ROOT);
 		$this->smarty->assign('I2_SELF', $I2_SELF);
 		$this->smarty->assign('I2_ARGSTRING', implode('/',$I2_ARGS));
-		$this->smarty->assign('I2_MODNAME', $this->my_module_name);
+		$this->smarty->assign('I2_MODNAME', $module);
 		if( isSet($I2_USER) ) {
 			$this->smarty->assign('I2_UID', $I2_USER->uid);
 			$this->smarty->assign('I2_USER', $I2_USER);
