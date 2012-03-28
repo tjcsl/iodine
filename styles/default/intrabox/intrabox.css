@@ -27,8 +27,8 @@
 }
 .boxbuttons {
 	float: right;
-	margin-top: 0px;
-	margin-right: 5px;
+	margin-top:-3px;
+	margin-right:0px;
 }
 .boxbuttons span a {
 	text-decoration: none;

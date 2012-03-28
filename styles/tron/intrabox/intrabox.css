@@ -54,7 +54,7 @@
 	float:right;
 	margin-left:0px;
 	margin-right:0px;
-	margin-top:0px;
+	margin-top:-1px;
 	padding:0px;
 	background-image:url(www/pics/styles/tron/tron_window_bg.gif);
 	-webkit-border-top-right-radius:3px;
@@ -65,7 +65,7 @@
 	display:inline-block;
 	width:14px;
 	height:14px;
-`	
+	
 	-webkit-user-select:none;
 	   -moz-user-select:none;
 	        user-select:none;
