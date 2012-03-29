@@ -91,7 +91,7 @@ class CSSParser {
 				//We can have multiple custom font faces, but they all have the same
 				//rule name normally, so we cheat a little and add a comment
 				if(substr($rule,0,10) == '@font-face') {
-					$rule=$rule.' /*'.$rules['font-family'].'*/';
+					$rule=$rule.' /*'.$rules['font-family'].'|'.$rules['src'].'*/';
 				}
 			}
 			// Don't just nuke the old rules, have them overwrite (even if it's in the same file)
