@@ -78,18 +78,21 @@ class StyleSheet {
 		return $this->print_ruleset($this->rulesets);
 	}
 
-	private function print_ruleset($ruleset) {
+	private function print_ruleset($ruleset, $indent='') {
 		$str = '';
 		foreach ($ruleset as $key => $value) {
-			if (substr($key, 0, 1) == '@')
-				$str .= $key . " {\n" .
-					$this->print_ruleset($value) . "}\n\n";
+			if (substr($key, 0, 1) == '@'  && !(substr($key,0,10) == '@font-face'))
+				$str .= $indent . $key . " {\n" .
+					$this->print_ruleset($value,$indent."\t") . "$indent}\n\n";
 			else {
-				$str .= $key . " {";
+				$str .= $indent . $key . " {";
 				foreach ($value as $property => $datum) {
-					$str .= "\n\t$property: $datum;";
+					if($property[0] == '/') {
+						$property = substr(strrchr($property,'/'),1);
+					}
+					$str .= "\n$indent\t$property: $datum;";
 				}
-				$str .= "\n}\n\n";
+				$str .= "\n$indent}\n\n";
 			}
 		}
 		return $str;

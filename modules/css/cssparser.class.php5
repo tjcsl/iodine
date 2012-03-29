@@ -12,6 +12,7 @@
 class CSSParser {
 	private $rulesets;
 	private $css;
+	static $uniqueid = 0; // Unique id for non-repeated elements
 
 	/**
 	 * Reads and parses the given CSS string.
@@ -60,16 +61,44 @@ class CSSParser {
 			$brace = CSSParser::findString($this->css, '{');
 			$rule = trim(substr($this->css, 0, $brace), ' ');
 			$this->css = trim(substr($this->css, $brace+1), ' ');
-			if (substr($rule, 0, 1) == '@') {
+			if (substr($rule, 0, 1) == '@' && !(substr($rule,0,10) == '@font-face')) {
 				$rules = $this->readRuleset();
 			} else {
+				$keeprepeats=false;
 				while (substr($this->css, 0, 1) != '}') {
 					$temp = $this->readRule();
-					$rules[$temp[0]] = $temp[1];
+					// This is where the intranet-specific property 'repeat' comes
+					// in. This is because while the CSS spec gives absolutely
+					// no reason to have this, vendor-specific values for some
+					// fields require that several values be stored for that field.
+					// Therefore, we prefix each field with a unique number, and 
+					// remove it when printing.
+					if($temp[0]=='repeat'){
+						if($temp[1]=='keep') 
+							$keeprepeats=true;
+						elseif($temp[1]=='normal')
+							$keeprepeats=false;
+					}
+					else {
+						if($keeprepeats) {
+							$rules['/*'.(CSSParser::$uniqueid).'*/'.$temp[0]] = $temp[1];
+							CSSParser::$uniqueid=CSSParser::$uniqueid+1;
+						} else
+							$rules[$temp[0]] = $temp[1];
+					}
 				}
 				$this->css = trim(substr($this->css, 1), ' ');
+				//We can have multiple custom font faces, but they all have the same
+				//rule name normally, so we cheat a little and add a comment
+				if(substr($rule,0,10) == '@font-face') {
+					$rule=$rule.' /*'.$rules['font-family'].'*/';
+				}
 			}
-			$ruleset[$rule] = $rules;
+			// Don't just nuke the old rules, have them overwrite (even if it's in the same file)
+			if(isset($ruleset[$rule]))
+				$ruleset[$rule] = array_merge($ruleset[$rule],$rules);
+			else
+				$ruleset[$rule] = $rules;
 		}
 		$this->css = trim(substr($this->css, 1), ' ');
 		return $ruleset;

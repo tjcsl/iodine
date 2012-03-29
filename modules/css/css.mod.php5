@@ -125,10 +125,14 @@ class CSS implements Module {
 	function init_pane() {
 		global $I2_ARGS, $I2_USER, $I2_FS_ROOT;
 		
-		$current_style = $I2_ARGS[1];
+		if(isset($I2_ARGS[1])) {
+			$current_style = $I2_ARGS[1];
 
-		if (ends_with($current_style, '.css')) {
-			$current_style = substr($current_style, 0, strlen($current_style) - 4);
+			if (ends_with($current_style, '.css')) {
+				$current_style = substr($current_style, 0, strlen($current_style) - 4);
+			}
+		} else {
+			$current_style = $I2_USER->style;
 		}
 		$this->current_style = $current_style;
 		
@@ -176,7 +180,7 @@ class CSS implements Module {
 		global $I2_DISP;
 		$this->style_sheet = new StyleSheet();
 		$this->load_style('default');
-		if ($this->current_style != 'default') {
+		if ($this->current_style != 'default' && $this->style_exists($this->current_style)) {
 			$this->load_style($this->current_style);
 		}
 
@@ -279,6 +283,19 @@ class CSS implements Module {
 				}
 			} else if ($selector == '@extend') {
 				$this->parse_ruleset($rule, false, $set);
+			// font-face requires special handling, because multiple can be there,
+			// and they must be in separate blocks in the final code.
+			} else if (substr($selector,0,10) == '@font-face') {
+				$r = new CSSRule();
+				foreach ($rule as $property=>$value) {
+					$r->set_property($property, $value);
+				}
+				$r->add_selector($selector);
+				if ($replace) {
+					$this->style_sheet->replace_rule($r, $set);
+				} else {
+					$this->style_sheet->extend_rule($r, $set);
+				}
 			} else {
 				$newset = new CSSBlock($selector, $set);
 				$this->parse_ruleset($rule, $replace, $newset);
@@ -354,6 +371,10 @@ class CSS implements Module {
 
 		//$this->css_text = file_get_contents($style_cache);
 		return true;
+	}
+	private function style_exists($style) {
+		$dir = $this->style_path . $style;
+		return file_exists($dir);
 	}
 }
 
