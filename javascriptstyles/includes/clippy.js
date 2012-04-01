@@ -5,7 +5,7 @@ var clippy = {};
  */
 clippy.init = function() {
 	// get Clippy's position
-	clippy.x = window.innerWidth - 300;
+	clippy.x = (window.innerWidth || document.documentElement.clientWidth) - 300;
 	clippy.y = Math.round(window.innerHeight * 0.45);
 	if(!!localStorage) {
 		if(!!localStorage.clippyX && !isNaN(parseInt(localStorage.clippyX))) {
@@ -99,17 +99,27 @@ clippy.init = function() {
 	document.body.appendChild(clippy.bubbleElem);
 	
 	
+	
 	clippy.elem.onmousedown = clippy.startDrag;
 	clippy.elem.onmouseup = clippy.stopDrag;
 	
-	window.addEventListener("resize", clippy.reposition, false);
-	//window.onresize = clippy.reposition;
-	window.addEventListener("unload", function() {
-		if(!!localStorage) {
-			localStorage.clippyX = clippy.x;
-			localStorage.clippyY = clippy.y;
-		}
-	}, false);
+	if(!!window.addEventListener) {
+		window.addEventListener("resize", clippy.reposition, false);
+		window.addEventListener("unload", function() {
+			if(!!localStorage) {
+				localStorage.clippyX = clippy.x;
+				localStorage.clippyY = clippy.y;
+			}
+		}, false);
+	} else {
+		window.onresize = clippy.reposition;
+		window.onunload = function() {
+			if(!!localStorage) {
+				localStorage.clippyX = clippy.x;
+				localStorage.clippyY = clippy.y;
+			}
+		};
+	}
 };
 
 /**
@@ -173,10 +183,10 @@ clippy.stopDrag = function(e) {
  * Repositions Clippy within the screen
  */
 clippy.reposition = function() {
-	if(clippy.x + clippy.elem.offsetWidth > window.innerWidth) {
-		clippy.x = window.innerWidth - clippy.elem.offsetWidth;
+	if(clippy.x + clippy.elem.offsetWidth > (window.innerWidth || document.documentElement.clientWidth)) {
+		clippy.x = (window.innerWidth || document.documentElement.clientWidth) - clippy.elem.offsetWidth;
 	}
-	if(clippy.y + clippy.elem.offsetHeight > window.innerHeight) {
+	if(clippy.y + clippy.elem.offsetHeight > (window.innerHeight || document.documentElement.clientHeight)) {
 		clippy.y = window.innerHeight - clippy.elem.offsetHeight;
 	}
 	if(clippy.x < 0) {
@@ -189,7 +199,7 @@ clippy.reposition = function() {
 	clippy.elem.style.left = clippy.x + "px";
 	clippy.elem.style.top = clippy.y + "px";
 	
-	if(window.innerWidth - clippy.x > 280) {
+	if((window.innerWidth || document.documentElement.clientWidth) - clippy.x > 280) {
 		clippy.bubbleElem.style.left = (clippy.x + 10) + "px";
 		clippy.bubbleArrowCell.className = "left";
 	} else {
