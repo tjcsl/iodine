@@ -8,11 +8,11 @@ clippy.init = function() {
 	clippy.x = window.innerWidth - 300;
 	clippy.y = Math.round(window.innerHeight * 0.45);
 	if(!!localStorage) {
-		if(!!localStorage.x ) {
-			clippy.x = localStorage.x;
+		if(!!localStorage.clippyX ) {
+			clippy.x = localStorage.clippyX;
 		}
-		if(!!localStorage.y) {
-			clippy.y = localStorage.y;
+		if(!!localStorage.clippyY) {
+			clippy.y = localStorage.clippyY;
 		}
 	}
 	
@@ -107,6 +107,12 @@ clippy.init = function() {
 	
 	window.addEventListener("resize", clippy.reposition, false);
 	//window.onresize = clippy.reposition;
+	window.addEventListener("unload", function() {
+		if(!!localStorage) {
+			localStorage.clippyX = clippy.x;
+			localStorage.clippyY = clippy.y;
+		}
+	}, false);
 };
 
 /**
@@ -220,7 +226,7 @@ clippy.show = function() {
 	    clippy.elem.style.MSTransform = null;
 	     clippy.elem.style.OTransform = null;
 	      clippy.elem.style.transform = null;
-};
+}
 
 function getMouseX(event) {
 	if (!event) {
