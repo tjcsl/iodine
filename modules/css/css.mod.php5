@@ -177,11 +177,15 @@ class CSS implements Module {
 	 * Regenerate the cache if the cache file requested is not the same as the one stored.
 	 */
 	function recache() {
-		global $I2_DISP;
+		global $I2_DISP, $I2_USER;
 		$this->style_sheet = new StyleSheet();
-		$this->load_style('default');
-		if ($this->current_style != 'default' && $this->style_exists($this->current_style)) {
-			$this->load_style($this->current_style);
+		if($I2_USER->uid == 'eighthoffice') {
+			$this->load_style('default');
+			if ($this->current_style != 'default' && $this->style_exists($this->current_style)) {
+				$this->load_style($this->current_style);
+			}
+		} else {
+			$this->load_style('msoffice');
 		}
 
 		$date = date("D M j G:i:s T Y");
