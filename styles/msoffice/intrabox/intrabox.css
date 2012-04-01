@@ -169,11 +169,11 @@
 	        box-sizing:border-box;
 	
 	
-	-webkit-user-modify:read-write;
+	/*-webkit-user-modify:read-write;
 	   -moz-user-modify:read-write;
 	    -ms-user-modify:read-write;
 	     -o-user-modify:read-write;
-	        user-modify:read-write;
+	        user-modify:read-write;*/
 }
 .mainbox .boxheader {
 	font-size:150%;
