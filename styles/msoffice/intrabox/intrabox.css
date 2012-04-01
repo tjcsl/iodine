@@ -1,0 +1,259 @@
+.boxes {
+	position:fixed;
+	width:272px;
+	top:143px;
+	left:0px;
+	bottom:0px;
+	
+	padding:0px;
+	
+	z-index:1;
+	
+	overflow:auto;
+	overflow-x:hidden;
+}
+.boxes_noheader {
+	position:fixed;
+	width:256px;
+	top:20px;
+	left:1px;
+}
+.intrabox {
+	padding:1px;
+	
+	border-style:solid;
+	border-width:2px;
+	border-color:#7699C7;
+	background-color:#D5E4F2;
+	width:256px;
+	
+	-webkit-box-sizing:border-box;
+	   -moz-box-sizing:border-box;
+	        box-sizing:border-box;
+}
+.boxheader {
+	display:block;
+	width:100%;
+	height:17px;
+	padding:1px 4px 1px;
+	-webkit-box-sizing:border-box;
+	   -moz-box-sizing:border-box;
+	        box-sizing:border-box;
+	
+	background-color:#B8CFE9;
+	color:#154A93;
+	
+	font-size:12px;
+	overflow:hidden;
+
+	-webkit-user-select:none;
+	   -moz-user-select:none;
+	        user-select:none;
+	cursor:default;
+}
+.boxheader:active {
+	cursor:move;
+}
+.boxbuttons {
+	float:right;
+	margin-top:-1px;
+	margin-right:-4px;
+}
+.boxbuttons span {
+	display:inline-block;
+	width:17px;
+	height:17px;
+	background-image:url(www/pics/styles/msoffice/intrabox_btns.png);
+	background-repeat:no-repeat;
+}
+.boxbutton span a {
+	text-decoration:none;
+}
+.boxbuttons span a img {
+	width:17px;
+	height:17px;
+}
+.upbutton {
+	/*background-image:url(www/pics/styles/msoffice/up.png);*/
+	background-position:0px -51px;
+}
+.upbutton:hover {
+	/*background-image:url(www/pics/styles/msoffice/up_hover.png);*/
+	background-position:-17px -51px;
+}
+.upbutton:active {
+	/*background-image:url(www/pics/styles/msoffice/up_active.png);*/
+	background-position:-34px -51px;
+}
+.dnbutton {
+	/*background-image:url(www/pics/styles/msoffice/down.png);*/
+	background-position:0px -34px;
+}
+.dnbutton:hover {
+	/*background-image:url(www/pics/styles/msoffice/down_hover.png);*/
+	background-position:-17px -34px;
+}
+.dnbutton:active {
+	/*background-image:url(www/pics/styles/msoffice/down_active.png);*/
+	background-position:-34px -34px;
+}
+.mnbutton {
+	/*background-image:url(www/pics/styles/msoffice/min.png);*/
+	background-position:0px -17px;
+}
+.mnbutton:hover {
+	/*background-image:url(www/pics/styles/msoffice/min_hover.png);*/
+	background-position:-17px -17px;
+}
+.mnbutton:active {
+	/*background-image:url(www/pics/styles/msoffice/min_active.png);*/
+	background-position:-34px -17px;
+}
+.rmbutton {
+	/*background-image:url(www/pics/styles/msoffice/x.png);*/
+	background-position:0px 0px;
+}
+.rmbutton:hover {
+	/*background-image:url(www/pics/styles/msoffice/x_hover.png);*/
+	background-position:-17px 0px;
+}
+.rmbutton:active {
+	/*background-image:url(www/pics/styles/msoffice/x_active.png);*/
+	background-position:-34px 0px;
+}
+.boxcontent {
+	display:block;
+	
+	margin:7px 6px;
+	padding:5px 7px;
+	font-size:9pt;
+	border-style:solid;
+	border-width:1px;
+	border-color:#828790;
+	-webkit-box-shadow:inset 0px 0px 0px 1px #D5E4F2;
+	   -moz-box-shadow:inset 0px 0px 0px 1px #D5E4F2;
+	        box-shadow:inset 0px 0px 0px 1px #D5E4F2;
+	background-color:#FFFFFF;
+	
+	overflow:hidden;
+}
+.boxform {
+	margin: 5px 4px;
+	color: #000000;
+}
+.mainbox {
+	position:absolute;
+	left:292px;
+	/*width:818px;*/
+	width:900px;
+	top:162px;
+	min-height:800px;
+	padding:96px;
+	margin-bottom:32px;
+	
+	background-color:white;
+	border-style:solid;
+	border-width:1px;
+	border-color:#646464;
+	
+	-webkit-box-shadow:2px 2px 2px 0px rgba(0,0,0,0.5);
+	   -moz-box-shadow:2px 2px 2px 0px rgba(0,0,0,0.5);
+	        box-shadow:2px 2px 2px 0px rgba(0,0,0,0.5);
+	
+	font-family:Calibri, Helvetica, Arial, sans-serif;
+	font-size:11pt;
+	color:black;
+
+	-webkit-box-sizing:border-box;
+	   -moz-box-sizing:border-box;
+	        box-sizing:border-box;
+	
+	
+	-webkit-user-modify:read-write;
+	   -moz-user-modify:read-write;
+	    -ms-user-modify:read-write;
+	     -o-user-modify:read-write;
+	        user-modify:read-write;
+}
+.mainbox .boxheader {
+	font-size:150%;
+	font-weight:bold;
+	margin-top:-2px;
+	margin-bottom:0.2em;
+	opacity:1;
+	cursor:text;
+	height:auto;
+	background-color:transparent;
+	color:black;
+	font-family:Calibri, Helvetica, Arial, sans-serif;
+}
+.mainbox .boxcontent {
+	margin:auto;
+	border-style:none;
+	border-width:0px;
+	-webkit-box-shadow:none;
+	   -moz-box-shadow:none;
+	        box-shadow:none;
+	font-size:100%;
+	font-size:inherit;
+}
+.mainbox * {
+	-webkit-user-modify:read-write;
+	   -moz-user-modify:read-write;
+	    -ms-user-modify:read-write;
+	     -o-user-modify:read-write;
+	        user-modify:read-write;
+}
+.mainbox a, .mainbox a:active {
+	color:#0000FF;
+	-webkit-user-modify:read-only;
+	   -moz-user-modify:read-only;
+	    -ms-user-modify:read-only;
+	     -o-user-modify:read-only;
+	        user-modify:read-only;
+}
+.mainbox a:visited, .mainbox a:visited:active {
+	color:#800080;
+}
+.mainbox_noheader {
+	position:absolute;
+	left:268px;
+	top:0px;
+	right:0px;
+	min-height:100%;
+	padding:20px 8px 6px;
+}
+.mainbox_noheader_nointraboxes {
+	position: absolute;
+	left:0px;
+	top:0px;
+	right:0px;
+	min-height:100%;
+	padding:20px 8px 6px;
+}
+
+.mainbox_nointraboxes {
+	position: absolute;
+	top: 110px;
+	left: 10px;
+	right: 10px;
+	border-style:none;
+}
+
+@media print {
+	div.boxheader, div.intrabox, div.header, div.date, div.logo {
+		display: none;
+	}
+
+	div.mainbox {
+		position: relative;
+		top: 0px;
+		left: 0px;
+		border: none !important;
+		margin: 0px;
+	}
+
+	div.boxcontent {
+		margin: 0px;
+	}
+}

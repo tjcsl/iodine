@@ -1,0 +1,144 @@
+@font-face {
+	font-family:Calibri;
+	font-weight:bold;
+	font-style:italic;
+	src:local("Calibri Bold Italic"), local("Calibri-BoldItalic"), url(www/fonts/calibri/calibriz.ttf);
+}
+@font-face {
+	font-family:Calibri;
+	font-weight:bold;
+	src:local("Calibri Bold"), local("Calibri-Bold"), url(www/fonts/calibri/calibrib.ttf);
+}
+@font-face {
+	font-family:Calibri;
+	font-style:italic;
+	src:local("Calibri Italic"), local("Calibri-Italic"), url(www/fonts/calibri/calibrii.ttf);
+}
+@font-face {
+	font-family:Calibri;
+	src:local("Segoe UI"), url(www/fonts/calibri/calibri.ttf);
+}
+@font-face {
+	font-family:"Segoe UI";
+	font-weight:bold;
+	font-style:italic;
+	src:local("Segoe UI Bold Italic"), local("SegoeUI-BoldItalic"), url(www/fonts/segoeui/segoeuiz.ttf);
+}
+@font-face {
+	font-family:"Segoe UI";
+	font-weight:bold;
+	src:local("Segoe UI Bold"), local("SegoeUI-Bold"), url(www/fonts/segoeui/segoeuib.ttf);
+}
+@font-face {
+	font-family:"Segoe UI";
+	font-style:italic;
+	src:local("Segoe UI Italic"), local("SegoeUI-Italic"), url(www/fonts/segoeui/segoeuii.ttf);
+}
+@font-face {
+	font-family:"Segoe UI";
+	src:local("Segoe UI"), local("SegoeUI"), url(www/fonts/segoeui/segoeui.ttf);
+}
+
+* {
+	font-family:"Segoe UI", Arial, Helvetica, sans-serif;
+	font-family:inherit;
+	/*font-size:100%;*/
+}
+body {
+	font-family:"Segoe UI", Arial, Helvetica, sans-serif;
+	font-size:10pt;
+	color:#020202;
+	background-color:#7397C6;
+	background-image:url(www/pics/styles/msoffice/bg.png);
+	background-size:cover;
+	background-attachment:fixed;
+	/*background-position:left top;*/
+	background-position:0px 143px;
+}
+
+form, div, p, span, td, th, i {
+	font-family:"Segoe UI", Arial, Helvetica, sans-serif;
+	font-family:inherit;
+	font-size:100%;
+}
+
+img {
+	border-style:none;
+	border-width:0px;
+}
+
+tt {
+	font-family:monospace, courier;
+}
+
+a, a:visited, a:active {
+	color:#1018D0;
+}
+
+button, input[type="button"], input[type="submit"], input[type="reset"] select:not([size]), select[size="1"] {
+}
+select:not([size]), select[size="1"] {
+}
+
+button:hover:not(:disabled), input[type="button"]:hover:not(:disabled), input[type="submit"]:hover:not(:disabled), input[type="reset"]:hover:not(:disabled), select:not([size]):hover:not(:disabled), select[size="1"]:hover:not(:disabled), button:focus:not(:disabled), input[type="button"]:focus:not(:disabled), input[type="submit"]:focus:not(:disabled), input[type="reset"]:focus:not(:disabled), select:not([size]):focus:not(:disabled), select[size="1"]:focus:not(:disabled) {
+}
+button:active:not(:disabled), input[type="button"]:active:not(:disabled), input[type="submit"]:active:not(:disabled), input[type="reset"]:active:not(:disabled), select:not([size]):active:not(:disabled), select[size="1"]:active:not(:disabled) {
+}
+
+input[type="radio"] {
+}
+input[type="radio"]:hover:not(:disabled), input[type="radio"]:focus:not(:disabled) {
+}
+input[type="radio"]:checked {
+}
+input[type="radio"]:checked:hover:not(:disabled), input[type="radio"]:checked:focus:not(:disabled) {
+}
+input[type="radio"]:active:not(:disabled) {
+}
+input[type="radio"]:checked:active:not(:disabled) {
+}
+
+input[type="checkbox"] {
+}
+input[type="checkbox"]:hover:not(:disabled), input[type="checkbox"]:focus:not(:disabled) {
+}
+input[type="checkbox"]:checked {
+}
+input[type="checkbox"]:checked:hover:not(:disabled), input[type="checkbox"]:checked:focus:not(:disabled) {
+}
+input[type="checkbox"]:active:not(:disabled) {
+}
+input[type="checkbox"]:checked:active:not(:disabled) {
+}
+
+input:not([type]), input[type="text"], input[type="email"], input[type="search"], input[type="password"], textarea, select[size]:not([size="1"]) {
+	-webkit-appearance:none;
+	   -moz-appearance:none;
+	    -ms-appearance:none;
+	     -o-appearance:none;
+	        appearance:none;
+	border-style:solid;
+	border-width:1px;
+	border-color:#AAAAAA;
+	padding:2px;
+}
+input:disabled, button:disabled, textarea:disabled, select:disabled {
+}
+textarea, select[size]:not([size="1"]) {
+}
+*:focus {
+	outline-color:#FED15E;
+}
+input:not([type]):focus, input[type="text"]:focus, input[type="email"]:focus, input[type="search"]:focus, input[type="password"]:focus, textarea:focus, select[size]:not([size="1"]):focus {
+	-webkit-box-shadow:none;
+	   -moz-box-shadow:none;
+	        box-shadow:none;
+	/*border-color:#1020FF;
+	border-style:solid;
+	border-width:1px;*/
+	outline-style:none;
+}
+
+input:disabled, button:disabled, textarea:disabled, select:disabled {
+	color:#222222;
+}

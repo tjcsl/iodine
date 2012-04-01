@@ -1,0 +1,196 @@
+.logo {
+	position:fixed;
+	left:0px;
+	top:0px;
+	width:43px;
+	height:43px;
+	white-space:nowrap;
+	overflow:hidden;
+	text-decoration:none;
+	
+	background-image:url(www/pics/styles/msoffice/office_btn.png);
+	background-repeat:no-repeat;
+	
+	z-index:11;
+}
+.logo:hover {
+	background-position:-43px 0px;
+}
+.logo:active {
+	background-position:-86px 0px;
+}
+.logo a {
+	display:block;
+	width:43px;
+	height:43px;
+	margin:0px;
+	text-decoration:none;
+}
+#logotext {
+	display:none;
+}
+.header {
+	display:block;
+	position:fixed;
+	left:0px;
+	/*right:0px;*/
+	width:100%;
+	top:0px;
+	height:143px;
+	-webkit-box-sizing:border-box;
+	   -moz-box-sizing:border-box;
+	        box-sizing:border-box;
+	padding:0px 4px;
+	
+	background-color:#BFDBFF;
+	background-image:url(www/pics/styles/msoffice/header_bg_center.png);
+	background-repeat:repeat-x;
+
+	z-index:10;
+}
+.header:before {
+	display:block;
+	position:absolute;
+	left:0px;
+	top:0px;
+	width:4px;
+	height:143px;
+	background-image:url(www/pics/styles/msoffice/header_bg_left.png);
+	background-repeat:no-repeat;
+	z-index:11;
+	
+	content:"";
+}
+.header:after {
+	display:block;
+	position:absolute;
+	right:0px;
+	top:0px;
+	width:4px;
+	height:143px;
+	background-image:url(www/pics/styles/msoffice/header_bg_right.png);
+	background-repeat:no-repeat;
+	z-index:11;
+	
+	content:"";
+}
+
+.header_small {
+	position:fixed;
+	top:0px;
+	right:10px;
+	text-align:right;
+}
+
+.title {
+	display:block;
+	margin-top:4px;
+	font-size:14px;
+	font-weight:normal;
+	border-width:0px;
+	border-style:none;
+	text-align:center;
+	color:#3E6AAA;
+	cursor:default;
+	-webkit-user-select:none;
+	   -moz-user-select:none;
+	        user-select:none;
+}
+.blurb {
+	margin-top:48px;
+}
+.date {
+	position:fixed;
+	top:0px;
+	left:45px;
+	margin:0px;
+	padding:0px;
+	z-index:11;
+}
+#form div { /* the search box container */
+	-webkit-box-sizing:border-box;
+	   -moz-box-sizing:border-box;
+	        box-sizing:border-box;
+	display:inline-block;
+	width:500px;
+}
+#form > div > input { /* the search box */
+	width:100%;
+}
+#menu {
+	margin:0px;
+	text-align:left;
+}
+#menu span {
+	display:none;
+}
+#menu a {
+	text-decoration:none;
+	display:inline-block;
+	
+	-webkit-box-sizing:border-box;
+	   -moz-box-sizing:border-box;
+	        box-sizing:border-box;
+	margin-top:27px;
+	font-size:12px;
+	/*padding:6px 6px 0px;*/
+	padding:6px 0px 0px;
+	height:24px;
+	text-align:center;
+	vertical-align:top;
+	
+	color:#15428B;
+	background-repeat:repeat-x;
+}
+#menu a:before {
+	display:inline-block;
+	width:6px;
+	height:24px;
+	/*position:relative;
+	top:-6px; /* padding * -1 */
+	/*left:-6px;*/
+	margin-right:6px;
+	margin-top:-6px;
+	vertical-align:top;
+	content:"";
+}
+#menu a:after {
+	display:inline-block;
+	width:6px;
+	height:24px;
+	/*position:relative;
+	top:-6px; /* padding * -1 */
+	/*left:6px;*/
+	margin-left:6px;
+	margin-top:-6px;
+	vertical-align:top;
+	content:"";
+}
+#menu a:hover {
+	background-image:url(www/pics/styles/msoffice/tab_hover_bg_center.png);
+}
+#menu a:hover:before {
+	background-image:url(www/pics/styles/msoffice/tab_hover_bg_left.png);
+}
+#menu a:hover:after {
+	background-image:url(www/pics/styles/msoffice/tab_hover_bg_right.png);
+}
+#menu a.currentmodule {
+	background-color:#E0EAF6;
+	background-image:url(www/pics/styles/msoffice/tab_current_bg_center.png);
+}
+#menu a.currentmodule:before {
+	background-image:url(www/pics/styles/msoffice/tab_current_bg_left.png);
+}
+#menu a.currentmodule:after {
+	background-image:url(www/pics/styles/msoffice/tab_current_bg_right.png);
+}
+#menu a.currentmodule:hover {
+	background-image:url(www/pics/styles/msoffice/tab_current_hover_bg_center.png);
+}
+#menu a.currentmodule:hover:before {
+	background-image:url(www/pics/styles/msoffice/tab_current_hover_bg_left.png);
+}
+#menu a.currentmodule:hover:after {
+	background-image:url(www/pics/styles/msoffice/tab_current_hover_bg_right.png);
+}
