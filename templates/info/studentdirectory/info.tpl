@@ -1,0 +1,2 @@
+<h1>Directory Profiles</h1>
+<p>Every TJ student and staff member has a profile on the Intranet.  A person's profile can include his or her name, picture, contact information, locker number, and schedule, but some students and faculty may choose to hide some of this information.  Students' parents or guardians can also choose to have certain sections hidden.  No matter what your privacy settings are, you can always see your complete profile.</p>
