@@ -63,8 +63,6 @@
 	display:inline-block;
 	width:17px;
 	height:17px;
-	background-image:url(www/pics/styles/msoffice/intrabox_btns.png);
-	background-repeat:no-repeat;
 }
 .boxbutton span a {
 	text-decoration:none;
@@ -72,52 +70,54 @@
 .boxbuttons span a img {
 	width:17px;
 	height:17px;
+	background-image:url(www/pics/styles/msoffice/intrabox_btns.png);
+	background-repeat:no-repeat;
 }
-.upbutton {
+.upbutton a img {
 	/*background-image:url(www/pics/styles/msoffice/up.png);*/
 	background-position:0px -51px;
 }
-.upbutton:hover {
+.upbutton a:hover img {
 	/*background-image:url(www/pics/styles/msoffice/up_hover.png);*/
 	background-position:-17px -51px;
 }
-.upbutton:active {
+.upbutton a:active img {
 	/*background-image:url(www/pics/styles/msoffice/up_active.png);*/
 	background-position:-34px -51px;
 }
-.dnbutton {
+.dnbutton a img {
 	/*background-image:url(www/pics/styles/msoffice/down.png);*/
 	background-position:0px -34px;
 }
-.dnbutton:hover {
+.dnbutton a:hover img {
 	/*background-image:url(www/pics/styles/msoffice/down_hover.png);*/
 	background-position:-17px -34px;
 }
-.dnbutton:active {
+.dnbutton a:active img {
 	/*background-image:url(www/pics/styles/msoffice/down_active.png);*/
 	background-position:-34px -34px;
 }
-.mnbutton {
+.mnbutton a img {
 	/*background-image:url(www/pics/styles/msoffice/min.png);*/
 	background-position:0px -17px;
 }
-.mnbutton:hover {
+.mnbutton a:hover img {
 	/*background-image:url(www/pics/styles/msoffice/min_hover.png);*/
 	background-position:-17px -17px;
 }
-.mnbutton:active {
+.mnbutton a:active img {
 	/*background-image:url(www/pics/styles/msoffice/min_active.png);*/
 	background-position:-34px -17px;
 }
-.rmbutton {
+.rmbutton a img {
 	/*background-image:url(www/pics/styles/msoffice/x.png);*/
 	background-position:0px 0px;
 }
-.rmbutton:hover {
+.rmbutton a:hover img {
 	/*background-image:url(www/pics/styles/msoffice/x_hover.png);*/
 	background-position:-17px 0px;
 }
-.rmbutton:active {
+.rmbutton a:active img {
 	/*background-image:url(www/pics/styles/msoffice/x_active.png);*/
 	background-position:-34px 0px;
 }
