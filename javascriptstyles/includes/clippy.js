@@ -8,11 +8,11 @@ clippy.init = function() {
 	clippy.x = window.innerWidth - 300;
 	clippy.y = Math.round(window.innerHeight * 0.45);
 	if(!!localStorage) {
-		if(!!localStorage.clippyX ) {
-			clippy.x = localStorage.clippyX;
+		if(!!localStorage.clippyX && !isNaN(parseInt(localStorage.clippyX))) {
+			clippy.x = parseInt(localStorage.clippyX);
 		}
-		if(!!localStorage.clippyY) {
-			clippy.y = localStorage.clippyY;
+		if(!!localStorage.clippyY && !isNaN(parseInt(localStorage.clippyY))) {
+			clippy.y = parseInt(localStorage.clippyY);
 		}
 	}
 	
