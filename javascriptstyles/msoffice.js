@@ -99,7 +99,7 @@ function page_init() {
 				break;
 				default:
 					moduleMsg += "searching the directory";
-					helpURL += "studentdirectory/search";
+					helpURL += "studentdirectory";
 					helpYesTxt = "searching the directory";
 					helpNoTxt = "search the directory";
 				break;
