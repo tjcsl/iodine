@@ -202,3 +202,41 @@
 #menu a.currentmodule:hover:after {
 	background-position:-30px 0px;
 }
+
+a#menu_help, a#menu_help.currentmodule {
+	position:fixed;
+	right:0px;
+	top:0px;
+	width:22px;
+	height:22px;
+	background-image:url(www/pics/styles/msoffice/btns.png);
+	background-position:0px -93px;
+	color:transparent;
+}
+a#menu_help:hover, a#menu_help.currentmodule:hover {
+	background-position:-22px -93px;
+}
+a#menu_help:active, a#menu_help.currentmodule:active {
+	background-position:-44px -93px;
+}
+
+a#menu_logout {
+	position:fixed;
+	right:0px;
+	top:-27px;
+	width:25px;
+	height:25px;
+	background-image:url(www/pics/styles/msoffice/btns.png);
+	background-position:0px -68px;
+	color:transparent;
+}
+a#menu_logout:hover {
+	background-position:-25px -68px;
+}
+a#menu_logout:active {
+	background-position:-50px -68px;
+}
+
+a#menu_help:before, a#menu_help:after, a#menu_logout:before, a#menu_logout:after {
+	display:none;
+}
