@@ -1,0 +1,4 @@
+<h1>News</h1>
+<p>The news page displays a list of TJ-related announcements, including notices regarding classes, clubs, events, and the Intranet.  When you finish reading a news item, you can mark it as read by clicking the &ldquo;Mark read&rdquo; link on the right side of the page's title.  You can also collapse a news post by clicking the &ldquo;Collapse&rdquo; link next to it or by double-clicking the post's title.</p>
+<p>Even if you do not mark them as read, most news posts will remove themselves from your news page after some period of time.  If you have the news intrabox enabled, you can access these news posts as well as those you have marked as read by selecting the &ldquo;All news&rdquo; link at the bottom of the box.</p>
+<p>See also: <a href="[<$I2_ROOT>]info/news/request">Submitting a news article for posting</a></p>
