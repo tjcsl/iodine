@@ -40,7 +40,7 @@
 	-webkit-box-sizing:border-box;
 	   -moz-box-sizing:border-box;
 	        box-sizing:border-box;
-	padding:0px 4px;
+	padding:0px 8px;
 	
 	background-color:#BFDBFF;
 	background-image:url(www/pics/styles/msoffice/header_bg_center.png);
@@ -97,7 +97,7 @@
 	        user-select:none;
 }
 .blurb {
-	margin-top:48px;
+	margin-top:44px;
 }
 .date {
 	position:fixed;
