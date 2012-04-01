@@ -1,11 +1,14 @@
 [<include file="../javascriptstyles/includes/clippy.js">]
 
 function page_init() {
+	if(navigator.userAgent.indexOf("mobile") != -1) {
+		return;
+	}
 	clippy.init();
 	
 	var module = location.href.replace(i2root, "").toLowerCase().split("/");
 	
-	var moduleMsg = "<p>It looks like you\'re ";
+	var moduleMsg = "It looks like you\'re ";
 	var helpURL = i2root + "info/";
 	var helpYesTxt = "";
 	var helpNoTxt = "";
@@ -116,7 +119,7 @@ function page_init() {
 		break;
 	}
 	
-	moduleMsg += ".  Can I help you with that?</p>";
+	moduleMsg += ".  Can I help you with that?";
 	moduleMsg += "<ul><a href=\"" + helpURL + "\"><li>Get help with " + helpYesTxt + "</li></a><a href=\"#\" onclick=\"clippy.hide();\"><li>Just " + helpNoTxt + " without help</li></a></ul>";
 	clippy.displayMessage(moduleMsg);
 }
