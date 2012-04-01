@@ -99,9 +99,6 @@ clippy.init = function() {
 	document.body.appendChild(clippy.bubbleElem);
 	
 	
-	clippy.displayMessage("Hello, and welcome to my study.  My name is Mitchell.  You're always welcome to enjoy the things that I've found.  I'm lonely, and I collect things.");
-	
-	
 	clippy.elem.onmousedown = clippy.startDrag;
 	clippy.elem.onmouseup = clippy.stopDrag;
 	
