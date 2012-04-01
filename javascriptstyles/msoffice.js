@@ -121,6 +121,11 @@ function page_init() {
 	
 	moduleMsg += ".  Can I help you with that?";
 	moduleMsg += "<ul><a href=\"" + helpURL + "\"><li>Get help with " + helpYesTxt + "</li></a><a href=\"#\" onclick=\"clippy.hide();\"><li>Just " + helpNoTxt + " without help</li></a></ul>";
+	
+	if(module[0] == "info" && module[1] == "credits") {
+		moduleMsg = "These guys are awesome.";
+	}
+	
 	clippy.displayMessage(moduleMsg);
 }
 
