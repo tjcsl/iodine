@@ -66,6 +66,24 @@ IE7_PNG_SUFFIX = ".png";
 			outline-color:#2C628B;
 			padding:2px;
 		}
+		.login.box button {
+			width:29px;
+			height:29px;
+			border-style:none;
+			border-width:0px;
+			background-color:transparent;
+			background-image:url([<$I2_ROOT>]www/pics/styles/msoffice/go_btn.png);
+			color:transparent;
+		}
+		.login.box button:hover {
+			background-position:-29px 0px;
+		}
+		.login.box button:active {
+			background-position:-58px 0px;
+		}
+		.login.box button:disabled {
+			background-position:-87 0px;
+		}
 		.logo {
 			position:absolute;
 			bottom:6px;
