@@ -28,7 +28,11 @@ var username="[<$I2_USER->username>]";
 var name="[<$I2_USER->name>]";
 var fullname="[<$I2_USER->fullname>]";
 var userid=[<$I2_USER->iodineUIDNumber>];
-window.addEventListener("load", page_init, false);
+if(!!window.addEventListener) {
+	window.addEventListener("load", page_init, false);
+} else {
+	window.onload = page_init;
+}
 </script>
 <link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
