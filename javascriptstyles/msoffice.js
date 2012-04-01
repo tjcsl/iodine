@@ -106,7 +106,7 @@ function page_init() {
 			}
 		break;
 		case "info":
-			moduleMsg + "getting help";
+			moduleMsg += "getting help";
 			helpURL = location.href;
 			helpYesTxt = "getting help";
 			helpNoTxt = "get help";
