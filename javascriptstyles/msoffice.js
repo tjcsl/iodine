@@ -124,6 +124,8 @@ function page_init() {
 	
 	if(module[0] == "info" && module[1] == "credits") {
 		moduleMsg = "These guys are awesome.";
+	} else if(module[0] == "suggestion") {
+		moduleMsg = "Suggestions are fantastic...as long as they are not about getting rid of me.  I got enough of that ten years ago.";
 	}
 	
 	clippy.displayMessage(moduleMsg);
