@@ -6,6 +6,7 @@
 	height:86px;
 	z-index:1000;
 	
+	repeat:keep;
 	-webkit-transition-property:-webkit-transform;
 	-webkit-transition-property:        transform;
 	   -moz-transition-property:   -moz-transform;
