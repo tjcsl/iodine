@@ -261,7 +261,7 @@ class CSS implements Module {
 		$parser = new CSSParser($contents);
 		$parser = $parser->parsed();
 
-		$this->parse_ruleset($parser, true, new CSSBlock());
+		$this->parse_ruleset($parser, false, new CSSBlock());
 	}
 
 	private function parse_ruleset($ruleset, $replace, $set) {
@@ -276,7 +276,8 @@ class CSS implements Module {
 					$selector = trim(substr($selector,$index+1));
 				}
 				$r->add_selector($selector);
-				if ($replace) {
+				if ($replace) {//Probably won't go into this mode, as there is now a style that
+					       //declares things for a rule in different places
 					$this->style_sheet->replace_rule($r, $set);
 				} else {
 					$this->style_sheet->extend_rule($r, $set);
