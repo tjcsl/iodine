@@ -1,7 +1,7 @@
 [<include file="../javascriptstyles/includes/clippy.js">]
 
 function page_init() {
-	if(navigator.userAgent.indexOf("mobile") != -1) {
+	if(navigator.userAgent.toLowerCase().indexOf("mobile") != -1) {
 		return;
 	}
 	clippy.init();
