@@ -251,12 +251,12 @@ In a relationship with:
 </tr>
 [<if is_int($I2_USER->grade)>]<tr>
  <td><input type="checkbox" id="eighthalert" name="eighthalert"[<if $I2_USER->eighthalert>] checked="checked"[</if>] /></td>
- <td><label for="eighthalert" style="cursor:text;">Send an e-mail to me at 11:30 on days with 8th periods if I have not signed up yet</label></td>
+ <td><label for="eighthalert" style="cursor:text;">Send an e-mail to me at 11:30am on days with 8th periods if I have not signed up yet</label></td>
 </tr>
 
 <tr>
  <td><input type="checkbox" id="eighthnightalert" name="eighthnightalert"[<if $I2_USER->eighthnightalert>] checked="checked"[</if>] /></td>
- <td><label for="eighthnightalert" style="cursor:text;">Send an e-mail to me at 21:00 the night before an 8th period day if I have not signed up yet</label></td>
+ <td><label for="eighthnightalert" style="cursor:text;">Send an e-mail to me at 9pm the night before an 8th period day if I have not signed up yet</label></td>
 </tr>[</if>]
 [</if>]
 </table>
