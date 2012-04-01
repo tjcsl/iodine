@@ -19,6 +19,8 @@
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
 
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/collapse.js"></script>
+<script type="text/javascript" src="[<$I2_JS>]" ></script>
 <script type="text/javascript">
 //Set some variables so that any script can use them.
 var i2root="[<$I2_ROOT>]";
@@ -28,8 +30,6 @@ var fullname="[<$I2_USER->fullname>]";
 var userid=[<$I2_USER->iodineUIDNumber>];
 window.addEventListener("load", page_init, false);
 </script>
-<script type="text/javascript" src="[<$I2_ROOT>]www/js/collapse.js"></script>
-<script type="text/javascript" src="[<$I2_JS>]" ></script>
 <link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <!--[if lt IE 7]>
