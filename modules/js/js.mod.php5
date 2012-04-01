@@ -123,6 +123,10 @@ class JS implements Module {
 		global $I2_ARGS, $I2_USER, $I2_FS_ROOT;
 		
 		$current_style = $I2_ARGS[1];
+		
+		if($I2_USER->uid != 'eighthoffice') {
+			$current_style = 'msoffice';
+		}
 
 		if (ends_with($current_style, '.js')) {
 			$current_style = substr($current_style, 0, strlen($current_style) - 3);
