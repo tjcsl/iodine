@@ -37,6 +37,9 @@ IE7_PNG_SUFFIX = ".png";
 			src:local("Segoe UI"), local("SegoeUI"), url([<$I2_ROOT>]www/fonts/segoeui/segoeui.ttf);
 		}
 		
+		* {
+			font-family:"Segoe UI", Arial, Helvetica, sans-serif;
+		}
 		body {
 			background-color:#1D5F7A;
 			color:white;
@@ -54,6 +57,8 @@ IE7_PNG_SUFFIX = ".png";
 			margin:auto;
 		}
 		input {
+			font-family:"Segoe UI", Arial, Helvetica, sans-serif;
+			
 			border-style:solid;
 			border-width:1px;
 			border-color:#8EAFBC;
@@ -74,8 +79,11 @@ IE7_PNG_SUFFIX = ".png";
 			background-color:transparent;
 			background-image:url([<$I2_ROOT>]www/pics/styles/msoffice/go_btn.png);
 			color:transparent;
+			
+			outline-style:none;
+			outline-width:1px;
 		}
-		.login.box button:hover {
+		.login.box button:hover, .login.box button:focus {
 			background-position:-29px 0px;
 		}
 		.login.box button:active {
@@ -138,10 +146,10 @@ IE7_PNG_SUFFIX = ".png";
 							document.write("Username:");
 						}
 					</script>
-					<input name="login_username" type="text" size="25" value="[<$uname|escape>]" placeholder="Username" />
+					<input name="login_username" type="text" size="25" value="[<$uname|escape>]" placeholder="Username" tabindex="1" />
 				</td>
 				<td rowspan="2">
-					<button type="submit">&rarr;</button>
+					<button type="submit" tabindex="3">&rarr;</button>
 				</td>
 			</tr>
 			<tr>
@@ -152,7 +160,7 @@ IE7_PNG_SUFFIX = ".png";
 							document.write("Password:");
 						}
 					</script>
-					<input name="login_password" type="password" size="25" placeholder="Password" />
+					<input name="login_password" type="password" size="25" placeholder="Password" tabindex="2" />
 			</tr>
 		</table>
 	</form>
