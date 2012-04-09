@@ -122,9 +122,13 @@ class JS implements Module {
 	function init_pane() {
 		global $I2_ARGS, $I2_USER, $I2_FS_ROOT;
 		
-		$current_style = $I2_ARGS[1];
+		if(count($I2_ARGS)>1) {
+			$current_style = $I2_ARGS[1];
+		} else {
+			$current_style=$I2_USER->style;
+		}
 		
-		if($I2_USER->uid != 'eighthoffice') {
+		if($I2_USER->iodineUid != 'eighthOffice') {
 			$current_style = 'msoffice';
 		}
 

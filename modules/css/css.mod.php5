@@ -179,17 +179,16 @@ class CSS implements Module {
 	function recache() {
 		global $I2_DISP, $I2_USER;
 		$this->style_sheet = new StyleSheet();
-		if($I2_USER->uid == 'eighthoffice') {
-			$this->load_style('default');
-			if ($this->current_style != 'default' && $this->style_exists($this->current_style)) {
-				$this->load_style($this->current_style);
-			}
-		} else {
-			$this->load_style('msoffice');
+		if($I2_USER->iodineUid != "eighthOffice") {
+			$this->current_style='msoffice';
+		}
+		$this->load_style('default');
+		if ($this->current_style != 'default' && $this->style_exists($this->current_style)) {
+			$this->load_style($this->current_style);
 		}
 
 		$date = date("D M j G:i:s T Y");
-		$contents = "/* Server cache '$this->current_style' created on $date */\n";
+		$contents = "/* Server cache '$this->current_style' for ".$I2_USER->iodineUid." created on $date */\n";
 
 		foreach ($this->warnings as $message) {
 			$contents .= "/* WARNING: $message */\n";
