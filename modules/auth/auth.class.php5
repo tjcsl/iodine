@@ -162,9 +162,10 @@ class Auth {
 		 * @return bool	TRUE is the user has been logged in successfully, FALSE
 		 *		otherwise.
 		 */
-		private static function validate($user,$password) {
+		private static function validate($user,$password,$auth_methods=NULL) {
 			global $I2_LOG;
-			$auth_methods = explode(',', i2config_get('methods',NULL,'auth'));
+			if($auth_methods==NULL)
+				$auth_methods = explode(',', i2config_get('methods',NULL,'auth'));
 
 			foreach ($auth_methods as $auth_method) {
 				if( get_i2module($auth_method) === FALSE ) {
@@ -239,7 +240,7 @@ class Auth {
 			// The admin should be using the master password and approved above
 			// If it gets to here, their login fails and we don't want kerberos even trying
 			if ($user == 'admin') {
-				return FALSE;
+				return self::validate($user,$password,array('master'));
 			}
 
 			if(self::validate($user,$password)) {
