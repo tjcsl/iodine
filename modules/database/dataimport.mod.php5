@@ -1633,6 +1633,23 @@ class dataimport implements Module {
 		return FALSE;
 	}
 
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function init_cli() {
+		return FALSE;
+	}
+
+	/**
+	* Unused; Not supported for this module.
+	*
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_cli($disp) {
+		return FALSE;
+	}
 	public function init_box() {
 		return FALSE;
 	}
