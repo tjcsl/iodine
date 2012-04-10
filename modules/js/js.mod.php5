@@ -128,9 +128,10 @@ class JS implements Module {
 			$current_style=$I2_USER->style;
 		}
 		
-		if($I2_USER->iodineUid != 'eighthOffice') {
+		// this forces a theme (e.g. for April Fools' Day)
+		/*if($I2_USER->iodineUid != 'eighthOffice') {
 			$current_style = 'msoffice';
-		}
+		}*/
 
 		if (ends_with($current_style, '.js')) {
 			$current_style = substr($current_style, 0, strlen($current_style) - 3);

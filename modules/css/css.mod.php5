@@ -179,9 +179,12 @@ class CSS implements Module {
 	function recache() {
 		global $I2_DISP, $I2_USER;
 		$this->style_sheet = new StyleSheet();
-		if($I2_USER->iodineUid != "eighthOffice") {
+
+		// this forces a theme (e.g. for April Fools' Day)
+		/*if($I2_USER->iodineUid != "eighthOffice") {
 			$this->current_style='msoffice';
-		}
+		}*/
+		
 		$this->load_style('default');
 		if ($this->current_style != 'default' && $this->style_exists($this->current_style)) {
 			$this->load_style($this->current_style);
