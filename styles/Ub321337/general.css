@@ -14,7 +14,7 @@ a {
 }
 }
 
-input, textarea {
+input, textarea, button {
 	font-family: courier, monospace;
 	color: #008800;
 	background: transparent;

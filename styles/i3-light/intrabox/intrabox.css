@@ -34,6 +34,8 @@
 	    -ms-transition-duration:0.2s;
 	     -o-transition-duration:0.2s;
 	        transition-duration:0.2s;*/
+	border-style:none;
+	border-width:0px;
 	border-top-style:solid;
 	border-top-width:1px;
 	border-top-color:#E0E0FF;
@@ -52,6 +54,9 @@
 }
 .boxheader {
 	font-size:12px;
+	font-weight:normal;
+	color:inherit;
+	background-color:transparent;
 	
 	overflow:hidden;
 	margin-bottom:-4px;
@@ -101,6 +106,8 @@
 	opacity:1;
 }
 .boxcontent {
+	color:inherit;
+	
 	margin-top:0.6em;
 	margin-bottom:0.6em;
 	
@@ -137,6 +144,7 @@
 	        box-shadow:-2px 0px 2px 0px rgba(0,0,0,0.2);
 }
 .mainbox .boxheader {
+	background-color:transparent;
 	font-size:150%;
 	font-weight:bold;
 	margin-top:-2px;

@@ -10,8 +10,11 @@
 	       border-radius-bottomleft:4px;
 	      border-radius-bottomright:4px;
 	/*margin-right: 5px;*/
-	border-top: 2px solid #c3d9ff;
-	background-color: white;
+	border-style:none;
+	border-width:0px;
+	border-color:transparent;
+	border-top:2px solid #c3d9ff;
+	background-color:white;
 	/*margin-bottom: 10pt;*/
 	padding:4px;
 	width: 310px;

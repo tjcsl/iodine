@@ -2,11 +2,16 @@
 	position:fixed;
 	left:0px;
 	top:0px;
-	height:60px;
+	width:260px;
+	height:90px;
+	padding:0px;
+	margin:0px;
 	white-space:nowrap;
 	overflow:hidden;
 	text-decoration:none;
 	
+	background-image:none;
+
 	-webkit-transition-duration:0.2s;
 	   -moz-transition-duration:0.2s;
 	    -ms-transition-duration:0.2s;
@@ -19,10 +24,13 @@
 	background-image:url(www/pics/styles/i3/logo-dark.png);
 	background-repeat:no-repeat;
 	background-size:50px 55px;
+	text-decoration:none;
 	display:block;
 	margin:6px 16px;
+	width:auto;
 	height:60px;
-	text-decoration:none;
+	left:0px;
+	top:4px;
 }
 #logotext {
 	margin-left:55px;
@@ -75,6 +83,8 @@
 	font-weight:bold;
 	border-width:0px;
 	border-style:none;
+	border-color:transparent;
+	color:inherit;
 }
 .date {
 	position:fixed;

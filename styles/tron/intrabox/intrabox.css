@@ -102,6 +102,7 @@
 }
 .upbutton {
 	background-image:url(www/pics/styles/tron/tron_title_btns.png);
+	background-position:0px 0px;
 	margin-right:-4px;
 }
 .dnbutton {

@@ -1,6 +1,8 @@
 * {
 	font-family:"Open Sans", Arial, Helvetica, Roboto, "Droid Sans", sans-serif;
+	font-family:inherit;
 	/*font-size:100%;*/
+	color:inherit;
 }
 body {
 	font-family:"Open Sans", Arial, Helvetica, Roboto, "Droid Sans", sans-serif;

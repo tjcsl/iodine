@@ -5,6 +5,9 @@
 	width:280px;
 }
 .intrabox {
+	border-style:none;
+	border-width:0px;
+	border-color:transparent;
 	border-top:1px solid #E2E2E2;
 	background-color:white;
 	/*margin-bottom:10pt;*/
