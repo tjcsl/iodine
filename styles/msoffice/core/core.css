@@ -4,6 +4,7 @@
 	top:0px;
 	width:43px;
 	height:43px;
+	margin:0px;
 	white-space:nowrap;
 	overflow:hidden;
 	text-decoration:none;
@@ -21,6 +22,8 @@
 }
 .logo a {
 	display:block;
+	left:0px;
+	top:0px;
 	width:43px;
 	height:43px;
 	margin:0px;
