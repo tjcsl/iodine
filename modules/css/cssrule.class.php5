@@ -31,7 +31,7 @@ class CSSRule {
 	}
 
 	public function set_property($key, $value) {
-		$value = preg_replace('/url\("?([^"]*)"?\)/', "url(\"{$GLOBALS['I2_ROOT']}\$1\")", $value);
+		$value = preg_replace('/url\("?([^")]*)"?\)/', "url(\"{$GLOBALS['I2_ROOT']}\$1\")", $value);
 		$this->properties[$key] = $value;
 	}
 
