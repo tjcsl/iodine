@@ -1,7 +1,16 @@
+.newspost {
+	border-width:0px;
+	border-top-width:1px;
+	border-top-style:solid;
+	border-top-color:#E9E9E9;
+}
+
 .newsitem {
 	font-family: arial, helvetica, verdana, sans-serif;
 	font-size: 11px;
 	margin-bottom: 10pt;
+	border-style:none;
+	border-width:0px;
 }
 
 .newstitle {
@@ -9,7 +18,8 @@
 	font-size:12px;
 	font-weight:bold;
 	padding-bottom:2px;
-	border-bottom:0.05em solid;
+	border-style:none;
+	border-width:0px;
 	line-height:1.1em;
 }
 
@@ -34,8 +44,9 @@
 }
 
 @extend {
-.newsoptions {
-	font-size:12px;
-	margin-top:0px;
-	padding:0px;
+	.newsoptions {
+		font-size:12px;
+		margin-top:0px;
+		padding:0px;
+	}
 }
