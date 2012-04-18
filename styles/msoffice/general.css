@@ -16,7 +16,7 @@
 }
 @font-face {
 	font-family:Calibri;
-	src:local("Segoe UI"), url(www/fonts/calibri/calibri.ttf);
+	src:local("Calibri"), url(www/fonts/calibri/calibri.ttf);
 }
 @font-face {
 	font-family:"Segoe UI";
