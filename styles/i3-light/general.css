@@ -85,11 +85,11 @@ select:not([size]), select[size="1"] {
 	font-size:13px;
 
 	background-color:#E0E0E0;
+	background-image:-webkit-linear-gradient(#E8E8E8, #D8D8D8);
+	background-image:   -moz-linear-gradient(#E8E8E8, #D8D8D8);
 	background-image:    -ms-linear-gradient(#E8E8E8, #D8D8D8);
 	background-image:     -o-linear-gradient(#E8E8E8, #D8D8D8);
 	background-image:        linear-gradient(#E8E8E8, #D8D8D8);
-	background:-webkit-linear-gradient(#E8E8E8, #D8D8D8);
-	background-image:   -moz-linear-gradient(#E8E8E8, #D8D8D8);
 	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#E8E8E8, endColorstr=#D8D8D8);
 	-ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr=#E8E8E8, endColorstr=#D8D8D8)";
 	border-style:solid;
@@ -117,11 +117,11 @@ button:active:enabled, input[type="button"]:active:enabled, input[type="submit"]
 	repeat:keep;
 	
 	background-color:#DCDCDC;
+	background-image:-webkit-linear-gradient(#D6D6D6, #E0E0E0);
+	background-image:   -moz-linear-gradient(#D6D6D6, #E0E0E0);
 	background-image:    -ms-linear-gradient(#D6D6D6, #E0E0E0);
 	background-image:     -o-linear-gradient(#D6D6D6, #E0E0E0);
 	background-image:        linear-gradient(#D6D6D6, #E0E0E0);
-	background:-webkit-linear-gradient(#D6D6D6, #E0E0E0);
-	background-image:   -moz-linear-gradient(#D6D6D6, #E0E0E0);
 	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#D6D6D6, endColorstr=#E0E0E0);
 	-ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr=#D6D6D6, endColorstr=#E0E0E0)";
 	-webkit-box-shadow:inset 0px 1px 4px -1px rgba(0,0,0,0.3);
@@ -142,6 +142,8 @@ input[type="radio"] {
 	height:15px;
 	background-color:#E0E0E0;
 	background-image:-webkit-linear-gradient(#E8E8E8, #D8D8D8);
+	background-image:     -o-linear-gradient(#E8E8E8, #D8D8D8);
+	background-image:        linear-gradient(#E8E8E8, #D8D8D8);
 	border-style:solid;
 	border-width:1px;
 	border-color:#D3D3D3;
@@ -153,8 +155,9 @@ input[type="radio"]:hover:enabled, input[type="radio"]:focus:enabled {
 	repeat:keep;
 	
 	background-color:#E8E8E8;
-	background:-o-linear-gradient(#F0F0F0, #E0E0E0);
 	background-image:-webkit-linear-gradient(#F0F0F0, #E0E0E0);
+	background-image:     -o-linear-gradient(#F0F0F0, #E0E0E0);
+	background-image:        linear-gradient(#F0F0F0, #E0E0E0);
 }
 input[type="radio"]:checked {
 	repeat:keep;

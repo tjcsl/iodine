@@ -46,11 +46,13 @@
 	-webkit-border-radius:4px;
 	   -moz-border-radius:4px;
 	        border-radius:4px;
+	background-image:-webkit-linear-gradient(#E0E0FF, rgba(239,239,247,0) 30px);
+	background-image:   -moz-linear-gradient(#E0E0FF, rgba(239,239,247,0) 30px);
 	background-image:    -ms-linear-gradient(#E0E0FF, rgba(239,239,247,0) 30px);
 	background-image:     -o-linear-gradient(#E0E0FF, rgba(239,239,247,0) 30px);
 	background-image:        linear-gradient(#E0E0FF, rgba(239,239,247,0) 30px);
-	background-image:   -moz-linear-gradient(#E0E0FF, rgba(239,239,247,0) 30px);
-	background:-webkit-linear-gradient(#E0E0FF, rgba(239,239,247,0) 30px);
+	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#E0E0FF, endColorstr=#EFEFF7);
+	-ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr=#E0E0FF, endColorstr=#EFEFF7)";
 }
 .boxheader {
 	font-size:12px;
