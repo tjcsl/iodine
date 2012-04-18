@@ -1,213 +1,27 @@
-.logo {
-	position:fixed;
-	left:0px;
-	top:0px;
-	width:260px;
-	height:90px;
-	padding:0px;
-	margin:0px;
-	white-space:nowrap;
-	overflow:hidden;
-	text-decoration:none;
-	
-	background-image:none;
-
-	-webkit-transition-duration:0.2s;
-	   -moz-transition-duration:0.2s;
-	    -ms-transition-duration:0.2s;
-	     -o-transition-duration:0.2s;
-	        transition-duration:0.2s;
-	
-	z-index:11;
-}
 .logo a {
 	background-image:url(www/pics/styles/i3/logo-dark.png);
-	background-repeat:no-repeat;
-	background-size:50px 55px;
-	text-decoration:none;
-	display:block;
-	margin:6px 16px;
-	width:auto;
-	height:60px;
-	left:0px;
-	top:4px;
 }
 #logotext {
-	margin-left:55px;
-	display:inline;
-	font-size:40px;
 	color:#EAEAEA;
 }
 .header {
-	position:fixed;
-	left:0px;
-	right:0px;
-	top:0px;
-	height:98px;
-	-webkit-box-sizing:border-box;
-	   -moz-box-sizing:border-box;
-	        box-sizing:border-box;
-	padding-left:268px;
-	padding-right:4px;
+	repeat:keep;
 	
 	background-color:#0A0A0A;
+	background-image:-webkit-linear-gradient(#202020, #0A0A0A);
+	background-image:   -moz-linear-gradient(#202020, #0A0A0A);
 	background-image:    -ms-linear-gradient(#202020, #0A0A0A);
 	background-image:     -o-linear-gradient(#202020, #0A0A0A);
 	background-image:        linear-gradient(#202020, #0A0A0A);
-	background:      -webkit-linear-gradient(#202020, #0A0A0A);
-	background-image:   -moz-linear-gradient(#202020, #0A0A0A);
 	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#202020, endColorstr=#0A0A0A);
 	-ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr=#202020, endColorstr=#0A0A0A)";
 	
 	box-shadow:0px 0px 8px 8px #0A0A0A;
-	
-	-webkit-transition-duration:0.2s;
-	   -moz-transition-duration:0.2s;
-	    -ms-transition-duration:0.2s;
-	     -o-transition-duration:0.2s;
-	        transition-duration:0.2s;
-	
-	z-index:10;
 }
 
-.header_small {
-	position:fixed;
-	top:0px;
-	right:10px;
-	text-align:right;
-}
-
-.title {
-	margin-top:4px;
-	font-size:14pt;
-	font-weight:bold;
-	border-width:0px;
-	border-style:none;
-	border-color:transparent;
-	color:inherit;
-}
-.date {
-	position:fixed;
-	top:0px;
-	right:4px;
-	z-index:11;
-}
-#menu {
-	width:100%;
-	text-align:right;
-}
-#menu span {
-	display:none;
-}
 #menu a {
-	text-decoration:none;
-	display:inline-block;
-	
-	font-size:14px;
-	padding:6px 10px 7px;
 	color:#8A8AD0;
-	
-	-webkit-transition-duration:0.2s;
-	   -moz-transition-duration:0.2s;
-	    -ms-transition-duration:0.2s;
-	     -o-transition-duration:0.2s;
-	        transition-duration:0.2s;
-	
-	 -webkit-border-bottom-left-radius:4px;
-	-webkit-border-bottom-right-radius:4px;
-	     -moz-border-radius-bottomleft:4px;
-	    -moz-border-radius-bottomright:4px;
-	         border-bottom-left-radius:4px;
-	        border-bottom-right-radius:4px;
 }
 #menu a:hover {
 	background-color:rgba(128,128,128,0.1);
-}
-@media (max-width:1005px) {
-	.logo a {
-		background-size:25px 28px;
-		/*width:72px;
-		height:30px;*/
-		margin:0px 6px;
-		padding-top:2px;
-	}
-	#logotext {
-		margin-left:29px;
-		font-size:18px;
-	}
-	.header {
-		padding:28px 4px 0px;
-	}
-	.title {
-		display:none;
-	}
-	#menu a {
-		padding:7px 8px 8px;
-	}
-}
-@media (max-width:765px) {
-	#menu a {
-		font-size:12px;
-		padding:8px 8px 8px;
-	}
-}
-@media (max-width:680px) {
-	#menu a {
-		font-size:11px;
-		padding:8px 8px 9px;
-	}
-}
-@media (max-width:645px) {
-	.logo a {
-		background-size:23px 25px;
-		margin:0px 2px 0px 4px;
-	}
-	#logotext {
-		margin-left:26px;
-	}
-	.blurb {
-		display:none;
-	}
-	.header {
-		height:72px;
-	}
-}
-@media (max-width:600px) {
-	#logotext {
-		font-size:0px;
-		color:transparent;
-	}
-	#form {
-		display:block;
-	}
-	#form > div {
-		display:block;
-		width:auto;
-		margin-right:58px;
-	}
-	#form > button {
-		padding:4px 5px;
-		font-size:95%;
-		float:right;
-		margin:2px 2px 0px;
-	}
-	#form > button#studentsearchbtn {
-		margin-right:2px;
-		float:right;
-		margin-top:-30px;
-	}
-	#form label {
-		display:none;
-	}
-}
-@media (max-width:525px) {
-	a#menu_suggest {
-		display:none;
-	}
-	a#menu_cred {
-		display:none;
-	}
-	a#menu_help {
-		display:none;
-	}
 }

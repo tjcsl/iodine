@@ -1,4 +1,5 @@
 * {
+	repeat:keep;
 	font-family:"Open Sans", Arial, Helvetica, Roboto, "Droid Sans", sans-serif;
 	font-family:inherit;
 	/*font-size:100%;*/
@@ -37,6 +38,8 @@ a:active {
 }
 
 button, input[type="button"], input[type="submit"], input[type="reset"] select:not([size]), select[size="1"] {
+	repeat:keep;
+	
 	-webkit-appearance:none;
 	   -moz-appearance:none;
 	     -o-appearance:none;
@@ -50,11 +53,11 @@ button, input[type="button"], input[type="submit"], input[type="reset"] select:n
 	font-size:13px;
 
 	background-color:#E0E0E0;
+	background-image:-webkit-linear-gradient(#E8E8E8, #D8D8D8);
+	background-image:   -moz-linear-gradient(#E8E8E8, #D8D8D8);
 	background-image:    -ms-linear-gradient(#E8E8E8, #D8D8D8);
 	background-image:     -o-linear-gradient(#E8E8E8, #D8D8D8);
 	background-image:        linear-gradient(#E8E8E8, #D8D8D8);
-	background:-webkit-linear-gradient(#E8E8E8, #D8D8D8);
-	background-image:   -moz-linear-gradient(#E8E8E8, #D8D8D8);
 	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#E8E8E8, endColorstr=#D8D8D8);
 	-ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr=#E8E8E8, endColorstr=#D8D8D8)";
 	border-style:solid;
@@ -67,6 +70,8 @@ button, input[type="button"], input[type="submit"], input[type="reset"] select:n
 	color:#020202;
 }
 select:not([size]), select[size="1"] {
+	repeat:keep;
+	
 	-webkit-appearance:menulist-button;
 	   -moz-appearance:menulist-button;
 	     -o-appearance:menulist-button;
@@ -96,17 +101,21 @@ select:not([size]), select[size="1"] {
 	
 	color:#020202;
 }
-button:hover:not(:disabled), input[type="button"]:hover:not(:disabled), input[type="submit"]:hover:not(:disabled), input[type="reset"]:hover:not(:disabled), select:not([size]):hover:not(:disabled), select[size="1"]:hover:not(:disabled), button:focus:not(:disabled), input[type="button"]:focus:not(:disabled), input[type="submit"]:focus:not(:disabled), input[type="reset"]:focus:not(:disabled), select:not([size]):focus:not(:disabled), select[size="1"]:focus:not(:disabled) {
+button:hover:enabled, input[type="button"]:hover:enabled, input[type="submit"]:hover:enabled, input[type="reset"]:hover:enabled, select:not([size]):hover:enabled, select[size="1"]:hover:enabled, button:focus:enabled, input[type="button"]:focus:enabled, input[type="submit"]:focus:enabled, input[type="reset"]:focus:enabled, select:not([size]):focus:enabled, select[size="1"]:focus:enabled {
+	repeat:keep;
+	
 	background-color:#E8E8E8;
+	background-image:-webkit-linear-gradient(#F0F0F0, #E0E0E0);
+	background-image:   -moz-linear-gradient(#F0F0F0, #E0E0E0);
 	background-image:    -ms-linear-gradient(#F0F0F0, #E0E0E0);
 	background-image:     -o-linear-gradient(#F0F0F0, #E0E0E0);
 	background-image:        linear-gradient(#F0F0F0, #E0E0E0);
-	background:-webkit-linear-gradient(#F0F0F0, #E0E0E0);
-	background-image:   -moz-linear-gradient(#F0F0F0, #E0E0E0);
 	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#F0F0F0, endColorstr=#E0E0E0);
 	-ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr=#F0F0F0, endColorstr=#E0E0E0)";
 }
-button:active:not(:disabled), input[type="button"]:active:not(:disabled), input[type="submit"]:active:not(:disabled), input[type="reset"]:active:not(:disabled), select:not([size]):active:not(:disabled), select[size="1"]:active:not(:disabled) {
+button:active:enabled, input[type="button"]:active:enabled, input[type="submit"]:active:enabled, input[type="reset"]:active:enabled, select:not([size]):active:enabled, select[size="1"]:active:enabled {
+	repeat:keep;
+	
 	background-color:#DCDCDC;
 	background-image:    -ms-linear-gradient(#D6D6D6, #E0E0E0);
 	background-image:     -o-linear-gradient(#D6D6D6, #E0E0E0);
@@ -123,6 +132,8 @@ button:active:not(:disabled), input[type="button"]:active:not(:disabled), input[
 }
 
 input[type="radio"] {
+	repeat:keep;
+	
 	-webkit-appearance:none;
 	     -o-appearance:none;
 	-webkit-border-radius:10px;
@@ -138,36 +149,55 @@ input[type="radio"] {
 	text-shadow:0px 1px 0px white;
 	color:#020202;
 }
-input[type="radio"]:hover:not(:disabled), input[type="radio"]:focus:not(:disabled) {
+input[type="radio"]:hover:enabled, input[type="radio"]:focus:enabled {
+	repeat:keep;
+	
 	background-color:#E8E8E8;
 	background:-o-linear-gradient(#F0F0F0, #E0E0E0);
 	background-image:-webkit-linear-gradient(#F0F0F0, #E0E0E0);
 }
 input[type="radio"]:checked {
+	repeat:keep;
+	
 	color:#404040;
 	text-shadow:0px 1px 0px white;
-	background:#E0E0E0 url(www/pics/styles/i3/radiodot-light.png) center center no-repeat;
+	background-color:#E0E0E0;
 	background-image:url(www/pics/styles/i3/radiodot-light.png), -webkit-linear-gradient(#E8E8E8, #D8D8D8);
+	background-image:url(www/pics/styles/i3/radiodot-light.png),      -o-linear-gradient(#E8E8E8, #D8D8D8);
+	background-image:url(www/pics/styles/i3/radiodot-light.png),         linear-gradient(#E8E8E8, #D8D8D8);
 }
-input[type="radio"]:checked:hover:not(:disabled), input[type="radio"]:checked:focus:not(:disabled) {
-	background:#E8E8E8 url(www/pics/styles/i3/radiodot-light.png) center center no-repeat;
+input[type="radio"]:checked:hover:enabled, input[type="radio"]:checked:focus:enabled {
+	repeat:keep;
+	
+	background-color:#E8E8E8;
 	background-image:url(www/pics/styles/i3/radiodot-light.png), -webkit-linear-gradient(#F0F0F0, #E0E0E0);
+	background-image:url(www/pics/styles/i3/radiodot-light.png),      -o-linear-gradient(#F0F0F0, #E0E0E0);
+	background-image:url(www/pics/styles/i3/radiodot-light.png),         linear-gradient(#F0F0F0, #E0E0E0);
 }
-input[type="radio"]:active:not(:disabled) {
+input[type="radio"]:active:enabled {
+	repeat:keep;
+	
 	background-color:#DCDCDC;
-	background:#DCDCDC url(www/pics/styles/i3/radiodot-light.png) center center no-repeat;
 	background-image:-webkit-linear-gradient(#D6D6D6, #E0E0E0);
+	background-image:     -o-linear-gradient(#D6D6D6, #E0E0E0);
+	background-image:        linear-gradient(#D6D6D6, #E0E0E0);
 	-webkit-box-shadow:inset 0px 1px 4px -1px rgba(0,0,0,0.3);
-	box-shadow:inset 0px 1px 4px -1px rgba(0,0,0,0.3);
+	        box-shadow:inset 0px 1px 4px -1px rgba(0,0,0,0.3);
 	border-color:rgba(0,0,0,0.2);
 	border-bottom-color:rgba(0,0,0,0.05);
 }
-input[type="radio"]:checked:active:not(:disabled) {
-	background:#DCDCDC url(www/pics/styles/i3/radiodot-light.png) center center no-repeat;
+input[type="radio"]:checked:active:enabled {
+	repeat:keep;
+	
+	background-color:#DCDCDC;
 	background-image:url(www/pics/styles/i3/radiodot-light.png), -webkit-linear-gradient(#D6D6D6, #E0E0E0);
+	background-image:url(www/pics/styles/i3/radiodot-light.png),      -o-linear-gradient(#D6D6D6, #E0E0E0);
+	background-image:url(www/pics/styles/i3/radiodot-light.png),         linear-gradient(#D6D6D6, #E0E0E0);
 }
 
 input[type="checkbox"] {
+	repeat:keep;
+	
 	-webkit-appearance:none;
 	     -o-appearance:none;
 	-webkit-border-radius:3px;
@@ -177,8 +207,9 @@ input[type="checkbox"] {
 	position:relative;
 	top:0px;
 	background-color:#E0E0E0;
-	background:-o-linear-gradient(#E8E8E8, #D8D8D8);
 	background-image:-webkit-linear-gradient(#E8E8E8, #D8D8D8);
+	background-image:     -o-linear-gradient(#E8E8E8, #D8D8D8);
+	background-image:        linear-gradient(#E8E8E8, #D8D8D8);
 	border-style:solid;
 	border-width:1px;
 	border-color:#D3D3D3;
@@ -186,33 +217,51 @@ input[type="checkbox"] {
 	text-shadow:0px 1px 0px white;
 	color:#020202;
 }
-input[type="checkbox"]:hover:not(:disabled), input[type="checkbox"]:focus:not(:disabled) {
+input[type="checkbox"]:hover:enabled, input[type="checkbox"]:focus:enabled {
+	repeat:keep;
+	
 	background-color:#E8E8E8;
-	background-image:-o-linear-gradient(#F0F0F0, #E0E0E0);
 	background-image:-webkit-linear-gradient(#F0F0F0, #E0E0E0);
+	background-image:     -o-linear-gradient(#F0F0F0, #E0E0E0);
+	background-image:        linear-gradient(#F0F0F0, #E0E0E0);
 }
 input[type="checkbox"]:checked {
-	background:#E0E0E0 url(www/pics/styles/i3/check-light.png) 1px 1px no-repeat;
+	repeat:keep;
+	
+	background-color:#E0E0E0;
 	background-image:url(www/pics/styles/i3/check-light.png), -webkit-linear-gradient(#E8E8E8, #D8D8D8);
+	background-image:url(www/pics/styles/i3/check-light.png),      -o-linear-gradient(#E8E8E8, #D8D8D8);
+	background-image:url(www/pics/styles/i3/check-light.png),         linear-gradient(#E8E8E8, #D8D8D8);
 	background-repeat:no-repeat;
 	background-position:1px 1px;
 }
-input[type="checkbox"]:checked:hover:not(:disabled), input[type="checkbox"]:checked:focus:not(:disabled) {
-	background:#E8E8E8 url(www/pics/styles/i3/check-light.png) 1px 1px no-repeat;
+input[type="checkbox"]:checked:hover:enabled, input[type="checkbox"]:checked:focus:enabled {
+	repeat:keep;
+	
+	background-color:#E8E8E8;
 	background-image:url(www/pics/styles/i3/check-light.png), -webkit-linear-gradient(#F0F0F0, #E0E0E0);
+	background-image:url(www/pics/styles/i3/check-light.png),      -o-linear-gradient(#F0F0F0, #E0E0E0);
+	background-image:url(www/pics/styles/i3/check-light.png),         linear-gradient(#F0F0F0, #E0E0E0);
 }
-input[type="checkbox"]:active:not(:disabled) {
+input[type="checkbox"]:active:enabled {
+	repeat:keep;
+	
 	background-color:#DCDCDC;
-	background:-o-linear-gradient(#D6D6D6, #E0E0E0);
 	background-image:-webkit-linear-gradient(#D6D6D6, #E0E0E0);
+	background-image:     -o-linear-gradient(#D6D6D6, #E0E0E0);
+	background-image:        linear-gradient(#D6D6D6, #E0E0E0);
 	-webkit-box-shadow:inset 0px 1px 4px -1px rgba(0,0,0,0.3);
 	        box-shadow:inset 0px 1px 4px -1px rgba(0,0,0,0.3);
 	border-color:rgba(0,0,0,0.2);
 	border-bottom-color:rgba(0,0,0,0.05);
 }
-input[type="checkbox"]:checked:active:not(:disabled) {
-	background:#DCDCDC url(www/pics/styles/i3/check-light.png) 1px 1px no-repeat;
+input[type="checkbox"]:checked:active:enabled {
+	repeat:keep;
+	
+	background-color:#DCDCDC;
 	background-image:url(www/pics/styles/i3/check-light.png), -webkit-linear-gradient(#D6D6D6, #E0E0E0);
+	background-image:url(www/pics/styles/i3/check-light.png),      -o-linear-gradient(#D6D6D6, #E0E0E0);
+	background-image:url(www/pics/styles/i3/check-light.png),         linear-gradient(#D6D6D6, #E0E0E0);
 }
 
 input:not([type]), input[type="text"], input[type="email"], input[type="search"], input[type="password"], textarea, select[size]:not([size="1"]) {
