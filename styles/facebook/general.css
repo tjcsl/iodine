@@ -30,14 +30,17 @@ a:active {
 	text-decoration:underline;
   }
 
-button, input[type="button"], input[type="submit"], select {
+button, input[type="button"], input[type="submit"], input[type="reset"], select {
+	repeat:keep;
+	
 	background-color:#F7F8F8;
-filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#F7F8F8', endColorstr='#E4E4E3',GradientType=0 );
-	background:-webkit-linear-gradient(#F7F8F8, #E4E4E3);
-	background-image:-moz-linear-gradient(top, #F7F8F8, #E4E4E3);
-	background-image:-ms-linear-gradient(#F7F8F8, #E4E4E3);
-	background-image:linear-gradient(#F7F8F8, #E4E4E3);
-	background-image:-moz-linear-gradient(top, #F7F8F8, #E4E4E3);
+	background-image:-webkit-linear-gradient(#F7F8F8, #E4E4E3);
+	background-image:   -moz-linear-gradient(#F7F8F8, #E4E4E3);
+	background-image:    -ms-linear-gradient(#F7F8F8, #E4E4E3);
+	background-image:     -o-linear-gradient(#F7F8F8, #E4E4E3);
+	background-image:        linear-gradient(#F7F8F8, #E4E4E3);
+	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F7F8F8', endColorstr='#E4E4E3', GradientType=0);
+	-ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr='#F7F8F8', endColorstr='#E4E4E3', GradientType=0)";
 
 	border-style:solid;
 	border-width:1px;
