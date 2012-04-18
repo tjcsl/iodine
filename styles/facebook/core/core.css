@@ -46,6 +46,7 @@
 	left:292px;
 	right:10px;
 /*	height:30px;*/
+	width:auto; /* overrides default */
 	text-align: right;
 
 	background-color:#627AAD;
