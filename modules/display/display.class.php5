@@ -169,9 +169,11 @@ class Display {
 						$title = FALSE;
 					}
 					else {
-						$timetest=microtime();
+						$timestart=explode(" ",microtime());
+						d("entering $module pane initialization at ".($timestart[1]+$timestart[0]),'P');
 						$title = $mod->init_pane();
-						d(number_format(microtime()-$timetest,6)." seconds to initialize $module pane",'P');
+						$timeend=explode(" ",microtime());
+						d((($timeend[1]-$timestart[1])+($timeend[0]-$timestart[0]))." seconds to initialize $module pane",'P');
 					}
 				} catch( Exception $e ) {
 					$this->global_header('Error');
@@ -206,9 +208,11 @@ class Display {
 							$this->open_content_pane(array('title' => htmlspecialchars($title[1])),$nagging);
 						}
 						try {
-							$timetest=microtime();
+							$timestart=explode(" ",microtime());
+							d("entering $module pane display call at ".($timestart[1]+$timestart[0]),'P');
 							$mod->display_pane($disp);
-							d(number_format(microtime()-$timetest,6)." seconds to display $module pane",'P');
+							$timeend=explode(" ",microtime());
+							d((($timeend[1]-$timestart[1])+($timeend[0]-$timestart[0]))." seconds to display $module pane",'P');
 						} catch (Exception $e) {
 							/* Make sure to close the content pane*/
 							if ($display_chrome || $nagging) {

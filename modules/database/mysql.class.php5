@@ -69,7 +69,6 @@ class MySQL {
 	*/
 	const TAGS_NOARG = 'rV%';
 		
-	
 	/**
 	* The MySQL class constructor.
 	* 
