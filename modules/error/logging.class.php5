@@ -198,11 +198,11 @@ class Logging {
 			}
 		} else {
 			if ($level == 'P' && $this->debug_profile)
-			if ($this->screen_debug) {
-				$this->log_screen('Level '.$level.' debug: '.$msg);
-			} else {
-				$this->log_file($msg,$level);
-			}
+				if ($this->screen_debug) {
+					$this->log_screen('Level '.$level.' debug: '.$msg);
+				} else {
+					$this->log_file($msg,$level);
+				}
 		}
 	}
 

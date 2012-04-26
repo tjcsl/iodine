@@ -100,7 +100,7 @@ class Display {
 		$this->buffer = '';
 		$this->buffering = TRUE;
 
-      self::style_set();
+		self::style_set();
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Display {
 	* pretty much all processing done outside of core.
 	*
 	* @param string $module The name of the module to display in the main
-	*                panel and give processing control to.
+	*					 panel and give processing control to.
 	*/
 	public function display_loop($module) {
 		global $I2_ERR,$I2_USER,$I2_ARGS,$I2_LOG,$I2_SQL;
@@ -267,26 +267,26 @@ class Display {
 		d('Style changed, is now: '.self::$style,7);
 	}
 
-    /**
-    * Initially set the style, if required.
-    */
-    public static function style_set() {
-        global $I2_USER;
-        if (self::$style == NULL) {
-           if (isSet($I2_USER)) {
-                 $I2_USER->recache('style');
-                 self::$style = ($I2_USER->style);
-           }
-           else {
-                 self::$style = 'default';
-           }
-           d('Style set to '.self::$style,7);
-        }
-        else
-        {
-           d('The style is already set and will not be reset');
-        }
-    }
+	 /**
+	 * Initially set the style, if required.
+	 */
+	 public static function style_set() {
+		  global $I2_USER;
+		  if (self::$style == NULL) {
+			  if (isSet($I2_USER)) {
+					  $I2_USER->recache('style');
+					  self::$style = ($I2_USER->style);
+			  }
+			  else {
+					  self::$style = 'default';
+			  }
+			  d('Style set to '.self::$style,7);
+		  }
+		  else
+		  {
+			  d('The style is already set and will not be reset');
+		  }
+	 }
 
 
 	/**
@@ -530,7 +530,7 @@ class Display {
 	* found.
 	*
 	* @returns mixed The absolute filename as a string if the template was
-	*                found, NULL otherwise.
+	*		 found, NULL otherwise.
 	*/
 	public static function get_template($tpl) {
 		$path = self::$tpl_root . $tpl;
