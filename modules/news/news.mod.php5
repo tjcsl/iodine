@@ -243,6 +243,7 @@ class News implements Module {
 				//$item->text = stripslashes($item->text);
 				$item->text = htmlspecialchars_decode($item->text);
 				$item->text = preg_replace('/<br\\s*?\/??>/i', "\n", $item->text);
+				// To fix highlighting in vim, since it thinks we just closed the tag: <?php
 				$this->template_args['newsitem'] = $item;
 				return 'Edit News Post';
 				

@@ -26,6 +26,16 @@ class GroupSQL extends Group {
 	private static $name_map = NULL;
 
 	/**
+	* Dynamic rules mapping
+	*/
+	private static $rules_map = NULL;
+
+	/**
+	* Membership list cache
+	*/
+	private static $members_cache = NULL;
+
+	/**
 	* Group info cache
 	*/
 	private $info = array();
@@ -48,6 +58,14 @@ class GroupSQL extends Group {
 			 while ($row = $res->fetch_array(Result::ASSOC)) {
 			 	self::$gid_map[$row['name']] = $row['gid'];
 				self::$name_map[$row['gid']] = $row['name'];
+			 }
+			 self::$rules_map = array();
+			 $res = $I2_SQL->query('SELECT dbtype, query, gid FROM groups_dynamic');
+			 while ($row = $res->fetch_array(Result::ASSOC)) {
+			 	if(!isset(self::$rules_map[$row['gid']])) {
+					self::$rules_map[$row['gid']]=array();
+				}
+			 	self::$rules_map[$row['gid']][]= array('dbtype'=>$row['dbtype'],'query'=>$row['query']);
 			 }
 		}
 
@@ -122,14 +140,19 @@ class GroupSQL extends Group {
 
 	public function get_static_members() {
 		global $I2_SQL;
-		return flatten($I2_SQL->query('SELECT uid FROM groups_static WHERE gid=%d',$this->gid)->fetch_all_arrays(Result::NUM));
+		if(!isset(self::$members_cache[$this->gid]))
+			self::$members_cache[$this->gid]=flatten($I2_SQL->query('SELECT uid FROM groups_static WHERE gid=%d',$this->gid)->fetch_all_arrays(Result::NUM));
+		return self::$members_cache[$this->gid];
 	}
 
 	public function get_dynamic_members() {
 		global $I2_SQL, $I2_LDAP;
-		$res = $I2_SQL->query('SELECT dbtype, query FROM groups_dynamic WHERE gid=%d', $this->gid);
+		//$res = $I2_SQL->query('SELECT dbtype, query FROM groups_dynamic WHERE gid=%d', $this->gid);
+		if(!isset(self::$rules_map[$this->gid]))
+			return array();
+		$list = self::$rules_map[$this->gid];
 		$members = array();
-		foreach ($res as $row) {
+		foreach ($list as $row) {
 			switch ($row['dbtype']) {
 			case 'LDAP':
 				$rulemembers = $I2_LDAP->search(LDAP::get_user_dn(),$row['query'],array('iodineUidNumber'))->fetch_col('iodineUidNumber');
@@ -399,10 +422,13 @@ class GroupSQL extends Group {
 			}
 
 			// Check dynamic groups
-			$dynamic = $I2_SQL->query('SELECT dbtype,query FROM groups_dynamic WHERE gid=%d', $this->gid);
-			foreach($dynamic as $group) {
-				if(self::is_dynamic_member($group['dbtype'], $group['query'], $subject)) {
-					return TRUE;
+			if(isset(self::$rules_map[$this->gid])) {
+				$list = self::$rules_map[$this->gid];
+				//$dynamic = $I2_SQL->query('SELECT dbtype,query FROM groups_dynamic WHERE gid=%d', $this->gid);
+				foreach($list as $group) {
+					if(self::is_dynamic_member($group['dbtype'], $group['query'], $subject)) {
+						return TRUE;
+					}
 				}
 			}
 
@@ -460,7 +486,11 @@ class GroupSQL extends Group {
 		global $I2_SQL;
 
 		$ret = array();
-		foreach($I2_SQL->query('SELECT dbtype,query FROM groups_dynamic WHERE gid=%d', $this->gid) as $row) {
+		if(!isset(self::$rules_map[$this->gid]))
+			return array();
+		$list = self::$rules_map[$this->gid];
+		//foreach($I2_SQL->query('SELECT dbtype,query FROM groups_dynamic WHERE gid=%d', $this->gid) as $row) {
+		foreach($list as $row) {
 			$arr['type'] = $row['dbtype'];
 			$arr['query'] = $row['query'];
 
@@ -509,16 +539,28 @@ class GroupSQL extends Group {
 			}
 		}
 
-		$res = $I2_SQL->query('SELECT gid, dbtype, query FROM groups_dynamic');
-		foreach ($res as $row) {
-			if (self::is_dynamic_member($row['dbtype'], $row['query'], $user)) {
-				$grp = new Group($row['gid']);
-				$ret[] = $grp;
-				if (is_array($perms)) {
-					foreach ($perms as $perm) {
-						if (!$grp->has_permission($user, $perm)) {
-							array_pop($ret);
-							break;
+		//$res = $I2_SQL->query('SELECT gid, dbtype, query FROM groups_dynamic');
+		if(!isset(self::$rules_map)) {
+			 self::$rules_map = array();
+			 $res = $I2_SQL->query('SELECT dbtype, query, gid FROM groups_dynamic');
+			 while ($row = $res->fetch_array(Result::ASSOC)) {
+			 	if(!isset(self::$rules_map[$row['gid']])) {
+					self::$rules_map[$row['gid']]=array();
+				}
+			 	self::$rules_map[$row['gid']][]= array('dbtype'=>$row['dbtype'],'query'=>$row['query']);
+			 }
+		}
+		foreach (self::$rules_map as $gid=>$rowset) {
+			foreach($rowset as $row) {
+				if (self::is_dynamic_member($row['dbtype'], $row['query'], $user)) {
+					$grp = new Group($gid);
+					$ret[] = $grp;
+					if (is_array($perms)) {
+						foreach ($perms as $perm) {
+							if (!$grp->has_permission($user, $perm)) {
+								array_pop($ret);
+								break;
+							}
 						}
 					}
 				}
@@ -667,6 +709,7 @@ class GroupSQL extends Group {
 	private static function is_dynamic_member($dbtype, $query, User $user) {
 		global $I2_LDAP, $I2_SQL;
 
+		$res;
 		switch ($dbtype) {
 			case 'PHP':
 				return eval($query);
@@ -678,6 +721,7 @@ class GroupSQL extends Group {
 				break;
 		}
 
+		//Sends up a warning
 		if($res->num_rows() < 1) {
 			// Nobody is in that group, so... this person certainly is not
 			return FALSE;
