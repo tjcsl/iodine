@@ -274,30 +274,18 @@ class NewsItem {
 			$groupstring .= $group->name . ", ";
 		$groupstring = substr($groupstring, 0,-2);
 		$subj = "[Iodine-news] ".strip_tags($title);
-		$separator = "MAIL-" . md5(date("r",time()));
-		$headers = "From: " . i2config_get('news', 'intranet-news@tjhsst.edu', 'suggestion') . "\r\n";
-		//We had some problems with people's vacation messages replying to alerts.
-		$headers .= "Reply-To: " . i2config_get('news', 'intranet-news@tjhsst.edu', 'suggestion') . "\r\n";
-		$headers .= "Content-Type: multipart/alternative; boundary=\"" . $separator . "\"";
+		
 		$messagecontents = "Posted by " . $author->fullname . " to " . $groupstring . ":\r\n\r\n" . $text ."<br /><br />-----------------------------------------<br />Automatically sent by the Iodine news feed. Do not reply to this email.";
-		$message = "--" . $separator . "\r\nContent-Type: text/plain; charset=\"iso-8859-1\"\r\n";
-		$message .= strip_tags($messagecontents);
-		$message .= "\r\n--" . $separator . "\r\nContent-Type: text/html; charset=\"iso-8859-1\"\r\n";
-		$message .= $messagecontents;
 
 		// Check permissions and send mail
 		$news = new NewsItem($nid);
 		foreach($I2_SQL->query('SELECT * FROM news_forwarding')->fetch_all_arrays() as $target) {
 			$user = new User($target[0]);
 			if($news->readable($user)) {
-				if(gettype($user->mail)=="array") {
-					foreach($user->mail as $mail)
-						mail($mail,$subj,$message,$headers);
-				} else {
-					mail($user->mail,$subj,$message,$headers);
-				}
+				i2_mail($user->mail,$subj,$messagecontents, true);
 			}
 		}
+
 		// Update the feeds.
 		Feeds::update();
 		//Post to Twitter.

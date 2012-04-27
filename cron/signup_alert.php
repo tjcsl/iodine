@@ -45,25 +45,11 @@ foreach($I2_SQL->query($userquery)->fetch_all_single_values() as $id) {
 	if(!$notsigned)
 		continue;
 	// Mail out the news post to any users who have subscribed to the news and can read it.
-	$headers = "From: " . i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion') . "\r\n";
-
-	$headers .= "Content-Type: multipart/alternative; boundary=\"" . $separator . "\"";
-	$messagecontents = "As of the time that this message is being sent, you have not signed up for one or more eighth periods on $date.\r\n";
-	$message = "--" . $separator . "\r\nContent-Type: text/plain; charset=\"iso-8859-1\"\r\n";
-	$message .= strip_tags($messagecontents);
-	$message .= "\r\n--" . $separator . "\r\nContent-Type: text/html; charset=\"iso-8859-1\"\r\n";
-	$message .= $messagecontents;
-
+	// Use the i2_mail library function
 	$user = new User($id);
-	if(gettype($user->mail)=="array") {
-		foreach($user->mail as $mail) {
-			//echo $mail."\r\n";
-			mail($mail,$subj,$message,$headers);
-		}
-	} else {
-		//echo $user->mail."\r\n";
-		mail($user->mail,$subj,$message,$headers);
-	}
+	
+	i2_mail($user->mail, $subj, "As of the time that this message is being sent, you have not signed up for one or more eighth periods on $date.\r\n");
+
 }
 //echo "Finished. Closing...";
 ?>

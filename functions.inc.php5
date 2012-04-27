@@ -330,4 +330,49 @@ function tempname($prefix, $suffix='') {
 	return $file;
 }
 
+
+/**
+* Sends a multipart (HTML/txt) eMail with an I2 From: address and various headers set to prevent
+* message bounceback. Note that sending a message to multiple To: addresses will result in multiple
+* emails rather than one to multiple recipients (ie. not To: all of them)
+*
+* @param $to The address to send the mail to; can be an array, in which case it will send to all
+* @param $subject The message subject
+* @param $message_content The message - can be html
+*/
+function i2_mail($to, $subject, $message_content, $news=false) {
+	$date = date("r",time());
+	$separator = "--MAIL-" . md5($message_content."_".$to."_".$date);	
+
+	$from = "TJHSST Intranet <".i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion').">";
+	if($news)
+		$from =  "TJHSST Intranet News <".i2config_get('news', 'intranet-news@tjhsst.edu', 'suggestion').">";
+
+	// required headers
+	$headers =  "From: " . $from . "\r\n";
+	$headers .= "Date: " . $date . "\r\n";
+
+	// bounceback prevention headers
+	$headers .= "Precedence: list\r\n";			// de facto standard (could also be 'bulk')
+	$headers .= "Auto-Submitted: auto-generated\r\n";	// RFC3834
+	$headers .= "X-Auto-Response-Suppress: OOF, AutoReply\r\n"; // Microsoft Exchange
+
+	// multipart content headers
+	$headers .= "Content-Type: multipart/alternative; boundary=\"" . $separator . "\"\r\n";
+	
+	$message = "--" . $separator . "\r\nContent-Type: text/plain; charset=\"UTF-8\"\r\n\r\n";
+	$message .= strip_tags($message_content);
+	$message .= "\r\n--" . $separator . "\r\nContent-Type: text/html; charset=\"UTF-8\"\r\n\r\n";
+	$message .= $message_content;
+	$message .= "\r\n--".$separator."--"; // end with separator, make amavis happy
+
+	if(gettype($to)=="array") {
+		foreach($to as $mail) {
+			mail($mail,$subject,$message,$headers);
+		}
+	} else if($to) {
+		mail($to,$subject,$message,$headers);
+	}	// if there's no $to... well, derp?
+}
+
 ?>
