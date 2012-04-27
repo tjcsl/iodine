@@ -28,6 +28,8 @@ if (date("H") == 11 && date("i") >= 28 && $date == date("Y-m-d")) {
 $separator = "MAIL-" . md5(date("r",time()));
 $def_aid=i2config_get('default_aid', 999, 'eighth');
 
+$message = "As of the time that this message is being sent, you have not signed up for one or more eighth periods on $date.<br />\r\n<br />\r\n-----------------------------------------<br />\r\nAutomatically sent by the TJHSST Intranet. Do not reply to this email. To unsubscribe from these messages, unselect the eighth period notification options in your Iodine preferences. If you are not a TJHSST student and believe that you are receiving this message in error, contact intranet@tjhsst.edu for assistance.";
+
 foreach($I2_SQL->query($userquery)->fetch_all_single_values() as $id) {
 	//echo $id."\r\n";
 	try {
@@ -47,8 +49,8 @@ foreach($I2_SQL->query($userquery)->fetch_all_single_values() as $id) {
 	// Mail out the news post to any users who have subscribed to the news and can read it.
 	// Use the i2_mail library function
 	$user = new User($id);
-	
-	i2_mail($user->mail, $subj, "As of the time that this message is being sent, you have not signed up for one or more eighth periods on $date.\r\n");
+
+	i2_mail($user->mail, $subj, $message);
 
 }
 //echo "Finished. Closing...";
