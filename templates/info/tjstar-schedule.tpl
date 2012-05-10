@@ -503,7 +503,7 @@
 
 	Title: The Comparison of Macroinvertebrate Biodiversity in Constructed vs. Natural Vernal Pools<br>
 	Speaker: Teja Sathi, Sriram Iyer, Eileen Zheng, and Anirudh Sharma <br>
-	This presentation invertigates the variation of macroinvertebrates in natural and constructed vernal pools.<br><br>
+	This presentation investigates the variation of macroinvertebrates in natural and constructed vernal pools.<br><br>
 
 	Title: The Effect of Soil Temperature on the Migration Patterns of Ambystoma maculatum<br>
 	Speaker: Albert Chuang, Brian Li, Jason Hu, and Harshal Jariwala<br>
@@ -1142,7 +1142,10 @@
 	Panelist: Alex Mohrman, Michael Sheaffer<br><br>
 
 	Title: Biogas Reactor <br>
-	Panelist: Robert Wharton</td>
+	Panelist: Robert Wharton<br><br>
+	
+	Title: Computer Security Competition Club<br>
+	Panelist: Jay Hebert, Hassan Almas</td>
 		<td style="vertical-align: top; border:1px solid #aaa;">A</td>
 		<td style="vertical-align: top; border:1px solid #aaa;">One Question Grant Winners</td>
 		<td style="vertical-align: top; border:1px solid #aaa;">212</td>
@@ -1254,7 +1257,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">Dr. Alan Tessier<br>
 	Program Director<br>
 	National Science Foundation</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">122</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">121</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -1843,7 +1846,7 @@
 	Dr. Daniel Eleuterio <br>
 	Program Officers<br>
 	Naval Oceanographic Research</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">121</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">224</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -1854,7 +1857,7 @@
 	Dr. Daniel Eleuterio <br>
 	Program Officers<br>
 	Naval Oceanographic Research</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">121</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">224</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -2279,19 +2282,14 @@
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">Proteomics to Investigate Host-pathogen Interactions</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">An infectious disease manifests itself when a pathogen successfully invades a host organism. The disease is not only described by the pathogen and how it affects the host (for example humans) but also by the response of the host. We will
-	 discuss principles of gastro-intestinal tract (GI tract) infections, such as recognition of the pathogen by the host, survival of the pathogen, and inflammatory responses by the host. The example is enterohemorhagic Escherichia coli (the bacterium that caused
-	 hundreds of life-threatening infections in Europe last year due to food contamination), and the research methods we use are those based on proteomics.
+		<td style="vertical-align: top; border:1px solid #aaa;">Studying the Complex Biological Systems</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">The science of complex biological networks is transforming research in areas ranging from evolutionary biology to medicine. The presentation aims to provide an introduction to network biology and its biological applications. We will discuss the research methods used to characterize macromolecular interactions of model organisms and host-pathogen interactions to understand the complex biological systems that are increasingly foundational for systems biology and understanding of living systems.
 	<br><br>
-
-	About Dr. Pieper: Dr. Pieper is an Associate Professor for Biochemistry at the J. Craig Venter Institute in Rockville, Maryland. He has previously worked in Germany, at Stanford University in California and at the National Institutes of Health in Maryland.
-	 His primary research interests are infectious diseases and disease biomarker discovery. His laboratory uses a high-tech instrument platform that is used in many different fields of biology, chemistry, pharmacology and clinical medicine (it is called mass spectrometry).
-	 He occassionally gives lectures or workshops at colleges and high schools.</td>
+	About Dr. Rajagopala: Dr. Rajagopala is a Staff Scientist at the J. Craig Venter Institute in Rockville, Maryland. He has previously worked in Germany, and obtained Ph.D. from the University of Heidelberg, Germany in 2006. His primary research interest is to use and develop high-throughput technologies to characterize the protein-protein interaction maps (interactome maps). The interactomes are an indispensible tool for systems biology and aid understanding of signaling pathways and biological networks. By using advanced high throughput technologies (yeast-two-hybrid), we comprehensively describe all protein-protein interactions of several model organisms (E. coli, lambda phage) and host-pathogen macromolecular interactions (example Herpesviral-human).</td>
 		<td style="vertical-align: top; border:1px solid #aaa;">C</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">Dr. Rembert Pieper<br>
-	Associate Professor, Biochemistry<br>
-	The J. Craig Venter Institute</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">Dr. Rajagopala Venkatappa<br>
+		Staff Scientist<br>
+		The J. Craig Venter Institute</td>
 		<td style="vertical-align: top; border:1px solid #aaa;">226</td>
 	</tr>
 	<tr>
@@ -3003,7 +3001,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">Mrs. Shelly Hynes<br>
 	Albert Einstein Distinguished Educator Fellow<br>
 	National Science Foundation Office of Polar Programs</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">121</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">219</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -3214,7 +3212,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">Ms. Sasha Denisin, in conjunction with Dr. Preston Fulmer, Research Microbiologist, Naval Research Lab<br>
 	Ph.D. Graduate Student<br>
 	University of California Berkeley</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">121</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">209</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -3228,7 +3226,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">Ms. Sasha Denisin, in conjunction with Dr. Preston Fulmer, Research Microbiologist, Naval Research Lab<br>
 	Ph.D. Graduate Student<br>
 	University of California Berkeley</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">121</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">209</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -3282,7 +3280,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;" >Dr. Sam Shekar<br>
 	Chief Medical Officer<br>
 	Northrop Grumman Information Systems</td>
-		<td style="vertical-align: top; border:1px solid #aaa;" >121</td>
+		<td style="vertical-align: top; border:1px solid #aaa;" >219</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Senior Research Presentation</td>
@@ -3673,7 +3671,9 @@
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Senior Research Presentation</td>
 		<td style="vertical-align: top; border:1px solid #aaa;">Biotechnology B128</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">Speaker: Christina Lee<br>
+		<td style="vertical-align: top; border:1px solid #aaa;">
+		Title: Estrogen's Role in Intestinal Tumor Growth in Irradiated Mice<br>
+		Speaker: Christina Lee<br>
 	Radiation can increase cancer risk and induce tumorigenesis through high-energy rays that can damage DNA molecules, and detrimentally affect the immune system. Previous research has shown that gamma radiation induces tumors in the gastrointestinal region,
 	 and that there may be tumor count differences between the two sexes. Using model mice, I am researching if there is an estrogen-dependent difference between males and females, and to use this information for future pharmaceutical studies that can prevent tumor
 	 growth.<br><br>
