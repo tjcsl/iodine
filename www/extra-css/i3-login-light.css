@@ -1,0 +1,40 @@
+@charset "UTF-8";
+
+.pane {
+	background-color:#F0F0F0;
+	background-color:rgba(240,240,240,0.8);
+	background:-webkit-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.8) 256px);
+	background:   -moz-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.8) 256px);
+	background:    -ms-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.8) 256px);
+	background:     -o-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.8) 256px);
+	background:        linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.8) 256px);
+	
+	-webkit-box-shadow:0px 0px 4px 2px rgba(0,0,0,0.75);
+	   -moz-box-shadow:0px 0px 4px 2px rgba(0,0,0,0.75);
+	        box-shadow:0px 0px 4px 2px rgba(0,0,0,0.75);
+}
+
+#logo {
+	color:#020202;
+	background-image:url(../pics/styles/i3/logo-light.png);
+	background-repeat:no-repeat;
+}
+
+.box {
+	background-color:white;
+	-webkit-box-shadow:0px 0px 4px 4px white;
+	   -moz-box-shadow:0px 0px 4px 4px white;
+	        box-shadow:0px 0px 4px 4px white;
+}
+
+@media (max-width:645px) {
+	#mainPane {
+		background-color:#F0F0F0;
+		background-color:rgba(240,240,240,0.8);
+		background-image:-webkit-linear-gradient(rgba(255,255,255,0.8), rgba(240,240,240,0.8));
+		background-image:   -moz-linear-gradient(rgba(255,255,255,0.8), rgba(240,240,240,0.8));
+		background-image:    -ms-linear-gradient(rgba(255,255,255,0.8), rgba(240,240,240,0.8));
+		background-image:     -o-linear-gradient(rgba(255,255,255,0.8), rgba(240,240,240,0.8));
+		background-image:        linear-gradient(rgba(255,255,255,0.8), rgba(240,240,240,0.8));
+	}
+}
