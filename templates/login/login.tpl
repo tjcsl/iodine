@@ -86,10 +86,17 @@
 	<div class="pane" id="subPane">
 		<div id="schedule">
 			<h2>Today's Schedule</h2>
-			<p></p>
+			<p>[<$schedule.description>]</p>
 			<table>
+				[<foreach from=$schedule.schedule item=block>]
+				<tr>
+					<td>[<$block.pd>]</td>
+					<td>[<$block.starttime>]-[<$block.endtime>]</td>
+				</tr>
+				[</foreach>]
 			</table>
 		</div>
+		<br />
 		<ul id="links">
 			<li><a href="http://www.tjhsst.edu" target="_blank">TJHSST</a></li>
 			<li><a href="https://webmail.tjhsst.edu" target="_blank">Mail</a></li>

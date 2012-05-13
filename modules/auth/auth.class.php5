@@ -354,6 +354,12 @@ class Auth {
 					'uname' => $uname,
 					'bg' => $image,
 					'bgjs' => $imagejs);
+			
+			// Schedule data
+			$schedule = self::getSchedule();
+			
+			$template_args['schedule'] = $schedule;
+			
 			// Save any post data that we get and pass it to the html. (except for a password field)
 			$str="";
 			foreach (array_keys($_POST) as $post) {
@@ -370,13 +376,13 @@ class Auth {
 			$disp = new Display('login');
 			if(isset($I2_ARGS[1]) && $I2_ARGS[1]=='api') {
 				$disp->disp('login_api.tpl', $template_args);
-		} else {
-			$disp->disp('login.tpl', $template_args);
-		}
-		//$disp->disp('fb.tpl', $template_args); 
-		//$disp->disp('windows.tpl', $template_args); 
+			} else {
+				$disp->disp('login.tpl', $template_args);
+				//$disp->disp('fb.tpl', $template_args);
+				//$disp->disp('windows.tpl', $template_args);
+			}
 
-		return FALSE;
+			return FALSE;
 	}
 	
 	/**
@@ -483,7 +489,93 @@ class Auth {
 			}
 		}
 	}
-
+	
+	/**
+	* Checks for a special modified schedule and returns it
+	* no special schedule, returns the default schedule for the day
+	*
+	* @return array An array containing the description of the modified schedule and the schedule array itself
+	*/
+	private static function getSchedule() {
+		global $I2_SQL;
+		
+		$today = mktime(0, 0, 0, date("m"), date("d"), date("y"));
+		//$tomorrow = mktime(0, 0, 0, date("m"), date("d") + 1, date("y"));
+		$day = date("N");
+		
+		$rows = $I2_SQL->query('SELECT * FROM special_schedules');
+		foreach ($rows as $specialSchedule) {
+			if (strtotime($specialSchedule['date']) == $today) {//$specialSchedule['date'] >= $today && strtotime($specialSchedule['date']) < $tomorrow) {
+				return array(
+					'description' => $specialSchedule['description'],
+					'schedule' => unserialize($specialSchedule['schedule'])
+				);
+			}
+		}
+		
+		$normalSchedules = array(
+			'anchor' => array(
+				array('pd' => 'Period 1', 'starttime' =>  '8:30', 'endtime' =>  '9:15'),
+				array('pd' => 'Period 2', 'starttime' =>  '9:25', 'endtime' => '10:05'),
+				array('pd' => 'Period 3', 'starttime' => '10:15', 'endtime' => '10:55'),
+				array('pd' => 'Period 4', 'starttime' => '11:05', 'endtime' => '11:45'),
+				array('pd' => 'Lunch',    'starttime' => '11:45', 'endtime' => '12:35'),
+				array('pd' => 'Period 5', 'starttime' => '12:35', 'endtime' =>  '1:15'),
+				array('pd' => 'Period 6', 'starttime' =>  '1:25', 'endtime' =>  '2:05'),
+				array('pd' => 'Period 7', 'starttime' =>  '2:15', 'endtime' =>  '2:55'),
+				array('pd' => 'Break',    'starttime' =>  '2:55', 'endtime' =>  '3:10'),
+				array('pd' => 'Period 8', 'starttime' =>  '3:10', 'endtime' =>  '3:50')
+			),
+			'blue' => array(
+				array('pd' => 'Period 1', 'starttime' =>  '8:30', 'endtime' => '10:05'),
+				array('pd' => 'Period 2', 'starttime' => '10:15', 'endtime' => '11:45'),
+				array('pd' => 'Lunch',    'starttime' => '11:45', 'endtime' => '12:30'),
+				array('pd' => 'Period 3', 'starttime' => '12:30', 'endtime' =>  '2:05'),
+				array('pd' => 'Break',    'starttime' =>  '2:05', 'endtime' =>  '2:20'),
+				array('pd' => 'Period 4', 'starttime' =>  '2:20', 'endtime' =>  '3:50')
+			),
+			'red' => array(
+				array('pd' => 'Period 5', 'starttime' =>  '8:30', 'endtime' => '10:05'),
+				array('pd' => 'Period 6', 'starttime' => '10:15', 'endtime' => '11:45'),
+				array('pd' => 'Lunch',    'starttime' => '11:45', 'endtime' => '12:30'),
+				array('pd' => 'Period 7', 'starttime' => '12:30', 'endtime' =>  '2:05'),
+				array('pd' => 'Break',    'starttime' =>  '2:05', 'endtime' =>  '2:20'),
+				array('pd' => 'Period 8A', 'starttime' =>  '2:20', 'endtime' =>  '3:00'),
+				array('pd' => 'Period 8B', 'starttime' =>  '3:10', 'endtime' =>  '3:50')
+			),
+			'lightblue' => array(
+				array('pd' => 'JLC',      'starttime' =>  '8:30', 'endtime' =>  '8:55'),
+				array('pd' => 'Period 1', 'starttime' =>  '9:00', 'endtime' => '10:28'),
+				array('pd' => 'Period 2', 'starttime' => '10:37', 'endtime' => '12:05'),
+				array('pd' => 'Lunch',    'starttime' => '12:05', 'endtime' => '12:45'),
+				array('pd' => 'Period 3', 'starttime' => '12:45', 'endtime' =>  '2:13'),
+				array('pd' => 'Break',    'starttime' =>  '2:13', 'endtime' =>  '2:22'),
+				array('pd' => 'Period 4', 'starttime' =>  '2:22', 'endtime' =>  '3:50')
+			)
+		);
+		if($day == 1) {
+			return array(
+				'description' => "Anchor day",
+				'schedule' => $normalSchedules['anchor']
+			);
+		} else if($day == 2 || $day == 4) {
+			return array(
+				'description' => "Blue day",
+				'schedule' => $normalSchedules['blue']
+			);
+		} else if($day == 3 || $day == 5) {
+			return array(
+				'description' => "Red day",
+				'schedule' => $normalSchedules['red']
+			);
+		} else {
+			return array(
+				'description' => "No school",
+				'schedule' => array()
+			);
+		}
+	}
+	
 	/**
 	 * Log the login (attempt)
 	 *
