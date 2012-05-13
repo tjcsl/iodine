@@ -503,9 +503,20 @@ class Auth {
 		//$tomorrow = mktime(0, 0, 0, date("m"), date("d") + 1, date("y"));
 		$day = date("N");
 		
+		
+		// Notes about special schedules stored in the database:
+		// The date and description are pretty simple--the date is a
+		// string that can be parsed by PHP's strtotime function and
+		// the description is just some string.  The actual schedule
+		// should be created as a PHP array and then stored using the
+		// serialize() function.  It then gets unserialized before it is
+		// returned (see the return statement in the foreach loop below).
+		// See the array of normalSchedules below to see how schedule
+		// arrays should be formatted.
+		
 		$rows = $I2_SQL->query('SELECT * FROM special_schedules');
-		foreach ($rows as $specialSchedule) {
-			if (strtotime($specialSchedule['date']) == $today) {//$specialSchedule['date'] >= $today && strtotime($specialSchedule['date']) < $tomorrow) {
+		foreach($rows as $specialSchedule) {
+			if(strtotime($specialSchedule['date']) == $today) {//$specialSchedule['date'] >= $today && strtotime($specialSchedule['date']) < $tomorrow) {
 				return array(
 					'description' => $specialSchedule['description'],
 					'schedule' => unserialize($specialSchedule['schedule'])
