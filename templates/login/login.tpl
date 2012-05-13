@@ -73,14 +73,16 @@
 		<br />
 		<br />
 		
-		<div id="verisign_box" class="box">
-			<table width="100" border="0" cellpadding="2" cellspacing="0" title="Click to Verify - This site chose VeriSign SSL for secure confidential communications.">
-				<tr>
-					<td width="100" align="center" valign="top">
-						<script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=iodine.tjhsst.edu&amp;size=S&amp;use_flash=NO&amp;use_transparent=YES&amp;lang=en"></script><br/>
-					</td>
-				</tr>
-			</table>
+		<div style="text-align:center;">
+			<div id="verisign_box" class="box">
+				<table width="100" border="0" cellpadding="2" cellspacing="0" title="Click to Verify - This site chose VeriSign SSL for secure confidential communications.">
+					<tr>
+						<td width="100" align="center" valign="top">
+							<script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=iodine.tjhsst.edu&amp;size=S&amp;use_flash=NO&amp;use_transparent=YES&amp;lang=en"></script><br/>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 	</div>
 	<div class="pane" id="subPane">
@@ -116,7 +118,7 @@
 			chromeBox.className = "box";
 			chromeBox.style.padding = "4px";
 			
-			chromeBox.innerHTML = "<img src=\"[<$I2_ROOT>]www/pics/chrome_icon_32.png\" style=\"float:left; margin-right:4px;\" alt=\"Google Chrome logo\"/>Install the TJ Intranet app for Chrome";
+			chromeBox.innerHTML = "<img src=\"[<$I2_ROOT>]www/pics/chrome_icon_42.png\" style=\"float:left; margin-right:4px;\" alt=\"Google Chrome logo\"/>Install the TJ Intranet app for Chrome";
 
 			chromeLink.appendChild(chromeBox);
 			document.getElementById("mainPane").appendChild(chromeLink);
