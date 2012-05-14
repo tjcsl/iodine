@@ -69,7 +69,7 @@
  <div>Upload a file:</div>
  <form enctype="multipart/form-data" method="post" action="">
   <input type="hidden" name="MAX_FILE_SIZE" value="[<$max_file_size>]"/>
-  <input type="file" name="file"/><br/>
+  <input type="file" name="file[]" multiple /><br/>
   <input type="submit" value="Upload"/>
  </form>
 </div>
