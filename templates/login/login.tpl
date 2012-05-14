@@ -33,9 +33,6 @@
 		<a id="logo" href="">Intranet</a>
 		<br />
 		<br />
-		<br />
-		<br />
-		<br />
 		
 		[<if $failed eq 1>]
 		<div id="login_failed">
