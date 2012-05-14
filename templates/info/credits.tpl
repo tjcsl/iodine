@@ -59,6 +59,7 @@ I2 Development Team:
 	<li>Andrew Imm (2010)</li>
 	<li>Peter Godofsky (2011)</li>
 	<li>Derek "bugzapper" Morris (2011)</li>
+	<li>Dylan Ladwig (2011)</li>
 	<li>Zachary &ldquo;Gamer_Z.&rdquo; Yaro (2011-2012)</li>
 </ul>
 

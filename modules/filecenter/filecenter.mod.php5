@@ -538,33 +538,41 @@ class Filecenter implements Module {
 	}
 
 	public function handle_upload($file) {
-		if ($file['error'] != UPLOAD_ERR_OK) {
-			switch($file['error']) {
-				case UPLOAD_ERR_INI_SIZE: //Max size in php
-				case UPLOAD_ERR_FORM_SIZE: //Max size in html
-					$this->template_args['error'] = "The file exceeded the maximum file size.";
-					return;
-				case UPLOAD_ERR_PARTIAL:
-					$this->template_args['error'] = "There was an error with the upload. Intranet only recieved part of the file.";
-					return;
-				case UPLOAD_ERR_NO_FILE:
-					$this->template_args['error'] = "You must select a file to upload.";
-					return;
-				case UPLOAD_ERR_NO_TMP_DIR:
-					$this->template_args['error'] = "Internal error in Intranet. Temporary folder missing. Please report this to the Intranet staff.";
-					return;
-				case UPLOAD_ERR_CANT_WRITE:
-					$this->template_args['error'] = "Internal error in Intranet. Disk write failed. Please report this to the Intranet staff.";
-					return;
-				case UPLOAD_ERR_EXTENSION:
-					$this->template_args['error'] = "Internal error in Intranet. A PHP extension blocked the upload. Please report this to the Intranet staff.";
-					return;
-				default:
-					throw new I2Exception('Error with uploaded file: ' . $file['error']);
+		for($i=0;$i<count($file['name']);$i++) {
+			if ($file['error'][$i] != UPLOAD_ERR_OK) {
+				switch($file['error'][$i]) {
+					case UPLOAD_ERR_INI_SIZE: //Max size in php
+					case UPLOAD_ERR_FORM_SIZE: //Max size in html
+						if(count($file['name'])>1)
+							$this->template_args['error'] = "One of the files exceeded the maximum file size.";
+						else
+							$this->template_args['error'] = "The file exceeded the maximum file size.";
+						return;
+					case UPLOAD_ERR_PARTIAL:
+						if(count($file['name'])>1)
+							$this->template_args['error'] = "Not all of the uploaded files were fully received.";
+						else
+							$this->template_args['error'] = "The uploaded file was not fully received.";
+						return;
+					case UPLOAD_ERR_NO_FILE:
+						$this->template_args['error'] = "You must select a file to upload.";
+						return;
+					case UPLOAD_ERR_NO_TMP_DIR:
+						$this->template_args['error'] = "Internal error in Intranet. Temporary folder missing. Please report this to the Intranet staff.";
+						return;
+					case UPLOAD_ERR_CANT_WRITE:
+						$this->template_args['error'] = "Internal error in Intranet. Disk write failed. Please report this to the Intranet staff.";
+						return;
+					case UPLOAD_ERR_EXTENSION:
+						$this->template_args['error'] = "Internal error in Intranet. A PHP extension blocked the upload. Please report this to the Intranet staff.";
+						return;
+					default:
+						throw new I2Exception('Error with uploaded file: ' . $file['error'][$i]);
+				}
 			}
+	
+			$this->filesystem->copy_file_into_system($file['tmp_name'][$i], $this->directory . $file['name'][$i]);
 		}
-
-		$this->filesystem->copy_file_into_system($file['tmp_name'], $this->directory . $file['name']);
 	}
 
 	public function file_header($name, $size) {
