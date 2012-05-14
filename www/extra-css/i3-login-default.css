@@ -62,11 +62,12 @@ body {
 }
 
 #logo {
+	display:block;
 	/*background-size:77px 70px;*/
 	background-size:50px 55px;
 	height:55px;
 	float:left;
-	margin:6px 8px;
+	margin:6px 8px 32px;
 	padding-top:0px;
 	padding-left:56px;
 	font-size:40px;
@@ -98,6 +99,10 @@ body {
 }
 
 @media (max-width:645px) {
+	body {
+		
+		font-size:12pt;
+	}
 	#mainPane {
 		width:100%;
 		padding:0px 4px;
@@ -112,6 +117,9 @@ body {
 		padding-left:32px;
 		font-size:26px;
 		background-size:30px 33px;
+		width:90%;
 		height:33px;
+		margin-left:4px;
+		margin-bottom:16px;
 	}
 }

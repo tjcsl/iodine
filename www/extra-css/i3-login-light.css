@@ -30,11 +30,11 @@
 @media (max-width:645px) {
 	#mainPane {
 		background-color:#F0F0F0;
-		background-color:rgba(240,240,240,0.8);
-		background-image:-webkit-linear-gradient(rgba(255,255,255,0.8), rgba(240,240,240,0.8));
-		background-image:   -moz-linear-gradient(rgba(255,255,255,0.8), rgba(240,240,240,0.8));
-		background-image:    -ms-linear-gradient(rgba(255,255,255,0.8), rgba(240,240,240,0.8));
-		background-image:     -o-linear-gradient(rgba(255,255,255,0.8), rgba(240,240,240,0.8));
-		background-image:        linear-gradient(rgba(255,255,255,0.8), rgba(240,240,240,0.8));
+		background-color:rgba(240,240,240,0.95);
+		background-image:-webkit-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9));
+		background-image:   -moz-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9));
+		background-image:    -ms-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9));
+		background-image:     -o-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9));
+		background-image:        linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9));
 	}
 }
