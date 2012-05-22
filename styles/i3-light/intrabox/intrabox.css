@@ -209,20 +209,3 @@
 		padding-top:78px;
 	}
 }
-@media print {
-	div.boxheader, div.intrabox, div.header, div.date, div.logo {
-		display: none;
-	}
-
-	div.mainbox {
-		position: relative;
-		top: 0px;
-		left: 0px;
-		border: none !important;
-		margin: 0px;
-	}
-
-	div.boxcontent {
-		margin: 0px;
-	}
-}
