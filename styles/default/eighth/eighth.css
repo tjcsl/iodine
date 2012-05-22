@@ -54,12 +54,6 @@
 	height: 80px;
 }
 
-@media print {
-	#eighth_header_logo {
-		display: none;
-	}
-}
-
 #eighth_header_table {
 	padding: 0px;
 	margin: 10px;
@@ -160,10 +154,51 @@
 #eighth_sponsor_filter {
 	width: 194px;
 }
+
+#eighth_call_in_numbers {
+	position:relative;
+	top:-1em;
+}
+
 .c1 {
 	background-color: #EEEEFF;
 }
 
 .c2 {
 	background-color: #FFFFFF;
+}
+
+@media print {
+	#eighth_header,
+	#eighth_header_logo,
+	#eighth_include_list {
+		display: none;
+	}
+	#vcp_attendance_form input[type="checkbox"] {
+		-webkit-appearance:none;
+		   -moz-appearance:none;
+		    -ms-appearance:none;
+		     -o-appearance:none;
+		        appearance:none;
+		width:2em;
+		height:2em;
+		border-style:solid;
+		border-width:none;
+		border-color:black;
+		background-color:white;
+	}
+	#vcp_attendance_form input[type="button"],
+	#vcp_attendance_form input[type="submit"],
+	#vcp_attendance_form input[type="reset"],
+	#vcp_attendance_form button {
+		display:none;
+	}
+
+	#eighth_call_in_numbers {
+		position:static;
+		top:auto;
+	}
+	#eighth_attendance_status {
+		display:none;
+	}
 }
