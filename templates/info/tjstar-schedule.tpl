@@ -1127,7 +1127,7 @@
 	Rithvik Prasanappa, Intel and Siemens Semi-Finalist<br>
 	Luo William Qian, Siemens Regional Finalist<br>
 	Shriram Sundararaman, Siemens Semi-Finalist</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">228-230</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">228/230</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Panel</td>
@@ -1180,7 +1180,7 @@
 	Yon Daniel Jang, Siemens Regional Finalist<br>
 	Darwin Li, Intel Semi-Finalist<br>
 	Pranava Raparla, Intel Semi-Finalist</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">207-208</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">207/208</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Panel</td>
@@ -2369,7 +2369,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">Dr. Terry Langendoen<br>
 	Expert<br>
 	National Science Foundation</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">225-227</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">225/227</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -2384,7 +2384,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">Dr. Terry Langendoen<br>
 	Expert<br>
 	National Science Foundation</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">203-204</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">203/204</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -2418,7 +2418,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">Mr. Alan Miller<br>
 	Chief Motivational Speaker<br>
 	CareerLifeBalance, LLC</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">218-219</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">218/219</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -2525,7 +2525,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">Mr. Danny Kim<br>
 	Student<br>
 	University of Southern California School of Cinematic Arts, Interactive Media Division</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">228-230</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">228/230</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -3212,7 +3212,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">D</td>
 		<td style="vertical-align: top; border:1px solid #aaa;">Albert Einstein Distinguished Educator Fellow<br>
 	National Science Foundation</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">203-204-205</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">203/204/205</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -3225,7 +3225,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">E</td>
 		<td style="vertical-align: top; border:1px solid #aaa;">Albert Einstein Distinguished Educator Fellow<br>
 	National Science Foundation</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">203-204</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">203/204</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
