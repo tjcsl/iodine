@@ -1127,7 +1127,7 @@
 	Rithvik Prasanappa, Intel and Siemens Semi-Finalist<br>
 	Luo William Qian, Siemens Regional Finalist<br>
 	Shriram Sundararaman, Siemens Semi-Finalist</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">213</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">228-230</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Panel</td>
@@ -1180,7 +1180,7 @@
 	Yon Daniel Jang, Siemens Regional Finalist<br>
 	Darwin Li, Intel Semi-Finalist<br>
 	Pranava Raparla, Intel Semi-Finalist</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">213</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">207-208</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Panel</td>
@@ -1238,7 +1238,7 @@
 	Capt Ryan Landoll, '03<br>
 	Clinical Psychology Resident<br>
 	U.S. Air Force</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">211</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">128</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -1978,7 +1978,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">Dr. Kim Waddell<br>
 	Senior Program Officer<br>
 	The National Academies</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">205</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">212</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -1996,7 +1996,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">Dr. Kim Waddell<br>
 	Senior Program Officer<br>
 	The National Academies</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">205</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">212</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -2369,7 +2369,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">Dr. Terry Langendoen<br>
 	Expert<br>
 	National Science Foundation</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">224</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">225-227</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -2384,7 +2384,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">Dr. Terry Langendoen<br>
 	Expert<br>
 	National Science Foundation</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">224</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">203-204</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -2418,7 +2418,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">Mr. Alan Miller<br>
 	Chief Motivational Speaker<br>
 	CareerLifeBalance, LLC</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">212</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">218-219</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -2507,38 +2507,11 @@
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">Social Engineering Threats</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">Spies have used social engineering for centuries. For example, a spy may observe a target&#8217;s movement and behavioral
-	pattern every Saturday morning. In doing so he might notice that the target goes to a particular coffee shop every Saturday at 10 AM, reads the Wall Street Journal and strolls through the adjacent farmer&#8217;s market.
-	The spy could then strategically place himself at the coffee shop and strike up a seemingly innocent conversation with the target about the nearby farmer&#8217;s market or an article in the newspaper.
-	Once a bond is formed between the spy and the target, the spy can easily manipulate the target into divulging confidential or personal information, such as where the target works or if the target is married, without raising any flags.
-	That is social engineering. <br>
-	<br>
-	Now enter cyberspace, a domain flooded with readily available personal information. Cyber criminals will try to manipulate their targets to click malicious links, which would give the cyber criminal unfettered access to the target&#8217;s system or network.
-	These cyber criminals use social networks to target their attacks. Have a Facebook account?
-	Chances are you do. Even if you have selected the highest privacy settings Facebook offers, your account is likely still linked to your real name, picture, and possibly your general geographic location.
-	What about LinkedIn? A simple search of your name and general location, paired with the information gleaned from Facebook, and cyber criminals have everything they need.<br>
-	<br>
-	Knowing a target&#8217;s employer is a jackpot for the social engineer, which makes LinkedIn especially dangerous.
-	Would you open an e-mail sent from an address similar to your company&#8217;s?
-	What if the e-mail was addressed to you and cc&#8217;d to your boss?
-	Would you open it, and then click the link? Chances are very high that you would. Cyber criminals use these targeted phishing attacks (or spear-phishing) frequently, which have been made easier by the prevalence of social networks.
-	Without these social networks, cyber criminals would have a much harder time discovering their target&#8217;s employer or position in the company.
-	<br><br>
-
-	This is Mr. Sherman's only session.<br><br>
-
-	About Mr. Sherman: Mr. Sherman is director of information security for Telos Corporation. His areas of expertise are penetration testing, vulnerability assessments, social engineering, and industry trends. Prior to assuming this position at the beginning of
-	 2011, Mr. Sherman also served Telos as research lead for Information Assurance (IA), IA program manager, ISEE project manager and as a senior enterprise security consultant since joining the company in October 2001.
-	Prior to his arrival at Telos, Mr. Sherman worked for ISP TSI Broadband in a variety of roles. He earned a diploma in network engineering and data communications from the Chubb Institute.
-	Mr. Sherman is certified as a Certified Information Systems Security Professional (CISSP), Information System Security Architecture Professional (ISSAP), Certified Ethical Hacker (CEH), Certified HIPAA Security Professional (CHSP) and a GIAC Certified
-	 Web Application Penetration Tester. Mr. Sherman is an advisory board member for the Computer and Network Security (CNS) program at Anthem Institute. He is a member of Infragard and a volunteer of the (ISC)2 Safe and Secure Program to teach young people about
-	 online security.</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">Nature vs. Nurure</td>
+		<td style="vertical-align: top; border:1px solid #aaa;"></td>
 		<td style="vertical-align: top; border:1px solid #aaa;">C</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">Mr. Daniel Sherman<br>
-	Director of Information Security<br>
-	Telos Corporation</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">218</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">Mr. Brian Young</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">217</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -2552,7 +2525,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">Mr. Danny Kim<br>
 	Student<br>
 	University of Southern California School of Cinematic Arts, Interactive Media Division</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">207</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">228-230</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -3239,7 +3212,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">D</td>
 		<td style="vertical-align: top; border:1px solid #aaa;">Albert Einstein Distinguished Educator Fellow<br>
 	National Science Foundation</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">133</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">203-204-205</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
@@ -3252,7 +3225,7 @@
 		<td style="vertical-align: top; border:1px solid #aaa;">E</td>
 		<td style="vertical-align: top; border:1px solid #aaa;">Albert Einstein Distinguished Educator Fellow<br>
 	National Science Foundation</td>
-		<td style="vertical-align: top; border:1px solid #aaa;">133</td>
+		<td style="vertical-align: top; border:1px solid #aaa;">203-204</td>
 	</tr>
 	<tr>
 		<td style="vertical-align: top; border:1px solid #aaa;">Professional Session</td>
