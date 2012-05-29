@@ -1,4 +1,6 @@
-<a href="https://academics.tjhsst.edu/srs/">TJStar Main Page</a> <br />
-<a href="https://academics.tjhsst.edu/srs/tjSTAR_program_low_resfinal.pdf">Program</a> <br />
-<a href="/polls/vote/203">Student Satisfaction Survey</a> <br />
-<a href="/polls/vote/204">Presenter Satisfaction Survey</a>
+<ul style="list-style-type:none;padding-left:0px;margin:0px;">
+	<li><a href="http://www.tjhsst.edu/studentlife/events/srs" target="_blank">Main Page</a></li>
+	<li><a href="http://www.tjstar.org" target="_blank">Registration</a></li>
+	<li><a href="[<$I2_ROOT>]info/tjstar-schedule">Schedule</a></li>
+	<li><a href="mailto:tjstarcommittee@gmail.com" target="_blank">Contact</a></li>
+</ul>

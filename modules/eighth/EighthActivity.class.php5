@@ -233,7 +233,7 @@ class EighthActivity {
 			// have to take them out of the other block
 			$signup_bothblocks = -1;
 		}
-		if ($signup_bothblocks != 0 && $otheract->sticky && !$force) { // Fix a loophole where the both blocks system circumvents the 
+		if ($signup_bothblocks != 0 && $otheract->sticky) { // Fix a loophole where the both blocks system circumvents the 
 			$ret |= EighthActivity::STICKY;
 		}
 
