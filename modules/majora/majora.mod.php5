@@ -4,8 +4,6 @@
  */
 class Majora implements Module {
 
-	private $template_args = array();
-
 	/**
 	* Unused; Not supported for this module.
 	*
@@ -57,13 +55,14 @@ class Majora implements Module {
 	}
 
 	function init_box() {
-		return "Majora's Mask Countdown";
+		return "Majora's Mask Graduation Counter";
 	}
 
 	function display_box($disp) {
-		// Right now the start date is set in the template :/
-		// Feel free to fix that at some point 
-		$disp->disp("majora_countdown_box.tpl", $this->template_args);
+		// Borrows from the graduation counter's config entry
+		$template_args = array('time'=>i2config_get('gradtime',1308094200,'countdown')*1000);
+
+		$disp->disp("majora_countdown_box.tpl", $template_args);
 	}
 
 	function get_name() {

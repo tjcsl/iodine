@@ -156,7 +156,7 @@
 			<b>Color Key:</b>
 			[<if empty($manybids)>]<span class="selectedAR even actkey"[<if $selected>] onclick="scrollToSection('section_selected');" style="cursor:pointer;"[</if>]>your choice</span>[</if>]
 			<span class="generalAR odd actkey"[<if $general>] onclick="scrollToSection('section_general');" style="cursor:pointer;"[</if>]>normal</span>
-			<span class="fillingAR odd actkey"[<if $filling>] onclick="scrollToSection('section_filling');" style="cursor:pointer;"[</if>]>almost full</span>
+			<!--<span class="fillingAR odd actkey"[<if $filling>] onclick="scrollToSection('section_filling');" style="cursor:pointer;"[</if>]>almost full</span>-->
 			<span class="fullAR odd actkey"[<if $full>] onclick="scrollToSection('section_full');" style="cursor:pointer;"[</if>]>full</span>
 			<span class="cancelledAR odd actkey"[<if $cancelled>] onclick="scrollToSection('section_cancelled');" style="cursor:pointer;"[</if>]>cancelled</span>
 			<span class="restrictedAR odd actkey"[<if $restricted>] onclick="scrollToSection('section_restricted');" style="cursor:pointer;"[</if>]>restricted</span>
