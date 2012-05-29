@@ -1205,6 +1205,28 @@ class EighthActivity {
 
 		return "generalAR";
 	}
+
+	/**
+	* Returns the class of the piechart div for this activity
+	* 
+	* @access public
+	*/
+	public function pieClass() {
+		if($this->capacity!=-1 && $this->capacity>0)
+			$fill = ceil(10-10*$this->member_count/$this->capacity);
+		else if($this->capacity==-1)
+			$fill = 10;
+		else
+			$fill = 0;
+
+		if($fill<=0)	// lol oversubscribed activities...
+			$fill = 0;
+
+		if($this->restricted || $this->cancelled)
+			return "crossPie pie".$fill." pieIcon";
+		else
+			return "pieIcon pie".$fill;
+	}
 }
 
 ?>

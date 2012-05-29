@@ -24,20 +24,19 @@
 		document.getElementById(id).style.top  = (y+Math.sin(angle)*hh)+"px";
 	}
 	function updateClock() {
-		var target = new Date(2011,5,18); // this should be the day of "FINAL DAY"
+		var target = new Date([<$time>]); // this should be the day of "FINAL DAY"
 		var today = new Date();
 
 		var daysLeft=Math.ceil((target.getTime()-today.getTime())/(1000*60*60*24));
-		if(daysLeft<0) {
+		if(daysLeft<0||daysLeft>2) {
 			document.getElementById('MMclock').style.display="none";
 			document.getElementById('MMfinished').style.display="block";
+			if(daysLeft>2)
+				document.getElementById('MMfinished').innerText=daysLeft+" more days until the clock starts.";
 		} else {
 			document.getElementById('MMclock').style.display="inline-block";
 			document.getElementById('MMfinished').style.display="none";
 		}
-
-		if(daysLeft>2)
-			daysLeft=2;
 
 		document.getElementById('MMday1').style.display = (daysLeft==2?'block':'none');
 		document.getElementById('MMday2').style.display = (daysLeft==1?'block':'none');

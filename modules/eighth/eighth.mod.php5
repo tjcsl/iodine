@@ -2272,12 +2272,12 @@ class Eighth implements Module {
 			
 			$this->template_args['selected_aid']=$selected_aid;
 			$this->template_args['selected']=$selected;
-			$this->template_args['restricted']=$restricted;
+			//$this->template_args['restricted']=$restricted;
 			$this->template_args['favorites'] = $faves;
 			$this->template_args['general'] = $general;
-			$this->template_args['filling'] = $filling;
-			$this->template_args['cancelled'] = $cancelled;
-			$this->template_args['full'] = $full;
+			//$this->template_args['filling'] = $filling;
+			//$this->template_args['cancelled'] = $cancelled;
+			//$this->template_args['full'] = $full;
 			$this->template_args['uid'] = $this->args['uid'];
 			$this->template = 'vcp_schedule_choose.tpl';
 

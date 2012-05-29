@@ -1,5 +1,5 @@
 #activityList {
-	height: 405px;
+	height: 455px;
 	overflow-y: scroll;
 	padding:0;
 	margin-top:1em; 
@@ -22,8 +22,9 @@
 
 .activityRow {
 	font-family: Trebuchet MS, sans-serif;
-	padding: .25em .5em .25em .5em;
+	padding: 3px .5em 3px 24px;
 	cursor: pointer;
+	position: relative;
 }
 
 .activityInfo {
@@ -49,24 +50,6 @@
 	background-color: #ff8;
 }
 
-.fillingAR.odd {
-	background-color: #8989F5;
-}
-
-.fillingAR.even {
-	background-color: #9191F8;
-}
-
-.fullAR.odd {
-	background-color: #222;
-	color: white;
-}
-
-.fullAR.even {
-	background-color: #292929;
-	color:white;
-}
-
 .cancelledAR.odd {
 	background-color: #B00;
 	color: white;
@@ -75,22 +58,6 @@
 .cancelledAR.even {
 	background-color: #C00;
 	color: white;
-}
-
-.restrictedAR.odd {
-	background-color: #FDC5A0;
-}
-
-.restrictedAR.even {
-	background-color: #fca;
-}
-
-.generalAR.odd {
-	background-color: #ECECFF;
-}
-
-.generalAR.even {
-	background-color: #F0F0FE;
 }
 
 .favoriteAR.odd {
@@ -110,7 +77,87 @@
 	font-weight:bold;
 }
 
+.fullAR.odd {
+	background-color: #99c;
+}
+
+.fullAR.even {
+	background-color: #aad;
+}
+
+/*.restrictedAR.odd {
+	background-color: #420;
+	color: white;
+}
+
+.restrictedAR.even {
+	background-color: #492909;
+	color:white;
+}*/
+
+
+.restrictedAR.odd {
+	background-color: #FDC5A0;
+}
+
+.restrictedAR.even {
+	background-color: #fca;
+}
+
+
+/*.fillingAR.odd {
+	background-color: #8989F5;
+}
+
+.fillingAR.even {
+	background-color: #9191F8;
+}*/
+
+.generalAR.odd, .fillingAR.odd {
+	background-color: #ECECFF;
+}
+
+.generalAR.even, .fillingAR.even  {
+	background-color: #F0F0FE;
+}
+
 .actkey {
 	font-family: Trebuchet MS, Trebuchet, sans-serif;	
 	padding:2px 6px;
 }
+
+.pieIcon {
+	position: absolute;
+	left:0px;
+	top:0px;
+	height: 21px;
+	width: 21px;
+}
+
+.pie0 { background-image: url(/www/pics/schedule/black/pie_0.png); }
+.pie1 { background-image: url(/www/pics/schedule/black/pie_1.png); }
+.pie2 { background-image: url(/www/pics/schedule/black/pie_2.png); }
+.pie3 { background-image: url(/www/pics/schedule/black/pie_3.png); }
+.pie4 { background-image: url(/www/pics/schedule/black/pie_4.png); }
+.pie5 { background-image: url(/www/pics/schedule/black/pie_5.png); }
+.pie6 { background-image: url(/www/pics/schedule/black/pie_6.png); }
+.pie7 { background-image: url(/www/pics/schedule/black/pie_7.png); }
+.pie8 { background-image: url(/www/pics/schedule/black/pie_8.png); }
+.pie9 { background-image: url(/www/pics/schedule/black/pie_9.png); }
+.pie10 { background-image: url(/www/pics/schedule/black/pie_10.png); }
+
+.crossPie { background-image: url(/www/pics/schedule/black/prohibit.png); }
+.cancelledAR .crossPie { background-image: url(/www/pics/schedule/black/prohibit_inv.png); }
+
+/*.crossPie.pie0 { background-image: url(/www/pics/schedule/black/pie_0_crossed.png); }
+.crossPie.pie1 { background-image: url(/www/pics/schedule/black/pie_1_crossed.png); }
+.crossPie.pie2 { background-image: url(/www/pics/schedule/black/pie_2_crossed.png); }
+.crossPie.pie3 { background-image: url(/www/pics/schedule/black/pie_3_crossed.png); }
+.crossPie.pie4 { background-image: url(/www/pics/schedule/black/pie_4_crossed.png); }
+.crossPie.pie5 { background-image: url(/www/pics/schedule/black/pie_5_crossed.png); }
+.crossPie.pie6 { background-image: url(/www/pics/schedule/black/pie_6_crossed.png); }
+.crossPie.pie7 { background-image: url(/www/pics/schedule/black/pie_7_crossed.png); }
+.crossPie.pie8 { background-image: url(/www/pics/schedule/black/pie_8_crossed.png); }
+.crossPie.pie9 { background-image: url(/www/pics/schedule/black/pie_9_crossed.png); }
+.crossPie.pie10 { background-image: url(/www/pics/schedule/black/pie_10_crossed.png); }*/
+
