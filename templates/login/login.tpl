@@ -87,6 +87,7 @@
 			<li><a href="http://www.tjhsst.edu" target="_blank">TJHSST</a></li>
 			<li><a href="https://webmail.tjhsst.edu" target="_blank">Mail</a></li>
 			<li><a href="http://postman.tjhsst.edu" target="_blank">Calendar</a></li>
+			<li><a href="http://www.tjhsst.edu/studentlife/publications/tjtoday" target="_blank">tjTODAY</a></li>
 		</ul>
 	</div>
 
