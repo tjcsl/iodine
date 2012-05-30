@@ -2,16 +2,19 @@
 
 .pane {
 	background-color:#F0F0F0;
-	background-color:rgba(240,240,240,0.8);
-	background:-webkit-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.8) 256px);
-	background:   -moz-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.8) 256px);
-	background:    -ms-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.8) 256px);
-	background:     -o-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.8) 256px);
-	background:        linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.8) 256px);
+	background-color:rgba(240,240,240,0.9);
+	background:-webkit-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9) 256px);
+	background:   -moz-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9) 256px);
+	background:    -ms-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9) 256px);
+	background:     -o-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9) 256px);
+	background:        linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9) 256px);
+
+/*	    filter: progid:DXImageTransform.Microsoft.Glow(Color=#080808, Strength=6), progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#F0F0F0);
+	-ms-filter:"progid:DXImageTransform.Microsoft.Glow(Color=#080808, Strength=6), progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#F0F0F0)";*/
 	
-	-webkit-box-shadow:0px 0px 4px 2px rgba(0,0,0,0.75);
-	   -moz-box-shadow:0px 0px 4px 2px rgba(0,0,0,0.75);
-	        box-shadow:0px 0px 4px 2px rgba(0,0,0,0.75);
+	-webkit-box-shadow:4px 0px 4px 0px rgba(0,0,0,0.75);
+	   -moz-box-shadow:4px 0px 4px 0px rgba(0,0,0,0.75);
+	        box-shadow:4px 0px 4px 0px rgba(0,0,0,0.75);
 }
 
 #logo {
@@ -28,13 +31,29 @@
 }
 
 @media (max-width:645px) {
-	#mainPane {
+	.pane {
 		background-color:#F0F0F0;
-		background-color:rgba(240,240,240,0.95);
-		background-image:-webkit-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9));
-		background-image:   -moz-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9));
-		background-image:    -ms-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9));
-		background-image:     -o-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9));
-		background-image:        linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9));
+		/*background-color:rgba(240,240,240,0.95);*/
+		
+		-webkit-box-shadow:none;
+		   -moz-box-shadow:none;
+		        box-shadow:none;
+	}
+	#mainPane {
+		/*background:-webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,1)), to(rgba(240,240,240,0.95)));
+		background:-webkit-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.95));
+		background:   -moz-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.95));
+		background:    -ms-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.95));
+		background:     -o-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.95));
+		background:        linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.95));*/
+		background:-webkit-gradient(linear, 0% 0%, 0% 20%, from(white), to(#F0F0F0));
+		background:-webkit-linear-gradient(white, #F0F0F0 72px);
+		background:   -moz-linear-gradient(white, #F0F0F0 72px);
+		background:    -ms-linear-gradient(white, #F0F0F0 72px);
+		background:     -o-linear-gradient(white, #F0F0F0 72px);
+		background:        linear-gradient(white, #F0F0F0 72px);
+	}
+	#subPane {
+		background-image:none;
 	}
 }
