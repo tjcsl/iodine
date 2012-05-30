@@ -71,14 +71,8 @@
 		<br />
 		
 		<div style="text-align:center;">
-			<div id="verisign_box" class="box">
-				<table width="100" border="0" cellpadding="2" cellspacing="0" title="Click to Verify - This site chose VeriSign SSL for secure confidential communications.">
-					<tr>
-						<td width="100" align="center" valign="top">
-							<script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=iodine.tjhsst.edu&amp;size=S&amp;use_flash=NO&amp;use_transparent=YES&amp;lang=en"></script><br/>
-						</td>
-					</tr>
-				</table>
+			<div id="verisign_box" class="box" title="Click to Verify - This site chose VeriSign SSL for secure confidential communications.">
+				<script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=iodine.tjhsst.edu&amp;size=S&amp;use_flash=NO&amp;use_transparent=YES&amp;lang=en"></script><br/>
 			</div>
 		</div>
 	</div>
@@ -86,20 +80,13 @@
 		<div id="schedule">
 			<h2>Today's Schedule</h2>
 			<p>[<$schedule.description>]</p>
-			<table>
-				[<foreach from=$schedule.schedule item=block>]
-				<tr>
-					<td>[<$block.pd>]</td>
-					<td>[<$block.starttime>]-[<$block.endtime>]</td>
-				</tr>
-				[</foreach>]
-			</table>
+			<div>[<$schedule.schedule>]</div>
 		</div>
 		<br />
 		<ul id="links">
 			<li><a href="http://www.tjhsst.edu" target="_blank">TJHSST</a></li>
 			<li><a href="https://webmail.tjhsst.edu" target="_blank">Mail</a></li>
-			<li><a href="http://postman.tjhsst.edu" target="_blank">Postman (Calendar)</a></li>
+			<li><a href="http://postman.tjhsst.edu" target="_blank">Calendar</a></li>
 		</ul>
 	</div>
 
