@@ -5,8 +5,8 @@
 [<include file="eighth/block_selection.tpl" header="FALSE" title='' method='vcp_attendance' op='view' field='bid' bid=$block->bid>]
 [<include file="eighth/include_list_close.tpl">]
 </td><td style="vertical-align: top;">
-<div style="position:relative;top:-2.5ex;">
-Call-in numbers: x5046 x2023 x5076 x5078
+<div id="eighth_call_in_numbers">
+	Call-in numbers: x5046 x2023 x5076 x5078
 </div>
 <div style="font-family: monospace;">
 Activity:&nbsp;[<$act->name>], ID [<$act->aid>]<br />
@@ -14,13 +14,13 @@ Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<$act->block->date|date_format>]
 Room(s):&nbsp;&nbsp;&nbsp;&nbsp;[<$act->block_rooms_comma>]<br />
 Sponsor(s):&nbsp;[<$act->block_sponsors_comma>]<br />
 [<if $is_admin || $is_sponsor>]
-[<if $act->attendancetaken == 1>]<font color="green" style="font-weight:bold; font-size:2.0em">Attendance Taken</font>
-[<else>]<font color="red" style="font-weight:bold; font-size:2.0em">Attendance NOT Taken</font>[</if>]
+[<if $act->attendancetaken == 1>]<span id="eighth_attendance_status" style="color:green;font-weight:bold;font-size:2.0em">Attendance Taken</span>
+[<else>]<span id="eighth_attendance_status" style="color:red;font-weight:bold;font-size:2.0em">Attendance NOT Taken</span>[</if>]
 [</if>]
 
 </div>
 <br />
-<form name="vcp_attendance_form" action="[<$I2_ROOT>]eighth/vcp_attendance/update/bid/[<$act->bid>]/aid/[<$act->aid>]" method="post">
+<form name="vcp_attendance_form" id="vcp_attendance_form" action="[<$I2_ROOT>]eighth/vcp_attendance/update/bid/[<$act->bid>]/aid/[<$act->aid>]" method="post">
 	<input type="button" value="Select All" onclick="CA();" name="selectall" /> [<if $is_admin>]<input type="submit" value="Update" />[</if>]<br />
 	<table cellspacing="0" style="border: 0px; margin: 0px; padding: 0px;">
 		<tr>
@@ -29,7 +29,7 @@ Sponsor(s):&nbsp;[<$act->block_sponsors_comma>]<br />
 			<th style="padding: 0px 5px;">Grade</th>
 		</tr>
 [<foreach from=$act->members_obj item=user>]
-		<tr style="background-color: [<cycle values="#EEEEFF,#FFFFFF">]">
+		<tr class="c[<cycle values="1,2">]">
 			<td style="padding: 0px 5px;"><input type="checkbox" name="absentees[]" value="[<$user->uid>]"[<if in_array($user->uid, $absentees) >] checked="checked"[</if>] onchange="CCA(this);" /></td>
 			<td style="padding: 0px 5px;">[<$user->name_comma>] ([<$user->iodineUidNumber>])</td>
 			<td style="padding: 0px 5px;">[<$user->grade>]</td>
