@@ -148,17 +148,19 @@ class BellSchedule implements Module {
 			$ender = 'END:VEVENT';
 			$str = substr($str, strpos($str, $starter) + strlen($starter));
 			$str = substr($str, 0, strpos($str, $ender));
-
+			
+			//return array('description' => '/X-ALT-DESC;FMTTYPE=text\/html:(.*)/', 'schedule' => $str);
+			
 			// Is any type of schedule set?
 			if(preg_match('/CATEGORIES:(Anchor Day|Blue Day|Red Day|JLC Blue Day)/', $str, $dayTypeMatches) > 0) {
 				// Does it have schedule data?
-				if(preg_match('/^X-ALT-DESC;FMTTYPE=text\/html:(.*)$/', $str, $scheduleMatches)) {
-					if(trim($descriptionMatches[1]) != '') {
+				if(preg_match('/X-ALT-DESC;FMTTYPE=text\/html:(.*)/', $str, $scheduleMatches)) {
+					if(trim($scheduleMatches[1]) != '') {
 						// Does it have a day type described?
 						if(preg_match('/^SUMMARY:(.*)$/', $str, $descriptionMatches) > 0) {
-							return array('description' => trim($descriptionMatches[1], '*'), 'schedule' => $scheduleMatches[1]);
+							return array('description' => trim($descriptionMatches[1], '*'), 'schedule' => substr($scheduleMatches[1], 0, -5));
 						} else { // If no day type is set, use the basic day type description
-							return array('description' => trim($dayTypeMatches[1], '*'), 'schedule' => $scheduleMatches[1]);
+							return array('description' => trim($dayTypeMatches[1], '*'), 'schedule' => substr($scheduleMatches[1], 0, -5));
 						}
 					} else {
 						return BellSchedule::get_default_schedule(str_replace('day', '', trim(strtolower($str))));
