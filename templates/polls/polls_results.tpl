@@ -23,7 +23,7 @@ function sort(table, name) {
 <ol class="poll_questions">
 [<foreach from=$questions key=qid item=question>]
  <li>
- [<if $question.answertype == 'free_response'>]
+ [<if $question.answertype == 'free_response' || $question.answertype == 'short_response'>]
   <a href="[<$I2_ROOT>]polls/results/[<$poll->pid>]/_[<$question.qid>]">[<$question.text>]</a><br />
  [<else>]
   [<$question.text>]<br />
