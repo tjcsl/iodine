@@ -50,6 +50,7 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, ".jove.com") ||
 		dnsDomainIs(host, ".marshallcavendishdigital.com") ||
 		dnsDomainIs(host, ".salempress.com") ||
+		dnsDomainIs(host, ".booksinprint.com") ||
 		dnsDomainIs(host, "whiv.alexanderstreet.com")
 
 	)
