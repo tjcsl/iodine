@@ -1,114 +1,22 @@
-#activityList {
-	overflow-y: scroll;
-	padding:0;
-	margin-top:1em; 
-	border: 1px solid green;
+#activityList, .activityHead {
+	border-color:green;
 	border-right: 4px double green;
-	height: 405px;
-}
-
-#activityList :first-child {
-	border-top: none;
-}
-
-.activityHead {
-	padding: .5em;
-	font-weight: bold;
-	background-color: black;
-	border-top: 1px solid green;
-	border-bottom: 1px solid green;
 }
 
 .activityRow {
-	padding: .25em .5em .25em .5em;
-	cursor: pointer;
-	color:#0C0;
-}
-
-.activityInfo {
-	padding: 0;
-	height: 0px;
-	overflow: hidden;
-	transition: height .5s;
-	-moz-transition: height .5s;
-	-webkit-transition: height .5s;
-	-o-transition: height .5s;
+	color:#00FF00;
 }
 
 .activityInfoInner {
 	background-color: rgba(0,0,0,.3);
-	margin-left: .5em;
 	border-top: 1px solid green;
 	border-left: 1px solid green;
-	padding: .5em;
 }
 
 .selectedAR {
-	background-color:#292200;
+	background-color:#292200 !important;
 }
 
-.fillingAR.odd {
-	background-color:#07073C;
-}
-
-.fillingAR.even {
-	background-color:#0B0B3F;
-}
-
-.fullAR.odd {
-	background-color:#D1D1D1;
-	color:black;
-}
-
-.fullAR.even {
-	background-color:#ccc;
-	color:black;
-}
-
-.cancelledAR.odd {
-	background-color:#BB0000;
-	color:white;
-}
-
-.cancelledAR.even {
-	background-color:#C10000;
-	color:white;
-}
-
-.restrictedAR.odd {
-	background-color:#470700;
-}
-
-.restrictedAR.even {
-	background-color:#520A00;
-}
-
-.generalAR.odd {
-	background-color:#16161D;
-}
-
-.generalAR.even {
-	background-color:#181820;
-}
-
-.favoriteAR.odd {
-	background-color:#112D10;
-}
-
-.favoriteAR.even {
-	background-color:#0F330F;
-}
-
-.clickedAR {
-	outline: 1px solid green;
-	-webkit-box-shadow: inset 0 0 10px green;
-	-moz-box-shadow: inset 0 0 10px green;
-	-o-box-shadow: inset 0 0 10px green;
-	box-shadow: inset 0 0 10px green;
-	font-weight:bold;
-}
-.actkey {
-	font-family:Courier, monospace;
-	color:#0C0;
-	padding:2px 6px;
+.pieIcon, .cancelledAR .crossPie {
+	background-image:url(/www/pics/styles/Ub321337/eighth_list_icons.png);
 }
