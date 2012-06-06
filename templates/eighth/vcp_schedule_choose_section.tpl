@@ -12,7 +12,7 @@
 	</div>
 	<div class="activityInfo [<if $key%2==1>]odd[<else>]even[</if>] [<$activity->displayClass($selected_aid)>]">
 		<div class="activityInfoInner">
-			<a href="[<$I2_ROOT>]eighth/vcp_schedule/favorite/uid/[<$activity->aid>]/bids/[<$bids>]">[<if $activity->favorite>]Unfavorite this activity[<else>]Favorite this activity[</if>]</a>
+			<!--<a href="[<$I2_ROOT>]eighth/vcp_schedule/favorite/uid/[<$activity->aid>]/bids/[<$bids>]">[<if $activity->favorite>]Unfavorite this activity[<else>]Favorite this activity[</if>]</a>-->
 			[<if $activity->comment>]
 				([<$activity->comment|escape:html>])
 			[</if>]
