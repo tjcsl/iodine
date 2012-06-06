@@ -148,7 +148,9 @@
 .pie10 { background-position:   0px 0px; }
 
 .crossPie { background-position:-231px 0px; }
-.cancelledAR .crossPie { background-image: url(/www/pics/styles/dark/eighth_list_icons.png); }
 
 .favoriteIcon { background-position:-252px 0px; }
 .favoriteIcon.selected { background-position:-273px 0px; }
+
+.cancelledAR .crossPie, .cancelledAR .favoriteIcon { background-image:url(/www/pics/styles/dark/eighth_list_icons.png); }
+.cancelledAR .favoriteIcon.selected { background-image:url(/www/pics/styles/tron/eighth_list_icons.png); }
