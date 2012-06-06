@@ -3,7 +3,7 @@
 	border-right: 4px double green;
 }
 
-.activityRow {
+.activityRow, .cancelledAR.odd, .cancelledAR.even {
 	color:#00FF00;
 }
 
@@ -25,6 +25,6 @@
 	        box-shadow:inset 0 0 10px #00CC00;
 }
 
-.favoriteIcon, .pieIcon, .cancelledAR .crossPie {
+.favoriteIcon, .pieIcon, .cancelledAR .crossPie, .cancelledAR .favoriteIcon, .cancelledAR .favoriteIcon.selected {
 	background-image:url(/www/pics/styles/Ub321337/eighth_list_icons.png);
 }
