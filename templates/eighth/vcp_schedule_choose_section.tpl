@@ -14,16 +14,16 @@
 		<div class="activityInfoInner">
 			<!--<a href="[<$I2_ROOT>]eighth/vcp_schedule/favorite/uid/[<$activity->aid>]/bids/[<$bids>]">[<if $activity->favorite>]Unfavorite this activity[<else>]Favorite this activity[</if>]</a>-->
 			[<if $activity->comment>]
-				([<$activity->comment|escape:html>])
+				([<$activity->comment|escape:html>])<br />
 			[</if>]
 			[<if $activity->description>]
-				<br/><b>Description:</b> [<$activity->description|escape:html>]
+				<b>Description:</b> [<$activity->description|escape:html>]<br />
 			[</if>]
 			[<if $activity->block_sponsors_comma_short>]
-				<br/><b>Sponsor:</b> [<$activity->block_sponsors_comma_short>]
+				<b>Sponsor:</b> [<$activity->block_sponsors_comma_short>]<br />
 			[</if>]
 			[<if $activity->block_rooms_comma>]
-				<br/><b>Room:</b> [<$activity->block_rooms_comma>]
+				<b>Room:</b> [<$activity->block_rooms_comma>]<br />
 			[</if>]
 			<br />[<$activity->member_count>] student[<if $activity->member_count == 1>] is[<else>]s are[</if>] signed up [<if $activity->capacity != -1>]out of [<$activity->capacity>] allowed [</if>]for this activity.<br />
 
