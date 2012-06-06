@@ -33,6 +33,6 @@
 	padding:2px 6px;
 }
 
-.pieIcon, .cancelledAR .crossPie {
+.favoriteIcon, .pieIcon, .cancelledAR .crossPie {
 	background-image:url(/www/pics/styles/tron/eighth_list_icons.png);
 }
