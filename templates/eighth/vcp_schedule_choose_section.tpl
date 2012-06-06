@@ -1,6 +1,6 @@
 <div class="activityHead" id="section_[<$sID>]">[<$sTitle>]</div>
 [<foreach from=$activities item=activity key=key>]
-	<div onclick="activityRowClicked(this)" class="[<if $key%2==1>]odd[<else>]even[</if>] [<$activity->displayClass($selected_aid)>] activityRow"
+	<div onclick="activityRowClicked(this)" class="activityRow [<if $key%2==1>]odd[<else>]even[</if>] [<$activity->displayClass($selected_aid)>]"
 		data-aid="[<$activity->aid>]"
 		[<if $activity->block_rooms_comma>]data-room="[<$activity->block_rooms_comma>]"[</if>]
 		[<if $activity->block_sponsors_comma_short>]data-sponsor="[<$activity->block_sponsors_comma_short>]"[</if>]
@@ -8,7 +8,7 @@
 		<div class="[<$activity->pieClass()>]"></div>
 		[<$activity->aid>]: [<$activity->name_comment_r|escape:html>]
 	</div>
-	<div class="[<if $key%2==1>]odd[<else>]even[</if>] [<$activity->displayClass($selected_aid)>] activityInfo">
+	<div class="activityInfo [<if $key%2==1>]odd[<else>]even[</if>] [<$activity->displayClass($selected_aid)>]">
 		<div class="activityInfoInner">
 			<a href="[<$I2_ROOT>]eighth/vcp_schedule/favorite/uid/[<$activity->aid>]/bids/[<$bids>]">[<if $activity->favorite>]Unfavorite this activity[<else>]Favorite this activity[</if>]</a>
 			[<if $activity->comment>]

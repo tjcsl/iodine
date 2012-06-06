@@ -12,7 +12,6 @@
 }
 
 .activityHead {
-	font-family: Trebuchet MS, Trebuchet, sans-serif;
 	padding: .5em;
 	font-weight: bold;
 	background-color: #eee;
@@ -21,21 +20,26 @@
 }
 
 .activityRow {
-	font-family: Trebuchet MS, sans-serif;
-	padding: 3px .5em 3px 24px;
-	cursor: pointer;
-	position: relative;
+	padding:3px;
+	cursor:pointer;
+	position:relative;
 }
 
 .activityInfo {
-	font-family: Trebuchet MS, sans-serif;
 	padding: 0;
 	height: 0px;
 	overflow: hidden;
-	transition: height .5s;
-	-moz-transition: height .5s;
 	-webkit-transition: height .5s;
-	-o-transition: height .5s;
+	   -moz-transition: height .5s;
+	     -o-transition: height .5s;
+	        transition: height .5s;
+}
+
+.activityRow.odd, .activityInfo.odd {
+	background-color: #FAFAFA;
+}
+.activityRow.even, .activityInfo.even {
+	background-color: #F8F8F8;
 }
 
 .activityInfoInner {
@@ -47,43 +51,35 @@
 }
 
 .selectedAR {
-	background-color: #ff8;
+	background-color: #FFFF88 !important;
 }
 
 .cancelledAR.odd {
-	background-color: #B00;
+	background-color: #CA0000;
 	color: white;
 }
 
 .cancelledAR.even {
-	background-color: #C00;
+	background-color: #CF0000;
 	color: white;
 }
 
-.favoriteAR.odd {
+/*.favoriteAR.odd {
 	background-color: #B3F4B3;
 }
 
 .favoriteAR.even {
 	background-color: #BCF9B3;
-}
+}*/
 
-.clickedAR {
-	outline: 1px solid black;
-	-webkit-box-shadow: inset 0px 0px 7px 1px black;
-	-moz-box-shadow: inset 0px 0px 7px 1px black;
-	-o-box-shadow: inset 0px 0px 7px 1px black;
-	box-shadow: inset 0px 0px 7px 1px black;
-	font-weight:bold;
-}
 
-.fullAR.odd {
+/*.fullAR.odd {
 	background-color: #99c;
 }
 
 .fullAR.even {
 	background-color: #aad;
-}
+}*/
 
 /*.restrictedAR.odd {
 	background-color: #420;
@@ -113,51 +109,42 @@
 	background-color: #9191F8;
 }*/
 
-.generalAR.odd, .fillingAR.odd {
-	background-color: #ECECFF;
-}
 
-.generalAR.even, .fillingAR.even  {
-	background-color: #F0F0FE;
+.clickedAR {
+	outline: 1px solid black;
+	-webkit-box-shadow: inset 0px 0px 7px 1px black;
+	   -moz-box-shadow: inset 0px 0px 7px 1px black;
+	     -o-box-shadow: inset 0px 0px 7px 1px black;
+	        box-shadow: inset 0px 0px 7px 1px black;
+	font-weight:bold;
 }
 
 .actkey {
-	font-family: Trebuchet MS, Trebuchet, sans-serif;	
 	padding:2px 6px;
 }
 
 .pieIcon {
-	position: absolute;
+	/*position:absolute;
 	left:0px;
-	top:0px;
-	height: 21px;
-	width: 21px;
+	top:0px;*/
+	float:left;
+	height:21px;
+	width:21px;
+	margin:-3px 2px;
+	background-image:url(/www/pics/eighth_list_icons.png);
 }
 
-.pie0 { background-image: url(/www/pics/schedule/black/pie_0.png); }
-.pie1 { background-image: url(/www/pics/schedule/black/pie_1.png); }
-.pie2 { background-image: url(/www/pics/schedule/black/pie_2.png); }
-.pie3 { background-image: url(/www/pics/schedule/black/pie_3.png); }
-.pie4 { background-image: url(/www/pics/schedule/black/pie_4.png); }
-.pie5 { background-image: url(/www/pics/schedule/black/pie_5.png); }
-.pie6 { background-image: url(/www/pics/schedule/black/pie_6.png); }
-.pie7 { background-image: url(/www/pics/schedule/black/pie_7.png); }
-.pie8 { background-image: url(/www/pics/schedule/black/pie_8.png); }
-.pie9 { background-image: url(/www/pics/schedule/black/pie_9.png); }
-.pie10 { background-image: url(/www/pics/schedule/black/pie_10.png); }
+.fullAR .pieIcon { background-position:-210px 0px; }
+ .pie1 { background-position:-189px 0px; }
+ .pie2 { background-position:-168px 0px; }
+ .pie3 { background-position:-147px 0px; }
+ .pie4 { background-position:-126px 0px; }
+ .pie5 { background-position:-105px 0px; }
+ .pie6 { background-position: -84px 0px; }
+ .pie7 { background-position: -63px 0px; }
+ .pie8 { background-position: -42px 0px; }
+ .pie9 { background-position: -21px 0px; }
+.pie10 { background-position:   0px 0px; }
 
-.crossPie { background-image: url(/www/pics/schedule/black/prohibit.png); }
-.cancelledAR .crossPie { background-image: url(/www/pics/schedule/black/prohibit_inv.png); }
-
-/*.crossPie.pie0 { background-image: url(/www/pics/schedule/black/pie_0_crossed.png); }
-.crossPie.pie1 { background-image: url(/www/pics/schedule/black/pie_1_crossed.png); }
-.crossPie.pie2 { background-image: url(/www/pics/schedule/black/pie_2_crossed.png); }
-.crossPie.pie3 { background-image: url(/www/pics/schedule/black/pie_3_crossed.png); }
-.crossPie.pie4 { background-image: url(/www/pics/schedule/black/pie_4_crossed.png); }
-.crossPie.pie5 { background-image: url(/www/pics/schedule/black/pie_5_crossed.png); }
-.crossPie.pie6 { background-image: url(/www/pics/schedule/black/pie_6_crossed.png); }
-.crossPie.pie7 { background-image: url(/www/pics/schedule/black/pie_7_crossed.png); }
-.crossPie.pie8 { background-image: url(/www/pics/schedule/black/pie_8_crossed.png); }
-.crossPie.pie9 { background-image: url(/www/pics/schedule/black/pie_9_crossed.png); }
-.crossPie.pie10 { background-image: url(/www/pics/schedule/black/pie_10_crossed.png); }*/
-
+.crossPie { background-position:-231px 0px; }
+.cancelledAR .crossPie { background-image: url(/www/pics/styles/dark/eighth_list_icons.png); }

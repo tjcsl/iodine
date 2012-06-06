@@ -110,19 +110,19 @@
 				sID="favs"
 				activities=$favorites>]
 		[</if>]
-		[<if $filling>]
+[<*		[<if $filling>]
 			[<include file="eighth/vcp_schedule_choose_section.tpl"
 				sTitle="Almost Full"
 				sID="filling"
 				activities=$filling>]
-		[</if>]
+		[</if>] *>]
 		[<if $general>]
 			[<include file="eighth/vcp_schedule_choose_section.tpl"
 				sTitle="All Activities"
 				sID="general"
 				activities=$general>]
 		[</if>]
-		[<if $full>]
+[<*		[<if $full>]
 			[<include file="eighth/vcp_schedule_choose_section.tpl"
 				sTitle="Filled"
 				sID="full"
@@ -139,8 +139,7 @@
 				sTitle="Cancelled"
 				sID="cancelled"
 				activities=$cancelled>]
-		[</if>]
-
+		[</if>] *>]
 	</div>
 	<div style="padding:.5em;">
 		<input type="text" name="aid" id="aid_box" maxlength="4" size="4" value="[<$selected_aid>]" />
@@ -152,16 +151,16 @@
 			}
 		</script>
 		<input size="50" id='filterActivities' type="search" results="0" placeholder=" Search for an activity" oninput="filterList(value);" onsearch="filterList(value);"/>
-		<div style="margin-top:4px;">
+[<*		<div style="margin-top:4px;">
 			<b>Color Key:</b>
-			[<if empty($manybids)>]<span class="selectedAR even actkey"[<if $selected>] onclick="scrollToSection('section_selected');" style="cursor:pointer;"[</if>]>your choice</span>[</if>]
+			<if empty($manybids)>]<span class="selectedAR even actkey"[<if $selected>] onclick="scrollToSection('section_selected');" style="cursor:pointer;"[</if>]>your choice</span>[</if>]
 			<span class="generalAR odd actkey"[<if $general>] onclick="scrollToSection('section_general');" style="cursor:pointer;"[</if>]>normal</span>
-			<!--<span class="fillingAR odd actkey"[<if $filling>] onclick="scrollToSection('section_filling');" style="cursor:pointer;"[</if>]>almost full</span>-->
+			<span class="fillingAR odd actkey"[<if $filling>] onclick="scrollToSection('section_filling');" style="cursor:pointer;"[</if>]>almost full</span>
 			<span class="fullAR odd actkey"[<if $full>] onclick="scrollToSection('section_full');" style="cursor:pointer;"[</if>]>full</span>
 			<span class="cancelledAR odd actkey"[<if $cancelled>] onclick="scrollToSection('section_cancelled');" style="cursor:pointer;"[</if>]>cancelled</span>
 			<span class="restrictedAR odd actkey"[<if $restricted>] onclick="scrollToSection('section_restricted');" style="cursor:pointer;"[</if>]>restricted</span>
 			<span class="favoriteAR odd actkey"[<if $favorites>] onclick="scrollToSection('section_favs');" style="cursor:pointer;"[</if>]>favorite</span>
-		</div>
+		</div> *>]
 		<br/>
 		<div>
 			<b>Search tips:</b>

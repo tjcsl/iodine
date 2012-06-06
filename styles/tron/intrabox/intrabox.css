@@ -37,6 +37,8 @@
 	padding:1px 0px 0px 8px;
 	height:13px;
 /*	margin-left:-4px;*/
+	border-left-width:0px;
+	border-right-width:0px;
 	border-bottom-style:solid;
 	border-bottom-width:1px;
 	border-bottom-color:rgba(0,0,0,0.7);
