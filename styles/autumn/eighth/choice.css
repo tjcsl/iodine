@@ -12,7 +12,6 @@
 }
 
 .activityHead {
-	font-family: Trebuchet MS, sans-serif;
 	padding: .5em;
 	font-weight: bold;
 	color:white;
@@ -22,14 +21,12 @@
 }
 
 .activityRow {
-	font-family: Trebuchet MS, sans-serif;
 	color:khaki;
 	padding: .25em .5em .25em .5em;
 	cursor: pointer;
 }
 
 .activityInfo {
-	font-family: Trebuchet MS, sans-serif;
 	padding: 0;
 	height: 0px;
 	overflow: hidden;
@@ -113,6 +110,5 @@
 }
 
 .actkey {
-	font-family: Trebuchet MS, Trebuchet, sans-serif;	
 	padding:2px 6px;
 }
