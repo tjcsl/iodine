@@ -20,7 +20,7 @@
 }
 
 .activityRow {
-	padding:3px;
+	padding:3px 6px 3px 1px;
 	cursor:pointer;
 	position:relative;
 }
@@ -123,15 +123,16 @@
 	padding:2px 6px;
 }
 
-.pieIcon {
-	/*position:absolute;
-	left:0px;
-	top:0px;*/
+.pieIcon, .favoriteIcon {
+	display:block;
 	float:left;
 	height:21px;
 	width:21px;
-	margin:-3px 2px;
+	margin:-3px 0px;
 	background-image:url(/www/pics/eighth_list_icons.png);
+}
+.pieIcon {
+	margin-right:3px;
 }
 
 .fullAR .pieIcon { background-position:-210px 0px; }
@@ -148,3 +149,6 @@
 
 .crossPie { background-position:-231px 0px; }
 .cancelledAR .crossPie { background-image: url(/www/pics/styles/dark/eighth_list_icons.png); }
+
+.favoriteIcon { background-position:-252px 0px; }
+.favoriteIcon.selected { background-position:-273px 0px; }
