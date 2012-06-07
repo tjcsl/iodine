@@ -31,8 +31,6 @@
 <body background="[<$I2_ROOT>][<$bg>]">
 	<div class="pane" id="mainPane">
 		<a id="logo" href="">Intranet</a>
-		<br />
-		<br />
 		
 		[<if $failed eq 1>]
 		<div id="login_failed">
@@ -47,7 +45,9 @@
 			An unidentified error has occurred.  Please contact the Intramaster and tell him you received this error message.
 		</div>
 		[<else>]
-		Please type your username and password to log in.
+		<div>
+			Please type your username and password to log in.
+		</div>
 		[</if>]
 		
 		<br />
