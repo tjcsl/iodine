@@ -9,8 +9,8 @@
 	background:     -o-linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9) 256px);
 	background:        linear-gradient(rgba(255,255,255,1), rgba(240,240,240,0.9) 256px);
 
-/*	    filter: progid:DXImageTransform.Microsoft.Glow(Color=#080808, Strength=6), progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#F0F0F0);
-	-ms-filter:"progid:DXImageTransform.Microsoft.Glow(Color=#080808, Strength=6), progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#F0F0F0)";*/
+	    filter: progid:DXImageTransform.Microsoft.Glow(Color=#080808, Strength=6), progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#F0F0F0);
+	-ms-filter:"progid:DXImageTransform.Microsoft.Glow(Color=#080808, Strength=6), progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#F0F0F0)";
 	
 	-webkit-box-shadow:4px 0px 4px 0px rgba(0,0,0,0.75);
 	   -moz-box-shadow:4px 0px 4px 0px rgba(0,0,0,0.75);
