@@ -32,7 +32,7 @@
 			document.getElementById('MMclock').style.display="none";
 			document.getElementById('MMfinished').style.display="block";
 			if(daysLeft>2)
-				document.getElementById('MMfinished').innerText=daysLeft+" more days until the clock starts.";
+				document.getElementById('MMfinished').innerText=(daysLeft-2)+" more days until the clock starts.";
 		} else {
 			document.getElementById('MMclock').style.display="inline-block";
 			document.getElementById('MMfinished').style.display="none";
