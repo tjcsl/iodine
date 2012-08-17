@@ -388,6 +388,9 @@ class Polls implements Module {
 						continue;
 					$q->vote($_POST[$q->qid],$uid);
 				}
+				if($q->answertype=='identity') {
+					$q->vote("",$uid);
+				}
 			}
 			$poll->cache_ldap();
 			$this->template = 'polls_voted.tpl';
@@ -541,6 +544,7 @@ class Polls implements Module {
 				case 'split_approval':
 				case 'short_response':
 				case 'standard_other':
+				case 'identity':
 					// Escape the quotes, they break csv file format
 					$list[$q->qid] = '"'.str_replace('"','“',$q->question).'"';
 			}
@@ -561,6 +565,7 @@ class Polls implements Module {
 				switch($info[0]->answertype) {
 					case 'free_response':
 					case 'short_response':
+					case 'identity':
 						// Don't break the csv file format with quotes!!!
 						$responses[] = '"'.str_replace('"','“',$answer).'"';
 						break;

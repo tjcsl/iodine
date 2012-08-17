@@ -37,60 +37,64 @@ function checklength_andcopy(area,error,count,to) {
 <ol class="poll_questions">
 [<foreach from=$poll->questions item=q>]
   <li>
- [<if count($q->answers) != 0 || $q->answertype == 'free_response' || $q->answertype == 'short_response' >]
-  [<$q->question>]<br />
-  [<if $q->answertype == 'approval' || $q->answertype == 'split_approval'>]
-   [<if $q->maxvotes == 0>]
-    You may select as many options as you wish.
-   [<else>]
-    You may select [<$q->maxvotes>] option[<if $q->maxvotes != 1>]s[</if>].
+ [<if $q->answertype == 'identity' >]
+  <div id='privacywarning'>This poll is not anonymous; your full name and username will be attached to your response.</div>
+ [<else>]
+  [<if count($q->answers) != 0 || $q->answertype == 'free_response' || $q->answertype == 'short_response' >]
+   [<$q->question>]<br />
+   [<if $q->answertype == 'approval' || $q->answertype == 'split_approval'>]
+    [<if $q->maxvotes == 0>]
+     You may select as many options as you wish.
+    [<else>]
+     You may select [<$q->maxvotes>] option[<if $q->maxvotes != 1>]s[</if>].
+    [</if>]
+    [<if $q->answertype == 'split_approval'>]
+     Your vote will be evenly split between the responses you select.
+    [</if>]<br />
    [</if>]
-   [<if $q->answertype == 'split_approval'>]
-    Your vote will be evenly split between the responses you select.
-   [</if>]<br />
   [</if>]
- [</if>]
- [<if $q->answertype == 'standard'>]
-  <input type="radio" name="[<$q->qid>]" value="-1" [<if $q->user_voted_for(0)>]checked="checked" [</if>]/><em>Clear Vote</em><br />
-  [<foreach from=$q->answers key=aid item=answer>]
-   <input type="radio" name="[<$q->qid>]" value="[<$aid>]" [<if $q->user_voted_for($aid)>]checked="checked" [</if>]/>[<$answer>]<br />
-  [</foreach>]
- [<elseif $q->answertype == 'standard_election'>]
-  <input type="radio" name="[<$q->qid>]" value="-1" [<if $q->user_voted_for(0)>]checked="checked" [</if>]/><em>Clear Vote</em><br />
-  [<foreach from=$q->answers_randomsort key=aid item=answer>]
-   <input type="radio" name="[<$q->qid>]" value="[<$aid>]" [<if $q->user_voted_for($aid)>]checked="checked" [</if>]/>[<$answer>]<br />
-  [</foreach>]
- [<elseif $q->answertype == 'approval' || $q->answertype == 'split_approval'>]
-  [<foreach from=$q->answers key=aid item=answer>]
-   <input type="checkbox" name="[<$q->qid>][]" value="[<$aid>]" [<if $q->user_voted_for($aid)>]checked="checked" [</if>]/>[<$answer>]<br />
-  [</foreach>]
- [<elseif $q->answertype == 'free_response'>]
-  [<assign var="aid" value="0">]
-  <div id="error_[<$q->qid>]">(1500 characters left)</div> 
-  <textarea id="textarea_[<$q->qid>]" rows="5" cols="80" name="[<$q->qid>]" onkeyup="checklength(this,'error_[<$q->qid>]',10000)">[<if $q->user_voted_for(0)>][<$q->get_response()>][</if>]</textarea><br />
-  <script type="text/javascript">
-	checklength(document.getElementById('textarea_[<$q->qid>]'),'error_[<$q->qid>]',10000);
-  </script>
- [<elseif $q->answertype == 'short_response'>]
-  [<assign var="aid" value="0">]
-  <div id="error_[<$q->qid>]">(1000 characters left)</div> 
-  <input type="text" id="input_[<$q->qid>]" name="[<$q->qid>]" onkeyup="checklength(this,'error_[<$q->qid>]',1000)" value="[<if $q->user_voted_for(0)>][<$q->get_response()>][</if>]" /><br />
-  <script type="text/javascript">
-	checklength(document.getElementById('input_[<$q->qid>]'),'error_[<$q->qid>]',1000);
-  </script>
- [<elseif $q->answertype=='standard_other'>]
-  [<assign var="oneselected" value="0">]
-  <input type="radio" name="[<$q->qid>]" value="" [<if $q->get_response()=="">][<assign var="oneselected" value="1">]checked="checked" [</if>]/><em>Clear Vote</em><br />
-  [<foreach from=$q->answers key=aid item=answer>]
-   <input type="radio" name="[<$q->qid>]" value="[<$answer>]" [<if $q->get_response()==$answer>][<assign var="oneselected" value="1">]checked="checked" [</if>]/>[<$answer>]<br />
-  [</foreach>]
-  <input type="radio" name="[<$q->qid>]" id="radioother_[<$q->qid>]" value="[<$q->get_response()>]" [<if $oneselected=='0'>]checked="checked"[</if>]>
-   Other: <input type="text" name="other_[<$q->qid>]" value="[<if $oneselected=='0'>][<$q->get_response()>][</if>]" onkeyup="checklength_andcopy(this,'error_[<$q->qid>]',100,'radioother_[<$q->qid>]')"/>
-   <div id="error_[<$q->qid>]">(100 characters left)</div>
-  </input>
-  <script type="text/javascript">
-	checklength(document.getElementById('other_[<$q->qid>]'),'error_[<$q->qid>]',1000);
-  </script>
+  [<if $q->answertype == 'standard'>]
+   <input type="radio" name="[<$q->qid>]" value="-1" [<if $q->user_voted_for(0)>]checked="checked" [</if>]/><em>Clear Vote</em><br />
+   [<foreach from=$q->answers key=aid item=answer>]
+    <input type="radio" name="[<$q->qid>]" value="[<$aid>]" [<if $q->user_voted_for($aid)>]checked="checked" [</if>]/>[<$answer>]<br />
+   [</foreach>]
+  [<elseif $q->answertype == 'standard_election'>]
+   <input type="radio" name="[<$q->qid>]" value="-1" [<if $q->user_voted_for(0)>]checked="checked" [</if>]/><em>Clear Vote</em><br />
+   [<foreach from=$q->answers_randomsort key=aid item=answer>]
+    <input type="radio" name="[<$q->qid>]" value="[<$aid>]" [<if $q->user_voted_for($aid)>]checked="checked" [</if>]/>[<$answer>]<br />
+   [</foreach>]
+  [<elseif $q->answertype == 'approval' || $q->answertype == 'split_approval'>]
+   [<foreach from=$q->answers key=aid item=answer>]
+    <input type="checkbox" name="[<$q->qid>][]" value="[<$aid>]" [<if $q->user_voted_for($aid)>]checked="checked" [</if>]/>[<$answer>]<br />
+   [</foreach>]
+  [<elseif $q->answertype == 'free_response'>]
+   [<assign var="aid" value="0">]
+   <div id="error_[<$q->qid>]">(1500 characters left)</div> 
+   <textarea id="textarea_[<$q->qid>]" rows="5" cols="80" name="[<$q->qid>]" onkeyup="checklength(this,'error_[<$q->qid>]',10000)">[<if $q->user_voted_for(0)>][<$q->get_response()>][</if>]</textarea><br />
+   <script type="text/javascript">
+         checklength(document.getElementById('textarea_[<$q->qid>]'),'error_[<$q->qid>]',10000);
+   </script>
+  [<elseif $q->answertype == 'short_response'>]
+   [<assign var="aid" value="0">]
+   <div id="error_[<$q->qid>]">(1000 characters left)</div> 
+   <input type="text" id="input_[<$q->qid>]" name="[<$q->qid>]" onkeyup="checklength(this,'error_[<$q->qid>]',1000)" value="[<if $q->user_voted_for(0)>][<$q->get_response()>][</if>]" /><br />
+   <script type="text/javascript">
+         checklength(document.getElementById('input_[<$q->qid>]'),'error_[<$q->qid>]',1000);
+   </script>
+  [<elseif $q->answertype=='standard_other'>]
+   [<assign var="oneselected" value="0">]
+   <input type="radio" name="[<$q->qid>]" value="" [<if $q->get_response()=="">][<assign var="oneselected" value="1">]checked="checked" [</if>]/><em>Clear Vote</em><br />
+   [<foreach from=$q->answers key=aid item=answer>]
+    <input type="radio" name="[<$q->qid>]" value="[<$answer>]" [<if $q->get_response()==$answer>][<assign var="oneselected" value="1">]checked="checked" [</if>]/>[<$answer>]<br />
+   [</foreach>]
+   <input type="radio" name="[<$q->qid>]" id="radioother_[<$q->qid>]" value="[<$q->get_response()>]" [<if $oneselected=='0'>]checked="checked"[</if>]>
+    Other: <input type="text" name="other_[<$q->qid>]" value="[<if $oneselected=='0'>][<$q->get_response()>][</if>]" onkeyup="checklength_andcopy(this,'error_[<$q->qid>]',100,'radioother_[<$q->qid>]')"/>
+    <div id="error_[<$q->qid>]">(100 characters left)</div>
+   </input>
+   <script type="text/javascript">
+         checklength(document.getElementById('other_[<$q->qid>]'),'error_[<$q->qid>]',1000);
+   </script>
+  [</if>]
  [</if>]
   </li>
 [</foreach>]

@@ -4,6 +4,6 @@ CREATE TABLE poll_questions (
 		  qid TINYINT(4) UNSIGNED NOT NULL,
 		  PRIMARY KEY(pid, qid),
 		  maxvotes INT(10) UNSIGNED NOT NULL DEFAULT 0,
-		  answertype ENUM('standard','approval','split_approval', 'free_response', 'short_response') NOT NULL DEFAULT 'standard',
+		  answertype ENUM('standard','approval','split_approval', 'free_response', 'short_response','standard_other','standard_election','identity') NOT NULL DEFAULT 'standard',
 		  question TEXT NOT NULL DEFAULT ''
 );
