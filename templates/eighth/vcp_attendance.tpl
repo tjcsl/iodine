@@ -4,6 +4,24 @@
 [<include file="eighth/activity_selection.tpl" op='view' bid=$block->bid field='aid'>]
 [<include file="eighth/block_selection.tpl" header="FALSE" title='' method='vcp_attendance' op='view' field='bid' bid=$block->bid>]
 [<include file="eighth/include_list_close.tpl">]
+<br />
+<h2>Passes</h2>
+<p>The following students were issued passes by the 8th period office.  When they arrive, please click the green button next to their name.</p>
+<table cellspacing="0" style="border: 0px; margin: 0px; padding: 0px;">
+	<tr><th>Name</th><th>Accept</th></tr>
+	[<foreach from=$act->passes_obj item=user>]
+		<tr class="c[<cycle values="1,2">]">
+			<td style="padding: 0px 5px;">[<$user->name_comma>] ([<$user->iodineUidNumber>])</td>
+			<td style="padding: 0px 5px; color: white; background-color: green;"><a style="color: white;" href="[<$I2_ROOT>]eighth/vcp_schedule/callin/bid/[<$act->bid>]/aid/[<$act->aid>]/name_id/[<$user->iodineUidNumber>]">Accept</a></td>
+		</tr>
+	[</foreach>]
+	</table>
+<h2>Call-ins</h2>
+<p>Enter the Name or Student ID# of a student to call-in. Please note that call-ins cannot override Stickies or or a Both-Blocks restriction.
+<form name="vcp_callin_form" id="vcp_callin_form" action="[<$I2_ROOT>]eighth/vcp_schedule/callin/bid/[<$act->bid>]/aid/[<$act->aid>]" method="post">
+	<input type="search" name="name_id" id="query" results="0"/>
+	<input type="submit" value="Call in Student"/>
+</form>
 </td><td style="vertical-align: top;">
 <div id="eighth_call_in_numbers">
 	Call-in numbers: x5046 x2023 x5076 x5078
@@ -24,13 +42,13 @@ Sponsor(s):&nbsp;[<$act->block_sponsors_comma>]<br />
 	<input type="button" value="Select All" onclick="CA();" name="selectall" /> [<if $is_admin>]<input type="submit" value="Update" />[</if>]<br />
 	<table cellspacing="0" style="border: 0px; margin: 0px; padding: 0px;">
 		<tr>
-			<th>Absent</th>
+			<th>Present</th>
 			<th style="padding: 0px 5px;">Student</th>
 			<th style="padding: 0px 5px;">Grade</th>
 		</tr>
 [<foreach from=$act->members_obj item=user>]
 		<tr class="c[<cycle values="1,2">]">
-			<td style="padding: 0px 5px;"><input type="checkbox" name="absentees[]" value="[<$user->uid>]"[<if in_array($user->uid, $absentees) >] checked="checked"[</if>] onchange="CCA(this);" /></td>
+			<td style="padding: 0px 5px;"><input type="checkbox" name="attendies[]" value="[<$user->uid>]"[<if ($act->attendancetaken == 1) && !in_array($user->uid, $absentees) >] checked="checked"[</if>] onchange="CCA(this);" /></td>
 			<td style="padding: 0px 5px;">[<$user->name_comma>] ([<$user->iodineUidNumber>])</td>
 			<td style="padding: 0px 5px;">[<$user->grade>]</td>
 		</tr>
@@ -68,4 +86,5 @@ Sponsor(s):&nbsp;[<$act->block_sponsors_comma>]<br />
 		}
 		frm.selectall.value = (TO == TB ? "Deselect All" : "Select All");
 	}
+	CCA();
 </script>
