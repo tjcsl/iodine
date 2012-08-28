@@ -17,6 +17,7 @@
 class EighthActivity {
 
 	static $membercache = array();
+	static $passcache = array();
 	private $data = array();
 	const CANCELLED = 1;
 	const PERMISSIONS = 2;
@@ -111,6 +112,47 @@ class EighthActivity {
 	public static function add_member_to_activity($aid, User $user, $force = FALSE, $blockid = NULL) {
 			  $act = new EighthActivity($aid);
 			  return $act->add_member($user,$force,$blockid);
+	}
+
+	public function add_member_callin($user, $aid, $blockid) {
+
+		global $I2_SQL,$I2_USER,$I2_LOG;
+		$defaid = i2config_get('default_aid', 999, 'eighth');
+
+		if (! $user instanceof User) {
+			$userid = $user;
+		} else {
+			$userid = $user->uid;
+		}
+
+		$admin = Eighth::is_admin();
+		$signup_admin = Eighth::is_signup_admin();
+		$sponsor = Eighth::is_sponsor($aid);
+
+		if (!$admin && !$signup_admin && !$sponsor) {
+			throw new I2Exception("Only Iodine Admins or Activity Sponsors can call a student into an activity");
+		}
+
+		$oldaid = EighthSchedule::get_activities_by_block($userid, $blockid);
+		$oldactivity = new EighthActivity($oldaid, $blockid);
+		if($oldactivity->sticky) {
+			throw new I2Exception("Student has been stickied into an activity for this block and may not be called in");
+		}
+		else if($oldactivity->bothblocks) {
+			throw new I2Exception("Student has signed up for a Both Blocks activity and will need to switch out of that before they can be called in");
+		}
+
+		//Postsign stuff, helpw the 8th office track trends.
+		if(time()>strtotime($block->date)+60*60*13){
+			d('old aid is '.$oldaid);
+			$psq = 'INSERT INTO eighth_postsigns (cid,uid,time,fromaid,toaid,bid) VALUES (%d,%d,%s,%d,%d,%d)';
+			$I2_SQL->query($psq,$I2_USER->uid,$userid,date("o-m-d H:i:s"),isset($oldaid)?$oldaid:$defaid,$this->data['aid'],$blockid);
+		}
+		//Now actual stuff...
+		$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid,pass) VALUES (%d,%d,%d,0)';
+		$args = array($this->data['aid'],$blockid,$userid);
+		$result = $I2_SQL->query_arr($query, $args);
+
 	}
 
 	/**
@@ -265,7 +307,12 @@ class EighthActivity {
 				$I2_SQL->query($psq,$I2_USER->uid,$userid,date("o-m-d H:i:s"),isset($oldaid)?$oldaid:$defaid,$this->data['aid'],$blockid);
 			}
 			//Now actual stuff...
-			$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES (%d,%d,%d)';
+			if ($block->locked) {
+				$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid,pass) VALUES (%d,%d,%d,1)';
+			} else {
+				
+				$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid,pass) VALUES (%d,%d,%d,0)';
+			}
 			$args = array($this->data['aid'],$blockid,$userid);
 			$result = $I2_SQL->query_arr($query, $args);
 			
@@ -288,7 +335,7 @@ class EighthActivity {
 				$inverse = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d';
 				$invargs = $args;
 			} else {
-				$inverse = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
+				$inverse = 'REPLACE INTO eighth_activity_map (aid,bid,userid,pass) VALUES(%d,%d,%d,0)';
 				$invargs = array($oldaid,$blockid,$userid);
 			}
 			//$I2_LOG->log_file('Changing activity');
@@ -309,7 +356,7 @@ class EighthActivity {
 
 	public function num_members() {
 		global $I2_SQL;
-		return $I2_SQL->query('SELECT COUNT(bid) FROM eighth_activity_map WHERE aid=%d AND bid=%d',$this->data['aid'],$this->data['bid'])->fetch_single_value();
+		return $I2_SQL->query('SELECT COUNT(bid) FROM eighth_activity_map WHERE aid=%d AND bid=%d AND pass=0',$this->data['aid'],$this->data['bid'])->fetch_single_value();
 	}
 
 	public static function add_members_to_activity($aid,$userids,$force = FALSE, $blockid = NULL) {
@@ -370,7 +417,7 @@ class EighthActivity {
 		}
 		$queryarg = array($this->data['aid'], $blockid, $userid);
 		$query = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d';
-		$invquery = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
+		$invquery = 'REPLACE INTO eighth_activity_map (aid,bid,userid,pass) VALUES(%d,%d,%d,0)';
 		$invarg = $queryarg;
 		$I2_SQL->query_arr($query, $queryarg);
 		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Remove Student From Activity');
@@ -421,6 +468,43 @@ class EighthActivity {
 		$I2_SQL->query('UPDATE eighth_activity_map SET aid=%d WHERE aid=%d AND bid=%d', $this->data['aid'], $old_aid, $bid);
 	}
 
+	public function get_passes($blockid = NULL) {
+
+		global $I2_SQL, $I2_USER;
+		if($blockid == NULL) {
+			if($this->data['bid']) {
+				$blockid = $this->data['bid'];
+			} else {
+				return array();
+			}
+		}
+		if(isset(self::$passcache[$this->data['aid']][$blockid]))
+			return self::$passcache[$this->data['aid']][$blockid];
+
+		$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d AND pass=1', $blockid, $this->data['aid'])->fetch_all_arrays(Result::ASSOC);
+		$tocache=array();
+		foreach($res as $row) {
+			$tocache[] = $row['userid'];
+		}
+		User::cache_users($tocache,array('nickname','mail','sn','givenname','graduationyear'));
+		$ret = array();
+		if($this->is_user_sponsor($I2_USER)) {
+			foreach ($res as $row) {
+				$ret[] = $row['userid'];
+			}
+		} else {
+			foreach ($res as $row) {
+				$user = new User($row['userid']);
+				if (EighthSchedule::can_view_schedule($user)) {
+					$ret[] = $user->uid;
+				}
+			}
+		}
+		self::$passcache[$this->data['aid']][$blockid] = $ret;
+		return $ret;
+
+	}
+
 	/**
 	* Gets the members of the activity.
 	*
@@ -439,7 +523,7 @@ class EighthActivity {
 		}
 		if(isset(self::$membercache[$this->data['aid']][$blockid]))
 			return self::$membercache[$this->data['aid']][$blockid];
-		$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d', $blockid, $this->data['aid'])->fetch_all_arrays(Result::ASSOC);
+		$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d AND pass=0', $blockid, $this->data['aid'])->fetch_all_arrays(Result::ASSOC);
 		$tocache=array();
 		foreach($res as $row) {
 			$tocache[]=$row['userid'];
@@ -503,7 +587,7 @@ class EighthActivity {
 		$query = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d';
 		$undoquery = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d';
 		$queryarg = array($this->data['aid'], $blockid);
-		$invquery = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
+		$invquery = 'REPLACE INTO eighth_activity_map (aid,bid,userid,pass) VALUES(%d,%d,%d,0)';
 		foreach($result->fetch_col('userid') as $userid) {
 			d($userid);
 			Eighth::push_undoable($undoquery,$queryarg+array($userid),$invquery,$queryarg+array($userid),'Remove All [student]');
@@ -907,6 +991,12 @@ class EighthActivity {
 		else if($name == 'members_obj' && $this->data['bid']) {
 			return User::sort_users($this->get_members());
 		}
+		else if($name == 'passes' && $this->data['bid']) {
+			return $this->get_passes();
+		}
+		else if($name == 'passes_obj' && $this->data['bid']) {
+			return User::sort_users($this->get_passes());
+		}
 		else if($name == 'absentees' && $this->data['bid']) {
 			return EighthSchedule::get_absentees($this->data['bid'], $this->data['aid']);
 		}
@@ -1027,7 +1117,7 @@ class EighthActivity {
 						  $this->data['block_rooms'])->fetch_single_value();
 				return $this->data['capacity'];
 		 	case 'member_count':
-				$this->data['member_count'] = $I2_SQL->query('SELECT COUNT(userid) FROM eighth_activity_map WHERE bid=%d AND aid=%d',$this->data['bid'],$this->data['aid'])->fetch_single_value();
+				$this->data['member_count'] = $I2_SQL->query('SELECT COUNT(userid) FROM eighth_activity_map WHERE bid=%d AND aid=%d AND pass=0',$this->data['bid'],$this->data['aid'])->fetch_single_value();
 				return $this->data['member_count'];
 			case 'percent_full':
 				return (100*$this->__get('member_count'))/($this->__get('capacity'));
