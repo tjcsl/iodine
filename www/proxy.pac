@@ -51,7 +51,8 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, ".marshallcavendishdigital.com") ||
 		dnsDomainIs(host, ".salempress.com") ||
 		dnsDomainIs(host, ".booksinprint.com") ||
-		dnsDomainIs(host, "whiv.alexanderstreet.com")
+		dnsDomainIs(host, "whiv.alexanderstreet.com") ||
+		dnsDomainIs(host, ".ebrary.com")
 
 	)
 			return "PROXY local.border.tjhsst.edu:8080";
