@@ -1,10 +1,12 @@
 [<include file="eighth/header.tpl">]
 <table><tr><td style="vertical-align: top;">
+[<if $is_admin >]
 [<include file="eighth/include_list_open.tpl">]
 [<include file="eighth/activity_selection.tpl" op='view' bid=$block->bid field='aid'>]
 [<include file="eighth/block_selection.tpl" header="FALSE" title='' method='vcp_attendance' op='view' field='bid' bid=$block->bid>]
 [<include file="eighth/include_list_close.tpl">]
 <br />
+[</if>]
 <h2>Passes</h2>
 <p>The following students were issued passes by the 8th period office.  When they arrive, please click the green button next to their name.</p>
 <table cellspacing="0" style="border: 0px; margin: 0px; padding: 0px;">
