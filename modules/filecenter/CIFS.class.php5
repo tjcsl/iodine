@@ -94,11 +94,11 @@ class CIFS extends Filesystem {
 		if(is_resource($pp)) {
 			fwrite($pipes[0],$pass);
 			fclose($pipes[0]);
-			d("mount.ciffs output: ".stream_get_contents($pipes[1]),7);
+			d("mount.cifs output: ".stream_get_contents($pipes[1]),7);
 			fclose($pipes[1]);
 			$retval = proc_close($pp);
 			if ($retval != 0) {
-				throw new I2Exception("/sbin/mount.cifs exited with status $retval");
+				throw new I2Exception("/sbin/mount.cifs exited with status $retval, command was (/sbin/mount.cifs //{$this->server}/{$this->share} $mount_point -o username=\"$user\")");
 			}
 		} else {
 			throw new I2Exception("falied to start /sbin/mount.cifs process");
