@@ -1,12 +1,13 @@
 [< assign var='proxyscript' value='https://iodine.tjhsst.edu/www/proxy.pac' >]
 [< assign var='proxyhost' value='local.border.tjhsst.edu' >]
 [< assign var='proxyport' value='8080' >]
-[< assign var='dbsite' value='http://www.tjhsst.edu/curriculum/library/databases.php' >]
+[< assign var='dbsite' value='http://www.tjhsst.edu/curriculum/library/wordpress/databases/' >]
 <h1 style="text-align: center; font-weight: bold; line-height:95%;">
   Internet Set-Up for Using TJHSST Library
   <br />Online Databases From Home
 </h1>
 
+<p><strong>A full PDF pictorial guide to configuring your TJHSST Database access is available at <a href="[<$I2_ROOT>]www/info/dbproxy.pdf">this link</a>.</strong></p>
 <p>
 Our library subscribes to online databases with high quality, authoritative resources that are
 essential for your high school research. On campus, they open automatically because the
@@ -30,12 +31,8 @@ You can access the databases at the Library's
    web page. You will need to go to 
    <a href="[<$dbsite>]">[<$dbsite>]</a>.
 <br /><br />
-When you connect to a database through the proxy, you will need to log in. Use the same username and password that you
-use for the TJHSST Intranet.
-<br /><br />
 If you are asked to log in by a particular database, please <strong>report it to the TJ Librarians</strong> so that they can fix problems with subscriptions.
 </p>
-<p><strong>For a full PDF pictorial guide, see <a href="[<$I2_ROOT>]www/info/dbproxy.pdf">this link</a>.</strong></p>
 <br />
 
 <h3>Internet Explorer 8</h3>
@@ -243,7 +240,7 @@ If you are asked to log in by a particular database, please <strong>report it to
 </p>
          
 <p>
-  [Last updated November 12, 2010] <br />
+  [Last updated August 30, 2012] <br />
 </p>
 
 </div>
