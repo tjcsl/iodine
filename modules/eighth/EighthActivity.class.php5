@@ -138,9 +138,6 @@ class EighthActivity {
 		if($oldactivity->sticky) {
 			throw new I2Exception("Student has been stickied into an activity for this block and may not be called in");
 		}
-		else if($oldactivity->bothblocks) {
-			throw new I2Exception("Student has signed up for a Both Blocks activity and will need to switch out of that before they can be called in");
-		}
 
 		//Postsign stuff, helpw the 8th office track trends.
 		if(time()>strtotime($block->date)+60*60*13){
@@ -153,6 +150,21 @@ class EighthActivity {
 		$args = array($this->data['aid'],$blockid,$userid);
 		$result = $I2_SQL->query_arr($query, $args);
 
+	}
+	public function accept_all_passes($aid, $blockid) {
+
+		global $I2_SQL,$I2_USER,$I2_LOG;
+		$admin = Eighth::is_admin();
+
+		$signup_admin = Eighth::is_signup_admin();
+
+		if(!$admin && !$signup_admin) {
+			throw new I2Exception("Only Iodine Admins can accept all passes");
+		}
+
+		$query = 'UPDATE eighth_activity_map SET pass=0 WHERE aid=%d AND bid=%d';
+		$args = array($aid, $blockid);
+		$result = $I2_SQL->query_arr($query, $args);
 	}
 
 	/**
@@ -1117,7 +1129,7 @@ class EighthActivity {
 						  $this->data['block_rooms'])->fetch_single_value();
 				return $this->data['capacity'];
 		 	case 'member_count':
-				$this->data['member_count'] = $I2_SQL->query('SELECT COUNT(userid) FROM eighth_activity_map WHERE bid=%d AND aid=%d AND pass=0',$this->data['bid'],$this->data['aid'])->fetch_single_value();
+				$this->data['member_count'] = $I2_SQL->query('SELECT COUNT(userid) FROM eighth_activity_map WHERE bid=%d AND aid=%d',$this->data['bid'],$this->data['aid'])->fetch_single_value();
 				return $this->data['member_count'];
 			case 'percent_full':
 				return (100*$this->__get('member_count'))/($this->__get('capacity'));

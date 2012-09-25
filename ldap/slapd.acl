@@ -36,8 +36,10 @@ access to attrs=is-admin,is-student-admin
 #	by * none break
 
 # no one can read studentids...except self
+# teachers need to be given explict read access here
 access to attrs=tjhsstStudentId
 	by self read
+	by group/groupOfURLs/memberURL.base="cn=teachers,dc=tjhsst,dc=edu" read
 	by * none
 
 access to filter="objectClass=tjhsstStudent"

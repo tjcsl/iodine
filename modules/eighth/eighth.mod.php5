@@ -1653,6 +1653,9 @@ class Eighth implements Module {
 				if(isSet($this->args['attendies']) && is_array($this->args['attendies']) && !in_array($member, $this->args['attendies'])) {
 					EighthSchedule::add_absentee($this->args['bid'], $member, $issponsor);
 				}
+				else if(!isSet($this->args['attendies']) || !is_array($this->args['attendies'])) {
+					EighthSchedule::add_absentee($this->args['bid'], $member, $issponsor);
+				}
 				else {
 					EighthSchedule::remove_absentee($this->args['bid'], $member, $issponsor);
 				}
@@ -2116,6 +2119,26 @@ class Eighth implements Module {
 		}
 	}
 
+	public function migrate_passes() {
+		global $I2_SQL;
+		if($this->op == '') {
+			$this->template = 'migrate_passes.tpl';
+			$start_date = $this->args['start_date'];
+			$this->template_args['blocks'] = EighthBlock::get_all_blocks($start_date);
+			$this->title = 'Migrate Outstanding Passes';
+		}
+		else if($this->op == 'migrate') {
+			self::start_undo_transaction();
+			$defaid = i2config_get('default_aid', 999, 'eighth');
+			$query = 'UPDATE eighth_activity_map SET aid=%d WHERE bid=%d AND pass=1';
+			$args = array($defaid, $this->args['bid']);
+			$result = $I2_SQL->query_arr($query, $args);
+			self::end_undo_transaction();
+			redirect('eighth/migrate_passes');
+		}
+	}
+
+
 	/**
 	* View, change, or print student schedule
 	*
@@ -2394,6 +2417,18 @@ class Eighth implements Module {
 
 			} else {
 				throw new I2Exception("You did not provide a required argument");
+			}
+
+		}
+		else if($this->op == 'acceptallpasses') {
+			if(isset($this->args['bid']) && isset($this->args['aid'])) {
+
+				$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
+				$activity->accept_all_passes($this->args['aid'], $this->args['bid']);
+				redirect("eighth/vcp_attendance/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
+
+			} else {
+				throw new I2Exception("you did not provide a required argument");
 			}
 
 		}

@@ -24,6 +24,7 @@
 				<li>[<* P- TODO: Needs to not be completely broken! *>]<a href="[<$I2_ROOT>]eighth/vp_delinquent">View or print a list of delinquent students</a></li>
 				<li><a href="[<$I2_ROOT>]eighth/postsigns">View a list of after-deadline signups and changes</a></li>
 				<li><a href="[<$I2_ROOT>]eighth/adm_attendance/acts_taken">View a list of activities that have not had attendance taken</a></li>
+				<li><a href="[<$I2_ROOT>]eighth/migrate_passes">Migrate all outstanding passes to the default activity (999)</a></li>
 			</ol>
 		</td>
 	</tr>
