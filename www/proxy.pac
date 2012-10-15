@@ -17,6 +17,7 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, ".earthscape.org") ||
 		dnsDomainIs(host, ".ebscohost.com") ||
 		dnsDomainIs(host, ".ebsco-content.com") ||
+		dnsDomainIs(host, "search.serialssolutions.com") ||
 		dnsDomainIs(host, "ehrafworldcultures.yale.edu") ||
 		dnsDomainIs(host, ".galegroup.com") ||
 		dnsDomainIs(host, "nelnetsolutions.com") ||
