@@ -55,7 +55,8 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, "whiv.alexanderstreet.com") ||
 		dnsDomainIs(host, ".ebrary.com") ||
 		dnsDomainIs(host, ".oxfordartonline.com") ||
-		dnsDomainIs(host, ".apimages.com")
+		dnsDomainIs(host, ".apimages.com") ||
+		dnsDomainIs(host, ".sciencemag.org")
 
 	)
 			return "PROXY local.border.tjhsst.edu:8080";
