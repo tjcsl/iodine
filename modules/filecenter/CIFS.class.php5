@@ -34,7 +34,7 @@ class CIFS extends Filesystem {
 		$this->server = isset($server) ? $server : i2config_get('cifs_default_server', '', 'filecenter');
 		$this->share = isset($share) ? $share : i2config_get('cifs_default_share', '', 'filecenter');
 
-		$this->root_dir = i2config_get('cifs_base_dir', '/tmp/cifs', 'filecenter') . $this->server . "/" . $this->share;
+		$this->root_dir = i2config_get('cifs_base_dir', '/tmp/cifs/', 'filecenter') . $this->server . "/" . $this->share . "_" . $user;
 		d("filecenter using mount point ".$this->root_dir." for CIFS filesystem",5);
 
 		if ( !($this->is_mounted()) ) {
@@ -73,7 +73,8 @@ class CIFS extends Filesystem {
 	 * @param string $mount_point The local directory to mount.
 	 */
 	private function mount($user, $pass, $mount_point) {
-		self::umount($mount_point);	
+		self::umount($mount_point);
+		
 		d("Mounting //{$this->server}/{$this->share} to $mount_point as $user");
 
 		if (!file_exists($mount_point)) {
@@ -96,8 +97,8 @@ class CIFS extends Filesystem {
 			d("mount.ciffs output: ".stream_get_contents($pipes[1]),7);
 			fclose($pipes[1]);
 			$retval = proc_close($pp);
-			if ($retval == -1) {
-				throw new I2Exception("/sbin/mount.cifs exited with status $retval, root-dir: $this->root_dir");
+			if ($retval != 0) {
+				throw new I2Exception("/sbin/mount.cifs exited with status $retval");
 			}
 		} else {
 			throw new I2Exception("falied to start /sbin/mount.cifs process");

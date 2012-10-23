@@ -61,7 +61,7 @@ abstract class Filesystem {
 			throw new I2Exception('File ' . $this->root_dir . '/' . $path . ' does not exist');
 		}
 	
-		if ($relative_path == $this->root_dir || fnmatch($this->root_dir . '/*', $relative_path)) {
+		if ($relative_path == $this->root_dir || fnmatch($this->root_dir. '/*', $relative_path)) {
 			return $relative_path;
 		} else {
 			throw new I2Exception("File $relative_path is outside of user's homedir");
