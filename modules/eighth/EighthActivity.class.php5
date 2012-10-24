@@ -127,11 +127,13 @@ class EighthActivity {
 
 		$admin = Eighth::is_admin();
 		$signup_admin = Eighth::is_signup_admin();
-		$sponsor = Eighth::is_sponsor($aid);
+		//$sponsor = Eighth::is_sponsor($aid);
 
+		/*Emergency comment due to is_sponsor not working
 		if (!$admin && !$signup_admin && !$sponsor) {
 			throw new I2Exception("Only Iodine Admins or Activity Sponsors can call a student into an activity");
 		}
+		*/
 
 		$oldaid = EighthSchedule::get_activities_by_block($userid, $blockid);
 		$oldactivity = new EighthActivity($oldaid, $blockid);
