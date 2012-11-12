@@ -557,6 +557,16 @@ class Eighth implements Module {
 		global $I2_USER;
 		return $I2_USER->is_group_member('admin_eighth_signup');
 	}
+
+	public static function is_sponsor($aid) {
+		global $I2_USER;
+		$activity = new EighthActivity($aid);
+		if ($activity->is_user_sponsor($I2_USER) > 0) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
 	
 	public static function check_admin() {
 		if (!self::is_admin()) {
@@ -1640,7 +1650,10 @@ class Eighth implements Module {
 			$members = $activity->members;
 			self::start_undo_transaction();
 			foreach($members as $member) {
-				if(isSet($this->args['absentees']) && is_array($this->args['absentees']) && in_array($member, $this->args['absentees'])) {
+				if(isSet($this->args['attendies']) && is_array($this->args['attendies']) && !in_array($member, $this->args['attendies'])) {
+					EighthSchedule::add_absentee($this->args['bid'], $member, $issponsor);
+				}
+				else if(!isSet($this->args['attendies']) || !is_array($this->args['attendies'])) {
 					EighthSchedule::add_absentee($this->args['bid'], $member, $issponsor);
 				}
 				else {
@@ -2106,6 +2119,26 @@ class Eighth implements Module {
 		}
 	}
 
+	public function migrate_passes() {
+		global $I2_SQL;
+		if($this->op == '') {
+			$this->template = 'migrate_passes.tpl';
+			$start_date = $this->args['start_date'];
+			$this->template_args['blocks'] = EighthBlock::get_all_blocks($start_date);
+			$this->title = 'Migrate Outstanding Passes';
+		}
+		else if($this->op == 'migrate') {
+			self::start_undo_transaction();
+			$defaid = i2config_get('default_aid', 999, 'eighth');
+			$query = 'UPDATE eighth_activity_map SET aid=%d WHERE bid=%d AND pass=1';
+			$args = array($defaid, $this->args['bid']);
+			$result = $I2_SQL->query_arr($query, $args);
+			self::end_undo_transaction();
+			redirect('eighth/migrate_passes');
+		}
+	}
+
+
 	/**
 	* View, change, or print student schedule
 	*
@@ -2368,6 +2401,36 @@ class Eighth implements Module {
 				$this->template_args['bids'] = $this->args['bids'];
 				$this->template_args['aid'] = $this->args['aid'];
 			}
+		}
+		else if($this->op == 'callin') {
+			if (isset($this->args['name_id']) && isset($this->args['bid']) && isset($this->args['aid'])) {
+
+					$users = User::search_info("{$this->args['name_id']}");
+					if (count($users) == 1) {
+						$user = $users[0];
+						$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
+						$activity->add_member_callin($user, $this->args['aid'], $this->args['bid']);
+						redirect("eighth/vcp_attendance/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
+					} else {
+						throw new I2Exception("You did not provide enough information to unambiguously identify a student");
+					}
+
+			} else {
+				throw new I2Exception("You did not provide a required argument");
+			}
+
+		}
+		else if($this->op == 'acceptallpasses') {
+			if(isset($this->args['bid']) && isset($this->args['aid'])) {
+
+				$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
+				$activity->accept_all_passes($this->args['aid'], $this->args['bid']);
+				redirect("eighth/vcp_attendance/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
+
+			} else {
+				throw new I2Exception("you did not provide a required argument");
+			}
+
 		}
 		else if($this->op == 'roster') {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);

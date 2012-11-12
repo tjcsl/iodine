@@ -152,7 +152,7 @@ class BellSchedule implements Module {
 			//return array('description' => '/X-ALT-DESC;FMTTYPE=text\/html:(.*)/', 'schedule' => $str);
 			
 			// Is any type of schedule set?
-			if(preg_match('/CATEGORIES:(Anchor Day|Blue Day|Red Day|JLC Blue Day)/', $str, $dayTypeMatches) > 0) {
+			if(preg_match('/CATEGORIES:(Anchor Day|Blue Day|Red Day|JLC Blue Day|Special Schedule)/', $str, $dayTypeMatches) > 0) {
 				// Does it have schedule data?
 				if(preg_match('/X-ALT-DESC;FMTTYPE=text\/html:(.*)/', $str, $scheduleMatches)) {
 					if(trim($scheduleMatches[1]) != '') {

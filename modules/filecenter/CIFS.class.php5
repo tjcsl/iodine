@@ -90,15 +90,16 @@ class CIFS extends Filesystem {
 			1=>array("pipe","w"),
 			2=>array("file","/tmp/i2cifserr.log","a")
 		);
-		$pp=proc_open("/sbin/mount.cifs //{$this->server}/{$this->share} $mount_point -o username=\"$user\"", $descriptors,$pipes);
+		$pp=proc_open("sudo /sbin/mount.cifs //{$this->server}/{$this->share} $mount_point -o username=\"$user\"", $descriptors,$pipes);
 		if(is_resource($pp)) {
 			fwrite($pipes[0],$pass);
 			fclose($pipes[0]);
-			d("mount.ciffs output: ".stream_get_contents($pipes[1]),7);
+			$outputstring=stream_get_contents($pipes[1]);
+			d("mount.cifs output: ".$outputstring,7);
 			fclose($pipes[1]);
 			$retval = proc_close($pp);
 			if ($retval != 0) {
-				throw new I2Exception("/sbin/mount.cifs exited with status $retval");
+				throw new I2Exception("sudo /sbin/mount.cifs exited with status $retval, command was (sudo /sbin/mount.cifs //{$this->server}/{$this->share} $mount_point -o username=\"$user\"), Command Output was ($outputstring)");
 			}
 		} else {
 			throw new I2Exception("falied to start /sbin/mount.cifs process");

@@ -706,7 +706,7 @@ class Newimport implements Module {
 
 			$newclass = array(
 				'objectClass' => 'tjhsstClass',
-				'tjhsstClassId' => (int)$classid,
+				'tjhsstClassId' => $classid,
 				'tjhsstSectionId' => $sectionid,
 				'courselength' => $courselen=='YR'?4:($courselen[0]=='S'?2:1),
 				'quarternumber' => $courselen=='YR'?array(1,2,3,4):($courselen[0]=='S'?($semesterno==1?array(1,2):array(3,4)):$semesterno),

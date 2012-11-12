@@ -170,7 +170,7 @@ class PollQuestion {
 		global $I2_SQL, $I2_USER;
 		if ($uid === NULL)
 			$uid = $I2_USER->uid;
-		if ($this->myanswertype == 'free_response' || $this->myanswertype == 'short_response' || $this->myanswertype =='standard_other')
+		if ($this->myanswertype == 'free_response' || $this->myanswertype == 'short_response' || $this->myanswertype =='standard_other' || $this->myanswertype == 'identity')
 			return $I2_SQL->query('SELECT written FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d',$this->mypid,$this->myqid,$uid)->fetch_single_value();
 		else if ($this->myanswertype == 'standard' || $this->myanswertype == 'standard_election')
 			return $I2_SQL->query('SELECT aid FROM poll_votes WHERE pid=%d AND qid=%d AND uid=%d',$this->mypid,$this->myqid,$uid)->fetch_single_value();
@@ -230,6 +230,14 @@ class PollQuestion {
 				$I2_SQL->query('INSERT INTO poll_votes SET pid=%d,qid=%d,uid=%d,written=%s',
 					$this->mypid, $this->myqid, $uid, $post);
 			}
+			break;
+		case 'identity':
+			$idstr = $I2_USER->username . " (" . $I2_USER->fullname .") " . $I2_USER->mail;
+			$I2_SQL->query('INSERT INTO poll_votes SET pid=%d,qid=%d,uid=%d,written=%s',
+				$this->mypid,$this->myqid,$uid,$idstr);
+			break;
+		default:
+			throw new I2Exception("Voted in a question of invalid type (".$this->myanswertype.")");
 		}
 	}
 
@@ -246,6 +254,7 @@ class PollQuestion {
 		case 'standard':
 		case 'approval':
 		case 'standard_election':
+		case 'identity':
 			return $I2_SQL->query('SELECT COUNT(*) FROM poll_votes '
 				.'WHERE pid=%d AND qid=%d AND aid=%d AND '.
 				'grade=%s'.$gender, $this->mypid, $this->myqid,
