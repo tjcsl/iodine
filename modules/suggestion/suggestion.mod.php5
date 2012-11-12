@@ -82,7 +82,7 @@ class Suggestion implements Module {
 		$to = i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion');
 		switch ($_REQUEST['sendchoice']) {
 			case 'SGA':
-				$to='sga@lists.tjhsst.edu';
+				$to='sga.tjhsst@gmail.com';
 				$mesg .= "\r\n\r\nSent through Intranet.";
 				break;
 			case 'intranet':
