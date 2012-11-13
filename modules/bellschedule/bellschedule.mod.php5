@@ -34,9 +34,17 @@ class BellSchedule implements Module {
 		'jlcblue' => array(
 			'description' => 'JLC Blue Day',
 			'schedule' => 'JLC 8:00 - 8:55<br />Period 1 9:00 - 10:28<br />Period 2 10:37 - 12:05<br />Lunch 12:05 - 12:45<br />Period 3 12:45 - 2:13<br />Break 2:13 - 2:22<br />Period 4 2:22 - 3:50'
-		)
+		),
+		'telelearn' => array(
+			'description' => 'Telelearn Day',
+			'schedule' => 'Period 1: 8:30-9:05<br />Period 2: 9:10-9:45<br />Period 3: 9:50-10:25<br />Period 4: 10:30-11:05<br />Lunch: 11:05-11:55<br />Period 5: 11:55-12:30<br />Period 6: 12:35-1:10<br />Period 7: 1:15-1:50'
+		),
+		'telelearnanchor' => array(
+		                        'description' => 'Telelearn Day',
+					                        'schedule' => 'Period 1: 8:30-9:05<br />Period 2: 9:10-9:45<br />Period 3: 9:50-10:25<br />Period 4: 10:30-11:05<br />Lunch: 11:05-11:55<br />Period 5: 11:55-12:30<br />Period 6: 12:35-1:10<br />Period 7: 1:15-1:50'
+								                )
 	);
-	
+
 	/**
 	* Template for the specified action
 	*/
@@ -142,16 +150,13 @@ class BellSchedule implements Module {
 		// HTTPS because otheriwse it gets cached by the proxy
 		$url = 'https://www.calendarwiz.com/CalendarWiz_iCal.php?crd=tjhsstcalendar';
 		if($str = BellSchedule::curl_file_get_contents($url)) { // Returns false if can't get anything
-			// The schedule entry is the first for each day, so just grab the first event
-			/*$starter = 'BEGIN:VEVENT\\r\n';*/
-			$starter = 'DTSTART;VALUE=DATE:' . date('Ymd');
+			$starter = 'DTSTART;VALUE=DATE:'. date('Ymd');
 			$ender = 'END:VEVENT';
-			$str = substr($str, strpos($str, $starter) + strlen($starter));
-			$str = substr($str, 0, strpos($str, $ender));
-			
-			//return array('description' => '/X-ALT-DESC;FMTTYPE=text\/html:(.*)/', 'schedule' => $str);
-			
+
+			//Find events on the current day that indicate a schedule type
+			$regex = '/'.$starter.'((?:(?!END:VEVENT).)*?)CATEGORIES:(Anchor Day|Blue Day|Red Day|JLC Blue Day|Special Schedule)(.*?)'.$ender.'/s';
 			// Is any type of schedule set?
+<<<<<<< HEAD
 			if(preg_match('/CATEGORIES:(Anchor Day|Blue Day|Red Day|JLC Blue Day|Special Schedule)/', $str, $dayTypeMatches) > 0) {
 				// Does it have schedule data?
 				if(preg_match('/X-ALT-DESC;FMTTYPE=text\/html:(.*)/', $str, $scheduleMatches)) {
@@ -164,17 +169,23 @@ class BellSchedule implements Module {
 						}
 					} else {
 						return BellSchedule::get_default_schedule(str_replace('day', '', trim(strtolower($str))));
+=======
+			if(preg_match($regex, $str, $dayTypeMatches) > 0) {
+				// Does it have a day type described?
+				if(preg_match('/SUMMARY:.(Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day)/', $dayTypeMatches[0], $descriptionMatches) > 0||1!=1) {
+					if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'){
+						return array('description' => 'No school', 'schedule' => '');
+					} else{
+						return array('description' => $descriptionMatches[1], 'schedule' => BellSchedule::$normalSchedules[strtolower(str_replace(array(' Day',' '),'',$descriptionMatches[1]))]['schedule']);
+>>>>>>> 39bb91a... Fix bell schedule bug that reported no school every day
 					}
-				} else { // If no schedule data, use the default schedule for that type of day
-					$dayType = strtolower($dayTypeMatches[1]);
-					$dayType = str_replace('day', '', $dayType);
-					$dayType = trim($dayType);
-					return BellSchedule::get_default_schedule($dayType);
+				} else { // If no day type is set, use the default schedule for that day
+					return BellSchedule::get_default_schedule();
 				}
-				
-			} else {
-				return array('description' => 'No school', 'schedule' => '');
+			} else { // If no schedule data, use the default schedule for that type of day
+					return BellSchedule::get_default_schedule();
 			}
+				
 		} else {
 			return array('description' => 'Error: Could not load schedule', 'schedule' => '');
 		}
@@ -196,18 +207,19 @@ class BellSchedule implements Module {
 	* @param string $type (Optional) The type of schedule whose default should be fetched
 	* @return array An array containing the schedule description and periods
 	*/
-	private static function get_default_schedule($type) {
+	private static function get_default_schedule($type=null) {
 		if(isset($type) && array_key_exists($type, BellSchedule::$normalSchedules)) {
 			return BellSchedule::$normalSchedules[$type];
 		} else {
 			$day = date('N');
-			if($day == 1) {
+			echo $day;
+			if($day == 3) {
 				return BellSchedule::$normalSchedules['anchor'];
-			} else if($day == 2) {
-				return BellSchedule::$normalSchedules['blue'];
-			} else if($day == 3 || $day == 5) {
-				return BellSchedule::$normalSchedules['red'];
 			} else if($day == 4) {
+				return BellSchedule::$normalSchedules['blue'];
+			} else if($day == 5 || $day == 7) {
+				return BellSchedule::$normalSchedules['red'];
+			} else if($day == 6) {
 				return BellSchedule::$normalSchedules['jlcblue'];
 			} else {
 				return array('description' => 'No school', 'schedule' => '');
