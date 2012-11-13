@@ -156,20 +156,6 @@ class BellSchedule implements Module {
 			//Find events on the current day that indicate a schedule type
 			$regex = '/'.$starter.'((?:(?!END:VEVENT).)*?)CATEGORIES:(Anchor Day|Blue Day|Red Day|JLC Blue Day|Special Schedule)(.*?)'.$ender.'/s';
 			// Is any type of schedule set?
-<<<<<<< HEAD
-			if(preg_match('/CATEGORIES:(Anchor Day|Blue Day|Red Day|JLC Blue Day|Special Schedule)/', $str, $dayTypeMatches) > 0) {
-				// Does it have schedule data?
-				if(preg_match('/X-ALT-DESC;FMTTYPE=text\/html:(.*)/', $str, $scheduleMatches)) {
-					if(trim($scheduleMatches[1]) != '') {
-						// Does it have a day type described?
-						if(preg_match('/^SUMMARY:(.*)$/', $str, $descriptionMatches) > 0) {
-							return array('description' => trim($descriptionMatches[1], '*'), 'schedule' => substr($scheduleMatches[1], 0, -5));
-						} else { // If no day type is set, use the basic day type description
-							return array('description' => trim($dayTypeMatches[1], '*'), 'schedule' => substr($scheduleMatches[1], 0, -5));
-						}
-					} else {
-						return BellSchedule::get_default_schedule(str_replace('day', '', trim(strtolower($str))));
-=======
 			if(preg_match($regex, $str, $dayTypeMatches) > 0) {
 				// Does it have a day type described?
 				if(preg_match('/SUMMARY:.(Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day)/', $dayTypeMatches[0], $descriptionMatches) > 0||1!=1) {
@@ -177,7 +163,6 @@ class BellSchedule implements Module {
 						return array('description' => 'No school', 'schedule' => '');
 					} else{
 						return array('description' => $descriptionMatches[1], 'schedule' => BellSchedule::$normalSchedules[strtolower(str_replace(array(' Day',' '),'',$descriptionMatches[1]))]['schedule']);
->>>>>>> 39bb91a... Fix bell schedule bug that reported no school every day
 					}
 				} else { // If no day type is set, use the default schedule for that day
 					return BellSchedule::get_default_schedule();
