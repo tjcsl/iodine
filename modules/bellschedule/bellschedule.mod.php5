@@ -28,7 +28,7 @@ class BellSchedule implements Module {
 			'schedule' => 'Period 1 8:30 - 10:05<br />Period 2 10:15 - 11:45<br />Lunch 11:45 - 12:30<br />Period 3 12:30 - 2:05<br />Break 2:05 - 2:20<br />Period 4 2:20 - 3:50'
 		),
 		'red' => array(
-			'description' => 'Red Day',
+			'description' => 'Reds Day',
 			'schedule' => 'Period 5 8:30 - 10:05<br />Period 6 10:15 - 11:45<br />Lunch 11:45 - 12:30<br />Period 7 12:30 - 2:05<br />Break - 2:05 2:20<br />Period 8A 2:20 - 3:00<br />Period 8B 3:10 - 3:50'
 		),
 		'jlcblue' => array(
@@ -197,14 +197,14 @@ class BellSchedule implements Module {
 			return BellSchedule::$normalSchedules[$type];
 		} else {
 			$day = date('N');
-			echo $day;
-			if($day == 3) {
+			
+			if($day == 1) {
 				return BellSchedule::$normalSchedules['anchor'];
-			} else if($day == 4) {
+			} else if($day == 2) {
 				return BellSchedule::$normalSchedules['blue'];
-			} else if($day == 5 || $day == 7) {
+			} else if($day == 3 || $day == 5) {
 				return BellSchedule::$normalSchedules['red'];
-			} else if($day == 6) {
+			} else if($day == 4) {
 				return BellSchedule::$normalSchedules['jlcblue'];
 			} else {
 				return array('description' => 'No school', 'schedule' => '');
