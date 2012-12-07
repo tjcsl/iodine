@@ -6,7 +6,7 @@
 <!-- Automatically zooms on mobile devices in certain (mobile-optimized) themes. -->
 <!-- This list of themes should really not be hard-coded, but it is for now.  Sue me. -->
 [<if $I2_CSS == "`$I2_ROOT`css/i3-light.css/`$I2_USER->iodineUIDNumber`" || $I2_CSS == "`$I2_ROOT`css/i3-dark.css/`$I2_USER->iodineUIDNumber`">]
-	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
 [</if>]
 
 <!-- prevents errors due to caching-->

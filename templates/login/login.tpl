@@ -5,7 +5,7 @@
 	<meta name="Description" content="TJHSST Intranet2: What you need, when you need it." />
 	
 	<!-- zoom in mobile browsers -->
-	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=1">
 	<title>TJHSST Intranet2: Login</title>
 	
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
