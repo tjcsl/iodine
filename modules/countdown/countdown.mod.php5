@@ -18,6 +18,13 @@ Class Countdown implements Module
 	function api($disp) {
 		return false;
 	}
+	/**
+	* We don't really support this yet, but make it look like we do.
+	*/
+	function api_build_dtd() {
+		return false;
+	}
+
 	function get_name() {return "countdown";}
 
 	function init_box()

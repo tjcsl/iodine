@@ -109,6 +109,13 @@ class Weather implements Module {
 		return false;
 	}
 
+	/**
+	* We don't really support this yet, but make it look like we do.
+	*/
+	function api_build_dtd() {
+		return false;
+	}
+
 	public function init_box() {
 		$this->makeData();
 		return 'Current Weather at TJ';

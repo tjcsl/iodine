@@ -236,8 +236,39 @@ try {
 		$module = i2config_get('startmodule','welcome','core');
 	}
 
+	$I2_IS_API = false;
+
 	if(strtolower($module) == 'ajax') {
 		$I2_AJAX->returnResponse($I2_ARGS[1]);
+	} elseif(strtolower($module) == 'api') {
+		$I2_IS_API=true;
+		array_shift($I2_ARGS);
+		$module = "";
+		if(isSet($I2_ARGS[0])) {
+			$module = $I2_ARGS[0];
+		} elseif($I2_USER->startpage) {
+			$module = $I2_USER->startpage;
+		} else {
+			$module = i2config_get('startmodule','welcome','core');
+		}
+		d('Passing module' . $module . ' api call', 8);
+		if(!get_i2module($module)) {
+			echo "<error>Not a module</error>";
+		} else {
+			$mod = new $module();
+			echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"? >\r\n";
+			$defaultdtd=array();
+			$defaultdtd[] = "<!ELEMENT $module - - (body,error,debug)>";
+			$defaultdtd[] = "<!ELEMENT error O O (#PCDATA)>";
+			$defaultdtd[] = "<!ELEMENT debug O O (#PCDATA)>";
+			$mbd=$mod->api_build_dtd();
+			if(is_array($mbd))
+				echo "<!DOCTYPE ".$module." [".implode(array_merge($defaultdtd,$mbd),"\r\n")."]>";
+			else
+				echo "<!DOCTYPE ".$module." [".implode($defaultdtd,"\r\n")."\r\n]>\r\n";
+			echo "<$module>";
+			echo $mod->api($I2_DISP);
+		}
 	}
 	else {
 		/* Display will instantiate the module, we just pass the name */

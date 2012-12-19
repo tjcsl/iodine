@@ -57,6 +57,13 @@ class Nags implements Module {
 	}
 
 	/**
+	* We don't really support this yet, but make it look like we do.
+	*/
+	function api_build_dtd() {
+		return false;
+	}
+
+	/**
 	* Unused; Not supported for this module.
 	*
 	* @param Display $disp The Display object to use for output.

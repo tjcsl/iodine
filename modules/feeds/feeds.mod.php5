@@ -58,6 +58,13 @@ class Feeds implements Module {
 	}
 
 	/**
+	* We don't really support this yet, but make it look like we do.
+	*/
+	function api_build_dtd() {
+		return false;
+	}
+
+	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
