@@ -158,8 +158,8 @@ class BellSchedule implements Module {
 			// Is any type of schedule set?
 			if(preg_match($regex, $str, $dayTypeMatches) > 0) {
 				// Does it have a day type described?
-				if(preg_match('/SUMMARY:.(Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day)/', $dayTypeMatches[0], $descriptionMatches) > 0||1!=1) {
-					if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'){
+				if(preg_match('/SUMMARY:.(Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break)/', $dayTypeMatches[0], $descriptionMatches) > 0||1!=1) {
+					if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'||$descriptionMatches[1]=='Winter Break'||$descriptionMatches[1]=='Spring Break'){
 						return array('description' => 'No school', 'schedule' => '');
 					} else{
 						return array('description' => $descriptionMatches[1], 'schedule' => BellSchedule::$normalSchedules[strtolower(str_replace(array(' Day',' '),'',$descriptionMatches[1]))]['schedule']);
