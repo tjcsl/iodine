@@ -64,6 +64,13 @@ class CodeInterface implements Module {
 	}
 
 	/**
+	* We don't really support this yet, but make it look like we do.
+	*/
+	function api_build_dtd() {
+		return false;
+	}
+
+	/**
 	* Unused; we don't display a box (yet)
 	*
 	* @param Display $disp The Display object to use for output.

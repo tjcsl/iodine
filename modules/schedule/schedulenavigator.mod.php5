@@ -62,6 +62,13 @@ class ScheduleNavigator implements Module {
 		return false;
 	}
 
+	/**
+	* We don't really support this yet, but make it look like we do.
+	*/
+	function api_build_dtd() {
+		return false;
+	}
+
 	public function init_box() {
 		global $I2_USER;
 		$this->sched = new Schedule($I2_USER);

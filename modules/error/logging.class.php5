@@ -271,8 +271,14 @@ class Logging {
 	* the applicatioan just dies halfway through.
 	*/
 	public function flush_debug_output() {
-		global $I2_DISP;
+		global $I2_DISP,$I2_IS_API,$module;
 		
+		if($I2_IS_API===true) {
+			echo "<error>".$this->error_buf."\r\n</error>\r\n<debug>".$this->debug_buf."\r\n</debug></$module>";
+			$this->error_buf = NULL;
+			$this->debug_buf = NULL;
+			return;
+		}
 		try {
 			if( ! isset($I2_DISP) ) {
 				$I2_DISP = new Display();

@@ -58,6 +58,13 @@ class Pictures implements Module {
 		return false;
 	}
 
+	/**
+	* We don't really support this yet, but make it look like we do.
+	*/
+	function api_build_dtd() {
+		return false;
+	}
+
 	function display_box($disp) {
 	}
 	

@@ -56,6 +56,13 @@ interface Module {
 	function api($disp);
 
 	/**
+	* Returns DTD for the api response.
+	*
+	* @abstract
+	*/
+	function api_build_dtd();
+
+	/**
 	* Gets the module's name.
 	*
 	* @returns string The name of the module.

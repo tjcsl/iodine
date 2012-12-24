@@ -65,6 +65,13 @@ class TabbedPane implements Module {
 		return 'Tab: '.$this->mod;
 	}
 
+	/**
+	* We don't really support this yet, but make it look like we do.
+	*/
+	function api_build_dtd() {
+		return false;
+	}
+
 	public function display_pane($display) {
 		$display->set_module_name($this->mod);
 		$display->set_buffering(TRUE);

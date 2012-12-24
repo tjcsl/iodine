@@ -415,10 +415,54 @@ class Eighth implements Module {
 	/**
 	* We don't really support this yet, but make it look like we do.
 	*
-	* @param Display $disp The Display object to use for output.
+	* @param Display $disp The Display object to IGNORE COMPLETELY. Really don't know why I left it there.
 	*/
 	function api($disp) {
+		global $I2_ARGS,$I2_QUERY;
+		if(!isset($I2_ARGS[1])) {
+			throw new I2Exception("eighth module needs argument");
+		}
+		switch($I2_ARGS[1]) {
+			case 'list_blocks':
+				if (!isset($I2_QUERY['start_date'])) {
+					$start_date = date("Y-m-d");
+				} else {
+					$start_date = $I2_QUERY['start_date'];
+				}
+				if (!isset($I2_QUERY['daysforward'])) {
+					$daysf = 99999;
+				} else {
+					$daysf = $I2_QUERY['daysforward'];
+				}
+				$blocks = EighthBlock::get_all_blocks($start_date, $daysf);
+				echo "<body>\r\n";
+				foreach($blocks as $block) {
+					echo "<block>\r\n";
+					echo "<bid>".$block['bid']."</bid>\r\n";
+					echo "<date>".$block['date']."</date>\r\n";
+					echo "<type>".$block['block']."</type>\r\n";
+					echo "<locked>".$block['locked']."</locked>\r\n";
+					echo "</block>\r\n";
+				}
+				echo "</body>";
+		}
 		return false;
+	}
+
+	/**
+	* We don't really support this yet, but make it look like we do.
+	*/
+	function api_build_dtd() {
+		global $I2_ARGS, $I2_QUERY;
+		$types=array();
+		if(!isset($I2_ARGS[1])) {
+			return array("<!ELEMENT body O O (#PCDATA)>");
+		}
+		switch($I2_ARGS[1]) {
+			case 'list_blocks':
+				return array("<!ELEMENT body - - (block*)>","<!ELEMENT block O O (bid,date,type,locked)>","<!ELEMENT bid - - (#PCDATA)>","<!ELEMENT date - - (#PCDATA)>","<!ELEMENT type O O (#PCDATA)>","<!ELEMENT locked O O (#PCDATA)>");
+		}
+		return array("<!ELEMENT body O O (#PCDATA)>");
 	}
 
 	/**

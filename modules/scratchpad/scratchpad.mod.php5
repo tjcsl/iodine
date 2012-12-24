@@ -53,6 +53,13 @@ class Scratchpad implements Module {
 		return false;
 	}
 
+	/**
+	* We don't really support this yet, but make it look like we do.
+	*/
+	function api_build_dtd() {
+		return false;
+	}
+
 	public function init_box() {
 		GLOBAL $I2_USER, $I2_SQL;
 		$this->template_args['text'] = 'Loading...'; //$I2_SQL->query('SELECT padtext FROM scratchpad WHERE uid=%d',$I2_USER->uid)->fetch_single_value();
