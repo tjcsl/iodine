@@ -13,6 +13,7 @@
 * @package modules
 * @subpackage Eighth
 */
+//MUAHAHHAHAHAH
 class Eighth implements Module {
 
 	/**
