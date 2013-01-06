@@ -70,7 +70,7 @@ class Ajax {
                fclose($handle);
 
                $matches = array();
-               preg_match('/<title>(.*)<\/title>/', $text, &$matches);
+               preg_match('/<title>(.*)<\/title>/', $text, $matches);
                if(isset($matches[1]))
                   $title =  $matches[1];
                else
