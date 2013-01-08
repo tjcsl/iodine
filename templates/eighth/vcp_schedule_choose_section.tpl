@@ -5,9 +5,7 @@
 		[<if $activity->block_rooms_comma>]data-room="[<$activity->block_rooms_comma>]"[</if>]
 		[<if $activity->block_sponsors_comma_short>]data-sponsor="[<$activity->block_sponsors_comma_short>]"[</if>]
 		[<if $activity->restricted || $activity->cancelled>]data-flags="[<if $activity->restricted>]restricted[</if>][<if $activity->cancelled>][<if $activity->restricted>] [</if>]cancelled[</if>]"[</if>]>
-		[<if $I2_USER->uid != 9999>]
-			<a href="[<$I2_ROOT>]eighth/vcp_schedule/favorite/uid/[<$activity->aid>]/bids/[<$bids>]" class="favoriteIcon[<if $activity->favorite>] selected[</if>]" onclick="event.stopPropagation();"></a><div title="[<$activity->member_count>]/[<$activity->capacity>]" class="[<$activity->pieClass()>]"></div>
-		[</if>]
+		<a href="[<$I2_ROOT>]eighth/vcp_schedule/favorite/uid/[<$activity->aid>]/bids/[<$bids>]" class="favoriteIcon[<if $activity->favorite>] selected[</if>]" onclick="event.stopPropagation();"></a><div title="[<$activity->member_count>]/[<$activity->capacity>]" class="[<$activity->pieClass()>]"></div>
 		[<$activity->aid>]: [<$activity->name_comment_r|escape:html>]
 	</div>
 	<div class="activityInfo [<if $key%2==1>]odd[<else>]even[</if>] [<$activity->displayClass($selected_aid)>]">
