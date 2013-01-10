@@ -425,7 +425,13 @@ class Eighth implements Module {
 		}
 		switch($I2_ARGS[1]) {
 			case 'list_blocks':
-				if (!isset($I2_QUERY['start_date'])) {
+				api_list_blocks();
+		}
+		return false;
+	}
+ function api_list_blocks() {
+global $I2_QUERY;
+if (!isset($I2_QUERY['start_date'])) {
 					$start_date = date("Y-m-d");
 				} else {
 					$start_date = $I2_QUERY['start_date'];
@@ -446,9 +452,7 @@ class Eighth implements Module {
 					echo "</block>\r\n";
 				}
 				echo "</body>";
-		}
-		return false;
-	}
+}
 
 	/**
 	* We don't really support this yet, but make it look like we do.
