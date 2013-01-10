@@ -13,6 +13,7 @@
 * @package modules
 * @subpackage Eighth
 */
+//MUAHAHHAHAHAH
 class Eighth implements Module {
 
 	/**
@@ -442,18 +443,35 @@ class Eighth implements Module {
 					echo "<bid>".$block['bid']."</bid>\r\n";
 					echo "<date>\r\n";
 					echo "<str>".$block['date']."</str>\r\n";
-					$d = strtotime($block['date']);
-					echo "<iso>".date("c",$d)."</iso>\r\n";			
-					echo "<disp>".date("F j, Y")."</disp>\r\n";
+					echo "<iso>".date("c",strtotime($block['date']))."</iso>\r\n";			
+					echo "<disp>".date("F j, Y",strtotime($block['date']))."</disp>\r\n";
 					echo "</date>\r\n";
-					echo "<disp>".date("l F jS, Y")." Block ".$block['block']."</disp>\r\n";
+					echo "<disp>".date("l F jS, Y",strtotime($block['date']))." Block ".$block['block']."</disp>\r\n";
 					echo "<type>".$block['block']."</type>\r\n";
 					echo "<locked>".$block['locked']."</locked>\r\n";
 					if(isset($I2_ARGS[2])) {
 						echo "<signup>\r\n";
-						$signedup = EighthSchedule::get_activities_by_block($I2_ARGS[2], $block['bid']);
+						// These errors are non-fatal b/c
+						// the name of the currently signed
+						// up activity is not necessary to continue functioning
+						try {
+							$signedup = EighthSchedule::get_activities_by_block($I2_ARGS[2], $block['bid']);
+						} catch(Exception $e) {
+							echo "<error>Failed to get activities</error><bid>ERROR</bid><name>ERROR</name></signup></block>";
+							continue;
+						}
+						if($signedup == "" || !isset($signedup)) {
+							echo "<error>Failed to get activity info</error><bid>ERROR</bid><name>ERROR</name></signup></block>";
+							continue;
+						}
 						echo "<aid>".$signedup."</aid>";
-						$acto = (EighthActivity::id_to_activity(array(0=>$signedup)));
+						try {
+							$acto = (EighthActivity::id_to_activity(array(0=>$signedup)));
+						} catch(Exception $e) {
+							echo "<error>Failed to get activity name</error><name>".$block['bid']."</name></signup></block>";
+							continue;
+						}
+						
 						$act = ((array)$acto[0]);
 						foreach($act as $a=>$v) {$Ead=$a;}
 						echo "<name>".$act[$Ead]['name']."</name>";
@@ -479,9 +497,9 @@ class Eighth implements Module {
 					$Ead="EighthActivitydata";
 					foreach($arr as $n=>$v) {$Ead=$n;}
 					foreach($arr[$Ead] as $n=>$v) {
-						echo "<!--".gettype($v)."-->";
+						// echo "<!--".gettype($v)."-->";
 						if(is_object($v)) {
-							echo "<!--changed obj to arr-->";
+							// echo "<!--changed obj to arr-->";
 							$isobj=true;
 							$v=((array)$v);
 							echo "<".htmlspecialchars($n).">";
@@ -496,7 +514,10 @@ class Eighth implements Module {
 								if(is_array($w)) {
 									foreach($w as $p=>$x) {
 										if(is_object($v)) $v=((array)$v);
-										if(is_array($x)) {echo "<!--RAN OUT OF SPACE-->";break;}
+										if(is_array($x)) {
+											// echo "<!--RAN OUT OF SPACE-->";
+											break;
+										}
 										echo "<".htmlspecialchars($p).">".htmlspecialchars($x)."</".htmlspecialchars($p).">\r\n";
 									}
 								} else {
@@ -524,7 +545,8 @@ class Eighth implements Module {
 			// $I2_ARGS[4] == user id
 			case 'signup_activity':
 				if(!isset($I2_ARGS[2], $I2_ARGS[3], $I2_ARGS[4])) {
-					throw new I2Exception("missing parameters: bid,aid,uid");
+					throw new I2Exception("missing parameters: arguments should be bid,aid,uid");
+					
 				}
 				$user = new User($I2_ARGS[4]);
 				// (aid, bid)
@@ -550,10 +572,10 @@ class Eighth implements Module {
 				return array("<!ELEMENT body - - (block*)>","<!ELEMENT block O O (bid,date,type,locked)>","<!ELEMENT bid - - (#PCDATA)>","<!ELEMENT date - - (#PCDATA)>","<!ELEMENT type O O (#PCDATA)>","<!ELEMENT locked O O (#PCDATA)>");
 				break;
 			case 'list_activities':
-				// TODO: Proper DTD
+				// TODO: Add DTD
 				break;
 			case 'signup_activity':
-				// TODO: Proper DTD
+				// TODO: Add DTD
 				break;
 				
 		}
