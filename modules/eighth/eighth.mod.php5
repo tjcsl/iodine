@@ -413,7 +413,7 @@ class Eighth implements Module {
 	}
 
 	/**
-	* We don't really support this yet, but make it look like we do.
+	* Now partially supported! Still work to do.
 	*
 	* @param Display $disp The Display object to IGNORE COMPLETELY. Really don't know why I left it there.
 	*/
@@ -437,14 +437,101 @@ class Eighth implements Module {
 				$blocks = EighthBlock::get_all_blocks($start_date, $daysf);
 				echo "<body>\r\n";
 				foreach($blocks as $block) {
+					
 					echo "<block>\r\n";
 					echo "<bid>".$block['bid']."</bid>\r\n";
-					echo "<date>".$block['date']."</date>\r\n";
+					echo "<date>\r\n";
+					echo "<str>".$block['date']."</str>\r\n";
+					$d = strtotime($block['date']);
+					echo "<iso>".date("c",$d)."</iso>\r\n";			
+					echo "<disp>".date("F j, Y")."</disp>\r\n";
+					echo "</date>\r\n";
+					echo "<disp>".date("l F jS, Y")." Block ".$block['block']."</disp>\r\n";
 					echo "<type>".$block['block']."</type>\r\n";
 					echo "<locked>".$block['locked']."</locked>\r\n";
+					if(isset($I2_ARGS[2])) {
+						echo "<signup>\r\n";
+						$signedup = EighthSchedule::get_activities_by_block($I2_ARGS[2], $block['bid']);
+						echo "<aid>".$signedup."</aid>";
+						$acto = (EighthActivity::id_to_activity(array(0=>$signedup)));
+						$act = ((array)$acto[0]);
+						foreach($act as $a=>$v) {$Ead=$a;}
+						echo "<name>".$act[$Ead]['name']."</name>";
+						echo "</signup>";
+					}
 					echo "</block>\r\n";
 				}
 				echo "</body>";
+				break;
+			// $I2_ARGS[2] == block id
+			case 'list_activities':
+				if (!isset($I2_ARGS[2])) {
+					throw new I2Exception("no block id given");
+				}
+				$acts = EighthActivity::get_all_activities($I2_ARGS[2],FALSE);
+				set_time_limit(2);
+				echo "<activities>\r\n";
+				foreach($acts as $act) {
+					echo "<activity>\r\n";
+					$arr=((array)$act);
+					// for some odd reason $arr['EighthActivitydata']
+					// doesn't work. I have no idea why.
+					$Ead="EighthActivitydata";
+					foreach($arr as $n=>$v) {$Ead=$n;}
+					foreach($arr[$Ead] as $n=>$v) {
+						echo "<!--".gettype($v)."-->";
+						if(is_object($v)) {
+							echo "<!--changed obj to arr-->";
+							$isobj=true;
+							$v=((array)$v);
+							echo "<".htmlspecialchars($n).">";
+						}
+						if(is_array($v)) {
+							foreach($v as $o=>$w) {
+								if(is_object($v)) {
+									$isobj2=true;
+									$w=((array)$w);
+									echo "<".htmlspecialchars($o).">";
+								}
+								if(is_array($w)) {
+									foreach($w as $p=>$x) {
+										if(is_object($v)) $v=((array)$v);
+										if(is_array($x)) {echo "<!--RAN OUT OF SPACE-->";break;}
+										echo "<".htmlspecialchars($p).">".htmlspecialchars($x)."</".htmlspecialchars($p).">\r\n";
+									}
+								} else {
+									echo "<".htmlspecialchars($o).">".htmlspecialchars($w)."</".htmlspecialchars($o).">\r\n";
+								}
+								if(isset($isobj2)) {
+									echo "</".htmlspecialchars(o).">";
+									unset($isobj2);
+								}
+							}
+						} else {
+							echo "<".htmlspecialchars($n).">".htmlspecialchars($v)."</".htmlspecialchars($n).">\r\n";
+						}
+						if(isset($isobj)) {
+							echo "</".htmlspecialchars($n).">";
+							unset($isobj);
+						}
+					}
+					echo "</activity>\r\n";
+				}
+					
+				break;
+			// $I2_ARGS[2] == block id
+			// $I2_ARGS[3] == activity id
+			// $I2_ARGS[4] == user id
+			case 'signup_activity':
+				if(!isset($I2_ARGS[2], $I2_ARGS[3], $I2_ARGS[4])) {
+					throw new I2Exception("missing parameters: bid,aid,uid");
+				}
+				$user = new User($I2_ARGS[4]);
+				// (aid, bid)
+				$activity = new EighthActivity($I2_ARGS[3]);
+				$activity->add_member($user, FALSE, $I2_ARGS[2]);
+				echo "<signup><bid>".$I2_ARGS[2]."</bid><aid>".$I2_ARGS[3]."</aid><uid>".$user->uid."</uid><success>1</success></signup>";
+				break;
 		}
 		return false;
 	}
@@ -461,6 +548,14 @@ class Eighth implements Module {
 		switch($I2_ARGS[1]) {
 			case 'list_blocks':
 				return array("<!ELEMENT body - - (block*)>","<!ELEMENT block O O (bid,date,type,locked)>","<!ELEMENT bid - - (#PCDATA)>","<!ELEMENT date - - (#PCDATA)>","<!ELEMENT type O O (#PCDATA)>","<!ELEMENT locked O O (#PCDATA)>");
+				break;
+			case 'list_activities':
+				// TODO: Proper DTD
+				break;
+			case 'signup_activity':
+				// TODO: Proper DTD
+				break;
+				
 		}
 		return array("<!ELEMENT body O O (#PCDATA)>");
 	}
