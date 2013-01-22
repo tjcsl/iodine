@@ -40,9 +40,21 @@ class BellSchedule implements Module {
 			'schedule' => 'Period 1: 8:30-9:05<br />Period 2: 9:10-9:45<br />Period 3: 9:50-10:25<br />Period 4: 10:30-11:05<br />Lunch: 11:05-11:55<br />Period 5: 11:55-12:30<br />Period 6: 12:35-1:10<br />Period 7: 1:15-1:50'
 		),
 		'telelearnanchor' => array(
-		                        'description' => 'Telelearn Day',
-					                        'schedule' => 'Period 1: 8:30-9:05<br />Period 2: 9:10-9:45<br />Period 3: 9:50-10:25<br />Period 4: 10:30-11:05<br />Lunch: 11:05-11:55<br />Period 5: 11:55-12:30<br />Period 6: 12:35-1:10<br />Period 7: 1:15-1:50'
-								                )
+		    'description' => 'Telelearn Day',
+			'schedule' => 'Period 1: 8:30-9:05<br />Period 2: 9:10-9:45<br />Period 3: 9:50-10:25<br />Period 4: 10:30-11:05<br />Lunch: 11:05-11:55<br />Period 5: 11:55-12:30<br />Period 6: 12:35-1:10<br />Period 7: 1:15-1:50'
+		),
+		'bluemidterm' => array(
+			'description' => 'Blue Day - Adjusted Midterm Schedule',
+			'schedule' => 'Period 1: 8:30-10:30<br />Period 2: 10:40-11:45<br />Period 3: 12:30-2:30<br />Period 4: 2:40-3:50'
+		),
+		'redmidterm' => array(
+			'description' => 'Red Day - Adjusted Midterm Schedule',
+			'schedule' => 'Period 5: 8:30-10:30<br />Period 6: 10:40-11:45<br />Period 7: 12:30-2:30<br />Period 8A: 2:40-3:10<br />Period 8B: 3:20-3:50'
+		),
+		'jlcmidterm' => array(
+			'description' => 'JLC Blue Day - Adjusted Midterm Schedule',
+			'schedule' => 'Period 1: 9:00-9:55<br />Period 2: 10:05-12:05<br />Period 3: 12:45-1:40<br />Period 4: 1:50-3:50'
+		)
 	);
 
 	/**
@@ -165,10 +177,17 @@ class BellSchedule implements Module {
 			// Is any type of schedule set?
 			if(preg_match($regex, $str, $dayTypeMatches) > 0) {
 				// Does it have a day type described?
-				if(preg_match('/SUMMARY:.(Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break)/', $dayTypeMatches[0], $descriptionMatches) > 0||1!=1) {
+				if(preg_match('/SUMMARY:.(Blue Day - Adjusted Schedule for Mid Term Exams|Red Day - Adjusted Schedule for Mid Term Exams|JLC Blue Day - Adjusted Schedule for Mid Term Exams|Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break)/', $dayTypeMatches[0], $descriptionMatches) > 0||1!=1) {
+					
 					if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'||$descriptionMatches[1]=='Winter Break'||$descriptionMatches[1]=='Spring Break'){
 						return array('description' => 'No school', 'schedule' => '');
-					} else{
+					} else if($descriptionMatches[1]=='Blue Day - Adjusted Schedule for Mid Term Exams'){
+						return array('description' => BellSchedule::$normalSchedules['bluemidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['bluemidterm']['schedule']);
+					} else if($descriptionMatches[1]=='Red Day - Adjusted Schedule for Mid Term Exams'){
+						return array('description' => BellSchedule::$normalSchedules['redmidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['redmidterm']['schedule']);
+					} else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
+						return array('description' => BellSchedule::$normalSchedules['jlcmidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['jlcmidterm']['schedule']);
+					}else{
 						return array('description' => $descriptionMatches[1], 'schedule' => BellSchedule::$normalSchedules[strtolower(str_replace(array(' Day',' '),'',$descriptionMatches[1]))]['schedule']);
 					}
 				} else { // If no day type is set, use the default schedule for that day
