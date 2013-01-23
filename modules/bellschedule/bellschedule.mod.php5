@@ -28,7 +28,7 @@ class BellSchedule implements Module {
 			'schedule' => 'Period 1 8:30 - 10:05<br />Period 2 10:15 - 11:45<br />Lunch 11:45 - 12:30<br />Period 3 12:30 - 2:05<br />Break 2:05 - 2:20<br />Period 4 2:20 - 3:50'
 		),
 		'red' => array(
-			'description' => 'Reds Day',
+			'description' => 'Red Day',
 			'schedule' => 'Period 5 8:30 - 10:05<br />Period 6 10:15 - 11:45<br />Lunch 11:45 - 12:30<br />Period 7 12:30 - 2:05<br />Break - 2:05 2:20<br />Period 8A 2:20 - 3:00<br />Period 8B 3:10 - 3:50'
 		),
 		'jlcblue' => array(
@@ -47,13 +47,17 @@ class BellSchedule implements Module {
 			'description' => 'Blue Day - Adjusted Midterm Schedule',
 			'schedule' => 'Period 1: 8:30-10:30<br />Period 2: 10:40-11:45<br />Period 3: 12:30-2:30<br />Period 4: 2:40-3:50'
 		),
-		'redmidterm' => array(
+		'red1midterm' => array(
 			'description' => 'Red Day - Adjusted Midterm Schedule',
 			'schedule' => 'Period 5: 8:30-10:30<br />Period 6: 10:40-11:45<br />Period 7: 12:30-2:30<br />Period 8A: 2:40-3:10<br />Period 8B: 3:20-3:50'
 		),
 		'jlcmidterm' => array(
 			'description' => 'JLC Blue Day - Adjusted Midterm Schedule',
 			'schedule' => 'Period 1: 9:00-9:55<br />Period 2: 10:05-12:05<br />Period 3: 12:45-1:40<br />Period 4: 1:50-3:50'
+		),
+		'red2midterm' => array(
+			'description' => 'Red Day - Adjusted Midterm Schedule',
+			'schedule' => 'Period 5: 8:30-9:35<br />Period 6: 9:45-11:45<br />Period 7: 12:30-1:35<br />Period 8A: 1:50-2:45<br />Period 8B: 2:55-3:50'
 		)
 	);
 
@@ -184,7 +188,11 @@ class BellSchedule implements Module {
 					} else if($descriptionMatches[1]=='Blue Day - Adjusted Schedule for Mid Term Exams'){
 						return array('description' => BellSchedule::$normalSchedules['bluemidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['bluemidterm']['schedule']);
 					} else if($descriptionMatches[1]=='Red Day - Adjusted Schedule for Mid Term Exams'){
-						return array('description' => BellSchedule::$normalSchedules['redmidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['redmidterm']['schedule']);
+						if(date('w')=='5'){
+							return array('description' => BellSchedule::$normalSchedules['red2midterm']['description'], 'schedule' => BellSchedule::$normalSchedules['red2midterm']['schedule']);
+						} else {
+							return array('description' => BellSchedule::$normalSchedules['red1midterm']['description'], 'schedule' => BellSchedule::$normalSchedules['red1midterm']['schedule']);
+						}
 					} else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
 						return array('description' => BellSchedule::$normalSchedules['jlcmidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['jlcmidterm']['schedule']);
 					}else{
