@@ -94,7 +94,8 @@ window.addEventListener("unload", function() {
 var tabInfo = new Object();
 function makeTab(name, value) {
 	if (tabInfo.num == 5) {
-		alert("You can only have 5 tabs.");
+		//alert("You can only have 5 tabs.");
+		console.log("You can only have 5 tabs.");
 		return;
 	}
 

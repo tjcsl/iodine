@@ -57,7 +57,7 @@ class BellSchedule implements Module {
 		),
 		'red2midterm' => array(
 			'description' => 'Red Day - Adjusted Midterm Schedule',
-			'schedule' => 'Period 5: 8:30-9:35<br />Period 6: 9:45-11:45<br />Period 7: 12:30-1:35<br />Period 8A: 1:50-2:45<br />Period 8B: 2:55-3:50'
+			'schedule' => 'Period 6: 8:30-10:30<br />Period 5: 10:40-11:45<br />Period 7: 12:30-1:35<br />Period 8A: 1:50-2:45<br />Period 8B: 2:55-3:50'
 		)
 	);
 

@@ -210,6 +210,9 @@
 		display: inline;
 	}
 }
+.ib_toggle {
+	display: none;
+}
 /*@media (max-width:790px) {
 	.boxes {
 		display:none;
