@@ -194,7 +194,7 @@ class BellSchedule implements Module {
 							return array('description' => BellSchedule::$normalSchedules['red1midterm']['description'], 'schedule' => BellSchedule::$normalSchedules['red1midterm']['schedule']);
 						}
 					} else if($descriptionMatches[1]=='AMC Blue Day'){
-						return array('description' => 'AMC Blue Day', 'schedule' => 'AMC/Study Hall: 8:30 - 10:00<br />Period 1: 10:10-11:20<br />Lunch: 11:20-12:00<br />Period 2: 12:00-1:10<br />Period 3: 1:20 - 2:30<br />Period 4: 2:40 - 3:50');
+						return array('description' => 'AMC Blue Day', 'schedule' => 'AMC/Study Hall: 8:30 - 10:00<br />Period 1: 10:10 - 11:20<br />Lunch: 11:20 - 12:00<br />Period 2: 12:00 - 1:10<br />Period 3: 1:20 - 2:30<br />Period 4: 2:40 - 3:50');
 					
 					}else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
 						return array('description' => BellSchedule::$normalSchedules['jlcmidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['jlcmidterm']['schedule']);
