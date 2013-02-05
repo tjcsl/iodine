@@ -21,19 +21,19 @@ class BellSchedule implements Module {
 	private static $normalSchedules = array(
 		'anchor' => array(
 			'description' => 'Anchor Day',
-			'schedule' => 'Period 1 8:30 - 9:15<br />Period 2 9:25 - 10:05<br />Period 3 10:15 - 10:55<br />Period 4 11:05 - 11:45<br />Lunch 11:45 - 12:35<br />Period 5 12:35 - 1:15<br />Period 6 1:25 - 2:05<br />Period 7 2:15 - 2:55<br />Break 2:55 - 3:10<br />Period 8 3:10 - 3:50'
+			'schedule' => 'Period 1: 8:30 - 9:15<br />Period 2: 9:25 - 10:05<br />Period 3: 10:15 - 10:55<br />Period 4: 11:05 - 11:45<br />Lunch: 11:45 - 12:35<br />Period 5: 12:35 - 1:15<br />Period 6: 1:25 - 2:05<br />Period 7: 2:15 - 2:55<br />Break: 2:55 - 3:10<br />Period 8: 3:10 - 3:50'
 		),
 		'blue' => array(
 			'description' => 'Blue Day',
-			'schedule' => 'Period 1 8:30 - 10:05<br />Period 2 10:15 - 11:45<br />Lunch 11:45 - 12:30<br />Period 3 12:30 - 2:05<br />Break 2:05 - 2:20<br />Period 4 2:20 - 3:50'
+			'schedule' => 'Period 1: 8:30 - 10:05<br />Period 2: 10:15 - 11:45<br />Lunch: 11:45 - 12:30<br />Period 3: 12:30 - 2:05<br />Break: 2:05 - 2:20<br />Period 4: 2:20 - 3:50'
 		),
 		'red' => array(
 			'description' => 'Red Day',
-			'schedule' => 'Period 5 8:30 - 10:05<br />Period 6 10:15 - 11:45<br />Lunch 11:45 - 12:30<br />Period 7 12:30 - 2:05<br />Break - 2:05 2:20<br />Period 8A 2:20 - 3:00<br />Period 8B 3:10 - 3:50'
+			'schedule' => 'Period 5: 8:30 - 10:05<br />Period 6: 10:15 - 11:45<br />Lunch: 11:45 - 12:30<br />Period 7: 12:30 - 2:05<br />Break: 2:05 - 2:20<br />Period 8A: 2:20 - 3:00<br />Period 8B: 3:10 - 3:50'
 		),
 		'jlcblue' => array(
 			'description' => 'JLC Blue Day',
-			'schedule' => 'JLC 8:00 - 8:55<br />Period 1 9:00 - 10:28<br />Period 2 10:37 - 12:05<br />Lunch 12:05 - 12:45<br />Period 3 12:45 - 2:13<br />Break 2:13 - 2:22<br />Period 4 2:22 - 3:50'
+			'schedule' => 'JLC: 8:00 - 8:55<br />Period 1: 9:00 - 10:28<br />Period 2: 10:37 - 12:05<br />Lunch: 12:05 - 12:45<br />Period 3: 12:45 - 2:13<br />Break: 2:13 - 2:22<br />Period 4: 2:22 - 3:50'
 		),
 		'telelearn' => array(
 			'description' => 'Telelearn Day',
@@ -181,7 +181,7 @@ class BellSchedule implements Module {
 			// Is any type of schedule set?
 			if(preg_match($regex, $str, $dayTypeMatches) > 0) {
 				// Does it have a day type described?
-				if(preg_match('/SUMMARY:.(Blue Day - Adjusted Schedule for Mid Term Exams|Red Day - Adjusted Schedule for Mid Term Exams|JLC Blue Day - Adjusted Schedule for Mid Term Exams|Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break)/', $dayTypeMatches[0], $descriptionMatches) > 0||1!=1) {
+				if(preg_match('/SUMMARY:.(Blue Day - Adjusted Schedule for Mid Term Exams|Red Day - Adjusted Schedule for Mid Term Exams|JLC Blue Day - Adjusted Schedule for Mid Term Exams|AMC Blue Day|Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break)/', $dayTypeMatches[0], $descriptionMatches) > 0||1!=1) {
 					
 					if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'||$descriptionMatches[1]=='Winter Break'||$descriptionMatches[1]=='Spring Break'){
 						return array('description' => 'No school', 'schedule' => '');
@@ -193,7 +193,10 @@ class BellSchedule implements Module {
 						} else {
 							return array('description' => BellSchedule::$normalSchedules['red1midterm']['description'], 'schedule' => BellSchedule::$normalSchedules['red1midterm']['schedule']);
 						}
-					} else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
+					} else if($descriptionMatches[1]=='AMC Blue Day'){
+						return array('description' => 'AMC Blue Day', 'schedule' => 'AMC/Study Hall: 8:30 - 10:00<br />Period 1: 10:10-11:20<br />Lunch: 11:20-12:00<br />Period 2: 12:00-1:10<br />Period 3: 1:20 - 2:30<br />Period 4: 2:40 - 3:50');
+					
+					}else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
 						return array('description' => BellSchedule::$normalSchedules['jlcmidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['jlcmidterm']['schedule']);
 					}else{
 						return array('description' => $descriptionMatches[1], 'schedule' => BellSchedule::$normalSchedules[strtolower(str_replace(array(' Day',' '),'',$descriptionMatches[1]))]['schedule']);
