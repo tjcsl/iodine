@@ -224,9 +224,10 @@
 	}
 }
 
-@media (max-width:400px) {
+@media (max-width:600px) {
         form[name=activities] {
-		zoom: 0.7;
+		//zoom: 0.7;
+		overflow-x: scroll;
 	}
 }
 
