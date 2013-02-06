@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
-	<meta name="Description" content="TJHSST Intranet2: What you need, when you need it." />
+	<meta name="Description" content="The TJ Intranet allows students at the Thomas Jefferson High School for Science and Technology to sign up for activities, access their school files and perform other tasks." />
 	
 	<!-- zoom in mobile browsers -->
 	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=1">
@@ -53,7 +53,7 @@
 		<br />
 		<br />
 		
-		<form name="login_form" action="[<$I2_SELF>]" method="post">
+		<form name="login_form" action="[<$I2_SELF|escape>]" method="post">
 			[<$posts>]
 			<label for="login_username">Username</label>
 			<br />
