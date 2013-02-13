@@ -130,9 +130,11 @@ class Info implements Module {
 		
 		if(isset($I2_ARGS[1])) {
 			$arr = array_slice($I2_ARGS, 1);
+			$mainhelppage = false;
 		} else {
 			// They might have hit 'help' when on the main page, when there are no arguments, so load the help for their startpage
 			$arr = array($I2_USER->startpage);
+			$mainhelppage = true;
 		}
 		
 		$last_try = FALSE;
@@ -146,7 +148,6 @@ class Info implements Module {
 			if(Display::is_template('info/'.$this->info_tpl)) {
 				break;
 			}
-			
 			if(array_pop($arr) === NULL) {
 				$this->info_tpl = 'error.tpl';
 				break;
@@ -155,6 +156,8 @@ class Info implements Module {
 			
 		if(isset($I2_ARGS[1])) {
 			return 'Iodine Info: '.ucfirst($I2_ARGS[1]);
+		}else if($mainhelppage) {
+			return;
 		}
 		return 'Error';
 	}
