@@ -28,7 +28,7 @@
 	<script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 	<![endif]-->
 </head>
-<body background="[<$I2_ROOT>][<$bg>]">
+<body background="[<$I2_ROOT>][<$bg>]" onLoad="document.forms.login_form.login_username.focus()">
 	<div class="pane" id="mainPane">
 		<a id="logo" href="">Intranet</a>
 		
@@ -57,7 +57,7 @@
 			[<$posts>]
 			<label for="login_username">Username</label>
 			<br />
-			<input name="login_username" id="login_username" type="text" size="25" value="[<$uname|escape>]" />
+			<input name="login_username" id="login_username" type="text" size="25" value="[<$uname|escape>]"/>
 			<br />
 			<br />
 			<label for="login_password">Password</label>
