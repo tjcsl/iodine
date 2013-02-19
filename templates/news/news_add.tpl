@@ -23,7 +23,7 @@
     <td width="1%">
      <select id="groups" class="groups_list" name="add_groups[]">
       [<foreach from=$groups item=group>]
-      	<option value="[<$group->gid>]">[<$group->name>]</option>
+      	<option value="[<$group->gid>]" [<if $group->name == 'all'>]SELECTED[</if>]>[<$group->name>]</option>
       [</foreach>]
      </select>
     </td>
