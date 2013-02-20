@@ -342,7 +342,11 @@ function tempname($prefix, $suffix='') {
 */
 function i2_mail($to, $subject, $message_content, $news=false) {
 	$date = date("r",time());
-	$separator = "--MAIL-" . md5($message_content."_".$to."_".$date);	
+	if(gettype($to)=="array") {
+		$separator = "--MAIL-" . md5($message_content."_".$to[0]."_".$date);
+	} else if($to) {
+		$separator = "--MAIL-" . md5($message_content."_".$to."_".$date);
+	}
 
 	$from = "TJHSST Intranet <".i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion').">";
 	if($news)
@@ -366,12 +370,15 @@ function i2_mail($to, $subject, $message_content, $news=false) {
 	$message .= $message_content;
 	$message .= "\r\n--".$separator."--"; // end with separator, make amavis happy
 
+
+	$root = i2config_get('root_path', '/var/wwww/iodine/', 'core');
+	
 	if(gettype($to)=="array") {
 		foreach($to as $mail) {
-			mail($mail,$subject,$message,$headers);
+			system("php ".$root."bin/mailsender.php5 ".escapeshellarg($mail)." ".escapeshellarg($subject)." ".escapeshellarg($message)." ".escapeshellarg($headers)." 1>/dev/null 2>&1 &");
 		}
 	} else if($to) {
-		mail($to,$subject,$message,$headers);
+		system("php ".$root."bin/mailsender.php5 ".escapeshellarg($to)." ".escapeshellarg($subject)." ".escapeshellarg($message)." ".escapeshellarg($headers)." 1>/dev/null 2>&1 &");
 	}	// if there's no $to... well, derp?
 }
 
