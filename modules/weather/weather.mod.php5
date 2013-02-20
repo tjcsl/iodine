@@ -19,7 +19,7 @@ class Weather implements Module {
 		}
 		$this->template_args=unserialize($I2_CACHE->read($this,'template_args'));
 		if($this->template_args===false) {
-			$connection = @fsockopen($server, $port, $errno, $errstr);
+			$connection = @fsockopen($server, $port, $errno, $errstr,1);
 			// We don't assume that weather is always up.
 			if (!$connection) {
 				$this->template_args['data'] = 0;
