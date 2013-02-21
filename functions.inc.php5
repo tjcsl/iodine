@@ -342,6 +342,8 @@ function tempname($prefix, $suffix='') {
 */
 function i2_mail($to, $subject, $message_content, $news=false) {
 	$date = date("r",time());
+	$separator = "";
+
 	if(gettype($to)=="array") {
 		$separator = "--MAIL-" . md5($message_content."_".$to[0]."_".$date);
 	} else if($to) {
