@@ -227,9 +227,10 @@ class Logging {
 		if ($level > $this->debug_loglevel) {
 			return;
 		}
-		fprintf($this->debug_log,$msg."\n");
+		fprintf($this->debug_log,"%s\n",$msg);
 		fflush($this->debug_log);
 	}
+
 
 	/**
 	* Logs a message to the screen.
