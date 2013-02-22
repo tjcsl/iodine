@@ -48,7 +48,7 @@ class GroupLDAP {
 			}
 		}
 
-		if(is_array($group) {
+		if(is_array($group)) {
 			$this->mygid = $group['gid'];
 			$this->myname = $group['name'];
 			$this->mydescription = $group['description'];
