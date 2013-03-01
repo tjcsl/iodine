@@ -5,10 +5,26 @@
 * @subpackage weather
 */
 
+/**
+* The Weather class
+* @package modules
+* @subpackage weather
+*/
 class Weather implements Module {
 
+	/**
+	* Holds the processed weather data
+	*/
 	private $template_args = array();
+	/**
+	* Holds the raw data from the weather station
+	*/
 	private $data;
+	/**
+	* Process raw data from weather
+	* @param string $server The weather server
+	* @param int $port The post to use
+	*/
 
 	private function makeData($server = 'weather.tjhsst.edu', $port=8889) {
 		global $I2_CACHE;
@@ -61,8 +77,6 @@ class Weather implements Module {
 
 	/**
 	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
 	*/
 	function init_mobile() {
 		return FALSE;
@@ -116,30 +130,48 @@ class Weather implements Module {
 		return false;
 	}
 
+	/**
+	* Setup the weather intrabox
+	* @return string Title
+	*/
 	public function init_box() {
 		$this->makeData();
 		return 'Current Weather at TJ';
 	}
 
+	/**
+	* Show the weather template
+	* @param Display $disp The Display object to use for output.
+	*/
 	public function display_box($disp) {
 		$disp->disp('weather_box.tpl', $this->template_args);
 	}
 	
 	/**
-	* I2_ARGS accepted:
+	* Required by the {@link Module} interface.
 	*/
 	public function init_pane() {
 		return FALSE;
 	}
 	
+	/**
+	* Required by the {@link Module} interface.
+	* @param Display $disp The Display object to use for output.
+	*/
 	function display_pane($disp) {
 		global $I2_ARGS;
 	}
 
+	/**
+	* Required by the {@link Module} interface.
+	*/
 	function get_name() {
 		return 'weather';
 	}
 
+	/**
+	* Required by the {@link Module} interface.
+	*/
 	function is_intrabox() {
 		return true;
 	}
