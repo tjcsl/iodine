@@ -1040,7 +1040,7 @@ class EighthActivity {
 					$commentlen = 0;
 					$comment = '';
 				}
-				return (isset($this->data['special']) ? 'SPECIAL: ' : '') . $this->data['name'] . ($commentlen ? ' - ' . substr($comment,0,70-$namelen).(70-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
+				return ($this->data['special'] ? 'SPECIAL: ' : '') . $this->data['name'] . ($commentlen ? ' - ' . substr($comment,0,70-$namelen).(70-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
 			case 'name_comment_r':
 				if (isSet($this->data['comment'])) {
 					$comment = $this->data['comment'];
