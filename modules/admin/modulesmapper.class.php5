@@ -52,6 +52,10 @@ class ModulesMapper {
 			error("Error! Could not process modules directory $module_path");
 		}
 
+		if (!file_exists($cache_dir) && !mkdir($cache_dir)) {
+			error("Error! Could not create $cache_dir");
+		}
+
 		if (file_exists($map_file) && !unlink($map_file)) {
 			error("Error! Could not delete $map_file");
 		}

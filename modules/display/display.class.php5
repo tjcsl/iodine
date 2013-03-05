@@ -93,6 +93,10 @@ class Display {
 
 		$this->my_module_name = $module_name;
 
+		if(!file_exists($this->smarty->compile_dir) && !mkdir($this->smarty->compile_dir)) {
+			error("Error! Could not create $this->smarty->compile_dir");
+		}
+
 		if ($module_name == 'core') {
 			self::$core_display = $this;
 		}
