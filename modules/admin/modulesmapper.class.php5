@@ -9,6 +9,7 @@
 */
 
 /**
+* Generates modules map
 * @package modules
 * @subpackage Admin
 */

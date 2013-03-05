@@ -1,6 +1,6 @@
 <?php
-
 /**
+* Provides a modular search-info plug-in which may be used in other components.
 * @author The Intranet 2 Development Team <intranet2@thsst.edu>
 * @copyright 2006 The Intranet 2 Development Team
 * @since 1.0
@@ -11,7 +11,6 @@
 
 /**
 * Provides a modular search-info plug-in which may be used in other components. 
-*
 * @package modules
 * @subpackage info
 */
