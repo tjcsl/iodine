@@ -52,6 +52,7 @@ class Display {
 	private static $core_display = NULL;
 	
 	/**
+	* Whether to display anything.
 	* @access private
 	*/
 	private static $display_stopped = FALSE;

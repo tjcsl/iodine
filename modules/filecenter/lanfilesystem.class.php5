@@ -5,11 +5,13 @@
 * @package modules
 * @subpackage Filecenter
 * @filesource
+* Implements {@link Filesystem} for novell
 */
 
 /**
 * @package modules
 * @subpackage Filecenter
+* Implements {@link Filesystem} for novell
 */
 class LANFilesystem extends Filesystem {
 

@@ -6,11 +6,13 @@
 * @package modules
 * @subpackage CSS
 * @filesource
+* Handles CSS
 */
 
 /**
 * @package modules
 * @subpackage CSS
+* Handles CSS
 */
 class CSS implements Module {
 

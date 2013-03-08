@@ -5,11 +5,13 @@
 * @package modules
 * @subpackage Filecenter
 * @filesource
+* Handles the various filesystems
 */
 
 /**
 * @package modules
 * @subpackage Filecenter
+* Handles the various filesystems
 */
 class Filecenter implements Module {
 

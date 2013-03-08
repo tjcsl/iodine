@@ -2,11 +2,13 @@
 /**
 * @package core
 * @subpackage Display
+* Contains Ajax support
 */
 
 /**
 * @package core
 * @subpackage Display
+* Contains Ajax support
 */
 class Ajax {
 	/**

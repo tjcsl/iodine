@@ -23,7 +23,7 @@ class User {
 	private static $cache = array();
 	
 	/**
-	*
+	* Contains the user's uid
 	*/
 	private static $usernametouid = array();
 

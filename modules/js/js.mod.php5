@@ -4,11 +4,13 @@
 * @package modules
 * @subpackage JS
 * @filesource
+* Supports theme-specific javascript
 */
 
 /**
 * @package modules
 * @subpackage JS
+* Supports theme-specific javascript
 */
 // This is to allow for theme-specific javascript
 // Note that most of this is copied from css.mod.php5
