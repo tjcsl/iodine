@@ -39,6 +39,7 @@ cp scripts/commit.tj commit
 chmod +x commit
 echo "./commit created"
 if [ ! -d "$HOME/web-docs/i2" ] ; then
+	mkdir -p ${HOME}/web-docs
 	ln -s ../intranet2 ${HOME}/web-docs/i2
 	echo "Symlink from ~/web-docs/i2 to ~/intranet2 created"
 fi
