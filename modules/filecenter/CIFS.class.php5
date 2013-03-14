@@ -120,7 +120,7 @@ class CIFS extends Filesystem {
 	 */
 	public static function umount($mount_point) {
 		d("Unmounting $mount_point");
-		exec("/usr/bin/umount.cifs $mount_point",$out,$status);
+		exec("/bin/umount $mount_point",$out,$status);
 		d("Unmount status: $status");
 
 		if($status == "0") {
