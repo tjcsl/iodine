@@ -131,6 +131,7 @@ class Docs implements Module {
 		if($doc->can_see()) {
 			$size=filesize("$doc->path");
 			$begin=0;
+			$cur=0;
 			$end=$size;
 			$filename = substr(strrchr($doc->path,'/'),1);
 			if(isset($_SERVER['HTTP_RANGE'])) {
