@@ -43,7 +43,6 @@ class Auth {
 	*/
 	public function __construct() {	
 		global $I2_ARGS;
-
 		$this->encryption = i2config_get('pass_encrypt',1,'core');
 
 		if($this->encryption && !function_exists('mcrypt_module_open')) {
@@ -275,7 +274,7 @@ class Auth {
 		 * @returns bool Whether or not the user has successfully logged in.
 		 */
 		public function login() {
-			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $modauth_loginfailed;
+			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $modauth_loginfailed, $I2_QUERY;
 
 			// the log function uses this to tell if the login was successful
 			// if login fails, something else will set it
@@ -332,12 +331,33 @@ class Auth {
 			$imagearr = self::getSpecialBG();
 			$image = $imagearr[0];
 			$imagejs = $imagearr[1];
-
+			$url_prefix = "www/pics/logins/";
+			if(isset($I2_QUERY['background']) && !strstr($I2_QUERY['background'], "..") && $I2_QUERY['background'] !== 'random') {
+				d("Custom background set in query: ".$I2_QUERY['background'], 8);
+				$image = $url_prefix.$I2_QUERY['background'];
+				$_COOKIE['background'] = $I2_QUERY['background'];
+				setcookie("background", $I2_QUERY['background'], time()+60*60*24*30);
+			} 
+			if(isset($_COOKIE['background']) && !strstr($_COOKIE['background'], "..") && $_COOKIE['background'] !== 'random') {
+				d("Custom background loaded from cookie: ".$_COOKIE['background'], 8);
+				$image = $url_prefix.$_COOKIE['background'];
+			}
+			if(isset($_COOKIE['background']) && (isset($I2_QUERY['background']) && $I2_QUERY['background'] == 'random')) {
+				setcookie("background", "", time()-3600);
+				unset($_COOKIE['background']);
+			}
+			d("{$image} does ".file_exists($I2_FS_ROOT . $image)." exist", 8);
+			if(isset($image) && !@file_exists($I2_FS_ROOT . $image)) {
+				d("Background image ({$image}) did not exist.", 8);
+				unset($image);
+				setcookie("background", "", time()-3600);
+				unset($_COOKIE['background']);
+			}
 			// if no special image, get a random normal one
 			if (! isset($image)) {
 
 				$images = array();
-				$dirpath = $I2_FS_ROOT . 'www/pics/logins';
+				$dirpath = $I2_FS_ROOT . $url_prefix;
 				$dir = opendir($dirpath);
 				while ($file = readdir($dir)) {
 					if (! is_dir($dirpath . '/' . $file)) {
@@ -345,7 +365,8 @@ class Auth {
 					}
 				}
 
-				$image = 'www/pics/logins/' . $images[rand(0,count($images)-1)];
+				$image = $url_prefix . $images[rand(0,count($images)-1)];
+				d("Using random background image {$image}", 8);
 			}
 
 			// Show the login box
@@ -373,6 +394,7 @@ class Auth {
 			}
 			$template_args['posts']=$str;
 			$disp = new Display('login');
+			$disp->smarty_assign('backgrounds', self::get_background_images());
 			if(isset($I2_ARGS[1]) && $I2_ARGS[1]=='api') {
 				$disp->disp('login_api.tpl', $template_args);
 			} else {
@@ -382,6 +404,23 @@ class Auth {
 			}
 
 			return FALSE;
+	}
+	/**
+	* Gets all of the background images that can be used on Iodine.
+	*
+	* @return Array An array containing the URLs of pictures in www/pics/logins.
+	*/
+	public function get_background_images() {
+		global $I2_FS_ROOT;
+			$images = array();
+			$dirpath = $I2_FS_ROOT . 'www/pics/logins';
+			$dir = opendir($dirpath);
+			while ($file = readdir($dir)) {
+				if (! is_dir($dirpath . '/' . $file)) {
+					$images[] = $file;
+				}
+			}
+		return $images;
 	}
 	
 	/**

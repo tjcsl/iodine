@@ -1,10 +1,12 @@
 function enable_creffet() {
 	s=document.createElement('link');
-	s.rel='stylesheet';
-	s.type='text/css';
-	s.href='/~2016jwoglom/i2/www/extra-css/fire.css';
+	s.rel='stylesheet';s.type='text/css';s.href='/~2016jwoglom/i2/www/extra-css/fire.css';
 	document.body.appendChild(s);
 	document.body.className='fire';
+	a=document.getElementsByTagName('a');
+	for(i=0;i<a.length;i++) {
+		if(typeof a[i].href!=='undefined') a[i].href+=(a[i].href.indexOf('?')!==-1?'&':'?')+'creffet=1';
+	}
 }
 function getQueryVariable(variable) {
     var query = window.location.search.substring(1);
@@ -18,7 +20,7 @@ function getQueryVariable(variable) {
     console.log('Query variable %s not found', variable);
 	return false;
 }
-function common_load() {
-	if(getQueryVariable('creffet')!=false) setTimeout(function() {enable_creffet();}, 1000);
+function common_init() {
+	if(getQueryVariable('creffet')!=false) enable_creffet();
 	
 }

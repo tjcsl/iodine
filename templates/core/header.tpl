@@ -19,7 +19,6 @@
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/common.js"></script>
-<script type="text/javascript">common_load();</script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/collapse.js"></script>
 <script type="text/javascript" src="[<$I2_JS>]" ></script>
 <script type="text/javascript">
@@ -29,10 +28,14 @@ var username="[<$I2_USER->username>]";
 var name="[<$I2_USER->name>]";
 var fullname="[<$I2_USER->fullname>]";
 var userid=[<$I2_USER->iodineUIDNumber>];
+prep_init = function() {
+	common_init(); // common js
+	page_init(); // theme js
+}
 if(!!window.addEventListener) {
-	window.addEventListener("load", page_init, false);
+	window.addEventListener("load", prep_init, false);
 } else {
-	window.onload = page_init;
+	window.onload = prep_init;
 }
 </script>
 <link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />

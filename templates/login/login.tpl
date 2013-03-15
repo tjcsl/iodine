@@ -17,6 +17,21 @@
 	<script type="text/javascript">
 	//Set some variables so that any script can use them.
 	var i2root="[<$I2_ROOT>]";
+	
+	function parse_bgs() {
+		try {
+			bid = window.location.search.split('bid=')[1];
+		} catch(e) {}
+		try {
+			bid = (function(){for(i in j=(c=document.cookie).split(';')) if((k=j[i].split('='))[0]=='background'&&!!k[1]) for(l=0;l<(m=document.getElementsByTagName('optgroup')[1].children).length;l++) if(unescape(m[l].value)==unescape(k[1])) return m[l].id.split('bg')[1];})();
+		} catch(e) {}
+		if(typeof bid !== 'undefined' && typeof document.getElementById('bg'+bid) !== 'undefined') {
+			document.getElementById('bg'+bid).setAttribute('selected', true);
+		} else {
+			document.getElementById('bg0').setAttribute('selected', true);
+		}
+	}
+	
 	</script>
 	[<if isset($bgjs)>]
 	<script type="text/javascript" src="[<$I2_ROOT>][<$bgjs>]"></script>
@@ -28,7 +43,7 @@
 	<script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 	<![endif]-->
 </head>
-<body background="[<$I2_ROOT>][<$bg>]" onLoad="document.forms.login_form.login_username.focus()">
+<body background="[<$I2_ROOT>][<$bg|escape>]" onLoad="document.forms.login_form.login_username.focus()">
 	<div class="pane" id="mainPane">
 		<a id="logo" href="">Intranet</a>
 		
@@ -42,7 +57,7 @@
 		</div>
 		[<elseif $failed>]
 		<div id="login_failed">
-			An unidentified error has occurred.  Please contact the Intramaster and tell him you received this error message.
+			An unidentified error has occurred.  Please contact the Intranetmaster and tell him you received this error message.
 		</div>
 		[<else>]
 		<div>
@@ -89,6 +104,28 @@
 			<li><a href="http://postman.tjhsst.edu" target="_blank">Calendar</a></li>
 			<!--<li><a href="http://www.tjhsst.edu/studentlife/publications/tjtoday" target="_blank">tjTODAY</a></li>-->
 		</ul>
+		<br />
+		<form action="[<$I2_SELF|escape>]" method="get">
+			<select name="background" onchange="this.form.bid.value=this.options[this.selectedIndex].id.split('bg')[1];this.form.submit()">
+				<optgroup label="Change your background image:">
+					<option value="random" id="bg0">Surprise me!</option>
+				</optgroup>
+				<optgroup>
+					[<assign var=num value=0>]
+					[<foreach from=$backgrounds item=b>]
+						[<assign var=num value=$num+1>]
+						[<assign var=name value="."|explode:$b>]
+						<option value="[<$b|escape>]" id="bg[<$num>]">[<$name[0]|escape>]</option>
+					[</foreach>]
+					
+				</optgroup>
+			</select>
+			<input type="hidden" name="bid" value="0">
+			<noscript><input type="submit" value="Change Background" /></noscript>
+		</form>
+		<script type="text/javascript">
+		parse_bgs();
+		</script>
 	</div>
 
 	<!-- Chrome app notification -->
@@ -113,3 +150,4 @@
 		document.login_form.login_username.focus();
 		//-->
 	</script>
+	
