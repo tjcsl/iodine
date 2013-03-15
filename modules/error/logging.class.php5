@@ -77,28 +77,28 @@ class Logging {
 		/* If not defined in config.ini, the log paths are absolute. */
 		$log_dir = i2config_get('log_dir', NULL, 'logging');
 		if($log_dir === NULL) {
-			$debug_file = i2config_get('debug_log');
-			$access_file = i2config_get('access_log');
-			$error_file = i2config_get('error_log');
-			$auth_file = i2config_get('auth_log');
+			$this->debug_log = i2config_get('debug_log');
+			$this->access_log = i2config_get('access_log');
+			$this->error_log = i2config_get('error_log');
+			$this->auth_log = i2config_get('auth_log');
 		} else { 
-			$debug_file = $log_dir . i2config_get('debug_log','iodine-debug.log','logging');
-			$access_file = $log_dir . i2config_get('access_log','iodine-access.log','logging');
-			$error_file = $log_dir . i2config_get('error_log','iodine-error.log','logging');
-			$auth_file = $log_dir . i2config_get('auth_log','iodine-auth.log','logging');
+			$this->debug_log = $log_dir . i2config_get('debug_log','iodine-debug.log','logging');
+			$this->access_log = $log_dir . i2config_get('access_log','iodine-access.log','logging');
+			$this->error_log = $log_dir . i2config_get('error_log','iodine-error.log','logging');
+			$this->auth_log = $log_dir . i2config_get('auth_log','iodine-auth.log','logging');
 		}
 		
-		if (!$access_file || !($this->access_log = fopen($access_file, 'a'))) {
+		if (!is_writable($this->access_log)) {
 			$I2_ERR->fatal_error('The main iodine access log cannot be accessed.');
 		}
 		$this->log_access();
-		if (!$debug_file || !($this->debug_log = fopen($debug_file, 'a'))) {
+		if (!is_writable($this->debug_log)) {
 			$I2_ERR->fatal_error('The main iodine debug log cannot be accessed.');
 		}
-		if (!$error_file || !($this->error_log = fopen($error_file, 'a'))) {
+		if (!is_writable($this->error_log)) {
 			$I2_ERR->fatal_error('The main iodine error log cannot be accessed.');
 		}
-		if (!$auth_file || !($this->auth_log = fopen($auth_file, 'a'))) {
+		if (!is_writable($this->auth_log)) {
 			$I2_ERR->fatal_error('The main iodine authentication log cannot be accessed.');
 		}
 		$this->default_debug_level = i2config_get('default_debug_level', 0, 'logging');
@@ -109,13 +109,6 @@ class Logging {
 		register_shutdown_function(array($this, 'flush_debug_output'));
 	}
 
-	public function __destruct() {
-		fclose($this->debug_log);
-		fclose($this->access_log);
-		fclose($this->auth_log);
-		fclose($this->error_log);
-	}
-
 	/**
 	* Records an entry in the access log. This is called on every page load
 	* that does not crash before the Logging object is instantiated.
@@ -124,13 +117,14 @@ class Logging {
 	* 'IP - username - [Apache-style date format] "Request" "Referrer" "User-Agent"'.
 	*/
 	public function log_access() {
-		fwrite($this->access_log,
+		file_put_contents($this->access_log,
 			$_SERVER['REMOTE_ADDR'] . ' - ' .
 			(isset($_SESSION['i2_username'])?$_SESSION['i2_username']:'not_logged_in') . ' - [' .
 			date('d/M/Y:H:i:s O') . '] "' .
 			$_SERVER['REQUEST_URI'] . '" "' .
 			(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'') . '" "' .
-			(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'') . '"' ."\n"
+			(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'') . '"' ."\n",
+			FILE_APPEND
 		);
 	}
 
@@ -155,12 +149,13 @@ class Logging {
 			}
 		}
 		
-		fwrite($this->error_log,
+		file_put_contents($this->error_log,
 			$_SERVER['REMOTE_ADDR'] . ' - [' .
 			@date('d/M/Y:H:i:s O') . '] [' .
 			implode($trace_arr, ',') . '] "' .
 			$_SERVER['REQUEST_URI'] . '" "' .
-			$msg . '"' ."\n"
+			$msg . '"' ."\n",
+			FILE_APPEND
 		);
 
 		$this->error_buf .= "\r\n<p>$msg</p>";
@@ -214,7 +209,10 @@ class Logging {
 	 * @param string $msg The message to log.
 	 */
 	function log_auth($msg) {
-		fwrite($this->auth_log, $msg."\n");
+		file_put_contents($this->error_log,
+			$msg."\n",
+			FILE_APPEND
+		);
 	}
 
 	/**
@@ -227,8 +225,10 @@ class Logging {
 		if ($level > $this->debug_loglevel) {
 			return;
 		}
-		fprintf($this->debug_log,"%s\n",$msg);
-		fflush($this->debug_log);
+		file_put_contents($this->error_log,
+			$msg."\n",
+			FILE_APPEND
+		);
 	}
 
 
