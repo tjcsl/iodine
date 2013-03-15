@@ -260,7 +260,7 @@ In a relationship with:
 </tr>[</if>]
 <tr>
  <td><input type="checkbox" onclick="window.location=(typeof i2root!=='undefined'?i2root:'/')+'?creffet=1'" /></td>
- <td><label>Enable creffet mode</label></td>
+ <td><label>Enable creffett mode</label></td>
 </tr>
 [</if>]
 </table>
