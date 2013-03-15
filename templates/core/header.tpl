@@ -18,7 +18,8 @@
 <title>TJHSST Intranet2[<if $title != "" >]: [<$title>][</if>]</title>
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
-
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/common.js"></script>
+<script type="text/javascript">common_load();</script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/collapse.js"></script>
 <script type="text/javascript" src="[<$I2_JS>]" ></script>
 <script type="text/javascript">
