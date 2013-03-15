@@ -1,0 +1,1 @@
+There is currently an issue with the Iodine implementation of Mail. The problem will be fixed soon.<br />In the meantime, log in to <a href='http://webmail.tjhsst.edu'>webmail</a> to access your messages.
