@@ -5,11 +5,13 @@
 * @package modules
 * @subpackage Filecenter
 * @filesource
+* Implements {@link Filesystem} for windows shares
 */
 
 /**
 * @package modules
 * @subpackage Filecenter
+* Implements {@link Filesystem} for windows shares
 */
 class CIFS extends Filesystem {
 
@@ -102,7 +104,7 @@ class CIFS extends Filesystem {
 				throw new I2Exception("sudo /sbin/mount.cifs exited with status $retval, command was (sudo /sbin/mount.cifs //{$this->server}/{$this->share} $mount_point -o username=\"$user\"), Command Output was ($outputstring)");
 			}
 		} else {
-			throw new I2Exception("falied to start /sbin/mount.cifs process");
+			throw new I2Exception("failed to start /sbin/mount.cifs process");
 		}
 
 
@@ -118,7 +120,7 @@ class CIFS extends Filesystem {
 	 */
 	public static function umount($mount_point) {
 		d("Unmounting $mount_point");
-		exec("/usr/bin/umount.cifs $mount_point",$out,$status);
+		exec("/bin/umount $mount_point",$out,$status);
 		d("Unmount status: $status");
 
 		if($status == "0") {

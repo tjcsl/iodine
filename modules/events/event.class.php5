@@ -9,6 +9,7 @@
 */
 
 /**
+* Contains helper methods for the {@link Event} module
 * @package modules
 * @subpackage Events
 */

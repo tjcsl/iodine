@@ -4,11 +4,13 @@
 * @copyright 2005 The Intranet 2 Development Team
 * @package modules
 * @subpackage Filecenter
+* PHP wrapper for files
 */
 
 /**
 * @package modules
 * @subpackage Filecenter
+* PHP wrapper for files
 */
 class I2File {
 

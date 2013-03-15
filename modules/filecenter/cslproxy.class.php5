@@ -5,11 +5,13 @@
 * @package modules
 * @subpackage Filecenter
 * @filesource
+* Sets up KRB for AFS
 */
 
 /**
 * @package modules
 * @subpackage Filecenter
+* Sets up KRB for AFS
 */
 class CSLProxy {
 

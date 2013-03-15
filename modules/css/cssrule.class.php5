@@ -6,11 +6,13 @@
 * @package modules
 * @subpackage CSS
 * @filesource
+* Handles css rules
 */
 
 /**
 * @package modules
 * @subpackage CSS
+* Handles css rules
 */
 class CSSRule {
 	

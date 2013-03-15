@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -d "${HOME}/intranet2" ] ; then
-	echo -e "Your CVS checkout of intranet2 is not in the correct directory. Please check it\nout in ${HOME}/intranet2."
+	echo -e "Your Git checkout of intranet2 is not in the correct directory. Please check it\nout in ${HOME}/intranet2."
 	exit 1
 fi
 
@@ -39,6 +39,7 @@ cp scripts/commit.tj commit
 chmod +x commit
 echo "./commit created"
 if [ ! -d "$HOME/web-docs/i2" ] ; then
+	mkdir -p ${HOME}/web-docs
 	ln -s ../intranet2 ${HOME}/web-docs/i2
 	echo "Symlink from ~/web-docs/i2 to ~/intranet2 created"
 fi

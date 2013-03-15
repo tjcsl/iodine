@@ -8,6 +8,9 @@
  * @filesource
  */
 
+/**
+ * Contains helper methods for Alumni
+ */
 class Alum implements Module {
 
 	/**

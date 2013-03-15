@@ -6,11 +6,13 @@
 * @package modules
 * @subpackage CSS
 * @filesource
+* Contains helper methods for CSS
 */
 
 /**
 * @package modules
 * @subpackage CSS
+* Contains helper methods for CSS
 */
 class StyleSheet {
 

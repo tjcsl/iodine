@@ -5,11 +5,13 @@
 * @package modules
 * @subpackage Filecenter
 * @filesource
+* Implements {@link Filesystem} for portfolios
 */
 
 /**
 * @package modules
 * @subpackage Filecenter
+* Implements {@link Filesystem} for portfolios
 */
 class PortfolioFilesystem extends Filesystem {
 
