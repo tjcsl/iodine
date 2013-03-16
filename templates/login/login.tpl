@@ -21,10 +21,9 @@
 	function parse_bgs() {
 		try {
 			bid = window.location.search.split('bid=')[1];
-		} catch(e) {}
-		try {
+		} catch(e) {
 			bid = (function(){for(i in j=(c=document.cookie).split(';')) if((k=j[i].split('='))[0]=='background'&&!!k[1]) for(l=0;l<(m=document.getElementsByTagName('optgroup')[1].children).length;l++) if(unescape(m[l].value)==unescape(k[1])) return m[l].id.split('bg')[1];})();
-		} catch(e) {}
+		} finally {}
 		if(typeof bid !== 'undefined' && typeof document.getElementById('bg'+bid) !== 'undefined') {
 			document.getElementById('bg'+bid).setAttribute('selected', true);
 		} else {
