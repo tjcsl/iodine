@@ -33,7 +33,6 @@ class Mail implements Module {
 	* The Mail class constructor.
 	*/
 	function __construct() {
-		return "";
 		global $I2_USER;
 
 		$cache_dir = i2config_get('cache_dir','/var/cache/iodine/','core') . 'mail/';
@@ -144,14 +143,13 @@ class Mail implements Module {
 */
 	}
 	
-	function display_pane($display) {;
-		$display->disp('mailerr.tpl');
-//		$display->disp('mail_pane.tpl', $this->pane_args);
+	function display_pane($display) {
+//		$display->disp('mailerr.tpl');
+		$display->disp('mail_pane.tpl', $this->pane_args);
 	}
 	
 	function init_box() {
 		global $I2_USER, $I2_AUTH;
-		return "Mail";
 		// only for regular users (the master password won't work!)
 		if ($I2_AUTH->get_auth_method() != 'kerberos') {
 			return FALSE;
@@ -194,8 +192,8 @@ class Mail implements Module {
 
 	function display_box($display) {
 		
-			$display->disp('mailerr.tpl',$this->box_args);
-//		$display->disp('mail_box.tpl',$this->box_args);
+//		$display->disp('mailerr.tpl',$this->box_args);
+		$display->disp('mail_box.tpl',$this->box_args);
 	}
 
 	function get_name() {
