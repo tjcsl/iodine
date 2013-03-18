@@ -60,5 +60,6 @@
 
 select[name="background"] {
 	width: 110px;
+	display: none;
 }
 
