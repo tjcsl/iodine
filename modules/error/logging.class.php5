@@ -89,17 +89,17 @@ class Logging {
 		}
 		
 
-		if (!file_put_contents($this->access_log,"Iodine Access Log created at: ".date('d/M/Y:H:i:s O')."\n") || !is_writable($this->access_log)) {
+		if (!file_exists($this->access_log) || !file_put_contents($this->access_log,"Iodine Access Log created at: ".date('d/M/Y:H:i:s O')."\n")) {
 			$I2_ERR->fatal_error('The main iodine access log cannot be accessed.');
 		}
 		$this->log_access();
-		if (!file_put_contents($this->debug_log,"Iodine Debug Log created at: ".date('d/M/Y:H:i:s O')."\n") || !is_writable($this->debug_log)) {
+		if (!file_exists($this->debug_log) || !file_put_contents($this->debug_log,"Iodine Debug Log created at: ".date('d/M/Y:H:i:s O')."\n")) {
 			$I2_ERR->fatal_error('The main iodine debug log cannot be accessed.');
 		}
-		if (!file_put_contents($this->error_log,"Iodine Error Log created at: ".date('d/M/Y:H:i:s O')."\n") || !is_writable($this->error_log)) {
+		if (!file_exists($this->error_log) || !file_put_contents($this->error_log,"Iodine Error Log created at: ".date('d/M/Y:H:i:s O')."\n")) {
 			$I2_ERR->fatal_error('The main iodine error log cannot be accessed.');
 		}
-		if (!file_put_contents($this->auth_log,"Iodine Auth Log created at: ".date('d/M/Y:H:i:s O')."\n") || !is_writable($this->auth_log)) {
+		if (!file_exists($this->auth_log) || !file_put_contents($this->auth_log,"Iodine Auth Log created at: ".date('d/M/Y:H:i:s O')."\n")) {
 			$I2_ERR->fatal_error('The main iodine authentication log cannot be accessed.');
 		}
 		$this->default_debug_level = i2config_get('default_debug_level', 0, 'logging');
