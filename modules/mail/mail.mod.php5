@@ -281,7 +281,7 @@ class Mail implements Module {
 
 		// Make sure these get deleted when the user logs out - so you don't get other people's cached mail.
 
-		$_SESSION['logout_funcs'][] = array(array($this,'clear_cache'),array());
+		$_SESSION['logout_funcs'][] = array(array('Mail','clear_cache'),array());
 
 		return $messages;
 	}
