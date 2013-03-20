@@ -37,14 +37,11 @@ class Error {
 	function default_error_handler($errno, $errstr, $errfile, $errline) {
 		global $I2_ROOT;
 		/* 
-		** Ignore messages from Smarty, as it generates a lot of them.
-		** Also ignore if error_reporting() is zero, i.e. error
+		** Ignore messages if error_reporting() is zero, i.e. error
 		** suppression is on.
 		*/
 
-		if($errfile == '/usr/share/php/smarty/Smarty.class.php' ||
-			$errfile == '/usr/share/php/smarty/Smarty_Compiler.class.php' ||
-			error_reporting() == 0 ) {
+		if(error_reporting() == 0 ) {
 			return;
 		}
 
