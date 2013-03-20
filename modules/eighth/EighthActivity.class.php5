@@ -141,8 +141,8 @@ class EighthActivity {
 			throw new I2Exception("Student has been stickied into an activity for this block and may not be called in");
 		}
 
-		//Postsign stuff, helpw the 8th office track trends.
-		if(time()>strtotime($block->date)+60*60*13){
+		//Postsign stuff, helps the 8th office track trends.
+		if(time()>(strtotime($block->date)+60*60*13)){
 			d('old aid is '.$oldaid);
 			$psq = 'INSERT INTO eighth_postsigns (cid,uid,time,fromaid,toaid,bid) VALUES (%d,%d,%s,%d,%d,%d)';
 			$I2_SQL->query($psq,$I2_USER->uid,$userid,date("o-m-d H:i:s"),isset($oldaid)?$oldaid:$defaid,$this->data['aid'],$blockid);
