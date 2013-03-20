@@ -42,8 +42,8 @@ class Error {
 		** suppression is on.
 		*/
 
-		if($errfile == '/usr/share/php/smarty/libs/Smarty.class.php' ||
-			$errfile == '/usr/share/php/smarty/libs/Smarty_Compiler.class.php' ||
+		if($errfile == '/usr/share/php/smarty/Smarty.class.php' ||
+			$errfile == '/usr/share/php/smarty/Smarty_Compiler.class.php' ||
 			error_reporting() == 0 ) {
 			return;
 		}
