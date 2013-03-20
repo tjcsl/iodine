@@ -281,7 +281,7 @@ class Mail implements Module {
 
 		// Make sure these get deleted when the user logs out - so you don't get other people's cached mail.
 
-		$_SESSION['logout_funcs'][] = array(array('Mail','clear_cache'),array());
+		$_SESSION['logout_funcs'][] = array(array('Mail','clear_cache'),array($this->cache_file));
 
 		return $messages;
 	}
@@ -290,8 +290,8 @@ class Mail implements Module {
 		return ( self::$msgno_map[$msg1->msgno] < self::$msgno_map[$msg2->msgno] ) ? -1 : 1;
 	}
 
-	private function clear_cache() {
-		unlink($this->cache_file);
+	public static function clear_cache($cache_file) {
+		unlink($cache_file);
 	}
 
 	public static function clear_mail_cache() {
