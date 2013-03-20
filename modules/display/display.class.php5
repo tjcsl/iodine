@@ -74,6 +74,8 @@ class Display {
 	*/
 	public function __construct($module_name='core') {
 		global $I2_FS_ROOT, $I2_LOG;
+		if(isset($I2_ARGS[0]) && $I2_ARGS[0] == 'logout')
+			return;
 		require_once('Smarty.class.php');
 		$this->smarty = new Smarty;
 		//$this->smarty->register_prefilter(array(&$this,'prefilter'));
