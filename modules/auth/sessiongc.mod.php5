@@ -62,7 +62,7 @@ class SessionGC {
 	*/
 	public static function gc($max_lifetime) {
 		clearstatcache();
-		exec("date >>/tmp/gclog"); // This is temporary, until I can see that it works correctly.
+		//exec("date >>/tmp/gclog"); // This is temporary, until I can see that it works correctly.
 		foreach (glob(self::SESS_DIR."sess_*") as $filename) {
 			if(is_file($filename) && is_readable($filename)) {
 				$contents = file_get_contents($filename);
