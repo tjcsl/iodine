@@ -273,7 +273,7 @@ class Logging {
 	* the applicatioan just dies halfway through.
 	*/
 	public function flush_debug_output() {
-		global $I2_DISP,$I2_IS_API,$module;
+		global $I2_DISP,$I2_IS_API,$I2_ARGS,$module;
 		
 		if($I2_IS_API===true) {
 			echo "<error>".$this->error_buf."\r\n</error>\r\n<debug>".$this->debug_buf."\r\n</debug></$module>";
@@ -281,6 +281,9 @@ class Logging {
 			$this->debug_buf = NULL;
 			return;
 		}
+		// don't bother setting up Display if we're logging out
+		if(isset($I2_ARGS[0]) && $I2_ARGS[0] == 'logout')
+			return;
 		try {
 			if( ! isset($I2_DISP) ) {
 				$I2_DISP = new Display();
