@@ -94,7 +94,7 @@ class SessionGC {
 	public static function logoutfuncs($sess) {
 		if(isset($sess['logout_funcs'])) {
 			foreach($sess['logout_funcs'] as $callback) {
-				exec("echo ".implode("->",$callback[0]).":".implode($callback[1])." >> /tmp/gcrunlog");
+				exec("echo ".{$callback[0][0]}."->".{$callback[0][1]}.":".implode($callback[1])." >> /tmp/gcrunlog");
 				if(is_callable($callback[0])) {
 					call_user_func_array($callback[0], $callback[1]);
 				}
