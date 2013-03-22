@@ -291,6 +291,7 @@ class Mail implements Module {
 	}
 
 	public static function clear_cache($cache_file) {
+		if(file_exists($cache_file))
 			unlink($cache_file);
 	}
 
