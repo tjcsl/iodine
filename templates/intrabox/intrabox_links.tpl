@@ -3,9 +3,6 @@
 <a href="[<$I2_ROOT>]info/resources">Proxy and Library Databases</a><br />
 <a href="http://www.tjhsst.edu/supportingtj/careercenter/index.html">College &amp; Career Center</a><br />
 [<if $I2_USER->objectclass == 'tjhsstTeacher' || $I2_USER->is_group_member('admin_calc')>]<a href="[<$I2_ROOT>]findcalc">Identify Lost Calculator</a><br />[</if>]
-[<php>]
-$this->assign('mode',i2config_get('mode','full','roster'));
-[</php>]
 [<if $mode == 'full' >]
 <a href="[<$I2_ROOT>]studentdirectory/roster">School Roster</a><br />
 [</if>]

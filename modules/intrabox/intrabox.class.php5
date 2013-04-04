@@ -98,7 +98,8 @@ class IntraBox {
 
 			try {
 				self::$display->disp('intrabox_openbox.tpl', array('name' => $this->module, 'title' => ucwords($display_title[0]), 'boxid' => $this->boxid, 'closed' => $this->closed));
-				self::$display->disp($tpl);
+				// mode is for intrabox_links.tpl
+				self::$display->disp($tpl, array('mode' => i2config_get('mode','full','roster')));
 				self::$display->disp('intrabox_closebox.tpl');
 				self::$display->flush_buffer();
 			}
