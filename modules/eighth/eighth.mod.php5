@@ -1230,6 +1230,9 @@ class Eighth implements Module {
 		else if($this->op == 'view') {
 			$this->template = 'amr_activity.tpl';
 			$this->template_args['activity'] = new EighthActivity($this->args['aid']);
+			$this->template_args['sponsors'] = EighthSponsor::id_to_sponsor($this->template_args['activity']->sponsors);
+			$this->template_args['sponsorcount'] = count($this->template_args['activity']->sponsors);
+			$this->template_args['rooms'] = EighthRoom::id_to_room($this->template_args['activity']->rooms);
 			$this->title = 'View Activities';
 		}
 		else if($this->op == 'add') {
