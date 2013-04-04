@@ -71,7 +71,7 @@ function error($msg, $critical=FALSE) {
 }
 
 /**
-* The __autoload function, used for autoloading modules.
+* The iodine_autoloader function, used for autoloading modules.
 *
 * This is the function used by PHP as a last resort for loading 
 * noninstantiated classes before it throws an error. It checks for
@@ -80,8 +80,13 @@ function error($msg, $critical=FALSE) {
 * 
 * @param string $class_name Name of noninstantiated class.
 */
-function __autoload($class_name) {
+function iodine_autoloader($class_name) {
 	global $I2_ERR;
+
+	// don't try to load smarty modules
+	if(strpos($class_name,'Smarty') !== false)
+		return;
+
 	d("Loading $class_name");
 	$class_file = '';
 
@@ -92,6 +97,8 @@ function __autoload($class_name) {
 		require_once($class_file);
 	}
 }
+
+spl_autoload_register('iodine_autoloader');
 
 /**
 * Loads the module map.
