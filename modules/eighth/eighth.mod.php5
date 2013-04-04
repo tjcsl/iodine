@@ -2605,6 +2605,7 @@ class Eighth implements Module {
 			$user = new User($this->args['uid']);
 			$this->template_args['user'] = $user;
 			$this->template_args['admin'] = $this->admin;
+			$this->template_args['count'] = count($absences);
 			$this->template = 'vcp_schedule_absences.tpl';
 		}
 		else if($this->op == 'remove_absence') {
