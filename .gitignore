@@ -1,4 +1,5 @@
 .htaccess
+*.sw?
 config.ini.php5
 update
 commit
