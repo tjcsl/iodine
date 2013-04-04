@@ -141,12 +141,14 @@ class Aphorisms implements Module {
 			if ($I2_ARGS[1] == 'choose') {
 				$this->template = 'choose.tpl';
 				$this->template_args['search_destination'] = 'aphorisms/searched/';
+				$this->template_args['first_year'] = User::get_gradyear(12);
 				return 'Find a Student';
 			} else if ($I2_ARGS[1] == 'searched') {
 				$this->template = 'choose.tpl';
 				$this->template_args['results_destination'] = 'aphorisms/';
 				$this->template_args['return_destination'] = 'aphorisms/choose/';
 				$this->template_args['info'] = Search::get_results();
+				$this->template_args['first_year'] = User::get_gradyear(12);
 				return 'Search Results';
 			} else if($I2_ARGS[1] == 'data') {
 				if(!$admin) {

@@ -93,6 +93,7 @@ class Privacy implements Module {
 		}
 		if ($I2_USER->is_ldap_admin()) {
 			$this->template = 'master.tpl';
+			$this->template_args['first_year'] = User::get_gradyear(12);
 			if (isSet($I2_ARGS[1])) {
 				$this->template_args['user'] = new User($I2_ARGS[1]);
 				$photonames = $this->template_args['user']->photonames;

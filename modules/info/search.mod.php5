@@ -121,6 +121,7 @@ class Search implements Module {
 		} else {
 			$disp->smarty_assign('action_name','Search');
 			$disp->smarty_assign('search_destination','search/results/');
+			$disp->smarty_assign('first_year',User::get_gradyear(12));
 			$disp->disp('search_pane.tpl');
 		}
 	}

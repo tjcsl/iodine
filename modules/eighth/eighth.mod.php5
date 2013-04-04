@@ -994,6 +994,7 @@ class Eighth implements Module {
 			$group = new Group($this->args['gid']);
 			$this->template = 'amr_group.tpl';
 			$this->template_args['group'] = $group;
+			$this->template_args['first_year'] = User::get_gradyear(12);
 			if (isSet($this->args['lastadded'])) {
 					$user = new User($this->args['lastadded']);
 					$this->template_args['lastaction'] = 'Added user '.$user->fullname_comma;
@@ -1115,6 +1116,7 @@ class Eighth implements Module {
 			$this->template = 'alt_permissions.tpl';
 			$this->template_args['activity'] = new EighthActivity($this->args['aid']);
 			$this->template_args['groups'] = Group::get_all_groups('eighth');
+			$this->template_args['first_year'] = User::get_gradyear(12);
 			if (isSet($this->args['searchdone']) && Search::get_results()) {
 				$this->template_args['results_destination'] = 'eighth/alt_permissions/add_member/aid/'.$this->args['aid'].'/uid/';
 				$this->template_args['return_destination'] = 'eighth/alt_permissions/view/aid/'.$this->args['aid'];
@@ -1720,6 +1722,7 @@ class Eighth implements Module {
 			$this->template_args['act'] = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->template_args['bid'] = $this->args['bid'];
 			$this->template_args['aid'] = $this->args['aid'];
+			$this->template_args['first_year'] = User::get_gradyear(12);
 			if (isSet($this->args['rescheduled'])) {
 				$this->template_args['lastuser'] = new User($this->args['rescheduled']);
 			}

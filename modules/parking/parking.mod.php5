@@ -320,6 +320,7 @@ class Parking implements Module {
 			$this->template_args['action_name'] = 'Find Person';
 		}
 
+		$this->template_args['first_year'] = User::get_gradyear(12);
 		$this->template = 'parking_partner.tpl';
 	}
 
