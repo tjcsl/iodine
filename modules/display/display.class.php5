@@ -82,9 +82,9 @@ class Display {
 		//$this->smarty->register_outputfilter(array(&$this,'outputfilter'));
 		$this->smarty->left_delimiter = '[<';
 		$this->smarty->right_delimiter = '>]';
-		$this->smarty->compile_dir = i2config_get('cache_dir', NULL, 'core') . 'smarty/';
-		$this->smarty->plugins_dir = array('plugins',$I2_FS_ROOT . 'smarty');
-		$this->smarty->cache_dir = $this->smarty->compile_dir.'cache';
+		$this->smarty->setCompileDir(i2config_get('cache_dir', NULL, 'core') . 'smarty/');
+		$this->smarty->addPluginsDir($I2_FS_ROOT . 'smarty');
+		$this->smarty->setCacheDir($this->smarty->getCompileDir().'cache');
 
 		// Caching off by default
 		$this->smarty->caching = false;
@@ -94,8 +94,8 @@ class Display {
 
 		$this->my_module_name = $module_name;
 
-		if(!file_exists($this->smarty->compile_dir) && !mkdir($this->smarty->compile_dir)) {
-			error("Error! Could not create $this->smarty->compile_dir");
+		if(!file_exists($this->smarty->getCompileDir()) && !mkdir($this->smarty->getCompileDir())) {
+			error("Error! Could not create $this->smarty->getCompileDir()");
 		}
 
 		if ($module_name == 'core') {
