@@ -218,7 +218,7 @@ class EighthRoom {
 		//Eighth::start_undo_transaction();
 		// Get rid of all block references to the room
 		
-		$res = new MySQLResult($I2_SQL->raw_query("SELECT bid,activityid,rooms FROM eighth_block_map WHERE rooms LIKE '%".mysql_real_escape_string($rid)."%'"),MYSQL::SELECT);
+		$res = new MySQLResult($I2_SQL->query("SELECT bid,activityid,rooms FROM eighth_block_map WHERE rooms LIKE '%%%d%%'",$rid),MYSQL::SELECT);
 		$query = 'UPDATE eighth_block_map SET rooms=%s WHERE bid=%d AND activityid=%d';
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 			$newrooms = array();

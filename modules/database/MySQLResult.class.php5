@@ -68,9 +68,9 @@ class MySQLResult implements Result {
 		$this->query_type = $query_type;
 		//FIXME: DANGER - HACKS AHEAD!
 		if ($query_type == MySQL::INSERT || $query_type == MySQL::REPLACE) {
-			$arr = mysql_fetch_row($I2_SQL->raw_query('SELECT LAST_INSERT_ID()'));
+			$arr = mysqli_fetch_row($I2_SQL->raw_query('SELECT LAST_INSERT_ID()'));
 			$this->insert_id = $arr[0];
-			//mysql_insert_id($mysql_result);//mysql_query(
+			//mysqli_insert_id($mysql_result);//mysql_query(
 		}
 		//d('MySQL Result: type '.$this->query_type.' on table '.$this->table.' with '.$this->insert_id.' as insert_id',8);
 	}
@@ -80,7 +80,7 @@ class MySQLResult implements Result {
 	}
 	
 	function fetch_array($type = MYSQL_BOTH) {
-		$row = mysql_fetch_array($this->mysql_result, $type);
+		$row = mysqli_fetch_array($this->mysql_result, $type);
 		if ($row) {
 			$this->current_row_number++;
 			return ($this->current_row = $row);
@@ -93,7 +93,7 @@ class MySQLResult implements Result {
 		return $this->insert_id;
 		/*
 		if ($this->query_type == MySQL::INSERT || $this->query_type == MySQL::REPLACE) {
-			$id = mysql_insert_id($this->mysql_result);
+			$id = mysqli_insert_id($this->mysql_result);
 			return $id;
 		}
 		return -1;*/
@@ -102,7 +102,7 @@ class MySQLResult implements Result {
 	
 	function get_affected_rows() {
 		if ($this->query_type == MySQL::INSERT || $this->query_type == MySQL::UPDATE || $this->query_type == MySQL::DELETE || $this->query_type == MySQL::REPLACE) {
-			$affected = mysql_affected_rows($this->mysql_result);
+			$affected = mysqli_affected_rows($this->mysql_result);
 			if ($affected) {
 				return $affected;
 			}
@@ -117,10 +117,10 @@ class MySQLResult implements Result {
 
 	
 	function fetch_row($rownum, $type = MYSQL_BOTH) {
-		if($this->query_type = MySQL::SELECT && $rownum < mysql_num_rows($this->mysql_result)) {
-			mysql_data_seek($this->mysql_result, $rownum);
+		if($this->query_type = MySQL::SELECT && $rownum < mysqli_num_rows($this->mysql_result)) {
+			mysqli_data_seek($this->mysql_result, $rownum);
 			$this->fetch_array($type);
-			mysql_data_seek($this->mysql_result, $this->current_row_number);
+			mysqli_data_seek($this->mysql_result, $this->current_row_number);
 		}
 		return FALSE;
 	}
@@ -135,7 +135,7 @@ class MySQLResult implements Result {
 	
 	
 	function more_rows() {
-		if ($this->query_type == MySQL::SELECT && mysql_num_rows($this->mysql_result) > $this->current_row_number) {
+		if ($this->query_type == MySQL::SELECT && mysqli_num_rows($this->mysql_result) > $this->current_row_number) {
 			return TRUE;
 		}
 		return FALSE;
@@ -179,7 +179,7 @@ class MySQLResult implements Result {
 	*/
 	function rewind() {
 		if($this->more_rows()) {
-			mysql_data_seek($this->mysql_result, 0);
+			mysqli_data_seek($this->mysql_result, 0);
 		}
 		$this->current_row_number = 0;
 		$this->current_row = FALSE;
@@ -223,12 +223,12 @@ class MySQLResult implements Result {
 	
 	
 	public function num_rows() {
-		return mysql_num_rows($this->mysql_result);
+		return mysqli_num_rows($this->mysql_result);
 	}
 
 	
 	public function num_cols() {
-		return mysql_num_fields($this->mysql_result);
+		return mysqli_num_fields($this->mysql_result);
 	}
 
 	public function fetch_single_value() {

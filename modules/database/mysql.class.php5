@@ -17,7 +17,7 @@
 class MySQL {
 
 	/**
-	* The mysql_pconnect() link
+	* The mysqli_connect() link
 	*/
 	private $link;
 	
@@ -107,7 +107,7 @@ class MySQL {
 	*/
 	protected function connect($server, $user, $password) {
 		d("Connecting to mysql server $server as $user",8);
-		$this->link = @mysql_pconnect($server, $user, $password);
+		$this->link = mysqli_connect('p:'.$server, $user, $password);
 		if( $this->link === FALSE ) {
 			throw new I2Exception('Could not connect to MySQL server');
 		}
@@ -121,7 +121,7 @@ class MySQL {
 	* @param string $database The name of the database to select.
 	*/
 	protected function select_db($database) {
-		mysql_select_db($database, $this->link);
+		mysqli_select_db($this->link, $database);
 	}
 
 	/**
@@ -133,8 +133,8 @@ class MySQL {
 	function raw_query($query) {
 		global $I2_ERR;
 		d('Running MySQL query: '.$query,7);
-		$r = mysql_query($query, $this->link);
-		if ($err = mysql_error($this->link)) {
+		$r = mysqli_query($this->link, $query);
+		if ($err = mysqli_error($this->link)) {
 			throw new I2Exception('MySQL error: '.$err);
 			return false;
 		}
@@ -286,11 +286,11 @@ class MySQL {
 					throw new I2Exception('String `'.$arg.'` contains non-alphanumeric characters, and was passed as an %a string in a mysql query');
 				}
 			case 's':
-				return '\''.mysql_real_escape_string($arg).'\'';
-				//return '\''.mysql_escape($arg).'\'';
+				return '\''.mysqli_real_escape_string($this->link,$arg).'\'';
+				//return '\''.mysqli_escape($arg).'\'';
 			case 'X':
 				// UNQUOTED STRING, use as sparingly as possible. Basically, just if the quotes mess up a regex.
-				return mysql_real_escape_string($arg);
+				return mysqli_real_escape_string($this->link,$arg);
 
 			/* array of strings */
 			case 'S':
@@ -298,7 +298,7 @@ class MySQL {
 					throw new I2Exception('Non-array passed as %S in a mysql query');
 				}
 				foreach($arg as $i=>$str) {
-					$arg[$i] = mysql_real_escape_string($str);
+					$arg[$i] = mysqli_real_escape_string($this->link,$str);
 				}
 				return '\''.implode('\',\'', $arg).'\'';
 
@@ -306,12 +306,12 @@ class MySQL {
 			case 'c':
 				if( is_array($arg) ) {
 					foreach($arg as $i=>$col) {
-						$arg[$i] = mysql_real_escape_string($col);
+						$arg[$i] = mysqli_real_escape_string($this->link,$col);
 					}
 					return '`'.implode('`,`', $arg).'`';
 				}
 				else {
-					return '`'.mysql_real_escape_string($arg).'`';
+					return '`'.mysqli_real_escape_string($this->link,$arg).'`';
 				}
 
 			/* array of integers */
