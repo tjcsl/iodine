@@ -1,7 +1,7 @@
-[< assign var='proxyscript' value='https://iodine.tjhsst.edu/www/proxy.pac' >]
-[< assign var='proxyhost' value='local.border.tjhsst.edu' >]
-[< assign var='proxyport' value='8080' >]
-[< assign var='dbsite' value='http://www.tjhsst.edu/curriculum/library/wordpress/databases/' >]
+[<assign var='proxyscript' value='https://iodine.tjhsst.edu/www/proxy.pac' >]
+[<assign var='proxyhost' value='local.border.tjhsst.edu' >]
+[<assign var='proxyport' value='8080' >]
+[<assign var='dbsite' value='http://www.tjhsst.edu/curriculum/library/wordpress/databases/' >]
 <h1 style="text-align: center; font-weight: bold; line-height:95%;">
   Internet Set-Up for Using TJHSST Library
   <br />Online Databases From Home
