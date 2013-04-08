@@ -57,7 +57,7 @@ End date/time:<input type="text" name="enddt" value="[<$poll->enddt>]" /><br />
     <td><input type="checkbox" name="results[[<$index>]]" [<if $perms[2] == 1>]checked="checked"[</if>] /></td>
     <td><a onclick="polls_deleteGroup(event)" href="[<$I2_ROOT>]polls/edit/[<$pid>]/delg/[<$gid>]">remove</a></td>
   </tr><tr>
-  [<assign var='index' value=`$index+1`>]
+  [<assign var='index' value='$index+1'>]
  [</foreach>]
 [</if>]
   <td></td>
