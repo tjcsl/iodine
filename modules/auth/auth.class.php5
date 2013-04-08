@@ -138,7 +138,7 @@ class Auth {
 		 * @return bool TRUE if the user should be automatically logged out, FALSE otherwise.
 		 */
 		public static function should_autologout($login_time,$i2_username=NULL) {
-			if ($_SESSION['i2_username'] == 'eighthoffice'|| (isset($i2_username) && $i2_username=='eighthoffice')) {
+			if ( (isset($_SESSION['i2_username']) && $_SESSION['i2_username'] == 'eighthoffice') || $i2_username=='eighthoffice') {
 				return FALSE;
 			}
 			return ( time() > $login_time + i2config_get('timeout',600,'login') );
