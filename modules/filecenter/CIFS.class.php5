@@ -121,14 +121,16 @@ class CIFS extends Filesystem {
 	public static function umount($mount_point) {
 		d("Unmounting $mount_point");
 		// check if the share is actually mounted
-		exec("/bin/grep -qs ".$mount_point." /proc/mounts",$out,$status);
+		exec("grep -qs ".$mount_point." /proc/mounts",$out,$status);
 		if($status == "0") {
-			exec("/usr/bin/sudo /bin/umount $mount_point",$out,$status);
+			exec("sudo umount $mount_point",$out,$status);
 			d("Unmount status: $status");
 		}
 		d("Removing mount point $mount_point");
-		$status = exec("rmdir --ignore-fail-on-non-empty $mount_point");
-		d("Mount point removal status: $status");
+		if(is_dir($mount_point)) {
+			$status = exec("rmdir $mount_point");
+			d("Mount point removal status: $status");
+		}
 	}
 
 }
