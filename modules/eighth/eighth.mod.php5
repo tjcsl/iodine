@@ -567,11 +567,12 @@ class Eighth implements Module {
 		global $I2_ARGS, $I2_QUERY;
 		$types=array();
 		if(!isset($I2_ARGS[1])) {
-			return array("<!ELEMENT body O O (#PCDATA)>");
+			return array("<!ELEMENT body (#PCDATA)>");
 		}
 		switch($I2_ARGS[1]) {
 			case 'list_blocks':
-				return array("<!ELEMENT body - - (block*)>","<!ELEMENT block O O (bid,date,type,locked)>","<!ELEMENT bid - - (#PCDATA)>","<!ELEMENT date - - (#PCDATA)>","<!ELEMENT type O O (#PCDATA)>","<!ELEMENT locked O O (#PCDATA)>");
+				return array("<!ELEMENT body (block*)>","<!ELEMENT block (bid,date,type,locked)>","<!ELEMENT bid (#PCDATA)>",
+					"<!ELEMENT date (#PCDATA)>","<!ELEMENT type (#PCDATA)>","<!ELEMENT locked (#PCDATA)>");
 				break;
 			case 'list_activities':
 				// TODO: Add DTD
@@ -581,7 +582,7 @@ class Eighth implements Module {
 				break;
 				
 		}
-		return array("<!ELEMENT body O O (#PCDATA)>");
+		return array("<!ELEMENT body (#PCDATA)>");
 	}
 
 	/**

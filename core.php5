@@ -241,6 +241,7 @@ try {
 	if(strtolower($module) == 'ajax') {
 		$I2_AJAX->returnResponse($I2_ARGS[1]);
 	} elseif(strtolower($module) == 'api') {
+		header('Content-Type: application/xml');
 		$I2_IS_API=true;
 		array_shift($I2_ARGS);
 		$module = "";
@@ -256,14 +257,14 @@ try {
 			echo "<error>Not a module</error>";
 		} else {
 			$mod = new $module();
-			echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"? >\r\n";
+			echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">\r\n";
 			$defaultdtd=array();
-			$defaultdtd[] = "<!ELEMENT $module - - (body,error,debug)>";
-			$defaultdtd[] = "<!ELEMENT error O O (#PCDATA)>";
-			$defaultdtd[] = "<!ELEMENT debug O O (#PCDATA)>";
+			$defaultdtd[] = "<!ELEMENT $module (body,error,debug)>";
+			$defaultdtd[] = "<!ELEMENT error (#PCDATA)>";
+			$defaultdtd[] = "<!ELEMENT debug (#PCDATA)>";
 			$mbd=$mod->api_build_dtd();
 			if(is_array($mbd))
-				echo "<!DOCTYPE ".$module." [\r\n".implode(array_merge($defaultdtd,$mbd),"\r\n")."]>\r\n";
+				echo "<!DOCTYPE ".$module." [\r\n".implode(array_merge($defaultdtd,$mbd),"\r\n")."\r\n]>\r\n";
 			else
 				echo "<!DOCTYPE ".$module." [\r\n".implode($defaultdtd,"\r\n")."\r\n]>\r\n";
 			echo "<$module>\r\n";
