@@ -554,6 +554,8 @@ class Eighth implements Module {
 				$activity->add_member($user, FALSE, $I2_ARGS[2]);
 				echo "<signup><bid>".$I2_ARGS[2]."</bid><aid>".$I2_ARGS[3]."</aid><uid>".$user->uid."</uid><success>1</success></signup>";
 				break;
+			default:
+				throw new I2Exception("Invalid argument given to eighth module");
 		}
 		return false;
 	}
