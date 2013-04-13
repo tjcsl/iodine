@@ -254,7 +254,8 @@ try {
 		}
 		d('Passing module' . $module . ' api call', 8);
 		if(!get_i2module($module)) {
-			echo "<error>Not a module</error>";
+			echo "<$module>\r\n";
+			throw new I2Exception("Not a module");
 		} else {
 			$mod = new $module();
 			echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">\r\n";
