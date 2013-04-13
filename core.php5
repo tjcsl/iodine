@@ -263,10 +263,10 @@ try {
 			$defaultdtd[] = "<!ELEMENT debug O O (#PCDATA)>";
 			$mbd=$mod->api_build_dtd();
 			if(is_array($mbd))
-				echo "<!DOCTYPE ".$module." [".implode(array_merge($defaultdtd,$mbd),"\r\n")."]>";
+				echo "<!DOCTYPE ".$module." [\r\n".implode(array_merge($defaultdtd,$mbd),"\r\n")."]>\r\n";
 			else
-				echo "<!DOCTYPE ".$module." [".implode($defaultdtd,"\r\n")."\r\n]>\r\n";
-			echo "<$module>";
+				echo "<!DOCTYPE ".$module." [\r\n".implode($defaultdtd,"\r\n")."\r\n]>\r\n";
+			echo "<$module>\r\n";
 			echo $mod->api($I2_DISP);
 		}
 	}

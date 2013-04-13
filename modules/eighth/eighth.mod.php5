@@ -479,7 +479,7 @@ class Eighth implements Module {
 					}
 					echo "</block>\r\n";
 				}
-				echo "</body>";
+				echo "</body>\r\n";
 				break;
 			// $I2_ARGS[2] == block id
 			case 'list_activities':
