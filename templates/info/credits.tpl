@@ -63,7 +63,7 @@ I2 Development Team:
 	<li>Zachary &ldquo;Gamer_Z.&rdquo; Yaro (2012)</li>
 	<li>Peter Foley (2013)</li>
 	<li>Ethan Lowman (2015)</li>
-	<li>James Woglom (2015)</li>
+	<li>James Woglom (2016)</li>
 </ul>
 
 I2 User Experience Technicians:
