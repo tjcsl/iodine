@@ -60,7 +60,10 @@ I2 Development Team:
 	<li>Peter Godofsky (2011)</li>
 	<li>Derek "bugzapper" Morris (2011)</li>
 	<li>Dylan Ladwig (2011)</li>
-	<li>Zachary &ldquo;Gamer_Z.&rdquo; Yaro (2011-2012)</li>
+	<li>Zachary &ldquo;Gamer_Z.&rdquo; Yaro (2012)</li>
+	<li>Peter Foley (2013)</li>
+	<li>Ethan Lowman (2015)</li>
+	<li>James Woglom (2015)</li>
 </ul>
 
 I2 User Experience Technicians:
@@ -80,6 +83,7 @@ Special Thanks to:
 	<li>Mr. Randy Latimer</li>
 	<li>Mr. Joshua Strong</li>
 	<li>Mr. Shane Torbert</li>
+	<li>Mr. Andrew Hamilton</li>
 	<li>Ms. Marie Lauducci</li>
 	<li>Ms. Jean Stevens</li>
 </ul>
