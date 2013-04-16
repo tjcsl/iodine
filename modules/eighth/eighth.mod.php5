@@ -502,7 +502,7 @@ class Eighth implements Module {
 							// echo "<!--changed obj to arr-->";
 							$isobj=true;
 							$v=((array)$v);
-							echo "<".htmlspecialchars($n).">";
+							echo "<".htmlspecialchars($n).">\r\n";
 						}
 						if(is_array($v)) {
 							foreach($v as $o=>$w) {
@@ -521,10 +521,11 @@ class Eighth implements Module {
 										echo "<".htmlspecialchars($p).">".htmlspecialchars($x)."</".htmlspecialchars($p).">\r\n";
 									}
 								} else {
-									echo "<".htmlspecialchars($o).">".htmlspecialchars($w)."</".htmlspecialchars($o).">\r\n";
+									//FIXME: $o=array index
+									echo "<".htmlspecialchars('fixme').">".htmlspecialchars($w)."</".htmlspecialchars('fixme').">\r\n";
 								}
 								if(isset($isobj2)) {
-									echo "</".htmlspecialchars(o).">";
+									echo "</".htmlspecialchars($o).">";
 									unset($isobj2);
 								}
 							}
@@ -532,13 +533,13 @@ class Eighth implements Module {
 							echo "<".htmlspecialchars($n).">".htmlspecialchars($v)."</".htmlspecialchars($n).">\r\n";
 						}
 						if(isset($isobj)) {
-							echo "</".htmlspecialchars($n).">";
+							echo "</".htmlspecialchars($n).">\r\n";
 							unset($isobj);
 						}
 					}
 					echo "</activity>\r\n";
 				}
-					
+				echo "</activities>\r\n";
 				break;
 			// $I2_ARGS[2] == block id
 			// $I2_ARGS[3] == activity id
