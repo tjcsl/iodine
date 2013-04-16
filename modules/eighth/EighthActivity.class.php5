@@ -1262,7 +1262,15 @@ class EighthActivity {
 		foreach($activityids as $activityid) {
 			if(is_array($activityid)) {
 				if($exceptionsok || EighthSchedule::is_activity_valid($activityid[0], $activityid[1])||$activityid[0]==-3)
-					$ret[] = new EighthActivity($activityid[0], $activityid[1]);
+					/* If this is not surrounded by a try-catch,
+					 * the whole module will fail when a user is
+					 * signed up for a nonexistant activity! */
+					try {
+						$ret[] = new EighthActivity($activityid[0], $activityid[1]);
+					} catch (Exception $e) {
+						// Allow the program to continue
+						d("Activity with ID {$activityid[0]} does not exist for block {$activityid[1]}.", 4);
+					}
 				else {
 					d("Activity $activityid[0] not scheduled for block $activityid[1], returning EighthActivity object with CANCELLED handler.");
 					$ret[] = new EighthActivity($activityid[0], $activityid[1], "CANCELLED");
