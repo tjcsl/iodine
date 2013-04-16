@@ -322,7 +322,7 @@ class CSS implements Module {
 	public static function flush_cache(User $user) {
 		$cache_dir = i2config_get('cache_dir', NULL, 'core') . 'styles/';
 		$style_cache = $cache_dir . $user->uid;
-		exec("rm -f $style_cache");
+		exec("rm -rf $style_cache");
 	}
 	// Skip most of the stuff if just reading from cache. In fact, no mysql or ldap connection nor user object has been made at this point.
 	// Just a relatively quick function.

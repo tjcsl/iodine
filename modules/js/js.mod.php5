@@ -196,7 +196,7 @@ class JS implements Module {
 	public static function flush_cache(User $user) {
 		$cache_dir = i2config_get('cache_dir', NULL, 'core') . 'javascriptstyles/';
 		$style_cache = $cache_dir . $user->uid;
-		exec("rm -f $style_cache");
+		exec("rm -rf $style_cache");
 	}
 }
 
