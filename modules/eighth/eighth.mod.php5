@@ -489,58 +489,61 @@ class Eighth implements Module {
 				$acts = EighthActivity::get_all_activities($I2_ARGS[2],FALSE);
 				set_time_limit(2);
 				echo "<activities>\r\n";
+				//FIXME: this is full of *horrible* HACKS
 				foreach($acts as $act) {
 					echo "<activity>\r\n";
 					$arr=((array)$act);
 					// for some odd reason $arr['EighthActivitydata']
 					// doesn't work. I have no idea why.
 					$Ead="EighthActivitydata";
-					foreach($arr as $n=>$v) {$Ead=$n;}
-					foreach($arr[$Ead] as $n=>$v) {
+					foreach($arr as $name=>$value) {$Ead=$name;}
+					foreach($arr[$Ead] as $name=>$value) {
 						// echo "<!--".gettype($v)."-->";
-						if(is_object($v)) {
+						if(is_object($value)) {
 							// echo "<!--changed obj to arr-->";
 							$isobj=true;
-							$v=((array)$v);
-							echo "<".htmlspecialchars($n).">\r\n";
+							$value=((array)$value);
+							echo "<".htmlspecialchars($name).">\r\n";
 						}
-						if(is_array($v)) {
-							foreach($v as $o=>$w) {
-								if(is_object($v)) {
-									$isobj2=true;
-									$w=((array)$w);
-									echo "<".htmlspecialchars($o).">";
-								}
-								if(is_array($w)) {
-									foreach($w as $p=>$x) {
-										if(is_object($v)) $v=((array)$v);
-										if(is_array($x)) {
-											// echo "<!--RAN OUT OF SPACE-->";
+						// collapse embedded arrays
+						if(is_array($value)) {
+							if(!isset($isobj)) {
+								$isarray=true;
+								echo "<".htmlspecialchars($name).">\r\n";
+							}
+							foreach($value as $innervalue) {
+								if(is_array($innervalue)) {
+									foreach($innervalue as $insidekey=>$insidevalue) {
+										if(is_array($insidevalue)) {
+											// if another level becomes needed, consider rewriting this code.
+											throw new I2Exception("RAN OUT OF SPACE");
 											break;
 										}
-										echo "<".htmlspecialchars($p).">".htmlspecialchars($x)."</".htmlspecialchars($p).">\r\n";
+										echo "<".htmlspecialchars($insidekey).">".htmlspecialchars($insidevalue)."</".htmlspecialchars($insidekey).">\r\n";
 									}
 								} else {
-									//FIXME: $o=array index
-									echo "<".htmlspecialchars('fixme').">".htmlspecialchars($w)."</".htmlspecialchars('fixme').">\r\n";
-								}
-								if(isset($isobj2)) {
-									echo "</".htmlspecialchars($o).">";
-									unset($isobj2);
+									//FIXME: hack to make singular
+									$innername=substr($name,0,-1);
+									echo "<".htmlspecialchars($innername).">".htmlspecialchars($innervalue)."</".htmlspecialchars($innername).">\r\n";
 								}
 							}
 						} else {
-							echo "<".htmlspecialchars($n).">".htmlspecialchars($v)."</".htmlspecialchars($n).">\r\n";
+							echo "<".htmlspecialchars($name).">".htmlspecialchars($value)."</".htmlspecialchars($name).">\r\n";
 						}
 						if(isset($isobj)) {
-							echo "</".htmlspecialchars($n).">\r\n";
+							echo "</".htmlspecialchars($name).">\r\n";
 							unset($isobj);
+						}
+						else if(isset($isarray)) {
+							echo "</".htmlspecialchars($name).">\r\n";
+							unset($isarray);
 						}
 					}
 					echo "</activity>\r\n";
 				}
 				echo "</activities>\r\n";
 				break;
+
 			// $I2_ARGS[2] == block id
 			// $I2_ARGS[3] == activity id
 			// $I2_ARGS[4] == user id
