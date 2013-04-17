@@ -13,8 +13,8 @@ USAGE: include file='utils/calendar.tpl' post_var='var'
 [<assign var="last_year" value="+1">]
 [</if>]
 [<html_select_date month_empty="Month" month_format="%b" month_extra="id=`$post_var`_mon onchange=submit_form_`$post_var`()"
- day_empty="Day" day_format="%d" day_extra="id=`$post_var`_day onchange=submit_form_`$post_var`()" 
- year_empty="Year" year_extra="id=`$post_var`_year onchange=submit_form_`$post_var`()" start_year=$first_year end_year=$last_year time="0000-00-00">]
+ day_empty="Day" day_format="%d" day_extra="id=`$post_var`_day onchange=submit_form_`$post_var`()"
+ year_empty="Year" year_extra="id=`$post_var`_year onchange=submit_form_`$post_var`()" start_year=$first_year end_year=$last_year time=$smarty.now>]
 <span id="alerter" style="color: #ff0000"></span>
 <script type="text/javascript">
 [<* This code will select the last year, the current year, and next year for year *>]
