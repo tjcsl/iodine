@@ -30,7 +30,7 @@ End date/time:<input type="text" name="enddt" value="[<$smarty.now|date_format:"
     <td><input type="hidden" name="groups[]" value="0" /></td>
     <td><select class="groups_list" name="group_gids[0]">
  [<foreach from=$groups item=group>]
-      <option value="[<$group->gid>]">[<$group->name>]</option>
+      <option value="[<$group->gid>]" [<if $group->name == 'all'>]SELECTED[</if>]>[<$group->name>]</option>
  [</foreach>]
     </select></td>
     <td><input type="checkbox" name="vote[0]" /></td>
