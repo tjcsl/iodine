@@ -491,54 +491,28 @@ class Eighth implements Module {
 					throw new I2Exception("No activities found. Invalid block id given?");
 				}
 				echo "<activities>\r\n";
-				//FIXME: this is full of *horrible* HACKS
 				foreach($acts as $act) {
 					echo "<activity>\r\n";
-					$arr=((array)$act);
-					// for some odd reason $arr['EighthActivitydata']
-					// doesn't work. I have no idea why.
-					$Ead="EighthActivitydata";
-					foreach($arr as $name=>$value) {$Ead=$name;}
-					foreach($arr[$Ead] as $name=>$value) {
-						// echo "<!--".gettype($v)."-->";
-						if(is_object($value)) {
-							// echo "<!--changed obj to arr-->";
-							$isobj=true;
-							$value=((array)$value);
-							echo "<".htmlspecialchars($name).">\r\n";
-						}
-						// collapse embedded arrays
+					foreach($act->get_data() as $name=>$value) {
 						if(is_array($value)) {
-							if(!isset($isobj)) {
-								$isarray=true;
-								echo "<".htmlspecialchars($name).">\r\n";
-							}
-							foreach($value as $innervalue) {
-								if(is_array($innervalue)) {
-									foreach($innervalue as $insidekey=>$insidevalue) {
-										if(is_array($insidevalue)) {
-											// if another level becomes needed, consider rewriting this code.
-											throw new I2Exception("RAN OUT OF SPACE");
-											break;
-										}
-										echo "<".htmlspecialchars($insidekey).">".htmlspecialchars($insidevalue)."</".htmlspecialchars($insidekey).">\r\n";
-									}
-								} else {
+							echo "<".htmlspecialchars($name).">\r\n";
+							foreach($value as $arrkey=>$arrvalue) {
 									//FIXME: hack to make singular
 									$innername=substr($name,0,-1);
-									echo "<".htmlspecialchars($innername).">".htmlspecialchars($innervalue)."</".htmlspecialchars($innername).">\r\n";
-								}
+									// we can't just use $arrkey because 0, etc. are not valid xml elements.
+									echo "<".htmlspecialchars($innername).">".htmlspecialchars($arrvalue)."</".htmlspecialchars($innername).">\r\n";
 							}
-						} else {
+							echo "</".htmlspecialchars($name).">\r\n";
+						}
+						else if(is_object($value)) {
+							echo "<".htmlspecialchars($name).">\r\n";
+							foreach($value->get_data() as $arrkey=>$arrvalue) {
+									echo "<".htmlspecialchars($arrkey).">".htmlspecialchars($arrvalue)."</".htmlspecialchars($arrkey).">\r\n";
+							}
+							echo "</".htmlspecialchars($name).">\r\n";
+						}
+						else {
 							echo "<".htmlspecialchars($name).">".htmlspecialchars($value)."</".htmlspecialchars($name).">\r\n";
-						}
-						if(isset($isobj)) {
-							echo "</".htmlspecialchars($name).">\r\n";
-							unset($isobj);
-						}
-						else if(isset($isarray)) {
-							echo "</".htmlspecialchars($name).">\r\n";
-							unset($isarray);
 						}
 					}
 					echo "</activity>\r\n";

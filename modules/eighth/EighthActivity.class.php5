@@ -1138,6 +1138,16 @@ class EighthActivity {
 		}
 	}
 
+	/**
+	* get private data.
+	* only for use by the api.
+	*
+	* @access public
+	*/
+	public function get_data() {
+		return $this->data;
+	}
+
 	public function sort_by_name($one,$two) {
 		return strcasecmp($one->name_comma,$two->name_comma);
 	}

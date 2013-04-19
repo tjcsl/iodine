@@ -118,6 +118,16 @@ class EighthBlock {
 	}
 
 	/**
+	* get private data.
+	* only for use by api.
+	*
+	* @access public
+	*/
+	public function get_data() {
+		return $this->data;
+	}
+
+	/**
 	* The magic __get function.
 	*
 	* @access public
