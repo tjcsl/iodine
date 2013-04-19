@@ -438,7 +438,6 @@ class Eighth implements Module {
 				$blocks = EighthBlock::get_all_blocks($start_date, $daysf);
 				echo "<body>\r\n";
 				foreach($blocks as $block) {
-					
 					echo "<block>\r\n";
 					echo "<bid>".$block['bid']."</bid>\r\n";
 					echo "<date>\r\n";
@@ -484,10 +483,13 @@ class Eighth implements Module {
 			// $I2_ARGS[2] == block id
 			case 'list_activities':
 				if (!isset($I2_ARGS[2])) {
-					throw new I2Exception("no block id given");
+					throw new I2Exception("No block id given");
 				}
 				$acts = EighthActivity::get_all_activities($I2_ARGS[2],FALSE);
 				set_time_limit(2);
+				if(empty($acts)) {
+					throw new I2Exception("No activities found. Invalid block id given?");
+				}
 				echo "<activities>\r\n";
 				//FIXME: this is full of *horrible* HACKS
 				foreach($acts as $act) {

@@ -247,10 +247,10 @@ try {
 		$module = "";
 		if(isSet($I2_ARGS[0])) {
 			$module = $I2_ARGS[0];
-		} elseif($I2_USER->startpage) {
-			$module = $I2_USER->startpage;
 		} else {
-			$module = i2config_get('startmodule','welcome','core');
+			$module='invalid';
+			echo "<$module>\r\n";
+			throw new I2Exception("No module specified");
 		}
 		d('Passing module' . $module . ' api call', 8);
 		if(!get_i2module($module)) {
