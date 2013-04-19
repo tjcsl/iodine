@@ -104,7 +104,14 @@ class Mail implements Module {
 
 	function init_pane() {
 		global $I2_ARGS,$I2_USER;
-		return "Mail";
+		
+
+		$this->pane_args['messages'] = array();
+		$this->pane_args['goleft'] = 0;
+		$this->pane_args['goright'] = 0;
+		$this->pane_args['gnmsgs'] = 0;
+		$this->pane_args['offset'] = 0;
+
 		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clear') {
 			// Clear the cache
 			$this->clear_cache($this->cache_file);
@@ -114,7 +121,7 @@ class Mail implements Module {
 		/*
 
 		   $max_msgs = i2config_get('max_pane_msgs', 20, 'mail');
-
+ 
 		   $offset = (isset($I2_ARGS[1]) && $I2_ARGS[1] > 0) ? $I2_ARGS[1] : 0;
 
 		   if(!is_array($this->messages)) {
