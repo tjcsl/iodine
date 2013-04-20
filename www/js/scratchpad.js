@@ -150,7 +150,7 @@ if(typeof setInterval !== 'undefined') {
 		scratchpad_autosave();
 		setTimeout(scratchpad_to, scratchpad_autosaveint);
 	};
-	setTimeout(scratchpad_to, scratchpad_autosavems);
+	setTimeout(scratchpad_to, scratchpad_autosaveint);
 }
 // TAB FUNCTIONS
 var tabInfo = new Object();
