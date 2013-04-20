@@ -29,8 +29,8 @@ if (window.ActiveXObject) {
 } else if (window.XMLHttpRequest) {
 	http = new XMLHttpRequest();
 }
-//window.onload = function(){
-window.addEventListener("load", function() {
+//window.onload = function(){m,
+scratchpad_load = function() {
 	// Set up tab functions
 	tabInfo.list = document.getElementById("tabs");
 	tabInfo.values = new Array();
@@ -44,6 +44,14 @@ window.addEventListener("load", function() {
 	http.onreadystatechange = function() {
 		try {
 			if(http.readyState == 4 && http.status == 200) {
+				window.scratchpadData = http.responseText;
+				if(http.responseText.indexOf('TJHSST Intranet2: Login') !==-1) {
+					console.log('Got login page as result. You may need to re-login.');
+					document.getElementById("text").value = "Data could not be loaded. You may need to re-login.";
+					window.onunload = null;
+					window.doUnLoad = false;
+					return false;
+				}
 				var all = http.responseText.split("&");
 				for (var i = 0; i < all.length; i++) {
 					var junk = all[i].split("=");
@@ -59,13 +67,20 @@ window.addEventListener("load", function() {
 			}
 		} catch (e) {
 			window.onunload = null;
+			window.doUnLoad = false;
+			try {document.getElementById("text").value = "Data could not be loaded. You may need to re-login.";}catch(e){}
 		}
 	};
 	http.open('GET', load_page, true);
 	http.send(null);
-}, false);
+};
+window.addEventListener("load", scratchpad_load, false);
 
-window.addEventListener("unload", function() {
+scratchpad_unload = function() {
+	if (typeof window.doUnLoad !== 'undefined' && window.doUnLoad == false) {
+		console.log('Not saving');
+		return;
+	}
 	if (tabInfo.all == null) // We did not download anything
 		return;
 	for (var i=0;i<tabInfo.list.childNodes.length;i++) {
@@ -74,9 +89,13 @@ window.addEventListener("unload", function() {
 			break;
 		}
 	}
-	http.open('POST', save_page,false);
+	http.open('POST', save_page, false);
 	http.setRequestHeader('Content-Type','text/plain');
-	http.onreadystatechange = function () {};
+	http.onreadystatechange = function () {
+		if(http.readyState == 4 && http.status == 200) {
+			console.log('Saved scratchpad contents.');
+		}
+	};
 	var arr = [];
 	for (var i=0;i<tabInfo.names.length;i++) {
 		var str = encodeURIComponent(tabInfo.names[i]);
@@ -88,7 +107,8 @@ window.addEventListener("unload", function() {
 		arr[i] = str;
 	}
 	http.send(arr.join('&'));
-}, false);
+};
+window.addEventListener("unload", scratchpad_unload, false);
 
 // TAB FUNCTIONS
 var tabInfo = new Object();

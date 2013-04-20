@@ -111,13 +111,17 @@ class Scratchpad implements Module {
 		
 		if($I2_ARGS[1]=='load') {
 			Display::stop_display();
-			echo $this->text;
+			echo "SCRATCHPAD_DATA::".$this->text;
+			exit;
+		}
+		else if($I2_ARGS[1] == 'save') {
+			echo "SCRATCHPAD_DATA::saved";
 			exit;
 		}
 		else {
 			//$disp->disp('scratchpad_pane.tpl', $this->template_args);
 			Display::stop_display();
-			echo $this->text;
+			echo "SCRATCHPAD_DATA::".$this->text;
 			exit;
 		}
 	}
