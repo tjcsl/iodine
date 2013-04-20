@@ -275,8 +275,9 @@ class NewsItem {
 		$groupstring = substr($groupstring, 0,-2);
 		$subj = "[Iodine-news] ".strip_tags($title);
 		
-		$messagecontents = "Posted by " . $author->fullname . " to " . $groupstring . ":<br />\r\n<br />\r\n" . $text ."<br />\r\n<br />\r\n-----------------------------------------<br />\r\nAutomatically sent by the Iodine news feed. Do not reply to this email. To unsubscribe from these messages, unselect 'Send all news posts to me by e-mail' in your Iodine preferences. If you are not a TJHSST student and believe that you are receiving this message in error, contact intranet@tjhsst.edu for assistance.";
+		$messagecontents = "Posted by " . $author->name . " to " . $groupstring . ":<br />\r\n<br />\r\n" . $text ."<br />\r\n<br />\r\n-----------------------------------------<br />\r\nAutomatically sent by the Iodine news feed. Do not reply to this email. To unsubscribe from these messages, unselect 'Send all news posts to me by e-mail' in your Iodine preferences. If you are not a TJHSST student and believe that you are receiving this message in error, contact intranet@tjhsst.edu for assistance.";
 
+		d($messagecontents);
 		// Check permissions and send mail
 		$news = new NewsItem($nid);
 		foreach($I2_SQL->query('SELECT * FROM news_forwarding')->fetch_all_arrays() as $target) {
