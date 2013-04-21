@@ -152,6 +152,12 @@ class EighthActivity {
 		$args = array($this->data['aid'],$blockid,$userid);
 		$result = $I2_SQL->query_arr($query, $args);
 
+		//Clear their absence if they have one for the block already
+		//This is needed for when a teacher marks a student absent before another teacher calls them in
+		$query = 'DELETE FROM eighth_absentees WHERE bid=%d AND user_id=%d';
+		$args = array($blockid, $user_id);
+		$result = $I2_SQL->query_arr($query, $args);
+
 	}
 	public function accept_all_passes($aid, $blockid) {
 
