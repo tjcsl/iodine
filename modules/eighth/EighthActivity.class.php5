@@ -155,7 +155,7 @@ class EighthActivity {
 		//Clear their absence if they have one for the block already
 		//This is needed for when a teacher marks a student absent before another teacher calls them in
 		$query = 'DELETE FROM eighth_absentees WHERE bid=%d AND userid=%d';
-		$args = array($blockid, $user_id);
+		$args = array($blockid, $userid);
 		$result = $I2_SQL->query_arr($query, $args);
 
 	}
