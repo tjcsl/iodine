@@ -248,6 +248,15 @@ class Auth {
 				$modauth_loginfailed = 1;
 				return FALSE;
 			}
+			// Another temporary "hack"; this will be actually fixed
+			// soon by not logging in when an account doesn't exist in LDAP
+
+			// Also, to those reading this in September 2013: REMOVE THIS
+			if (substr($user,0,4) == '2017') {
+				$modauth_err = "Your account is not ready yet. Incoming freshman will be able to log in to Intranet at the start of the school year.";
+				$modauth_loginfailed = 1;
+				return FALSE;
+			}
 
 			if(self::validate($user,$password)) {
 				return TRUE;
