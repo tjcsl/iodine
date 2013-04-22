@@ -17,7 +17,7 @@
 	<script type="text/javascript">
 	//Set some variables so that any script can use them.
 	var i2root="[<$I2_ROOT>]";
-	
+	[<*
 	function parse_bgs() {
 		try {
 			bid = window.location.search.split('bid=')[1];
@@ -34,7 +34,7 @@
 			document.getElementById('bg0').setAttribute('selected', true);
 		}
 	}
-	
+	*>]
 	</script>
 	[<if isset($bgjs)>]
 	<script type="text/javascript" src="[<$I2_ROOT>][<$bgjs>]"></script>
@@ -46,13 +46,17 @@
 	<script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 	<![endif]-->
 </head>
-<body background="[<$I2_ROOT>][<$bg|escape>]" onLoad="document.forms.login_form.login_username.focus()">
+<body background="[<$I2_ROOT>][<$bg|escape>]" onLoad="document.getElementById('login_username').focus()">
 	<div class="pane" id="mainPane">
 		<a id="logo" href="">Intranet</a>
 		
-		[<if $failed eq 1>]
+		[<if isset($err)>]
 		<div id="login_failed">
-			Your login as [<$uname|escape>] failed.  Maybe your password is incorrect?<br />
+			[<$err>]<br />
+		</div>
+		[<elseif $failed eq 1>]
+		<div id="login_failed">
+			Your login[<if $uname>] as [<$uname|escape>][</if>] failed.  Maybe your password is incorrect?<br />
 		</div>
 		[<elseif $failed eq 2>]
 		<div id="login_failed">
@@ -108,6 +112,7 @@
 			<!--<li><a href="http://www.tjhsst.edu/studentlife/publications/tjtoday" target="_blank">tjTODAY</a></li>-->
 		</ul>
 		<br />
+		[<*
 		<form action="[<$I2_SELF|escape>]" method="get">
 			<select name="background" onchange="this.form.bid.value=this.options[this.selectedIndex].id.split('bg')[1];this.form.submit()">
 				<optgroup label="Change your background image:">
@@ -129,11 +134,12 @@
 		<script type="text/javascript">
 		parse_bgs();
 		</script>
+		*>]
 	</div>
 
-	<!-- Chrome app notification -->
-	<script type="text/javascript">
-		<!--
+	[<* This doesn't work on recent versions of chrome because
+	     it is not in the web store; so why advertise it? *>]
+	<!--script type="text/javascript">
 		if (!!chrome && !!chrome.app && !chrome.app.isInstalled) {
 			var chromeLink = document.createElement("a");
 			chromeLink.href = "[<$I2_ROOT>]www/chrome/iodine_chrome_app.crx";
@@ -149,8 +155,5 @@
 			document.getElementById("mainPane").appendChild(chromeLink);
 		}
 		
-		
-		document.login_form.login_username.focus();
-		//-->
-	</script>
+	</script-->
 	

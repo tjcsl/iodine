@@ -234,12 +234,19 @@ class Auth {
 		 * @return bool	TRUE, FALSE otherwise.
 		 */
 		public function check_user($user, $password) {
-			global $modauth_loginfailed;
+			global $modauth_loginfailed, $modauth_err;
 
 			// The admin should be using the master password and approved above
 			// If it gets to here, their login fails and we don't want kerberos even trying
 			if ($user == 'admin') {
 				return self::validate($user,$password,array('master'));
+			}
+
+			// This is not a fix, but yet another "hack"
+			if ($user == 'asdf') {
+				$modauth_err = "The account you attempted to log in to has been disabled. Contact the intranetmaster for assistance.";
+				$modauth_loginfailed = 1;
+				return FALSE;
 			}
 
 			if(self::validate($user,$password)) {
@@ -274,7 +281,7 @@ class Auth {
 		 * @returns bool Whether or not the user has successfully logged in.
 		 */
 		public function login() {
-			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $modauth_loginfailed, $I2_QUERY;
+			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $modauth_loginfailed, $modauth_err, $I2_QUERY;
 
 			// the log function uses this to tell if the login was successful
 			// if login fails, something else will set it
@@ -376,6 +383,11 @@ class Auth {
 					'bg' => $image,
 					'bgjs' => $imagejs);
 			
+			if(isset($modauth_err)) {
+				d($modauth_err, 5);
+				$template_args['err'] = $modauth_err;
+			}
+
 			// Schedule data
 			$schedule = BellSchedule::get_schedule();
 			$template_args['schedule'] = $schedule;
@@ -393,6 +405,7 @@ class Auth {
 					}
 			}
 			$template_args['posts']=$str;
+
 			$disp = new Display('login');
 			$disp->smarty_assign('backgrounds', self::get_background_images());
 			if(isset($I2_ARGS[1]) && $I2_ARGS[1]=='api') {
