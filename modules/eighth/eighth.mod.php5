@@ -542,7 +542,7 @@ class Eighth implements Module {
 					$success=0;
 
 
-				echo "<signup><bid>".$I2_ARGS[2]."</bid><aid>".$I2_ARGS[3]."</aid><uid>".$user->uid."</uid><success>".$success."</success></signup>";
+				echo "<signup>\r\n<bid>".$I2_ARGS[2]."</bid>\r\n<aid>".$I2_ARGS[3]."</aid>\r\n<uid>".$user->uid."</uid>\r\n<success>".$success."</success>\r\n</signup>\r\n";
 				break;
 			default:
 				throw new I2Exception("Invalid argument given to eighth module");
