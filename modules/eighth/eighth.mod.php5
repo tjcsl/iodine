@@ -419,7 +419,7 @@ class Eighth implements Module {
 	* @param Display $disp The Display object to IGNORE COMPLETELY. Really don't know why I left it there.
 	*/
 	function api($disp) {
-		global $I2_ARGS,$I2_QUERY;
+		global $I2_ARGS,$I2_QUERY,$I2_USER;
 		if(!isset($I2_ARGS[1])) {
 			throw new I2Exception("eighth module needs argument");
 		}
@@ -524,11 +524,16 @@ class Eighth implements Module {
 			// $I2_ARGS[3] == activity id
 			// $I2_ARGS[4] == user id
 			case 'signup_activity':
-				if(!isset($I2_ARGS[2], $I2_ARGS[3], $I2_ARGS[4])) {
-					throw new I2Exception("missing parameters: arguments should be bid,aid,uid");
+				if(!isset($I2_ARGS[2], $I2_ARGS[3])) {
+					throw new I2Exception("missing parameters: arguments should be bid, aid, uid (defaults to self if not specified)");
 					
 				}
-				$user = new User($I2_ARGS[4]);
+				if(isset($I2_ARGS[4])) {
+					$user = new User($I2_ARGS[4]);
+				}
+				else {
+					$user = $I2_USER;
+				}
 				// (aid, bid)
 				$activity = new EighthActivity($I2_ARGS[3]);
 				$activity->add_member($user, FALSE, $I2_ARGS[2]);
