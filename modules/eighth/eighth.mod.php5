@@ -536,16 +536,13 @@ class Eighth implements Module {
 				}
 				// (aid, bid)
 				$activity = new EighthActivity($I2_ARGS[3]);
-				if($activity->add_member($user, FALSE, $I2_ARGS[2])==0)
-					$success=1;
-				else
-					$success=0;
+				$success = ($activity->add_member($user, FALSE, $I2_ARGS[2]));
 
 
-				echo "<signup>\r\n<bid>".$I2_ARGS[2]."</bid>\r\n<aid>".$I2_ARGS[3]."</aid>\r\n<uid>".$user->uid."</uid>\r\n<success>".$success."</success>\r\n</signup>\r\n";
+				echo "<signup>\r\n<bid>".$I2_ARGS[2]."</bid>\r\n<aid>".$I2_ARGS[3]."</aid>\r\n<uid>".$user->uid."</uid>\r\n<success>".($success==0)."</success>\r\n<result>".$success."</result>\r\n</signup>\r\n";
 				break;
 			default:
-				throw new I2Exception("Invalid argument given to eighth module");
+				throw new I2Exception("Invalid argument given to eighth module.");
 		}
 		return false;
 	}
