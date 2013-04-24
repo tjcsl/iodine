@@ -1,6 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+<!DOCTYPE html>
+<html>
+<head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <!-- Automatically zooms on mobile devices in certain (mobile-optimized) themes. -->
@@ -16,7 +16,7 @@
 
 
 <title>TJHSST Intranet2[<if $title != "" >]: [<$title>][</if>]</title>
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/common.js"></script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/collapse.js"></script>

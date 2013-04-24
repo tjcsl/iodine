@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 	<meta name="Description" content="The TJ Intranet allows students at the Thomas Jefferson High School for Science and Technology to sign up for activities, access their school files and perform other tasks." />
@@ -8,7 +8,7 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=1">
 	<title>TJHSST Intranet2: Login</title>
 	
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-ui-light.css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-login-default.css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-login-light.css" />
@@ -46,7 +46,7 @@
 	<script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 	<![endif]-->
 </head>
-<body background="[<$I2_ROOT>][<$bg|escape>]" onLoad="document.getElementById('login_username').focus()">
+<body style="background-image:url('[<$I2_ROOT>][<$bg|escape>]');" onLoad="document.getElementById('login_username').focus()">
 	<div class="pane" id="mainPane">
 		<a id="logo" href="">Intranet</a>
 		

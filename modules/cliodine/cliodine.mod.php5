@@ -84,7 +84,7 @@ class CLIodine implements Module {
 	function display_pane($disp) {
 		global $I2_ARGS,$I2_ROOT,$I2_USER;
 		if( !isset($I2_ARGS[1]) ){
-			echo "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>\n";
+			echo "<!DOCTYPE html>\n";
 			echo "<html>\n";
 			echo "<head>\n";
 			echo "<title>CLIodine</title>\n";
