@@ -2,7 +2,7 @@
 <script type="text/javascript">
 	var news_root = '[<$I2_ROOT>]news/';
 </script>
-<div align="left" style="margin-bottom:3px;">
+<div style="text-align:left; margin-bottom:3px;">
 [<if $newsadmin || $maypost>]
 	<a href="[<$I2_ROOT>]news/add">Post a news article</a>
 [</if>]
