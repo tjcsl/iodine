@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
@@ -46,7 +46,7 @@
 	<script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 	<![endif]-->
 </head>
-<body style="background-image:url('[<$I2_ROOT>][<$bg|escape>]');" onLoad="document.getElementById('login_username').focus()">
+<body style="background-image: url('[<$I2_ROOT>][<$bg|escape>]')" onLoad="document.getElementById('login_username').focus()">
 	<div class="pane" id="mainPane">
 		<a id="logo" href="">Intranet</a>
 		

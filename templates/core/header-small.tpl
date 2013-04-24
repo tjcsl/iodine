@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
 <title>TJHSST Intranet2[<if $title != "" >]: [<$title>][</if>]</title>
