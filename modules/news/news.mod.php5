@@ -193,7 +193,7 @@ class News implements Module {
 				echo "]]>\r\n</text>\r\n";
 				echo "<text_strip>\r\n";
 				echo "<![CDATA[\r\n";
-				echo "{strip_tags($story->text)}\r\n";
+				echo strip_tags($story->text)."\r\n";
 				echo "]]>\r\n</text_strip>\r\n";
 				echo "</post>\r\n";
 				break;
