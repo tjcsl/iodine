@@ -178,6 +178,7 @@ class News implements Module {
 					}
 				}
 				echo "</news>";
+				break;
 			case "show":
 				if(!isset($I2_ARGS[2])) {
 					return "<error>ID of article to read not specified.</error>\r\n";
@@ -195,6 +196,7 @@ class News implements Module {
 				echo "{strip_tags($story->text)}\r\n";
 				echo "]]>\r\n</text_strip>\r\n";
 				echo "</post>\r\n";
+				break;
 			default:
 				return "<error>Error: unrecognizable input</error>\r\n";
 		}
