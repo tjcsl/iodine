@@ -151,7 +151,53 @@ class News implements Module {
 	* @param Display $disp The Display object to use for output.
 	*/
 	function api($disp) {
-		return false;
+		global $I2_ARGS;
+		if(!isset($I2_ARGS[1])) {
+			return "<error>Arguments not specified. Possible arguments are list, show.</error>";
+		}
+		switch (strtolower($I2_ARGS[1])) {
+			case "list":
+				echo "<news>\r\n";
+				if( $this->stories === NULL) {
+					$this->stories = Newsitem::get_all_items(false);
+				}
+				foreach($this->stories as $story) {
+					if ((!$story->has_been_read()) && $story->readable()) {
+						echo "<post>\r\n";
+						echo "<id>{$story->nid}</id>\r\n";
+						echo "<title>{$story->title}</title>\r\n";
+						echo "<text>\r\n";
+						echo "<![CDATA[\r\n";
+						echo "{$story->text}\r\n";
+						echo "]]>\r\n</text>\r\n";
+						echo "<text_strip>\r\n";
+						echo "<![CDATA[\r\n";
+						echo strip_tags($story->text)."\r\n";
+						echo "]]>\r\n</text_strip>\r\n";
+						echo "</post>\r\n";
+					}
+				}
+				echo "</news>";
+			case "show":
+				if(!isset($I2_ARGS[2])) {
+					return "<error>ID of article to read not specified.</error>\r\n";
+				}
+				$story = new Newsitem($I2_ARGS[2]);
+				echo "<post>\r\n";
+				echo "<id>{$story->nid}</id>\r\n";
+				echo "<title>{$story->title}</title>\r\n";
+				echo "<text>\r\n";
+				echo "<![CDATA[\r\n";
+				echo "{$story->text}\r\n";
+				echo "]]>\r\n</text>\r\n";
+				echo "<text_strip>\r\n";
+				echo "<![CDATA[\r\n";
+				echo "{strip_tags($story->text)}\r\n";
+				echo "]]>\r\n</text_strip>\r\n";
+				echo "</post>\r\n";
+			default:
+				return "<error>Error: unrecognizable input</error>\r\n";
+		}
 	}
 
 	/**
