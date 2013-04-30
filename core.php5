@@ -250,7 +250,7 @@ try {
 		} else {
 			$module='invalid';
 			echo "<$module>\r\n";
-			throw new I2Exception("No module specified");
+			throw new I2Exception("No module specified. Currently supported modules are news and eighth.");
 		}
 		d('Passing module' . $module . ' api call', 8);
 		if(!get_i2module($module)) {
