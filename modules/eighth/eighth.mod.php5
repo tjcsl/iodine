@@ -535,6 +535,8 @@ class Eighth implements Module {
 				}
 				// (aid, bid)
 				$activity = new EighthActivity($I2_ARGS[3]);
+				if(!EighthBlock::block_exists($I2_ARGS[2]))
+					throw new I2Exception("Block does not exist");
 				$success = ($activity->add_member($user, FALSE, $I2_ARGS[2]));
  
 				echo "<signup>\r\n<bid>".$I2_ARGS[2]."</bid>\r\n<aid>".$I2_ARGS[3]."</aid>\r\n<uid>".$user->uid."</uid>\r\n<success>".($success==0?1:0)."</success>\r\n<result>".$success."</result>\r\n</signup>\r\n";

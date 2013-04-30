@@ -33,6 +33,17 @@ class EighthBlock {
 			$restrictionlists[] = array('gid'=>$temp['gid'], 'aidlist'=>explode(',',$temp['aidlist']));
 		}
 	}
+	/**
+	* Check whether an block exists.
+	*
+	* @access public
+	* @param int $bid The block ID.
+	* @return boolean
+	*/
+	public static function block_exists($bid) {
+		global $I2_SQL;
+		return $I2_SQL->query('SELECT COUNT(*) FROM eighth_blocks WHERE bid=%d', $bid)->fetch_single_value();
+	}
 
 	/**
 	* Adds a block to the list.  If a block with the given name already exists, its blockid is returned.
