@@ -5,9 +5,9 @@
 		<div class="newsoptions">
 			<a href="[<$I2_ROOT>]news/shade/[<$story->id>]" onclick="return doNewsShade([<$story->nid>])" id="shadelink_[<$story->nid>]">[<if $story->shaded()>]Expand[<else>]Collapse[</if>]</a> - 
 			[<if !$story->has_been_read()>]
-				<a href="[<$I2_ROOT>]news/read/[<$story->id>]">Mark read</a>
+				<a href="[<$I2_ROOT>]news/read/[<$story->id>]" onclick="return doNewsRead([<$story->nid>])">Mark read</a>
 			[<else>]
-				<a href="[<$I2_ROOT>]news/unread/[<$story->id>]">Mark unread</a>
+				<a href="[<$I2_ROOT>]news/unread/[<$story->id>]" onclick="return doNewsUnread([<$story->nid>])" id="unreadlink_[<$story->nid>]">Mark unread</a>
 			[</if>]
 		</div>
 	</div>
