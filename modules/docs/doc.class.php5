@@ -104,7 +104,7 @@ class Doc {
         public static function delete_doc($docid) {
                 global $I2_SQL;
                 $I2_SQL->query('DELETE FROM docs WHERE docid=%d', $docid);
-                $I2_SQL-query('DELETE from doc_permissions WHERER docid=%d', $docid);
+                $I2_SQL->query('DELETE FROM doc_permissions WHERE docid=%d', $docid);
         }
 
         /**

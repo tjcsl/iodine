@@ -266,12 +266,7 @@ class Docs implements Module {
 		$docid = $I2_ARGS[2];
 		$name = $I2_SQL->query('SELECT name FROM docs WHERE docid=%d',$docid)->fetch_single_value();
 		$this->template_args['docname'] = $name;
-		if(isset($_REQUEST['docs_delete_form'])) {
-			if($_REQUEST['docs_delete_form'] == 'delete_doc') {
-				Doc::delete_doc($docid);
-				$this->template_args['deleted'] = TRUE;
-			}
-		}
+		Doc::delete_doc($docid);
 		$this->template = 'docs_delete.tpl';
 	}
 }
