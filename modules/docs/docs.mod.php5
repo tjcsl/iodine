@@ -184,13 +184,8 @@ class Docs implements Module {
 		$max_size = 10485760; // 10 MB
 		if(count($_POST) > 0) {
 			$fname = $_FILES['upfile']['name'];
-			//$ext = strrchr($fname,'.'); //We shouldn't do extension-based file determination.
-			//$typer = new finfo(FILEINFO_MIME); //FileInfo should be enabled by default, but for some reason php can't find it.
-			//$filetype = $typer->file($this->path); //So for now we'll just use `file`.
-			$filetype = exec("file ".escapeshellarg($_FILES['upfile']['tmp_name'])." -bi");
-			$filetype = str_replace(';','',$filetype);
-			if(stripos($filetype," ")) //Remove encoding information
-				$filetype = substr($filetype,0,stripos($filetype," "));
+			$typer = new finfo(FILEINFO_MIME_TYPE);
+			$filetype = $typer->file($_FILES['upfile']['tmp_name']);
 			if(in_array($filetype,$allowed_types) && filesize($_FILES['upfile']['tmp_name']) <= $max_size) {
 				$upload_dir = i2config_get('upload_dir', NULL, 'core');
 				if(is_writable($upload_dir)) {
