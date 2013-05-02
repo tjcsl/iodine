@@ -219,6 +219,9 @@ class Docs implements Module {
 			if(isset($this->template_args['error'])) {
 				$this->template = 'docs_add.tpl';
 			}
+			else {
+				redirect('docs');
+			}
 		} else {
 			$this->template_args['error'] = NULL;
 			$this->template = 'docs_add.tpl';
@@ -233,8 +236,29 @@ class Docs implements Module {
 		$doc = new Doc($I2_ARGS[2]);
 		
 		$this->template = 'docs_edit.tpl';
+		$upload_dir = i2config_get('upload_dir', NULL, 'core');
+		$this->template_args['upload_dir'] = $upload_dir;
 		$this->template_args['doc'] = $doc;
 		$this->template_args['groups'] = Group::get_all_groups();
+		//FIXME: implement support for multiple groups
+		$gid = array_keys($doc->groups)[0];
+		$this->template_args['gid'] = $gid;
+		$this->template_args['view'] = $doc->groups[$gid][0];
+		$this->template_args['edit'] = $doc->groups[$gid][1];
+		$this->template_args['error'] = NULL;
+		$typer = new finfo(FILEINFO_MIME_TYPE);
+		$this->template_args['type'] = $typer->file($doc->path);
+		if(count($_POST)>0) {
+			if(empty($_POST['name']) || empty($_POST['path']) || empty($_POST['type'])) {
+				$this->template_args['error'] = "Blank fields are not allowed.";
+			}
+			else {
+				$gid = $_POST['group_gids'][$_POST['groups'][0]];
+				$doc->edit_doc($_POST['name'], $upload_dir.$_POST['path'], isset($_POST['visible'])?1:0, $_POST['type']);
+				$doc->edit_group_id($gid, array(isset($_POST['view'])?1:0, isset($_POST['edit'])?1:0));
+				redirect('docs');
+			}
+		}
 	}
 
 	/**

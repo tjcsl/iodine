@@ -185,7 +185,7 @@ class Doc {
         public function edit_group_id($gid,$perms) {
                 global $I2_SQL;
                 $I2_SQL->query('UPDATE doc_permissions SET view=%d, edit=%d WHERE docid=%d AND gid=%d', $perms[0],$perms[1],$this->doc_id,$gid);
-                $this->gs[$gis] = $perms;
+                $this->gs[$gid] = $perms;
         }
 
         /**
