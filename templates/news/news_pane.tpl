@@ -18,7 +18,7 @@
 		[<include file="news/news-disp.tpl">]
 [<foreachelse>]
 		<br />
-		<p>Oh noes! There are no newsposts that can be displayed this time. You can individually re-add posts that you want to see by clicking "Old news" below and selecting "Mark as unread."</p>
+		<p>There are no newsposts that can be displayed this time. You can individually re-add posts that you want to see by clicking "Old news" below and selecting "Mark as unread."</p>
 [</foreach>]
 </div>
 <br/>
