@@ -268,8 +268,16 @@ class Filecenter implements Module {
 		}
 
 		$return=false;
+
+		//HACK: find a better way to do this
+		$this->commonserver = i2config_get('cifs_common_server','','filecenter');
+
 		eval($I2_SQL->query('SELECT `code` FROM filecenter_filesystems WHERE `name`=%s',$system_type)->fetch_single_value());
 		if($return) return $return;//We have to do this, because if you return inside the eval, it just exits the eval.
+
+		if(!isset($this->filesystem)) {
+			throw new I2Exception("No filesystem found. Is this filesystem in the db?");
+		}
 		
 		$this->directory = '/';
 		
