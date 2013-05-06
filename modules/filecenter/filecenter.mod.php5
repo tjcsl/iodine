@@ -500,6 +500,10 @@ class Filecenter implements Module {
 	* Sort by name, used for field sorting in the usort()s above.
 	*/
 	static function equals_name($f1,$f2) {
+		//HACK: special case ..
+		if($f1['name']=='..') {
+			return -1;
+		}
 		return strnatcmp($f1['name'],$f2['name']);
 	}
 
