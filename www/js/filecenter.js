@@ -19,10 +19,8 @@ function options(anchor, unescapedanchor, type, canread, canwrite, candelete) {
 		if (type == 'file') {
 			var contents = "";
 			if (canread) {
-				if(unescapedanchor.toLowerCase() != 'current directory') {
-					contents += "<a href=\"" + url + "\">Download file</a><br />" + 
-					"<a href=\"" + url + "?download=zip\">Download file as ZIP</a> (NOTE: This will not work for files over 100 MB in size)<br />";
-				}
+				contents += "<a href=\"" + url + "\">Download file</a><br />" + 
+				"<a href=\"" + url + "?download=zip\">Download file as ZIP</a> (NOTE: This will not work for files over 100 MB in size)<br />";
 			}
 			if (canwrite && canread) {
 				contents += "<a href=\"javascript:rename('" + file + "')\">Rename file</a><br />"; 
@@ -42,37 +40,28 @@ function options(anchor, unescapedanchor, type, canread, canwrite, candelete) {
 			"<a href=\"javascript:rml('" + file + "')\">Delete link</a><br />";
 		} else if (type == 'dir') {
 			cell.innerHTML = 
-			"<a href=\"" + url + "/\">Open directory</a><br />";
-			if(unescapedanchor.toLowerCase() != 'current directory') {
-				cell.innerHTML+=
-				"<a href=\"" + url + "/?download\">Download directory as ZIP</a> (NOTE: The ZIP will not include any individual files over 100 MB in size)<br />";
-			}
-			cell.innerHTML+="<a href=\"javascript:rename('" + file + "')\">Rename directory</a><br />" +
+			"<a href=\"" + url + "/\">Open directory</a><br />" + 
+			"<a href=\"" + url + "/?download\">Download directory as ZIP</a> (NOTE: The ZIP will not include any individual files over 100 MB in size)<br />" +
+			"<a href=\"javascript:rename('" + file + "')\">Rename directory</a><br />" +
 			"<a href=\"javascript:rmd_recursive('" + file + "')\">Delete directory</a><br />";
-		} else if (type == 'linkdir') {cell.innerHTML = 
-			"<a href=\"" + url + "/\">Open directory</a><br />";
-			if(unescapedanchor.toLowerCase() != 'current directory') {
-				cell.innerHTML+=
-				"<a href=\"" + url + "/?download\">Download directory as ZIP</a> (NOTE: The ZIP will not include any individual files over 100 MB in size)<br />";
-			}
-			cell.innerHTML+="<a href=\"javascript:rename('" + file + "')\">Rename directory</a><br />" +
-			"<a href=\"javascript:rmd_recursive('" + file + "')\">Delete directory</a><br />";
-		} else if (type == 'emptydir') {cell.innerHTML = 
-			"<a href=\"" + url + "/\">Open directory</a><br />";
-			if(unescapedanchor.toLowerCase() != 'current directory') {
-				cell.innerHTML+=
-				"<a href=\"" + url + "/?download\">Download directory as ZIP</a> (NOTE: The ZIP will not include any individual files over 100 MB in size)<br />";
-			}
-			cell.innerHTML+="<a href=\"javascript:rename('" + file + "')\">Rename directory</a><br />" +
-			"<a href=\"javascript:rmd_recursive('" + file + "')\">Delete directory</a><br />";
+		} else if (type == 'linkdir') {
+			cell.innerHTML = 
+			"<a href=\"" + url + "/\">Open linked directory</a><br />" + 
+			"<a href=\"" + url + "/?download\">Download linked directory as ZIP</a> (NOTE: The ZIP will not include any individual files over 100 MB in size)<br />" +
+			"<a href=\"javascript:rename('" + file + "')\">Rename link</a><br />" +
+			"<a href=\"javascript:rmld('" + file + "')\">Delete link</a><br />";
+		} else if (type == 'emptydir') {
+			cell.innerHTML =
+			"<a href=\"" + url + "/\">Open directory</a><br />" + 
+			"<a href=\"" + url + "/?download\">Download directory as ZIP</a> (NOTE: The ZIP will not include any individual files over 100 MB in size)<br />" +
+			"<a href=\"javascript:rename('" + file + "')\">Rename directory</a><br />" +
+			"<a href=\"javascript:rmd('" + file + "')\">Delete directory</a><br />";
 
 		} else if (type == 'cur') {
 			if (canread) {
-				if(unescapedanchor.toLowerCase() != 'current directory') {
-					cell.innerHTML = 
-					"<a href=\"?download\">Download directory as ZIP</a><br />" +
-					"NOTE: The ZIP will not include any individual files over 100 MB in size";
-				}
+				cell.innerHTML = 
+				"<a href=\"?download\">Download directory as ZIP</a><br />" +
+				"NOTE: The ZIP will not include any individual files over 100 MB in size";
 			} else {
 				cell.innerHTML = "<font color='red'>Permission denied</font><br />";
 			}
