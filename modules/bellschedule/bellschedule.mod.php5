@@ -37,71 +37,70 @@ class BellSchedule implements Module {
 		),
 		'telelearn' => array(
 			'description' => 'Telelearn Day',
-			'schedule' => 'Period 1: 8:30-9:05<br />Period 2: 9:10-9:45<br />Period 3: 9:50-10:25<br />Period 4: 10:30-11:05<br />Lunch: 11:05-11:55<br />Period 5: 11:55-12:30<br />Period 6: 12:35-1:10<br />Period 7: 1:15-1:50'
+			'schedule' => 'Period 1: 8:30 - 9:05<br />Period 2: 9:10 - 9:45<br />Period 3: 9:50 - 10:25<br />Period 4: 10:30 - 11:05<br />Lunch: 11:05 - 11:55<br />Period 5: 11:55 - 12:30<br />Period 6: 12:35 - 1:10<br />Period 7: 1:15 - 1:50'
 		),
 		'telelearnanchor' => array(
 		    'description' => 'Telelearn Day',
-			'schedule' => 'Period 1: 8:30-9:05<br />Period 2: 9:10-9:45<br />Period 3: 9:50-10:25<br />Period 4: 10:30-11:05<br />Lunch: 11:05-11:55<br />Period 5: 11:55-12:30<br />Period 6: 12:35-1:10<br />Period 7: 1:15-1:50'
+			'schedule' => 'Period 1: 8:30 - 9:05<br />Period 2: 9:10 - 9:45<br />Period 3: 9:50 - 10:25<br />Period 4: 10:30 - 11:05<br />Lunch: 11:05 - 11:55<br />Period 5: 11:55 - 12:30<br />Period 6: 12:35 - 1:10<br />Period 7: 1:15 - 1:50'
 		),
 		'bluemidterm' => array(
 			'description' => 'Blue Day - Adjusted Midterm Schedule',
-			'schedule' => 'Period 1: 8:30-10:30<br />Period 2: 10:40-11:45<br />Period 3: 12:30-2:30<br />Period 4: 2:40-3:50'
+			'schedule' => 'Period 1: 8:30 - 10:30<br />Period 2: 10:40 - 11:45<br />Period 3: 12:30 - 2:30<br />Period 4: 2:40 - 3:50'
 		),
 		'red1midterm' => array(
 			'description' => 'Red Day - Adjusted Midterm Schedule',
-			'schedule' => 'Period 5: 8:30-10:30<br />Period 6: 10:40-11:45<br />Period 7: 12:30-2:30<br />Period 8A: 2:40-3:10<br />Period 8B: 3:20-3:50'
+			'schedule' => 'Period 5: 8:30 - 10:30<br />Period 6: 10:40 - 11:45<br />Period 7: 12:30 - 2:30<br />Period 8A: 2:40 - 3:10<br />Period 8B: 3:20 - 3:50'
 		),
 		'jlcmidterm' => array(
 			'description' => 'JLC Blue Day - Adjusted Midterm Schedule',
-			'schedule' => 'Period 1: 9:00-9:55<br />Period 2: 10:05-12:05<br />Period 3: 12:45-1:40<br />Period 4: 1:50-3:50'
+			'schedule' => 'Period 1: 9:00 - 9:55<br />Period 2: 10:05 - 12:05<br />Period 3: 12:45 - 1:40<br />Period 4: 1:50 - 3:50'
 		),
 		'red2midterm' => array(
 			'description' => 'Red Day - Adjusted Midterm Schedule',
-			'schedule' => 'Period 6: 8:30-10:30<br />Period 5: 10:40-11:45<br />Period 7: 12:30-1:35<br />Period 8A: 1:50-2:45<br />Period 8B: 2:55-3:50'
+			'schedule' => 'Period 6: 8:30 - 10:30<br />Period 5: 10:40 - 11:45<br />Period 7: 12:30 - 1:35<br />Period 8A: 1:50 - 2:45<br />Period 8B: 2:55 - 3:50'
 		)
 	);
 	private static $apExamSchedule = array(
 		6 => array(
-			'description' => 'Adjusted Blue Day',
-			'schedule' => 'Period 1: 8:30-10:20<br />Period 2: 10:30-12:15<br />Period 3: 1:00-2:20<br />Period 4: 2:30-3:50'
+			'description' => 'Modified Blue Day',
+			'schedule' => 'Period 1: 8:30 - 10:20<br />Period 2: 10:30 - 12:15<br />Lunch: 12:25 - 1:00<br />Period 3: 1:00 - 2:20<br />Period 4: 2:30 - 3:50'
 		),
 		7 => array(
-			'description' => 'Adjusted Red Day',
-			'schedule' => 'Period 7: 8:30-10:20<br />Period 6: 10:30-12:15<br />Period 5: 1:00-2:20<br />Period 8A: 2:30-3:05<br />Period 8B: 3:15-3:50'
+			'description' => 'Modified Red Day',
+			'schedule' => 'Period 7: 8:30 - 10:20<br />Period 6: 10:30 - 12:15<br />Lunch: 12:15 - 1:00<br />Period 5: 1:00 - 2:20<br />Period 8A: 2:30 - 3:05<br />Period 8B: 3:15 - 3:50'
 		),
 		8 => array(
-			'description' => 'Adjusted Blue Day',
-			'schedule' => 'Period 4: 8:30-10:25<br />Period 3: 10:35-12:30<br />Period 2: 1:15-2:30<br />Period 4: 2:40-3:50'
+			'description' => 'Modified Blue Day',
+			'schedule' => 'Period 4: 8:30 - 10:25<br />Period 3: 10:35 - 12:30<br />Lunch: 12:30 - 1:15<br />Period 2: 1:15 - 2:30<br />Period 1: 2:40 - 3:50'
 		),
 		9 => array(
-			'description' => 'Adjusted Red Day',
-			'schedule' => 'Period 5: 8:30-10:10<br />Period 7: 10:20-12:00<br />Period 6: 12:45-2:05<br />Period 8A: 2:20-3:00<br />Period 8B: 3:10-3:50'
+			'description' => 'Modified Red Day',
+			'schedule' => 'Period 5: 8:30 - 10:10<br />Period 7: 10:20 - 12:00<br />Lunch: 12:00 - 12:45<br />Period 6: 12:45 - 2:05<br />Period 8A: 2:20 - 3:00<br />Period 8B: 3:10 - 3:50'
 		),
 		10 => array(
-			'description' => 'Adjusted Blue Day',
-			'schedule' => 'Period 1: 8:30-10:25<br />Period 2: 10:35-12:30<br />Period 3: 1:15-2:20<br />Period 4: 2:30-3:50'
+			'description' => 'Modified Blue Day',
+			'schedule' => 'Period 1: 8:30 - 10:25<br />Period 2: 10:35 - 12:30<br />Lunch: 12:30 - 1:15<br />Period 3: 1:15 - 2:20<br />Period 4: 2:30 - 3:50'
 		),
 		13 => array(
-			'description' => 'Adjusted Red Day',
-			'schedule' => 'Period 5: 8:30-10:10<br />Period 6: 10:20-12:00<br />Period 7: 12:45-2:15<br />Period 8A: 2:30-3:05<br />Period 8B: 3:15-3:50'
+			'description' => 'Modified Red Day',
+			'schedule' => 'Period 5: 8:30 - 10:10<br />Period 6: 10:20 - 12:00<br />Period 7: 12:45 - 2:15<br />Period 8A: 2:30 - 3:05<br />Period 8B: 3:15 - 3:50'
 		),
 		14 => array(
-			'description' => 'Adjusted Blue Day',
-			'schedule' => 'Period 1: 8:30-10:05<br />Period 2: 10:15-11:45<br />Period 3: 12:30-2:05<br />Period 4: 2:20-3:50'
+			'description' => 'Modified Blue Day',
+			'schedule' => 'Period 1: 8:30 - 10:05<br />Period 2: 10:15 - 11:45<br />Lunch: 11:15 - 12:30<br />Period 3: 12:30 - 2:05<br />Period 4: 2:20 - 3:50'
 		),
 		15 => array(
-			'description' => 'Adjusted Red Day',
-			'schedule' => 'Period 5: 8:30-10:25<br />Period 6: 10:35-12:30<br />Period 7: 1:15-2:30<br />Period 8A: 2:40-3:10<br />Period 8B: 3:20-3:50'
+			'description' => 'Modified Red Day',
+			'schedule' => 'Period 5: 8:30 - 10:25<br />Period 6: 10:35 - 12:30<br />Lunch: 12:30 - 1:15<br />Period 7: 1:15 - 2:30<br />Period 8A: 2:40 - 3:10<br />Period 8B: 3:20 - 3:50'
 		),
 		16 => array(
-			'description' => 'Adjusted Blue Day',
-			'schedule' => 'Period 1: 8:30-10:10<br />Period 2: 10:20-12:00<br />Period 3: 12:45-2:15<br />Period 4: 2:25-3:50'
+			'description' => 'Modified Blue Day',
+			'schedule' => 'Period 1: 8:30 - 10:10<br />Period 2: 10:20 - 12:00<br />Lunch: 12:00 - 12:45<br />Period 3: 12:45 - 2:15<br />Period 4: 2:25 - 3:50'
 		),
 		17 => array(
-			'description' => 'Adjusted Red Day',
-			'schedule' => 'Period 5: 8:30-10:05<br />Period 6: 10:15-11:45<br />Period 7: 12:30-2:05<br />Period 8A: 2:20-3:00<br />Period 8B: 3:10-3:50'
+			'description' => 'Modified Red Day',
+			'schedule' => 'Period 5: 8:30 - 10:05<br />Period 6: 10:15 - 11:45<br />Lunch: 11:45 - 12:30<br />Period 7: 12:30 - 2:05<br />Period 8A: 2:20 - 3:00<br />Period 8B: 3:10 - 3:50'
 		)
-
 	);
 
 	/**
@@ -232,7 +231,7 @@ class BellSchedule implements Module {
 			if(preg_match($regex, $str, $dayTypeMatches) > 0) {
 				// Does it have a day type described?
 				if(preg_match('/SUMMARY:.(Blue Day - Adjusted Schedule for Mid Term Exams|Red Day - Adjusted Schedule for Mid Term Exams|JLC Blue Day - Adjusted Schedule for Mid Term Exams|AMC Blue Day|Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break|Modified Blue Day|Modified Red Day)/', $dayTypeMatches[0], $descriptionMatches) > 0||1!=1) {
-					
+					d($descriptionMatches[1]);
 					if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'||$descriptionMatches[1]=='Winter Break'||$descriptionMatches[1]=='Spring Break'){
 						return array('description' => 'No school', 'schedule' => '');
 					} else if($descriptionMatches[1]=='Blue Day - Adjusted Schedule for Mid Term Exams'){
@@ -250,13 +249,14 @@ class BellSchedule implements Module {
 						return array('description' => BellSchedule::$normalSchedules['jlcmidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['jlcmidterm']['schedule']);
 					/* 2013 AP EXAMS */
 					}else if($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day' && date('Y M') == '2013 May' && ((int)date('j'))>6) {
-						$d = (isset($I2_QUERY['start_date'])?substr($I2_QUERY['start_date'],6):date('j'));
-						if(((int)$d) < 10) $d = substr($d, 1);
-						d('Day: '.$d);
-						d(BellSchedule::$apExamSchedule[$d]);
+						if(isset($I2_QUERY['start_date'])) $d = substr($I2_QUERY['start_date'], 6);
+						else $d = date('j');
+						if(substr($d, 0, 1) == '0') $d = substr($d, 1);
+						d('Modified AP Day: '.$d.' exists: '.isset(BellSchedule::$apExamSchedule[$d]));
 						if(isset(BellSchedule::$apExamSchedule[$d])) {
 							return array('description' => BellSchedule::$apExamSchedule[$d]['description'], 'schedule' => BellSchedule::$apExamSchedule[$d]['schedule']);
 						} else {
+							d('Using default schedule--may not be correct!');
 							return BellSchedule::get_default_schedule();
 						}
 					}else{
