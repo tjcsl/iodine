@@ -210,7 +210,16 @@ abstract class Filesystem {
 		if ($origpath == NULL) {
 			$origpath = $dirpath;
 		}
-
+		// timeout after 15 seconds
+		exec('timeout 15s du -sb ' . escapeshellarg($dirpath), $dirsize, $ret);
+		if($ret == 124) {
+			throw new I2Exception("Getting directory size timed out. Try a smaller directory.");
+		}
+		// get just the size
+		$dirsize = intval(strtok($dirsize[0], "\t"));
+		if ($dirsize > i2config_get('max_zip_filesize', 104857600, 'filecenter')) {
+			throw new I2Exception("Directory tree is too large. Size is " . Filecenter::human_readable_size($dirsize));
+		}
 		$dir = opendir($dirpath);
 		while (FALSE !== ($file = readdir($dir))) {
 			if ($file == '.' || $file == '..') {
