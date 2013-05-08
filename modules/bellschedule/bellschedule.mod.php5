@@ -307,7 +307,7 @@ class BellSchedule implements Module {
 		if(!isset($start)) $start = $mid - 2;
 		if(!isset($end)) $end = $mid + 2;
 		$contentsr = array();
-		for($i=$start; $i<($end+1); $i++) {
+		for($i=$start; $i<($end); $i++) {
 			$contentsr[$i] = BellSchedule::update_schedule_contents($contents, $i);
 			$contentsr[$i]['day'] = $i;
 		}

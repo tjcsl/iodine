@@ -19,6 +19,7 @@
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/logins/schedule.js"></script>
 	<script type="text/javascript">
 	week_base_url = "";
+	day_base_url = "news";
 	week_text = "[<if $has_custom_day>]View [<$schedule.date>][<else>]View Today[</if>]";
 	</script>
 	<script type="text/javascript">
@@ -107,13 +108,13 @@
 	</div>
 	<div class="pane" id="subPane">
 		<p id='sched_tools'>
-			<button id="week_b" onclick="window.location='?day=[<$schedule.yday>]'" style=''>&lt;==</button>
+			<button id="week_b" onclick="window.location=day_base_url+'?day=[<$schedule.yday>]'" style=''>&lt;==</button>
 			[<if $has_custom_day>]
-				<button id="week_today" onclick="window.location='?day=0'">View Today</button>
+				<button id="week_today" onclick="window.location=day_base_url+'?day=0'">View Today</button>
 			[</if>]
 				<button id="week_click" onclick="week_click();">View Week</button>
 			
-			<button id="week_f" onclick="window.location='?day=[<$schedule.nday>]'">==&gt;</button>
+			<button id="week_f" onclick="window.location=day_base_url+'?day=[<$schedule.nday>]'">==&gt;</button>
 		</p>
 		<div id="schedule">
 			
