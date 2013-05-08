@@ -1,7 +1,6 @@
-#!/usr/bin/env python
-import urllib2
-from BeautifulSoup import BeautifulSoup
-import string
+#!/usr/bin/python3 -OO
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
 import os
 import sys
 
@@ -9,10 +8,10 @@ if not os.path.exists("config.ini.php5"):
    sys.stderr.write("This program must be run from the root directory of iodine.\n")
    sys.exit(1)
 
-links_file = open('templates/info/links.tpl', 'w')
+links_file = open('templates/info/links.tpl', 'w', encoding='UTF-8')
 proxy_file = open('www/proxy.pac', 'w')
 
-page = urllib2.urlopen("http://academics.tjhsst.edu/library/database.htm")
+page = urlopen("http://www.tjhsst.edu/curriculum/library/wordpress/databases")
 soup = BeautifulSoup(page)
 domains = []
 for link in soup('a'):
@@ -21,17 +20,17 @@ for link in soup('a'):
       if href == None or href.count("http") == 0 or href.count("fcps.edu") > 0 or href.count("tjhsst.edu") > 0 or href.count("co.fairfax.va.us") > 0:
          continue
       href = ' '.join(href.split())
-      href = string.replace(href, '  ', ' ')
-      href = string.replace(href, '  ', ' ')
+      href = str.replace(href, '  ', ' ')
+      href = str.replace(href, '  ', ' ')
       href = href.lower()
       contents = ""
       for i in range(0, len(link.contents)):
          contents += " " + ''.join(link.contents[i])
       contents = ' '.join(contents.split())
-      contents = string.replace(contents, '&nbsp;', ' ')
-      contents = string.replace(contents, '  ', ' ')
-      contents = string.replace(contents, '  ', ' ')
-      contents = string.replace(contents, '  ', ' ')
+      contents = str.replace(contents, '&nbsp;', ' ')
+      contents = str.replace(contents, '  ', ' ')
+      contents = str.replace(contents, '  ', ' ')
+      contents = str.replace(contents, '  ', ' ')
       if href.count(".eb.com") > 0:
          contents = "Britannica's Online Reference - " + contents
       links_file.write("<li><a href=\"" + href + "\">"+contents+"</a></li>\n")
@@ -41,14 +40,14 @@ for link in soup('a'):
       if href == None or href.count("http") == 0 or href.count("fcps.edu") > 0 or href.count("tjhsst.edu") > 0 or href.count("co.fairfax.va.us") > 0:
          continue
       href = ' '.join(href.split())
-      href = string.replace(href, '  ', ' ')
-      href = string.replace(href, '  ', ' ')
+      href = str.replace(href, '  ', ' ')
+      href = str.replace(href, '  ', ' ')
       href = href.lower()
-      contents = ''.join(link.contents)
+      contents = ''.join(str(x) for x in link.contents)
       contents = ' '.join(contents.split())
-      contents = string.replace(contents, '&nbsp;', ' ')
-      contents = string.replace(contents, '  ', ' ')
-      contents = string.replace(contents, '  ', ' ')
+      contents = str.replace(contents, '&nbsp;', ' ')
+      contents = str.replace(contents, '  ', ' ')
+      contents = str.replace(contents, '  ', ' ')
       if href.count(".eb.com") > 0:
          contents = "Britannica's Online Reference - " + contents
       links_file.write("<li><a href=\"" + href + "\">"+contents+"</a></li>\n")
