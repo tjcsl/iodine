@@ -413,6 +413,19 @@ class BellSchedule implements Module {
 		else return FALSE;
 	}
 	
+	public static function parse_schedule_day($desc) {
+		if(strpos($desc, "Blue") !==false) {
+			return 'blue';
+		} else if(strpos($desc, "Red") !== false) {
+			return 'red';
+		} else if(strpos($desc, "Anchor") !== false) {
+			return 'anchor';
+		} else if(strpos($desc, "No school") !== false) {
+			return 'noschool';
+		} else {
+			return 'other';
+		}
+	}
 	/**
 	* Returns the default schedule for a given day
 	*

@@ -108,18 +108,18 @@
 	</div>
 	<div class="pane" id="subPane">
 		<p id='sched_tools'>
-			<button id="week_b" onclick="window.location=day_base_url+'?day=[<$schedule.yday>]'" style=''>&lt;==</button>
+			<button id="week_b" onclick="window.location=day_base_url+'?day=[<$schedule.yday>]'" style=''>←</button>
 			[<if $has_custom_day>]
 				<button id="week_today" onclick="window.location=day_base_url+'?day=0'">View Today</button>
 			[</if>]
 				<button id="week_click" onclick="week_click();">View Week</button>
 			
-			<button id="week_f" onclick="window.location=day_base_url+'?day=[<$schedule.nday>]'">==&gt;</button>
+			<button id="week_f" onclick="window.location=day_base_url+'?day=[<$schedule.nday>]'">→</button>
 		</p>
 		<div id="schedule">
 			
 			<h2>[<$schedule.header>]</h2>
-			<p class='desc[<if isset($schedule.modified)>] desc-modified[</if>]'>[<$schedule.description>]</p>
+			<p class='desc[<if isset($schedule.schedday)>] schedule-[<$schedule.schedday>][</if>]'>[<$schedule.description>]</p>
 			<div style='height: 160px;float: center'>[<$schedule.schedule>]</div>
 		
 		</div>

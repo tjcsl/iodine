@@ -17,11 +17,7 @@ week_show = function() {
 	$("#schedule_t").show();
 	$('#schedule_week').show();
 	$('#week_b, #week_f').hide();
-	u = week_base_url+'?week';
-	/*
-	if (window.location.search.indexOf('day=')!==-1) {
-		u+= '&day=' + window.location.search.split('day=')[1];
-	}*/
+	
 	function getMonday(d) {
 		d = new Date(d);
 		var day = d.getDay(),
@@ -35,14 +31,25 @@ week_show = function() {
 	dd = m.getDate()+1;
 	if(dd <= 9) dd = '0'+dd;
 	d = parseInt(dy+''+dm+''+dd);
+	u = week_base_url+'?week&ajax';
+	if (window.location.search.indexOf('day=')!==-1) {
+		da = parseInt(window.location.search.split('day=')[1]);
+		d +=da;
+		u+= '&day=' + da;
+	}
 	u+= '&start='+(d-1);
 	u+= '&end='+(d+4);
 	$.get(u, {}, function(d) {
 		//try {
 			window.getd = d;
-			weekdata = d.split('::START::');
-			weekdata = weekdata[1].split('::END::')[0];
-			$('#schedule_week').html(weekdata);
+			if(d.indexOf('::START::')!==-1 && d.indexOf('::END::')!==-1) {
+				weekdata = d.split('::START::</span>');
+				weekdata = weekdata[1].split('<span style=\'display:none\'>::END::')[0];
+				$('#schedule_week').html(weekdata);
+			} else {
+				$('#schedule_week').append('<p>An error occurred fetching schedules.</p>');
+				window.location.href = u;
+			}
 		//} catch(e) {
 		//	$('#schedule_week').append('<p>An error occurred fetching schedules.</p>');
 		//}

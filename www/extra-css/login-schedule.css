@@ -36,13 +36,24 @@ body.login #logo {
 #schedule_week {
 	width: auto;
 	text-align: center;
-	margin-left: auto;
-	margin-right: auto;
 	margin-top: 20px;
 	display: none;
+	margin-left: -15px;
 }
-.desc-modified {
+.schedule-blue {
+	color: blue;
+}
+.schedule-red {
 	color: red;
+}
+.schedule-anchor {
+	color: black;
+}
+.schedule-other, .schedule-noschool {
+	color: black;
+}
+.schedule-modified {
+	font-weight: bold;
 }
 /* ajax table css */
 #subPane #schedule_week table {

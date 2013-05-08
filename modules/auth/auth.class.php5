@@ -401,7 +401,7 @@ class Auth {
 			
 			// Week view
 			if(isset($I2_QUERY['week'])) {
-				$c = "::START::";
+				$c = "<span style='display:none'>::START::</span>";
 				$md = isset($I2_QUERY['day']) ? date('Ymd', BellSchedule::parse_day_query()) : null;
 				$ws = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : null;
 				$we = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : null;
@@ -417,7 +417,7 @@ class Auth {
 				foreach($schedules as $day=>$schedule) {
 					$nday = date('l, F j', strtotime($day));
 					$m = (isset($schedule['modified'])? ' desc-modified': '');
-					$c.= "<td class='desc".$m."''>";
+					$c.= "<td class='desc".$m." schedule-".(BellSchedule::parse_schedule_day($schedule['description']))."'>";
 					$c.=$schedule['description']."</td>";
 				}
 				$c.= "</tr><tr>";
@@ -426,7 +426,7 @@ class Auth {
 				}
 				$c.= "</tr></table>";
 				$c.="<p><span style='max-width: 500px'>Schedules are subject to change.</span></p>";
-				$c.="::END::";
+				$c.="<span style='display:none'>::END::</span>";
 				$disp = new Display('login');
 				$disp->raw_display($c);
 				exit();
@@ -455,6 +455,10 @@ class Auth {
 
 				$template_args['has_custom_day'] = false;
 			}
+
+			$schedule['schedday'] = BellSchedule::parse_schedule_day($schedule['description']);
+
+			if(strpos($schedule['description'], 'Modified')!==false) $schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
 			$template_args['schedule'] = $schedule;
 			// Save any post data that we get and pass it to the html. (except for a password field)
 			$str="";
