@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ${HOME}/intranet2
+test -f config.ini.php5 || cd ${HOME}/intranet2
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!!!!!         Warning!         !!!!!"
