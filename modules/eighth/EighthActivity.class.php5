@@ -85,7 +85,7 @@ class EighthActivity {
 			$this->data['aid'] = $activityid;
 			if($blockid) {
 				$this->data['block'] = new EighthBlock($blockid);
-				$additional = $I2_SQL->query('SELECT bid,sponsors AS block_sponsors,rooms AS block_rooms,cancelled,comment,advertisement,attendancetaken FROM eighth_block_map WHERE bid=%d AND activityid=%d', $blockid, $activityid)->fetch_array(MYSQL_ASSOC);
+				$additional = $I2_SQL->query('SELECT bid,sponsors AS block_sponsors,rooms AS block_rooms,cancelled,comment,advertisement,attendancetaken FROM eighth_block_map WHERE bid=%d AND activityid=%d', $blockid, $activityid)->fetch_array(MYSQLI_ASSOC);
 				if(!$additional)
 					throw new I2Exception("Activity $activityid does not exist for block $blockid ({$this->data['block']->date}, {$this->data['block']->block} block)!");
 				$this->data = array_merge($this->data, $additional);
@@ -93,7 +93,7 @@ class EighthActivity {
 				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(',', $this->data['block_rooms']) : array());
 			}
 			// Import favorites data. This is a _good_thing_. I think.
-			$this->data['favorite']=sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $activityid)->fetch_array(MYSQL_ASSOC))>1?TRUE:FALSE;
+			$this->data['favorite']=sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $activityid)->fetch_array(MYSQLI_ASSOC))>1?TRUE:FALSE;
 		}
 	}
 
@@ -861,7 +861,7 @@ class EighthActivity {
 	*/
 	public static function favorite_change($aid) {
 		global $I2_USER,$I2_SQL;
-		if(sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $aid)->fetch_array(MYSQL_ASSOC))>1)
+		if(sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $aid)->fetch_array(MYSQLI_ASSOC))>1)
 			$I2_SQL->query('DELETE FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $aid);
 		else
 			$I2_SQL->query('INSERT INTO eighth_favorites (uid,aid) VALUES (%d,%d)', $I2_USER->uid, $aid);

@@ -184,9 +184,9 @@ class GroupSQL extends Group {
 
 	public static function get_all_user_group_info() {
 		global $I2_USER,$I2_SQL;
-		$groups=$I2_SQL->query('SELECT groups_static.gid,groups_name.name FROM groups_static,groups_name WHERE (groups_static.gid=groups_name.gid) AND groups_static.uid=%d',$I2_USER->uid)->fetch_all_arrays_keyed('gid',MYSQL_ASSOC);
+		$groups=$I2_SQL->query('SELECT groups_static.gid,groups_name.name FROM groups_static,groups_name WHERE (groups_static.gid=groups_name.gid) AND groups_static.uid=%d',$I2_USER->uid)->fetch_all_arrays_keyed('gid',MYSQLI_ASSOC);
 		print_r($groups);
-		$perms=$I2_SQL->query('SELECT groups_static.gid,groups_user_perms.pid FROM groups_static,groups_user_perms WHERE (groups_static.gid=groups_user_perms.gid) AND (groups_static.uid=groups_user_perms.uid) AND groups_static.uid=%d',$I2_USER->uid)->fetch_all_arrays_keyed_list('gid',MYSQL_ASSOC);
+		$perms=$I2_SQL->query('SELECT groups_static.gid,groups_user_perms.pid FROM groups_static,groups_user_perms WHERE (groups_static.gid=groups_user_perms.gid) AND (groups_static.uid=groups_user_perms.uid) AND groups_static.uid=%d',$I2_USER->uid)->fetch_all_arrays_keyed_list('gid',MYSQLI_ASSOC);
 		print_r($perms);
 	}
 

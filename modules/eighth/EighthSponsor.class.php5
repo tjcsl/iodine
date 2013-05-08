@@ -106,7 +106,7 @@ class EighthSponsor {
 			if (!$startdate) {
 				$startdate = date('Y-m-d');
 			}
-			$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date>=%t AND eighth_block_map.sponsors REGEXP \'(^|,)(%d)($|,)\' ORDER BY eighth_blocks.date,eighth_blocks.block',$startdate,$thissponsor)->fetch_all_arrays(MYSQL_ASSOC);
+			$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date>=%t AND eighth_block_map.sponsors REGEXP \'(^|,)(%d)($|,)\' ORDER BY eighth_blocks.date,eighth_blocks.block',$startdate,$thissponsor)->fetch_all_arrays(MYSQLI_ASSOC);
 			$activities = array();
 			foreach($result as $activity) {
 				$activities[] = new EighthActivity($activity['activityid'], $activity['bid']);
@@ -130,9 +130,9 @@ class EighthSponsor {
 			if(is_array($thissponsor)) {
 				if(empty($thissponsor))
 					return array();
-				$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date=%t AND eighth_block_map.sponsors REGEXP "(^|,)(%X)($|,)" ORDER BY eighth_blocks.date,eighth_blocks.block',$date,implode("|",$thissponsor))->fetch_all_arrays(MYSQL_ASSOC);
+				$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date=%t AND eighth_block_map.sponsors REGEXP "(^|,)(%X)($|,)" ORDER BY eighth_blocks.date,eighth_blocks.block',$date,implode("|",$thissponsor))->fetch_all_arrays(MYSQLI_ASSOC);
 			} else {
-				$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date=%t AND eighth_block_map.sponsors REGEXP \'(^|,)(%d)($|,)\' ORDER BY eighth_blocks.date,eighth_blocks.block',$date,$thissponsor)->fetch_all_arrays(MYSQL_ASSOC);
+				$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date=%t AND eighth_block_map.sponsors REGEXP \'(^|,)(%d)($|,)\' ORDER BY eighth_blocks.date,eighth_blocks.block',$date,$thissponsor)->fetch_all_arrays(MYSQLI_ASSOC);
 			}
 			$activities = array();
 			foreach($result as $activity) {

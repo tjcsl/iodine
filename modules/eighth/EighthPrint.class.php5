@@ -121,7 +121,7 @@ class EighthPrint {
 	public static function print_activity_rosters($bids, $color, $format = "print") {
 		global $I2_SQL;
 		$color = str_replace('-', ',', $color);
-		$activities = EighthActivity::id_to_activity($I2_SQL->query('SELECT activityid,bid FROM eighth_block_map WHERE bid IN (%D) ORDER BY activityid ASC, bid ASC', $bids)->fetch_all_arrays(MYSQL_NUM));
+		$activities = EighthActivity::id_to_activity($I2_SQL->query('SELECT activityid,bid FROM eighth_block_map WHERE bid IN (%D) ORDER BY activityid ASC, bid ASC', $bids)->fetch_all_arrays(MYSQLI_NUM));
 		usort($activities, array('EighthPrint', 'sort_by_pickup_then_sponsor'));
 		$block = NULL;
 		$blocks = array();

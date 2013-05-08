@@ -79,7 +79,7 @@ class MySQLResult implements Result {
 		return new MySQLResult(null,null);	
 	}
 	
-	function fetch_array($type = MYSQL_BOTH) {
+	function fetch_array($type = MYSQLI_BOTH) {
 		$row = mysqli_fetch_array($this->mysql_result, $type);
 		if ($row) {
 			$this->current_row_number++;
@@ -116,7 +116,7 @@ class MySQLResult implements Result {
 	}
 
 	
-	function fetch_row($rownum, $type = MYSQL_BOTH) {
+	function fetch_row($rownum, $type = MYSQLI_BOTH) {
 		if($this->query_type = MySQL::SELECT && $rownum < mysqli_num_rows($this->mysql_result)) {
 			mysqli_data_seek($this->mysql_result, $rownum);
 			$this->fetch_array($type);
@@ -141,7 +141,7 @@ class MySQLResult implements Result {
 		return FALSE;
 	}
 
-	function fetch_all_arrays($type = MYSQL_BOTH) {
+	function fetch_all_arrays($type = MYSQLI_BOTH) {
 		$sum = array();
 		while ($arr = $this->fetch_array($type)) {
 			$sum[] = $arr;
@@ -149,7 +149,7 @@ class MySQLResult implements Result {
 		return $sum;
 	}
 
-	function fetch_all_arrays_keyed($key,$type = MYSQL_BOTH) {
+	function fetch_all_arrays_keyed($key,$type = MYSQLI_BOTH) {
 		$sum = array();
 		while ($arr = $this->fetch_array($type)) {
 			$sum[$arr[$key]] = $arr;
@@ -157,7 +157,7 @@ class MySQLResult implements Result {
 		return $sum;
 	}
 
-	function fetch_all_arrays_keyed_list($key,$type = MYSQL_BOTH) {
+	function fetch_all_arrays_keyed_list($key,$type = MYSQLI_BOTH) {
 		$sum = array();
 		while ($arr = $this->fetch_array($type)) {
 			$sum[$arr[$key]][] = $arr;
@@ -167,7 +167,7 @@ class MySQLResult implements Result {
 
 	function fetch_array_keyed($key,$val) {
 		$sum = array();
-		while ($arr = $this->fetch_array(MYSQL_ASSOC)) {
+		while ($arr = $this->fetch_array(MYSQLI_ASSOC)) {
 			print_r($arr);
 			$sum[$arr[$key]]=$arr[$val];
 		}
@@ -233,14 +233,14 @@ class MySQLResult implements Result {
 
 	public function fetch_single_value() {
 		$this->rewind();
-		$array = $this->fetch_array(MYSQL_NUM);
+		$array = $this->fetch_array(MYSQLI_NUM);
 		return $array[0];
 	}
 
 	public function fetch_col($colname) {
 		$this->rewind();
 		$ret = array();
-		while ($arr = $this->fetch_array(MYSQL_ASSOC)) {
+		while ($arr = $this->fetch_array(MYSQLI_ASSOC)) {
 			$ret[] = $arr[$colname];
 		}
 		return $ret;
@@ -249,7 +249,7 @@ class MySQLResult implements Result {
 	public function fetch_all_single_values() {
 		$this->rewind();
 		$ret = array();
-		while ($arr = $this->fetch_array(MYSQL_NUM)) {
+		while ($arr = $this->fetch_array(MYSQLI_NUM)) {
 			$ret[] = $arr[0];
 		}
 		return $ret;

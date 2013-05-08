@@ -597,7 +597,7 @@ class NewsItem {
 	 */
 	private static function regenshadecache(){
 		global $I2_SQL,$I2_USER;
-		self::$shadecache = $I2_SQL->query('SELECT nid FROM news_shaded_map WHERE uid=%d', $I2_USER->uid)->fetch_all_single_values(MYSQL_ASSOC);
+		self::$shadecache = $I2_SQL->query('SELECT nid FROM news_shaded_map WHERE uid=%d', $I2_USER->uid)->fetch_all_single_values(MYSQLI_ASSOC);
 	}
 }
 ?>

@@ -28,7 +28,7 @@ class Ajax {
 			if($boxes[1] == "") {
 				unset($boxes[1]);
 			}
-			$boxes_todo = $I2_SQL->query("SELECT name, box_order, intrabox.boxid FROM intrabox_map LEFT JOIN intrabox USING (boxid) WHERE uid=%d AND (name IN (%S)" . ($boxes[1] ? "" : " OR intrabox.boxid=(SELECT MAX(boxid) FROM intrabox_map WHERE uid=%d)") . ") ORDER BY box_order", $uid, $boxes, $uid)->fetch_all_arrays(MYSQL_ASSOC);
+			$boxes_todo = $I2_SQL->query("SELECT name, box_order, intrabox.boxid FROM intrabox_map LEFT JOIN intrabox USING (boxid) WHERE uid=%d AND (name IN (%S)" . ($boxes[1] ? "" : " OR intrabox.boxid=(SELECT MAX(boxid) FROM intrabox_map WHERE uid=%d)") . ") ORDER BY box_order", $uid, $boxes, $uid)->fetch_all_arrays(MYSQLI_ASSOC);
 			print_r($boxes);
 			print_r($boxes_todo);
 			if(strcasecmp($boxes_todo[0]['name'], $boxes[0]) == 0) { // Before
@@ -39,7 +39,7 @@ class Ajax {
 				$I2_SQL->query("UPDATE intrabox_map SET box_order=box_order+1 WHERE box_order >= %d AND box_order < %d AND uid=%d ORDER BY box_order ASC", $boxes_todo[0]['box_order'], $boxes_todo[1]['box_order'], $uid);
 				$I2_SQL->query("UPDATE intrabox_map SET box_order=%d WHERE uid=%d AND boxid=%d ORDER BY box_order ASC", $boxes_todo[0]['box_order'], $uid, $boxes_todo[1]['boxid']);
 			}
-			echo implode(",", flatten($I2_SQL->query("SELECT name FROM intrabox LEFT JOIN intrabox_map USING (boxid) WHERE uid=%d ORDER BY box_order ASC", $uid)->fetch_all_arrays(MYSQL_NUM)));
+			echo implode(",", flatten($I2_SQL->query("SELECT name FROM intrabox LEFT JOIN intrabox_map USING (boxid) WHERE uid=%d ORDER BY box_order ASC", $uid)->fetch_all_arrays(MYSQLI_NUM)));
 		}*/
 		if($module == 'webpage_title') {
          $retvalue = "";

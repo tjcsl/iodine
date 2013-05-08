@@ -134,10 +134,10 @@ class Calendar implements Module {
 		$this->template_args['startdate']=$startdate;
 		$this->template_args['enddate']=$enddate;
 
-		$data_time = $I2_SQL->query('SELECT * FROM calendar WHERE blocknottime=0')->fetch_all_arrays(MYSQL_ASSOC);
-		$data_block = $I2_SQL->query('SELECT * FROM calendar WHERE blocknottime=1')->fetch_all_arrays_keyed_list('blockdate',MYSQL_ASSOC);
+		$data_time = $I2_SQL->query('SELECT * FROM calendar WHERE blocknottime=0')->fetch_all_arrays(MYSQLI_ASSOC);
+		$data_block = $I2_SQL->query('SELECT * FROM calendar WHERE blocknottime=1')->fetch_all_arrays_keyed_list('blockdate',MYSQLI_ASSOC);
 
-		$blocksraw = $I2_SQL->query('SELECT * FROM calendar_schedule')->fetch_all_arrays(MYSQL_ASSOC);
+		$blocksraw = $I2_SQL->query('SELECT * FROM calendar_schedule')->fetch_all_arrays(MYSQLI_ASSOC);
 		$blocks = array();
 		foreach($blocksraw as $block) {
 			$blocklist = explode('|',$block['blocksarray']);
@@ -162,7 +162,7 @@ class Calendar implements Module {
 		//print_r($blocks);
 		// TODO: Get working
 		/*if(isset($I2_USER) && $I2_USER->iodineUIDNumber !=9999) {
-			$userdata = $I2_SQL->query('SELECT * FROM calendar_user WHERE uid=%s',$I2_USER->iodineUIDNumber)->fetch_all_arrays_keyed_list('day',MYSQL_ASSOC);
+			$userdata = $I2_SQL->query('SELECT * FROM calendar_user WHERE uid=%s',$I2_USER->iodineUIDNumber)->fetch_all_arrays_keyed_list('day',MYSQLI_ASSOC);
 			$data = array_merge($data,$userdata);
 			$this->template_args['extraline']='';
 		} else {
