@@ -398,9 +398,64 @@ class Auth {
 			}
 
 			// Schedule data
-			$schedule = BellSchedule::get_schedule();
-			$template_args['schedule'] = $schedule;
 			
+			// Week view
+			if(isset($I2_QUERY['week'])) {
+				$c = "::START::";
+				$md = isset($I2_QUERY['day']) ? date('Ymd', BellSchedule::parse_day_query()) : null;
+				$ws = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : null;
+				$we = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : null;
+				$schedules = BellSchedule::get_schedule_week($ws, $we, $md);
+
+				$c.= "<table class='weeksched'><tr class='h' style='min-height: 40px;max-height: 40px;line-height: 25px'>";
+				foreach($schedules as $day=>$schedule) {
+					$nday = date('l, F j', strtotime($day));
+					$c.= "<td style='font-size: 16px;font-weight: bold'>Schedule for<br />".$nday."</td>";
+				}
+				$c.= "</tr><tr>";
+
+				foreach($schedules as $day=>$schedule) {
+					$nday = date('l, F j', strtotime($day));
+					$m = (isset($schedule['modified'])? ' desc-modified': '');
+					$c.= "<td class='desc".$m."''>";
+					$c.=$schedule['description']."</td>";
+				}
+				$c.= "</tr><tr>";
+				foreach($schedules as $day=>$schedule) {
+					$c.= "<td>".$schedule['schedule']."</td>";
+				}
+				$c.= "</tr></table>";
+				$c.="<p><span style='max-width: 500px'>Schedules are subject to change.</span></p>";
+				$c.="::END::";
+				$disp = new Display('login');
+				$disp->raw_display($c);
+				exit();
+				return FALSE;
+			}
+			$schedule = BellSchedule::get_schedule();
+			$schedule['header'] = "Today's Schedule";
+			if(isset($I2_QUERY['day'])) {
+				$cday = $I2_QUERY['day'];
+				if(substr($cday, 0, 1) == '-') $cday = '-'.substr($cday, 1);
+				else $cday = '+'.$cday;
+				d($cday);
+				$schedule['date'] = date('l, F j', strtotime($cday.' day'));
+				if($schedule['date'] !== date('l, F j')) {
+					$schedule['header'] = "Schedule for<br />".$schedule['date'];
+				}
+				if(substr($cday, 0, 1) == '+') $dint = substr($cday, 1);
+				else $dint = $cday;
+				d($dint);
+				$schedule['yday'] = ((int)$dint)-1;
+				$schedule['nday'] = ((int)$dint)+1;
+				$template_args['has_custom_day'] = ($cday !== "+0");
+			} else {
+				$schedule['yday'] = -1;
+				$schedule['nday'] = 1;
+
+				$template_args['has_custom_day'] = false;
+			}
+			$template_args['schedule'] = $schedule;
 			// Save any post data that we get and pass it to the html. (except for a password field)
 			$str="";
 			foreach (array_keys($_POST) as $post) {
@@ -416,6 +471,7 @@ class Auth {
 			$template_args['posts']=$str;
 
 			$disp = new Display('login');
+			
 			$disp->smarty_assign('backgrounds', self::get_background_images());
 			if(isset($I2_ARGS[1]) && $I2_ARGS[1]=='api') {
 				$disp->disp('login_api.tpl', $template_args);

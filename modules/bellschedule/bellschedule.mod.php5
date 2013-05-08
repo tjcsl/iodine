@@ -18,6 +18,7 @@ class BellSchedule implements Module {
 	/**
 	* The default schedules
 	*/
+	private static $url = 'https://www.calendarwiz.com/CalendarWiz_iCal.php?crd=tjhsstcalendar';
 	private static $normalSchedules = array(
 		'anchor' => array(
 			'description' => 'Anchor Day',
@@ -58,9 +59,12 @@ class BellSchedule implements Module {
 		'red2midterm' => array(
 			'description' => 'Red Day - Adjusted Midterm Schedule',
 			'schedule' => 'Period 6: 8:30 - 10:30<br />Period 5: 10:40 - 11:45<br />Period 7: 12:30 - 1:35<br />Period 8A: 1:50 - 2:45<br />Period 8B: 2:55 - 3:50'
-		)
+		),
+		'noschool' => array('description' => 'No school', 'schedule' => '')
 	);
 	private static $apExamSchedule = array(
+		4 => array('description' => 'No school', 'schedule' => ''),
+		5 => array('description' => 'No school', 'schedule' => ''),
 		6 => array(
 			'description' => 'Modified Blue Day',
 			'schedule' => 'Period 1: 8:30 - 10:20<br />Period 2: 10:30 - 12:15<br />Lunch: 12:25 - 1:00<br />Period 3: 1:00 - 2:20<br />Period 4: 2:30 - 3:50'
@@ -164,120 +168,238 @@ class BellSchedule implements Module {
 	function api_build_dtd() {
 		return false;
 	}
-
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	public function init_pane() {
-		return false;
+		return "Bell Schedule";
 	}
 
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	public function display_pane($disp) {
-		return false;
+		global $I2_QUERY;
+		$schedule = BellSchedule::get_schedule();
+		// Week view
+		if(isset($I2_QUERY['week'])) {
+			$c = "::START::";
+			$md = isset($I2_QUERY['day']) ? date('Ymd', BellSchedule::parse_day_query()) : null;
+			$ws = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : null;
+			$we = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : null;
+			$schedules = BellSchedule::get_schedule_week($ws, $we, $md);
+
+			$c.= "<table class='weeksched'><tr class='h' style='min-height: 40px;max-height: 40px;line-height: 25px'>";
+			foreach($schedules as $day=>$schedule) {
+				$nday = date('l, F j', strtotime($day));
+				$c.= "<td style='font-size: 16px;font-weight: bold'>Schedule for<br />".$nday."</td>";
+			}
+			$c.= "</tr><tr>";
+
+			foreach($schedules as $day=>$schedule) {
+				$nday = date('l, F j', strtotime($day));
+				$m = (isset($schedule['modified'])? ' desc-modified': '');
+				$c.= "<td class='desc".$m."''>";
+				$c.=$schedule['description']."</td>";
+			}
+			$c.= "</tr><tr>";
+			foreach($schedules as $day=>$schedule) {
+				$c.= "<td>".$schedule['schedule']."</td>";
+			}
+			$c.= "</tr></table>";
+			$c.="<p><span style='max-width: 500px'>Schedules are subject to change.</span></p>";
+			$c.="::END::";
+			$disp = new Display('bellschedule');
+			$disp->raw_display($c);
+			exit();
+			return FALSE;
+		}
+		$schedule['header'] = "Today's Schedule";
+		if(isset($I2_QUERY['day'])) {
+			$cday = $I2_QUERY['day'];
+			if(substr($cday, 0, 1) == '-') $cday = '-'.substr($cday, 1);
+			else $cday = '+'.$cday;
+			d($cday);
+			$schedule['date'] = date('l, F j', strtotime($cday.' day'));
+			if($schedule['date'] !== date('l, F j')) {
+				$schedule['header'] = "Schedule for<br />".$schedule['date'];
+			}
+			if(substr($cday, 0, 1) == '+') $dint = substr($cday, 1);
+			else $dint = $cday;
+			d($dint);
+			$schedule['yday'] = ((int)$dint)-1;
+			$schedule['nday'] = ((int)$dint)+1;
+			$template_args['has_custom_day'] = ($cday !== "+0");
+		} else {
+			$schedule['yday'] = -1;
+			$schedule['nday'] = 1;
+
+			$template_args['has_custom_day'] = false;
+		}
+		$template_args['schedule'] = $schedule;
+		$disp->disp('pane_schedule.tpl', $template_args);
 	}
 
 	public function init_box() {
-		return false;
+		return "Bell Schedule";
 	}
 
 	public function display_box($disp) {
-		return false;
+		return $this->display_pane($disp);
 	}
 	
 	/**
 	* Get the schedule from the TJ CalendarWiz iCal feed
 	*
-	* @return array An array containing the schedule description and periods for today, and tomorrow
+	* @return array An array containing the schedule description and periods
 	*/
 	public static function get_schedule() {
 		global $I2_QUERY;
 		// Get the cache file location
-		$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'bellschedule.cache';
+		$cachedir = i2config_get('cache_dir','/var/cache/iodine/','core');
+		$cachefile = $cachedir . 'bellschedule.cache';
 		
 		// Don't let the cache get older than an hour, and update if the day the file was updated is not today
 		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile) > 600) || date('z', filemtime($cachefile)) != date('z') || isset($I2_QUERY['update_schedule'])) {
-			// one day in seconds
-			$day = 24*60*60;
-			$contents = array(
-				'today' => BellSchedule::update_schedule(time()),
-				'tomorrow' => BellSchedule::update_schedule(time()+$day),
-			);
-
+			$contents = BellSchedule::update_schedule();
 			BellSchedule::store_schedule($cachefile, serialize($contents));
 		// do not update cache
 		} else if(isset($I2_QUERY['start_date'])) {
-			$contents = BellSchedule::update_schedule();
+			$contents = BellSchedule::update_schedule($I2_QUERY['start_date']);
+		} else if(isset($I2_QUERY['day'])) {
+			$cd = $I2_QUERY['day'];
+			$cb = "+";
+			if(substr($cd, 0, 1) == '-') $cb = "-";
+			$cinc = strtotime($cb.$cd." day");
+			$cdate = date('Ymd', $cinc);
+			d($cinc.' '.$cdate);
+			$str = BellSchedule::get_saved_schedule($cachedir . 'bellschedule-save.cache');
+			$contents = BellSchedule::update_schedule_contents($str, $cdate);
 		} else {
 			$contents = unserialize($contents);
 		}
 		return $contents;
 	}
+
+	public static function parse_day_query($cday=null) {
+		global $I2_QUERY;
+		if(!isset($cday)) $cday = $I2_QUERY['day'];
+		if(substr($cday, 0, 1) == '-') $cday = '-'.substr($cday, 1);
+		else $cday = '+'.$cday;
+		return strtotime($cday.' day');
+	}
+	/**
+	* Get a week view
+	*
+	* @return array An array containing schedule description and periods for each day
+	*/
+	public static function get_schedule_week($start=null, $end=null, $mid=null) {
+		$cachedir = i2config_get('cache_dir','/var/cache/iodine/','core');
+		$cachefile = $cachedir.'bellschedule-save.cache';
+		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile) > 600) || date('z', filemtime($cachefile)) != date('z') || isset($I2_QUERY['update_schedule'])) {
+			$contents = BellSchedule::update_schedule();
+			BellSchedule::store_schedule($cachefile, serialize($contents));
+		} else {
+			$contents = BellSchedule::get_saved_schedule($cachedir . 'bellschedule-save.cache');
+		}
+
+		if(!isset($mid)) $mid = ((int)date('Ymd'));
+		if(!isset($start)) $start = $mid - 2;
+		if(!isset($end)) $end = $mid + 2;
+		$contentsr = array();
+		for($i=$start; $i<($end+1); $i++) {
+			$contentsr[$i] = BellSchedule::update_schedule_contents($contents, $i);
+			$contentsr[$i]['day'] = $i;
+		}
+		return $contentsr;
+	}
 	private static function store_schedule($cachefile,$string) {
+		d('Updating schedule cache');
 		$fh = fopen($cachefile,'w');
 		fwrite($fh, $string);
 		fclose($fh);
 	}
-	private static function update_schedule($date = NULL) {
+	private static function get_saved_schedule($cachefile) {
+		d('Getting saved calendar contents');
+		if(!file_exists($cachefile)) {
+			$fc = BellSchedule::store_schedule($cachefile, BellSchedule::get_calendar_contents());
+			return $fc;
+		}
+		$fc = file_get_contents($cachefile);
+		return $fc;
+	}
+	private static function get_calendar_contents() {
+		$cachedir = i2config_get('cache_dir','/var/cache/iodine/','core');
+		d('Getting new calendar contents');
+		$url = BellSchedule::$url;
+		if($str = BellSchedule::curl_file_get_contents($url)) {
+			BellSchedule::store_schedule($cachedir . 'bellschedule-save.cache', $str);
+			return $str;
+		} else {
+			return false;
+		}
+	}
+	private static function update_schedule($day=null) {
 		global $I2_QUERY;
 		// TJ CalendarWiz iCal URL
 		// HTTPS because otheriwse it gets cached by the proxy
-		$url = 'https://www.calendarwiz.com/CalendarWiz_iCal.php?crd=tjhsstcalendar';
-		if($str = BellSchedule::curl_file_get_contents($url)) { // Returns false if can't get anything
-			if(isset($I2_QUERY['start_date'])) $startd = $I2_QUERY['start_date'];
-			else if ($date==NULL) $startd = date('Ymd');
-			else $startd = date('Ymd',$date);
-			$starter = 'DTSTART;VALUE=DATE:'. $startd;
-			$ender = 'END:VEVENT';
-
-			//Find events on the current day that indicate a schedule type
-			$regex = '/'.$starter.'((?:(?!END:VEVENT).)*?)CATEGORIES:(Anchor Day|Blue Day|Red Day|JLC Blue Day|Special Schedule)(.*?)'.$ender.'/s';
-			// Is any type of schedule set?
-			if(preg_match($regex, $str, $dayTypeMatches) > 0) {
-				// Does it have a day type described?
-				if(preg_match('/SUMMARY:.(Blue Day - Adjusted Schedule for Mid Term Exams|Red Day - Adjusted Schedule for Mid Term Exams|JLC Blue Day - Adjusted Schedule for Mid Term Exams|AMC Blue Day|Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break|Modified Blue Day|Modified Red Day)/', $dayTypeMatches[0], $descriptionMatches) > 0||1!=1) {
-					d($descriptionMatches[1]);
-					if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'||$descriptionMatches[1]=='Winter Break'||$descriptionMatches[1]=='Spring Break'){
-						return array('description' => 'No school', 'schedule' => '');
-					} else if($descriptionMatches[1]=='Blue Day - Adjusted Schedule for Mid Term Exams'){
-						return array('description' => BellSchedule::$normalSchedules['bluemidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['bluemidterm']['schedule']);
-					} else if($descriptionMatches[1]=='Red Day - Adjusted Schedule for Mid Term Exams'){
-						if(date('w',$date)=='5'){
-							return array('description' => BellSchedule::$normalSchedules['red2midterm']['description'], 'schedule' => BellSchedule::$normalSchedules['red2midterm']['schedule']);
-						} else {
-							return array('description' => BellSchedule::$normalSchedules['red1midterm']['description'], 'schedule' => BellSchedule::$normalSchedules['red1midterm']['schedule']);
-						}
-					} else if($descriptionMatches[1]=='AMC Blue Day'){
-						return array('description' => 'AMC Blue Day', 'schedule' => 'AMC/Study Hall: 8:30 - 10:00<br />Period 1: 10:10 - 11:20<br />Lunch: 11:20 - 12:00<br />Period 2: 12:00 - 1:10<br />Period 3: 1:20 - 2:30<br />Period 4: 2:40 - 3:50');
-					
-					}else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
-						return array('description' => BellSchedule::$normalSchedules['jlcmidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['jlcmidterm']['schedule']);
-					/* 2013 AP EXAMS */
-					}else if($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day' && date('Y M',$date) == '2013 May' && ((int)date('j',$date))>6) {
-						if(isset($I2_QUERY['start_date'])) $d = substr($I2_QUERY['start_date'], 6);
-						else $d = date('j',$date);
-						if(substr($d, 0, 1) == '0') $d = substr($d, 1);
-						d('Modified AP Day: '.$d.' exists: '.isset(BellSchedule::$apExamSchedule[$d]));
-						if(isset(BellSchedule::$apExamSchedule[$d])) {
-							return array('description' => BellSchedule::$apExamSchedule[$d]['description'], 'schedule' => BellSchedule::$apExamSchedule[$d]['schedule']);
-						} else {
-							d('Using default schedule--may not be correct!');
-							return BellSchedule::get_default_schedule();
-						}
-					}else{
-						return array('description' => $descriptionMatches[1], 'schedule' => BellSchedule::$normalSchedules[strtolower(str_replace(array(' Day',' '),'',$descriptionMatches[1]))]['schedule']);
-					}
-				} else { // If no day type is set, use the default schedule for that day
-					return BellSchedule::get_default_schedule();
-				}
-			} else { // If no schedule data, use the default schedule for that type of day
-					return BellSchedule::get_default_schedule();
-			}
-				
+		$url = BellSchedule::$url;
+		if($str = BellSchedule::get_calendar_contents()) { // Returns false if can't get anything
+			return BellSchedule::update_schedule_contents($str, $day);
 		} else {
 			return array('description' => 'Error: Could not load schedule', 'schedule' => '');
+		}
+	}
+	private static function update_schedule_contents($str, $day=null) {
+		global $I2_QUERY;
+		if(isset($day)) $startd = $day;
+		else $startd = date('Ymd');
+		$starter = 'DTSTART;VALUE=DATE:'. $startd;
+		$ender = 'END:VEVENT';
+		$dwk = date('N', strtotime($day));
+		//Find events on the current day that indicate a schedule type
+		$regex = '/'.$starter.'((?:(?!END:VEVENT).)*?)CATEGORIES:(Anchor Day|Blue Day|Red Day|JLC Blue Day|Special Schedule)(.*?)'.$ender.'/s';
+		// Is any type of schedule set?
+		if(preg_match($regex, $str, $dayTypeMatches) > 0) {
+			// Does it have a day type described?
+			if(preg_match('/SUMMARY:.(Blue Day - Adjusted Schedule for Mid Term Exams|Red Day - Adjusted Schedule for Mid Term Exams|JLC Blue Day - Adjusted Schedule for Mid Term Exams|AMC Blue Day|Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break|Modified Blue Day|Modified Red Day)/', $dayTypeMatches[0], $descriptionMatches) > 0||1!=1) {
+				d($descriptionMatches[1]);
+				if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'||$descriptionMatches[1]=='Winter Break'||$descriptionMatches[1]=='Spring Break'){
+					return array('description' => 'No school', 'schedule' => '');
+				} else if($descriptionMatches[1]=='Blue Day - Adjusted Schedule for Mid Term Exams'){
+					return array('description' => BellSchedule::$normalSchedules['bluemidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['bluemidterm']['schedule']);
+				} else if($descriptionMatches[1]=='Red Day - Adjusted Schedule for Mid Term Exams'){
+					if(date('w')=='5'){
+						return array('description' => BellSchedule::$normalSchedules['red2midterm']['description'], 'schedule' => BellSchedule::$normalSchedules['red2midterm']['schedule']);
+					} else {
+						return array('description' => BellSchedule::$normalSchedules['red1midterm']['description'], 'schedule' => BellSchedule::$normalSchedules['red1midterm']['schedule']);
+					}
+				} else if($descriptionMatches[1]=='AMC Blue Day'){
+					return array('description' => 'AMC Blue Day', 'schedule' => 'AMC/Study Hall: 8:30 - 10:00<br />Period 1: 10:10 - 11:20<br />Lunch: 11:20 - 12:00<br />Period 2: 12:00 - 1:10<br />Period 3: 1:20 - 2:30<br />Period 4: 2:40 - 3:50');
+				
+				}else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
+					return array('description' => BellSchedule::$normalSchedules['jlcmidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['jlcmidterm']['schedule']);
+				/* 2013 AP EXAMS */
+				}else if($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day' && date('Y M') == '2013 May' && isset(BellSchedule::$apExamSchedule[((int)date('j'))])) {
+					if(isset($I2_QUERY['start_date'])) $d = substr($I2_QUERY['start_date'], 6);
+					else $d = date('j', strtotime($startd));
+					if(substr($d, 0, 1) == '0') $d = substr($d, 1);
+					d('Modified AP Day: '.$d.' exists: '.isset(BellSchedule::$apExamSchedule[$d]));
+					if(isset(BellSchedule::$apExamSchedule[$d])) {
+						return array('description' => BellSchedule::$apExamSchedule[$d]['description'], 'schedule' => BellSchedule::$apExamSchedule[$d]['schedule'], 'modified' => true);
+					} else {
+						d('Using default schedule--may not be correct!');
+
+						return BellSchedule::get_default_schedule(null, $dwk);
+					}
+				}else{
+					return array('description' => $descriptionMatches[1], 'schedule' => BellSchedule::$normalSchedules[strtolower(str_replace(array(' Day',' '),'',$descriptionMatches[1]))]['schedule']);
+				}
+			} else { // If no day type is set, use the default schedule for that day
+				return BellSchedule::get_default_schedule(null, $dwk);
+			}
+		} else { // If no schedule data, use the default schedule for that type of day
+				return BellSchedule::get_default_schedule(null, $dwk);
 		}
 	}
 	private static function curl_file_get_contents($url) {
@@ -297,12 +419,19 @@ class BellSchedule implements Module {
 	* @param string $type (Optional) The type of schedule whose default should be fetched
 	* @return array An array containing the schedule description and periods
 	*/
-	private static function get_default_schedule($type=null) {
+	private static function get_default_schedule($type=null, $day=null) {
+		global $I2_QUERY;
 		if(isset($type) && array_key_exists($type, BellSchedule::$normalSchedules)) {
 			return BellSchedule::$normalSchedules[$type];
 		} else {
-			$day = date('N');
-			
+			if(isset($I2_QUERY['week'])) {
+
+			}
+			if(!isset($day)) $day = date('N');
+			if(isset($I2_QUERY['day'])) {
+				$day = date('N', BellSchedule::parse_day_query());
+			}
+			d('Default: '.$day);
 			if($day == 1) {
 				return BellSchedule::$normalSchedules['anchor'];
 			} else if($day == 2) {

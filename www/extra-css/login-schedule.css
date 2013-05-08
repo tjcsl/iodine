@@ -1,0 +1,69 @@
+body.login #mainPane {
+	position: fixed;
+}
+
+body.login #logo {
+	-webkit-transition-duration: 0s;
+	-moz-transition-duration: 0s;
+	transition-duration: 0s;
+	-ms-transition-duration: 0s;
+	max-width: 180px;
+}
+.login_msg {
+	display: inline-block;
+}
+#subPane.exp {
+	width: 80%;
+	min-width: 900px;
+	width: calc(100% - 264px);
+}
+#sched_tools {
+	position: absolute;
+	width: 100%;
+	top: -10px;
+	left: 0px
+}
+#week_b {
+	float: left;
+	z-index: 999
+}
+#week_f {
+	float: right;
+}
+#week_today, #week_click {
+	text-align: center
+}
+#schedule_week {
+	width: auto;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+	display: none;
+}
+.desc-modified {
+	color: red;
+}
+/* ajax table css */
+#subPane #schedule_week table {
+	width: 100%;
+}
+.h, .d, .s, #subPane #schedule_week table td {
+	font-family: "Open Sans", Arial, Helvetica, Roboto, "Droid Sans", sans-serif;
+	font-size: 100%;
+	vertical-align: top;
+	padding: 5px;
+	min-width: 165px;
+}
+
+@media (max-width: 645px) {
+	#mainPane.pane {
+		position: static;
+	}
+	#subPane.pane {
+		width: 100% !important;
+	}
+	#sched_tools {
+		top: 390px;
+	}
+}

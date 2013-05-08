@@ -12,8 +12,15 @@
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-ui-light.css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-login-default.css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-login-light.css" />
+	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/login-schedule.css" />
 	<link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 	<link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
+	<script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js"></script>
+	<script type="text/javascript" src="[<$I2_ROOT>]www/js/logins/schedule.js"></script>
+	<script type="text/javascript">
+	week_base_url = "";
+	week_text = "[<if $has_custom_day>]View [<$schedule.date>][<else>]View Today[</if>]";
+	</script>
 	<script type="text/javascript">
 	//Set some variables so that any script can use them.
 	var i2root="[<$I2_ROOT>]";
@@ -46,28 +53,28 @@
 	<script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 	<![endif]-->
 </head>
-<body style="background-image: url('[<$I2_ROOT>][<$bg|escape>]')" onLoad="document.getElementById('login_username').focus()">
+<body style="background-image: url('[<$I2_ROOT>][<$bg|escape>]')" onLoad="document.getElementById('login_username').focus()" class="login">
 	<div class="pane" id="mainPane">
 		<a id="logo" href="">Intranet</a>
 		
 		[<if isset($err)>]
-		<div id="login_failed">
+		<div class="login_msg" id="login_failed">
 			[<$err>]<br />
 		</div>
 		[<elseif $failed eq 1>]
-		<div id="login_failed">
+		<div class="login_msg" id="login_failed">
 			Your login[<if $uname>] as [<$uname|escape>][</if>] failed.  Maybe your password is incorrect?<br />
 		</div>
 		[<elseif $failed eq 2>]
-		<div id="login_failed">
+		<div class="login_msg" id="login_failed">
 			Your password and username were correct, but you don't appear to exist in our database.  If this is a mistake, please contact the intranetmaster about it.
 		</div>
 		[<elseif $failed>]
-		<div id="login_failed">
+		<div class="login_msg" id="login_failed">
 			An unidentified error has occurred.  Please contact the Intranetmaster and tell him you received this error message.
 		</div>
 		[<else>]
-		<div>
+		<div class="login_msg" id="login_msg">
 			Please type your username and password to log in.
 		</div>
 		[</if>]
@@ -99,17 +106,28 @@
 		</div>
 	</div>
 	<div class="pane" id="subPane">
+		<p id='sched_tools'>
+			<button id="week_b" onclick="window.location='?day=[<$schedule.yday>]'" style=''>&lt;==</button>
+			[<if $has_custom_day>]
+				<button id="week_today" onclick="window.location='?day=0'">View Today</button>
+			[</if>]
+				<button id="week_click" onclick="week_click();">View Week</button>
+			
+			<button id="week_f" onclick="window.location='?day=[<$schedule.nday>]'">==&gt;</button>
+		</p>
 		<div id="schedule">
-			<h2>Today's Schedule</h2>
-			<p>[<$schedule.today.description>]</p>
-			<div>[<$schedule.today.schedule>]</div>
+			
+			<h2>[<$schedule.header>]</h2>
+			<p class='desc[<if $schedule.modified>] desc-modified[</if>]'>[<$schedule.description>]</p>
+			<div style='height: 160px;float: center'>[<$schedule.schedule>]</div>
+		
 		</div>
-		<div id="schedule.tomorrow">
-			<h2>Tomorrow's Schedule</h2>
-			<p>[<$schedule.tomorrow.description>]</p>
-			<div>[<$schedule.tomorrow.schedule>]</div>
+		
+		<div id="schedule_week">
+			<p>One moment please..</p>
+			<p>If the page doesn't load, <a href='http://postman.tjhsst.edu'>click to view the main TJ calendar.</a></p>
 		</div>
-		<br />
+		<br /><br />
 		<ul id="links">
 			<li><a href="http://www.tjhsst.edu" target="_blank">TJHSST</a></li>
 			<li><a href="https://webmail.tjhsst.edu" target="_blank">Mail</a></li>
