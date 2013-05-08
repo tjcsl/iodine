@@ -118,7 +118,7 @@
 		<div id="schedule">
 			
 			<h2>[<$schedule.header>]</h2>
-			<p class='desc[<if $schedule.modified>] desc-modified[</if>]'>[<$schedule.description>]</p>
+			<p class='desc[<if isset($schedule.modified)>] desc-modified[</if>]'>[<$schedule.description>]</p>
 			<div style='height: 160px;float: center'>[<$schedule.schedule>]</div>
 		
 		</div>

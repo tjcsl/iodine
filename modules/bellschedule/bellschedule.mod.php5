@@ -380,7 +380,7 @@ class BellSchedule implements Module {
 				}else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
 					return array('description' => BellSchedule::$normalSchedules['jlcmidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['jlcmidterm']['schedule']);
 				/* 2013 AP EXAMS */
-				}else if($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day' && date('Y M') == '2013 May' && isset(BellSchedule::$apExamSchedule[((int)date('j'))])) {
+				}else if(($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day') && date('Y M') == '2013 May' && isset(BellSchedule::$apExamSchedule[((int)date('j'))]) && ((int)date('j'))>6) {
 					if(isset($I2_QUERY['start_date'])) $d = substr($I2_QUERY['start_date'], 6);
 					else $d = date('j', strtotime($startd));
 					if(substr($d, 0, 1) == '0') $d = substr($d, 1);
