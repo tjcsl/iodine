@@ -412,6 +412,32 @@ class Eighth implements Module {
 		}
 	}
 
+	private static function print_activity($act) {
+		echo "<activity>\r\n";
+		foreach($act->get_data() as $name=>$value) {
+			if(is_array($value)) {
+				echo "<".htmlspecialchars($name).">\r\n";
+				foreach($value as $arrkey=>$arrvalue) {
+						//FIXME: hack to make singular
+						$innername=substr($name,0,-1);
+						// we can't just use $arrkey because 0, etc. are not valid xml elements.
+						echo "<".htmlspecialchars($innername).">".htmlspecialchars($arrvalue)."</".htmlspecialchars($innername).">\r\n";
+				}
+				echo "</".htmlspecialchars($name).">\r\n";
+			}
+			else if(is_object($value)) {
+				echo "<".htmlspecialchars($name).">\r\n";
+				foreach($value->get_data() as $arrkey=>$arrvalue) {
+						echo "<".htmlspecialchars($arrkey).">".htmlspecialchars($arrvalue)."</".htmlspecialchars($arrkey).">\r\n";
+				}
+				echo "</".htmlspecialchars($name).">\r\n";
+			}
+			else {
+				echo "<".htmlspecialchars($name).">".htmlspecialchars($value)."</".htmlspecialchars($name).">\r\n";
+			}
+		}
+		echo "</activity>\r\n";
+	}
 	/**
 	* Now partially supported! Still work to do.
 	*
@@ -491,30 +517,7 @@ class Eighth implements Module {
 				}
 				echo "<activities>\r\n";
 				foreach($acts as $act) {
-					echo "<activity>\r\n";
-					foreach($act->get_data() as $name=>$value) {
-						if(is_array($value)) {
-							echo "<".htmlspecialchars($name).">\r\n";
-							foreach($value as $arrkey=>$arrvalue) {
-									//FIXME: hack to make singular
-									$innername=substr($name,0,-1);
-									// we can't just use $arrkey because 0, etc. are not valid xml elements.
-									echo "<".htmlspecialchars($innername).">".htmlspecialchars($arrvalue)."</".htmlspecialchars($innername).">\r\n";
-							}
-							echo "</".htmlspecialchars($name).">\r\n";
-						}
-						else if(is_object($value)) {
-							echo "<".htmlspecialchars($name).">\r\n";
-							foreach($value->get_data() as $arrkey=>$arrvalue) {
-									echo "<".htmlspecialchars($arrkey).">".htmlspecialchars($arrvalue)."</".htmlspecialchars($arrkey).">\r\n";
-							}
-							echo "</".htmlspecialchars($name).">\r\n";
-						}
-						else {
-							echo "<".htmlspecialchars($name).">".htmlspecialchars($value)."</".htmlspecialchars($name).">\r\n";
-						}
-					}
-					echo "</activity>\r\n";
+					self::print_activity($act);
 				}
 				echo "</activities>\r\n";
 				break;
@@ -542,6 +545,8 @@ class Eighth implements Module {
 				echo "<signup>\r\n<bid>".$I2_ARGS[2]."</bid>\r\n<aid>".$I2_ARGS[3]."</aid>\r\n<uid>".$user->uid."</uid>\r\n<success>".($success==0?1:0)."</success>\r\n<result>".$success."</result>\r\n</signup>\r\n";
 				
 				break;
+			// $I2_ARGS[2] == date (Y-m-d)
+			// $I2_ARGS[3] == user id
 			case 'signedup_activities':
 				try {
 					if(isset($I2_ARGS[2])) {
@@ -554,42 +559,17 @@ class Eighth implements Module {
 					} else {
 						$u = $I2_USER->uid;
 					}
-					$acts = EighthActivity::id_to_activity(EighthSchedule::get_activities($u, $date, 1), FALSE);
+					$acts = EighthActivity::id_to_activity(EighthSchedule::get_activities($u, $date), FALSE);
 				} catch(Exception $e) {
 					return "<activities><error>Failed getting activities.</error></activities>";
 				}
-				echo "<activities day='$date' user='$u'>\r\n";
-				$i = 0;
-				// consider fixing this hack-y 'what block is it' solution
-				$bn = array('A','B','C','D','E','F');
+				echo "<activities>\r\n";
 				foreach($acts as $act) {
-					echo "<activity block='$bn[$i]' num='$i'>\r\n";
-					$i++;
-					foreach($act->get_data() as $name=>$value) {
-						if(is_array($value)) {
-							echo "<".htmlspecialchars($name).">\r\n";
-							foreach($value as $arrkey=>$arrvalue) {
-									//FIXME: hack to make singular
-									$innername=substr($name,0,-1);
-									// we can't just use $arrkey because 0, etc. are not valid xml elements.
-									echo "<".htmlspecialchars($innername).">".htmlspecialchars($arrvalue)."</".htmlspecialchars($innername).">\r\n";
-							}
-							echo "</".htmlspecialchars($name).">\r\n";
-						}
-						else if(is_object($value)) {
-							echo "<".htmlspecialchars($name).">\r\n";
-							foreach($value->get_data() as $arrkey=>$arrvalue) {
-									echo "<".htmlspecialchars($arrkey).">".htmlspecialchars($arrvalue)."</".htmlspecialchars($arrkey).">\r\n";
-							}
-							echo "</".htmlspecialchars($name).">\r\n";
-						}
-						else {
-							echo "<".htmlspecialchars($name).">".htmlspecialchars($value)."</".htmlspecialchars($name).">\r\n";
-						}
-					}
-					echo "</activity>\r\n";
+					self::print_activity($act);
 				}
-				if($i<1) echo "<error>No data was returned. There may not be a block on this date or you may not have permissions to view this user's activities.</error>";
+				if(count($acts)<0) {
+				       throw new I2Exception("No data was returned. There may not be a block on this date or you may not have permissions to view this user's activities.");
+				}
 				echo "</activities>\r\n";
 				break;
 			default:
