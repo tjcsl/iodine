@@ -101,8 +101,13 @@
 	<div class="pane" id="subPane">
 		<div id="schedule">
 			<h2>Today's Schedule</h2>
-			<p>[<$schedule.description>]</p>
-			<div>[<$schedule.schedule>]</div>
+			<p>[<$schedule.today.description>]</p>
+			<div>[<$schedule.today.schedule>]</div>
+		</div>
+		<div id="schedule.tomorrow">
+			<h2>Tomorrow's Schedule</h2>
+			<p>[<$schedule.tomorrow.description>]</p>
+			<div>[<$schedule.tomorrow.schedule>]</div>
 		</div>
 		<br />
 		<ul id="links">
