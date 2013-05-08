@@ -57,10 +57,16 @@ body.login #logo {
 }
 
 @media (max-width: 645px) {
-	#mainPane.pane {
-		position: static;
+	#logo {
+		margin-right: 500%;
 	}
-	#subPane.pane {
+	#subPane, #subPane.week {
+		min-height: 500px;
+	}
+	#mainPane.pane, #mainPane, #subPane, #subPane.pane {
+		position: static !important;
+	}
+	#subPane.pane, #subPane {
 		width: 100% !important;
 	}
 	#sched_tools {
