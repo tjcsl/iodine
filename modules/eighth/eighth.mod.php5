@@ -413,30 +413,31 @@ class Eighth implements Module {
 	}
 
 	private static function print_activity($act) {
-		echo "<activity>\r\n";
+		global $I2_API;
+		$I2_API->startElement('activity');
 		foreach($act->get_data() as $name=>$value) {
 			if(is_array($value)) {
-				echo "<".htmlspecialchars($name).">\r\n";
+				$I2_API->startElement($name);
 				foreach($value as $arrkey=>$arrvalue) {
 						//FIXME: hack to make singular
 						$innername=substr($name,0,-1);
 						// we can't just use $arrkey because 0, etc. are not valid xml elements.
-						echo "<".htmlspecialchars($innername).">".htmlspecialchars($arrvalue)."</".htmlspecialchars($innername).">\r\n";
+						$I2_API->writeElement($innername,$arrvalue);
 				}
-				echo "</".htmlspecialchars($name).">\r\n";
+				$I2_API->endElement();
 			}
 			else if(is_object($value)) {
-				echo "<".htmlspecialchars($name).">\r\n";
+				$I2_API->startElement($name);
 				foreach($value->get_data() as $arrkey=>$arrvalue) {
-						echo "<".htmlspecialchars($arrkey).">".htmlspecialchars($arrvalue)."</".htmlspecialchars($arrkey).">\r\n";
+					$I2_API->writeElement($arrkey,$arrvalue);
 				}
-				echo "</".htmlspecialchars($name).">\r\n";
+				$I2_API->endElement();
 			}
 			else {
-				echo "<".htmlspecialchars($name).">".htmlspecialchars($value)."</".htmlspecialchars($name).">\r\n";
+				$I2_API->writeElement($name,$value);
 			}
 		}
-		echo "</activity>\r\n";
+		$I2_API->endElement();
 	}
 	/**
 	* Now partially supported! Still work to do.
@@ -444,7 +445,7 @@ class Eighth implements Module {
 	* @param Display $disp The Display object to IGNORE COMPLETELY. Really don't know why I left it there.
 	*/
 	function api($disp) {
-		global $I2_ARGS,$I2_QUERY,$I2_USER;
+		global $I2_ARGS,$I2_QUERY,$I2_USER,$I2_API;
 		if(!isset($I2_ARGS[1])) {
 			throw new I2Exception("eighth module needs argument");
 		}
@@ -461,49 +462,21 @@ class Eighth implements Module {
 					$daysf = $I2_QUERY['daysforward'];
 				}
 				$blocks = EighthBlock::get_all_blocks($start_date, $daysf);
-				echo "<body>\r\n";
+				$I2_API->startElement('body');
 				foreach($blocks as $block) {
-					echo "<block>\r\n";
-					echo "<bid>".$block['bid']."</bid>\r\n";
-					echo "<date>\r\n";
-					echo "<str>".$block['date']."</str>\r\n";
-					echo "<iso>".date("c",strtotime($block['date']))."</iso>\r\n";			
-					echo "<disp>".date("F j, Y",strtotime($block['date']))."</disp>\r\n";
-					echo "</date>\r\n";
-					echo "<disp>".date("l F jS, Y",strtotime($block['date']))." Block ".$block['block']."</disp>\r\n";
-					echo "<type>".$block['block']."</type>\r\n";
-					echo "<locked>".$block['locked']."</locked>\r\n";
-					if(isset($I2_ARGS[2])) {
-						echo "<signup>\r\n";
-						// These errors are non-fatal b/c
-						// the name of the currently signed
-						// up activity is not necessary to continue functioning
-						try {
-							$signedup = EighthSchedule::get_activities_by_block($I2_ARGS[2], $block['bid']);
-						} catch(Exception $e) {
-							echo "<error>Failed to get activities</error><bid>ERROR</bid><name>ERROR</name></signup></block>";
-							continue;
-						}
-						if($signedup == "" || !isset($signedup)) {
-							echo "<error>Failed to get activity info</error><bid>ERROR</bid><name>ERROR</name></signup></block>";
-							continue;
-						}
-						echo "<aid>".$signedup."</aid>";
-						try {
-							$acto = (EighthActivity::id_to_activity(array(0=>$signedup)));
-						} catch(Exception $e) {
-							echo "<error>Failed to get activity name</error><name>".$block['bid']."</name></signup></block>";
-							continue;
-						}
-						
-						$act = ((array)$acto[0]);
-						foreach($act as $a=>$v) {$Ead=$a;}
-						echo "<name>".$act[$Ead]['name']."</name>";
-						echo "</signup>";
-					}
-					echo "</block>\r\n";
+					$I2_API->startElement('block');
+					$I2_API->writeElement('bid',$block['bid']);
+					$I2_API->startElement('date');
+					$I2_API->writeElement('str',$block['date']);
+					$I2_API->writeElement('iso',date('c',strtotime($block['date'])));
+					$I2_API->writeElement('disp',date('F j, Y',strtotime($block['date'])));
+					$I2_API->endElement();
+					$I2_API->writeElement('disp',date('l F jS, Y',strtotime($block['date']))." Block ".$block['block']);
+					$I2_API->writeElement('type',$block['block']);
+					$I2_API->writeElement('locked',$block['locked']);
+					$I2_API->endElement();
 				}
-				echo "</body>\r\n";
+				$I2_API->endElement();
 				break;
 			// $I2_ARGS[2] == block id
 			case 'list_activities':
@@ -515,11 +488,11 @@ class Eighth implements Module {
 				if(empty($acts)) {
 					throw new I2Exception("No activities found. Invalid block id given?");
 				}
-				echo "<activities>\r\n";
+				$I2_API->startElement('activities');
 				foreach($acts as $act) {
 					self::print_activity($act);
 				}
-				echo "</activities>\r\n";
+				$I2_API->endElement();
 				break;
 
 			// $I2_ARGS[2] == block id
@@ -541,9 +514,13 @@ class Eighth implements Module {
 				if(!EighthBlock::block_exists($I2_ARGS[2]))
 					throw new I2Exception("Block does not exist");
 				$success = ($activity->add_member($user, FALSE, $I2_ARGS[2]));
- 
-				echo "<signup>\r\n<bid>".$I2_ARGS[2]."</bid>\r\n<aid>".$I2_ARGS[3]."</aid>\r\n<uid>".$user->uid."</uid>\r\n<success>".($success==0?1:0)."</success>\r\n<result>".$success."</result>\r\n</signup>\r\n";
-				
+				$I2_API->startElement('signup');
+				$I2_API->writeElement('bid',$I2_ARGS[2]);
+				$I2_API->writeElement('aid',$I2_ARGS[3]);
+				$I2_API->writeElement('uid',$user->uid);
+				$I2_API->writeElement('success',$success==0?1:0);
+				$I2_API->writeElement('result',$success);
+				$I2_API->endElement();
 				break;
 			// $I2_ARGS[2] == date (Y-m-d)
 			// $I2_ARGS[3] == user id
@@ -561,16 +538,16 @@ class Eighth implements Module {
 					}
 					$acts = EighthActivity::id_to_activity(EighthSchedule::get_activities($u, $date), FALSE);
 				} catch(Exception $e) {
-					return "<activities><error>Failed getting activities.</error></activities>";
+					throw new I2Exception("Failed getting activities.");
 				}
-				echo "<activities>\r\n";
+				$I2_API->startElement('activites');
 				foreach($acts as $act) {
 					self::print_activity($act);
 				}
 				if(count($acts)<0) {
 				       throw new I2Exception("No data was returned. There may not be a block on this date or you may not have permissions to view this user's activities.");
 				}
-				echo "</activities>\r\n";
+				$I2_API->endElement();
 				break;
 			default:
 				throw new I2Exception("Invalid argument given to eighth module.");
@@ -580,28 +557,30 @@ class Eighth implements Module {
 	}
 
 	/**
-	* We don't really support this yet, but make it look like we do.
+	* Build the dtd.
 	*/
 	function api_build_dtd() {
-		global $I2_ARGS, $I2_QUERY;
-		$types=array();
+		global $I2_ARGS, $I2_API;
 		if(!isset($I2_ARGS[1])) {
-			return array("<!ELEMENT body (#PCDATA)>");
+			return false;
 		}
 		switch($I2_ARGS[1]) {
 			case 'list_blocks':
-				return array("<!ELEMENT body (block*)>","<!ELEMENT block (bid,date,type,locked)>","<!ELEMENT bid (#PCDATA)>",
-					"<!ELEMENT date (#PCDATA)>","<!ELEMENT type (#PCDATA)>","<!ELEMENT locked (#PCDATA)>");
-				break;
+				$I2_API->writeDTDElement('body','(block*)');
+				$I2_API->writeDTDElement('block','(bid,date,type,locked)');
+				$I2_API->writeDTDElement('bid','(#PCDATA)');
+				$I2_API->writeDTDElement('date','(#PCDATA)');
+				$I2_API->writeDTDElement('type','(#PCDATA)');
+				$I2_API->writeDTDElement('locked','(#PCDATA)');
+				return true;
 			case 'list_activities':
 				// TODO: Add DTD
 				break;
 			case 'signup_activity':
 				// TODO: Add DTD
 				break;
-				
 		}
-		return array("<!ELEMENT body (#PCDATA)>");
+		return false;
 	}
 
 	/**

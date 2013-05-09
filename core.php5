@@ -271,7 +271,6 @@ try {
 			$I2_API->endDTD();
 			$I2_API->startElement($module);
 			$mod->api($I2_DISP);
-			$I2_API->endElement();
 		}
 	}
 	else {
