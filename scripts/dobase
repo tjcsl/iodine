@@ -3,10 +3,8 @@
 test -f config.ini.php5 || cd ${HOME}/intranet2
 
 echo "Creating mysql databases..."
-./scripts/mysqltables
+source scripts/mysqltables
 echo "Populating DBs"
-
-pass=`./scripts/mysqlpass`
 
 for i in `ls -1 --color=never mysql/base/*.sql`; do
 	mysql -u iodine --password="${passwd}" -D iodine -e "source $i"
