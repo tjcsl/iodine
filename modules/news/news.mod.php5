@@ -145,60 +145,49 @@ class News implements Module {
 		}
 	}
 
+	private function print_story($story) {
+		global $I2_API;
+		$I2_API->startElement('post');
+		$I2_API->writeElement('id',$story->nid);
+		$I2_API->writeElement('title',$story->title);
+		$I2_API->startElement('text');
+		$I2_API->writeCData($story->text);
+		$I2_API->endElement();
+		$I2_API->startElement('text_strip');
+		$I2_API->writeCData(strip_tags($story->text));
+		$I2_API->endElement();
+	}
+
 	/**
-	* We don't really support this yet, but make it look like we do.
+	* Handle the api.
 	*
 	* @param Display $disp The Display object to use for output.
 	*/
 	function api($disp) {
 		global $I2_ARGS;
 		if(!isset($I2_ARGS[1])) {
-			return "<error>Arguments not specified. Possible arguments are list, show.</error>";
+			throw new I2Exception('Arguments not specified. Possible arguments are list, show.');
 		}
 		switch (strtolower($I2_ARGS[1])) {
 			case "list":
-				echo "<news>\r\n";
 				if( $this->stories === NULL) {
 					$this->stories = Newsitem::get_all_items(false);
 				}
 				foreach($this->stories as $story) {
 					if ((!$story->has_been_read()) && $story->readable()) {
-						echo "<post>\r\n";
-						echo "<id>{$story->nid}</id>\r\n";
-						echo "<title>{$story->title}</title>\r\n";
-						echo "<text>\r\n";
-						echo "<![CDATA[\r\n";
-						echo "{$story->text}\r\n";
-						echo "]]>\r\n</text>\r\n";
-						echo "<text_strip>\r\n";
-						echo "<![CDATA[\r\n";
-						echo strip_tags($story->text)."\r\n";
-						echo "]]>\r\n</text_strip>\r\n";
-						echo "</post>\r\n";
+						self::print_story($story);
 					}
 				}
-				echo "</news>";
 				break;
 			case "show":
 				if(!isset($I2_ARGS[2])) {
-					return "<error>ID of article to read not specified.</error>\r\n";
+					throw new I2Exception('ID of article to read not specified.');
 				}
 				$story = new Newsitem($I2_ARGS[2]);
-				echo "<post>\r\n";
-				echo "<id>{$story->nid}</id>\r\n";
-				echo "<title>{$story->title}</title>\r\n";
-				echo "<text>\r\n";
-				echo "<![CDATA[\r\n";
-				echo "{$story->text}\r\n";
-				echo "]]>\r\n</text>\r\n";
-				echo "<text_strip>\r\n";
-				echo "<![CDATA[\r\n";
-				echo strip_tags($story->text)."\r\n";
-				echo "]]>\r\n</text_strip>\r\n";
-				echo "</post>\r\n";
+				self::print_story($story);
 				break;
 			default:
-				return "<error>Error: unrecognizable input</error>\r\n";
+				throw new I2Exception('Error: unrecognizable input');
 		}
 	}
 
