@@ -393,12 +393,15 @@ class BellSchedule implements Module {
 						return BellSchedule::get_default_schedule(null, $dwk);
 					}
 				}else{
+					d('no descriptionMatches');
 					return array('description' => $descriptionMatches[1], 'schedule' => BellSchedule::$normalSchedules[strtolower(str_replace(array(' Day',' '),'',$descriptionMatches[1]))]['schedule']);
 				}
 			} else { // If no day type is set, use the default schedule for that day
+				d('No day type set');
 				return BellSchedule::get_default_schedule(null, $dwk);
 			}
 		} else { // If no schedule data, use the default schedule for that type of day
+				d('No schedule data');
 				return BellSchedule::get_default_schedule(null, $dwk);
 		}
 	}
@@ -433,17 +436,14 @@ class BellSchedule implements Module {
 	* @return array An array containing the schedule description and periods
 	*/
 	private static function get_default_schedule($type=null, $day=null) {
-		global $I2_QUERY;
+		global $I2_QUERY;d($day);
 		if(isset($type) && array_key_exists($type, BellSchedule::$normalSchedules)) {
 			return BellSchedule::$normalSchedules[$type];
 		} else {
-			if(isset($I2_QUERY['week'])) {
-
+			if(isset($I2_QUERY['day'])&&$day==null) {
+				$day = ((int)date('N', BellSchedule::parse_day_query()));
 			}
-			if(!isset($day)) $day = date('N');
-			if(isset($I2_QUERY['day'])) {
-				$day = date('N', BellSchedule::parse_day_query());
-			}
+			if(!isset($day)||$day==null) $day = date('N');
 			d('Default: '.$day);
 			if($day == 1) {
 				return BellSchedule::$normalSchedules['anchor'];
