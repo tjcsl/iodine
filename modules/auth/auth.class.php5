@@ -291,7 +291,7 @@ class Auth {
 		 * @returns bool Whether or not the user has successfully logged in.
 		 */
 		public function login() {
-			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $modauth_loginfailed, $modauth_err, $I2_QUERY, $template_args;
+			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $modauth_loginfailed, $modauth_err, $I2_QUERY, $template_args, $I2_LOG_SHUTDOWN;
 
 			// the log function uses this to tell if the login was successful
 			// if login fails, something else will set it
@@ -301,9 +301,8 @@ class Auth {
 				$_SESSION['logout_funcs'] = array();
 			}
 			//$this->cache_password($_REQUEST['login_password']);
-
+			d_r($_REQUEST);
 			if (isset($_REQUEST['login_username']) && isset($_REQUEST['login_password'])) {
-
 				if (($check_result = $this->check_user($_REQUEST['login_username'],$_REQUEST['login_password']))) {
 
 					//$_SESSION['i2_uid'] = strtolower($_REQUEST['login_username']);
@@ -338,6 +337,24 @@ class Auth {
 					// Attempted login failed
 					// $modauth_loginfailed is now set where it fails so we know why.
 					$uname = $_REQUEST['login_username'];
+
+					if(isset($I2_ARGS[0]) && $I2_ARGS[0] == 'api') {
+						$disp = new Display('login');
+						$I2_LOG_SHUTDOWN->unregister();
+						header("Content-type: text/xml");
+						// $disp->disp('login_api.tpl', $template_args);
+						$t = "<"."?xml version=\"1.0\""."?>\r\n";
+						$m = isset($I2_ARGS[1]) ? $I2_ARGS[1] : 'auth';
+						$t.= "<error>\r\n";
+						$t.= "<success>".($modauth_loginfailed==1?'false':'true')."</success>\r\n";
+						$t.= "<loginerror>".$modauth_err."</loginerror>\r\n";
+						$t.= "<id>".$modauth_loginfailed."</id>\r\n";
+						$t.= "<message>Login failed.</message>\r\n";
+						$t.= "<login_base_url>" . $I2_ROOT . "</login_base_url>\r\n";
+						$t.= "</error>\r\n";
+						$disp->raw_display($t);
+						exit(0);
+					}
 				}
 			} else {
 				$modauth_loginfailed = FALSE;
@@ -373,8 +390,20 @@ class Auth {
 			$disp = new Display('login');
 			
 			$disp->smarty_assign('backgrounds', self::get_background_images());
-			if(isset($I2_ARGS[1]) && $I2_ARGS[1]=='api') {
-				$disp->disp('login_api.tpl', $template_args);
+			if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='api') {
+				//$I2_LOG_SHUTDOWN->unregister();
+				header("Content-type: text/xml");
+				// $disp->disp('login_api.tpl', $template_args);
+				$t = "<"."?xml version=\"1.0\""."?>\r\n";
+				$m = isset($I2_ARGS[1]) ? $I2_ARGS[1] : 'auth';
+				$t.= "<error>\r\n";
+				$t.= "<message>You are not logged in.</message>\r\n";
+				$t.= "<login_base_url>" . $I2_ROOT . "</login_base_url>\r\n";
+				$t.= "</error>\r\n";
+
+
+				$disp->raw_display($t);
+				exit(0);
 			} else {
 				$disp->disp('login.tpl', $template_args);
 				//$disp->disp('fb.tpl', $template_args);

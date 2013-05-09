@@ -458,5 +458,9 @@ class BellSchedule implements Module {
 			}
 		}
 	}
+	
+	function is_intrabox() {
+		return true;
+	}
 }
 ?>

@@ -7,7 +7,40 @@
 * @subpackage Error
 * @filesource
 */
+class UnregisterableCallback{
 
+    // Store the Callback for Later
+    private $callback;
+
+    // Check if the argument is callable, if so store it
+    public function __construct($callback)
+    {
+        if(is_callable($callback))
+        {
+            $this->callback = $callback;
+        }
+        else
+        {
+            throw new InvalidArgumentException("Not a Callback");
+        }
+    }
+
+    // Check if the argument has been unregistered, if not call it
+    public function call()
+    {
+        if($this->callback == false)
+            return false;
+
+        $callback = $this->callback;
+        $callback(); // weird PHP bug
+    }
+
+    // Unregister the callback
+    public function unregister()
+    {
+        $this->callback = false;
+    }
+}
 /**
 * The logging module for Iodine.
 * @package core
@@ -70,7 +103,7 @@ class Logging {
 	* @access public
 	*/
 	public function __construct() {
-		global $I2_ERR;
+		global $I2_ERR, $I2_LOG_SHUTDOWN;
 
 		$this->my_email = i2config_get('email', 'iodine-errors@tjhsst.edu', 'logging');
 	
@@ -107,7 +140,11 @@ class Logging {
 		$this->debug_profile = i2config_get('debug_profile', false, 'logging');
 		$this->screen_debug = i2config_get('screen_debug', 1, 'logging');
 		
-		register_shutdown_function(array($this, 'flush_debug_output'));
+
+		$I2_LOG_SHUTDOWN = new UnregisterableCallback(array($this, 'flush_debug_output'));
+
+		register_shutdown_function(array($I2_LOG_SHUTDOWN, "call"));
+		
 	}
 
 	/**

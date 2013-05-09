@@ -150,6 +150,8 @@ try {
 	 *
 	 * @global Logging $I2_LOG
 	 */
+
+	$I2_LOG_SHUTDOWN = null;
 	$I2_LOG = new Logging();
 	
 	/**
@@ -243,6 +245,7 @@ try {
 	} elseif(strtolower($module) == 'api') {
 		header('Content-Type: application/xml');
 		$I2_IS_API=true;
+		$I2_LOG_SHUTDOWN->unregister();
 		array_shift($I2_ARGS);
 		$module = "";
 		if(isSet($I2_ARGS[0])) {
