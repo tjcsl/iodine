@@ -310,10 +310,18 @@ class Logging {
 	* the applicatioan just dies halfway through.
 	*/
 	public function flush_debug_output() {
-		global $I2_DISP,$I2_IS_API,$I2_ARGS,$module;
+		global $I2_DISP,$I2_API,$I2_ARGS,$module;
 		
-		if($I2_IS_API===true) {
-			echo "<error>".$this->error_buf."\r\n</error>\r\n<debug>".$this->debug_buf."\r\n</debug>\r\n</$module>";
+		if(isset($I2_API)) {
+			$I2_API->startElement('error');
+			$I2_API->writeRaw($this->error_buf);
+			$I2_API->endElement();
+			$I2_API->startElement('debug');
+			$I2_API->writeRaw($this->debug_buf);
+			$I2_API->endElement();
+			$I2_API->endElement();
+			$I2_API->endDocument();
+			echo $I2_API->outputMemory();
 			$this->error_buf = NULL;
 			$this->debug_buf = NULL;
 			return;

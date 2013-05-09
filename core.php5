@@ -238,41 +238,40 @@ try {
 		$module = i2config_get('startmodule','welcome','core');
 	}
 
-	$I2_IS_API = false;
-
 	if(strtolower($module) == 'ajax') {
 		$I2_AJAX->returnResponse($I2_ARGS[1]);
 	} elseif(strtolower($module) == 'api') {
 		header('Content-Type: application/xml');
-		$I2_IS_API=true;
-		$I2_LOG_SHUTDOWN->unregister();
 		array_shift($I2_ARGS);
-		$module = "";
+		$I2_LOG_SHUTDOWN->unregister();
+		$I2_API = new XMLWriter();
+		$I2_API->openMemory();
+		$I2_API->setIndent(true);
+		$I2_API->startDocument('1.0','ISO-8859-1');
 		if(isSet($I2_ARGS[0])) {
 			$module = $I2_ARGS[0];
 		} else {
-			$module='invalid';
-			echo "<$module>\r\n";
+			$I2_API->startElement('invalid');
 			throw new I2Exception("No module specified. Currently supported modules are news and eighth.");
 		}
 		d('Passing module' . $module . ' api call', 8);
 		if(!get_i2module($module)) {
-			echo "<$module>\r\n";
+			$I2_API->startElement($module);
 			throw new I2Exception("Not a module");
 		} else {
 			$mod = new $module();
-			echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">\r\n";
-			$defaultdtd=array();
-			$defaultdtd[] = "<!ELEMENT $module (body,error,debug)>";
-			$defaultdtd[] = "<!ELEMENT error (#PCDATA)>";
-			$defaultdtd[] = "<!ELEMENT debug (#PCDATA)>";
-			$mbd=$mod->api_build_dtd();
-			if(is_array($mbd))
-				echo "<!DOCTYPE ".$module." [\r\n".implode(array_merge($defaultdtd,$mbd),"\r\n")."\r\n]>\r\n";
-			else
-				echo "<!DOCTYPE ".$module." [\r\n".implode($defaultdtd,"\r\n")."\r\n]>\r\n";
-			echo "<$module>\r\n";
-			echo $mod->api($I2_DISP);
+			$I2_API->startDTD($module);
+			$I2_API->writeDTDElement($module,'(body,error,debug)');
+			if($mod->api_build_dtd()==false) {
+				// no module-specific dtd
+				$I2_API->writeDTDElement('body','(#PCDATA)');
+			}
+			$I2_API->writeDTDElement('error','(#PCDATA)');
+			$I2_API->writeDTDElement('debug','(#PCDATA)');
+			$I2_API->endDTD();
+			$I2_API->startElement($module);
+			$mod->api($I2_DISP);
+			$I2_API->endElement();
 		}
 	}
 	else {
