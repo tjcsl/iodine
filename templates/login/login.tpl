@@ -111,6 +111,8 @@
 			<button id="week_b" onclick="window.location=day_base_url+'?day=[<$schedule.yday>]'" style=''>←</button>
 			[<if $has_custom_day>]
 				<button id="week_today" onclick="window.location=day_base_url+'?day=0'">View Today</button>
+			[<elseif isset($has_custom_day_tom) and $has_custom_day_tom>]
+				<button id="week_today" onclick="window.location=day_base_url+'?day=0&tomorrow'">View Tomorrow</button>
 			[</if>]
 				<button id="week_click" onclick="week_click();">View Week</button>
 			

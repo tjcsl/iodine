@@ -35,6 +35,7 @@ class Auth {
 	*/
 	private $auth_type;
 
+	public $template_args = array();
 	/**
 	* The Auth class constructor.
 	* 
@@ -290,7 +291,7 @@ class Auth {
 		 * @returns bool Whether or not the user has successfully logged in.
 		 */
 		public function login() {
-			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $modauth_loginfailed, $modauth_err, $I2_QUERY;
+			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $modauth_loginfailed, $modauth_err, $I2_QUERY, $template_args;
 
 			// the log function uses this to tell if the login was successful
 			// if login fails, something else will set it
@@ -343,123 +344,18 @@ class Auth {
 				$uname='';
 			}
 
-			// try to get a special image for a holiday, etc.
-			$imagearr = self::getSpecialBG();
-			$image = $imagearr[0];
-			$imagejs = $imagearr[1];
-			$url_prefix = "www/pics/logins/";
-			if(isset($I2_QUERY['background']) && !strstr($I2_QUERY['background'], "..") && $I2_QUERY['background'] !== 'random') {
-				d("Custom background set in query: ".$I2_QUERY['background'], 8);
-				$image = $url_prefix.$I2_QUERY['background'];
-				$_COOKIE['background'] = $I2_QUERY['background'];
-				setcookie("background", $I2_QUERY['background'], time()+60*60*24*30);
-			} 
-			if(isset($_COOKIE['background']) && !strstr($_COOKIE['background'], "..") && $_COOKIE['background'] !== 'random') {
-				d("Custom background loaded from cookie: ".$_COOKIE['background'], 8);
-				$image = $url_prefix.$_COOKIE['background'];
-			}
-			if(isset($_COOKIE['background']) && (isset($I2_QUERY['background']) && $I2_QUERY['background'] == 'random')) {
-				setcookie("background", "", time()-3600);
-				unset($_COOKIE['background']);
-			}
-			d("{$image} does ".file_exists($I2_FS_ROOT . $image)." exist", 8);
-			if(isset($image) && !@file_exists($I2_FS_ROOT . $image)) {
-				d("Background image ({$image}) did not exist.", 8);
-				unset($image);
-				setcookie("background", "", time()-3600);
-				unset($_COOKIE['background']);
-			}
-			// if no special image, get a random normal one
-			if (! isset($image)) {
-
-				$images = array();
-				$dirpath = $I2_FS_ROOT . $url_prefix;
-				$dir = opendir($dirpath);
-				while ($file = readdir($dir)) {
-					if (! is_dir($dirpath . '/' . $file)) {
-						$images[] = $file;
-					}
-				}
-
-				$image = $url_prefix . $images[rand(0,count($images)-1)];
-				d("Using random background image {$image}", 8);
-			}
-
+			self::init_backgrounds();
 			// Show the login box
-			$template_args = array(
-					'failed' => $modauth_loginfailed,
-					'uname' => $uname,
-					'bg' => $image,
-					'bgjs' => $imagejs);
+			$template_args['failed'] = $modauth_loginfailed;
+			$template_args['uname'] = $uname;
+			
 			
 			if(isset($modauth_err)) {
 				d($modauth_err, 5);
 				$template_args['err'] = $modauth_err;
 			}
 
-			// Schedule data
-			
-			// Week view
-			if(isset($I2_QUERY['week'])) {
-				$c = "<span style='display:none'>::START::</span>";
-				$md = isset($I2_QUERY['day']) ? date('Ymd', BellSchedule::parse_day_query()) : null;
-				$ws = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : null;
-				$we = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : null;
-				$schedules = BellSchedule::get_schedule_week($ws, $we, $md);
-
-				$c.= "<table class='weeksched'><tr class='h' style='min-height: 40px;max-height: 40px;line-height: 25px'>";
-				foreach($schedules as $day=>$schedule) {
-					$nday = date('l, F j', strtotime($day));
-					$c.= "<td style='font-size: 16px;font-weight: bold'>Schedule for<br />".$nday."</td>";
-				}
-				$c.= "</tr><tr>";
-
-				foreach($schedules as $day=>$schedule) {
-					$nday = date('l, F j', strtotime($day));
-					$m = (isset($schedule['modified'])? ' desc-modified': '');
-					$c.= "<td class='desc".$m." schedule-".(BellSchedule::parse_schedule_day($schedule['description']))."'>";
-					$c.=$schedule['description']."</td>";
-				}
-				$c.= "</tr><tr>";
-				foreach($schedules as $day=>$schedule) {
-					$c.= "<td>".$schedule['schedule']."</td>";
-				}
-				$c.= "</tr></table>";
-				$c.="<p><span style='max-width: 500px'>Schedules are subject to change.</span></p>";
-				$c.="<span style='display:none'>::END::</span>";
-				$disp = new Display('login');
-				$disp->raw_display($c);
-				exit();
-				return FALSE;
-			}
-			$schedule = BellSchedule::get_schedule();
-			$schedule['header'] = "Today's Schedule";
-			if(isset($I2_QUERY['day'])) {
-				$cday = $I2_QUERY['day'];
-				if(substr($cday, 0, 1) == '-') $cday = '-'.substr($cday, 1);
-				else $cday = '+'.$cday;
-				d($cday);
-				$schedule['date'] = date('l, F j', strtotime($cday.' day'));
-				if($schedule['date'] !== date('l, F j')) {
-					$schedule['header'] = "Schedule for<br />".$schedule['date'];
-				}
-				if(substr($cday, 0, 1) == '+') $dint = substr($cday, 1);
-				else $dint = $cday;
-				d($dint);
-				$schedule['yday'] = ((int)$dint)-1;
-				$schedule['nday'] = ((int)$dint)+1;
-				$template_args['has_custom_day'] = ($cday !== "+0");
-			} else {
-				$schedule['yday'] = -1;
-				$schedule['nday'] = 1;
-
-				$template_args['has_custom_day'] = false;
-			}
-
-			$schedule['schedday'] = BellSchedule::parse_schedule_day($schedule['description']);
-
-			if(strpos($schedule['description'], 'Modified')!==false) $schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
-			$template_args['schedule'] = $schedule;
+			self::init_schedule();
 			// Save any post data that we get and pass it to the html. (except for a password field)
 			$str="";
 			foreach (array_keys($_POST) as $post) {
@@ -486,6 +382,161 @@ class Auth {
 			}
 
 			return FALSE;
+	}
+
+	private function init_backgrounds() {
+		global $I2_QUERY, $I2_FS_ROOT, $template_args;
+		// try to get a special image for a holiday, etc.
+		$imagearr = self::getSpecialBG();
+		$image = $imagearr[0];
+		$imagejs = $imagearr[1];
+		$url_prefix = "www/pics/logins/";
+		if(isset($I2_QUERY['background']) && !strstr($I2_QUERY['background'], "..") && $I2_QUERY['background'] !== 'random') {
+			d("Custom background set in query: ".$I2_QUERY['background'], 8);
+			$image = $url_prefix.$I2_QUERY['background'];
+			$_COOKIE['background'] = $I2_QUERY['background'];
+			setcookie("background", $I2_QUERY['background'], time()+60*60*24*30);
+		} 
+		if(isset($_COOKIE['background']) && !strstr($_COOKIE['background'], "..") && $_COOKIE['background'] !== 'random') {
+			d("Custom background loaded from cookie: ".$_COOKIE['background'], 8);
+			$image = $url_prefix.$_COOKIE['background'];
+		}
+		if(isset($_COOKIE['background']) && (isset($I2_QUERY['background']) && $I2_QUERY['background'] == 'random')) {
+			setcookie("background", "", time()-3600);
+			unset($_COOKIE['background']);
+		}
+		d("{$image} does ".file_exists($I2_FS_ROOT . $image)." exist", 8);
+		if(isset($image) && !@file_exists($I2_FS_ROOT . $image)) {
+			d("Background image ({$image}) did not exist.", 8);
+			unset($image);
+			setcookie("background", "", time()-3600);
+			unset($_COOKIE['background']);
+		}
+		// if no special image, get a random normal one
+		if (! isset($image)) {
+
+			$images = array();
+			$dirpath = $I2_FS_ROOT . $url_prefix;
+			$dir = opendir($dirpath);
+			while ($file = readdir($dir)) {
+				if (! is_dir($dirpath . '/' . $file)) {
+					$images[] = $file;
+				}
+			}
+
+			$image = $url_prefix . $images[rand(0,count($images)-1)];
+			d("Using random background image {$image}", 8);
+		}
+		$template_args['bg'] = $image;
+		$template_args['bgjs'] = $imagejs;
+
+	}
+	private function init_schedule() {
+		global $I2_QUERY, $disp, $template_args;
+		// Schedule data
+		
+		// If it's past 5PM, show tomorrow's date
+		if(((int)date('h')) > 4 && date('a') == 'pm') {
+			$after_5pm = true;
+			if((!isset($I2_QUERY['day']) || $I2_QUERY['day']==0) && !isset($I2_QUERY['today'])) {
+				d('Showing tomorrows schedule');
+				$show_tomorrow = true;
+				$template_args['show_tomorrow'] = true;
+				$I2_QUERY['tomorrow'] = true;
+				$I2_QUERY['day'] = 1;
+			} else {
+				$show_tomorrow = false;
+			}
+		}
+		// Week view
+		if(isset($I2_QUERY['week'])) {
+			$c = "<span style='display:none'>::START::</span>";
+			$md = isset($I2_QUERY['day']) ? date('Ymd', BellSchedule::parse_day_query()) : null;
+			$ws = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : null;
+			$we = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : null;
+			$schedules = BellSchedule::get_schedule_week($ws, $we, $md);
+
+			$c.= "<table class='weeksched'><tr class='h' style='min-height: 40px;max-height: 40px;line-height: 25px'>";
+			foreach($schedules as $day=>$schedule) {
+				$nday = date('l, F j', strtotime($day));
+				$c.= "<td style='font-size: 16px;font-weight: bold'>Schedule for<br />".$nday."</td>";
+			}
+			$c.= "</tr><tr>";
+
+			foreach($schedules as $day=>$schedule) {
+				$nday = date('l, F j', strtotime($day));
+				$m = (isset($schedule['modified'])? ' desc-modified': '');
+				$c.= "<td class='desc".$m." schedule-".(BellSchedule::parse_schedule_day($schedule['description']))."'>";
+				$c.=$schedule['description']."</td>";
+			}
+			$c.= "</tr><tr>";
+			foreach($schedules as $day=>$schedule) {
+				$c.= "<td>".$schedule['schedule']."</td>";
+			}
+			$c.= "</tr></table>";
+			$c.="<p><span style='max-width: 500px'>Schedules are subject to change.</span></p>";
+			$c.="<span style='display:none'>::END::</span>";
+			$disp = new Display('login');
+			$disp->raw_display($c);
+			exit();
+			return FALSE;
+		}
+		$schedule = BellSchedule::get_schedule();
+		$schedule['header'] = "Today's Schedule";
+		if(isset($I2_QUERY['day'])) {
+			$cday = $I2_QUERY['day'];
+			if(substr($cday, 0, 1) == '-') $cday = '-'.substr($cday, 1);
+			else $cday = '+'.$cday;
+			d($cday);
+			$schedule['date'] = date('l, F j', strtotime($cday.' day'));
+			if($schedule['date'] !== date('l, F j')) {
+				$schedule['header'] = "Schedule for<br />".$schedule['date'];
+			}
+			if(substr($cday, 0, 1) == '+') $dint = substr($cday, 1);
+			else $dint = $cday;
+			d($dint);
+			$schedule['yday'] = ((int)$dint)-1;
+			$schedule['nday'] = ((int)$dint)+1;
+			$template_args['has_custom_day'] = ($cday !== "+0");
+		} else {
+			$I2_QUERY['day'] = 0;
+			$schedule['yday'] = -1;
+			$schedule['nday'] = 1;
+
+			$template_args['has_custom_day'] = false;
+		}
+
+
+		// show "Tomorrow's schedule"
+		if(isset($I2_QUERY['tomorrow'])) {
+			$schedule['yday'] = '0&today';
+			$schedule['nday'] = 1;
+			$schedule['header'] = "<span style='white-space: nowrap'>Tomorrow's Schedule</span>";
+		}
+
+		if(isset($after_5pm) && $after_5pm) {
+			if($I2_QUERY['day'] == 0 && isset($I2_QUERY['today'])) {
+				$schedule['nday'] = '0&tomorrow';
+			}
+			if($show_tomorrow) {
+				$schedule['nday'] = 2;
+			} else {
+				$template_args['has_custom_day_tom'] = true;
+			}
+			if($I2_QUERY['day'] == 2) {
+				$schedule['yday'] = 0;
+			}
+			if($I2_QUERY['day'] == -1) {
+				$schedule['nday'] = '0&today';
+			}
+
+			$template_args['has_custom_day'] = false;
+		}
+
+		$schedule['schedday'] = BellSchedule::parse_schedule_day($schedule['description']);
+
+		if(strpos($schedule['description'], 'Modified')!==false) $schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
+		$template_args['schedule'] = $schedule;
 	}
 	/**
 	* Gets all of the background images that can be used on Iodine.
