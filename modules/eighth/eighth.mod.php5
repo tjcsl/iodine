@@ -552,7 +552,6 @@ class Eighth implements Module {
 			default:
 				throw new I2Exception("Invalid argument given to eighth module.");
 		}
-		echo "</eighth>";
 		return false;
 	}
 

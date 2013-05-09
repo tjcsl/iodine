@@ -54,9 +54,9 @@ if(version_compare(PHP_VERSION, '5.1.0', '>')) {
 }
 
 /*
-The actual config file in HG is config.user.ini and config.server.ini
+The actual config file in Git is config.user.ini and config.server.ini
 When you check out intranet2 to run it from your personal space, run
-setup. Do _NOT_ add config.ini to HG, as it's different for
+setup. Do _NOT_ add config.ini.php5 to Git, as it's different for
 everyone. Edit config.server.ini to edit the server (production) config.
 */
 
@@ -151,7 +151,6 @@ try {
 	 * @global Logging $I2_LOG
 	 */
 
-	$I2_LOG_SHUTDOWN = null;
 	$I2_LOG = new Logging();
 	
 	/**
@@ -225,6 +224,13 @@ try {
 	 */
 	$I2_AJAX  = new Ajax();
 
+	/**
+	 * The Api object.
+	 *
+	 * @global Api $I2_API
+	 */
+	$I2_API  = new Api();
+
 	/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here) */
 
 	// Starts with whatever module the user specified, otherwise
@@ -241,10 +247,10 @@ try {
 	if(strtolower($module) == 'ajax') {
 		$I2_AJAX->returnResponse($I2_ARGS[1]);
 	} elseif(strtolower($module) == 'api') {
+		register_shutdown_function(array($I2_API,'flush_api'));
 		header('Content-Type: application/xml');
 		array_shift($I2_ARGS);
-		$I2_LOG_SHUTDOWN->unregister();
-		$I2_API = new XMLWriter();
+		//$I2_API->disable_logging();
 		$I2_API->openMemory();
 		$I2_API->setIndent(true);
 		$I2_API->startDocument('1.0','ISO-8859-1');

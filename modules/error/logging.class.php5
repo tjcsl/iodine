@@ -7,40 +7,7 @@
 * @subpackage Error
 * @filesource
 */
-class UnregisterableCallback{
 
-    // Store the Callback for Later
-    private $callback;
-
-    // Check if the argument is callable, if so store it
-    public function __construct($callback)
-    {
-        if(is_callable($callback))
-        {
-            $this->callback = $callback;
-        }
-        else
-        {
-            throw new InvalidArgumentException("Not a Callback");
-        }
-    }
-
-    // Check if the argument has been unregistered, if not call it
-    public function call()
-    {
-        if($this->callback == false)
-            return false;
-
-        $callback = $this->callback;
-        $callback(); // weird PHP bug
-    }
-
-    // Unregister the callback
-    public function unregister()
-    {
-        $this->callback = false;
-    }
-}
 /**
 * The logging module for Iodine.
 * @package core
@@ -103,7 +70,7 @@ class Logging {
 	* @access public
 	*/
 	public function __construct() {
-		global $I2_ERR, $I2_LOG_SHUTDOWN;
+		global $I2_ERR;
 
 		$this->my_email = i2config_get('email', 'iodine-errors@tjhsst.edu', 'logging');
 	
@@ -140,10 +107,7 @@ class Logging {
 		$this->debug_profile = i2config_get('debug_profile', false, 'logging');
 		$this->screen_debug = i2config_get('screen_debug', 1, 'logging');
 		
-
-		$I2_LOG_SHUTDOWN = new UnregisterableCallback(array($this, 'flush_debug_output'));
-
-		register_shutdown_function(array($I2_LOG_SHUTDOWN, "call"));
+		register_shutdown_function(array($this,'flush_debug_output'));
 		
 	}
 
@@ -310,18 +274,19 @@ class Logging {
 	* the applicatioan just dies halfway through.
 	*/
 	public function flush_debug_output() {
-		global $I2_DISP,$I2_API,$I2_ARGS,$module;
+		global $I2_DISP,$I2_API,$I2_ARGS;
 		
 		if(isset($I2_API)) {
+			//logging disabled
+			if(!$I2_API->get_logging()) {
+				return;
+			}
 			$I2_API->startElement('error');
 			$I2_API->writeRaw($this->error_buf);
 			$I2_API->endElement();
 			$I2_API->startElement('debug');
 			$I2_API->writeRaw($this->debug_buf);
 			$I2_API->endElement();
-			$I2_API->endElement();
-			$I2_API->endDocument();
-			echo $I2_API->outputMemory();
 			$this->error_buf = NULL;
 			$this->debug_buf = NULL;
 			return;
