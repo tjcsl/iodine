@@ -172,6 +172,13 @@ try {
 	$I2_SQL = new MySQL();
 
 	/**
+	 * The Api object.
+	 * Used in Auth, so must come first.
+	 * @global Api $I2_API
+	 */
+	$I2_API  = new Api();
+
+	/**
 	 * The global authentication mechanism.
 	 *
 	 * Use this {@link Auth} object for authenticating users.
@@ -224,13 +231,6 @@ try {
 	 */
 	$I2_AJAX  = new Ajax();
 
-	/**
-	 * The Api object.
-	 *
-	 * @global Api $I2_API
-	 */
-	$I2_API  = new Api();
-
 	/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here) */
 
 	// Starts with whatever module the user specified, otherwise
@@ -247,13 +247,8 @@ try {
 	if(strtolower($module) == 'ajax') {
 		$I2_AJAX->returnResponse($I2_ARGS[1]);
 	} elseif(strtolower($module) == 'api') {
-		register_shutdown_function(array($I2_API,'flush_api'));
-		header('Content-Type: application/xml');
+		$I2_API->init();
 		array_shift($I2_ARGS);
-		//$I2_API->disable_logging();
-		$I2_API->openMemory();
-		$I2_API->setIndent(true);
-		$I2_API->startDocument('1.0','ISO-8859-1');
 		if(isSet($I2_ARGS[0])) {
 			$module = $I2_ARGS[0];
 		} else {

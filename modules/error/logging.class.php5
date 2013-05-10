@@ -278,7 +278,7 @@ class Logging {
 		
 		if(isset($I2_API)) {
 			//logging disabled
-			if(!$I2_API->get_logging()) {
+			if($I2_API->logging==false) {
 				return;
 			}
 			$I2_API->startElement('error');

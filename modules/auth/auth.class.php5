@@ -291,7 +291,7 @@ class Auth {
 		 * @returns bool Whether or not the user has successfully logged in.
 		 */
 		public function login() {
-			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $modauth_loginfailed, $modauth_err, $I2_QUERY, $template_args, $I2_LOG_SHUTDOWN;
+			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $I2_API, $modauth_loginfailed, $modauth_err, $I2_QUERY, $template_args;
 
 			// the log function uses this to tell if the login was successful
 			// if login fails, something else will set it
@@ -339,20 +339,15 @@ class Auth {
 					$uname = $_REQUEST['login_username'];
 
 					if(isset($I2_ARGS[0]) && $I2_ARGS[0] == 'api') {
-						$disp = new Display('login');
-						$I2_LOG_SHUTDOWN->unregister();
-						header("Content-type: text/xml");
-						// $disp->disp('login_api.tpl', $template_args);
-						$t = "<"."?xml version=\"1.0\""."?>\r\n";
-						$m = isset($I2_ARGS[1]) ? $I2_ARGS[1] : 'auth';
-						$t.= "<error>\r\n";
-						$t.= "<success>".($modauth_loginfailed==1?'false':'true')."</success>\r\n";
-						$t.= "<loginerror>".$modauth_err."</loginerror>\r\n";
-						$t.= "<id>".$modauth_loginfailed."</id>\r\n";
-						$t.= "<message>Login failed.</message>\r\n";
-						$t.= "<login_base_url>" . $I2_ROOT . "</login_base_url>\r\n";
-						$t.= "</error>\r\n";
-						$disp->raw_display($t);
+						$I2_API->init();
+						$I2_API->logging = false;
+						$I2_API->startElement('error');
+						$I2_API->writeElement('success',$modauth_loginfailed==1?'false':'true');
+						$I2_API->writeElement('loginerror',$modauth_err);
+						$I2_API->writeElement('id',$modauth_loginfailed);
+						$I2_API->writeElement('message','Login failed.');
+						$I2_API->writeElement('login_base_url',$I2_ROOT);
+						$I2_API->endElement();
 						exit(0);
 					}
 				}
@@ -391,18 +386,12 @@ class Auth {
 			
 			$disp->smarty_assign('backgrounds', self::get_background_images());
 			if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='api') {
-				//$I2_LOG_SHUTDOWN->unregister();
-				header("Content-type: text/xml");
-				// $disp->disp('login_api.tpl', $template_args);
-				$t = "<"."?xml version=\"1.0\""."?>\r\n";
-				$m = isset($I2_ARGS[1]) ? $I2_ARGS[1] : 'auth';
-				$t.= "<error>\r\n";
-				$t.= "<message>You are not logged in.</message>\r\n";
-				$t.= "<login_base_url>" . $I2_ROOT . "</login_base_url>\r\n";
-				$t.= "</error>\r\n";
-
-
-				$disp->raw_display($t);
+				$I2_API->init();
+				$I2_API->logging = false;
+				$I2_API->startElement('error');
+				$I2_API->writeElement('message','You are not logged in.');
+				$I2_API->writeElement('login_base_url',$I2_ROOT);
+				$I2_API->endElement();
 				exit(0);
 			} else {
 				$disp->disp('login.tpl', $template_args);

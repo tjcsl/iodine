@@ -13,21 +13,21 @@
 class Api extends XMLWriter {
 
 	/**
-	 * @private logging is logging on?
+	 * @public logging is logging on?
 	 */
-	private $logging = true;
+	public $logging = true;
 
-	function disable_logging() {
-		$this->logging = false;
-	}
-
-	function get_logging() {
-		return $this->logging;
-	}
 	function flush_api() {
 		$this->endElement();
 		$this->endDocument();
 		echo $this->outputMemory();
+	}
+	function init() {
+		register_shutdown_function(array($this,'flush_api'));
+		header('Content-Type: application/xml');
+		$this->openMemory();
+		$this->setIndent(true);
+		$this->startDocument('1.0','ISO-8859-1');
 	}
 }
 ?>
