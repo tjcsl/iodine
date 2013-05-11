@@ -357,7 +357,7 @@ class Filecenter implements Module {
 			if ($I2_USER->grade != "staff") {
 				$this->template_args['tj01path'] = 'students/' . self::$standing[$I2_USER->grade] . '/' . $_SESSION['i2_username'];
 			}
-			$this->template_args['otherdirs'] = Filecenter::get_additional_dirs();
+			$this->template_args['dirs'] = Filecenter::get_additional_dirs();
 			$this->template = 'filecenter_box.tpl';
 		}
 		elseif ($this->filesystem == 'bookmarks') {
@@ -375,7 +375,7 @@ class Filecenter implements Module {
 				}
 				redirect("{$I2_ROOT}filecenter/bookmarks");
 			}
-			$this->template_args['otherdirs'] = Filecenter::get_additional_dirs_onlymine();
+			$this->template_args['dirs'] = Filecenter::get_additional_dirs_onlymine();
 			$this->template = 'filecenter_bookmarks.tpl';
 		}
 		elseif ($this->filesystem->is_valid()) {
@@ -504,6 +504,9 @@ class Filecenter implements Module {
 		if($f1['name']=='..') {
 			return -1;
 		}
+		if($f2['name']=='..') {
+			return 1;
+		}
 		return strnatcmp($f1['name'],$f2['name']);
 	}
 
@@ -546,7 +549,7 @@ class Filecenter implements Module {
 			$this->box_args['tj01path'] = 'students/' . self::$standing[$I2_USER->grade] . '/' . $_SESSION['i2_username'];
 		}
 		// This is where most of the directories are loaded from mysql/
-		$this->box_args['otherdirs'] = Filecenter::get_additional_dirs();
+		$this->box_args['dirs'] = Filecenter::get_additional_dirs();
 
 		return 'Filecenter';
 	}
