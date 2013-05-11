@@ -276,7 +276,7 @@ class Logging {
 	public function flush_debug_output() {
 		global $I2_DISP,$I2_API,$I2_ARGS;
 		
-		if(isset($I2_API)) {
+		if($I2_API->api) {
 			//logging disabled
 			if($I2_API->logging==false) {
 				return;
