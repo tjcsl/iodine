@@ -7,7 +7,7 @@ CREATE TABLE filecenter_folders_groups (
 
 
 INSERT INTO filecenter_folders_groups VALUES (13,"{{I2_ROOT}}filecenter/common/","View/Upload your Common (R:) files");
-INSERT INTO filecenter_folders_groups VALUES (13,"{{I2_ROOT}}filecenter/local/{{i2_username}}","View/Upload your Windows (M:) files");
+INSERT INTO filecenter_folders_groups VALUES (13,"{{I2_ROOT}}filecenter/local/","View/Upload your Windows (M:) files");
 INSERT INTO filecenter_folders_groups VALUES (13,"https://shares.tjhsst.edu/portfolio/{{grad_year}}/{{i2_username}}","View your portfolio (Shares)");
 INSERT INTO filecenter_folders_groups VALUES (1,"https://shares.tjhsst.edu/","View all Windows files (Shares)");
 INSERT INTO filecenter_folders_groups VALUES (1,"{{I2_ROOT}}filecenter/main/{{studentorstaff}}/{{i2_username}}/","Access your UNIX files");
