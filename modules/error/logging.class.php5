@@ -140,6 +140,7 @@ class Logging {
 	* @param string $msg The error message to record.
 	*/
 	public function log_error($msg) {
+		global $I2_API;
 		$trace_arr = array();
 		foreach(array_slice(debug_backtrace(),1) as $trace) {
 			if (isSet($trace['file']) && isSet($trace['line'])) {
@@ -159,8 +160,10 @@ class Logging {
 			$msg . '"' ."\n",
 			FILE_APPEND
 		);
-
-		$this->error_buf .= "\r\n<p>$msg</p>";
+		if($I2_API->api && $I2_API->backtrace==false)
+			$this->error_buf .= $msg;
+		else
+			$this->error_buf .= "\r\n<p>$msg</p>";
 	}
 	
 	/**
@@ -279,7 +282,7 @@ class Logging {
 		if($I2_API->api) {
 			if($I2_API->logging==false)
 				return;
-			$I2_API->writeElement('error',strip_tags($this->error_buf));
+			$I2_API->writeElement('error',$this->error_buf);
 			$I2_API->startElement('debug');
 			$I2_API->writeRaw($this->debug_buf);
 			$I2_API->endElement();

@@ -133,7 +133,7 @@ class Error {
 	*/
 
 	function fatal_error($msg, $critical = FALSE) {
-		global $I2_LOG;
+		global $I2_LOG,$I2_API;
 
 		$out = 'Iodine fatal error: '.$msg;
 		
@@ -141,7 +141,7 @@ class Error {
 			$I2_LOG->log_mail($out.'\r\nBacktrace: \r\n'.print_r(debug_backtrace(),TRUE));
 			$out .= "\r\n".'<br />This is a critical error, so an email is being sent to the developers, hopefully this problem will be fixed soon.';
 		}
-		else {
+		else if(!$I2_API->api || $I2_API->backtrace) {
 			$out .= "<br />\r\n".'If this problem persists, please contact the intranetmaster.';
 		}
 		
