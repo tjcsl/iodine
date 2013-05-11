@@ -13,6 +13,11 @@
 class Api extends XMLWriter {
 
 	/**
+	 * @public backtrace display backtraces?
+	 */
+	public $backtrace = false;
+
+	/**
 	 * @public logging is logging on?
 	 */
 	public $logging = true;

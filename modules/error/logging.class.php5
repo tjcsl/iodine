@@ -277,13 +277,9 @@ class Logging {
 		global $I2_DISP,$I2_API,$I2_ARGS;
 		
 		if($I2_API->api) {
-			//logging disabled
-			if($I2_API->logging==false) {
+			if($I2_API->logging==false)
 				return;
-			}
-			$I2_API->startElement('error');
-			$I2_API->writeRaw($this->error_buf);
-			$I2_API->endElement();
+			$I2_API->writeElement('error',strip_tags($this->error_buf));
 			$I2_API->startElement('debug');
 			$I2_API->writeRaw($this->debug_buf);
 			$I2_API->endElement();

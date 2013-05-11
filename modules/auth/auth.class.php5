@@ -341,12 +341,14 @@ class Auth {
 					if(isset($I2_ARGS[0]) && $I2_ARGS[0] == 'api') {
 						$I2_API->init();
 						$I2_API->logging = false;
+						$I2_API->startElement('auth');
 						$I2_API->startElement('error');
 						$I2_API->writeElement('success',$modauth_loginfailed==1?'false':'true');
 						$I2_API->writeElement('loginerror',$modauth_err);
 						$I2_API->writeElement('id',$modauth_loginfailed);
 						$I2_API->writeElement('message','Login failed.');
 						$I2_API->writeElement('login_base_url',$I2_ROOT);
+						$I2_API->endElement();
 						$I2_API->endElement();
 						exit(0);
 					}
@@ -388,9 +390,11 @@ class Auth {
 			if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='api') {
 				$I2_API->init();
 				$I2_API->logging = false;
+				$I2_API->startElement('auth');
 				$I2_API->startElement('error');
 				$I2_API->writeElement('message','You are not logged in.');
 				$I2_API->writeElement('login_base_url',$I2_ROOT);
+				$I2_API->endElement();
 				$I2_API->endElement();
 				exit(0);
 			} else {

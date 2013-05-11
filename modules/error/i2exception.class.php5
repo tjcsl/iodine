@@ -55,8 +55,11 @@ class I2Exception extends Exception {
 	* @return string The exception in the form of a string.
 	*/
 	public function __toString() {
-		global $I2_ROOT;
+		global $I2_ROOT,$I2_API;
 		$str = ($this->critical?'Critical ':'') . 'I2 Exception: '.$this->message;
+		// if api, don't show a backtrace.
+		if($I2_API->api && $I2_API->backtrace==false)
+			return $str;
 		$str .= "<br />\r\nBacktrace:<br />\r\n";
 		
 		$trace = $this->getTrace();

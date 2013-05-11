@@ -248,6 +248,8 @@ try {
 		$I2_AJAX->returnResponse($I2_ARGS[1]);
 	} elseif(strtolower($module) == 'api') {
 		$I2_API->init();
+		// disable backtraces by default
+		$I2_API->backtrace=false;
 		array_shift($I2_ARGS);
 		if(isSet($I2_ARGS[0])) {
 			$module = $I2_ARGS[0];
