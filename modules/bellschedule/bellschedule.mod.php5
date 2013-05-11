@@ -345,6 +345,7 @@ class BellSchedule implements Module {
 		// HTTPS because otheriwse it gets cached by the proxy
 		$url = BellSchedule::$url;
 		if($str = BellSchedule::get_calendar_contents()) { // Returns false if can't get anything
+		
 			return BellSchedule::update_schedule_contents($str, $day);
 		} else {
 			return array('description' => 'Error: Could not load schedule', 'schedule' => '');
@@ -352,18 +353,19 @@ class BellSchedule implements Module {
 	}
 	private static function update_schedule_contents($str, $day=null) {
 		global $I2_QUERY;
-		if(isset($day)) $startd = $day;
+		if(isset($day) && $day!==null) $startd = $day;
 		else $startd = date('Ymd');
 		$starter = 'DTSTART;VALUE=DATE:'. $startd;
 		$ender = 'END:VEVENT';
-		$dwk = date('N', strtotime($day));
+		$dwk = date('N', strtotime($startd));
 		//Find events on the current day that indicate a schedule type
 		$regex = '/'.$starter.'((?:(?!END:VEVENT).)*?)CATEGORIES:(Anchor Day|Blue Day|Red Day|JLC Blue Day|Special Schedule)(.*?)'.$ender.'/s';
 		// Is any type of schedule set?
 		if(preg_match($regex, $str, $dayTypeMatches) > 0) {
+			d('First regex: '.$dayTypeMatches[0]);
 			// Does it have a day type described?
 			if(preg_match('/SUMMARY:.(Blue Day - Adjusted Schedule for Mid Term Exams|Red Day - Adjusted Schedule for Mid Term Exams|JLC Blue Day - Adjusted Schedule for Mid Term Exams|AMC Blue Day|Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break|Modified Blue Day|Modified Red Day)/', $dayTypeMatches[0], $descriptionMatches) > 0||1!=1) {
-				d($descriptionMatches[1]);
+				d('Second regex: '.$descriptionMatches[1]);
 				if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'||$descriptionMatches[1]=='Winter Break'||$descriptionMatches[1]=='Spring Break'){
 					return array('description' => 'No school', 'schedule' => '');
 				} else if($descriptionMatches[1]=='Blue Day - Adjusted Schedule for Mid Term Exams'){
@@ -380,7 +382,7 @@ class BellSchedule implements Module {
 				}else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
 					return array('description' => BellSchedule::$normalSchedules['jlcmidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['jlcmidterm']['schedule']);
 				/* 2013 AP EXAMS */
-				}else if(($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day') && date('Y M') == '2013 May' && isset(BellSchedule::$apExamSchedule[((int)date('j'))]) && ((int)date('j'))>6) {
+				}else if(($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day') && date('Y M') == '2013 May') {
 					if(isset($I2_QUERY['start_date'])) $d = substr($I2_QUERY['start_date'], 6);
 					else $d = date('j', strtotime($startd));
 					if(substr($d, 0, 1) == '0') $d = substr($d, 1);
@@ -401,7 +403,7 @@ class BellSchedule implements Module {
 				return BellSchedule::get_default_schedule(null, $dwk);
 			}
 		} else { // If no schedule data, use the default schedule for that type of day
-				d('No schedule data');
+				d('No schedule data'.$dwk);
 				return BellSchedule::get_default_schedule(null, $dwk);
 		}
 	}
@@ -458,7 +460,7 @@ class BellSchedule implements Module {
 			}
 		}
 	}
-	
+
 	function is_intrabox() {
 		return true;
 	}
