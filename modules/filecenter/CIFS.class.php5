@@ -84,7 +84,10 @@ class CIFS extends Filesystem {
 			mkdir($mount_point, 0755, TRUE);
 		}
 
-		$user = isset($this->domain) ? $this->domain . "/" . $user : $user;
+
+		$cifscommand = "sudo /sbin/mount.cifs //{$this->server}/{$this->share} $mount_point --verbose";
+		$cifscommand .= isset($this->domain) ? " -o domain=\"$this->domain\"" : "";
+		$cifscommand .= " -o username=\"$user\"";
 
 		//$status = exec("/sbin/mount.cifs //{$this->server}/{$this->share} $mount_point -o username=\"$user\",password=\"$pass\"");
 		$descriptors = array(
@@ -92,7 +95,7 @@ class CIFS extends Filesystem {
 			1=>array("pipe","w"),
 			2=>array("file","/tmp/i2cifserr.log","a")
 		);
-		$pp=proc_open("sudo /sbin/mount.cifs //{$this->server}/{$this->share} $mount_point -o username=\"$user\"", $descriptors,$pipes);
+		$pp=proc_open($cifscommand,$descriptors,$pipes);
 		if(is_resource($pp)) {
 			fwrite($pipes[0],$pass);
 			fclose($pipes[0]);
@@ -101,7 +104,7 @@ class CIFS extends Filesystem {
 			fclose($pipes[1]);
 			$retval = proc_close($pp);
 			if ($retval != 0) {
-				throw new I2Exception("sudo /sbin/mount.cifs exited with status $retval, command was (sudo /sbin/mount.cifs //{$this->server}/{$this->share} $mount_point -o username=\"$user\"), Command Output was ($outputstring)");
+				throw new I2Exception("sudo /sbin/mount.cifs exited with status $retval, command was ($cifscommand), Command Output was ($outputstring)");
 			}
 		} else {
 			throw new I2Exception("failed to start /sbin/mount.cifs process");
