@@ -216,9 +216,8 @@ class BellSchedule implements Module {
 	*/
 	public function display_pane($disp) {
 		global $I2_QUERY;
-		$schedule = self::get_schedule();
 		// Week view
-		// FIXME: broken
+		// FIXME: week is badly broken
 		if(isset($I2_QUERY['week'])) {
 			$c = "::START::";
 			$md = isset($I2_QUERY['day']) ? date('Ymd', self::parse_day_query()) : null;
@@ -250,8 +249,12 @@ class BellSchedule implements Module {
 			$disp->raw_display($c);
 			return FALSE;
 		}
-		$template_args['date'] = date('l, F j', self::parse_day_query());
+		$date = self::parse_day_query();
+		$template_args['date'] = date('l, F j', $date);
 		$template_args['header'] = "Today's Schedule<br />".$template_args['date'];
+
+		$template_args['schedule'] = self::get_schedule();
+
 		if(isset($I2_QUERY['day'])) {
 			if($template_args['date'] !== date('l, F j')) {
 				$template_args['header'] = "Schedule for<br />".$template_args['date'];
@@ -264,7 +267,6 @@ class BellSchedule implements Module {
 			$template_args['nday'] = 1;
 			$template_args['has_custom_day'] = false;
 		}
-		$template_args['schedule'] = $schedule;
 		$disp->disp('pane_schedule.tpl', $template_args);
 	}
 
