@@ -218,6 +218,7 @@ class BellSchedule implements Module {
 		global $I2_QUERY;
 		$schedule = self::get_schedule();
 		// Week view
+		// FIXME: broken
 		if(isset($I2_QUERY['week'])) {
 			$c = "::START::";
 			$md = isset($I2_QUERY['day']) ? date('Ymd', self::parse_day_query()) : null;
@@ -249,16 +250,15 @@ class BellSchedule implements Module {
 			$disp->raw_display($c);
 			return FALSE;
 		}
-		$template_args['header'] = "Today's Schedule";
+		$template_args['date'] = date('l, F j', self::parse_day_query());
+		$template_args['header'] = "Today's Schedule<br />".$template_args['date'];
 		if(isset($I2_QUERY['day'])) {
-			$offset = $I2_QUERY['day'];
-			$template_args['date'] = date('l, F j', strtotime($offset.' day'));
 			if($template_args['date'] !== date('l, F j')) {
 				$template_args['header'] = "Schedule for<br />".$template_args['date'];
 			}
-			$template_args['yday'] = intval($offset)-1;
-			$template_args['nday'] = intval($offset)+1;
-			$template_args['has_custom_day'] = ($offset !== "0");
+			$template_args['yday'] = intval($I2_QUERY['day'])-1;
+			$template_args['nday'] = intval($I2_QUERY['day'])+1;
+			$template_args['has_custom_day'] = ($I2_QUERY['day'] !== "0");
 		} else {
 			$template_args['yday'] = -1;
 			$template_args['nday'] = 1;
@@ -302,8 +302,7 @@ class BellSchedule implements Module {
 		} else if(isset($I2_QUERY['start_date'])) {
 			$contents = self::update_schedule($I2_QUERY['start_date']);
 		} else if(isset($I2_QUERY['day'])) {
-			$offset = $I2_QUERY['day'];
-			$date = date('Ymd', strtotime($offset.' day'));
+			$date = date('Ymd', self::parse_day_query());
 			$rawical = self::get_saved_schedule($cachedir . 'bellschedule-ical.cache');
 			$contents = self::parse_schedule($rawical, $date);
 		} else {
@@ -315,18 +314,12 @@ class BellSchedule implements Module {
 	/**
 	* Get the date from the query string
 	*
-	* @param string $cday The date to parse.
 	* @return int The date.
 	*/
-	public static function parse_day_query($cday=null) {
+	public static function parse_day_query() {
 		global $I2_QUERY;
-		if(!isset($cday))
-			$cday = $I2_QUERY['day'];
-		if(substr($cday, 0, 1) == '-')
-			$cday = '-'.substr($cday, 1);
-		else
-			$cday = '+'.$cday;
-		return strtotime($cday.' day');
+		$offset = isset($I2_QUERY['day']) ? $I2_QUERY['day'] : 0 ;
+		return strtotime($offset.' day');
 	}
 
 	/**
