@@ -212,6 +212,7 @@ class BellSchedule implements Module {
 
 	/**
 	* Required by the {@link Module} interface.
+	* @param Display $disp The Display object to use for output.
 	*/
 	public function display_pane($disp) {
 		global $I2_QUERY;
@@ -284,6 +285,7 @@ class BellSchedule implements Module {
 
 	/**
 	* Required by the {@link Module} interface.
+	* @param Display $disp The Display object to use for output.
 	*/
 	public function display_box($disp) {
 		return $this->display_pane($disp);
@@ -322,6 +324,12 @@ class BellSchedule implements Module {
 		return $contents;
 	}
 
+	/**
+	* Get the date from the query string
+	*
+	* @param string $cday The date to parse.
+	* @return int The date.
+	*/
 	public static function parse_day_query($cday=null) {
 		global $I2_QUERY;
 		if(!isset($cday))
@@ -336,6 +344,9 @@ class BellSchedule implements Module {
 	/**
 	* Get a week view
 	*
+	* @param string $start (Optional) The start of the week
+	* @param string $end (Optional) The end of the week
+	* @param string $mid (Optional) The middle of the week
 	* @return array An array containing schedule description and periods for each day
 	*/
 	public static function get_schedule_week($start=null, $end=null, $mid=null) {
@@ -362,6 +373,12 @@ class BellSchedule implements Module {
 		return $contentsr;
 	}
 	
+	/**
+	* Get the cached ical file.
+	*
+	* @param string $cachefile The path to the cachefile.
+	* @return string The raw ical file.
+	*/
 	private static function get_saved_schedule($cachefile) {
 		d('Getting saved calendar contents');
 		if(!file_exists($cachefile)) {
@@ -445,7 +462,7 @@ class BellSchedule implements Module {
 					if(isset($I2_QUERY['start_date']))
 					       	$d = substr($I2_QUERY['start_date'], 6);
 					else
-					       	$d = date('j', strtotime($startd));
+					       	$d = date('j', strtotime($day));
 					if(substr($d, 0, 1) == '0')
 					       	$d = substr($d, 1);
 					d('Modified AP Day: '.$d.' exists: '.isset(self::$apExamSchedule[$d]));
@@ -508,6 +525,7 @@ class BellSchedule implements Module {
 	* Returns the default schedule for a given day
 	*
 	* @param string $type (Optional) The type of schedule whose default should be fetched
+	* @param string $day (Optional) The day to get the schedule for
 	* @return array An array containing the schedule description and periods
 	*/
 	private static function get_default_schedule($type=null, $day=null) {
