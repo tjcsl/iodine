@@ -200,14 +200,14 @@ class BellSchedule implements Module {
 	*/
 	public function display_pane($disp) {
 		global $I2_QUERY;
-		$schedule = BellSchedule::get_schedule();
+		$schedule = self::get_schedule();
 		// Week view
 		if(isset($I2_QUERY['week'])) {
 			$c = "::START::";
-			$md = isset($I2_QUERY['day']) ? date('Ymd', BellSchedule::parse_day_query()) : null;
+			$md = isset($I2_QUERY['day']) ? date('Ymd', self::parse_day_query()) : null;
 			$ws = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : null;
 			$we = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : null;
-			$schedules = BellSchedule::get_schedule_week($ws, $we, $md);
+			$schedules = self::get_schedule_week($ws, $we, $md);
 
 			$c.= "<table class='weeksched'><tr class='h' style='min-height: 40px;max-height: 40px;line-height: 25px'>";
 			foreach($schedules as $day=>$schedule) {
@@ -281,11 +281,11 @@ class BellSchedule implements Module {
 
 		// Don't let the cache get older than an hour, and update if the day the file was updated is not today
 		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile) > 600) || date('z', filemtime($cachefile)) != date('z') || isset($I2_QUERY['update_schedule'])) {
-			$contents = BellSchedule::update_schedule();
-			BellSchedule::store_schedule($cachefile, serialize($contents));
+			$contents = self::update_schedule();
+			self::store_schedule($cachefile, serialize($contents));
 		// do not update cache
 		} else if(isset($I2_QUERY['start_date'])) {
-			$contents = BellSchedule::update_schedule($I2_QUERY['start_date']);
+			$contents = self::update_schedule($I2_QUERY['start_date']);
 		} else if(isset($I2_QUERY['day'])) {
 			$cd = $I2_QUERY['day'];
 			$cb = "+";
@@ -293,8 +293,8 @@ class BellSchedule implements Module {
 			$cinc = strtotime($cb.$cd." day");
 			$cdate = date('Ymd', $cinc);
 			d($cinc.' '.$cdate);
-			$str = BellSchedule::get_saved_schedule($cachedir . 'bellschedule-ical.cache');
-			$contents = BellSchedule::update_schedule_contents($str, $cdate);
+			$str = self::get_saved_schedule($cachedir . 'bellschedule-ical.cache');
+			$contents = self::update_schedule_contents($str, $cdate);
 		} else {
 			$contents = unserialize($contents);
 		}
@@ -317,10 +317,10 @@ class BellSchedule implements Module {
 		$cachedir = i2config_get('cache_dir','/var/cache/iodine/','core');
 		$cachefile = $cachedir.'bellschedule-ical.cache';
 		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile) > 600) || date('z', filemtime($cachefile)) != date('z') || isset($I2_QUERY['update_schedule'])) {
-			$contents = BellSchedule::update_schedule();
-			BellSchedule::store_schedule($cachefile, serialize($contents));
+			$contents = self::update_schedule();
+			self::store_schedule($cachefile, serialize($contents));
 		} else {
-			$contents = BellSchedule::get_saved_schedule($cachedir . 'bellschedule-ical.cache');
+			$contents = self::get_saved_schedule($cachedir . 'bellschedule-ical.cache');
 		}
 
 		if(!isset($mid)) $mid = ((int)date('Ymd'));
@@ -328,7 +328,7 @@ class BellSchedule implements Module {
 		if(!isset($end)) $end = $mid + 2;
 		$contentsr = array();
 		for($i=$start; $i<($end); $i++) {
-			$contentsr[$i] = BellSchedule::update_schedule_contents($contents, $i);
+			$contentsr[$i] = self::update_schedule_contents($contents, $i);
 			$contentsr[$i]['day'] = $i;
 		}
 		return $contentsr;
@@ -342,7 +342,7 @@ class BellSchedule implements Module {
 	private static function get_saved_schedule($cachefile) {
 		d('Getting saved calendar contents');
 		if(!file_exists($cachefile)) {
-			$fc = BellSchedule::store_schedule($cachefile, BellSchedule::get_calendar_contents());
+			$fc = self::store_schedule($cachefile, self::get_calendar_contents());
 			return $fc;
 		}
 		$fc = file_get_contents($cachefile);
@@ -351,9 +351,9 @@ class BellSchedule implements Module {
 	private static function get_calendar_contents() {
 		$cachedir = i2config_get('cache_dir','/var/cache/iodine/','core');
 		d('Getting new calendar contents');
-		$url = BellSchedule::$url;
-		if($str = BellSchedule::curl_file_get_contents($url)) {
-			BellSchedule::store_schedule($cachedir . 'bellschedule-ical.cache', $str);
+		$url = self::$url;
+		if($str = self::curl_file_get_contents($url)) {
+			self::store_schedule($cachedir . 'bellschedule-ical.cache', $str);
 			return $str;
 		} else {
 			return false;
@@ -363,10 +363,10 @@ class BellSchedule implements Module {
 		global $I2_QUERY;
 		// TJ CalendarWiz iCal URL
 		// HTTPS because otheriwse it gets cached by the proxy
-		$url = BellSchedule::$url;
-		if($str = BellSchedule::get_calendar_contents()) { // Returns false if can't get anything
+		$url = self::$url;
+		if($str = self::get_calendar_contents()) { // Returns false if can't get anything
 
-			return BellSchedule::update_schedule_contents($str, $day);
+			return self::update_schedule_contents($str, $day);
 		} else {
 			return array('description' => 'Error: Could not load schedule', 'schedule' => '');
 		}
@@ -391,43 +391,43 @@ class BellSchedule implements Module {
 				if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'||$descriptionMatches[1]=='Winter Break'||$descriptionMatches[1]=='Spring Break'){
 					return array('description' => 'No school', 'schedule' => '');
 				} else if($descriptionMatches[1]=='Blue Day - Adjusted Schedule for Mid Term Exams'){
-					return array('description' => BellSchedule::$normalSchedules['bluemidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['bluemidterm']['schedule']);
+					return array('description' => self::$normalSchedules['bluemidterm']['description'], 'schedule' => self::$normalSchedules['bluemidterm']['schedule']);
 				} else if($descriptionMatches[1]=='Red Day - Adjusted Schedule for Mid Term Exams'){
 					if(date('w')=='5'){
-						return array('description' => BellSchedule::$normalSchedules['red2midterm']['description'], 'schedule' => BellSchedule::$normalSchedules['red2midterm']['schedule']);
+						return array('description' => self::$normalSchedules['red2midterm']['description'], 'schedule' => self::$normalSchedules['red2midterm']['schedule']);
 					} else {
-						return array('description' => BellSchedule::$normalSchedules['red1midterm']['description'], 'schedule' => BellSchedule::$normalSchedules['red1midterm']['schedule']);
+						return array('description' => self::$normalSchedules['red1midterm']['description'], 'schedule' => self::$normalSchedules['red1midterm']['schedule']);
 					}
 				} else if($descriptionMatches[1]=='AMC Blue Day'){
 					return array('description' => 'AMC Blue Day', 'schedule' => 'AMC/Study Hall: 8:30 - 10:00<br />Period 1: 10:10 - 11:20<br />Lunch: 11:20 - 12:00<br />Period 2: 12:00 - 1:10<br />Period 3: 1:20 - 2:30<br />Period 4: 2:40 - 3:50');
 
 				}else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
-					return array('description' => BellSchedule::$normalSchedules['jlcmidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['jlcmidterm']['schedule']);
+					return array('description' => self::$normalSchedules['jlcmidterm']['description'], 'schedule' => self::$normalSchedules['jlcmidterm']['schedule']);
 				/* 2013 AP EXAMS */
-				}else if(($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day' || $descriptionMatches[1] == 'Modified Anchor Day') && date('Y M', strtotime($startd)) == '2013 May' && isset(BellSchedule::$apExamSchedule[((int)date('j',strtotime($startd)))]) && ((int)date('j',strtotime($dateoffset.' days')))>=6) {
+				}else if(($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day' || $descriptionMatches[1] == 'Modified Anchor Day') && date('Y M', strtotime($startd)) == '2013 May' && isset(self::$apExamSchedule[((int)date('j',strtotime($startd)))]) && ((int)date('j',strtotime($dateoffset.' days')))>=6) {
 
 					if(isset($I2_QUERY['start_date'])) $d = substr($I2_QUERY['start_date'], 6);
 					else $d = date('j', strtotime($startd));
 					if(substr($d, 0, 1) == '0') $d = substr($d, 1);
-					d('Modified AP Day: '.$d.' exists: '.isset(BellSchedule::$apExamSchedule[$d]));
-					if(isset(BellSchedule::$apExamSchedule[$d])) {
-						return array('description' => BellSchedule::$apExamSchedule[$d]['description'], 'schedule' => BellSchedule::$apExamSchedule[$d]['schedule'], 'modified' => true);
+					d('Modified AP Day: '.$d.' exists: '.isset(self::$apExamSchedule[$d]));
+					if(isset(self::$apExamSchedule[$d])) {
+						return array('description' => self::$apExamSchedule[$d]['description'], 'schedule' => self::$apExamSchedule[$d]['schedule'], 'modified' => true);
 					} else {
 						d('Using default schedule--may not be correct!');
 
-						return BellSchedule::get_default_schedule(null, $dwk);
+						return self::get_default_schedule(null, $dwk);
 					}
 				}else{
 					d('no descriptionMatches');
-					return array('description' => $descriptionMatches[1], 'schedule' => BellSchedule::$normalSchedules[strtolower(str_replace(array(' Day',' '),'',$descriptionMatches[1]))]['schedule']);
+					return array('description' => $descriptionMatches[1], 'schedule' => self::$normalSchedules[strtolower(str_replace(array(' Day',' '),'',$descriptionMatches[1]))]['schedule']);
 				}
 			} else { // If no day type is set, use the default schedule for that day
 				d('No day type set');
-				return BellSchedule::get_default_schedule(null, $dwk);
+				return self::get_default_schedule(null, $dwk);
 			}
 		} else { // If no schedule data, use the default schedule for that type of day
 				d('No schedule data'.$dwk);
-				return BellSchedule::get_default_schedule(null, $dwk);
+				return self::get_default_schedule(null, $dwk);
 		}
 	}
 	private static function curl_file_get_contents($url) {
@@ -462,22 +462,22 @@ class BellSchedule implements Module {
 	*/
 	private static function get_default_schedule($type=null, $day=null) {
 		global $I2_QUERY;d($day);
-		if(isset($type) && array_key_exists($type, BellSchedule::$normalSchedules)) {
-			return BellSchedule::$normalSchedules[$type];
+		if(isset($type) && array_key_exists($type, self::$normalSchedules)) {
+			return self::$normalSchedules[$type];
 		} else {
 			if(isset($I2_QUERY['day'])&&$day==null) {
-				$day = ((int)date('N', BellSchedule::parse_day_query()));
+				$day = ((int)date('N', self::parse_day_query()));
 			}
 			if(!isset($day)||$day==null) $day = date('N');
 			d('Default: '.$day);
 			if($day == 1) {
-				return BellSchedule::$normalSchedules['anchor'];
+				return self::$normalSchedules['anchor'];
 			} else if($day == 2) {
-				return BellSchedule::$normalSchedules['blue'];
+				return self::$normalSchedules['blue'];
 			} else if($day == 3 || $day == 5) {
-				return BellSchedule::$normalSchedules['red'];
+				return self::$normalSchedules['red'];
 			} else if($day == 4) {
-				return BellSchedule::$normalSchedules['jlcblue'];
+				return self::$normalSchedules['jlcblue'];
 			} else {
 				return array('description' => 'No school', 'schedule' => '');
 			}
