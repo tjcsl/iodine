@@ -12,26 +12,36 @@ body.login #logo {
 .login_msg {
 	display: inline-block;
 }
+
+#subPane {
+	padding-left:0;
+	padding-right:0;
+}
+
 #subPane.exp {
 	width: 80%;
 	min-width: 900px;
 	width: calc(100% - 264px);
+	padding-left: 32px;
+	padding-right:32px;
 }
 #sched_tools {
 	position: absolute;
-	width: 100%;
-	top: -10px;
-	left: 0px
+	width:100%;
+	top: -4px;
+	left: 0px;
 }
 #week_b {
 	float: left;
-	z-index: 999
+	z-index: 999;
+	margin-left:10px;
 }
 #week_f {
 	float: right;
+	margin-right:10px;
 }
 #week_today, #week_click {
-	text-align: center
+	text-align: center;
 }
 #schedule_week {
 	width: auto;
@@ -59,6 +69,12 @@ body.login #logo {
 #subPane #schedule_week table {
 	width: 100%;
 }
+
+#schedule_header {
+	text-align: center;
+	width:100%;
+}
+
 .h, .d, .s, #subPane #schedule_week table td {
 	font-family: "Open Sans", Arial, Helvetica, Roboto, "Droid Sans", sans-serif;
 	font-size: 100%;
@@ -81,6 +97,6 @@ body.login #logo {
 		width: 100% !important;
 	}
 	#sched_tools {
-		top: 390px;
+		top: 420px;
 	}
 }

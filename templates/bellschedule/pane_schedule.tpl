@@ -20,11 +20,11 @@
 		<button id="week_today" onclick="window.location='?day=0'">View Today</button>
 	[</if>]
 		<button id="week_click" onclick="week_click();">View Week</button>
-	
+
 	<button id="week_f" onclick="window.location='?day=[<$schedule.nday>]'">==&gt;</button>
 </p>
 <div id="schedule">
-	
+
 	<h2>[<$schedule.header>]</h2>
 	<p class='desc[<if isset($schedule.modified)>] desc-modified[</if>]'>[<$schedule.description>]</p>
 	<div style='height: 160px;float: center'>[<$schedule.schedule>]</div>

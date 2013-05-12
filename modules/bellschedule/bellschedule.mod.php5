@@ -14,7 +14,7 @@
 * @subpackage BellSchedule
 */
 class BellSchedule implements Module {
-	
+
 	/**
 	* The default schedules
 	*/
@@ -104,6 +104,26 @@ class BellSchedule implements Module {
 		17 => array(
 			'description' => 'Modified Red Day',
 			'schedule' => 'Period 5: 8:30 - 10:05<br />Period 6: 10:15 - 11:45<br />Lunch: 11:45 - 12:30<br />Period 7: 12:30 - 2:05<br />Period 8A: 2:20 - 3:00<br />Period 8B: 3:10 - 3:50'
+		),
+		20 => array(
+			'description' => 'Modified Anchor Day',
+			'schedule' => 'Period 1: 8:30 - 9:20<br />Period 2: 9:30 - 10:20<br />Period 3: 10:30 - 11:20<br />Period 4: 11:30 - 12:20<br />Lunch: 12:20 - 1:00<br />Period 5: 1:00 - 1:50<br />Period 6: 2:00 - 2:50<br />Period 7: 3:00 - 3:50'
+		),
+		21 => array(
+			'description' => 'Modified Blue Day',
+			'schedule' => 'SOL: 8:30 - 10:40<br />Period 1: 10:50 - 11:50<br />Lunch: 11:50 - 12:30<br />Period 2: 12:30 - 1:30<br />Period 3: 1:40 - 2:40<br />Period 4: 2:50 - 3:50'
+		),
+		22 => array(
+			'description' => 'Modified Red Day',
+			'schedule' => 'SOL: 8:30 - 10:40<br />Period 5: 10:50 - 12:10<br />Lunch: 12:10 - 1:00<br />Period 6: 1:00 - 2:20<br />Period 7: 2:20 - 3:50'
+		),
+		23 => array(
+			'description' => 'Modified Blue Day',
+			'schedule' => 'SOL: 8:30 - 10:40<br />Period 1: 10:50 - 11:50<br />Lunch: 11:50 - 12:30<br />Period 2: 12:30 - 1:30<br />Period 3: 1:40 - 2:40<br />Period 4: 2:50 - 3:50'
+		),
+		24 => array(
+			'description' => 'Modified Red Day',
+			'schedule' => 'SOL: 8:30 - 10:40<br />Period 5: 10:50 - 12:10<br />Lunch: 12:10 - 1:00<br />Period 6: 1:00 - 2:20<br />Period 7: 2:20 - 3:50'
 		)
 	);
 
@@ -116,11 +136,11 @@ class BellSchedule implements Module {
 	* Template arguments for the specified action
 	*/
 	private $template_args = array();
-	
+
 	public function get_name() {
 		return "Bell Schedule";
 	}
-	
+
 	/**
 	* Unused; Not supported for this module.
 	*/
@@ -161,7 +181,7 @@ class BellSchedule implements Module {
 	function api($disp) {
 		return false;
 	}
-	
+
 	/**
 	* We don't really support this yet, but make it look like we do.
 	*/
@@ -247,7 +267,7 @@ class BellSchedule implements Module {
 	public function display_box($disp) {
 		return $this->display_pane($disp);
 	}
-	
+
 	/**
 	* Get the schedule from the TJ CalendarWiz iCal feed
 	*
@@ -258,9 +278,9 @@ class BellSchedule implements Module {
 		// Get the cache file location
 		$cachedir = i2config_get('cache_dir','/var/cache/iodine/','core');
 		$cachefile = $cachedir . 'bellschedule.cache';
-		
+
 		// Don't let the cache get older than an hour, and update if the day the file was updated is not today
-		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile) > 600) || date('z', filemtime($cachefile)) != date('z') || isset($I2_QUERY['update_schedule'])) {
+		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile) > 0) || date('z', filemtime($cachefile)) != date('z') || isset($I2_QUERY['update_schedule'])) {
 			$contents = BellSchedule::update_schedule();
 			BellSchedule::store_schedule($cachefile, serialize($contents));
 		// do not update cache
@@ -352,18 +372,20 @@ class BellSchedule implements Module {
 	}
 	private static function update_schedule_contents($str, $day=null) {
 		global $I2_QUERY;
+		if(isset($I2_QUERY['day'])) $dateoffset = $I2_QUERY['day'];
+		else $dateoffset = 0;
 		if(isset($day)) $startd = $day;
-		else $startd = date('Ymd');
+		else $startd = date('Ymd',strtotime($dateoffset.' days'));
 		$starter = 'DTSTART;VALUE=DATE:'. $startd;
 		$ender = 'END:VEVENT';
-		$dwk = date('N', strtotime($day));
+		$dwk = date('N', strtotime($startd));
 		//Find events on the current day that indicate a schedule type
 		$regex = '/'.$starter.'((?:(?!END:VEVENT).)*?)CATEGORIES:(Anchor Day|Blue Day|Red Day|JLC Blue Day|Special Schedule)(.*?)'.$ender.'/s';
 		// Is any type of schedule set?
 		if(preg_match($regex, $str, $dayTypeMatches) > 0) {
 			// Does it have a day type described?
-			if(preg_match('/SUMMARY:.(Blue Day - Adjusted Schedule for Mid Term Exams|Red Day - Adjusted Schedule for Mid Term Exams|JLC Blue Day - Adjusted Schedule for Mid Term Exams|AMC Blue Day|Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break|Modified Blue Day|Modified Red Day)/', $dayTypeMatches[0], $descriptionMatches) > 0||1!=1) {
-				d($descriptionMatches[1]);
+			if(preg_match('/SUMMARY:.(Blue Day - Adjusted Schedule for Mid Term Exams|Red Day - Adjusted Schedule for Mid Term Exams|JLC Blue Day - Adjusted Schedule for Mid Term Exams|AMC Blue Day|Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break|Modified Blue Day|Modified Red Day|Modified Anchor Day)/', $dayTypeMatches[0], $descriptionMatches) > 0) {
+				d("DM: ".$descriptionMatches[1]);
 				if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'||$descriptionMatches[1]=='Winter Break'||$descriptionMatches[1]=='Spring Break'){
 					return array('description' => 'No school', 'schedule' => '');
 				} else if($descriptionMatches[1]=='Blue Day - Adjusted Schedule for Mid Term Exams'){
@@ -376,11 +398,12 @@ class BellSchedule implements Module {
 					}
 				} else if($descriptionMatches[1]=='AMC Blue Day'){
 					return array('description' => 'AMC Blue Day', 'schedule' => 'AMC/Study Hall: 8:30 - 10:00<br />Period 1: 10:10 - 11:20<br />Lunch: 11:20 - 12:00<br />Period 2: 12:00 - 1:10<br />Period 3: 1:20 - 2:30<br />Period 4: 2:40 - 3:50');
-				
+
 				}else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
 					return array('description' => BellSchedule::$normalSchedules['jlcmidterm']['description'], 'schedule' => BellSchedule::$normalSchedules['jlcmidterm']['schedule']);
 				/* 2013 AP EXAMS */
-				}else if(($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day') && date('Y M') == '2013 May' && isset(BellSchedule::$apExamSchedule[((int)date('j'))]) && ((int)date('j'))>6) {
+				}else if(($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day') && date('Y M', strtotime($startd)) == '2013 May' && isset(BellSchedule::$apExamSchedule[((int)date('j',strtotime($startd)))]) && ((int)date('j',strtotime($dateoffset.' days')))>=6) {
+
 					if(isset($I2_QUERY['start_date'])) $d = substr($I2_QUERY['start_date'], 6);
 					else $d = date('j', strtotime($startd));
 					if(substr($d, 0, 1) == '0') $d = substr($d, 1);
@@ -411,11 +434,11 @@ class BellSchedule implements Module {
 		curl_setopt($c, CURLOPT_URL, $url);
 		$contents = curl_exec($c);
 		curl_close($c);
-		
+
 		if ($contents) return $contents;
 		else return FALSE;
 	}
-	
+
 	public static function parse_schedule_day($desc) {
 		if(strpos($desc, "Blue") !==false) {
 			return 'blue';
@@ -458,7 +481,7 @@ class BellSchedule implements Module {
 			}
 		}
 	}
-	
+
 	function is_intrabox() {
 		return true;
 	}

@@ -24,7 +24,7 @@ class Auth {
 	* Authentication object used.
 	*/
 	private $auth;
-	
+
 	/**
 	* Location of credentials cache
 	*/
@@ -38,11 +38,11 @@ class Auth {
 	public $template_args = array();
 	/**
 	* The Auth class constructor.
-	* 
+	*
 	* This constructor determines if a user is logged in, and if not,
 	* displays the login page, and checks the username and password.
 	*/
-	public function __construct() {	
+	public function __construct() {
 		global $I2_ARGS;
 		$this->encryption = i2config_get('pass_encrypt',1,'core');
 
@@ -70,7 +70,7 @@ class Auth {
 		if( isset($I2_ARGS[0]) && $I2_ARGS[0] == 'feeds' ) {
 			return true;
 		}
-		
+
 		if( !$this->is_authenticated() && !$this->login() ) {
 			die();
 		}
@@ -113,8 +113,8 @@ class Auth {
 			/*
 			 ** Iodine proprietary authentication (of all kinds)
 			 */
-			//if (	isset($_SESSION['i2_uid']) 
-			if (	isset($_SESSION['i2_username']) 
+			//if (	isset($_SESSION['i2_uid'])
+			if (	isset($_SESSION['i2_username'])
 					&& isset($_SESSION['i2_login_time'])) {
 
 				$this->auth_type = $_SESSION['auth_type'];
@@ -362,8 +362,8 @@ class Auth {
 			// Show the login box
 			$template_args['failed'] = $modauth_loginfailed;
 			$template_args['uname'] = $uname;
-			
-			
+
+
 			if(isset($modauth_err)) {
 				d($modauth_err, 5);
 				$template_args['err'] = $modauth_err;
@@ -385,7 +385,7 @@ class Auth {
 			$template_args['posts']=$str;
 
 			$disp = new Display('login');
-			
+
 			$disp->smarty_assign('backgrounds', self::get_background_images());
 			if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='api') {
 				$I2_API->init();
@@ -418,7 +418,7 @@ class Auth {
 			$image = $url_prefix.$I2_QUERY['background'];
 			$_COOKIE['background'] = $I2_QUERY['background'];
 			setcookie("background", $I2_QUERY['background'], time()+60*60*24*30);
-		} 
+		}
 		if(isset($_COOKIE['background']) && !strstr($_COOKIE['background'], "..") && $_COOKIE['background'] !== 'random') {
 			d("Custom background loaded from cookie: ".$_COOKIE['background'], 8);
 			$image = $url_prefix.$_COOKIE['background'];
@@ -456,7 +456,7 @@ class Auth {
 	private function init_schedule() {
 		global $I2_QUERY, $disp, $template_args;
 		// Schedule data
-		
+
 		// If it's past 5PM, show tomorrow's date
 		if(((int)date('h')) > 4 && date('a') == 'pm') {
 			$after_5pm = true;
@@ -533,7 +533,7 @@ class Auth {
 		if(isset($I2_QUERY['tomorrow'])) {
 			$schedule['yday'] = '0&today';
 			$schedule['nday'] = 1;
-			$schedule['header'] = "<span style='white-space: nowrap'>Tomorrow's Schedule</span>";
+			$schedule['header'] = "Tomorrow's Schedule";
 		}
 
 		if(isset($after_5pm) && $after_5pm) {
@@ -577,7 +577,7 @@ class Auth {
 			}
 		return $images;
 	}
-	
+
 	/**
 	* Encrypts a string with the given key.
 	*
@@ -595,7 +595,7 @@ class Auth {
 		mcrypt_generic_deinit($td);
 		mcrypt_module_close($td);
 		return array($ret,$key,$iv);
-	
+
 	}
 
 	/**
@@ -682,7 +682,7 @@ class Auth {
 			}
 		}
 	}
-	
+
 	/**
 	 * Log the login (attempt)
 	 *
@@ -710,7 +710,7 @@ class Auth {
 
 	/**
 	 * Get the user's active kerberos realm.
-	 * When using multiple realms in the config, this lets afs know 
+	 * When using multiple realms in the config, this lets afs know
 	 * which you want to check against for login.
 	 *
 	 * $return string Realm name, or FALSE on failure.

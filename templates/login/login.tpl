@@ -1,13 +1,13 @@
 <!doctype html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="Description" content="The TJ Intranet allows students at the Thomas Jefferson High School for Science and Technology to sign up for activities, access their school files and perform other tasks." />
-	
+
 	<!-- zoom in mobile browsers -->
 	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=1">
 	<title>TJHSST Intranet2: Login</title>
-	
+
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-ui-light.css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-login-default.css" />
@@ -18,9 +18,9 @@
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js"></script>
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/logins/schedule.js"></script>
 	<script type="text/javascript">
-	week_base_url = "news";
-	day_base_url = "news";
-	week_text = "[<if $has_custom_day>]View [<$schedule.date>][<else>]View Today[</if>]";
+	week_base_url = "";
+	day_base_url = "";
+	week_text = "Back"; //"[<if $has_custom_day>]View [<$schedule.date>][<else>]View Today[</if>]";
 	</script>
 	<script type="text/javascript">
 	//Set some variables so that any script can use them.
@@ -31,7 +31,7 @@
 			bid = window.location.search.split('bid=')[1];
 		} catch(e) {}
 		if(window.location.search.indexOf('bid=')==-1) {
-			try { 
+			try {
 				bid = (function(){for(i in j=(c=document.cookie).split(';')) if((k=j[i].split('='))[0]=='background'&&!!k[1]) for(l=0;l<(m=document.getElementsByTagName('optgroup')[1].children).length;l++) if(unescape(m[l].value)==unescape(k[1])) return m[l].id.split('bg')[1];})();
 			} catch(e) {}
 		}
@@ -57,7 +57,7 @@
 <body style="background-image: url('[<$I2_ROOT>][<$bg|escape>]')" onLoad="document.getElementById('login_username').focus()" class="login">
 	<div class="pane" id="mainPane">
 		<a id="logo" href="">Intranet</a>
-		
+
 		[<if isset($err)>]
 		<div class="login_msg" id="login_failed">
 			[<$err>]<br />
@@ -79,10 +79,10 @@
 			Please type your username and password to log in.
 		</div>
 		[</if>]
-		
+
 		<br />
 		<br />
-		
+
 		<form name="login_form" action="[<$I2_SELF|escape>]" method="post">
 			[<$posts>]
 			<label for="login_username">Username</label>
@@ -96,10 +96,10 @@
 			<br />
 			<button type="submit">Login</button>
 		</form>
-		
+
 		<br />
 		<br />
-		
+
 		<div style="text-align:center;">
 			<div id="verisign_box" class="box" title="Click to Verify - This site chose VeriSign SSL for secure confidential communications.">
 				<script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=iodine.tjhsst.edu&amp;size=S&amp;use_flash=NO&amp;use_transparent=YES&amp;lang=en"></script><br/>
@@ -110,22 +110,22 @@
 		<p id='sched_tools'>
 			<button id="week_b" onclick="window.location=day_base_url+'?day=[<$schedule.yday>]'" style=''>←</button>
 			[<if $has_custom_day>]
-				<button id="week_today" onclick="window.location=day_base_url+'?day=0'">View Today</button>
+				<button id="week_today" onclick="window.location=day_base_url+'?day=0'">Today</button>
 			[<elseif isset($has_custom_day_tom) and $has_custom_day_tom>]
-				<button id="week_today" onclick="window.location=day_base_url+'?day=0&tomorrow'">View Tomorrow</button>
+				<button id="week_today" onclick="window.location=day_base_url+'?day=0&tomorrow'">Tomorrow</button>
 			[</if>]
-				<button id="week_click" onclick="week_click();">View Week</button>
-			
+				<button id="week_click" onclick="week_click();">Full Week</button>
+
 			<button id="week_f" onclick="window.location=day_base_url+'?day=[<$schedule.nday>]'">→</button>
 		</p>
 		<div id="schedule">
-			
-			<h2>[<$schedule.header>]</h2>
+
+			<h2 id="schedule_header">[<$schedule.header>]</h2>
 			<p class='desc[<if isset($schedule.schedday)>] schedule-[<$schedule.schedday>][</if>]'>[<$schedule.description>]</p>
 			<div style='height: 160px;float: center'>[<$schedule.schedule>]</div>
-		
+
 		</div>
-		
+
 		<div id="schedule_week">
 			<p>One moment please..</p>
 			<p>If the page doesn't load, <a href='http://postman.tjhsst.edu'>click to view the main TJ calendar.</a></p>
@@ -151,7 +151,7 @@
 						[<assign var=name value="."|explode:$b>]
 						<option value="[<$b|escape>]" id="bg[<$num>]">[<$name[0]|escape>]</option>
 					[</foreach>]
-					
+
 				</optgroup>
 			</select>
 			<input type="hidden" name="bid" value="0">
@@ -174,12 +174,12 @@
 			var chromeBox = document.createElement("div");
 			chromeBox.className = "box";
 			chromeBox.style.padding = "4px";
-			
+
 			chromeBox.innerHTML = "<img src=\"[<$I2_ROOT>]www/pics/chrome_icon_42.png\" style=\"float:left; margin-right:4px;\" alt=\"Google Chrome logo\"/>Install the TJ Intranet app for Chrome";
 
 			chromeLink.appendChild(chromeBox);
 			document.getElementById("mainPane").appendChild(chromeLink);
 		}
-		
+
 	</script-->
-	
+
