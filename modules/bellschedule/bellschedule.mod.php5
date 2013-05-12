@@ -251,14 +251,12 @@ class BellSchedule implements Module {
 		}
 		$date = self::parse_day_query();
 		$template_args['date'] = date('l, F j', $date);
-		$template_args['header'] = "Today's Schedule<br />".$template_args['date'];
-
+		$template_args['header'] = "Today's Schedule<br />";
 		$template_args['schedule'] = self::get_schedule();
 
 		if(isset($I2_QUERY['day'])) {
-			if($template_args['date'] !== date('l, F j')) {
-				$template_args['header'] = "Schedule for<br />".$template_args['date'];
-			}
+			if($I2_QUERY['day'] != 0)
+				$template_args['header'] = "Schedule for<br />";
 			$template_args['yday'] = intval($I2_QUERY['day'])-1;
 			$template_args['nday'] = intval($I2_QUERY['day'])+1;
 			$template_args['has_custom_day'] = ($I2_QUERY['day'] !== "0");
@@ -267,6 +265,7 @@ class BellSchedule implements Module {
 			$template_args['nday'] = 1;
 			$template_args['has_custom_day'] = false;
 		}
+		$template_args['header'] .= $template_args['date'];
 		$disp->disp('pane_schedule.tpl', $template_args);
 	}
 
