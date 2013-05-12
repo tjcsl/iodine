@@ -33,5 +33,5 @@
 
 <div id="schedule_week">
 	<p>One moment please..</p>
-	<p>If the page doesn't load, <a href='http://postman.tjhsst.edu'>click to view the main TJ calendar.</a></p>
+	<p>If the page doesn't load, <a href='http://www.calendarwiz.com/calendars/calendar.php?crd=tjhsstcalendar'>click to view the main TJ calendar.</a></p>
 </div>

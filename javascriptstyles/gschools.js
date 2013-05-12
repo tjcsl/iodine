@@ -15,7 +15,7 @@ function page_init() {
 	/* Begin top header */
 	var topheader = document.createElement("div");
 	topheader.className = "gtopbar";
-	topheader.innerHTML = "&nbsp;&nbsp;<b>Schools</b>&nbsp;&nbsp;<a href='http://postman.tjhsst.edu' target='_blank'>Calendar</a>&nbsp;&nbsp;<a href='[<$I2_ROOT>]filecenter'>Documents</a>&nbsp;&nbsp;<a href='https://webmail.tjhsst.edu' target='_blank'>Mail</a>&nbsp;&nbsp;<a href='http://publications.tjhsst.edu/tjtoday' target='_blank'>News</a>&nbsp;&nbsp;<a href='http://tjhsst.edu' target='_blank'>Web</a>";
+	topheader.innerHTML = "&nbsp;&nbsp;<b>Schools</b>&nbsp;&nbsp;<a href='http://www.calendarwiz.com/calendars/calendar.php?crd=tjhsstcalendar' target='_blank'>Calendar</a>&nbsp;&nbsp;<a href='[<$I2_ROOT>]filecenter'>Documents</a>&nbsp;&nbsp;<a href='https://webmail.tjhsst.edu' target='_blank'>Mail</a>&nbsp;&nbsp;<a href='http://publications.tjhsst.edu/tjtoday' target='_blank'>News</a>&nbsp;&nbsp;<a href='http://tjhsst.edu' target='_blank'>Web</a>";
 	document.getElementsByTagName("body")[0].appendChild(topheader);
 	/* End top header */
 	/* Begin side links */

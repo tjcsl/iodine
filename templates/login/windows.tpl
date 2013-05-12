@@ -165,7 +165,7 @@ IE7_PNG_SUFFIX = ".png";
 		</table>
 	</form>
 <!--	<div style="text-align: right">
-		<a href="http://www.tjhsst.edu/">TJHSST</a> &ndash; <a href="https://webmail.tjhsst.edu/">Mail</a> &ndash; <a href="http://postman.tjhsst.edu/">Postman (Calendar)</a>
+		<a href="http://www.tjhsst.edu/">TJHSST</a> &ndash; <a href="https://webmail.tjhsst.edu/">Mail</a> &ndash; <a href="http://www.calendarwiz.com/calendars/calendar.php?crd=tjhsstcalendar">Calendar</a>
 	</div>-->
 </div>
 <div id="verisign_box" class="box">

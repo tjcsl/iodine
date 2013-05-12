@@ -293,7 +293,7 @@ class BellSchedule implements Module {
 			$cinc = strtotime($cb.$cd." day");
 			$cdate = date('Ymd', $cinc);
 			d($cinc.' '.$cdate);
-			$str = BellSchedule::get_saved_schedule($cachedir . 'bellschedule-save.cache');
+			$str = BellSchedule::get_saved_schedule($cachedir . 'bellschedule-ical.cache');
 			$contents = BellSchedule::update_schedule_contents($str, $cdate);
 		} else {
 			$contents = unserialize($contents);
@@ -315,12 +315,12 @@ class BellSchedule implements Module {
 	*/
 	public static function get_schedule_week($start=null, $end=null, $mid=null) {
 		$cachedir = i2config_get('cache_dir','/var/cache/iodine/','core');
-		$cachefile = $cachedir.'bellschedule-save.cache';
+		$cachefile = $cachedir.'bellschedule-ical.cache';
 		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile) > 600) || date('z', filemtime($cachefile)) != date('z') || isset($I2_QUERY['update_schedule'])) {
 			$contents = BellSchedule::update_schedule();
 			BellSchedule::store_schedule($cachefile, serialize($contents));
 		} else {
-			$contents = BellSchedule::get_saved_schedule($cachedir . 'bellschedule-save.cache');
+			$contents = BellSchedule::get_saved_schedule($cachedir . 'bellschedule-ical.cache');
 		}
 
 		if(!isset($mid)) $mid = ((int)date('Ymd'));
@@ -353,7 +353,7 @@ class BellSchedule implements Module {
 		d('Getting new calendar contents');
 		$url = BellSchedule::$url;
 		if($str = BellSchedule::curl_file_get_contents($url)) {
-			BellSchedule::store_schedule($cachedir . 'bellschedule-save.cache', $str);
+			BellSchedule::store_schedule($cachedir . 'bellschedule-ical.cache', $str);
 			return $str;
 		} else {
 			return false;
