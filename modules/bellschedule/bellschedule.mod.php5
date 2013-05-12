@@ -108,11 +108,11 @@ class BellSchedule implements Module {
 		],
 		13 => [
 			'description' => 'Modified Red Day',
-			'schedule' => 'Period 5: 8:30 - 10:10<br />Period 6: 10:20 - 12:00<br />Period 7: 12:45 - 2:15<br />Period 8A: 2:30 - 3:05<br />Period 8B: 3:15 - 3:50'
+			'schedule' => 'Period 5: 8:30 - 10:10<br />Period 6: 10:20 - 12:00<br />Lunch: 12:00 - 12:45<br />Period 7: 12:45 - 2:15<br />Period 8A: 2:30 - 3:05<br />Period 8B: 3:15 - 3:50'
 		],
 		14 => [
 			'description' => 'Modified Blue Day',
-			'schedule' => 'Period 1: 8:30 - 10:05<br />Period 2: 10:15 - 11:45<br />Lunch: 11:15 - 12:30<br />Period 3: 12:30 - 2:05<br />Period 4: 2:20 - 3:50'
+			'schedule' => 'Period 1: 8:30 - 10:05<br />Period 2: 10:15 - 11:45<br />Lunch: 11:45 - 12:30<br />Period 3: 12:30 - 2:05<br />Period 4: 2:20 - 3:50'
 		],
 		15 => [
 			'description' => 'Modified Red Day',
