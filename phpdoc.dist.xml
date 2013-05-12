@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <phpdoc>
-  <parser>
-    <target>/var/www/phpdoc/</target>
-    <extensions>
-      <extension>php</extension>
-      <extension>php5</extension>
-    </extensions>
-  </parser>
-  <transformer>
-    <target>/var/www/phpdoc/</target>
-  </transformer>
-  <transformations>
-    <template name="responsive"/>
-  </transformations>
-  <files>
-    <directory>.</directory>
-    <ignore>config.ini.php5</ignore>
-  </files>
+	<parser>
+		<target>/var/www/phpdoc/</target>
+		<extensions>
+			<extension>php</extension>
+			<extension>php5</extension>
+		</extensions>
+	</parser>
+	<transformer>
+		<target>/var/www/phpdoc/</target>
+	</transformer>
+	<transformations>
+		<template name="responsive"/>
+	</transformations>
+	<files>
+		<directory>.</directory>
+		<ignore>config.ini.php5</ignore>
+	</files>
 </phpdoc>
