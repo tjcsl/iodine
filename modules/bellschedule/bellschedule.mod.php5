@@ -206,7 +206,7 @@ class BellSchedule implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	public function init_pane() {
+	function init_pane() {
 		return "Bell Schedule";
 	}
 
@@ -214,7 +214,7 @@ class BellSchedule implements Module {
 	* Required by the {@link Module} interface.
 	* @param Display $disp The Display object to use for output.
 	*/
-	public function display_pane($disp) {
+	function display_pane($disp) {
 		global $I2_QUERY;
 		// Week view
 		// FIXME: week is badly broken
@@ -273,7 +273,7 @@ class BellSchedule implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	public function init_box() {
+	function init_box() {
 		return "Bell Schedule";
 	}
 
@@ -281,9 +281,11 @@ class BellSchedule implements Module {
 	* Required by the {@link Module} interface.
 	* @param Display $disp The Display object to use for output.
 	*/
-	public function display_box($disp) {
+	function display_box($disp) {
 		return $this->display_pane($disp);
 	}
+
+	// Public helper methods
 
 	/**
 	* Get the schedule from the TJ CalendarWiz iCal feed
@@ -325,6 +327,25 @@ class BellSchedule implements Module {
 	}
 
 	/**
+	* Converts a text description to the correct array index.
+	*
+	* @param string $desc The schedule description
+	* @return string The schedule array index
+	*/
+	public static function parse_schedule_day($desc) {
+		if(strpos($desc, "Blue"))
+			return 'blue';
+		else if(strpos($desc, "Red"))
+			return 'red';
+		else if(strpos($desc, "Anchor"))
+			return 'anchor';
+		else if(strpos($desc, "No school"))
+			return 'noschool';
+		else
+			return 'other';
+	}
+
+	/**
 	* Get a week view
 	*
 	* @param string $start (Optional) The start of the week
@@ -355,7 +376,9 @@ class BellSchedule implements Module {
 		}
 		return $contentsr;
 	}
-	
+
+	// Private helper methods
+
 	/**
 	* Get the cached ical file.
 	*
@@ -486,25 +509,6 @@ class BellSchedule implements Module {
 	}
 
 	/**
-	* Converts a text description to the correct array index.
-	*
-	* @param string $desc The schedule description
-	* @return string The schedule array index
-	*/
-	public static function parse_schedule_day($desc) {
-		if(strpos($desc, "Blue"))
-			return 'blue';
-		else if(strpos($desc, "Red"))
-			return 'red';
-		else if(strpos($desc, "Anchor"))
-			return 'anchor';
-		else if(strpos($desc, "No school"))
-			return 'noschool';
-		else
-			return 'other';
-	}
-
-	/**
 	* Returns the default schedule for a given day
 	*
 	* @param string $type (Optional) The type of schedule whose default should be fetched
@@ -512,15 +516,10 @@ class BellSchedule implements Module {
 	* @return array An array containing the schedule description and periods
 	*/
 	private static function get_default_schedule($type=null, $day=null) {
-		global $I2_QUERY;
 		if(isset($type) && array_key_exists($type, self::$normalSchedules)) {
 			return self::$normalSchedules[$type];
 		} else {
-			if(isset($I2_QUERY['day'])&&$day==null) {
-				$day = date('N', self::parse_day_query());
-			}
-
-			$day = isset($day) ? $day : date('N');
+			$day = isset($day) ? $day : date('N',self::parse_day_query());
 			d('Default: ' . $day);
 			switch($day) {
 			case 1:
