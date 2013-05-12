@@ -42,7 +42,6 @@ week_show = function() {
 	m = new Date();
 	m.setDate(m.getDate() + dayoffset);
 	m = getMonday(m);
-	console.log(m);
 	dy = m.getFullYear();
 	dm = m.getMonth()+1;
 	if(dm <= 9) dm = '0'+dm;
@@ -53,7 +52,6 @@ week_show = function() {
 
 	u+= '&start='+(d);
 	u+= '&end='+(d+5);
-	console.log(u);
 	$.get(u, {}, function(d) {
 		//try {
 			window.getd = d;

@@ -280,7 +280,7 @@ class BellSchedule implements Module {
 		$cachefile = $cachedir . 'bellschedule.cache';
 
 		// Don't let the cache get older than an hour, and update if the day the file was updated is not today
-		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile) > 0) || date('z', filemtime($cachefile)) != date('z') || isset($I2_QUERY['update_schedule'])) {
+		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile) > 600) || date('z', filemtime($cachefile)) != date('z') || isset($I2_QUERY['update_schedule'])) {
 			$contents = BellSchedule::update_schedule();
 			BellSchedule::store_schedule($cachefile, serialize($contents));
 		// do not update cache
