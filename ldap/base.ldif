@@ -44,10 +44,11 @@ memberURL: ldap:///ou=people,dc=tjhsst,dc=edu??one?objectclass=tjhsstTeacher
 description: Teachers
 
 dn: iodineUid=admin,ou=people,dc=tjhsst,dc=edu
-objectClass: fakeUser
+objectClass: simpleUser
 iodineUid: admin
 givenName: Admin
 cn: Admin
+sn: Admin
 iodineUidNumber: 9998
 style: default
 startPage: dataimport
