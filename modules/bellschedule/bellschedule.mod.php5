@@ -247,29 +247,21 @@ class BellSchedule implements Module {
 			$c.="::END::";
 			$disp = new Display('bellschedule');
 			$disp->raw_display($c);
-			exit();
 			return FALSE;
 		}
-		$schedule['header'] = "Today's Schedule";
+		$template_args['header'] = "Today's Schedule";
 		if(isset($I2_QUERY['day'])) {
-			$cday = $I2_QUERY['day'];
-			if(substr($cday, 0, 1) == '-') $cday = '-'.substr($cday, 1);
-			else $cday = '+'.$cday;
-			d($cday);
-			$schedule['date'] = date('l, F j', strtotime($cday.' day'));
-			if($schedule['date'] !== date('l, F j')) {
-				$schedule['header'] = "Schedule for<br />".$schedule['date'];
+			$offset = $I2_QUERY['day'];
+			$template_args['date'] = date('l, F j', strtotime($offset.' day'));
+			if($template_args['date'] !== date('l, F j')) {
+				$template_args['header'] = "Schedule for<br />".$template_args['date'];
 			}
-			if(substr($cday, 0, 1) == '+') $dint = substr($cday, 1);
-			else $dint = $cday;
-			d($dint);
-			$schedule['yday'] = ((int)$dint)-1;
-			$schedule['nday'] = ((int)$dint)+1;
-			$template_args['has_custom_day'] = ($cday !== "+0");
+			$template_args['yday'] = intval($offset)-1;
+			$template_args['nday'] = intval($offset)+1;
+			$template_args['has_custom_day'] = ($offset !== "0");
 		} else {
-			$schedule['yday'] = -1;
-			$schedule['nday'] = 1;
-
+			$template_args['yday'] = -1;
+			$template_args['nday'] = 1;
 			$template_args['has_custom_day'] = false;
 		}
 		$template_args['schedule'] = $schedule;
@@ -310,14 +302,10 @@ class BellSchedule implements Module {
 		} else if(isset($I2_QUERY['start_date'])) {
 			$contents = self::update_schedule($I2_QUERY['start_date']);
 		} else if(isset($I2_QUERY['day'])) {
-			$cd = $I2_QUERY['day'];
-			$cb = "+";
-			if(substr($cd, 0, 1) == '-') $cb = "-";
-			$cinc = strtotime($cb.$cd." day");
-			$cdate = date('Ymd', $cinc);
-			d($cinc.' '.$cdate);
-			$str = self::get_saved_schedule($cachedir . 'bellschedule-ical.cache');
-			$contents = self::parse_schedule($str, $cdate);
+			$offset = $I2_QUERY['day'];
+			$date = date('Ymd', strtotime($offset.' day'));
+			$rawical = self::get_saved_schedule($cachedir . 'bellschedule-ical.cache');
+			$contents = self::parse_schedule($rawical, $date);
 		} else {
 			$contents = unserialize($contents);
 		}
