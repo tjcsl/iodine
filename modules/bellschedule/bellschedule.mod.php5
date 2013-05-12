@@ -365,6 +365,7 @@ class BellSchedule implements Module {
 		// HTTPS because otheriwse it gets cached by the proxy
 		$url = BellSchedule::$url;
 		if($str = BellSchedule::get_calendar_contents()) { // Returns false if can't get anything
+
 			return BellSchedule::update_schedule_contents($str, $day);
 		} else {
 			return array('description' => 'Error: Could not load schedule', 'schedule' => '');
@@ -383,6 +384,7 @@ class BellSchedule implements Module {
 		$regex = '/'.$starter.'((?:(?!END:VEVENT).)*?)CATEGORIES:(Anchor Day|Blue Day|Red Day|JLC Blue Day|Special Schedule)(.*?)'.$ender.'/s';
 		// Is any type of schedule set?
 		if(preg_match($regex, $str, $dayTypeMatches) > 0) {
+			d('First regex: '.$dayTypeMatches[0]);
 			// Does it have a day type described?
 			if(preg_match('/SUMMARY:.(Blue Day - Adjusted Schedule for Mid Term Exams|Red Day - Adjusted Schedule for Mid Term Exams|JLC Blue Day - Adjusted Schedule for Mid Term Exams|AMC Blue Day|Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break|Modified Blue Day|Modified Red Day|Modified Anchor Day)/', $dayTypeMatches[0], $descriptionMatches) > 0) {
 				d("DM: ".$descriptionMatches[1]);
@@ -424,7 +426,7 @@ class BellSchedule implements Module {
 				return BellSchedule::get_default_schedule(null, $dwk);
 			}
 		} else { // If no schedule data, use the default schedule for that type of day
-				d('No schedule data');
+				d('No schedule data'.$dwk);
 				return BellSchedule::get_default_schedule(null, $dwk);
 		}
 	}
