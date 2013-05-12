@@ -71,6 +71,11 @@ class BellSchedule implements Module {
 			'description' => 'Red Day - Adjusted Midterm Schedule',
 			'schedule' => 'Period 6: 8:30 - 10:30<br />Period 5: 10:40 - 11:45<br />Period 7: 12:30 - 1:35<br />Period 8A: 1:50 - 2:45<br />Period 8B: 2:55 - 3:50'
 		],
+		'amcblueday' => [
+			'description' => 'AMC Blue Day',
+			'schedule' => 'AMC/Study Hall: 8:30 - 10:00<br />Period 1: 10:10 - 11:20<br />
+				Lunch: 11:20 - 12:00<br />Period 2: 12:00 - 1:10<br />Period 3: 1:20 - 2:30<br />Period 4: 2:40 - 3:50'
+		],
 		'noschool' => ['description' => 'No school', 'schedule' => '']
 	];
 
@@ -447,23 +452,22 @@ class BellSchedule implements Module {
 			if(preg_match('/SUMMARY:.(Blue Day - Adjusted Schedule for Mid Term Exams|Red Day - Adjusted Schedule for Mid Term Exams|JLC Blue Day - Adjusted Schedule for Mid Term Exams|AMC Blue Day|Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break|Modified Blue Day|Modified Red Day|Modified Anchor Day)/', $dayTypeMatches[0], $descriptionMatches) > 0) {
 				d("DM: ".$descriptionMatches[1]);
 				if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'||$descriptionMatches[1]=='Winter Break'||$descriptionMatches[1]=='Spring Break'){
-					return array('description' => 'No school', 'schedule' => '');
+					return self::get_default_schedule('noschool');
 				} else if($descriptionMatches[1]=='Blue Day - Adjusted Schedule for Mid Term Exams'){
-					return array('description' => self::$normalSchedules['bluemidterm']['description'], 'schedule' => self::$normalSchedules['bluemidterm']['schedule']);
+					return self::get_default_schedule('bluemidterm');
 				} else if($descriptionMatches[1]=='Red Day - Adjusted Schedule for Mid Term Exams'){
-					if(date('w',strtotime($day))=='5'){
-						return array('description' => self::$normalSchedules['red2midterm']['description'], 'schedule' => self::$normalSchedules['red2midterm']['schedule']);
-					} else {
-						return array('description' => self::$normalSchedules['red1midterm']['description'], 'schedule' => self::$normalSchedules['red1midterm']['schedule']);
-					}
+					if(date('w',strtotime($day))=='5')
+						return self::get_default_schedule('red2midterm');
+					else
+						return self::get_default_schedule('red1midterm');
 				} else if($descriptionMatches[1]=='AMC Blue Day'){
-					return array('description' => 'AMC Blue Day', 'schedule' => 'AMC/Study Hall: 8:30 - 10:00<br />Period 1: 10:10 - 11:20<br />Lunch: 11:20 - 12:00<br />Period 2: 12:00 - 1:10<br />Period 3: 1:20 - 2:30<br />Period 4: 2:40 - 3:50');
-
-				}else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
-					return array('description' => self::$normalSchedules['jlcmidterm']['description'], 'schedule' => self::$normalSchedules['jlcmidterm']['schedule']);
+						return self::get_default_schedule('amcblueday');
+				} else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
+						return self::get_default_schedule('jlcmidterm');
 				/* 2013 AP EXAMS */
-				}else if(($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day' || $descriptionMatches[1] == 'Modified Anchor Day') && date('Y M', strtotime($day)) == '2013 May' && isset(self::$apExamSchedule[((int)date('j',strtotime($day)))]) && ((int)date('j',strtotime($dateoffset.' days')))>=6) {
-
+				// FIXME: hard coded
+				} else if(($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day' || $descriptionMatches[1] == 'Modified Anchor Day')
+					&& date('Y M', strtotime($day)) == '2013 May' && isset(self::$apExamSchedule[date('j',strtotime($day))]) && date('j',strtotime($dateoffset.' days'))>=6) {
 					if(isset($I2_QUERY['start_date']))
 					       	$d = substr($I2_QUERY['start_date'], 6);
 					else
@@ -475,12 +479,11 @@ class BellSchedule implements Module {
 						return array('description' => self::$apExamSchedule[$d]['description'], 'schedule' => self::$apExamSchedule[$d]['schedule'], 'modified' => true);
 					} else {
 						d('Using default schedule--may not be correct!');
-
 						return self::get_default_schedule(null, $dwk);
 					}
-				}else{
+				} else {
 					d('no descriptionMatches');
-					return array('description' => $descriptionMatches[1], 'schedule' => self::$normalSchedules[strtolower(str_replace(array(' Day',' '),'',$descriptionMatches[1]))]['schedule']);
+					return self::get_default_schedule(null, $dwk);
 				}
 			} else { // If no day type is set, use the default schedule for that day
 				d('No day type set');
