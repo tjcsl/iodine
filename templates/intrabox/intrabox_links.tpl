@@ -7,7 +7,7 @@
 <a href="[<$I2_ROOT>]studentdirectory/roster">School Roster</a><br />
 [</if>]
 <a href="http://leadership.tjhsst.edu/sga">TJ SGA</a><br />
-<a href="http://postman.tjhsst.edu/">Postman (calendar)</a><br />
+<a href="http://www.calendarwiz.com/calendars/calendar.php?crd=tjhsstcalendar">Calendar</a><br />
 <a href="[<$I2_ROOT>]groups/">Groups</a><br />
 <a href="[<$I2_ROOT>]polls/">Polls</a><br />
 <a href="[<$I2_ROOT>]bugzilla/">Report a bug (Intranet or the CSL)</a><br />

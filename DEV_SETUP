@@ -14,7 +14,7 @@ Dependencies:
 
 PHP Modules:
 	PHP must be built with
-	USE="mysqli curl ldap"
+	USE="mysqli curl ldap xmlwriter"
 
 PHP Configuration:
    In addition to the custom compilation, several PHP options need to
