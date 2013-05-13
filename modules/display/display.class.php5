@@ -74,7 +74,7 @@ class Display {
 	*/
 	public function __construct($module_name='core') {
 		global $I2_FS_ROOT, $I2_LOG;
-		require_once('Smarty.class.php');
+		require_once('smarty/Smarty.class.php');
 		$this->smarty = new Smarty;
 		//$this->smarty->register_prefilter(array(&$this,'prefilter'));
 		//$this->smarty->load_filter('pre','strip');

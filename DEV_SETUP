@@ -31,12 +31,11 @@ PHP Configuration:
    * register_argc_argv = Off
    * post_max_size = 256M
    * magic_quotes_gpc = Off
-   * include_path = ".:/usr/share/php/smarty:/usr/share/php"
    * enable_dl = On
    * upload_max_filesize = 256M
    * date.timezone = 'America/New_York'
    * session.gc_probability = 1
-   * asession.gc_maxlifetime = 3600
+   * session.gc_maxlifetime = 3600
      3600 must be larger than the iodine session timeout
 
 LDAP Configuration:
