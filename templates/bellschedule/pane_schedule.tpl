@@ -9,7 +9,7 @@
 	}
 	</style>
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js"></script>
-	<script type="text/javascript" src="[<$I2_ROOT>]www/js/logins/schedule.js"></script>
+	<script type="text/javascript" src="[<$I2_ROOT>]www/js/schedule.js"></script>
 	<script type="text/javascript">
 	week_base_url = i2root+"bellschedule";
 	week_text = "[<if $has_custom_day>]View [<$date>][<else>]View Today[</if>]";
