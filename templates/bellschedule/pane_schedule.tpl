@@ -15,13 +15,13 @@
 	week_text = "[<if $has_custom_day>]View [<$date>][<else>]View Today[</if>]";
 	</script>
 <p id='sched_tools'>
-	<button id="week_b" onclick="window.location='?day=[<$yday>]'" style=''>&lt;==</button>
+	<button id="week_b" onclick="window.location=day_base_url+'?day=[<$yday>]'" style=''>←</button>
 	[<if $has_custom_day>]
 		<button id="week_today" onclick="window.location='?day=0'">View Today</button>
 	[</if>]
 		<button id="week_click" onclick="week_click();">View Week</button>
 
-	<button id="week_f" onclick="window.location='?day=[<$nday>]'">==&gt;</button>
+	<button id="week_f" onclick="window.location=day_base_url+'?day=[<$nday>]'">→</button>
 </p>
 <div id="schedule">
 
