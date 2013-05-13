@@ -281,7 +281,7 @@ class BellSchedule implements Module {
 		// Week view
 		// FIXME: week is badly broken
 		if(isset($I2_QUERY['week'])) {
-			$c = "::START::";
+			$c = "<span style='display:none'>::START::</span>";
 			$md = isset($I2_QUERY['day']) ? date('Ymd', self::parse_day_query()) : null;
 			$ws = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : null;
 			$we = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : null;
