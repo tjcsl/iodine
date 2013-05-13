@@ -199,9 +199,66 @@ class BellSchedule implements Module {
 	* @param Display $disp The Display object to use for output.
 	*/
 	function api($disp) {
-		return FALSE;
+		global $I2_API, $I2_QUERY;
+		$c = self::get_schedule();
+		$I2_API->startElement('schedule');
+		foreach($c as $n=>$v) {
+			/* use cdata for schedule */
+			if($n == 'schedule') {
+				$I2_API->startElement($n);
+				$I2_API->writeCData(htmlspecialchars_decode($v));
+				$I2_API->endElement();
+			} else {
+				$I2_API->writeElement($n, htmlspecialchars_decode($v));
+			}
+		}
+		$I2_API->startElement('parsedschedule');
+		/* This is a complete hack */
+		try {
+			$s = explode("<br />", $c['schedule']);
+			foreach($s as $v) {
+				$t = explode(":", $v, 2);
+				$I2_API->startElement('block');
+
+				$I2_API->writeAttribute('pd', trim(str_replace("Period", "", $t[0])));
+				$I2_API->writeElement("period", trim($t[0]));
+
+				$I2_API->startElement('time');
+				$u = explode("-", trim($t[1]));
+				$I2_API->writeAttribute('start', trim($u[0]));
+				$I2_API->writeAttribute('end', trim($u[1]));
+
+				/* this is broken */
+				$ts = new DateTime(trim($u[0]));
+				$te = new DateTime(trim($u[1]));
+				$td = $ts->diff($te);
+				$tl = (((int)$td->format('%h')));
+				if($tl>9) $tl = 1;
+				$tl.=":".((int)$td->format('%i'));
+				$I2_API->writeAttribute('length', $tl);
+
+				$I2_API->text(trim($t[1]));
+				$I2_API->endElement();
+
+				$I2_API->endElement();
+			}
+		} catch(Exception $e) {
+			$I2_API->writeCData('An error occurred.');
+		}
+		$I2_API->endElement();
+
+
+		$I2_API->startElement('args');
+		foreach($I2_QUERY as $n=>$v) {
+			$I2_API->writeElement($n, $v);
+		}
+		$I2_API->endElement();
+
+		$I2_API->endElement();
+		return false;
 	}
 
+	
 	/**
 	* We don't really support this yet, but make it look like we do.
 	*/

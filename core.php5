@@ -194,7 +194,7 @@ try {
 	 *
 	 * @global LDAP $I2_LDAP
 	 */
-	if(isset($I2_ARGS[0]) && ($I2_ARGS[0]=='feeds' || ($I2_ARGS[0]=='calendar' && !$I2_AUTH->is_authenticated(TRUE)))) {
+	if(isset($I2_ARGS[0]) && ($I2_ARGS[0]=='feeds' || (($I2_ARGS[0]=='calendar' || ($I2_ARGS[0] == 'api' && $I2_ARGS[1] == 'bellschedule')) && !$I2_AUTH->is_authenticated(TRUE)))) {
 		//don't try to bind when you're in generic mode.
 		$I2_LDAP = LDAP::get_generic_bind();
 		$I2_USER = new User(9999);
@@ -258,6 +258,7 @@ try {
 			throw new I2Exception("No module specified. Currently supported modules are news and eighth.");
 		}
 		d('Passing module' . $module . ' api call', 8);
+
 		if(!get_i2module($module)) {
 			$I2_API->startElement($module);
 			throw new I2Exception("Not a module");

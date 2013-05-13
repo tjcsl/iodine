@@ -387,8 +387,26 @@ class Auth {
 
 			$disp->smarty_assign('backgrounds', self::get_background_images());
 			if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='api') {
+
 				$I2_API->init();
 				$I2_API->logging = false;
+				if(isset($I2_ARGS[1]) && $I2_ARGS[1] == 'bellschedule') {
+					$module = 'bellschedule';
+					$mod = new $module();
+					$I2_API->startDTD($module);
+					$I2_API->writeDTDElement($module,'(body,error,debug)');
+					if($mod->api_build_dtd()==false) {
+						// no module-specific dtd
+						$I2_API->writeDTDElement('body','(#PCDATA)');
+					}
+					$I2_API->writeDTDElement('error','(#PCDATA)');
+					$I2_API->writeDTDElement('debug','(#PCDATA)');
+					$I2_API->endDTD();
+					$I2_API->startElement($module);
+					$I2_API->writeElement('loggedin', 0);
+					$mod->api($I2_DISP);
+					exit(0);
+				}
 				$I2_API->startElement('auth');
 				$I2_API->startElement('error');
 				$I2_API->writeElement('message','You are not logged in.');
