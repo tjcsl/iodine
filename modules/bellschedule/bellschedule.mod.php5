@@ -306,7 +306,7 @@ class BellSchedule implements Module {
 			}
 			$c.= "</tr></table>";
 			$c.="<p><span style='max-width: 500px'>Schedules are subject to change.</span></p>";
-			$c.="::END::";
+			$c.="<span style='display:none'>::END::</span>";
 			$disp = new Display('bellschedule');
 			$disp->raw_display($c);
 			return FALSE;
