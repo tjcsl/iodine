@@ -475,7 +475,8 @@ class Auth {
 		// Schedule data
 
 		// If it's past 5PM, show tomorrow's date
-		if(((int)date('h')) > 4 && date('a') == 'pm') {
+		d(date('G'));
+		if(((int)date('G')) > 16) {
 			$after_5pm = true;
 			if((!isset($I2_QUERY['day']) || $I2_QUERY['day']==0) && !isset($I2_QUERY['today'])) {
 				d('Showing tomorrows schedule');
