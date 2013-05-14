@@ -243,7 +243,7 @@ class BellSchedule implements Module {
 				$I2_API->endElement();
 			}
 		} catch(Exception $e) {
-			$I2_API->writeCData('An error occurred.');
+			$I2_API->text('An error occurred.');
 		}
 		$I2_API->endElement();
 
@@ -281,35 +281,7 @@ class BellSchedule implements Module {
 		// Week view
 		// FIXME: week is badly broken
 		if(isset($I2_QUERY['week'])) {
-			$c = "<span style='display:none'>::START::</span>";
-			$md = isset($I2_QUERY['day']) ? date('Ymd', self::parse_day_query()) : null;
-			$ws = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : null;
-			$we = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : null;
-			$schedules = self::get_schedule_week($ws, $we, $md);
-
-			$c.= "<table class='weeksched'><tr class='h' style='min-height: 40px;max-height: 40px;line-height: 25px'>";
-			foreach($schedules as $day=>$schedule) {
-				$nday = date('l, F j', strtotime($day));
-				$c.= "<td style='font-size: 16px;font-weight: bold'>Schedule for<br />".$nday."</td>";
-			}
-			$c.= "</tr><tr>";
-
-			foreach($schedules as $day=>$schedule) {
-				$nday = date('l, F j', strtotime($day));
-				$m = (isset($schedule['modified'])? ' desc-modified': '');
-				$c.= "<td class='desc".$m."''>";
-				$c.=$schedule['description']."</td>";
-			}
-			$c.= "</tr><tr>";
-			foreach($schedules as $day=>$schedule) {
-				$c.= "<td>".$schedule['schedule']."</td>";
-			}
-			$c.= "</tr></table>";
-			$c.="<p><span style='max-width: 500px'>Schedules are subject to change.</span></p>";
-			$c.="<span style='display:none'>::END::</span>";
-			$disp = new Display('bellschedule');
-			$disp->raw_display($c);
-			return FALSE;
+			return self::display_week($disp);
 		}
 		$date = self::parse_day_query();
 		$template_args['date'] = date('l, F j', $date);
@@ -329,6 +301,43 @@ class BellSchedule implements Module {
 		}
 		$template_args['header'] .= $template_args['date'];
 		$disp->disp('pane_schedule.tpl', $template_args);
+	}
+
+	/**
+	* display a week view
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_week($disp) {
+		global $I2_QUERY;
+		$c = "<span style='display:none'>::START::</span>";
+		$md = isset($I2_QUERY['day']) ? date('Ymd', self::parse_day_query()) : null;
+		$ws = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : null;
+		$we = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : null;
+		$schedules = self::get_schedule_week($ws, $we, $md);
+
+		$c.= "<table class='weeksched'><tr class='h' style='min-height: 40px;max-height: 40px;line-height: 25px'>";
+		foreach($schedules as $day=>$schedule) {
+			$nday = date('l, F j', strtotime($day));
+			$c.= "<td style='font-size: 16px;font-weight: bold'>Schedule for<br />".$nday."</td>";
+		}
+		$c.= "</tr><tr>";
+
+		foreach($schedules as $day=>$schedule) {
+			$nday = date('l, F j', strtotime($day));
+			$m = (isset($schedule['modified'])? ' desc-modified': '');
+			$c.= "<td class='desc".$m."''>";
+			$c.=$schedule['description']."</td>";
+		}
+		$c.= "</tr><tr>";
+		foreach($schedules as $day=>$schedule) {
+			$c.= "<td>".$schedule['schedule']."</td>";
+		}
+		$c.= "</tr></table>";
+		$c.="<p><span style='max-width: 500px'>Schedules are subject to change.</span></p>";
+		$c.="<span style='display:none'>::END::</span>";
+		$disp = new Display('bellschedule');
+		$disp->raw_display($c);
+		return FALSE;
 	}
 
 	/**
@@ -520,8 +529,10 @@ class BellSchedule implements Module {
 						return self::get_default_schedule('amcblueday');
 				} else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
 						return self::get_default_schedule('jlcmidterm');
-				/* 2013 AP EXAMS */
-				// FIXME: hard coded
+				/*
+				* 2013 AP EXAMS 
+				* FIXME: hard coded
+				*/
 				} else if(($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day' || $descriptionMatches[1] == 'Modified Anchor Day')
 					&& date('Y M', strtotime($day)) == '2013 May' && isset(self::$apExamSchedule[date('j',strtotime($day))]) && date('j',strtotime($dateoffset.' days'))>=6) {
 					if(isset($I2_QUERY['start_date']))
@@ -546,7 +557,7 @@ class BellSchedule implements Module {
 				return self::get_default_schedule(null, $dwk);
 			}
 		} else { // If no schedule data, use the default schedule for that type of day
-				d('No schedule data'.$dwk);
+				d('No schedule data: '.$dwk);
 				return self::get_default_schedule(null, $dwk);
 		}
 	}

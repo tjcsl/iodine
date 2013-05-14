@@ -470,7 +470,7 @@ class Auth {
 		$template_args['bgjs'] = $imagejs;
 
 	}
-	private function init_schedule() {
+	public static function init_schedule($rtn = null) {
 		global $I2_QUERY, $disp, $template_args;
 		// Schedule data
 
@@ -515,6 +515,7 @@ class Auth {
 			$c.= "</tr></table>";
 			$c.="<p><span style='max-width: 500px'>Schedules are subject to change.</span></p>";
 			$c.="<span style='display:none'>::END::</span>";
+			if(isset($rtn) && $rtn) return $c;
 			$disp = new Display('login');
 			$disp->raw_display($c);
 			exit();

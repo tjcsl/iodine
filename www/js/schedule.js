@@ -11,11 +11,20 @@ week_click = function() {
 };
 
 week_show = function() {
+
+	$sp = $('#schedule_week').parent();
+	if($sp.hasClass('boxcontent')) {
+		h = $sp.css('height');
+		$('#schedule_week').addClass('ibox_exp');
+		$sp.css('height', h);
+	}
+
 	$('#subPane').css({'overflow-x': 'hidden'}).addClass('exp');
 
 	$("#schedule h2, #schedule p, #schedule div").hide();
 	$("#schedule_t").show();
 	$('#schedule_week').show();
+	
 	$('#week_b, #week_f, #week_today').hide();
 
 	function getMonday(d) {
@@ -71,7 +80,21 @@ week_show = function() {
 
 week_hide = function() {
 	$("#subPane").css({'overflow-x': ''}).removeClass('exp');
+
+	$sp = $('#schedule_week').parent();
+	if($sp.hasClass('boxcontent')) {
+		$('#schedule_week').removeClass('ibox_exp');
+		$sp.css('height', 'auto');
+	}
+
 	$("#schedule_week").hide();
 	$("#schedule h2, #schedule p, #schedule div").show();
 	$("#schedule_t, #week_b, #week_f, #week_today").show();
+};
+
+day_click = function(day, extra) {
+	if(typeof extra=='undefined') extra = '';
+	$.get(u = i2root+'?day='+day+'&'+extra, {}, function(d) {
+		$('div#schedule').parent().html($(d).find('div#schedule').parent().html());
+	}, 'html');
 };

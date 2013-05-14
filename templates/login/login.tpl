@@ -17,32 +17,15 @@
 	<link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js"></script>
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/schedule.js"></script>
+	<script type="text/javascript" src="[<$I2_ROOT>]www/js/login.js"></script>
 	<script type="text/javascript">
 	week_base_url = "news";
 	day_base_url = "news";
-	week_text = "Back"; //"[<if $has_custom_day>]View [<$schedule.date>][<else>]View Today[</if>]";
+	week_text = "Back"; 
 	</script>
 	<script type="text/javascript">
 	//Set some variables so that any script can use them.
 	var i2root="[<$I2_ROOT>]";
-	[<*
-	function parse_bgs() {
-		try {
-			bid = window.location.search.split('bid=')[1];
-		} catch(e) {}
-		if(window.location.search.indexOf('bid=')==-1) {
-			try {
-				bid = (function(){for(i in j=(c=document.cookie).split(';')) if((k=j[i].split('='))[0]=='background'&&!!k[1]) for(l=0;l<(m=document.getElementsByTagName('optgroup')[1].children).length;l++) if(unescape(m[l].value)==unescape(k[1])) return m[l].id.split('bg')[1];})();
-			} catch(e) {}
-		}
-		if(typeof bid != 'undefined' && typeof document.getElementById('bg'+bid) != 'undefined') {
-			document.getElementById('bg0').setAttribute('selected', false);
-			document.getElementById('bg'+bid).setAttribute('selected', true);
-		} else {
-			document.getElementById('bg0').setAttribute('selected', true);
-		}
-	}
-	*>]
 	</script>
 	[<if isset($bgjs)>]
 	<script type="text/javascript" src="[<$I2_ROOT>][<$bgjs>]"></script>
@@ -91,7 +74,7 @@
 			<br />
 			<br />
 			<label for="login_password">Password</label>
-			<input name="login_password" id="login_password" type="password" size="25" />
+			<input name="login_password" id="login_password" type="password" size="25" onkeydown="checkcl()" />
 			<br />
 			<br />
 			<button type="submit">Login</button>
@@ -108,15 +91,15 @@
 	</div>
 	<div class="pane" id="subPane">
 		<p id='sched_tools'>
-			<button id="week_b" onclick="window.location=day_base_url+'?day=[<$schedule.yday>]'" style=''>←</button>
+			<button id="week_b" onclick="day_click('[<$schedule.yday>]')" style=''>←</button>
 			[<if $has_custom_day>]
-				<button id="week_today" onclick="window.location=day_base_url+'?day=0'">Today</button>
+				<button id="week_today" onclick="day_click(0)'">Today</button>
 			[<elseif isset($has_custom_day_tom) and $has_custom_day_tom>]
-				<button id="week_today" onclick="window.location=day_base_url+'?day=0&tomorrow'">Tomorrow</button>
+				<button id="week_today" onclick="day_click(0,'tomorrow')">Tomorrow</button>
 			[</if>]
-				<button id="week_click" onclick="week_click();">Full Week</button>
+				<button id="week_click" onclick="week_click();">Week</button>
 
-			<button id="week_f" onclick="window.location=day_base_url+'?day=[<$schedule.nday>]'">→</button>
+			<button id="week_f" onclick="day_click('[<$schedule.nday>]')">→</button>
 		</p>
 		<div id="schedule">
 
@@ -166,20 +149,7 @@
 	[<* This doesn't work on recent versions of chrome because
 	     it is not in the web store; so why advertise it? *>]
 	<!--script type="text/javascript">
-		if (!!chrome && !!chrome.app && !chrome.app.isInstalled) {
-			var chromeLink = document.createElement("a");
-			chromeLink.href = "[<$I2_ROOT>]www/chrome/iodine_chrome_app.crx";
-			chromeLink.type = "application/x-chrome-extension";
-
-			var chromeBox = document.createElement("div");
-			chromeBox.className = "box";
-			chromeBox.style.padding = "4px";
-
-			chromeBox.innerHTML = "<img src=\"[<$I2_ROOT>]www/pics/chrome_icon_42.png\" style=\"float:left; margin-right:4px;\" alt=\"Google Chrome logo\"/>Install the TJ Intranet app for Chrome";
-
-			chromeLink.appendChild(chromeBox);
-			document.getElementById("mainPane").appendChild(chromeLink);
-		}
+		chrome_app();
 
 	</script-->
 

@@ -1,27 +1,20 @@
 
 	<!--link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/login-schedule.css" /-->
-	<style>
-	#schedule_week {
-		display: none;
-	}
-	.desc-modified {
-		color: red;
-	}
-	</style>
+	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/bellschedule_pane.css" />
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js"></script>
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/schedule.js"></script>
 	<script type="text/javascript">
 	week_base_url = i2root+"bellschedule";
-	week_text = "[<if $has_custom_day>]View [<$date>][<else>]View Today[</if>]";
+	week_text = "Back";
 	</script>
 <p id='sched_tools'>
-	<button id="week_b" onclick="window.location='?day=[<$yday>]'" style=''>←</button>
+	<button id="week_b" onclick="day_click('[<$yday>]')" style=''>←</button>
 	[<if $has_custom_day>]
-		<button id="week_today" onclick="window.location='?day=0'">View Today</button>
+		<button id="week_today" onclick="day_click(0)">Today</button>
 	[</if>]
-		<button id="week_click" onclick="week_click();">Full Week</button>
+		<button id="week_click" onclick="week_click();">Week</button>
 
-	<button id="week_f" onclick="window.location='?day=[<$nday>]'">→</button>
+	<button id="week_f" onclick="day_click('[<$nday>]')">→</button>
 </p>
 <div id="schedule">
 

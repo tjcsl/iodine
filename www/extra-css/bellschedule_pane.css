@@ -1,0 +1,17 @@
+#schedule_week {
+	display: none;
+}
+.desc-modified {
+	color: red;
+}
+#schedule_week.ibox_exp {
+	position: fixed;
+	width: 100%;
+	z-index: 9999;
+	background-color: #f0f0f0;
+	padding: 5px;
+}
+/* update this number if it changes */
+#boxcontent_25 {
+	text-align: center;
+}
