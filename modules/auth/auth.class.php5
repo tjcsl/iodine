@@ -599,12 +599,12 @@ class Auth {
 	/**
 	* Encrypts a string with the given key.
 	*
-	* encrypt() takes $str, and uses $key to encrypt it. It uses the TripleDES in CBC mode as the encryption algorithm, with /dev/urandom as a random source.
+	* encrypt() takes $str, and uses $key to encrypt it. It uses Rijndael 128 in CBC mode as the encryption algorithm, with /dev/urandom as a random source.
 	*
 	* @return Array An array containing three elements. The first one is the encrypted string, the second is the key used (if it was altered at all from the one passed), and the third is the initialization vector used to encrypt the string. You will need all three of these items in order to decrypt the string again.
 	*/
 	public static function encrypt($str, $key) {
-		$td = mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
+		$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128,'',MCRYPT_MODE_CBC,'');
 		$iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td),MCRYPT_DEV_URANDOM);
 		$keysize = mcrypt_enc_get_key_size($td);
 		$mkey = substr(md5($key),0,$keysize);
@@ -619,12 +619,12 @@ class Auth {
 	/**
 	* Decrypts a string with the given key and initialization vector.
 	*
-	* decrypt() takes $str, and uses $key and $iv to decrypt it (all items that are returned by encrypt()). It uses the TripleDES in CBC mode as the encryption algorithm.
+	* decrypt() takes $str, and uses $key and $iv to decrypt it (all items that are returned by encrypt()). It uses Rijndael 128 in CBC mode as the encryption algorithm.
 	*
 	* @return String The decrypted string.
 	*/
 	public static function decrypt($str, $key, $iv) {
-		$td = mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
+		$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128,'',MCRYPT_MODE_CBC,'');
 		$keysize = mcrypt_enc_get_key_size($td);
 		$key = substr(md5($key),0,$keysize);
 		mcrypt_generic_init($td, $key, $iv);
