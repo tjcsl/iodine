@@ -1,3 +1,4 @@
+if(typeof window.cached_req == 'undefined') window.cached_req = {};
 week_click = function() {
 	if(typeof weekd == 'undefined' || (typeof weekd != 'undefined' && !weekd)) {
 		weekd = true;
@@ -61,23 +62,31 @@ week_show = function() {
 
 	u+= '&start='+(d);
 	u+= '&end='+(d+5);
-	$.get(u, {}, function(d) {
-		//try {
-			window.getd = d;
-			if(d.indexOf('::START::')!==-1 && d.indexOf('::END::')!==-1) {
-				weekdata = d.split('::START::</span>');
-				weekdata = weekdata[1].split('<span style=\'display:none\'>::END::')[0];
-				$('#schedule_week').html(weekdata);
-			} else {
-				$('#schedule_week').append('<p>An error occurred fetching schedules.</p>');
-				window.location.href = u;
-			}
-		//} catch(e) {
-		//	$('#schedule_week').append('<p>An error occurred fetching schedules.</p>');
-		//}
-	}, 'text');
+	if(typeof window.cached_req[u] == 'undefined') {
+		$.get(u, {}, function(d) {
+			//try {
+				window.getd = d;
+				window.cached_req[u] = d;
+				week_showget(d, u);
+			//} catch(e) {
+			//	$('#schedule_week').append('<p>An error occurred fetching schedules.</p>');
+			//}
+		}, 'text');
+	} else {
+		week_showget(window.cached_req[u], u);
+	}
 };
 
+week_showget = function(d) {
+	if(d.indexOf('::START::')!==-1 && d.indexOf('::END::')!==-1) {
+		weekdata = d.split('::START::</span>');
+		weekdata = weekdata[1].split('<span style=\'display:none\'>::END::')[0];
+		$('#schedule_week').html(weekdata);
+	} else {
+		$('#schedule_week').append('<p>An error occurred fetching schedules.</p>');
+		window.location.href = u;
+	}
+};
 week_hide = function() {
 	$("#subPane").css({'overflow-x': ''}).removeClass('exp');
 
@@ -94,7 +103,17 @@ week_hide = function() {
 
 day_click = function(day, extra) {
 	if(typeof extra=='undefined') extra = '';
-	$.get(u = i2root+'?day='+day+'&'+extra, {}, function(d) {
-		$('div#schedule').parent().html($(d).find('div#schedule').parent().html());
-	}, 'html');
+	u = week_base_url+'?day='+day+'&'+extra;
+	if(typeof window.cached_req[u] == 'undefined') {
+		$.get(u, {}, function(d) {
+			window.cached_req[u] = d;
+			day_clickget(d);
+		}, 'html');
+	} else {
+		day_clickget(window.cached_req[u]);
+	}
+};
+day_clickget = function(d) {
+	d = d.replace(/script type="text\/javascript" src/g, 'script src_dontrun');
+	$('div#schedule').parent().html($(d).find('div#schedule').parent().html());
 };
