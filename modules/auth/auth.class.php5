@@ -489,91 +489,41 @@ class Auth {
 		}
 		// Week view
 		if(isset($I2_QUERY['week'])) {
-			$c = "<span style='display:none'>::START::</span>";
-			$md = isset($I2_QUERY['day']) ? date('Ymd', BellSchedule::parse_day_query()) : null;
-			$ws = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : null;
-			$we = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : null;
-			$schedules = BellSchedule::get_schedule_week($ws, $we, $md);
-
-			$c.= "<table class='weeksched'><tr class='h' style='min-height: 40px;max-height: 40px;line-height: 25px'>";
-			foreach($schedules as $day=>$schedule) {
-				$nday = date('l, F j', strtotime($day));
-				$c.= "<td style='font-size: 16px;font-weight: bold'>Schedule for<br />".$nday."</td>";
-			}
-			$c.= "</tr><tr>";
-
-			foreach($schedules as $day=>$schedule) {
-				$nday = date('l, F j', strtotime($day));
-				$m = (isset($schedule['modified'])? ' desc-modified': '');
-				$c.= "<td class='desc".$m." schedule-".(BellSchedule::parse_schedule_day($schedule['description']))."'>";
-				$c.=$schedule['description']."</td>";
-			}
-			$c.= "</tr><tr>";
-			foreach($schedules as $day=>$schedule) {
-				$c.= "<td>".$schedule['schedule']."</td>";
-			}
-			$c.= "</tr></table>";
-			$c.="<p><span style='max-width: 500px'>Schedules are subject to change.</span></p>";
-			$c.="<span style='display:none'>::END::</span>";
-			if(isset($rtn) && $rtn) return $c;
-			$disp = new Display('login');
-			$disp->raw_display($c);
+			BellSchedule::display_week($disp);
 			exit();
-			return FALSE;
 		}
+		$args = BellSchedule::gen_day_view();
+		$template_args = array_merge($template_args, $args);
 		$schedule = BellSchedule::get_schedule();
-		$schedule['header'] = "Today's Schedule";
-		if(isset($I2_QUERY['day'])) {
-			$cday = $I2_QUERY['day'];
-			if(substr($cday, 0, 1) == '-') $cday = '-'.substr($cday, 1);
-			else $cday = '+'.$cday;
-			d($cday);
-			$schedule['date'] = date('l, F j', strtotime($cday.' day'));
-			if($schedule['date'] !== date('l, F j')) {
-				$schedule['header'] = "Schedule for<br />".$schedule['date'];
-			}
-			if(substr($cday, 0, 1) == '+') $dint = substr($cday, 1);
-			else $dint = $cday;
-			d($dint);
-			$schedule['yday'] = ((int)$dint)-1;
-			$schedule['nday'] = ((int)$dint)+1;
-			$template_args['has_custom_day'] = ($cday !== "+0");
-		} else {
-			$I2_QUERY['day'] = 0;
-			$schedule['yday'] = -1;
-			$schedule['nday'] = 1;
-
-			$template_args['has_custom_day'] = false;
-		}
 
 
 		// show "Tomorrow's schedule"
 		if(isset($I2_QUERY['tomorrow'])) {
-			$schedule['yday'] = '0&today';
-			$schedule['nday'] = 1;
-			$schedule['header'] = "Tomorrow's Schedule";
+			$template_args['yday'] = '0&today';
+			$template_args['nday'] = 1;
+			$template_args['header'] = "Tomorrow's Schedule";
 		}
 
 		if(isset($after_5pm) && $after_5pm) {
 			if($I2_QUERY['day'] == 0 && isset($I2_QUERY['today'])) {
-				$schedule['nday'] = '0&tomorrow';
+				$template_args['nday'] = '0&tomorrow';
 			}
 			if($show_tomorrow) {
-				$schedule['nday'] = 2;
+				$template_args['nday'] = 2;
 			} else {
 				$template_args['has_custom_day_tom'] = true;
 			}
 			if($I2_QUERY['day'] == 2) {
-				$schedule['yday'] = 0;
+				$template_args['yday'] = 0;
 			}
 			if($I2_QUERY['day'] == -1) {
-				$schedule['nday'] = '0&today';
+				$template_args['nday'] = '0&today';
 			}
 
 			$template_args['has_custom_day'] = false;
 		}
 
-		$schedule['schedday'] = BellSchedule::parse_schedule_day($schedule['description']);
+		$template_args['schedday'] = BellSchedule::parse_schedule_day($schedule['description']);
 
 		if(strpos($schedule['description'], 'Modified')!==false) $schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
 		$template_args['schedule'] = $schedule;

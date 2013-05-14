@@ -6,7 +6,7 @@ week_click = function() {
 		return week_show();
 	} else {
 		weekd = false;
-		$("#week_click").html("Full Week");
+		$("#week_click").html("Week");
 		return week_hide();
 	}
 };

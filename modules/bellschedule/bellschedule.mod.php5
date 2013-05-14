@@ -283,31 +283,42 @@ class BellSchedule implements Module {
 		if(isset($I2_QUERY['week'])) {
 			return self::display_week($disp);
 		}
+		$template_args = self::gen_day_view();
+		$disp->disp('pane_schedule.tpl', $template_args);
+	}
+
+	/**
+	* Generate a day view
+	* @param array $args The args for this day.
+	*/
+	public static function gen_day_view() {
+		global $I2_QUERY;
+		$args = [];
 		$date = self::parse_day_query();
-		$template_args['date'] = date('l, F j', $date);
-		$template_args['header'] = "Today's Schedule<br />";
-		$template_args['schedule'] = self::get_schedule();
+		$args['date'] = date('l, F j', $date);
+		$args['header'] = "Today's Schedule<br />";
+		$args['schedule'] = self::get_schedule();
 
 		if(isset($I2_QUERY['day'])) {
 			if($I2_QUERY['day'] != 0)
-				$template_args['header'] = "Schedule for<br />";
-			$template_args['yday'] = intval($I2_QUERY['day'])-1;
-			$template_args['nday'] = intval($I2_QUERY['day'])+1;
-			$template_args['has_custom_day'] = ($I2_QUERY['day'] !== "0");
+				$args['header'] = "Schedule for<br />";
+			$args['yday'] = intval($I2_QUERY['day'])-1;
+			$args['nday'] = intval($I2_QUERY['day'])+1;
+			$args['has_custom_day'] = ($I2_QUERY['day'] !== "0");
 		} else {
-			$template_args['yday'] = -1;
-			$template_args['nday'] = 1;
-			$template_args['has_custom_day'] = false;
+			$args['yday'] = -1;
+			$args['nday'] = 1;
+			$args['has_custom_day'] = false;
 		}
-		$template_args['header'] .= $template_args['date'];
-		$disp->disp('pane_schedule.tpl', $template_args);
+		$args['header'] .= $args['date'];
+		return $args;
 	}
 
 	/**
 	* display a week view
 	* @param Display $disp The Display object to use for output.
 	*/
-	function display_week($disp) {
+	public static function display_week($disp) {
 		global $I2_QUERY;
 		$c = "<span style='display:none'>::START::</span>";
 		$md = isset($I2_QUERY['day']) ? date('Ymd', self::parse_day_query()) : null;
