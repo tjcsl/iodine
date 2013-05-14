@@ -21,7 +21,7 @@
 	<script type="text/javascript">
 	week_base_url = "news";
 	day_base_url = "news";
-	week_text = "Back"; 
+	week_text = "Back";
 	</script>
 	<script type="text/javascript">
 	//Set some variables so that any script can use them.
@@ -74,7 +74,7 @@
 			<br />
 			<br />
 			<label for="login_password">Password</label>
-			<input name="login_password" id="login_password" type="password" size="25" onkeydown="checkcl()" />
+			<input name="login_password" id="login_password" type="password" size="25" /><!--onkeydown="checkcl()" />-->
 			<br />
 			<br />
 			<button type="submit">Login</button>
