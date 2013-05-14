@@ -607,7 +607,7 @@ class Auth {
 		$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128,'',MCRYPT_MODE_CBC,'');
 		$iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td),MCRYPT_DEV_URANDOM);
 		$keysize = mcrypt_enc_get_key_size($td);
-		$mkey = substr(md5($key),0,$keysize);
+		$mkey = substr(hash('sha256',$key),0,$keysize);
 		mcrypt_generic_init($td,$mkey,$iv);
 		$ret = mcrypt_generic($td, $str);
 		mcrypt_generic_deinit($td);
@@ -626,7 +626,7 @@ class Auth {
 	public static function decrypt($str, $key, $iv) {
 		$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128,'',MCRYPT_MODE_CBC,'');
 		$keysize = mcrypt_enc_get_key_size($td);
-		$key = substr(md5($key),0,$keysize);
+		$key = substr(hash('sha256',$key),0,$keysize);
 		mcrypt_generic_init($td, $key, $iv);
 		$ret = mdecrypt_generic($td, $str);
 		mcrypt_generic_deinit($td);
