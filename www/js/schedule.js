@@ -101,18 +101,25 @@ week_hide = function() {
 	$("#schedule_t, #week_b, #week_f, #week_today").show();
 };
 
-day_click = function(day) {
+day_click_box = function(day) {
+	day_click(day,true);
+}
+
+day_click = function(day,box) {
 	u = week_base_url+'?day='+day;
 	if(typeof window.cached_req[u] == 'undefined') {
 		$.get(u, {}, function(d) {
 			window.cached_req[u] = d;
-			day_clickget(d);
+			day_clickget(d,box);
 		}, 'html');
 	} else {
-		day_clickget(window.cached_req[u]);
+		day_clickget(window.cached_req[u],box);
 	}
 };
-day_clickget = function(d) {
-	d = d.replace(/script type="text\/javascript" src/g, 'script src_dontrun');
-	$('div#schedule').parent().html($(d).find('div#schedule').parent().html());
+
+day_clickget = function(d,box) {
+	if(typeof box == 'undefined')
+		$('div#schedule').parent().html($(d).find('div#schedule').parent().html());
+	else
+		$('div#schedule_box').parent().html($(d).find('div#schedule_box').parent().html());
 };
