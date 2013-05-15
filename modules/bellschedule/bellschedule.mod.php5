@@ -203,14 +203,8 @@ class BellSchedule implements Module {
 		$c = self::get_schedule();
 		$I2_API->startElement('schedule');
 		foreach($c as $n=>$v) {
-			/* use cdata for schedule */
-			if($n == 'schedule') {
-				$I2_API->startElement($n);
-				$I2_API->writeCData(htmlspecialchars_decode($v));
-				$I2_API->endElement();
-			} else {
+			if($n != 'schedule')
 				$I2_API->writeElement($n, htmlspecialchars_decode($v));
-			}
 		}
 		$I2_API->startElement('parsedschedule');
 		/* This is a complete hack */
