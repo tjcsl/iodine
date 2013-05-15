@@ -242,13 +242,6 @@ class Auth {
 			if ($user == 'admin') {
 				return self::validate($user,$password,array('master'));
 			}
-
-			// This is not a fix, but yet another "hack"
-			if ($user == 'asdf') {
-				$modauth_err = "The account you attempted to log in to has been disabled. Contact the intranetmaster for assistance.";
-				$modauth_loginfailed = 1;
-				return FALSE;
-			}
 			// Another temporary "hack"; this will be actually fixed
 			// soon by not logging in when an account doesn't exist in LDAP
 
