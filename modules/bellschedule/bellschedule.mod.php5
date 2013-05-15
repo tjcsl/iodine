@@ -203,8 +203,8 @@ class BellSchedule implements Module {
 		$template_args = self::gen_day_view();
 		$template_args['ajax'] = TRUE;
 		if(isset($I2_QUERY['box'])) {
-			$intrabox_args['is_intrabox'] = TRUE;
-			$intrabox_args['box'] = "_box";
+			$template_args['is_intrabox'] = TRUE;
+			$template_args['box'] = "_box";
 		}
 		echo $disp->fetch('schedule.tpl', $template_args);
 	}

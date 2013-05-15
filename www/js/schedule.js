@@ -107,6 +107,8 @@ day_click_box = function(day) {
 
 day_click = function(day,box) {
 	u = week_base_url+'?day='+day;
+	if(typeof box != 'undefined')
+		u = u + '&box'
 	if(typeof window.cached_req[u] == 'undefined') {
 		$.get(u, {}, function(d) {
 			window.cached_req[u] = d;
