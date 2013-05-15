@@ -296,21 +296,35 @@ class BellSchedule implements Module {
 		$args = [];
 		$date = self::parse_day_query();
 		$args['date'] = date('l, F j', $date);
-		$args['header'] = "Today's Schedule<br />";
-		$args['schedule'] = self::get_schedule();
+		// is it after 5pm?
+		$args['tomorrow'] = $tomorrow = date('G') > 16 ? TRUE : FALSE;
 
 		if(isset($I2_QUERY['day'])) {
-			if($I2_QUERY['day'] != 0)
-				$args['header'] = "Schedule for<br />";
-			$args['yday'] = intval($I2_QUERY['day'])-1;
-			$args['nday'] = intval($I2_QUERY['day'])+1;
-			$args['has_custom_day'] = ($I2_QUERY['day'] !== "0");
+			$day = $I2_QUERY['day'];
 		} else {
-			$args['yday'] = -1;
-			$args['nday'] = 1;
+			$day = $tomorrow ? 1 : 0;
 			$args['has_custom_day'] = false;
 		}
+		$args['day'] = $day;
+		$args['dayname'] = $tomorrow ? "Tomorrow" : "Today";
+
+		if($day == 0) {
+			$args['header'] = "Today's Schedule<br />";
+			if($tomorrow)
+				$args['has_custom_day'] = true;
+		}
+		else if($day == 1 && $tomorrow)
+			$args['header'] = "Tomorrow's Schedule<br />";
+		else {
+			$args['header'] = "Schedule for<br />";
+			$args['has_custom_day'] = true;
+		}
 		$args['header'] .= $args['date'];
+		$schedule = self::get_schedule();
+		$args['schedday'] = self::parse_schedule_day($schedule['description']);
+		if(strpos($schedule['description'], 'Modified')!==false)
+			$schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
+		$args['schedule'] = $schedule;
 		return $args;
 	}
 
@@ -399,11 +413,19 @@ class BellSchedule implements Module {
 	/**
 	* Get the date from the query string
 	*
+	* @param bool $rawoffset Do we want a raw offset?
 	* @return int The date.
 	*/
-	public static function parse_day_query() {
+	public static function parse_day_query($rawoffset=false) {
 		global $I2_QUERY;
-		$offset = isset($I2_QUERY['day']) ? $I2_QUERY['day'] : 0 ;
+		// is it after 5 pm?
+		$tomorrow = date('G') > 16 ? TRUE : FALSE;
+		if(isset($I2_QUERY['day']))
+			$offset = $I2_QUERY['day'];
+		else
+			$offset = $tomorrow ? 1 : 0;
+		if($rawoffset)
+			return $offset;
 		return strtotime($offset.' day');
 	}
 
@@ -515,7 +537,7 @@ class BellSchedule implements Module {
 	*/
 	private static function parse_schedule($str, $day=null) {
 		global $I2_QUERY;
-		$dateoffset = isset($I2_QUERY['day']) ? $I2_QUERY['day'] : 0;
+		$dateoffset = self::parse_day_query(TRUE);
 		$day = isset($day) ? $day : date('Ymd',strtotime($dateoffset.' days'));
 		$start = 'DTSTART;VALUE=DATE:'. $day;
 		$end = 'END:VEVENT';

@@ -50,21 +50,6 @@ body.login #logo {
 	display: none;
 	margin-left: -15px;
 }
-.schedule-blue {
-	color: blue;
-}
-.schedule-red {
-	color: red;
-}
-.schedule-anchor {
-	color: black;
-}
-.schedule-other, .schedule-noschool {
-	color: black;
-}
-.schedule-modified {
-	font-weight: bold;
-}
 /* ajax table css */
 #subPane #schedule_week table {
 	width: 100%;

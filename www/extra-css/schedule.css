@@ -1,0 +1,15 @@
+.schedule-blue {
+	color: blue;
+}
+.schedule-red {
+	color: red;
+}
+.schedule-anchor {
+	color: black;
+}
+.schedule-other, .schedule-noschool {
+	color: black;
+}
+.schedule-modified {
+	font-weight: bold;
+}

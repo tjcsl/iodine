@@ -2,7 +2,7 @@ if(typeof window.cached_req == 'undefined') window.cached_req = {};
 week_click = function() {
 	if(typeof weekd == 'undefined' || (typeof weekd != 'undefined' && !weekd)) {
 		weekd = true;
-		$("#week_click").html(week_text);
+		$("#week_click").html("Back");
 		return week_show();
 	} else {
 		weekd = false;
@@ -101,9 +101,8 @@ week_hide = function() {
 	$("#schedule_t, #week_b, #week_f, #week_today").show();
 };
 
-day_click = function(day, extra) {
-	if(typeof extra=='undefined') extra = '';
-	u = week_base_url+'?day='+day+'&'+extra;
+day_click = function(day) {
+	u = week_base_url+'?day='+day;
 	if(typeof window.cached_req[u] == 'undefined') {
 		$.get(u, {}, function(d) {
 			window.cached_req[u] = d;

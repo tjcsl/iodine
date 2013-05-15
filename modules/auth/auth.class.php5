@@ -472,21 +472,6 @@ class Auth {
 	}
 	public static function init_schedule($rtn = null) {
 		global $I2_QUERY, $disp, $template_args;
-		// Schedule data
-
-		// If it's past 5PM, show tomorrow's date
-		if(((int)date('G')) > 16) {
-			$after_5pm = true;
-			if((!isset($I2_QUERY['day']) || $I2_QUERY['day']==0) && !isset($I2_QUERY['today'])) {
-				d('Showing tomorrows schedule');
-				$show_tomorrow = true;
-				$template_args['show_tomorrow'] = true;
-				$I2_QUERY['tomorrow'] = true;
-				$I2_QUERY['day'] = 1;
-			} else {
-				$show_tomorrow = false;
-			}
-		}
 		// Week view
 		if(isset($I2_QUERY['week'])) {
 			BellSchedule::display_week($disp);
@@ -495,37 +480,9 @@ class Auth {
 		$args = BellSchedule::gen_day_view();
 		$template_args = array_merge($template_args, $args);
 		$schedule = BellSchedule::get_schedule();
-
-
-		// show "Tomorrow's schedule"
-		if(isset($I2_QUERY['tomorrow'])) {
-			$template_args['yday'] = '0&today';
-			$template_args['nday'] = 1;
-			$template_args['header'] = "Tomorrow's Schedule";
-		}
-
-		if(isset($after_5pm) && $after_5pm) {
-			if($I2_QUERY['day'] == 0 && isset($I2_QUERY['today'])) {
-				$template_args['nday'] = '0&tomorrow';
-			}
-			if($show_tomorrow) {
-				$template_args['nday'] = 2;
-			} else {
-				$template_args['has_custom_day_tom'] = true;
-			}
-			if($I2_QUERY['day'] == 2) {
-				$template_args['yday'] = 0;
-			}
-			if($I2_QUERY['day'] == -1) {
-				$template_args['nday'] = '0&today';
-			}
-
-			$template_args['has_custom_day'] = false;
-		}
-
 		$template_args['schedday'] = BellSchedule::parse_schedule_day($schedule['description']);
-
-		if(strpos($schedule['description'], 'Modified')!==false) $schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
+		if(strpos($schedule['description'], 'Modified')!==false)
+			$schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
 		$template_args['schedule'] = $schedule;
 	}
 	/**

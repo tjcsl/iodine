@@ -13,6 +13,7 @@
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-login-default.css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-login-light.css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/login-schedule.css" />
+	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/schedule.css" />
 	<link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 	<link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js"></script>
@@ -21,7 +22,6 @@
 	<script type="text/javascript">
 	week_base_url = "news";
 	day_base_url = "news";
-	week_text = "Back";
 	</script>
 	<script type="text/javascript">
 	//Set some variables so that any script can use them.
@@ -90,29 +90,8 @@
 		</div>
 	</div>
 	<div class="pane" id="subPane">
-		<p id='sched_tools'>
-			<button id="week_b" onclick="day_click('[<$yday>]')" style=''>←</button>
-			[<if $has_custom_day>]
-				<button id="week_today" onclick="day_click(0)'">Today</button>
-			[<elseif isset($has_custom_day_tom) and $has_custom_day_tom>]
-				<button id="week_today" onclick="day_click(0,'tomorrow')">Tomorrow</button>
-			[</if>]
-				<button id="week_click" onclick="week_click();">Week</button>
-
-			<button id="week_f" onclick="day_click('[<$nday>]')">→</button>
-		</p>
-		<div id="schedule">
-
-			<h2 id="schedule_header">[<$header>]</h2>
-			<p class='desc[<if isset($schedday)>] schedule-[<$schedday>][</if>]'>[<$schedule.description>]</p>
-			<div style='height: 160px;float: center'>[<$schedule.schedule>]</div>
-
-		</div>
-
-		<div id="schedule_week">
-			<p>One moment please..</p>
-			<p>If the page doesn't load, <a href='http://www.calendarwiz.com/calendars/calendar.php?crd=tjhsstcalendar'>click to view the main TJ calendar.</a></p>
-		</div>
+		[<* the schedule *>]
+		[<include file='bellschedule/common.tpl'>]
 		<br /><br />
 		<ul id="links">
 			<li><a href="http://www.tjhsst.edu" target="_blank">TJHSST</a></li>
