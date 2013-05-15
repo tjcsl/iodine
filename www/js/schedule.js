@@ -119,7 +119,7 @@ day_click = function(day,box) {
 
 day_clickget = function(d,box) {
 	if(typeof box == 'undefined')
-		$('div#schedule').parent().html($(d).find('div#schedule').parent().html());
+		$('div#schedule').parent().html(d);
 	else
-		$('div#schedule_box').parent().html($(d).find('div#schedule_box').parent().html());
+		$('div#schedule_box').parent().html(d);
 };

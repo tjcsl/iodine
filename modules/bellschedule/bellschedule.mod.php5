@@ -150,11 +150,6 @@ class BellSchedule implements Module {
 	];
 
 	/**
-	* Template arguments
-	*/
-	private $template_args = [];
-
-	/**
 	* Required by the {@link Module} interface.
 	*/
 	function get_name() {
@@ -194,7 +189,28 @@ class BellSchedule implements Module {
 	}
 
 	/**
-	* We don't really support this yet, but make it look like we do.
+	* returns a version of the schedule that can be used with ajax.
+	*
+	*/
+	function ajax() {
+		global $I2_QUERY;
+		$disp = new Display('bellschedule');
+		//FIXME: week is a HACK
+		if(isset($I2_QUERY['week'])) {
+			echo self::display_week(true);
+			return;
+		}
+		$template_args = self::gen_day_view();
+		$template_args['ajax'] = TRUE;
+		if(isset($I2_QUERY['box'])) {
+			$intrabox_args['is_intrabox'] = TRUE;
+			$intrabox_args['box'] = "_box";
+		}
+		echo $disp->fetch('schedule.tpl', $template_args);
+	}
+
+	/**
+	* Returns a xml schedule
 	*
 	* @param Display $disp The Display object to use for output.
 	*/
@@ -275,7 +291,7 @@ class BellSchedule implements Module {
 		// Week view
 		// FIXME: week is badly broken
 		if(isset($I2_QUERY['week'])) {
-			return self::display_week($disp);
+			return self::display_week(FALSE);
 		}
 		$template_args = self::gen_day_view();
 		$disp->disp('schedule.tpl', $template_args);
@@ -313,6 +329,7 @@ class BellSchedule implements Module {
 		$date = self::parse_day_query();
 		$args['date'] = date('l, F j', $date);
 		$args['is_intrabox'] = FALSE;
+		$args['ajax'] = FALSE;
 		$args['box'] = "";
 		// is it after 5pm?
 		$args['tomorrow'] = $tomorrow = date('G') > 16 ? TRUE : FALSE;
@@ -348,9 +365,9 @@ class BellSchedule implements Module {
 
 	/**
 	* display a week view
-	* @param Display $disp The Display object to use for output.
+	* @param bool $ajax are we using ajax?
 	*/
-	public static function display_week($disp) {
+	public static function display_week($ajax) {
 		global $I2_QUERY;
 		$c = "<span style='display:none'>::START::</span>";
 		$md = isset($I2_QUERY['day']) ? date('Ymd', self::parse_day_query()) : null;
@@ -378,6 +395,8 @@ class BellSchedule implements Module {
 		$c.= "</tr></table>";
 		$c.="<p><span style='max-width: 500px'>Schedules are subject to change.</span></p>";
 		$c.="<span style='display:none'>::END::</span>";
+		if($ajax)
+			return $c;
 		$disp = new Display('bellschedule');
 		$disp->raw_display($c);
 		return FALSE;

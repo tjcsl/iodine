@@ -23,7 +23,6 @@
 	<div style='height: 160px;float: center'>[<$schedule.schedule>]</div>
 
 </div>
-
 <div id="schedule_week">
 	<p>One moment please..</p>
 	<p>If the page doesn't load, <a href='http://www.calendarwiz.com/calendars/calendar.php?crd=tjhsstcalendar'>click to view the main TJ calendar.</a></p>

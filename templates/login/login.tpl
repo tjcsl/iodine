@@ -18,7 +18,6 @@
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/login.js"></script>
 	<script type="text/javascript">
 	week_base_url = "news";
-	day_base_url = "news";
 	</script>
 	<script type="text/javascript">
 	//Set some variables so that any script can use them.
