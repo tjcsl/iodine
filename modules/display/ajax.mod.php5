@@ -1,27 +1,35 @@
 <?php
 /**
-* @package core
-* @subpackage Display
-* Contains Ajax support
-*/
+ * @package core
+ * @subpackage Display
+ * Contains Ajax support
+ */
 
 /**
-* @package core
-* @subpackage Display
-* Contains Ajax support
-*/
+ * @package core
+ * @subpackage Display
+ * Contains Ajax support
+ */
 class Ajax {
 	/**
-    * If the requested iodine module is ajax, the core will not call the
-    * display_loop for a module named ajax, but instead will call this
-    * function, where $module is I2_ARGS[1].
+	 * If the requested iodine module is ajax, the core will not call the
+	 * display_loop for a module named ajax, but instead will call this
+	 * function, where $module is I2_ARGS[1].
 	 **/
 	function returnResponse($module) {
 		global $I2_SQL, $I2_ARGS, $I2_LDAP;
 
-      // Stop the display of debugging information
-      Display::stop_display();
-      
+		// Stop the display of debugging information
+		Display::stop_display();
+
+		if(get_i2module($module)) {
+			$mod = new $module();
+			if(method_exists($mod,'ajax'))
+				return $mod->ajax();
+			else
+				echo "Error: Attempted to use a module that does not support ajax.";
+		}
+
       /*if($module == "intrabox") {
 			$uid = $I2_ARGS[2];
 			$boxes = explode(",", strtr($I2_ARGS[3], array("intrabox_" => "")));
@@ -40,55 +48,55 @@ class Ajax {
 				$I2_SQL->query("UPDATE intrabox_map SET box_order=%d WHERE uid=%d AND boxid=%d ORDER BY box_order ASC", $boxes_todo[0]['box_order'], $uid, $boxes_todo[1]['boxid']);
 			}
 			echo implode(",", flatten($I2_SQL->query("SELECT name FROM intrabox LEFT JOIN intrabox_map USING (boxid) WHERE uid=%d ORDER BY box_order ASC", $uid)->fetch_all_arrays(MYSQLI_NUM)));
-		}*/
+      }*/
 		if($module == 'webpage_title') {
-         $retvalue = "";
+			$retvalue = "";
 			if(!($row = $I2_LDAP->search_base(LDAP::get_user_dn($I2_ARGS[2]), 'webpage')))
 				return NULL;
-         $urls = $row->fetch_single_value();
-         
-         if(!is_array($urls))
-            $urls = array($urls);
+			$urls = $row->fetch_single_value();
 
-         if($urls[0] == "") {
-            echo "0" . "\n";
-            return "0" . "\n";
-         }
+			if(!is_array($urls))
+				$urls = array($urls);
 
-         echo sizeof($urls) . "\n";
-         $retvalue .= sizeof($urls) . "\n";
+			if($urls[0] == "") {
+				echo "0" . "\n";
+				return "0" . "\n";
+			}
 
-         foreach ($urls as &$url) {
-            if($handle = fopen($url, 'rb')) {
-               $title = '';
+			echo sizeof($urls) . "\n";
+			$retvalue .= sizeof($urls) . "\n";
 
-               $text = '';
-               while(TRUE) {
-                  // fread()'s maximum number of bytes at a time is 8192.
-                  $text .= fread($handle, 8192);
-                  if(feof($handle))
-                     break;
-               }
-               fclose($handle);
+			foreach ($urls as &$url) {
+				if($handle = fopen($url, 'rb')) {
+					$title = '';
 
-               $matches = array();
-               preg_match('/<title>(.*)<\/title>/', $text, $matches);
-               if(isset($matches[1]))
-                  $title =  $matches[1];
-               else
-                  $title = $url;
-               // now replace the <script> tags
-               $title = strip_tags(preg_replace('/<script.*>.*<\/script>/', '', $title));
-               echo $title . "\n";
-               $retvalue .= $title . "\n";
-            }
-            else {
-               echo $url;
-               $retvalue .= $url;
-            }
-         }
-         return $retvalue;
-      }
+					$text = '';
+					while(TRUE) {
+						// fread()'s maximum number of bytes at a time is 8192.
+						$text .= fread($handle, 8192);
+						if(feof($handle))
+							break;
+					}
+					fclose($handle);
+
+					$matches = array();
+					preg_match('/<title>(.*)<\/title>/', $text, $matches);
+					if(isset($matches[1]))
+						$title =  $matches[1];
+					else
+						$title = $url;
+					// now replace the <script> tags
+					$title = strip_tags(preg_replace('/<script.*>.*<\/script>/', '', $title));
+					echo $title . "\n";
+					$retvalue .= $title . "\n";
+				}
+				else {
+					echo $url;
+					$retvalue .= $url;
+				}
+			}
+			return $retvalue;
+		}
 	}
 }
 ?>
