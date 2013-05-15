@@ -284,8 +284,30 @@ class BellSchedule implements Module {
 			return self::display_week($disp);
 		}
 		$template_args = self::gen_day_view();
-		$disp->disp('pane_schedule.tpl', $template_args);
+		$disp->disp('schedule.tpl', $template_args);
 	}
+
+	/**
+	* Required by the {@link Module} interface.
+	*/
+	function init_box() {
+		return "Bell Schedule";
+	}
+
+	/**
+	* Required by the {@link Module} interface.
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_box($disp) {
+		$intrabox_args = self::gen_day_view();
+		//FIXME: week dosen't work in the intrabox.
+		$intrabox_args['is_intrabox'] = TRUE;
+		$intrabox_args['box'] = "_box";
+		$disp->disp('schedule.tpl', $intrabox_args);
+	}
+
+
+	// Public helper methods
 
 	/**
 	* Generate a day view
@@ -296,6 +318,8 @@ class BellSchedule implements Module {
 		$args = [];
 		$date = self::parse_day_query();
 		$args['date'] = date('l, F j', $date);
+		$args['is_intrabox'] = FALSE;
+		$args['box'] = "";
 		// is it after 5pm?
 		$args['tomorrow'] = $tomorrow = date('G') > 16 ? TRUE : FALSE;
 
@@ -364,23 +388,6 @@ class BellSchedule implements Module {
 		$disp->raw_display($c);
 		return FALSE;
 	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return "Bell Schedule";
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_box($disp) {
-		return $this->display_pane($disp);
-	}
-
-	// Public helper methods
 
 	/**
 	* Get the schedule from the TJ CalendarWiz iCal feed
