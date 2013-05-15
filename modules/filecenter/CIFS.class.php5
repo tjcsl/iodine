@@ -85,7 +85,7 @@ class CIFS extends Filesystem {
 		}
 
 
-		$cifscommand = "sudo /sbin/mount.cifs //{$this->server}/{$this->share} $mount_point --verbose";
+		$cifscommand = "sudo /sbin/mount.cifs //{$this->server}/{$this->share} $mount_point";
 		$cifscommand .= isset($this->domain) ? " -o domain=\"$this->domain\"" : "";
 		$cifscommand .= " -o username=\"$user\"";
 
