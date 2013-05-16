@@ -523,7 +523,7 @@ class Eighth implements Module {
 				$I2_API->endElement();
 				break;
 			// $I2_ARGS[2] == date (Y-m-d)
-			// $I2_ARGS[3] == user id
+			// $I2_ARGS[3] == user id (optional, defaults to current user)
 			case 'signedup_activities':
 				try {
 					if(isset($I2_ARGS[2])) {
