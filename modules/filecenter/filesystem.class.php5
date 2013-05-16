@@ -240,7 +240,7 @@ abstract class Filesystem {
 				$filepath = $i2file->get_absolute_path();
 				$filepath = substr($filepath, strlen($origpath)+1);
 				if ($i2file->get_size() < i2config_get('max_zip_filesize', 104857600, 'filecenter')) {
-					$process = proc_open("zip $zippath '$filepath'", $descriptors, $pipes, $origpath);
+					$process = proc_open("zip $zippath ".escapeshellarg($filepath), $descriptors, $pipes, $origpath);
 					$code = proc_close($process);
 
 					if ($code !== 0) {
