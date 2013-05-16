@@ -20,7 +20,7 @@ class BellSchedule implements Module {
 	* Must be https to avoid being cached by the proxy.
 	*/
 	private static $url = 'https://www.calendarwiz.com/CalendarWiz_iCal.php?crd=tjhsstcalendar';
-	
+
 	/**
 	* The normal schedules
 	*/
@@ -268,7 +268,7 @@ class BellSchedule implements Module {
 		return false;
 	}
 
-	
+
 	/**
 	* We don't really support this yet, but make it look like we do.
 	*/
@@ -583,7 +583,7 @@ class BellSchedule implements Module {
 				} else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
 						return self::get_default_schedule('jlcmidterm');
 				/*
-				* 2013 AP EXAMS 
+				* 2013 AP EXAMS
 				* FIXME: hard coded
 				*/
 				} else if(($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day' || $descriptionMatches[1] == 'Modified Anchor Day')
@@ -614,7 +614,7 @@ class BellSchedule implements Module {
 				return self::get_default_schedule(null, $dwk);
 		}
 	}
-	
+
 	/**
 	* Downloads a file.
 	*

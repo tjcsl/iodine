@@ -385,10 +385,11 @@ class Display {
 	public function fetch($template, $args=array(), $validate = TRUE) {
 		$this->assign_i2vals();
 		$this->smarty_assign($args);
-		if( $validate && (($tpl = self::get_template(strtolower($this->my_module_name).'/'.$template)) === NULL) ) {
-			throw new I2Exception('Invalid template `'.$this->my_module_name.'/'.$template.'` passed to Display');
+		if( (($tpl = self::get_template(strtolower($this->my_module_name).'/'.$template)) === NULL) ) {
+			if($validate)
+				throw new I2Exception('Invalid template `'.$this->my_module_name.'/'.$template.'` passed to Display');
 		}
-		return $this->smarty->fetch($template);
+		return $this->smarty->fetch($tpl);
 	}
 
 	/**
