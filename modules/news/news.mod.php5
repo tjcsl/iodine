@@ -500,6 +500,7 @@ class News implements Module {
 		fclose($fh);
 	}
 	private function get_new_message() {
+		global $I2_ROOT;
 		// HTTPS because otheriwse it gets cached by the proxy, which is bad.
 		// It endangers kittens because they don't get information quickly enough.
 		/*$url = i2config_get('emerg_url','https://www.fcps.edu/content/emergencyContent.html','emergency'); // FCPS Emergency announcement _really_ short summary page.
