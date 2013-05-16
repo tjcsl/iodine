@@ -17,9 +17,6 @@
 	<link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/login.js"></script>
 	<script type="text/javascript">
-	week_base_url = "news";
-	</script>
-	<script type="text/javascript">
 	//Set some variables so that any script can use them.
 	var i2root="[<$I2_ROOT>]";
 	</script>

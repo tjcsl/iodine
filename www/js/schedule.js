@@ -1,4 +1,5 @@
 if(typeof window.cached_req == 'undefined') window.cached_req = {};
+week_base_url = i2root + "ajax/bellschedule"
 week_click = function() {
 	if(typeof weekd == 'undefined' || (typeof weekd != 'undefined' && !weekd)) {
 		weekd = true;

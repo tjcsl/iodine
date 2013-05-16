@@ -284,7 +284,7 @@ class Auth {
 		 * @returns bool Whether or not the user has successfully logged in.
 		 */
 		public function login() {
-			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $I2_API, $modauth_loginfailed, $modauth_err, $I2_QUERY, $template_args;
+			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $I2_API, $I2_AJAX, $modauth_loginfailed, $modauth_err, $I2_QUERY, $template_args;
 
 			// the log function uses this to tell if the login was successful
 			// if login fails, something else will set it
@@ -379,6 +379,7 @@ class Auth {
 			$disp = new Display('login');
 
 			$disp->smarty_assign('backgrounds', self::get_background_images());
+			//FIXME: all these special cases should not be in the login() function.
 			if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='api') {
 
 				$I2_API->init();
@@ -407,6 +408,8 @@ class Auth {
 				$I2_API->endElement();
 				$I2_API->endElement();
 				exit(0);
+			} else if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='ajax' && $I2_ARGS[1]=='bellschedule') {
+				$I2_AJAX->returnResponse($I2_ARGS[1]);
 			} else {
 				$disp->disp('login.tpl', $template_args);
 				//$disp->disp('fb.tpl', $template_args);

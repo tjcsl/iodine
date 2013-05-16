@@ -174,9 +174,18 @@ try {
 	/**
 	 * The Api object.
 	 * Used in Auth, so must come first.
+	 *
 	 * @global Api $I2_API
 	 */
 	$I2_API  = new Api();
+
+	/**
+	 * The control mechanism for all Asynchonous Javascript and XML.
+	 * Used in Auth, so must come first.
+	 *
+	 * @global Ajax $I2_AJAX
+	 */
+	$I2_AJAX  = new Ajax();
 
 	/**
 	 * The global authentication mechanism.
@@ -194,7 +203,11 @@ try {
 	 *
 	 * @global LDAP $I2_LDAP
 	 */
-	if(isset($I2_ARGS[0]) && ($I2_ARGS[0]=='feeds' || (($I2_ARGS[0]=='calendar' || ($I2_ARGS[0] == 'api' && $I2_ARGS[1] == 'bellschedule')) && !$I2_AUTH->is_authenticated(TRUE)))) {
+	$ldap_excludes = ($I2_ARGS[0] == 'feeds' ||
+		$I2_ARGS[0] == 'calendar' ||
+		($I2_ARGS[0] == 'api' && $I2_ARGS[1] == 'bellschedule') ||
+		($I2_ARGS[0] == 'ajax' && $I2_ARGS[1] == 'bellschedule'));
+	if(isset($I2_ARGS[0]) && $ldap_excludes && !$I2_AUTH->is_authenticated(TRUE)) {
 		//don't try to bind when you're in generic mode.
 		$I2_LDAP = LDAP::get_generic_bind();
 		$I2_USER = new User(9999);
@@ -223,13 +236,6 @@ try {
 	 * @global Display $I2_DISP
 	 */
 	$I2_DISP = new Display();
-
-	/**
-	 * The control mechanism for all Asynchonous Javascript and XML.
-	 *
-	 * @global Ajax $I2_AJAX
-	 */
-	$I2_AJAX  = new Ajax();
 
 	/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here) */
 

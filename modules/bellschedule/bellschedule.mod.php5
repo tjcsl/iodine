@@ -347,10 +347,10 @@ class BellSchedule implements Module {
 			$args['header'] = "Today's Schedule<br />";
 			if($tomorrow)
 				$args['has_custom_day'] = true;
-		}
-		else if($day == 1 && $tomorrow)
+		} else if($day == 1 && $tomorrow) {
 			$args['header'] = "Tomorrow's Schedule<br />";
-		else {
+			$args['has_custom_day'] = false;
+		} else {
 			$args['header'] = "Schedule for<br />";
 			$args['has_custom_day'] = true;
 		}
