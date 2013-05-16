@@ -412,20 +412,6 @@ class Eighth implements Module {
 		}
 	}
 
-	private static function print_block($block) {
-		global $I2_API;
-		$I2_API->startElement('block');
-		$I2_API->writeElement('bid',$block['bid']);
-		$I2_API->startElement('date');
-		$I2_API->writeElement('str',$block['date']);
-		$I2_API->writeElement('iso',date('c',strtotime($block['date'])));
-		$I2_API->writeElement('disp',date('F j, Y',strtotime($block['date'])));
-		$I2_API->endElement();
-		$I2_API->writeElement('disp',date('l F jS, Y',strtotime($block['date']))." Block ".$block['block']);
-		$I2_API->writeElement('type',$block['block']);
-		$I2_API->writeElement('locked',$block['locked']);
-		$I2_API->endElement();
-	}
 	private static function print_activity($act) {
 		global $I2_API;
 		$I2_API->startElement('activity');
@@ -466,7 +452,7 @@ class Eighth implements Module {
 		switch($I2_ARGS[1]) {
 			case 'list_blocks':
 				if (!isset($I2_QUERY['start_date'])) {
-					$start_date = EighthSchedule::get_next_date();
+					$start_date = date("Y-m-d");
 				} else {
 					$start_date = $I2_QUERY['start_date'];
 				}
@@ -476,9 +462,19 @@ class Eighth implements Module {
 					$daysf = $I2_QUERY['daysforward'];
 				}
 				$blocks = EighthBlock::get_all_blocks($start_date, $daysf);
-				$I2_API->startElement('blocks');
+				$I2_API->startElement('body');
 				foreach($blocks as $block) {
-					self::print_block($block);
+					$I2_API->startElement('block');
+					$I2_API->writeElement('bid',$block['bid']);
+					$I2_API->startElement('date');
+					$I2_API->writeElement('str',$block['date']);
+					$I2_API->writeElement('iso',date('c',strtotime($block['date'])));
+					$I2_API->writeElement('disp',date('F j, Y',strtotime($block['date'])));
+					$I2_API->endElement();
+					$I2_API->writeElement('disp',date('l F jS, Y',strtotime($block['date']))." Block ".$block['block']);
+					$I2_API->writeElement('type',$block['block']);
+					$I2_API->writeElement('locked',$block['locked']);
+					$I2_API->endElement();
 				}
 				$I2_API->endElement();
 				break;
@@ -528,41 +524,30 @@ class Eighth implements Module {
 				break;
 			// $I2_ARGS[2] == date (Y-m-d)
 			// $I2_ARGS[3] == user id (optional, defaults to current user)
-			case 'list_signedup':
+			case 'signedup_activities':
 				try {
 					if(isset($I2_ARGS[2])) {
 						$date = $I2_ARGS[2];
 					} else {
 						$date = EighthSchedule::get_next_date();
 					}
-					if (!isset($I2_QUERY['daysforward'])) {
-						$daysf = 99999;
-					} else {
-						$daysf = $I2_QUERY['daysforward'];
-					}
 					if(isset($I2_ARGS[3])) {
 						$u = $I2_ARGS[3];
 					} else {
 						$u = $I2_USER->uid;
 					}
-					//$acts = EighthActivity::id_to_activity(EighthSchedule::get_activities($u, $date), FALSE);
-					$blocks = EighthBlock::get_all_blocks($date, $daysf);
+					$acts = EighthActivity::id_to_activity(EighthSchedule::get_activities($u, $date), FALSE);
 				} catch(Exception $e) {
 					throw new I2Exception("Failed getting activities.");
 				}
-				$I2_API->startElement('blocks');
-				foreach($blocks as $block) {
-					self::print_block($block);
-				}
-				$I2_API->endElement();
-				/*$I2_API->startElement('activites');
+				$I2_API->startElement('activites');
 				foreach($acts as $act) {
 					self::print_activity($act);
 				}
 				if(count($acts)<0) {
 				       throw new I2Exception("No data was returned. There may not be a block on this date or you may not have permissions to view this user's activities.");
 				}
-				$I2_API->endElement();*/
+				$I2_API->endElement();
 				break;
 			default:
 				throw new I2Exception("Invalid argument given to eighth module.");
