@@ -388,8 +388,9 @@ class BellSchedule implements Module {
 
 		foreach($schedules as $day=>$schedule) {
 			$nday = date('l, F j', strtotime($day));
-			$m = (isset($schedule['modified'])? ' desc-modified': '');
-			$c.= "<td class='desc".$m."''>";
+			if(strpos($schedule['description'], 'Modified')!==false)
+				$schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
+			$c.="<td class='desc schedule-".self::parse_schedule_day($schedule['description'])."'>";
 			$c.=$schedule['description']."</td>";
 		}
 		$c.= "</tr><tr>";
@@ -460,13 +461,13 @@ class BellSchedule implements Module {
 	* @return string The schedule array index
 	*/
 	public static function parse_schedule_day($desc) {
-		if(strpos($desc, "Blue"))
+		if(strpos($desc, "Blue")!==false)
 			return 'blue';
-		else if(strpos($desc, "Red"))
+		else if(strpos($desc, "Red")!==false)
 			return 'red';
-		else if(strpos($desc, "Anchor"))
+		else if(strpos($desc, "Anchor")!==false)
 			return 'anchor';
-		else if(strpos($desc, "No school"))
+		else if(strpos($desc, "No school")!==false)
 			return 'noschool';
 		else
 			return 'other';
@@ -600,7 +601,7 @@ class BellSchedule implements Module {
 					       	$d = substr($d, 1);
 					d('Modified AP Day: '.$d.' exists: '.isset(self::$apExamSchedule[$d]));
 					if(isset(self::$apExamSchedule[$d])) {
-						return array('description' => self::$apExamSchedule[$d]['description'], 'schedule' => self::$apExamSchedule[$d]['schedule'], 'modified' => true);
+						return ['description' => self::$apExamSchedule[$d]['description'], 'schedule' => self::$apExamSchedule[$d]['schedule']];
 					} else {
 						d('Using default schedule--may not be correct!');
 						return self::get_default_schedule(null, $dwk);

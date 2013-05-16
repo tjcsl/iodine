@@ -1,9 +1,6 @@
 #schedule_week {
 	display: none;
 }
-.desc-modified {
-	color: red;
-}
 #schedule_week.ibox_exp {
 	position: fixed;
 	width: 100%;
