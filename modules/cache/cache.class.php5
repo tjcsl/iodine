@@ -102,7 +102,7 @@ class Cache {
 			return false;
 		}
 		d("memcache lookup $hash succeeded",7);
-		d(print_r($val,true),7);
+		d(print_r(unserialize($val),true),7);
 		//$val2=unserialize($val);
 		//print_r($val);
 		//if($val2!==false) $val=$val2;

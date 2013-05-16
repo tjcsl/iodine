@@ -187,22 +187,18 @@ class Logging {
 		if ($level === NULL) { /* If not set, get default debug level */
 			$level = $this->default_debug_level;
 		}
+		$msg = 'Level '.$level.' debug: '.$msg;
 		if(is_int($level)) {
 			if ($level > $this->debug_loglevel) {
 				return;
 			}
-			if ($this->screen_debug) {
-				$this->log_screen('Level '.$level.' debug: '.$msg);
-			} else {
-				$this->log_file($msg,$level);
-			}
-		} else {
-			if ($level == 'P' && $this->debug_profile)
-				if ($this->screen_debug) {
-					$this->log_screen('Level '.$level.' debug: '.$msg);
-				} else {
-					$this->log_file($msg,$level);
-				}
+			if ($this->screen_debug)
+				$this->log_screen($msg);
+			$this->log_file($msg,$level,$this->debug_log);
+		} else if ($level == 'P' && $this->debug_profile) {
+			if ($this->screen_debug)
+				$this->log_screen($msg);
+			$this->log_file($msg,$level);
 		}
 	}
 
@@ -223,14 +219,14 @@ class Logging {
 	/**
 	* Logs directly to a file
 	*/
-	public function log_file($msg,$level=NULL) {
-		if ($level === NULL) { /* If not set, get default debug level */
+	public function log_file($msg, $level=NULL, $logfile=NULL) {
+		if ($level === NULL) /* If not set, get default debug level */
 			$level = $this->default_debug_level;
-		}
-		if ($level > $this->debug_loglevel) {
+		if ($logfile === NULL)
+			$logfile = $this->error_log;
+		if ($level > $this->debug_loglevel)
 			return;
-		}
-		file_put_contents($this->error_log,
+		file_put_contents($logfile,
 			$msg."\n",
 			FILE_APPEND
 		);
