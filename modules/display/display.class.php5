@@ -37,7 +37,7 @@ class Display {
 	* @access public
 	*/
 	public $buffer;
-	
+
 	/**
 	* Whether to buffer output.
 	*
@@ -50,7 +50,7 @@ class Display {
 	* @access private
 	*/
 	private static $core_display = NULL;
-	
+
 	/**
 	* Whether to display anything.
 	* @access private
@@ -63,12 +63,12 @@ class Display {
 	* since it's referenced so much in Display.
 	*/
 	private static $tpl_root = NULL;
-	
+
 	private static $style = NULL;
-	
+
 	/**
 	* The Display class constructor.
-	* 
+	*
 	* @access public
 	* @param string $module_name The name of the module this Display object applies to.
 	*/
@@ -88,7 +88,7 @@ class Display {
 
 		// Caching off by default
 		$this->smarty->caching = false;
-		
+
 		//TODO: turn this off for production code!
 		$this->smarty->compile_check = true;
 
@@ -109,7 +109,7 @@ class Display {
 	}
 
 	/**
-	* Sets the name of the module associated with this Display object. 
+	* Sets the name of the module associated with this Display object.
 	*
 	* Useful for handing off Display objects to other classes.
 	*/
@@ -152,19 +152,19 @@ class Display {
 
 		$mod = '';
 
-		try {	
+		try {
 			if( !get_i2module($module) ) {
 				$this->global_header('Error');
 				$this->open_content_pane(array('no_module' => $module));
 				$this->close_content_pane();
 			}
 			else {
-		
+
 				/*
 				** Display the main pane.
 				*/
 				$disp = new Display($module);
-				
+
 				$mod = NULL;
 
 				try {
@@ -186,14 +186,14 @@ class Display {
 					$this->close_content_pane();
 					throw $e;
 				}
-				
+
 				if ( $title === FALSE) {
 					$this->global_header('Error');
 					$this->open_content_pane(array('no_module' => $module));
 					$this->close_content_pane();
 				}
 				else {
-	
+
 					if( !is_array($title) ) {
 						$title = array( $title, $title );
 					}
@@ -203,11 +203,11 @@ class Display {
 					elseif( count($title) == 0 ) {
 						$title = array( NULL, '&nbsp;' );
 					}
-				
+
 					$display_chrome = (isset($I2_USER)?($I2_USER->chrome=='TRUE'?TRUE:FALSE):FALSE);
 
 					$this->global_header($title[0],$display_chrome,$nagging);
-					
+
 					if (!self::$display_stopped && $title) {
 						if ($display_chrome) {
 							$this->open_content_pane(array('title' => htmlspecialchars($title[1])),$nagging);
@@ -231,13 +231,13 @@ class Display {
 					}
 				}
 			}
-						
+
 		} catch (Exception $e) {
 			$I2_ERR->nonfatal_error('Exception raised in module '.$module.', while processing main pane. Exception: '.$e->__toString());
 		}
-			
+
 		Intrabox::display_boxes($mod,$nagging);
-		
+
 		$this->global_footer();
 	}
 
@@ -258,7 +258,7 @@ class Display {
 			$this->smarty->clear_cache($template);
 		}
 	}
-	
+
 	/**
 	* Inform Dislay that the user's style has changed.
 	*/
@@ -324,7 +324,7 @@ class Display {
 			$this->smarty->assign($var,$value);
 		}
 	}
-	
+
 	public function smarty_register_function($name, $call = NULL) {
 		$this->smarty->register_function($name, ($call == NULL ? $name : $call));
 	}
@@ -351,7 +351,7 @@ class Display {
 
 	/**
 	* The display function.
-	* 
+	*
 	* @param string $template File name of the template.
 	* @param array $args Associative array of Smarty arguments.
 	*/
@@ -359,17 +359,17 @@ class Display {
 		if(self::$display_stopped) {
 			return;
 		}
-	
+
 		$this->assign_i2vals();
 		$this->smarty_assign($args);
-		
+
 		// Validate template given
 		if( $validate && (($tpl = self::get_template(strtolower($this->my_module_name).'/'.$template)) === NULL) ) {
 			throw new I2Exception('Invalid template `'.$this->my_module_name.'/'.$template.'` passed to Display');
 		}
-		
+
 		if ($this->buffering_on()) {
-			self::$core_display->buffer .= $this->smarty->fetch($tpl); 
+			self::$core_display->buffer .= $this->smarty->fetch($tpl);
 			#die("Got here");
 		} else {
 			$this->smarty->display($tpl);
@@ -388,9 +388,9 @@ class Display {
 		if( $validate && (($tpl = self::get_template(strtolower($this->my_module_name).'/'.$template)) === NULL) ) {
 			throw new I2Exception('Invalid template `'.$this->my_module_name.'/'.$template.'` passed to Display');
 		}
-		return $this->smarty->fetch($tpl);
+		return $this->smarty->fetch($template);
 	}
-	
+
 	/**
 	* Output raw HTML to the browser.  Not advisable.
 	*
@@ -400,14 +400,14 @@ class Display {
 		if(self::$display_stopped) {
 			return;
 		}
-	
+
 		if ($this->buffering_on()) {
 			self::$core_display->buffer .= "$text";
 		} else {
 			echo($text);
 		}
 	}
-	
+
 	/**
 	* Clear any output buffers, ensuring that all data is written to the browser.
 	*/
@@ -429,7 +429,7 @@ class Display {
 	public function clear_buffer() {
 		self::$core_display->buffer = '';
 	}
-	
+
 	/**
 	* Set whether or not to buffer output.
 	*
@@ -441,7 +441,7 @@ class Display {
 			$this->flush_buffer();
 		}
 	}
-	
+
 	/**
 	* Outputs everything that should go to the user before iboxes, regardless
 	* of whether it will appear at the top or bottom of the finished layout.
@@ -455,8 +455,8 @@ class Display {
 		global $I2_USER;
 		$this->smarty_assign(
 			array(
-					'title' => htmlspecialchars($title), 
-					'first_name' => (isset($I2_USER)?$I2_USER->fname:"Noman"), 
+					'title' => htmlspecialchars($title),
+					'first_name' => (isset($I2_USER)?$I2_USER->fname:"Noman"),
 					'chrome' => $chrome
 			)
 		);
@@ -543,7 +543,7 @@ class Display {
 	*/
 	public static function get_template($tpl) {
 		$path = self::$tpl_root . $tpl;
-		
+
 		if (is_readable($path)) {
 			return $path;
 		}
