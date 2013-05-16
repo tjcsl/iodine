@@ -500,7 +500,7 @@ class News implements Module {
 		fclose($fh);
 	}
 	private function get_new_message() {
-		global $I2_ROOT;
+		global $I2_FS_ROOT;
 		// HTTPS because otheriwse it gets cached by the proxy, which is bad.
 		// It endangers kittens because they don't get information quickly enough.
 		/*$url = i2config_get('emerg_url','https://www.fcps.edu/content/emergencyContent.html','emergency'); // FCPS Emergency announcement _really_ short summary page.
@@ -527,7 +527,7 @@ class News implements Module {
 			return "<!-- ERROR: We can't reach FCPS' page. -->"; // If fcps isn't up, don't bother showing anything.
 		}*/
 		d('Checking FCPS emerg msgs and including simple_html_dom', 9);
-		require_once $I2_ROOT.'lib/simple_html_dom.php';
+		require_once $I2_FS_ROOT.'lib/simple_html_dom.php';
 		$url = "http://www.fcps.edu/news/emerg.shtml";
 		try {
 			if($fgetc = $this->curl_file_get_contents($url)) {
