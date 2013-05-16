@@ -1,10 +1,10 @@
 if(typeof window.cached_req == 'undefined') window.cached_req = {};
-week_base_url = i2root + "ajax/bellschedule"
-week_click = function() {
+week_base_url = i2root + "ajax/bellschedule";
+week_click = function(day) {
 	if(typeof weekd == 'undefined' || (typeof weekd != 'undefined' && !weekd)) {
 		weekd = true;
 		$("#week_click").html("Back");
-		return week_show();
+		return week_show(day);
 	} else {
 		weekd = false;
 		$("#week_click").html("Week");
@@ -12,7 +12,7 @@ week_click = function() {
 	}
 };
 
-week_show = function() {
+week_show = function(dayoffset) {
 
 	$sp = $('#schedule_week').parent();
 	if($sp.hasClass('boxcontent')) {
@@ -26,7 +26,7 @@ week_show = function() {
 	$("#schedule h2, #schedule p, #schedule div").hide();
 	$("#schedule_t").show();
 	$('#schedule_week').show();
-	
+
 	$('#week_b, #week_f, #week_today').hide();
 
 	function getMonday(d) {
@@ -43,12 +43,7 @@ week_show = function() {
 		return new Date(d.setDate(d.getDate() + offset));
 	}
 
-	var daygetvar = "";
-	var dayoffset = 0;
-	if (window.location.search.indexOf('day=')!==-1) {
-		dayoffset = parseInt(window.location.search.split('day=')[1], 10);
-		daygetvar = "&day=" + dayoffset;
-	}
+	var daygetvar = "&day=" + dayoffset;
 
 	m = new Date();
 	m.setDate(m.getDate() + dayoffset);
@@ -63,6 +58,7 @@ week_show = function() {
 
 	u+= '&start='+(d);
 	u+= '&end='+(d+5);
+
 	if(typeof window.cached_req[u] == 'undefined') {
 		$.get(u, {}, function(d) {
 			//try {

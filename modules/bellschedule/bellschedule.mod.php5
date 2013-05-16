@@ -347,6 +347,7 @@ class BellSchedule implements Module {
 			$args['header'] = "Today's Schedule<br />";
 			if($tomorrow)
 				$args['has_custom_day'] = true;
+			else $args['has_custom_day'] = false;
 		} else if($day == 1 && $tomorrow) {
 			$args['header'] = "Tomorrow's Schedule<br />";
 			$args['has_custom_day'] = false;
@@ -360,6 +361,7 @@ class BellSchedule implements Module {
 		if(strpos($schedule['description'], 'Modified')!==false)
 			$schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
 		$args['schedule'] = $schedule;
+
 		return $args;
 	}
 
@@ -375,6 +377,8 @@ class BellSchedule implements Module {
 		$we = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : null;
 		$schedules = self::get_schedule_week($ws, $we, $md);
 
+		d(var_dump($schedules));
+		d("hi");
 		$c.= "<table class='weeksched'><tr class='h' style='min-height: 40px;max-height: 40px;line-height: 25px'>";
 		foreach($schedules as $day=>$schedule) {
 			$nday = date('l, F j', strtotime($day));

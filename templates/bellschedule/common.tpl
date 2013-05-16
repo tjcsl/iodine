@@ -12,7 +12,7 @@
 		[</if>]
 	[</if>]
 	[<if !$is_intrabox>]
-		<button id="week_click" onclick="week_click();">Week</button>
+		<button id="week_click" onclick="week_click([<$day>]);">Week</button>
 	[</if>]
 	<button id="week_f[<$box>]" onclick="day_click[<$box>]('[<$day+1>]')">→</button>
 </p>
