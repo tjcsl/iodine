@@ -440,7 +440,6 @@ class Auth {
 			setcookie("background", "", time()-3600);
 			unset($_COOKIE['background']);
 		}
-		d("{$image} does ".file_exists($I2_FS_ROOT . $image)." exist", 8);
 		if(isset($image) && !@file_exists($I2_FS_ROOT . $image)) {
 			d("Background image ({$image}) did not exist.", 8);
 			unset($image);
