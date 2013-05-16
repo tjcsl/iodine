@@ -203,8 +203,8 @@ try {
 	 *
 	 * @global LDAP $I2_LDAP
 	 */
-	$ldap_excludes = (isset($I2_ARGS[0]) &&
-		$I2_ARGS[0] == 'feeds' ||
+	$ldap_excludes = isset($I2_ARGS[0]) &&
+		($I2_ARGS[0] == 'feeds' ||
 		$I2_ARGS[0] == 'calendar' ||
 		($I2_ARGS[0] == 'api' && $I2_ARGS[1] == 'bellschedule') ||
 		($I2_ARGS[0] == 'ajax' && $I2_ARGS[1] == 'bellschedule'));
