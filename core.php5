@@ -203,11 +203,12 @@ try {
 	 *
 	 * @global LDAP $I2_LDAP
 	 */
-	$ldap_excludes = ($I2_ARGS[0] == 'feeds' ||
+	$ldap_excludes = (isset($I2_ARGS[0]) &&
+		$I2_ARGS[0] == 'feeds' ||
 		$I2_ARGS[0] == 'calendar' ||
 		($I2_ARGS[0] == 'api' && $I2_ARGS[1] == 'bellschedule') ||
 		($I2_ARGS[0] == 'ajax' && $I2_ARGS[1] == 'bellschedule'));
-	if(isset($I2_ARGS[0]) && $ldap_excludes && !$I2_AUTH->is_authenticated(TRUE)) {
+	if($ldap_excludes && !$I2_AUTH->is_authenticated(TRUE)) {
 		//don't try to bind when you're in generic mode.
 		$I2_LDAP = LDAP::get_generic_bind();
 		$I2_USER = new User(9999);
