@@ -65,7 +65,7 @@ try {
 	load_module_map();
 
 	//session_set_save_handler(open,close,read,write,destroy,gc);
-	session_set_save_handler(array('SessionGC','open'),array('SessionGC','close'),array('SessionGC','read'),array('SessionGC','write'),array('SessionGC','destroy'),array('SessionGC','gc'));
+	session_set_save_handler(['SessionGC','open'],['SessionGC','close'],['SessionGC','read'],['SessionGC','write'],['SessionGC','destroy'],['SessionGC','gc']);
 
 	session_start();
 
@@ -88,7 +88,7 @@ try {
 	*
 	* @global array $I2_ARGS
 	*/
-	$I2_ARGS = array();
+	$I2_ARGS = [];
 
 	/**
 	* The global associative array for a module's query arguments.
@@ -99,7 +99,7 @@ try {
 	*
 	* @global array $I2_QUERY
 	*/
-	$I2_QUERY = array();
+	$I2_QUERY = [];
 
 	/* Eliminates extraneous slashes in the PATH_INFO
 	** And splits them into the global I2_ARGS array

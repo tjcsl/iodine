@@ -256,7 +256,7 @@ function redirect($url = NULL,$postrelay=false) {
 * @return Array The flattened array.
 */
 function flatten($arr) {
-	$ret = array();
+	$ret = [];
 	foreach($arr as $item) {
 		if( is_array($item) ) {
 			$ret = array_merge($ret,$item);
@@ -275,7 +275,7 @@ function flatten($arr) {
 * @return Array The flattened array.
 */
 function flatten_values($arr) {
-	$ret = array();
+	$ret = [];
 	foreach($arr as $item) {
 		if( is_array($item) ) {
 			$ret = array_merge($ret, array_values($item));

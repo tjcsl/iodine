@@ -20,7 +20,7 @@ if ($who === NULL || $cred === NULL) {
 	exit(1);
 }
 
-$results = array();
+$results = [];
 exec("ldapsearch -x -LLL -D $who -w $cred \"$filter\" iodineUid cn birthday givenName mail",$results);
 $results = implode("\n",$results);
 $results = explode("\n\n",$results);

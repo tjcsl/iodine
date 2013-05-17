@@ -24,7 +24,7 @@ $separator = "MAIL-" . md5(date("r",time()));
 $checkacts = Calendar::get_alert_events($nextday); //List of events to check against
 
 $alerts = $I2_SQL->query($userquery)->fetch_all_arrays();
-$userlist = array();
+$userlist = [];
 foreach($alerts as $row) {
 	$userlist[]=$row['userid'];
 }

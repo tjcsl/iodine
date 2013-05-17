@@ -208,7 +208,7 @@ class CSS implements Module {
 		$contents .= $this->style_sheet->__toString();
 		$contents .= "//$this->current_style";
 		file_put_contents($this->style_cache, $contents);
-		$text=$I2_DISP->fetch($this->style_cache,array(),FALSE);
+		$text=$I2_DISP->fetch($this->style_cache,[],FALSE);
 		unlink($this->style_cache);
 		file_put_contents($this->style_cache, $text);
 	}

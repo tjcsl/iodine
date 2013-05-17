@@ -187,7 +187,7 @@ class JS implements Module {
 			$contents .= "/* WARNING: $message */\n";
 		}
 		$parser = new Display();
-		$contents .= $parser->fetch($this->script_path,array(),FALSE);
+		$contents .= $parser->fetch($this->script_path,[],FALSE);
 		$contents .= "\n/* End of file */\n";
 		$contents .= "//$this->current_style";
 		file_put_contents($this->script_cache,$contents);
