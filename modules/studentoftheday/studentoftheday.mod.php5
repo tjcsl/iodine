@@ -64,7 +64,7 @@ class StudentOfTheDay implements Module {
 		global $I2_ROOT;
 		$student = $this->user->name;
 		$uidnumber = $this->user->iodineUidNumber;
-		$disp->raw_display("<span style=\"font-weight: bold;\">The student of the day is.... $student!!!!!</span><img src=\"$I2_ROOT/pictures/$uidnumber\" />");
+		$disp->raw_display("<span style=\"font-weight: bold;\">The student of the day is.... $student!!!!!</span><br><img src=\"$I2_ROOT/pictures/$uidnumber\" />");
 	}
 
 	public function init_box() {
