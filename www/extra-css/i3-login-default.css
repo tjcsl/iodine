@@ -110,10 +110,6 @@ body {
 	margin:16px auto;
 }
 
-.debug {
-	color:red;
-}
-
 @media (max-width:645px) {
 	body {
 		

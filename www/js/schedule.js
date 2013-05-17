@@ -1,10 +1,12 @@
+// This requires jQuery
+
 if(typeof window.cached_req == 'undefined') window.cached_req = {};
 week_base_url = i2root + "ajax/bellschedule";
-week_click = function(day) {
+week_click = function() {
 	if(typeof weekd == 'undefined' || (typeof weekd != 'undefined' && !weekd)) {
 		weekd = true;
 		$("#week_click").html("Back");
-		return week_show(day);
+		return week_show();
 	} else {
 		weekd = false;
 		$("#week_click").html("Week");
@@ -12,7 +14,19 @@ week_click = function(day) {
 	}
 };
 
-week_show = function(dayoffset) {
+week_stripjs = function(d) {
+	debug_start = '<script type="text/javascript" src="'+i2root+'www/js/cookie.js"></script>';
+	if(d.indexOf(debug_start) !== -1) {
+		d = d.split(debug_start)[0];
+	}
+	d = d.replace(/<script type="text\/javascript" src/g, '<script type="text/javascript" src_disabled');
+	d = d.replace(/<script type='text\/javascript' src/g, '<script type=\'text/javascript\' src_disabled');
+	d = d.replace(/<script src/g, '<script src_disabled');
+	return d;
+};
+
+week_show = function() {
+
 
 	$sp = $('#schedule_week').parent();
 	if($sp.hasClass('boxcontent')) {
@@ -43,7 +57,12 @@ week_show = function(dayoffset) {
 		return new Date(d.setDate(d.getDate() + offset));
 	}
 
-	var daygetvar = "&day=" + dayoffset;
+	var daygetvar = "";
+	var dayoffset = 0;
+	if (window.location.search.indexOf('day=')!==-1) {
+		dayoffset = parseInt(window.location.search.split('day=')[1], 10);
+		daygetvar = "&day=" + dayoffset;
+	}
 
 	m = new Date();
 	m.setDate(m.getDate() + dayoffset);
@@ -58,16 +77,12 @@ week_show = function(dayoffset) {
 
 	u+= '&start='+(d);
 	u+= '&end='+(d+5);
-
 	if(typeof window.cached_req[u] == 'undefined') {
 		$.get(u, {}, function(d) {
-			//try {
-				window.getd = d;
-				window.cached_req[u] = d;
-				week_showget(d, u);
-			//} catch(e) {
-			//	$('#schedule_week').append('<p>An error occurred fetching schedules.</p>');
-			//}
+			d = week_stripjs(d);
+			window.getd = d;
+			window.cached_req[u] = d;
+			week_showget(d, u);
 		}, 'text');
 	} else {
 		week_showget(window.cached_req[u], u);
@@ -83,6 +98,7 @@ week_showget = function(d) {
 		$('#schedule_week').append('<p>An error occurred fetching schedules.</p>');
 		window.location.href = u;
 	}
+
 };
 week_hide = function() {
 	$("#subPane").css({'overflow-x': ''}).removeClass('exp');
@@ -100,14 +116,18 @@ week_hide = function() {
 
 day_click_box = function(day) {
 	day_click(day,true);
-}
+};
 
 day_click = function(day,box) {
+	links_content = '<br /><br />'+$('<div>').append($('ul#links').clone()).html()+'<br />';
+
 	u = week_base_url+'?day='+day;
-	if(typeof box != 'undefined')
-		u = u + '&box'
+	if(typeof box != 'undefined') {
+		u = u + '&box';
+	}
 	if(typeof window.cached_req[u] == 'undefined') {
 		$.get(u, {}, function(d) {
+			d = week_stripjs(d);
 			window.cached_req[u] = d;
 			day_clickget(d,box);
 		}, 'html');
@@ -117,8 +137,13 @@ day_click = function(day,box) {
 };
 
 day_clickget = function(d,box) {
-	if(typeof box == 'undefined')
+	if(typeof box == 'undefined') {
 		$('div#schedule').parent().html(d);
-	else
+	} else {
 		$('div#schedule_box').parent().html(d);
+	}
+
+	if(typeof links_content != 'undefined') {
+		$('#subPane').append(links_content);
+	}
 };
