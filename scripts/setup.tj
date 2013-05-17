@@ -7,17 +7,6 @@ fi
 
 cd ${HOME}/intranet2
 
-rm -rf /tmp/i2cache-`whoami`
-mkdir /tmp/i2cache-`whoami`
-mkdir /tmp/i2cache-`whoami`/styles
-mkdir /tmp/i2cache-`whoami`/mail
-mkdir /tmp/i2cache-`whoami`/smarty
-mkdir /tmp/i2cache-`whoami`/smarty/cache
-mkdir /tmp/i2cache-`whoami`/smarty/templates_c
-mkdir /tmp/i2cache-`whoami`/javascriptstyles
-chmod -R 777 /tmp/i2cache-`whoami`
-chmod 777 /tmp/i2cache-`whoami`/
-echo "Iodine cache dir /tmp/i2cache-`whoami`/ created and given 777 modifier... be warned."
 if [ -f .htaccess ]
 then
 	echo "HAHA! I found your htaccess, so I'll leave it alone."
