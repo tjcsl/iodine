@@ -157,7 +157,7 @@ class JS implements Module {
 
 		$this->script_cache = $script_cache;
 
-		//Recomi)le the cache if it's stale
+		//Recompile the cache if it's stale
 		if (!file_exists($script_cache)) {
 			// || (filemtime($script_cache) < filemtime($this->script_path))
 			$this->recache();
