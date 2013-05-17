@@ -98,7 +98,11 @@ class Calendar implements Module {
 	}
 
 	function display_pane($display) {
-		$display->disp($this->template, $this->template_args);
+		global $I2_USER;
+		if($I2_USER->is_group_member('admin_all') ||$I2_USER->is_group_member('admin_calendar'))
+			$display->disp($this->template, $this->template_args);
+		else
+			return FALSE;
 	}
 
 	function get_name() {
