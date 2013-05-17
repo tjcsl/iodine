@@ -193,7 +193,7 @@ class BellSchedule implements Module {
 	*
 	*/
 	function ajax() {
-		global $I2_QUERY;
+		global $I2_QUERY, $I2_FS_ROOT;
 		$disp = new Display('bellschedule');
 		//FIXME: week is a HACK
 		if(isset($I2_QUERY['week'])) {
@@ -206,7 +206,7 @@ class BellSchedule implements Module {
 			$template_args['is_intrabox'] = TRUE;
 			$template_args['box'] = "_box";
 		}
-		echo $disp->fetch('schedule.tpl', $template_args);
+		echo $disp->fetch($I2_FS_ROOT.'templates/bellschedule/schedule.tpl', $template_args, FALSE);
 	}
 
 	/**
