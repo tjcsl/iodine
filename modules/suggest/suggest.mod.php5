@@ -129,7 +129,7 @@ class Suggest implements Module {
 	}
 	public static function getItems() {
 		$news = NewsItem::get_all_items_nouser();
-		$returner = array();
+		$returner = [];
 		foreach($news as $item) {
 			if($item->public==0) //Only display stuff that's public.
 				continue;

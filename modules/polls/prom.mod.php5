@@ -16,7 +16,7 @@
 class Prom implements Module {
 
 		  private $template = 'prom_pane.tpl';
-		  private $template_args = array();
+		  private $template_args = [];
 
 	/**
 	* Unused; Not supported for this module.
@@ -158,11 +158,11 @@ class Prom implements Module {
 			}
 			$this->template = 'prom_admin.tpl';
 			$tout = $I2_SQL->query('SELECT * FROM prom ORDER BY going, datefrom')->fetch_all_arrays();
-			$notgoing = array();
-			$nodate = array();
-			$tjdate = array();
-			$fcpsdate = array();
-			$fardate = array();
+			$notgoing = [];
+			$nodate = [];
+			$tjdate = [];
+			$fcpsdate = [];
+			$fardate = [];
 			foreach ($tout as $someone) {
 				$u = new User($someone['uid']);
 				$name = $u->name;

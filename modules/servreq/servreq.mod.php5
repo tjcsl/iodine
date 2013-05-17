@@ -29,9 +29,9 @@ class ServReq implements Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
-	private $box_args = array();
+	private $box_args = [];
 
 	/**
 	* Whether the current user is a teacher/admin.
@@ -107,10 +107,10 @@ class ServReq implements Module {
 
 			case 'add':
 				$group = new Group(8); //all staff
-				$this->template_args['approvers'] = array();
+				$this->template_args['approvers'] = [];
 				$users = $group->members_obj_sorted;
 				foreach($users as $person){
-					$person_array = array();
+					$person_array = [];
 					$person_array['name'] = $person->name;
 					$person_array['uid'] = $person->uid;
 					$this->template_args['approvers'][] = $person_array;

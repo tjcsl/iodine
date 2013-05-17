@@ -55,9 +55,9 @@ class CSSParser {
 	}
 
 	private function readRuleset() {
-		$ruleset = array();
+		$ruleset = [];
 		while (substr($this->css, 0, 1) != '}' && strlen($this->css) > 0) {
-			$rules = array();
+			$rules = [];
 			$brace = CSSParser::findString($this->css, '{');
 			$rule = trim(substr($this->css, 0, $brace), ' ');
 			$this->css = trim(substr($this->css, $brace+1), ' ');

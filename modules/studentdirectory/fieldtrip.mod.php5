@@ -16,7 +16,7 @@
 class Fieldtrip implements Module {
 	
 	private $template;
-	private $template_args = array();
+	private $template_args = [];
 		
 	/**
 	* Unused; Not supported for this module.
@@ -102,8 +102,8 @@ class Fieldtrip implements Module {
 				$periods = $_REQUEST['periods'];
 			}
 
-			$teachers = array();
-			$notfound = array();
+			$teachers = [];
+			$notfound = [];
 			foreach ($students as $student) {
 				try {
 					$user = new User($student);
@@ -118,10 +118,10 @@ class Fieldtrip implements Module {
 						$tchr = $section->teacher->name_comma;
 						$pd = $section->period;
 						if (!array_key_exists($tchr, $teachers)) {
-							$teachers[$tchr] = array();
+							$teachers[$tchr] = [];
 						}
 						if (!array_key_exists($pd, $teachers[$tchr])) {
-							$teachers[$tchr][$pd] = array();
+							$teachers[$tchr][$pd] = [];
 						}
 						if (!in_array($user, $teachers[$tchr][$pd])) {
 							$teachers[$tchr][$pd][] = $user;

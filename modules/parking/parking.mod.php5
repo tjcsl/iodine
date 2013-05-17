@@ -28,7 +28,7 @@ class Parking implements Module {
 	/**
 	* Arguments for the template
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* Declaring some global variables
@@ -224,7 +224,7 @@ class Parking implements Module {
 		$this->template_args['grade'] = $I2_USER->grade;
 		$this->template_args['skips'] = count(EighthSchedule::get_absences($I2_USER->uid));
 
-		$this->template_args['cars'] = array();
+		$this->template_args['cars'] = [];
 
 		if($I2_SQL->query('SELECT COUNT(*) FROM parking_apps WHERE uid=%d', $I2_USER->uid)->fetch_single_value() != 0) {
 
@@ -249,7 +249,7 @@ class Parking implements Module {
 		}
 
 		$res = $I2_SQL->query('SELECT uid FROM parking_apps WHERE other_driver=%d', $I2_USER->uid);
-		$pot_parts = array();
+		$pot_parts = [];
 		while ($row = $res->fetch_array()) {
 			$pot_parts[] = new User($row['uid']);
 		}
@@ -352,7 +352,7 @@ class Parking implements Module {
 					'timedesc' 		=> array('timestamp DESC', 'time submtted, latest first'),
 					'random' 		=> array('RAND()', 'randomize within last category')
 				);
-		$sortarr = array();
+		$sortarr = [];
 		if(isset($_REQUEST['parking_admin_form'])) {
 			if($_REQUEST['parking_admin_form'] == 'changedeadline') {
 				$I2_SQL->query('UPDATE parking_settings SET deadline=%s', $_REQUEST['deadline']);
@@ -361,7 +361,7 @@ class Parking implements Module {
 				$I2_SQL->query('UPDATE parking_settings SET startdate=%s', $_REQUEST['startdate']);
 			}
 			if($_REQUEST['parking_admin_form'] == 'sort') {
-				$this->template_args['sort_selected'] = array();
+				$this->template_args['sort_selected'] = [];
 				for($n = 1; $n <= 5; $n++) {
 					$sort = $_REQUEST["sort$n"];
 					$sortarr[] = $sortmap[$sort][0];
@@ -423,8 +423,8 @@ class Parking implements Module {
 			$I2_SQL->query('UPDATE parking_apps SET other_driver_skips=%d WHERE other_driver=%d', count(EighthSchedule::get_absences($uid)), $uid);
 		}
 
-		$this->template_args['people'] = array();
-		$driveruids = array();
+		$this->template_args['people'] = [];
+		$driveruids = [];
 		//$res = $I2_SQL->query('SELECT assigned FROM parking_apps ORDER BY '.join(", ", $sortarr));
 		//while ($record = $res->fetch_array()) {
 		//	print_r($record);
@@ -438,7 +438,7 @@ class Parking implements Module {
 				continue;
 			}
 
-			$person = array();
+			$person = [];
 
 			if($record['special_name'] != "") {
 				$person['isTeacher'] = TRUE;
@@ -494,7 +494,7 @@ class Parking implements Module {
 				}
 			}
 			$person['numcars'] = 0;
-			$person['cars'] = array();
+			$person['cars'] = [];
 			$car_res = $I2_SQL->query('SELECT plate, make, model, year FROM parking_cars WHERE uid=%d', $record['uid']);
 			$n = 0;
 			while ($car = $car_res->fetch_array()) {
@@ -629,7 +629,7 @@ class Parking implements Module {
 					'timedesc' 		=> array('timestamp DESC', 'time submtted, latest first'),
 					'random' 		=> array('RAND()', 'randomize within last category')
 				);
-		$sortarr = array();
+		$sortarr = [];
 		if(count($sortarr) == 0) {
 			$sorts = $I2_SQL->query('SELECT sort1, sort2, sort3, sort4, sort5 FROM parking_settings')->fetch_array();
 			$sortarr = array(	$sortmap[$sorts['sort1']][0],
@@ -650,10 +650,10 @@ class Parking implements Module {
 			$I2_SQL->query('UPDATE parking_apps SET other_driver_skips=%d WHERE other_driver=%d', count(EighthSchedule::get_absences($uid)), $uid);
 		}
 
-		$people = array();
+		$people = [];
 		$res = $I2_SQL->query($this->query);
 		while ($record = $res->fetch_array()) {
-			$person = array();
+			$person = [];
 
 			if($record['special_name'] != "") {
 				$person['isTeacher'] = TRUE;
@@ -694,7 +694,7 @@ class Parking implements Module {
 				$person['otherdriver'] = $user->name;
 			}
 			$person['numcars'] = 0;
-			$person['cars'] = array();
+			$person['cars'] = [];
 			$car_res = $I2_SQL->query('SELECT plate, make, model, year FROM parking_cars WHERE uid=%d', $record['uid']);
 			$n = 0;
 			while ($car = $car_res->fetch_array()) {

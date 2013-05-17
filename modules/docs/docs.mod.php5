@@ -20,7 +20,7 @@ class Docs implements Module {
 	/**
 	* Arguments for the template
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* Declaring some global variables
@@ -199,7 +199,7 @@ class Docs implements Module {
 							$g = $_POST['group_gids'][$id];
 							$d->add_group_id($g, array(isset($_POST['view'][$id])?1:0, isset($_POST['edit'][$id])?1:0));
 						}
-						$_POST = array();
+						$_POST = [];
 						$I2_ARGS[2] = $d->docid;
 						$this->edit();
 					} else {

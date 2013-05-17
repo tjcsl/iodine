@@ -16,9 +16,9 @@
  */
 class Mail implements Module {
 
-	private $box_args = array();
+	private $box_args = [];
 
-	private $pane_args = array();
+	private $pane_args = [];
 
 	private $pane_tpl;
 
@@ -106,7 +106,7 @@ class Mail implements Module {
 		global $I2_ARGS,$I2_USER;
 		
 
-		$this->pane_args['messages'] = array();
+		$this->pane_args['messages'] = [];
 		$this->pane_args['goleft'] = 0;
 		$this->pane_args['goright'] = 0;
 		$this->pane_args['gnmsgs'] = 0;
@@ -232,14 +232,14 @@ class Mail implements Module {
 
 		//$sorted = array_slice(imap_sort($this->connection, SORTARRIVAL, 1), $offset, $length);
 # We don't use the above because it's slower.
-		$sorted = array();
+		$sorted = [];
 		$endindex = $this->nmsgs-$length < 0 ? 0 : $this->nmsgs-$length;
 		for( $i = $this->nmsgs; $i > $endindex; $i--)
 			$sorted[] = $i;
 		$messages = imap_fetch_overview($this->connection, implode(',',$sorted));
 
 		if (count($sorted) == 0) {
-			self::$msgno_map = array();
+			self::$msgno_map = [];
 		} else {
 			// Used for the usort() call below; swaps the keys/values in $sorted
 			self::$msgno_map = array_combine(array_values($sorted), array_keys($sorted));

@@ -131,7 +131,7 @@ class Prefs implements Module {
 		$this->prefs = $I2_USER->info();
 
 		$photonames = $I2_USER->photoNames;
-		$this->photonames = array();
+		$this->photonames = [];
 		foreach ($photonames as $photo) {
 			$text = ucfirst(strtolower(substr($photo, 0, -5)));
 			$this->photonames[$photo] = $text;

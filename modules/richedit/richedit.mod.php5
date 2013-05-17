@@ -77,7 +77,7 @@ class RichEdit implements Module {
 		global $I2_FS_ROOT;
 		// This just makes basically a blank page with just the css set
 		// That way the editor already has the css loaded for you
-		echo $display->fetch($I2_FS_ROOT."templates/richedit/richeditwindow.tpl", array(), FALSE);
+		echo $display->fetch($I2_FS_ROOT."templates/richedit/richeditwindow.tpl", [], FALSE);
 		Display::stop_display();
 		exit;
 	}
@@ -123,7 +123,7 @@ class RichEdit implements Module {
 		$bb_otags=array('lb'=>'[','rb'=>']', 'hr'=>"<div class='bb_hr'></div>", 'hairline'=>"<div class='bb_hr'></div>", 'b'=>"<span class='bb_bold'>", 'bold'=>"<span class='bb_bold'>", 'i'=>"<span class='bb_italic'>", 'ital'=>"<span class='bb_italic'>", 'italic'=>"<span class='bb_italic", 'u'=>"<span class='bb_underline'>", 'under'=>"<span class='bb_underline'>", 'underline'=>"span class='bb_underline'", 'hl'=>"<span class='bb_highlight'>", 'high'=>"<span class='bb_highlight'", 'highlight'=>"<span class='bb_highlight'>", 's'=>"<span class='bb_strike'>", 'strike'=>"<span class='bb_strike'>", 'strikethrough'=>"<span class='bb_strikethrough'>", 'a='=>array("<a href='", "'>", 'safe'=>'strtr'), 'anchor='=>array("a href='","'>", 'safe'=>'strtr'), 'img='=>array("<img src='", "' alt='User Picture' />", 'safe'=>'strtr'), 'image='=>array("<img src='","' alt='User Picture' />", 'safe'=>'strtr'), 'color='=>array("<span style='color:","'>",'safe'=>'strtr'), 'url='=>array("<a href='","'>", 'safe'=>'strtr'));
 		$bb_ctags=array('b'=>'</span>', 'bold'=>'</span>', 'i'=>'</span>', 'ital'=>'</span>', 'italic'=>'</span>', 'u'=>'</span>', 'under'=>'</span>', 'underline'=>'</span>', 'hl'=>'</span>', 'high'=>'</span>', 'highlight'=>'</span>', 's'=>'</span>', 'strike'=>'</span>', 'strikethrough'=>'</span', 'a'=>'</a>', 'color'=>'</span>', 'url'=>'</a>', 'anchor'=>'</a>');
 		$bb_nostrip=array('lb'=>1, 'rb'=>1);
-		$errs = array();
+		$errs = [];
 
 		return Discussion::bbCodeConvert($post);
 		if(count($errs)>0)
@@ -148,7 +148,7 @@ class RichEdit implements Module {
 		global $errs;
 
 		if($tags===false) {
-			$tags=array();
+			$tags=[];
 		}
 		if($depth<0) {
 			$errs[] = "One of the posters in this thread has tried to overnest BBCode elements. There can be no more than 50 nested BBCode elements.";

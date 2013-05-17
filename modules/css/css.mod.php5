@@ -20,7 +20,7 @@ class CSS implements Module {
 
 	private $css_text;
 
-	private $warnings = array();
+	private $warnings = [];
 
 	private $style_cache;
 
@@ -219,7 +219,7 @@ class CSS implements Module {
 		global $I2_FS_ROOT;
 		$style_path = $I2_FS_ROOT . 'styles/';
 		
-		$styles = array();
+		$styles = [];
 		
 		$handle = opendir($style_path);
 		while (($name = readdir($handle)) !== FALSE) {

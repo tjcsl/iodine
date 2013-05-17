@@ -16,7 +16,7 @@
 
 class Printing {
 
-	public static $sections = array();
+	public static $sections = [];
 	public static $printing_path = NULL;
 
 	public static function print_parking($people, $format = 'pdf') {
@@ -110,8 +110,8 @@ class Printing {
 			self::$printing_path = i2config_get('printing_path', NULL, 'printing');
 		}
 		$lines = file(self::$printing_path . "{$filename}.tex.in");
-		self::$sections = array();
-		$currsections = array();
+		self::$sections = [];
+		$currsections = [];
 		$code = '';
 		$output = '';
 		$echoed = FALSE;

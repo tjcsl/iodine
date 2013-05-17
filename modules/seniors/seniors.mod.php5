@@ -24,10 +24,10 @@ class Seniors implements Module {
 	* Template for the specified action
 	*/
 	private $template;
-	private $template_args = array();
+	private $template_args = [];
 
-	private $college_cache = array();
-	private $major_cache = array();
+	private $college_cache = [];
+	private $major_cache = [];
 
 	private $is_admin = false;
 	
@@ -89,7 +89,7 @@ class Seniors implements Module {
 
 		$this->is_admin = $I2_USER->is_group_member('admin_all');
 		
-		$args = array();
+		$args = [];
 		if(count($I2_ARGS) <= 1) {
 			return $this->sort();
 		}
@@ -136,11 +136,11 @@ class Seniors implements Module {
 		}
 		$this->template_args['sortnormal'] = ($sortdir == 'ASC');
 
-		$this->template_args['seniors'] = array();
+		$this->template_args['seniors'] = [];
 
 		$rows = $I2_SQL->query("SELECT uid, CollegeName, college_certain, MajorMap.Major, major_certain FROM senior_destinations LEFT JOIN CEEBMap USING (CEEB) LEFT JOIN MajorMap ON senior_destinations.Major=MajorMap.MajorID ORDER BY $sort $sortdir")->fetch_all_arrays(Result::ASSOC);
 		foreach ($rows as $row) {
-			$senior = array();
+			$senior = [];
 			$senior['user'] = new $I2_USER($row['uid']);
 			#$senior['dest'] = $this->get_college($row['ceeb']);
 			$senior['dest'] = $row['CollegeName'];
@@ -274,7 +274,7 @@ class Seniors implements Module {
 	*/
 	function display_box($display) {
 		global $I2_SQL, $I2_USER;
-		$args = array();
+		$args = [];
 		$args['num_submitted'] = $I2_SQL->query('SELECT COUNT(*) FROM senior_destinations')->fetch_single_value();
 		if ($I2_USER->grade == 12) {
 			$args['is_senior'] = 1;

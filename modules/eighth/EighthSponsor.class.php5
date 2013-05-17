@@ -16,9 +16,9 @@
 
 class EighthSponsor {
 
-	private static $cache = array();
+	private static $cache = [];
 
-	private $data = array();
+	private $data = [];
 
 	/**
 	* The constructor for the {@link EighthSponsor} class.
@@ -52,22 +52,22 @@ class EighthSponsor {
 	*/
 	public static function get_conflicts($blockid) {
 		global $I2_SQL;
-		$conflicts = array();
-		$sponsorstorooms = array();
+		$conflicts = [];
+		$sponsorstorooms = [];
 		$res = $I2_SQL->query('SELECT rooms,sponsors FROM eighth_block_map WHERE bid=%d',$blockid);
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 			$sponsors = explode(',',$row['sponsors']);
 			$rooms = explode(',',$row['rooms']);
 			foreach ($sponsors as $sponsorid) {
 				if (!isSet($sponsorstorooms[$sponsorid])) {
-					$sponsorstorooms[$sponsorid] = array();
+					$sponsorstorooms[$sponsorid] = [];
 				}
 				foreach ($rooms as $room) {
 					$sponsorstorooms[$sponsorid][] = $room;
 				}
 			}
 		}
-		$ret = array();
+		$ret = [];
 		
 		foreach ($sponsorstorooms as $sponsorid=>$rooms) {
 			if (count($rooms) < 2) {
@@ -75,9 +75,9 @@ class EighthSponsor {
 			}
 			foreach ($rooms as $room) {
 				if (!isSet($ret[$room])) {
-					$ret[$room] = array();
+					$ret[$room] = [];
 				}
-				$sponsorotherrooms = array();
+				$sponsorotherrooms = [];
 				/*
 				** Make a list of the rooms OTHER THAN THIS ONE that the sponsor is in
 				*/
@@ -107,7 +107,7 @@ class EighthSponsor {
 				$startdate = date('Y-m-d');
 			}
 			$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date>=%t AND eighth_block_map.sponsors REGEXP \'(^|,)(%d)($|,)\' ORDER BY eighth_blocks.date,eighth_blocks.block',$startdate,$thissponsor)->fetch_all_arrays(MYSQLI_ASSOC);
-			$activities = array();
+			$activities = [];
 			foreach($result as $activity) {
 				$activities[] = new EighthActivity($activity['activityid'], $activity['bid']);
 			}
@@ -129,12 +129,12 @@ class EighthSponsor {
 			}
 			if(is_array($thissponsor)) {
 				if(empty($thissponsor))
-					return array();
+					return [];
 				$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date=%t AND eighth_block_map.sponsors REGEXP "(^|,)(%X)($|,)" ORDER BY eighth_blocks.date,eighth_blocks.block',$date,implode("|",$thissponsor))->fetch_all_arrays(MYSQLI_ASSOC);
 			} else {
 				$result = $I2_SQL->query('SELECT eighth_block_map.sponsors,eighth_block_map.activityid,eighth_block_map.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) WHERE date=%t AND eighth_block_map.sponsors REGEXP \'(^|,)(%d)($|,)\' ORDER BY eighth_blocks.date,eighth_blocks.block',$date,$thissponsor)->fetch_all_arrays(MYSQLI_ASSOC);
 			}
-			$activities = array();
+			$activities = [];
 			foreach($result as $activity) {
 				$activities[] = new EighthActivity($activity['activityid'], $activity['bid']);
 			}
@@ -235,7 +235,7 @@ class EighthSponsor {
 	*/
 	public function remove() {
 		$this->remove_sponsor($this->data['sid']);
-		$this->data = array();
+		$this->data = [];
 	}
 
 	/**
@@ -261,7 +261,7 @@ class EighthSponsor {
 		}
 		else if($name == 'schedule') {
 			$result = $I2_SQL->query('SELECT bid,activityid,sponsors FROM eighth_block_map ORDER BY bid');
-			$activities = array();
+			$activities = [];
 			foreach($result as $activity) {
 				$sponsors = explode(',', $activity['sponsors']);
 				foreach($sponsors as $sponsor) {
@@ -306,7 +306,7 @@ class EighthSponsor {
 	* @param array $sponsorids The sponsor IDs.
 	*/
 	public static function id_to_sponsor($sponsorids) {
-		$ret = array();
+		$ret = [];
 		foreach($sponsorids as $sponsorid) {
 			$ret[] = new EighthSponsor($sponsorid);
 		}

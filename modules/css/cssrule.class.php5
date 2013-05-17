@@ -16,9 +16,9 @@
 */
 class CSSRule {
 	
-	private $selectors = array();
+	private $selectors = [];
 	
-	private $properties = array();
+	private $properties = [];
 
 	public function add_selector($selector) {
 		$this->selectors[] = $selector;

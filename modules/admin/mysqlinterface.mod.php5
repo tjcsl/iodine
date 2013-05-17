@@ -87,7 +87,7 @@ class MySQLInterface implements Module {
 		$header_data = NULL;
 		if(!is_string($this->query_data)) {
 			if($this->query_data != NULL) {
-				$header_data = array();
+				$header_data = [];
 				foreach($this->query_data as $dat) {
 					foreach($dat as $key=>$unused) {
 						if(!is_int($key))

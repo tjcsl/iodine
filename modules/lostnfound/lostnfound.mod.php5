@@ -28,7 +28,7 @@ class LostNFound implements Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* A 1-dimensional array of all the items
@@ -38,7 +38,7 @@ class LostNFound implements Module {
 	/**
 	* A 1-dimensional array containing all of the titles for all news posts.
 	*/
-	private $summaries = array();
+	private $summaries = [];
 
 	/**
 	* Whether the current user is an Intranet administrator
@@ -294,7 +294,7 @@ class LostNFound implements Module {
 		$this->template = 'lostnfound_pane.tpl';
 		$I2_ARGS[1] = '';
 		
-		$this->template_args['items'] = array();
+		$this->template_args['items'] = [];
 
 		if( $this->items === NULL) {
 			$this->items = LostItem::get_all_items();

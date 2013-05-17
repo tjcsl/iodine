@@ -113,7 +113,7 @@ abstract class Filesystem {
 		$path = $this->convert_path($pathname);
 		
 		if ($handle = opendir($path)) {
-			$files = array();
+			$files = [];
 			while (false !== ($file = readdir($handle))) {
 				if ($file == "." || $file == "..") {
 					continue;

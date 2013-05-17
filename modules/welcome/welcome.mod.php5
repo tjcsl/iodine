@@ -8,7 +8,7 @@
 
 class Welcome implements Module {
 
-	private $template_args = array();
+	private $template_args = [];
 	private $data;
 
 	/**

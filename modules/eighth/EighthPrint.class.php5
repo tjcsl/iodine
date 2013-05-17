@@ -16,7 +16,7 @@
 
 class EighthPrint {
 
-	public static $sections = array();
+	public static $sections = [];
 	public static $printing_path = NULL;
 
 	/**
@@ -124,7 +124,7 @@ class EighthPrint {
 		$activities = EighthActivity::id_to_activity($I2_SQL->query('SELECT activityid,bid FROM eighth_block_map WHERE bid IN (%D) ORDER BY activityid ASC, bid ASC', $bids)->fetch_all_arrays(MYSQLI_NUM));
 		usort($activities, array('EighthPrint', 'sort_by_pickup_then_sponsor'));
 		$block = NULL;
-		$blocks = array();
+		$blocks = [];
 		foreach($bids as $bid) {
 			$block = new EighthBlock($bid);
 			$blocks[] = "{$block->date} ({$block->block} block)";
@@ -284,8 +284,8 @@ class EighthPrint {
 			self::$printing_path = i2config_get('printing_path', NULL, 'eighth');
 		}
 		$lines = file(self::$printing_path . "{$filename}.tex.in");
-		self::$sections = array();
-		$currsections = array();
+		self::$sections = [];
+		$currsections = [];
 		$code = '';
 		$output = '';
 		$echoed = FALSE;

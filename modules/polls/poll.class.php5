@@ -25,8 +25,8 @@ class Poll {
 	private $blurb;
 	private $visibility;
 
-	private $qs = array();
-	private $gs = array();
+	private $qs = [];
+	private $gs = [];
 
 	/**
 	 * Vars this can get:
@@ -183,7 +183,7 @@ class Poll {
 		Poll::generate_cache();
 
 		$pids = array_keys(self::$pollcache);
-		$polls = array();
+		$polls = [];
 		foreach ($pids as $pid) {
 			$polls[] = new Poll($pid,$loadq);
 		}

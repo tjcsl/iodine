@@ -16,7 +16,7 @@
 
 class ModulesMapper {
 	
-	static $map = array();
+	static $map = [];
 
 	private static function process_dir($dir) {
 		if ($handle = opendir($dir)) {

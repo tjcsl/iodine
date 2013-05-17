@@ -18,7 +18,7 @@ class Doc {
         private $path;
         private $visibility;
 
-        private $gs = array();
+        private $gs = [];
 	private $type;
 
         /**
@@ -115,7 +115,7 @@ class Doc {
         public static function all_docs() {
                 global $I2_SQL;
                 $docids = $I2_SQL->query('SELECT docid FROM docs ORDER BY docid DESC')->fetch_all_single_values();
-                $docs = array();
+                $docs = [];
                 foreach($docids as $docid) {
                         $docs[] = new Doc($docid);
                 }

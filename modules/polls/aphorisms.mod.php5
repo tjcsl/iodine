@@ -18,7 +18,7 @@ class Aphorisms implements Module {
 		  private $aphorism = '';
 		  private $updated = FALSE;
 		  private $template = 'aphorisms_pane.tpl';
-		  private $template_args = array();
+		  private $template_args = [];
 
 	/**
 	* Unused; Not supported for this module.
@@ -157,8 +157,8 @@ class Aphorisms implements Module {
 				}
 				$this->template = 'data.tpl';
 				$data = $I2_SQL->query('SELECT * FROM aphorisms ORDER BY uid')->fetch_all_arrays(Result::ASSOC);
-				$this->template_args['data'] = array();
-				$this->template_args['users'] = array();
+				$this->template_args['data'] = [];
+				$this->template_args['users'] = [];
 				foreach($data as $row) {
 					$this->template_args['users'][] = new User($row['uid']);
 					$this->template_args['data'][$row['uid']] = $row;
@@ -170,8 +170,8 @@ class Aphorisms implements Module {
 					return;
 				}
 				$in_data = $I2_SQL->query('SELECT * FROM aphorisms ORDER BY uid')->fetch_all_arrays(Result::ASSOC);
-				$data = array();
-				$users = array();
+				$data = [];
+				$users = [];
 				foreach($in_data as $row) {
 					$users[] = new User($row['uid']);
 					$data[$row['uid']] = $row;

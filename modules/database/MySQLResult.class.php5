@@ -29,7 +29,7 @@ class MySQLResult implements Result {
 	/*
 	** Cached information resolving column names to numbers.
 	*/
-	private $schema = array();
+	private $schema = [];
 
 	/*
 	** The current row.
@@ -142,7 +142,7 @@ class MySQLResult implements Result {
 	}
 
 	function fetch_all_arrays($type = MYSQLI_BOTH) {
-		$sum = array();
+		$sum = [];
 		while ($arr = $this->fetch_array($type)) {
 			$sum[] = $arr;
 		}
@@ -150,7 +150,7 @@ class MySQLResult implements Result {
 	}
 
 	function fetch_all_arrays_keyed($key,$type = MYSQLI_BOTH) {
-		$sum = array();
+		$sum = [];
 		while ($arr = $this->fetch_array($type)) {
 			$sum[$arr[$key]] = $arr;
 		}
@@ -158,7 +158,7 @@ class MySQLResult implements Result {
 	}
 
 	function fetch_all_arrays_keyed_list($key,$type = MYSQLI_BOTH) {
-		$sum = array();
+		$sum = [];
 		while ($arr = $this->fetch_array($type)) {
 			$sum[$arr[$key]][] = $arr;
 		}
@@ -166,7 +166,7 @@ class MySQLResult implements Result {
 	}
 
 	function fetch_array_keyed($key,$val) {
-		$sum = array();
+		$sum = [];
 		while ($arr = $this->fetch_array(MYSQLI_ASSOC)) {
 			print_r($arr);
 			$sum[$arr[$key]]=$arr[$val];
@@ -239,7 +239,7 @@ class MySQLResult implements Result {
 
 	public function fetch_col($colname) {
 		$this->rewind();
-		$ret = array();
+		$ret = [];
 		while ($arr = $this->fetch_array(MYSQLI_ASSOC)) {
 			$ret[] = $arr[$colname];
 		}
@@ -248,7 +248,7 @@ class MySQLResult implements Result {
 
 	public function fetch_all_single_values() {
 		$this->rewind();
-		$ret = array();
+		$ret = [];
 		while ($arr = $this->fetch_array(MYSQLI_NUM)) {
 			$ret[] = $arr[0];
 		}

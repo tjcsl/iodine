@@ -23,7 +23,7 @@ class Homecoming implements Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* Unused; Not supported for this module.
@@ -81,7 +81,7 @@ class Homecoming implements Module {
 	public function init_pane() {
 		global $I2_ARGS, $I2_USER, $I2_SQL;
 
-		$args = array();
+		$args = [];
 		if(count($I2_ARGS) <= 1) {
 			$this->template = 'homecoming_pane.tpl';
 
@@ -225,7 +225,7 @@ class Homecoming implements Module {
 		$this->template = 'homecoming_votees_all.tpl';
 		if (isset($I2_ARGS[2])) {
 			$myuids = $I2_SQL->query("SELECT uid,male,female FROM homecoming_votes where grade={$I2_ARGS[2]}")->fetch_all_arrays();
-			$this->template_args['voters'] = array();
+			$this->template_args['voters'] = [];
 			foreach($myuids as $line) {
 				$voter = array('user' => new User($line['uid']));
 				if($line['male'])
@@ -275,7 +275,7 @@ class Homecoming implements Module {
 		$this->template = 'homecoming_voters.tpl';
 		if (isset($I2_ARGS[2])) {
 			$myuids = $I2_SQL->query("SELECT uid FROM homecoming_votes WHERE male={$I2_ARGS[2]} OR female={$I2_ARGS[2]}")->fetch_col('uid');
-			$voters = array();
+			$voters = [];
 			foreach($myuids as $i) {
 				$voters[] = array('user' => new User($i));
 			}
@@ -307,8 +307,8 @@ class Homecoming implements Module {
 			$this->template_args['numvotees_male'] = count($muids);
 			$this->template_args['numvotees_female'] = count($fuids);
 
-			$males = array();
-			$females = array();
+			$males = [];
+			$females = [];
 
 			$mtotal = 0;
 			$ftotal = 0;

@@ -20,12 +20,12 @@ class User {
 	/**
 	* Keeps track of all cached sets of user information so we don't have to do two lookups.
 	*/
-	private static $cache = array();
+	private static $cache = [];
 	
 	/**
 	* Contains the user's uid
 	*/
-	private static $usernametouid = array();
+	private static $usernametouid = [];
 
 	/**
 	* Information about the user, only stored if this User object
@@ -72,7 +72,7 @@ class User {
 				if (isset(self::$usernametouid[$uid])&&isSet(self::$cache[self::$usernametouid[$uid]])) {
 					$this->info = &self::$cache[self::$usernametouid[$uid]];
 				} else {
-					$this->info = array();
+					$this->info = [];
 					$blah = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
 					foreach ($blah as $key=>$val) {
 						$this->info[strtolower($key)] = $val;
@@ -100,7 +100,7 @@ class User {
 			if (!$uid) {
 				throw new I2Exception('Blank uidnumber used in User construction'.$this->username);
 			}
-			$this->info = array();
+			$this->info = [];
 			if (isSet(self::$cache[$uid]) && isSet(self::$cache[$uid]['iodineuid'])) {
 				$this->info = self::$cache[$uid];
 			} else {
@@ -126,7 +126,7 @@ class User {
 		** Set the null array
 		*/
 		if(!isset($this->info['__nulls']))
-			$this->info['__nulls']=array();
+			$this->info['__nulls']=[];
 		/*
 		** Put info in cache
 		*/
@@ -308,7 +308,7 @@ class User {
 				$phone = $this->__get('telephoneNumber');
 				if($phone) {
 					if(is_array($phone)) {
-						$numbers = array();
+						$numbers = [];
 						foreach($phone as $key => $value) {
 							$value = preg_replace('/[^0-9]/', '', $value);
 							$international = strlen($value) - 10;
@@ -596,7 +596,7 @@ class User {
 			throw new I2Exception('User entries without usernames cannot be modified!');
 		}*/
 		if ($val == '') {
-			$val = array();
+			$val = [];
 		}
 			
 		if($name == 'mobile' || $name == 'homephone' || $name == 'telephoneNumber') {
@@ -753,7 +753,7 @@ class User {
 		}
 		
 		if($val==NULL) {
-			$val=array(); //LDAP will not like you if you give it null entries (i.e. the modify fails)
+			$val=[]; //LDAP will not like you if you give it null entries (i.e. the modify fails)
 		}
 		$ldap->modify_val(LDAP::get_user_dn_username($this->username),$name,$val);
 	}
@@ -1186,7 +1186,7 @@ class User {
 			  }
 
 			  $res = $I2_LDAP->search(LDAP::get_user_dn(),$prefix.$infix.$postfix,array('iodineUid'));
-			  $ret = array();
+			  $ret = [];
 			  while ($row = $res->fetch_array(Result::ASSOC)) {
 			  	$ret[] = $row['iodineUid'];
 			  }
@@ -1218,7 +1218,7 @@ class User {
 		// User is trying an LDAP query
 		if (strpos($str,'&') !== FALSE || strpos($str,'|') !== FALSE) {
 			$res = $I2_LDAP->search(LDAP::get_user_dn(),"$str",array('iodineUid'));
-			$results = array();
+			$results = [];
 			while ($row = $res->fetch_array(Result::ASSOC)) {
 				$results[] = $row['iodineUid'];
 			}
@@ -1252,7 +1252,7 @@ class User {
 			$str = trim($str);
 
 
-			$results = array();
+			$results = [];
 			$firstres = TRUE;
 		
 			if (!$str || $str == '') {
@@ -1274,7 +1274,7 @@ class User {
 				$numtokens = 0;
 				$separator = " \t";
 				$tok = strtok($str,$separator);
-				$preres = array();
+				$preres = [];
 
 				while ($tok !== FALSE) {
 					$res = $I2_LDAP->search(LDAP::get_user_dn(),
@@ -1300,7 +1300,7 @@ class User {
 				}
 
 				if ($numtokens == 0) {
-					  $results = array();
+					  $results = [];
 				} elseif ($numtokens == 1) {
 					  $results = array_keys($preres);
 				} else {
@@ -1333,7 +1333,7 @@ class User {
 	* @return array An array of {@link User} objects.
 	*/
 	public static function id_to_user($userids) {
-		$ret = array();
+		$ret = [];
 		if (!is_array($userids)) {
 			$userids = array($userids);
 		}
@@ -1446,7 +1446,7 @@ class User {
 		$data = $I2_LDAP->search(LDAP::get_user_dn(),$query.")",$attributes);
 		while($row=$data->fetch_array(Result::ASSOC)) {
 			$index=$row['iodineUidNumber'];
-			$info=array();
+			$info=[];
 			foreach($row as $key=>$val) {
 				$info[strtolower($key)]=$val;
 			}

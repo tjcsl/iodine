@@ -41,7 +41,7 @@ class SectionLDAP implements Section {
 				$data['enrolledStudent'] = array($data['enrolledStudent']);
 			}
 		
-			$this->info['students'] = array();
+			$this->info['students'] = [];
 			foreach($data['enrolledStudent'] as $student_dn) {
 				$this->info['students'][] = new User($I2_LDAP->search_base($student_dn, 'iodineUidNumber')->fetch_single_value());
 				usort($this->info['students'], array('User', 'name_cmp'));
@@ -92,7 +92,7 @@ class SectionLDAP implements Section {
 	public function get_students() {
 		global $I2_LDAP;
 		if (!isSet($this->info['students'])) {
-				  $this->info['students'] = array();
+				  $this->info['students'] = [];
 				  $res = $I2_LDAP->search(LDAP::get_user_dn(),'enrolledClass='.LDAP::get_schedule_dn($this->info['sectionid']),array('iodineUid'));
 				  while ($row = $res->fetch_array(Result::ASSOC)) {
 							 $uid = $row['iodineUid'];
@@ -115,7 +115,7 @@ class SectionLDAP implements Section {
 		$res = $I2_LDAP->search('ou=schedule,dc=tjhsst,dc=edu','(&(objectClass=tjhsstClass)(sponsorDn='.$this->teacher_dn.'))', array('classPeriod','roomNumber','cn','tjhsstSectionId','quarterNumber','tjhsstClassId'));
 		$res->sort(array('classPeriod'));
 		
-		$ret = array();
+		$ret = [];
 		foreach($res as $row) {
 			$ret[] = new SectionLDAP($row);
 		}

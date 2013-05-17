@@ -38,7 +38,7 @@ class GroupSQL extends Group {
 	/**
 	* Group info cache
 	*/
-	private $info = array();
+	private $info = [];
 
 	/**
 	* The constructor.
@@ -52,18 +52,18 @@ class GroupSQL extends Group {
 
 		// Generate the GID/name maps if they do not exist
 		if (self::$gid_map === NULL) {
-			 self::$gid_map = array();
-			 self::$name_map = array();
+			 self::$gid_map = [];
+			 self::$name_map = [];
 			 $res = $I2_SQL->query('SELECT name,gid FROM groups_name');
 			 while ($row = $res->fetch_array(Result::ASSOC)) {
 			 	self::$gid_map[$row['name']] = $row['gid'];
 				self::$name_map[$row['gid']] = $row['name'];
 			 }
-			 self::$rules_map = array();
+			 self::$rules_map = [];
 			 $res = $I2_SQL->query('SELECT dbtype, query, gid FROM groups_dynamic');
 			 while ($row = $res->fetch_array(Result::ASSOC)) {
 			 	if(!isset(self::$rules_map[$row['gid']])) {
-					self::$rules_map[$row['gid']]=array();
+					self::$rules_map[$row['gid']]=[];
 				}
 			 	self::$rules_map[$row['gid']][]= array('dbtype'=>$row['dbtype'],'query'=>$row['query']);
 			 }
@@ -149,9 +149,9 @@ class GroupSQL extends Group {
 		global $I2_SQL, $I2_LDAP;
 		//$res = $I2_SQL->query('SELECT dbtype, query FROM groups_dynamic WHERE gid=%d', $this->gid);
 		if(!isset(self::$rules_map[$this->gid]))
-			return array();
+			return [];
 		$list = self::$rules_map[$this->gid];
-		$members = array();
+		$members = [];
 		foreach ($list as $row) {
 			switch ($row['dbtype']) {
 			case 'LDAP':
@@ -175,7 +175,7 @@ class GroupSQL extends Group {
 		if($module) {
 			$prefix = strtolower($module) . '_%';
 		}
-		$ret = array();
+		$ret = [];
 		foreach($I2_SQL->query('SELECT gid FROM groups_name WHERE name LIKE %s ORDER BY name', $prefix) as $row) {
 			$ret[] = new Group($row[0]);
 		}
@@ -339,7 +339,7 @@ class GroupSQL extends Group {
 			throw new I2Exception('Invalid object passed as $subject to '.__METHOD__);
 		}
 
-		$ret = array();
+		$ret = [];
 		foreach ($pids as $pid) {
 			$ret[] = Permission::getPermission($pid);
 		}
@@ -459,7 +459,7 @@ class GroupSQL extends Group {
 			$res = $I2_SQL->query('SELECT DISTINCT usergroup FROM groups_group_perms WHERE gid=%d', $this->gid);
 		}
 
-		$ret = array();
+		$ret = [];
 		foreach($res as $row) {
 			$ret[] = new Group($row[0]);
 		}
@@ -475,7 +475,7 @@ class GroupSQL extends Group {
 			$res = $I2_SQL->query('SELECT DISTINCT uid FROM groups_user_perms WHERE gid=%d', $this->gid);
 		}
 
-		$ret = array();
+		$ret = [];
 		foreach($res as $row) {
 			$ret[] = new User($row[0]);
 		}
@@ -485,9 +485,9 @@ class GroupSQL extends Group {
 	public function list_dynamic_rules() {
 		global $I2_SQL;
 
-		$ret = array();
+		$ret = [];
 		if(!isset(self::$rules_map[$this->gid]))
-			return array();
+			return [];
 		$list = self::$rules_map[$this->gid];
 		//foreach($I2_SQL->query('SELECT dbtype,query FROM groups_dynamic WHERE gid=%d', $this->gid) as $row) {
 		foreach($list as $row) {
@@ -521,7 +521,7 @@ class GroupSQL extends Group {
 
 	public static function get_dynamic_groups(User $user, $perms = NULL) {
 		global $I2_SQL, $I2_USER;
-		$ret = array();
+		$ret = [];
 
 		if ($user->uid != $I2_USER->uid && !Group::admin_all()->has_member($I2_USER)) {
 			throw new I2Exception('You are not authorized to view this user\'s group membership');
@@ -541,11 +541,11 @@ class GroupSQL extends Group {
 
 		//$res = $I2_SQL->query('SELECT gid, dbtype, query FROM groups_dynamic');
 		if(!isset(self::$rules_map)) {
-			 self::$rules_map = array();
+			 self::$rules_map = [];
 			 $res = $I2_SQL->query('SELECT dbtype, query, gid FROM groups_dynamic');
 			 while ($row = $res->fetch_array(Result::ASSOC)) {
 			 	if(!isset(self::$rules_map[$row['gid']])) {
-					self::$rules_map[$row['gid']]=array();
+					self::$rules_map[$row['gid']]=[];
 				}
 			 	self::$rules_map[$row['gid']][]= array('dbtype'=>$row['dbtype'],'query'=>$row['query']);
 			 }
@@ -572,7 +572,7 @@ class GroupSQL extends Group {
 
 	public static function get_static_groups(User $user, $perms = NULL) {
 		global $I2_SQL, $I2_USER;
-		$ret = array();
+		$ret = [];
 
 		if ($user->uid != $I2_USER->uid && !Group::admin_all()->has_member($I2_USER)) {
 			throw new I2Exception('You are not authorized to view this user\'s group membership');
@@ -600,7 +600,7 @@ class GroupSQL extends Group {
 		// (ADMIN_GROUP has all other permissions, etc.)
 		$res = $I2_SQL->query('SELECT gid FROM groups_static WHERE uid=%d',$user->uid);
 		
-		$ret = array();
+		$ret = [];
 		foreach($res as $row) {
 			$grp = new Group($row[0]);
 			$ret[] = $grp;
@@ -620,7 +620,7 @@ class GroupSQL extends Group {
 
 	public static function user_admin_prefixes(User $user) {
 		global $I2_SQL;
-		$ret = array();
+		$ret = [];
 
 		$all = Group::all();
 		$perms = $all->get_permissions($user);
@@ -638,7 +638,7 @@ class GroupSQL extends Group {
 
 	public static function get_admin_groups(User $user) {
 		$groups = Group::get_static_groups($user);
-		$ret = array();
+		$ret = [];
 		
 		foreach($groups as $group) {
 			if($group->is_admin($user)) {
@@ -651,7 +651,7 @@ class GroupSQL extends Group {
 
 	public static function get_userperm_groups(User $user, Permission $perm) {
 		$allgrps = Group::get_all_groups();
-		$ret = array();
+		$ret = [];
 		foreach($allgrps as $i)
 			if($i->has_permission($user, $perm))
 				$ret[] = $i;

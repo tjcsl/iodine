@@ -28,7 +28,7 @@ class Findcalc implements Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* Unused; Not supported for this module.
@@ -117,10 +117,10 @@ class Findcalc implements Module {
 				$this->template_args['message']="Calculator not found.";
 			}
 			else if(!isset($this->template_args['message']) && $calcs!="") {
-				$this->template_args['results'] = array();
+				$this->template_args['results'] = [];
 
 				foreach($calcs as $calc) {
-					$output_array = array();
+					$output_array = [];
 
 					$output_array['uid'] = $uid = $calc['uid'];
 					$possible_owner = new User($uid);

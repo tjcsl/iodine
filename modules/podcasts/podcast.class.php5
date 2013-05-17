@@ -23,8 +23,8 @@ class Podcast {
 	private $blurb;
 	private $visibility;
 
-	private $qs = array();
-	private $gs = array();
+	private $qs = [];
+	private $gs = [];
 
 	private $movie;
 
@@ -174,7 +174,7 @@ class Podcast {
 
 		$pids = $I2_SQL->query('SELECT pid FROM podcasts ORDER BY pid'.
 			' DESC')->fetch_all_single_values();
-		$podcasts = array();
+		$podcasts = [];
 		foreach ($pids as $pid) {
 			$podcasts[] = new Podcast($pid,$loadq);
 		}

@@ -28,12 +28,12 @@ class Filecenter implements Module {
 	/**
 	* Template arguments for intrabox
 	*/
-	private $box_args = array();
+	private $box_args = [];
 
 	/**
 	* Template arguments for pane
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 
 	private $filesystem;
@@ -379,8 +379,8 @@ class Filecenter implements Module {
 			$this->template = 'filecenter_bookmarks.tpl';
 		}
 		elseif ($this->filesystem->is_valid()) {
-			$dirs = array();
-			$files = array();
+			$dirs = [];
+			$files = [];
 			
 			//Add the .. directory
 			if (!$this->filesystem->is_root($this->directory)) {
@@ -629,11 +629,11 @@ class Filecenter implements Module {
 	
 	static function get_additional_dirs() {
 		global $I2_USER, $I2_SQL, $I2_ROOT;
-		$dirs = array();
+		$dirs = [];
 		$dirs = $I2_SQL->query('SELECT `path`,`name` FROM filecenter_folders WHERE `uid`=%d',$I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
 		// Find out all of a user's groups, then dynamic groups
 		$groups = $I2_SQL->query('SELECT `gid` FROM groups_static WHERE `uid`=%d',$I2_USER->uid)->fetch_all_single_values();
-		$dynagroups = array();
+		$dynagroups = [];
 		$dynagroupsarray = $I2_SQL->query('SELECT * FROM groups_dynamic')->fetch_all_arrays(Result::ASSOC);
 		$user = $I2_USER;
 		foreach ($dynagroupsarray as $dynagroup) {
@@ -667,7 +667,7 @@ class Filecenter implements Module {
 
 	static function get_additional_dirs_onlymine() {
 		global $I2_USER, $I2_SQL;
-		$dirs = array();
+		$dirs = [];
 		$dirs = $I2_SQL->query('SELECT `path`,`name` FROM filecenter_folders WHERE `uid`=%d',$I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
 		return $dirs;
 	}

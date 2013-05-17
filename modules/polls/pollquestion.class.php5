@@ -42,7 +42,7 @@ class PollQuestion {
 		case 'answers_randomsort':
 			$keys=array_keys($this->myanswers);
 			shuffle($keys);
-			$ret=array();
+			$ret=[];
 			foreach($keys as $key) {
 				$ret[$key]=$this->myanswers[$key];
 			}
@@ -75,7 +75,7 @@ class PollQuestion {
 		$this->myquestion = $info['question'];
 
 		$as = $I2_SQL->query('SELECT aid, answer FROM poll_responses WHERE pid=%d AND qid=%d', $pid,$qid)->fetch_all_arrays();
-		$this->myanswers = array();
+		$this->myanswers = [];
 		foreach ($as as $answer) {
 			$this->myanswers[$answer['aid']] = $answer['answer'];
 		}
@@ -153,7 +153,7 @@ class PollQuestion {
 		$en = $I2_SQL->query('SHOW COLUMNS FROM poll_questions LIKE \'answertype\'')->fetch_array();
 		$en = substr($en['Type'],6,-2);
 		$en = explode("','", $en);
-		$res = array();
+		$res = [];
 		foreach ($en as $type) {
 			$res[$type] = ucfirst(str_replace('_',' ',$type));
 		}
@@ -265,7 +265,7 @@ class PollQuestion {
 					'FROM poll_votes WHERE pid=%d AND qid=%d'.
 					' GROUP BY uid',$this->mypid,
 					$this->myqid)->fetch_all_arrays();
-				$this->num_cache = array();
+				$this->num_cache = [];
 				foreach ($temp as $row)
 					$this->num_cache[$row[0]] = $row[1];
 			}
@@ -289,10 +289,10 @@ class PollQuestion {
 	public function get_all_votes() {
 		global $I2_SQL;
 
-		$votes = array();
+		$votes = [];
 		$res = $I2_SQL->query('SELECT written AS answer, LOWER(grade) AS grade FROM poll_votes WHERE pid=%d AND qid=%d AND written IS NOT NULL',$this->mypid,$this->myqid)->fetch_all_arrays();
 		foreach ($res as $r) {
-			$vote = array();
+			$vote = [];
 			$vote['vote'] = $r['answer'];
 			if ($r['grade'] == 'staff') {
 				$vote['grade'] = 'Teacher';

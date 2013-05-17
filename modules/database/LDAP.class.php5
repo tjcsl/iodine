@@ -25,7 +25,7 @@ class LDAP {
 	const SCOPE_ONE = 3;
 
 	private $dnbase;
-	private static $ou_bases = array();
+	private static $ou_bases = [];
 	private $bind;
 	private $bindtype;
 	private $conn;
@@ -33,7 +33,7 @@ class LDAP {
 	private $sizelimit;
 	private $timelimit;
 	
-	private $conns = array();
+	private $conns = [];
 	
 	function __construct($dn=NULL,$pass=NULL,$server=NULL,$gssapi=FALSE,$proxydn='') {
 		global $I2_USER, $I2_ERR, $I2_AUTH;
@@ -445,7 +445,7 @@ class LDAP {
 		*/
 		$newvalues = array_filter($values);
 		//$newvalues = $values;
-		/*$fin = array();
+		/*$fin = [];
 		foreach ($newvalues as $value) {
 			$fin[$value] = 1;
 		}*/

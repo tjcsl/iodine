@@ -31,7 +31,7 @@ class News implements Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* A 1-dimensional array of all the stories
@@ -41,7 +41,7 @@ class News implements Module {
 	/**
 	* A 1-dimensional array containing all of the titles for all news posts.
 	*/
-	private $summaries = array();
+	private $summaries = [];
 
 	/**
 	* Whether the current user is a news administrator.
@@ -465,7 +465,7 @@ class News implements Module {
 		$this->template = 'news_pane.tpl';
 		$I2_ARGS[1] = '';
 
-		$this->template_args['stories'] = array();
+		$this->template_args['stories'] = [];
 
 		if( $this->stories === NULL) {
 			$this->stories = Newsitem::get_all_items($expired);

@@ -141,7 +141,7 @@ class Logging {
 	*/
 	public function log_error($msg) {
 		global $I2_API;
-		$trace_arr = array();
+		$trace_arr = [];
 		foreach(array_slice(debug_backtrace(),1) as $trace) {
 			if (isSet($trace['file']) && isSet($trace['line'])) {
 				$trace_arr[] = basename($trace['file'],'.php5') .':'. $trace['line'];

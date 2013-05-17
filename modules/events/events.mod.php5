@@ -28,7 +28,7 @@ class Events implements Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* Unused; Not supported for this module.
@@ -86,7 +86,7 @@ class Events implements Module {
 	function init_pane() {
 		global $I2_ARGS, $I2_USER;
 
-		$args = array();
+		$args = [];
 		if(count($I2_ARGS) <= 1) {
 			$this->home();
 			return array('Events: Home', 'Events');

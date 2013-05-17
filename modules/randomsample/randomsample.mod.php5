@@ -20,7 +20,7 @@ class Randomsample implements Module {
 
 	private function take_sample($filter,$size,$attrs) {
 		global $I2_LDAP,$I2_LOG;
-		$samp = array();
+		$samp = [];
 		$mail = FALSE;
 		$username = FALSE;
 		if (in_array('iodineUid',$attrs)) {
@@ -33,7 +33,7 @@ class Randomsample implements Module {
 				  }
 		}
 		$res = $I2_LDAP->search('ou=people',$filter,$attrs);
-		$pop = array();
+		$pop = [];
 		$ct = 0;
 		$rows = $res->num_rows();
 		while ($ct < $rows) {
@@ -55,7 +55,7 @@ class Randomsample implements Module {
 		if ($size > $popsize) {
 			return -1;
 		}
-		$selected = array();
+		$selected = [];
 		while ($numselected < $size) {
 				  $choice = rand(0,$popsize-$numselected-1);
 				  if (isSet($selected[$choice])) {
@@ -133,7 +133,7 @@ class Randomsample implements Module {
 	}
 
 	public function display_pane($disp) {
-		$args = array();
+		$args = [];
 		if (isSet($this->sample)) {
 				  $args['sample'] = $this->sample;
 				  $args['cols'] = $this->attrs;

@@ -16,8 +16,8 @@
 
 class EighthBlock {
 
-	private $data = array();
-	private $restrictionlists = array(); //Lists of group-specific restrictions.
+	private $data = [];
+	private $restrictionlists = []; //Lists of group-specific restrictions.
 
 	/**
 	* The constructor for the {@link EighthBlock} class.

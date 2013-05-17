@@ -197,7 +197,7 @@ class IntraBox {
 		if(!count($allowed_modules)==0) {
 			$check=true;
 		}
-		$ret = array();
+		$ret = [];
 	
 		while ($boxen->more_rows()) {
 			$tmp=$boxen->fetch_array(Result::ASSOC);
@@ -293,7 +293,7 @@ class IntraBox {
 			WHERE intrabox_map.uid = %d
 			ORDER BY intrabox_map.box_order;', $I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
 			if($check) {
-				$ret=array();
+				$ret=[];
 				foreach($tmp as $t) {
 					if(!$check||in_array($t['name'],$allowed_modules))
 						$ret[]=$t;
@@ -306,7 +306,7 @@ class IntraBox {
 		elseif( $boxes == self::UNUSED ) {
 			//this is possible with one query with subqueries, but mysql < 4.1 doesn't support them
 			//I can't think of a way to do it right now with joins, but if it's possible, then someone do it here
-			$ids = array();
+			$ids = [];
 			foreach($I2_SQL->query('SELECT boxid FROM intrabox_map WHERE uid=%d;', $I2_USER->uid) as $row) {
 				$ids[] = $row[0];
 			}
@@ -322,7 +322,7 @@ class IntraBox {
 			WHERE intrabox.boxid NOT IN (%D) AND (gid IN (%D) OR gid IS NULL)
 			ORDER BY intrabox.display_name;', $ids, self::get_all_groups())->fetch_all_arrays(Result::ASSOC);
 			if($check){
-				$ret=array();
+				$ret=[];
 				foreach($tmp as $t) {
 					if(in_array($t['name'],$allowed_modules))
 						$ret[]=$t;
@@ -352,7 +352,7 @@ class IntraBox {
 	private static function get_all_groups() {
 		global $I2_USER;
 		if (self::$groups === NULL) {
-			self::$groups = array();
+			self::$groups = [];
 			foreach (Group::get_user_groups($I2_USER) as $g)
 				self::$groups[] = $g->gid;
 			d(print_r(self::$groups,TRUE),1);

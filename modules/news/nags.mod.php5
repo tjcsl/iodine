@@ -16,7 +16,7 @@
 class Nags implements Module {
 
 	private $template = 'pane.tpl';
-	private $template_args = array();
+	private $template_args = [];
 
 	public function get_name() {
 		return 'nags';

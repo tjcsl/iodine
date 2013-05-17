@@ -19,7 +19,7 @@
 // styles isn't likely to be too complex anyway.
 class JS implements Module {
 
-	private $warnings = array();
+	private $warnings = [];
 
 	private $date;
 

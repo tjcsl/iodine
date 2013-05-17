@@ -355,7 +355,7 @@ class Display {
 	* @param string $template File name of the template.
 	* @param array $args Associative array of Smarty arguments.
 	*/
-	public function disp($template, $args=array(), $validate=TRUE) {
+	public function disp($template, $args=[], $validate=TRUE) {
 		if(self::$display_stopped) {
 			return;
 		}
@@ -382,7 +382,7 @@ class Display {
 	* @param string $temple File name of the template.
 	* @param array $args Associative array of Smarty arguments.
 	*/
-	public function fetch($template, $args=array(), $validate = TRUE) {
+	public function fetch($template, $args=[], $validate = TRUE) {
 		$this->assign_i2vals();
 		$this->smarty_assign($args);
 		if( (($tpl = self::get_template(strtolower($this->my_module_name).'/'.$template)) === NULL) ) {

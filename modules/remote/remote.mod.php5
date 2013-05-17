@@ -14,7 +14,7 @@
 * @subpackage Remote
 */
 class Remote implements Module {
-	private $template_args = array();
+	private $template_args = [];
 	/**
 	* Unused; Not supported for this module.
 	*

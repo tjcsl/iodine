@@ -17,7 +17,7 @@
 class StudentDirectory implements Module {
 	
 	private $template;
-	private $template_args = array();
+	private $template_args = [];
 		
 	const IM_AVAILABLE = 'available.png';
 	const IM_AVAILABLE_IDLE = 'available.png';
@@ -161,7 +161,7 @@ class StudentDirectory implements Module {
 					$classid = NULL;
 				}
 				$sectionids = Schedule::sections($classid);
-				$classes = array();
+				$classes = [];
 				foreach ($sectionids as $sectionid) {
 					$sec = Schedule::section($sectionid);
 					$classes[] = array('class'=>$sec);
@@ -173,7 +173,7 @@ class StudentDirectory implements Module {
 				return "Sections of $classname";
 			case 'roster':
 				$sectionids = Schedule::roster();
-				$classes = array();
+				$classes = [];
 				foreach ($sectionids as $sectionid) {
 					$sec = Schedule::section($sectionid);
 					$classes[] = $sec;
@@ -250,7 +250,7 @@ class StudentDirectory implements Module {
 
 				$tempmaillist = $user->mail;
 				if(is_array($tempmaillist)) {
-					$this->template_args['maillist']=array();
+					$this->template_args['maillist']=[];
 					foreach($tempmaillist as $email) {
 						$this->template_args['maillist'][] = str_replace("?","",$email);
 					}
@@ -292,7 +292,7 @@ class StudentDirectory implements Module {
 
 	function logic_eval($input) {
 		// http://en.wikipedia.org/wiki/Logical_connective
-		$vartable = array(); //TODO: finish parse_logicelement, make display nicer
+		$vartable = []; //TODO: finish parse_logicelement, make display nicer
 		if(has_unlogical($input))
 			return false;
 		$rootnode = parse_logicelement($input,$vartable);

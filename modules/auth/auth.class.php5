@@ -35,7 +35,7 @@ class Auth {
 	*/
 	private $auth_type;
 
-	public $template_args = array();
+	public $template_args = [];
 	/**
 	* The Auth class constructor.
 	*
@@ -291,7 +291,7 @@ class Auth {
 			$modauth_loginfailed = FALSE;
 
 			if(!isSet($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
-				$_SESSION['logout_funcs'] = array();
+				$_SESSION['logout_funcs'] = [];
 			}
 			//$this->cache_password($_REQUEST['login_password']);
 			if (isset($_REQUEST['login_username']) && isset($_REQUEST['login_password'])) {
@@ -449,7 +449,7 @@ class Auth {
 		// if no special image, get a random normal one
 		if (! isset($image)) {
 
-			$images = array();
+			$images = [];
 			$dirpath = $I2_FS_ROOT . $url_prefix;
 			$dir = opendir($dirpath);
 			while ($file = readdir($dir)) {
@@ -487,7 +487,7 @@ class Auth {
 	*/
 	public function get_background_images() {
 		global $I2_FS_ROOT;
-			$images = array();
+			$images = [];
 			$dirpath = $I2_FS_ROOT . 'www/pics/logins';
 			$dir = opendir($dirpath);
 			while ($file = readdir($dir)) {

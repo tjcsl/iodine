@@ -138,7 +138,7 @@ class ManageIbox implements Module {
 				$this->renormalize_boxen();
 				break;
 			default:
-				$this->tpl = array('error.tpl', array());
+				$this->tpl = array('error.tpl', []);
 				return 'Error';
 		}
 

@@ -16,7 +16,7 @@
 class Privacy implements Module {
 
 	private $template = 'view.tpl';
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* Unused; Not supported for this module.
@@ -97,7 +97,7 @@ class Privacy implements Module {
 			if (isSet($I2_ARGS[1])) {
 				$this->template_args['user'] = new User($I2_ARGS[1]);
 				$photonames = $this->template_args['user']->photonames;
-				$this->photonames = array();
+				$this->photonames = [];
 				foreach ($photonames as $photo) {
 					$text = ucfirst(strtolower(substr($photo, 0, -5)));
 					$this->photonames[$photo] = $text;
@@ -113,7 +113,7 @@ class Privacy implements Module {
 		} else {
 			$this->template_args['user'] = $I2_USER;
 			$photonames = $this->template_args['user']->photonames;
-			$this->photonames = array();
+			$this->photonames = [];
 			foreach ($photonames as $photo) {
 				$text = ucfirst(strtolower(substr($photo, 0, -5)));
 				$this->photonames[$photo] = $text;

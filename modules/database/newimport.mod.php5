@@ -16,11 +16,11 @@
 class Newimport implements Module {
 
 	private $template = 'home.tpl';
-	private $template_args = array();
+	private $template_args = [];
 
 	private $startyear = FALSE;
 
-	private $messages = array();
+	private $messages = [];
 
 	private $boxids;
 
@@ -221,7 +221,7 @@ class Newimport implements Module {
 		}
 
 		$user = new User($_REQUEST['id']);
-		$warnings = array();
+		$warnings = [];
 		
 		$data = $_REQUEST['data'];
 		if ($data['iodineUid'] != $user->iodineUid) {
@@ -385,7 +385,7 @@ class Newimport implements Module {
 			$ldap = $I2_LDAP;
 		}
 
-		$newteach = array();
+		$newteach = [];
 		$newteach['objectClass'] = 'tjhsstTeacher';
 		$newteach['iodineUid'] = $info['iodineUid'];
 		$newteach['iodineUidNumber'] = $info['iodineUidNumber'];
@@ -435,8 +435,8 @@ class Newimport implements Module {
 
 		$oldusers = $ldap->search(LDAP::get_user_dn(), 'objectClass=tjhsstStudent', 'iodineUid')->fetch_col('iodineUid');
 
-		$newusers = array();
-		$newuserdata = array();
+		$newusers = [];
+		$newuserdata = [];
 
 		$file = @fopen($filename, 'r');
 
@@ -541,7 +541,7 @@ class Newimport implements Module {
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}
-		$usernew = array();
+		$usernew = [];
 		$usernew['objectClass'] = 'tjhsstStudent';
 		$usernew['graduationYear'] = User::get_gradyear($user['grade']);
 		$usernew['iodineUid'] = strtolower($user['username']);
@@ -593,7 +593,7 @@ class Newimport implements Module {
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}
-		$usernew = array();
+		$usernew = [];
 		$usernew['tjhsstStudentId'] = $user['studentid'];
 		$usernew['cn'] = $user['fname'].' '.$user['lname'];
 		$usernew['sn'] = $user['lname'];
@@ -732,7 +732,7 @@ class Newimport implements Module {
 		/*
 		** Set up student <=> course mappings
 		*/
-		$students = array();
+		$students = [];
 		d("Reading from schedule file: $schedulefile...", 6);
 		$studentcoursefile = @fopen($schedulefile,'r');
 		while (list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename, $teacherid, $teachername, $term, $room) = fgetcsv($studentcoursefile)) {
@@ -745,7 +745,7 @@ class Newimport implements Module {
 			$classdn = LDAP::get_schedule_dn($class);
 
 			if (!isSet($students[$studentid])) {
-				$students[$studentid] = array();
+				$students[$studentid] = [];
 			}
 			$students[$studentid][] = $classdn;
 		}
@@ -776,7 +776,7 @@ class Newimport implements Module {
 			'links'=>'Useful Links',
 			'scratchpad'=>'ScratchPad'
 		);
-		$desiredboxes = array();
+		$desiredboxes = [];
 		foreach ($boxes as $desiredbox=>$name) {
 			$boxnum = $I2_SQL->query('SELECT boxid FROM intrabox WHERE name=%s',$desiredbox)->fetch_single_value();
 			$desiredboxes[$boxnum] = $name;

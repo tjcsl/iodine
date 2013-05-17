@@ -15,7 +15,7 @@
 */
 class SGD implements Module {
 	private $template;
-	private $template_args = array();
+	private $template_args = [];
 	/**
 	* Unused; Not supported for this module.
 	*

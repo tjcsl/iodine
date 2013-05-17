@@ -27,7 +27,7 @@ class TabbedPane implements Module {
 
 	private $template = 'pane.tpl';
 
-	private $template_args = array();
+	private $template_args = [];
 
 	private $title;
 

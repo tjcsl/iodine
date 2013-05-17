@@ -19,7 +19,7 @@ class Calendar implements Module {
 	/**
 	* Arguments for the template
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* Declaring some global variables
@@ -142,14 +142,14 @@ class Calendar implements Module {
 		$data_block = $I2_SQL->query('SELECT * FROM calendar WHERE blocknottime=1')->fetch_all_arrays_keyed_list('blockdate',MYSQLI_ASSOC);
 
 		$blocksraw = $I2_SQL->query('SELECT * FROM calendar_schedule')->fetch_all_arrays(MYSQLI_ASSOC);
-		$blocks = array();
+		$blocks = [];
 		foreach($blocksraw as $block) {
 			$blocklist = explode('|',$block['blocksarray']);
 			//print_r($blocklist);
-			$addarray=array();
+			$addarray=[];
 			foreach($blocklist as $shard) {
 				$blockparts = explode(',',$shard);
-				$ret=array();
+				$ret=[];
 				$ret['name']=$blockparts[0];
 				//echo "(".$block['day'].' '.$blockparts[1].")\r\n";
 				$ret['starttime']=strtotime($block['day'].' '.$blockparts[1]);
@@ -158,7 +158,7 @@ class Calendar implements Module {
 			}
 			$blocks[$block['day']]=$addarray;
 		}
-		$data = array();
+		$data = [];
 		foreach($data_time as $row) {
 			$data[date("Y-m-d",strtotime($row['starttime']))][]=array('title'=>$row['title'],'id'=>$row['id'],'text'=>$row['text']);
 		}
@@ -175,12 +175,12 @@ class Calendar implements Module {
 		
 		
 
-		$weeks=array();
+		$weeks=[];
 		$thisdate=$starttime;
 		for($i=0;$i<5;$i++) {
-			$weeks[]=array();
+			$weeks[]=[];
 			for($j=0;$j<7;$j++) {
-				$weeks[$i][]=array();
+				$weeks[$i][]=[];
 				$weeks[$i][$j]['day']=date("j",$thisdate);
 				$weeks[$i][$j]['monthodd']=date("n",$thisdate)%2;
 				/*$text="";

@@ -23,12 +23,12 @@ class NewsItem {
 	/**
 	* An associative array containing various information about the newsitem.
 	*/
-	protected $info = array();
+	protected $info = [];
 
 	/**
 	* An array of NewsItem objects whose info hasn't been fetched yet.
 	*/
-	private static $unfetched = array();
+	private static $unfetched = [];
 
 	/**
 	* The list of what's shaded and what's not.
@@ -99,7 +99,7 @@ class NewsItem {
 		}
 		// Fetches the groups to which the item was posted
 		foreach(self::$unfetched as $item) {
-			$item->info['groups'] = array();
+			$item->info['groups'] = [];
 		}
 
 		foreach($I2_SQL->query('SELECT `nid`,`gid` FROM news_group_map WHERE `nid` IN (%D)', array_keys(self::$unfetched)) as $row) {
@@ -140,7 +140,7 @@ class NewsItem {
 			self::$unfetched[$row['nid']]->info['liked'] = $row[$checkstr];
 		}
 
-		self::$unfetched = array();
+		self::$unfetched = [];
 	}
 
 	/**
@@ -172,8 +172,8 @@ class NewsItem {
 	 */
 	public static function get_all_items($expired = false) {
 		global $I2_SQL;
-		$allitems = array();
-		$myitems = array();
+		$allitems = [];
+		$myitems = [];
 		$qstring = 'SELECT id FROM news ' . ($expired ? '' : 'WHERE expire > NOW() OR expire IS NULL ') .
 			'ORDER BY posted DESC';
 		foreach($I2_SQL->query($qstring)->fetch_all_single_values() as $nid) {
@@ -198,8 +198,8 @@ class NewsItem {
 	 */
 	public static function get_all_items_nouser($expired = false) {
 		global $I2_SQL;
-		$allitems = array();
-		$myitems = array();
+		$allitems = [];
+		$myitems = [];
 		$qstring = 'SELECT id FROM news ' . ($expired ? '' : 'WHERE expire > NOW() OR expire IS NULL ') .
 			'ORDER BY posted DESC';
 		foreach($I2_SQL->query($qstring)->fetch_all_single_values() as $nid) {
@@ -346,7 +346,7 @@ class NewsItem {
 		$newsadm = new Group('admin_news');
 		if(!$newsadm->has_member()) {
 			//You can't delete a news item unless you can manage news for ALL the groups it is posted to.
-			$groups = array();
+			$groups = [];
 			foreach($I2_SQL->query('SELECT gid FROM news_group_map WHERE nid=%d', $nid)->fetch_all_arrays() as $group)
 			{
 				$groups[] = new Group($group[0]);

@@ -41,7 +41,7 @@ class GroupLDAP {
 	public function __construct($group) {
 		global $I2_LDAP;
 		if(self::$gid_map === NULL) {
-			self::$gid_map = array();
+			self::$gid_map = [];
 			$res = $I2_LDAP->search(LDAP::get_group_dn(), '(objectClass=iodineGroup)', array('cn', 'gidNumber'));
 			while($row = $res->fetch_array(Result::ASSOC)) {
 				self::$gid_map[$row['cn']] = $row['gidNumber'];
@@ -101,7 +101,7 @@ class GroupLDAP {
 		if($module) {
 			$prefix = strtolower($module) . '_*';
 		}
-		$ret = array();
+		$ret = [];
 		foreach($I2_LDAP->search(LDAP::get_group_dn(), '(objectClass=iodineGroup)', array('gidNumber')) as $row) {
 			$ret[] = new Group($row[0]);
 		}
@@ -181,7 +181,7 @@ class GroupLDAP {
 
 	public static function get_user_groups(User $user, $include_special = TRUE, $perms = NULL) {
 		global $I2_LDAP;
-		$ret = array();
+		$ret = [];
 		if($perms && !is_array($perms)) {
 			$perms = array($perms);
 		}
@@ -203,7 +203,7 @@ class GroupLDAP {
 
 	public static function get_admin_groups(User $user) {
 		$groups = Group::get_user_groups($user, FALSE);
-		$ret = array();
+		$ret = [];
 		foreach($groups as $group) {
 			if($group->is_admin($user)) {
 				$ret[] = $group;

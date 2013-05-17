@@ -22,7 +22,7 @@ class Birthdays implements Module {
 	private $birthdays_today;
 	private $birthdays_tomorrow;
 
-	private $template_args = array();
+	private $template_args = [];
 
 	private $tmp_ldap;
 
@@ -121,13 +121,13 @@ class Birthdays implements Module {
 			$time = time();
 		}
 
-		$birthdays = array();
+		$birthdays = [];
 
 		$this->tmp_ldap = $I2_LDAP;
 
 		for($i = -3; $i <= 3; $i+=1) {
 			$timestamp = strtotime("+$i day",$time);
-			$birthday = array();
+			$birthday = [];
 			$birthday['date'] = $timestamp;
 			$birthday['people'] = $this->get_birthdays($timestamp);
 			$birthdays[] = $birthday;
@@ -147,7 +147,7 @@ class Birthdays implements Module {
 		$date = '*' . date('md', $timestamp);
 		$year = (int)date('Y', $timestamp);
 
-		$people = array();
+		$people = [];
 		$result = $this->tmp_ldap->search('ou=people,dc=tjhsst,dc=edu', "(birthday=$date)", 'iodineUidNumber');
 		while ($uid = $result->fetch_single_value()) {
 			$user = new User((int)$uid);

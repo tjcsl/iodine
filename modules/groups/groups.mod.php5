@@ -23,7 +23,7 @@ class Groups implements Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* Unused; Not supported for this module.
@@ -81,7 +81,7 @@ class Groups implements Module {
 	public function init_pane() {
 		global $I2_ARGS, $I2_USER;
 
-		$args = array();
+		$args = [];
 		if(count($I2_ARGS) <= 1) {
 			$this->template = 'groups_home.tpl';
 			$this->template_args['groups'] = Group::get_user_groups($I2_USER);
@@ -91,7 +91,7 @@ class Groups implements Module {
 			$this->template_args['prefixes'] = Group::user_admin_prefixes($I2_USER);
 			$this->template_args['group_admin'] = Group::get_admin_groups($I2_USER);
 			$alluserjoin = Group::get_userperm_groups($I2_USER, Permission::getPermission('GROUP_JOIN'));
-			$this->template_args['group_join'] = array();
+			$this->template_args['group_join'] = [];
 			foreach($alluserjoin as $i) { //The groups of which this user is allowed to join.
 				if(!$i->has_member($I2_USER)) //Not already a member.
 					$this->template_args['group_join'][] = $i;
@@ -431,11 +431,11 @@ class Groups implements Module {
 	 * Private helper function
 	 */
 	private static function get_memberinfo(Group $group) {
-		$group_members = array();
+		$group_members = [];
 		
 		$users = $group->members_obj_sorted;
 		foreach($users as $person_user) {
-			$person_array = array();
+			$person_array = [];
 
 			$person_array['name'] = $person_user->name;
 			$person_array['uid'] = $person_user->uid;
@@ -467,10 +467,10 @@ class Groups implements Module {
 		$users = $group->users_with_perm();
 
 		if(count($users) < 1) {
-			return array();
+			return [];
 		}
 
-		$ret = array();
+		$ret = [];
 		foreach($users as $usr) {
 			$row['name'] = $usr->name;
 			$row['uid'] = $usr->uid;
@@ -488,10 +488,10 @@ class Groups implements Module {
 		$groups = $group->groups_with_perm();
 
 		if(count($groups) < 1) {
-			return array();
+			return [];
 		}
 
-		$ret = array();
+		$ret = [];
 		foreach($groups as $grp) {
 			$row['name'] = $grp->name;
 			$row['gid'] = $grp->gid;
@@ -630,7 +630,7 @@ class Groups implements Module {
 		$this->template_args['prefixes'] = Group::user_admin_prefixes($otheruser);
 		$this->template_args['group_admin'] = Group::get_admin_groups($otheruser);
 		$alluserjoin = Group::get_userperm_groups($otheruser, Permission::getPermission('GROUP_JOIN'));
-		$this->template_args['group_join'] = array();
+		$this->template_args['group_join'] = [];
 		foreach($alluserjoin as $i) { //The groups of which this user is allowed to join.
 			if(!$i->has_member($otheruser)) //Not already a member.
 				$this->template_args['group_join'][] = $i;

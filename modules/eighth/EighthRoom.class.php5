@@ -16,9 +16,9 @@
 
 class EighthRoom {
 
-	private static $cache = array();
+	private static $cache = [];
 
-	private $data = array();
+	private $data = [];
 
 	/**
 	* The constructor for the {@link EighthRoom} class.
@@ -52,7 +52,7 @@ class EighthRoom {
 	public static function get_utilization($blockid, $columns = NULL, $overbooked = FALSE, $sort = NULL) {
 		global $I2_SQL;
 		$activities = EighthActivity::id_to_activity($I2_SQL->query('SELECT eighth_block_map.activityid,bid FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d', $blockid)->fetch_all_arrays(Result::NUM));
-		$utilizations = array();
+		$utilizations = [];
 		foreach($activities as $activity) {
 			$students = EighthSchedule::count_members($blockid, $activity->aid);
 			$rooms = $activity->block_rooms;
@@ -131,7 +131,7 @@ class EighthRoom {
 	public static function get_conflicts($blockid) {
 		global $I2_SQL;
 		$result = $I2_SQL->query("SELECT aid,name,special,restricted,eighth_block_map.rooms FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d AND eighth_block_map.rooms != ''", $blockid)->fetch_all_arrays(Result::ASSOC);
-		$conflicts = array();
+		$conflicts = [];
 		foreach($result as $activity) {
 			$rooms = explode(',', $activity['rooms']);
 			foreach($rooms as $room) {
@@ -221,7 +221,7 @@ class EighthRoom {
 		$res = new MySQLResult($I2_SQL->query("SELECT bid,activityid,rooms FROM eighth_block_map WHERE rooms LIKE '%%%d%%'",$rid),MYSQL::SELECT);
 		$query = 'UPDATE eighth_block_map SET rooms=%s WHERE bid=%d AND activityid=%d';
 		while ($row = $res->fetch_array(Result::ASSOC)) {
-			$newrooms = array();
+			$newrooms = [];
 			foreach (explode(',',$row['rooms']) as $room) {
 				if ($room != $rid) {
 					$newrooms[] = $room;
@@ -241,7 +241,7 @@ class EighthRoom {
 		$res = $I2_SQL->query("SELECT aid,rooms FROM eighth_activities WHERE rooms LIKE '%%?%'");
 		$aquery = 'UPDATE eighth_activities SET rooms=%s WHERE aid=%d';
 		while ($row = $res->fetch_array(Result::ASSOC)) {
-				  $newrooms = array();
+				  $newrooms = [];
 				  foreach (explode(',',$row['rooms']) as $room) {
 							 if ($room != $rid) {
 										$newrooms[] = $rid;
@@ -270,7 +270,7 @@ class EighthRoom {
 	*/
 	public function remove() {
 		$this->remove_room($this->data['rid']);
-		$this->data = array();
+		$this->data = [];
 	}
 
 	/**
@@ -320,7 +320,7 @@ class EighthRoom {
 	* @param array $roomids The room IDs.
 	*/
 	public static function id_to_room($roomids) {
-		$ret = array();
+		$ret = [];
 		foreach($roomids as $roomid) {
 			if (!$roomid) {
 				continue;

@@ -15,7 +15,7 @@
 */
 class RedirectMail implements Module {
 	
-	private $tpl_args = array();
+	private $tpl_args = [];
 	private $tpl = NULL;
 
 	/**

@@ -15,7 +15,7 @@
 */
 class Kerberos implements AuthType {
 	private $cache;
-	private $realms = array();
+	private $realms = [];
 	private $realm;
 
 	public function __construct($realm=NULL) {

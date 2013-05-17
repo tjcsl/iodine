@@ -18,7 +18,7 @@ class dataimport implements Module {
 	private $oldsql;
 	private $usertable;
 	private $teachertable;
-	private $args = array();
+	private $args = [];
 	private $admin_pass;
 	private $num = 10000;
 	private $last_to_people;
@@ -80,12 +80,12 @@ class dataimport implements Module {
 		d("Importing data from teacher data file $filename...",6);
 		
 		$line = null;
-		$this->teachertable = array();
+		$this->teachertable = [];
 
 		/*
 		** Store a map of last names => people, for later use
 		*/
-		$this->last_to_people = array();
+		$this->last_to_people = [];
 
 		$numlines = 0;
 
@@ -139,7 +139,7 @@ class dataimport implements Module {
 		//$teacherldap = LDAP::get_simple_bind($user,$pass,$server);
 		$teacherldap = LDAP::get_user_bind($server);
 		$res = $teacherldap->search('ou=Staff,dc=local,dc=tjhsst,dc=edu','cn=*',array('cn','sn','givenName'));
-		$validteachers = array();
+		$validteachers = [];
 		while ($teacher = $res->fetch_array()) {
 			if (!isSet($teacher['sn'])) {
 				continue;
@@ -197,7 +197,7 @@ class dataimport implements Module {
 
 		$file = @fopen($teachersfiletwo,'r');
 
-		$validteachers = array();
+		$validteachers = [];
 
 		while (list($username, , , $firstname, $lastname) = fgetcsv($file,0,';')) {
 			$username = strtolower($username);
@@ -215,14 +215,14 @@ class dataimport implements Module {
 					/*
 					** We have exactly one match.  We've got our teacher.
 					*/
-					$newteach = array();
+					$newteach = [];
 					$newteach['username'] = $username;
 					$newteach['id'] = $choices[0]['id'];
 					$newteach['lname'] = $lastname;
 					$newteach['fname'] = $choices[0]['fname'];
 					$validteachers[] = $newteach;
 				} else {
-					$valid = array();
+					$valid = [];
 					d("Multiple choices for last name \"$lastname\"",6);
 					foreach ($choices as $choice) {
 						/*
@@ -245,7 +245,7 @@ class dataimport implements Module {
 						d("There is no \"$firstname $lastname\"!",1);
 						continue;
 					}
-					$newteach = array();
+					$newteach = [];
 					$newteach['username'] = $username;
 					$newteach['id'] = $valid[0]['id'];
 					$newteach['lname'] = $lastname;
@@ -306,7 +306,7 @@ class dataimport implements Module {
 
 		$oldusers = $ldap->search(LDAP::get_user_dn(), 'objectClass=tjhsstStudent', 'iodineUid')->fetch_col('iodineUid');
 
-		$newusers = array();
+		$newusers = [];
 		
 		$filename = $this->userfile;
 		$file = @fopen($filename, 'r');
@@ -315,7 +315,7 @@ class dataimport implements Module {
 
 		$line = null;
 
-		$this->usertable = array();
+		$this->usertable = [];
 
 		$numlines = 0;
 
@@ -413,7 +413,7 @@ class dataimport implements Module {
 			'links'=>'Useful Links',
 			'scratchpad'=>'ScratchPad'
 		);
-		$desiredboxes = array();
+		$desiredboxes = [];
 		foreach ($this->boxes as $desiredbox=>$name) {
 			$boxnum = $I2_SQL->query('SELECT boxid FROM intrabox WHERE name=%s',$desiredbox)->fetch_single_value();
 			$desiredboxes[$boxnum] = $name;
@@ -430,7 +430,7 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}
-		$newteach = array();
+		$newteach = [];
 		//$newteach['objectClass'] = 'tjhsstTeacher';
 		//$newteach['iodineUid'] = $teacher['username'];
 		//$newteach['iodineUidNumber'] = $teacher['id'];
@@ -455,7 +455,7 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}
-		$newteach = array();
+		$newteach = [];
 		$newteach['objectClass'] = 'tjhsstTeacher';
 		$newteach['iodineUid'] = $teacher['username'];
 		$newteach['iodineUidNumber'] = $teacher['id'];
@@ -493,7 +493,7 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}
-		$usernew = array();
+		$usernew = [];
 		$usernew['objectClass'] = 'tjhsstStudent';
 		//$usernew['graduationYear'] = (12-$user['grade'])+i2config_get('senior_gradyear',date('Y'),'user');
 		$usernew['graduationYear'] = User::get_gradyear($user['grade']);
@@ -543,7 +543,7 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}
-		$usernew = array();
+		$usernew = [];
 		$usernew['cn'] = $user['fname'].' '.$user['lname'];
 		$usernew['sn'] = $user['lname'];
 		$usernew['postalCode'] = $user['zip'];
@@ -691,7 +691,7 @@ class dataimport implements Module {
 
 		// We're going to dispose of all the bad rooms - this means consolidation.
 		// So, we'll reroute all the bad room IDs into the (fewer) good ones.
-		$room_mappings = array();
+		$room_mappings = [];
 
 		/*
 		** Create rooms
@@ -778,7 +778,7 @@ class dataimport implements Module {
 
 
 			// Collect the rooms the activity occurs in
-			$validrooms = array();
+			$validrooms = [];
 
 			if ($sponsors && $sponsors != '') {
 				$sponsors = $this->create_sponsor($sponsors);
@@ -862,7 +862,7 @@ class dataimport implements Module {
 		$num = 0;
 
 		//Badly named - keys are studentids, vals are uids
-		$studentids = array();
+		$studentids = [];
 		$ldap = LDAP::get_admin_bind($this->admin_pass);
 		$res = $ldap->search('ou=people','objectClass=tjhsstStudent',array('tjhsstStudentId','iodineUidNumber'));
 		$total = $res->num_rows();
@@ -1056,7 +1056,7 @@ class dataimport implements Module {
 		/*
 		** Set up student <=> course mappings
 		*/
-		$students = array();
+		$students = [];
 		$schedulefile = $this->schedulefile;
 		d("Reading from schedule file: $schedulefile...", 6);
 		$studentcoursefile = @fopen($schedulefile,'r');
@@ -1075,7 +1075,7 @@ class dataimport implements Module {
 			$studentdn = LDAP::get_user_dn($studentid);
 
 			if (!isSet($students[$studentdn])) {
-				$students[$studentdn] = array();
+				$students[$studentdn] = [];
 			}
 			$students[$studentdn][] = $classdn;
 		}
@@ -1141,7 +1141,7 @@ class dataimport implements Module {
 		global $I2_SQL, $I2_LDAP;
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 
-		$nonexistant = array();
+		$nonexistant = [];
 
 		$I2_SQL->query('DELETE FROM parking_apps WHERE special_name IS NOT NULL');
 
@@ -1315,7 +1315,7 @@ class dataimport implements Module {
 				throw new I2Exception('Column '.$column.' not set');
 			}
 			$query = "UPDATE $table SET ";
-			$queryarr = array();
+			$queryarr = [];
 			$studentid = $row[$column];
 			$user = new User($studentid);
 			$uid = $user->uid;
@@ -1427,9 +1427,9 @@ class dataimport implements Module {
 	private function import_polls() {
 			global $I2_SQL, $I2_LOG;
 			$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
-			$answerstopolls = array();
-			$answerstoquestions = array();
-			$questionstopolls=array();
+			$answerstopolls = [];
+			$answerstoquestions = [];
+			$questionstopolls=[];
 			/*
 			** Import polls
 			*/
@@ -1511,7 +1511,7 @@ class dataimport implements Module {
 					  }
 					  if (isSet($questionstopolls[$questionid])) {
 						  // We need to remove the bitwise OR encoding used on these answers <sigh>
-						  /*$aidparts = array();
+						  /*$aidparts = [];
 						  // I know this isn't the normal way to decode the data but I feel safer doing it this way than
 						  // trusting myself to use bitshifts correctly.  This makes for simpler, safer code.
 						  $bin = decbin($answerid);

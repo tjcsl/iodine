@@ -16,9 +16,9 @@
 
 class EighthActivity {
 
-	static $membercache = array();
-	static $passcache = array();
-	private $data = array();
+	static $membercache = [];
+	static $passcache = [];
+	private $data = [];
 	const CANCELLED = 1;
 	const PERMISSIONS = 2;
 	const CAPACITY = 4;
@@ -59,8 +59,8 @@ class EighthActivity {
 				$this->data['sticky']=0;
 				$this->data['special']=0;
 				$this->data['calendar']=0;
-				$this->data['sponsors'] = array();
-				$this->data['rooms'] = array();
+				$this->data['sponsors'] = [];
+				$this->data['rooms'] = [];
 				$this->data['aid'] = $activityid;
 				if($blockid) {
 					$this->data['bid']=$blockid;
@@ -71,8 +71,8 @@ class EighthActivity {
 					$this->data['comment']='';
 					$this->data['advertisement']='';
 					$this->data['capacity']=9001;
-					$this->data['block_sponsors'] = array();
-					$this->data['block_rooms'] = array();
+					$this->data['block_sponsors'] = [];
+					$this->data['block_rooms'] = [];
 				}
 				return;
 			}
@@ -80,8 +80,8 @@ class EighthActivity {
 		}
 		if ($activityid != NULL && $activityid != '') {
 			$this->data = $I2_SQL->query('SELECT * FROM eighth_activities WHERE aid=%d', $activityid)->fetch_array(Result::ASSOC);
-			$this->data['sponsors'] = (!empty($this->data['sponsors']) ? explode(',', $this->data['sponsors']) : array());
-			$this->data['rooms'] = (!empty($this->data['rooms']) ? explode(',', $this->data['rooms']) : array());
+			$this->data['sponsors'] = (!empty($this->data['sponsors']) ? explode(',', $this->data['sponsors']) : []);
+			$this->data['rooms'] = (!empty($this->data['rooms']) ? explode(',', $this->data['rooms']) : []);
 			$this->data['aid'] = $activityid;
 			if($blockid) {
 				$this->data['block'] = new EighthBlock($blockid);
@@ -89,8 +89,8 @@ class EighthActivity {
 				if(!$additional)
 					throw new I2Exception("Activity $activityid does not exist for block $blockid ({$this->data['block']->date}, {$this->data['block']->block} block)!");
 				$this->data = array_merge($this->data, $additional);
-				$this->data['block_sponsors'] = (!empty($this->data['block_sponsors']) ? explode(',', $this->data['block_sponsors']) : array());
-				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(',', $this->data['block_rooms']) : array());
+				$this->data['block_sponsors'] = (!empty($this->data['block_sponsors']) ? explode(',', $this->data['block_sponsors']) : []);
+				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(',', $this->data['block_rooms']) : []);
 			}
 			// Import favorites data. This is a _good_thing_. I think.
 			$this->data['favorite']=sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $activityid)->fetch_array(MYSQLI_ASSOC))>1?TRUE:FALSE;
@@ -300,7 +300,7 @@ class EighthActivity {
 		}
 
 		$query_excludes = $I2_SQL->query('SELECT * FROM eighth_excludes WHERE bid = %d',$blockid)->fetch_all_arrays(Result::ASSOC);	// mutually exclusive blocks
-		$excludes = array();
+		$excludes = [];
 		foreach($query_excludes as $r) {
 			$exclude_bid=$r['target_bid'];
 			$exclude_aid=EighthSchedule::get_activities_by_block($userid,$exclude_bid);
@@ -495,19 +495,19 @@ class EighthActivity {
 			if($this->data['bid']) {
 				$blockid = $this->data['bid'];
 			} else {
-				return array();
+				return [];
 			}
 		}
 		if(isset(self::$passcache[$this->data['aid']][$blockid]))
 			return self::$passcache[$this->data['aid']][$blockid];
 
 		$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d AND pass=1', $blockid, $this->data['aid'])->fetch_all_arrays(Result::ASSOC);
-		$tocache=array();
+		$tocache=[];
 		foreach($res as $row) {
 			$tocache[] = $row['userid'];
 		}
 		User::cache_users($tocache,array('nickname','mail','sn','givenname','graduationyear'));
-		$ret = array();
+		$ret = [];
 		if($this->is_user_sponsor($I2_USER)) {
 			foreach ($res as $row) {
 				$ret[] = $row['userid'];
@@ -538,18 +538,18 @@ class EighthActivity {
 					  $blockid = $this->data['bid'];
 			}
 			else {
-				return array();
+				return [];
 			}
 		}
 		if(isset(self::$membercache[$this->data['aid']][$blockid]))
 			return self::$membercache[$this->data['aid']][$blockid];
 		$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d AND pass=0', $blockid, $this->data['aid'])->fetch_all_arrays(Result::ASSOC);
-		$tocache=array();
+		$tocache=[];
 		foreach($res as $row) {
 			$tocache[]=$row['userid'];
 		}
 		User::cache_users($tocache,array('nickname','mail','sn','givenname','graduationyear'));
-		$ret = array();
+		$ret = [];
 		// Only show students who want to be found, unless the person asking is the activity sponsor
 		if($this->is_user_sponsor($I2_USER)) {
 			foreach ($res as $row) {
@@ -912,7 +912,7 @@ class EighthActivity {
 	* @param string $description The description of the activity.
 	* @param bool $restricted If this is a restricted activity.
 	*/
-	public static function add_activity($name, $sponsors = array(), $rooms = array(), $description = '', 
+	public static function add_activity($name, $sponsors = [], $rooms = [], $description = '', 
 			$restricted = FALSE, $sticky = FALSE, $bothblocks = FALSE, $presign = FALSE, $aid = NULL, $special = FALSE) {
 		Eighth::check_admin();
 		global $I2_SQL;
@@ -988,7 +988,7 @@ class EighthActivity {
 	*/
 	public function remove() {
 		$this->remove_activity($this->data['aid']);
-		$this->data = array();
+		$this->data = [];
 	}
 
 	/**
@@ -1062,14 +1062,14 @@ class EighthActivity {
 				return $this->data['name'].' - '.$comment;
 			case 'sponsors_comma':
 				$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
-				$temp_sponsors = array();
+				$temp_sponsors = [];
 				foreach($sponsors as $sponsor) {
 					$temp_sponsors[] = $sponsor->name;
 				}
 				return implode(', ', $temp_sponsors);
 			case 'sponsors_lname_comma':
 				$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
-				$temp_sponsors = array();
+				$temp_sponsors = [];
 				foreach($sponsors as $sponsor) {
 					$temp_sponsors[] = $sponsor->lname;
 				}
@@ -1080,7 +1080,7 @@ class EighthActivity {
 					return 'CANCELLED';
 				}
 				$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
-				$temp_sponsors = array();
+				$temp_sponsors = [];
 				foreach($sponsors as $sponsor) {
 					$temp_sponsors[] = $sponsor->name_comma;
 				}
@@ -1090,7 +1090,7 @@ class EighthActivity {
 					return 'CANCELLED';
 				}
 				$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
-				$temp_sponsors = array();
+				$temp_sponsors = [];
 				foreach($sponsors as $sponsor) {
 					$temp_sponsors[] =  $sponsor->lname . ($sponsor->fname ? ', ' . substr($sponsor->fname, 0, 1) . '.' : '');
 				}
@@ -1099,14 +1099,14 @@ class EighthActivity {
 				return $sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
 			case 'pickups_comma':
 				$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
-				$temp_pickups = array();
+				$temp_pickups = [];
 				foreach($sponsors as $sponsor) {
 					$temp_pickups[] = $sponsor->pickup;
 				}
 				return implode(', ', array_unique($temp_pickups));
 			case 'rooms_comma':
 				$rooms = EighthRoom::id_to_room($this->data['rooms']);
-				$temp_rooms = array();
+				$temp_rooms = [];
 				foreach($rooms as $room) {
 					$temp_rooms[] = $room->name;
 				}
@@ -1116,7 +1116,7 @@ class EighthActivity {
 					return '';
 				}
 				$rooms = EighthRoom::id_to_room($this->data['block_rooms']);
-				$temp_rooms = array();
+				$temp_rooms = [];
 				foreach($rooms as $room) {
 					$temp_rooms[] = $room->name;
 				}
@@ -1274,7 +1274,7 @@ class EighthActivity {
 	* @param int $activityids The activity IDs.
 	*/
 	public static function id_to_activity($activityids, $exceptionsok = TRUE) {
-		$ret = array();
+		$ret = [];
 		foreach($activityids as $activityid) {
 			if(is_array($activityid)) {
 				if($exceptionsok || EighthSchedule::is_activity_valid($activityid[0], $activityid[1])||$activityid[0]==-3)

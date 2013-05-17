@@ -7,7 +7,7 @@
 
 class Scratchpad implements Module {
 
-	private $template_args = array();
+	private $template_args = [];
 	private $text;
 
 	/**
@@ -68,7 +68,7 @@ class Scratchpad implements Module {
 
 	public function display_box($disp) {
 		$disp->disp('scratchpad_box.tpl', $this->template_args);
-		//$disp->disp('scratchpad_box.tpl', array());
+		//$disp->disp('scratchpad_box.tpl', []);
 	}
 	
 	/**
@@ -91,7 +91,7 @@ class Scratchpad implements Module {
 
 		switch ($I2_ARGS[1]) {
 		case 'save':
-			$arr = array();
+			$arr = [];
 			$text = $HTTP_RAW_POST_DATA;
 			$I2_SQL->query('REPLACE INTO scratchpad (uid, padtext) VALUES (%d, %s)', $I2_USER->uid, $text);
 			$this->text = $text;

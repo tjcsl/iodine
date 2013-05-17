@@ -15,7 +15,7 @@ class Weather implements Module {
 	/**
 	* Holds the processed weather data
 	*/
-	private $template_args = array();
+	private $template_args = [];
 	/**
 	* Holds the raw data from the weather station
 	*/
