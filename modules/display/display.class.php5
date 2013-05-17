@@ -389,7 +389,7 @@ class Display {
 			if($validate)
 				throw new I2Exception('Invalid template `'.$this->my_module_name.'/'.$template.'` passed to Display');
 		}
-		return $this->smarty->fetch($template);
+		return $this->smarty->fetch($tpl);
 	}
 
 	/**

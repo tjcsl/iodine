@@ -77,7 +77,7 @@ class RichEdit implements Module {
 		global $I2_FS_ROOT;
 		// This just makes basically a blank page with just the css set
 		// That way the editor already has the css loaded for you
-		echo $display->fetch($I2_FS_ROOT."templates/richedit/richeditwindow.tpl", array(), FALSE);
+		echo $display->fetch("richeditwindow.tpl", array(), FALSE);
 		Display::stop_display();
 		exit;
 	}
