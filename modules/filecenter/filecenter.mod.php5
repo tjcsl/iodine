@@ -47,12 +47,13 @@ class Filecenter implements Module {
 	*
 	* Warning: This may not work for all shares.
 	*/
-	private static $standing = array(
+	private static $standing = [
+		'graduate' => 'invalid',
 		'12' => 'senior',
 		'11' => 'junior',
 		'10' => 'sophomore',
 		'9' => 'freshman'
-	);
+	];
 
 	/**
 	* Returns $size in a human-readable format.
