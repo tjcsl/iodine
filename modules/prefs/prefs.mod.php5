@@ -160,6 +160,7 @@ class Prefs implements Module {
 		$this->prefs['showphone'] = $I2_USER->showphone=='TRUE'?TRUE:FALSE;
 		$this->prefs['showlockerself'] = $I2_USER->showlockerself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showlocker'] = $I2_USER->showlocker=='TRUE'?TRUE:FALSE;
+		$this->prefs['mailentries'] = isset($I2_USER->mailentries) ? $I2_USER->mailentries : -1;
 
 		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED);
 		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED);
