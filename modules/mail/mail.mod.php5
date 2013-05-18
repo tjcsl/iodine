@@ -312,7 +312,8 @@ class Mail implements Module {
 		}
 
 		$cache_file = $cache_dir . hash('md5', $I2_USER->iodineUid);
-		unlink($cache_file);
+		if(file_exists($cache_file))
+			unlink($cache_file);
 	}
 
 	private function get_cache() {
