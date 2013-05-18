@@ -64,8 +64,7 @@ everyone. Edit config.server.ini to edit the server (production) config.
 try {
 	load_module_map();
 
-	//session_set_save_handler(open,close,read,write,destroy,gc);
-	session_set_save_handler(['SessionGC','open'],['SessionGC','close'],['SessionGC','read'],['SessionGC','write'],['SessionGC','destroy'],['SessionGC','gc']);
+	session_set_save_handler(new SessionGC());
 
 	session_start();
 
