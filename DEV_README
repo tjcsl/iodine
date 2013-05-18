@@ -6,10 +6,10 @@ Directory hierarchy:
 /smarty/ -- PHP files for defining custom smarty tags and functions.
 functions.inc.php5 -- globally available functions and such.
 
-We have switch to using Git for source management. 
+We use Git for source management.
 
 To get started:
-git clone /shared/git/intranet2.git intranet2
+git clone /shared/git/intranet2.git
 
 To commit:
 ./commit
@@ -24,10 +24,10 @@ Note that these tools will update or commit your ENTIRE repository.  ./commit ca
 Also, note that files you create won't be committed until you use 'git add' on them.
 
 Summary of things you need installed to work on AND RUN i2 from home:
-- Apache
-- PHP5 with mod_php
+- Apache 2.2+
+- PHP 5.4+ with apache2 support
 - mod_rewrite  
-- Python 2.3
+- Python 2.7
 - Meld, xxdiff, kdiff3, or some type of decent merge program 
 - Git
 - MySQL: you need the user iodine, with the correct password, and the database 'iodine'.

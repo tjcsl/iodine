@@ -17,7 +17,7 @@ PHP Modules:
 	USE="mysqli curl ldap xmlwriter imap"
 
 PHP Configuration:
-   In addition to the custom compilation, several PHP options need to
+   Several PHP options need to
    be changed in order for iodine to work correctly:
    These settings should be set in /etc/php5/apache2/php.ini:
    * expose_php = Off
