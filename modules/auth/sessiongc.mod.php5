@@ -18,7 +18,7 @@ class SessionGC {
 	/**
 	* The directory where all PHP session files reside.
 	*/
-	const SESS_DIR = '/var/lib/php5/iodine';
+	const SESS_DIR = '/var/lib/php5/iodine/';
 
 	/**
 	* Emulates default session handling behavior; required by session_set_save_handler().
