@@ -1,3 +1,5 @@
+/* all users */
+INSERT INTO groups_name (name,description) VALUES('all','All Users');
 /* vital admin groups */
 INSERT INTO groups_name (name,description) VALUES('admin_all','Full administrative users');
 INSERT INTO groups_name (name,description) VALUES('admin_ldap','LDAP administrators');
