@@ -13,7 +13,7 @@
 * @package modules
 * @subpackage Admin
 */
-class Newimport implements Module {
+class Newimport extends Module {
 
 	private $template = 'home.tpl';
 	private $template_args = [];
@@ -26,7 +26,8 @@ class Newimport implements Module {
 
 	private $new_iodine_uid;
 
-	public static $sqltables = array('alum'		=> 'id',
+	public static $sqltables = [
+			'alum'				=> 'id',
 			'aphorisms'			=> 'uid',
 			'calculators'			=> 'uid',
 			'eighth_absentees'		=> 'userid',
@@ -53,70 +54,7 @@ class Newimport implements Module {
 			'homecoming_votes'		=> 'female',
 			'event_signups'			=> 'vid',
 			'eighth_activity_permissions'	=> 'userid'
-	); #This is also used by the set_uidnumber function in User.
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return "cliodine";
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return "<div>Sorry, no recursion!</div>\n";
-	}
-	
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
-	}
-
-	/**
-	* Required by the {@link Module} interface
-	*/
-	public function init_box() {
-		return FALSE;
-	}
-
-	/**
-	* Required by the {@link Module} interface
-	*/
-	public function display_box($display) {
-	}
+	]; #This is also used by the set_uidnumber function in User.
 
 	/**
 	* Required by the {@link Module} interface

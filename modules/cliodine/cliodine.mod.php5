@@ -14,26 +14,10 @@
 * @package modules
 * @subpackage CLIodine
 */
-class CLIodine implements Module {
+class CLIodine extends Module {
+
 	//Static responses.
 	var $singles;
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
 
 	/**
 	* Unused; Not supported for this module.
@@ -49,31 +33,6 @@ class CLIodine implements Module {
 	*/
 	function display_cli($disp) {
 		return "<div>Sorry, no recursion!</div>\n";
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
-	}
-
-	/**
-	* Displays all of a module's ibox content.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_box($disp) {
-		return FALSE;
 	}
 	
 	/**
@@ -142,17 +101,6 @@ class CLIodine implements Module {
 	*/
 	function get_name() {
 		return 'CLIodine';
-	}
-	/**
-	* Performs all initialization necessary for this module to be 
-	* displayed in an ibox.
-	*
-	* @returns string The title of the box if it is to be displayed,
-	*                 otherwise FALSE if this module doesn't have an
-	*                 intrabox.
-	*/
-	function init_box() {
-		return FALSE;
 	}
 
 	/**

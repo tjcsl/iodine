@@ -17,7 +17,7 @@
 // Although it's not as powerful, or as complex
 // But it should be faster, and the javascript for the
 // styles isn't likely to be too complex anyway.
-class JS implements Module {
+class JS extends Module {
 
 	private $warnings = [];
 
@@ -28,69 +28,6 @@ class JS implements Module {
 	private $script_cache;
 
 	private $current_style;
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return FALSE;
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function display_box($disp) {
-		return FALSE;
-	}
 	
 	/**
 	* Required by the {@link Module} interface.

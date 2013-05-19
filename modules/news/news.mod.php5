@@ -14,7 +14,7 @@
 * @package modules
 * @subpackage News
 */
-class News implements Module {
+class News extends Module {
 
 	const PERM_POST = 'NEWS_POST';
 	
@@ -91,9 +91,8 @@ class News implements Module {
 	/**
 	* Handle the news command.
 	*
-	* @param Display $disp The Display object to use for output.
 	*/
-	function display_cli($disp) {
+	function display_cli() {
 		global $I2_ARGS;
 		$valid_commands = array("list","show","old","archived");
 		if(!isset($I2_ARGS[2]) || !in_array(strtolower($I2_ARGS[2]),$valid_commands) ) {
@@ -161,9 +160,8 @@ class News implements Module {
 	/**
 	* Handle the api.
 	*
-	* @param Display $disp The Display object to use for output.
 	*/
-	function api($disp) {
+	function api() {
 		global $I2_ARGS;
 		if(!isset($I2_ARGS[1])) {
 			throw new I2Exception('Arguments not specified. Possible arguments are list, show.');
@@ -189,13 +187,6 @@ class News implements Module {
 			default:
 				throw new I2Exception('Error: unrecognizable input');
 		}
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
 	}
 
 	/**
@@ -461,6 +452,7 @@ class News implements Module {
 	function get_name() {
 		return 'News';
 	}
+
 	function display_news($archive = false,$title='Recent News Posts',$expired = false) {	
 		$this->template = 'news_pane.tpl';
 		$I2_ARGS[1] = '';
@@ -481,6 +473,7 @@ class News implements Module {
 		$this->template_args['weatherstatus']=$this->get_emerg_message();
 		return array('News',$title);
 	}
+
 	/**
 	* Get the emergency messages from FCPS.
 	* This is stuff like weather-related cancellations.
@@ -494,11 +487,13 @@ class News implements Module {
 		}
 		return $contents;
 	}
+
 	private function store_emerg_message($cachefile,$string) {
 		$fh = fopen($cachefile,'w');
 		fwrite($fh,$string);
 		fclose($fh);
 	}
+
 	private function get_new_message() {
 		global $I2_FS_ROOT;
 		// HTTPS because otheriwse it gets cached by the proxy, which is bad.

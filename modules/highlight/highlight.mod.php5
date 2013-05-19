@@ -9,63 +9,13 @@
 */
 
 /**
-* The module that keeps the eighth block office happy.
+* The module that keeps the people who read code happy.
 * @package modules
 * @subpackage Highlight
 */
-class Highlight implements Module {
+class Highlight extends Module {
 
 	private $code;
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
-	}
 
 	/**
 	* Required by the {@link Module} interface.
@@ -116,20 +66,6 @@ class Highlight implements Module {
 	function display_pane($display) {
 		Display::stop_display();
 		echo $this->code;
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return FALSE;
-	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function display_box($display) {
-		return FALSE;
 	}
 	
 	/**

@@ -14,7 +14,7 @@
 * @subpackage ServReq
 */
 
-class ServReq implements Module {
+class ServReq extends Module {
 
 	/**
 	* The display object to use
@@ -37,56 +37,6 @@ class ServReq implements Module {
 	* Whether the current user is a teacher/admin.
 	*/
 	private $admin;
-	
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
-	}
 
 	/**
 	* Required by the {@link Module} interface.

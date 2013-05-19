@@ -13,7 +13,7 @@
 * @package modules
 * @subpackage Homecoming
 */
-class Homecoming implements Module {
+class Homecoming extends Module {
 
 	/**
 	* Template for the specified action
@@ -24,56 +24,6 @@ class Homecoming implements Module {
 	* Template arguments for the specified action
 	*/
 	private $template_args = [];
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
-	}
 
 	/**
 	* Required by the {@link Module} interface.
@@ -117,25 +67,12 @@ class Homecoming implements Module {
 	public function display_pane($display) {
 		$display->disp($this->template, $this->template_args);
 	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	public function init_box() {
-		return FALSE;
-	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	public function display_box($display) {
-	}
 	
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	public function get_name() {
-		return 'Groups';
+		return 'Homecoming';
 	}
 
 	/**

@@ -5,7 +5,7 @@
 * @package modules
 * @subpackage Docs
 */
-class Docs implements Module {
+class Docs extends Module {
 
 	/**
 	* The display object to use
@@ -26,56 +26,6 @@ class Docs implements Module {
 	* Declaring some global variables
 	*/
 	private $message;
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
-	}
 
 	/**
 	* Required by the {@link Module} interface.
@@ -104,13 +54,6 @@ class Docs implements Module {
 
 	function get_name() {
 		return 'I2 Documents';
-	}
-
-	function init_box() {
-		return FALSE;
-	}
-
-	function display_box($display) {
 	}
 
 	/**

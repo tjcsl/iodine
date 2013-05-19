@@ -13,7 +13,7 @@
 * @package modules
 * @subpackage Eighth
 */
-class Eighth implements Module {
+class Eighth extends Module {
 
 	/**
 	* The display object to use
@@ -329,24 +329,6 @@ class Eighth implements Module {
 	}
 
 	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
 	* Initialize variables for CLIodine
 	*/
 	function init_cli() {
@@ -356,9 +338,8 @@ class Eighth implements Module {
 	/**
 	* Display a text version of the eighth period module.
 	*
-	* @param Display $disp The Display object to use for output.
 	*/
-	function display_cli($disp) {
+	function display_cli() {
 		global $I2_ARGS;
 		$valid_commands = array("list","signup","old","archived");
 		if(!isset($I2_ARGS[2]) || !in_array(strtolower($I2_ARGS[2]),$valid_commands) ) {
@@ -461,9 +442,8 @@ class Eighth implements Module {
 	/**
 	* Now partially supported! Still work to do.
 	*
-	* @param Display $disp The Display object to IGNORE COMPLETELY. Really don't know why I left it there.
 	*/
-	function api($disp) {
+	function api() {
 		global $I2_ARGS,$I2_QUERY,$I2_USER,$I2_API;
 		if(!isset($I2_ARGS[1])) {
 			throw new I2Exception("eighth module needs argument");

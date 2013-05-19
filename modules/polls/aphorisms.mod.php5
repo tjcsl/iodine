@@ -1,83 +1,24 @@
 <?php
 /**
-* Just contains the definition for the interface {@link Module}.
+* Just contains the definition for the {@link Aphorisms}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005-2006 The Intranet 2 Development Team
-* @package core
-* @subpackage Module
+* @package modules
+* @subpackage Aphorisms
 * @filesource
 */
 
 /**
-* The API for all Intranet2 modules to extend.
+* A {@link Module} to display Aphorisms.
 * @package core
 * @subpackage Module
 */
-class Aphorisms implements Module {
+class Aphorisms extends Module {
 
 		  private $aphorism = '';
 		  private $updated = FALSE;
 		  private $template = 'aphorisms_pane.tpl';
 		  private $template_args = [];
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
-	}
-
-	/**
-	* Displays all of a module's ibox content.
-	*
-	* @param Display $disp The Display object to use for output.
-	* @abstract
-	*/
-	function display_box($disp) {
-	}
 	
 	/**
 	* Displays all of a module's main content.
@@ -101,18 +42,9 @@ class Aphorisms implements Module {
 			  return 'Aphorisms';
 	  }
 
-	/**
-	* Performs all initialization necessary for this module to be 
-	* displayed in an ibox.
-	*
-	* @returns string The title of the box if it is to be displayed,
-	*                 otherwise FALSE if this module doesn't have an
-	*                 intrabox.
-	* @abstract
-	*/
-		  function init_box() {
-					 return FALSE;
-		  }
+	function ec($str) {
+		return str_replace('"','“',$str);
+	}
 
 	/**
 	* Performs all initialization necessary for this module to be
@@ -128,9 +60,6 @@ class Aphorisms implements Module {
 	*                return FALSE.
 	* @abstract
 	*/
-	function ec($str) {
-		return str_replace('"','“',$str);
-	}
 	function init_pane() {
 		global $I2_USER,$I2_SQL,$I2_ARGS;
 		$uidnumber = FALSE;

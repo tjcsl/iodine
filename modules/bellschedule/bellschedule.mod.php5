@@ -13,7 +13,7 @@
 * @package modules
 * @subpackage BellSchedule
 */
-class BellSchedule implements Module {
+class BellSchedule extends Module {
 
 	/**
 	* The url to retrive the calendar from.
@@ -157,38 +157,6 @@ class BellSchedule implements Module {
 	}
 
 	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
 	* returns a version of the schedule that can be used with ajax.
 	*
 	*/
@@ -212,9 +180,8 @@ class BellSchedule implements Module {
 	/**
 	* Returns a xml schedule
 	*
-	* @param Display $disp The Display object to use for output.
 	*/
-	function api($disp) {
+	function api() {
 		global $I2_API, $I2_QUERY;
 		$c = self::get_schedule();
 		$I2_API->startElement('schedule');
@@ -269,12 +236,6 @@ class BellSchedule implements Module {
 	}
 
 
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return FALSE;
-	}
 	/**
 	* Required by the {@link Module} interface.
 	*/

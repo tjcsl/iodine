@@ -1,6 +1,6 @@
 <?php
 /**
-* Just contains the definition for the interface {@link Module}.
+* Just contains the definition for the class {@link Module}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005-2006 The Intranet 2 Development Team
 * @package core
@@ -13,54 +13,61 @@
 * @package core
 * @subpackage Module
 */
-interface Module {
+abstract class Module {
 
 	/**
 	* Displays all of a module's ibox content.
 	*
 	* @param Display $disp The Display object to use for output.
-	* @abstract
 	*/
-	function display_box($disp);
+	function display_box($disp) {
+		return FALSE;
+	}
 	
 	/**
 	* Displays all of a module's main content.
 	*
 	* @param Display $disp The Display object to use for output.
-	* @abstract
 	*/
-	function display_pane($disp);
+	function display_pane($disp) {
+		return FALSE;
+	}
 	
 	/**
 	* Displays a version of the module designed for small screens.
 	*
 	* @param Display $disp The Display object to use for output.
-	* @abstract
 	*/
-	function display_mobile($disp);
+	function display_mobile($disp) {
+		return FALSE;
+	}
 
 	/**
 	* Returns text to be displayed on a cli.
 	*
-	* @param Display $disp The Display object to use. Don't use it.
-	* @abstract
+	* @returns boolean FALSE if the module lacks a cli.
 	*/
-	function display_cli($disp);
+	function display_cli() {
+		return FALSE;
+	}
 
 	/**
 	* Returns text to be displayed for the api.
 	*
-	* @param Display $disp The Display object to use. Don't use it.
-	* @abstract
+	* @returns boolean FALSE if the module lacks a api.
 	*/
-	function api($disp);
+	function api() {
+		return FALSE;
+	}
 
 	/**
 	* Returns DTD for the api response.
 	*
-	* @abstract
+	* @returns boolean TRUE if the module has a dtd, FALSE otherwise.
 	*/
-	function api_build_dtd();
+	function api_build_dtd() {
+		return FALSE;
+	}
 
 	/**
 	* Gets the module's name.
@@ -68,7 +75,7 @@ interface Module {
 	* @returns string The name of the module.
 	* @abstract
 	*/
-	function get_name();
+	abstract function get_name();
 
 	/**
 	* Performs all initialization necessary for this module to be 
@@ -77,9 +84,10 @@ interface Module {
 	* @returns string The title of the box if it is to be displayed,
 	*                 otherwise FALSE if this module doesn't have an
 	*                 intrabox.
-	* @abstract
 	*/
-	function init_box();
+	function init_box() {
+		return FALSE;
+	}
 
 	/**
 	* Performs all initialization necessary for this module to be
@@ -95,7 +103,9 @@ interface Module {
 	*                return FALSE.
 	* @abstract
 	*/
-	function init_pane();
+	function init_pane() {
+		return FALSE;
+	}
 	
 	/**
 	* Performs all initialization necessary for this module to be 
@@ -104,16 +114,19 @@ interface Module {
 	* @returns string The title of the box if it is to be displayed,
 	*                 otherwise FALSE if this module can't be displayed
 	*                 on a small screen.
-	* @abstract
 	*/
-	function init_mobile();
+	function init_mobile() {
+		return FALSE;
+	}
+
 	/**
 	* Performs all initialization necessary for cli display
 	*
 	* @returns string The title of the command, otherwise FALSE if it
 	* 		  isn't ready for the cli.
-	* @abstract
 	*/
-	function init_cli();
+	function init_cli() {
+		return FALSE;
+	}
 }
 ?>

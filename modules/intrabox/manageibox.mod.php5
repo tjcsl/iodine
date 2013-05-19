@@ -14,76 +14,10 @@
 * @package core
 * @subpackage Display
 */
-class ManageIbox implements Module {
+class ManageIbox extends Module {
 
 	private $tpl = NULL;
 
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
-	}
-
-	/**
-	* Unused; required to implement {@link Module}
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	public function display_box($disp) {
-	}
-	
-	/**
-	* Displays all of a module's main content.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	public function display_pane($disp) {
-	}
-	
 	/**
 	* Gets the module's name.
 	*
@@ -91,17 +25,6 @@ class ManageIbox implements Module {
 	*/
 	public function get_name() {
 		return 'ManageIbox';
-	}
-
-	/**
-	* Unused; required to implement {@link Module}
-	*
-	* @returns string The title of the box if it is to be displayed,
-	*                 otherwise FALSE if this module doesn't have an
-	*                 intrabox.
-	*/
-	public function init_box() {
-		return FALSE;
 	}
 
 	/**

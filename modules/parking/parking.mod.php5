@@ -13,7 +13,7 @@
 * @package modules
 * @subpackage Parking
 */
-class Parking implements Module {
+class Parking extends Module {
 
 	/**
 	* The display object to use
@@ -55,56 +55,6 @@ class Parking implements Module {
 			(skips < 12 AND other_driver_skips * other_driver_approved < 12) as s4
 			FROM parking_apps WHERE uid IS NOT NULL
 			ORDER BY grade DESC, s0 DESC, s1 DESC, s2 DESC, s3 DESC, s4 DESC, RAND();';
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
-	}
 
 	/**
 	* Required by the {@link Module} interface.
@@ -720,19 +670,6 @@ class Parking implements Module {
 	function display_pane($display) {
 		global $I2_SQL, $I2_USER;
 		$display->disp($this->template, $this->template_args);
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return FALSE;
-	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function display_box($display) {
 	}
 	
 	/**

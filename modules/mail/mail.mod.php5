@@ -14,7 +14,7 @@
  * @package modules
  * @subpackage Mail
  */
-class Mail implements Module {
+class Mail extends Module {
 
 	private $box_args = [];
 
@@ -50,56 +50,6 @@ class Mail implements Module {
 				imap_timeout($i, $timeout);
 			}
 		}
-	}
-
-	/**
-	 * Unused; Not supported for this module.
-	 *
-	 * @param Display $disp The Display object to use for output.
-	 */
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	 * Unused; Not supported for this module.
-	 *
-	 * @param Display $disp The Display object to use for output.
-	 */
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	 * Unused; Not supported for this module.
-	 */
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	 * Unused; Not supported for this module.
-	 *
-	 * @param Display $disp The Display object to use for output.
-	 */
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	 * We don't really support this yet, but make it look like we do.
-	 *
-	 * @param Display $disp The Display object to use for output.
-	 */
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	 * We don't really support this yet, but make it look like we do.
-	 */
-	function api_build_dtd() {
-		return false;
 	}
 
 	function init_pane() {

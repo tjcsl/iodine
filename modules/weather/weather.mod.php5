@@ -10,7 +10,7 @@
 * @package modules
 * @subpackage weather
 */
-class Weather implements Module {
+class Weather extends Module {
 
 	/**
 	* Holds the processed weather data
@@ -76,22 +76,6 @@ class Weather implements Module {
 	}
 
 	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
 	* Build the dataset for the cli
 	*/
 	function init_cli() {
@@ -100,11 +84,11 @@ class Weather implements Module {
 	}
 
 	/**
-	* Unused; Not supported for this module.
+	* Display the cli.
 	*
 	* @param Display $disp The Display object to use for output.
 	*/
-	function display_cli($disp) {
+	function display_cli() {
 		if( isset($this->template_args['error']) ) {
 			return "<div>".$this->template_args['error']."</div>";
 		}
@@ -112,22 +96,6 @@ class Weather implements Module {
 		$str.="Current temperature is {$this->template_args['temperature']}<br />\n";
 		$str.="Rain accumulation is {$this->template_args['rain']} inch(es)";
 		return $str;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
 	}
 
 	/**
@@ -150,30 +118,8 @@ class Weather implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	public function init_pane() {
-		return FALSE;
-	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_pane($disp) {
-		global $I2_ARGS;
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
 	function get_name() {
 		return 'weather';
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function is_intrabox() {
-		return true;
 	}
 }
 ?>

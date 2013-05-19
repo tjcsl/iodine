@@ -1,36 +1,17 @@
 <?php
-Class Countdown implements Module
+class Countdown extends Module
 {
-	//you know what? I'm not even going to bother to phpdoc all the blank methods. sue me, derek.
+	// you know what? I'm not even going to bother to phpdoc all the blank methods. sue me, derek.
 
-	function display_pane($i){ return false;}
-	function init_pane() { return false; }
-	function init_cli() {return false;}
-	function init_mobile() {return false;}
-	function display_mobile($i) {return false;}
-	function display_cli($disp) {return false;}//I'm actually gonna do this one later
-	
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
+	function get_name() {
+		return "countdown";
 	}
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
-	}
-
-	function get_name() {return "countdown";}
 
 	function init_box()
 	{
 		return "COUNTDOWN!";
 	}
+
 	function display_box($disp)
 	{
 		$grad=i2config_get('gradtime',1308094200,'countdown'); //unix timestamp for graduation date.

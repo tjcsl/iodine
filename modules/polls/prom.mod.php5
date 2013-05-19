@@ -13,69 +13,10 @@
 * @package core
 * @subpackage Module
 */
-class Prom implements Module {
+class Prom extends Module {
 
 		  private $template = 'prom_pane.tpl';
 		  private $template_args = [];
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
-	}
-
-	/**
-	* Displays all of a module's ibox content.
-	*
-	* @param Display $disp The Display object to use for output.
-	* @abstract
-	*/
-	function display_box($disp) {
-	}
 	
 	/**
 	* Displays all of a module's main content.
@@ -95,19 +36,6 @@ class Prom implements Module {
 	*/
 	function get_name() {
 		return 'Prom Registration';
-	}
-
-	/**
-	* Performs all initialization necessary for this module to be 
-	* displayed in an ibox.
-	*
-	* @returns string The title of the box if it is to be displayed,
-	*                 otherwise FALSE if this module doesn't have an
-	*                 intrabox.
-	* @abstract
-	*/
-	function init_box() {
-		return FALSE;
 	}
 
 	/**

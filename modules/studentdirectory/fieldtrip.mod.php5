@@ -13,60 +13,10 @@
 * @package modules
 * @subpackage StudentDirectory
 */
-class Fieldtrip implements Module {
+class Fieldtrip extends Module {
 	
 	private $template;
 	private $template_args = [];
-		
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
-	}
 
 	/**
 	* Required by the {@link Module} interface.
@@ -163,20 +113,6 @@ class Fieldtrip implements Module {
 	*/
 	function display_pane($display) {
 		$display->disp($this->template, $this->template_args);
-	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return 'Search the Directory'; // right now we don't need to get any initial values, the box will just contain a form like the old intranet for queries
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function display_box($display) {
-		$display->disp('studentdirectory_box.tpl');
 	}
 
 	/**

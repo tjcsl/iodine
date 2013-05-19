@@ -13,7 +13,7 @@
 * @subpackage Filecenter
 * Handles the various filesystems
 */
-class Filecenter implements Module {
+class Filecenter extends Module {
 
 	/**
 	* The display object to use
@@ -70,24 +70,6 @@ class Filecenter implements Module {
 		}
 		$filesizename = array(' Bytes', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB');
 		return round($size/pow(1024, ($i = floor(log($size, 1024)))), 1) . $filesizename[$i];
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
 	}
 
 	/**
@@ -195,31 +177,6 @@ class Filecenter implements Module {
 		}
 
 		return 'Filecenter';
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
 	}
 
 	/**
