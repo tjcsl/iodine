@@ -13,7 +13,7 @@
 * @package modules
 * @subpackage LostNFound
 */
-class LostNFound implements Module {
+class LostNFound extends Module {
 
 	/**
 	* The display object to use
@@ -95,9 +95,8 @@ class LostNFound implements Module {
 	/**
 	* Handle the lostnfound command.
 	*
-	* @param Display $disp The Display object to use for output.
 	*/
-	function display_cli($disp) {
+	function display_cli() {
 		global $I2_ARGS;
 		$valid_commands = array("list-lost","list-found");
 		if(!isset($I2_ARGS[2]) || !in_array(strtolower($I2_ARGS[2]),$valid_commands) ) {
@@ -116,22 +115,6 @@ class LostNFound implements Module {
 			default:
 				return "<div>Error: unrecognizable input</div>\n";
 		}
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*/
-	function api_build_dtd() {
-		return false;
 	}
 
 	/**
