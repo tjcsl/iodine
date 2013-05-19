@@ -13,7 +13,7 @@
 * @package modules
 * @subpackage StudentDirectory
 */
-class ScheduleNavigator implements Module {
+class ScheduleNavigator extends Module {
 
 	private $sched;
 
@@ -24,7 +24,8 @@ class ScheduleNavigator implements Module {
 	}
 
 	public function display_box($display) {
-		$display->assign('schedule',$sched);
+		$display->assign('schedule',$this->sched);
+		//FIXME: make this actually display something
 		$display->disp('box.tpl');
 	}
 

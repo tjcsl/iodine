@@ -14,3 +14,4 @@ INSERT INTO intrabox (name,display_name) VALUES('countdown','Graduation countdow
 INSERT INTO intrabox (name,display_name) VALUES('testing','Testing Information');
 INSERT INTO intrabox (name,display_name) VALUES('majora','Majora\'s Mask Countdown');
 INSERT INTO intrabox (name,display_name) VALUES('bellschedule','Bell Schedule');
+INSERT INTO intrabox (name,display_name) VALUES('schedulenavigator','Your Classes');
