@@ -66,12 +66,13 @@ class ServReq extends Module {
 					$this->template_args['approvers'][] = $person_array;
 				}
 				$this->template = 'req_add.tpl';
-				
+				break;				
 			case 'edit':
 				$this->template = 'req_edit.tpl';
-				
+				break;				
 			case 'approve':
 				$this->template = 'req_app.tpl';
+				break;
 		}
 	}
 
