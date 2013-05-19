@@ -103,15 +103,15 @@ try {
 	/* Eliminates extraneous slashes in the PATH_INFO
 	** And splits them into the global I2_ARGS array
 	*/
-	if(isset($_SERVER['REDIRECT_QUERY_STRING'])) {
-		$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
-		$args = substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index);
+	if(isset($_SERVER['REQUEST_URI'])) {
+		$index = strpos($_SERVER['REQUEST_URI'], '?');
+		$args = substr($_SERVER['REQUEST_URI'], 0, $index);
 		foreach(explode('/', $args) as $arg) {
 			if(strlen($arg) != 0) {
 				$I2_ARGS[] = $arg;
 			}
 		}
-		$queries = substr($_SERVER['REDIRECT_QUERY_STRING'], $index+1);
+		$queries = substr($_SERVER['REQUEST_URI'], $index+1);
 		foreach(explode('&', $queries) as $query) {
 			if ($query) {
 				$element = explode('=', urldecode($query));
