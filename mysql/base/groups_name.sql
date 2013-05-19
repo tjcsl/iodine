@@ -18,3 +18,4 @@ INSERT INTO groups_name (name,description) VALUES('admin_eighth_signup','Eighth 
 INSERT INTO groups_name (name,description) VALUES('admin_testing','Testing administrators');
 INSERT INTO groups_name (name,description) VALUES('admin_aphorisms','Aphorism administrators');
 INSERT INTO groups_name (name,description) VALUES('admin_calendar','Calendar administrators');
+INSERT INTO groups_name (name,description) VALUES('admin_podcasts','Podcast administrators');
