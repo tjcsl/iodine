@@ -14,7 +14,7 @@ Dependencies:
 
 PHP Modules:
 	PHP must be built with
-	USE="mysqli curl ldap xmlwriter imap"
+	USE="mysqli curl ldap xmlwriter imap gd"
 
 PHP Configuration:
    Several PHP options need to
