@@ -29,7 +29,7 @@ class Barcode extends Module {
 		$height = isset($I2_ARGS[4]) ? $I2_ARGS[4] : 60;
 		$out = Barcode::gen_barcode($I2_ARGS[1], $I2_ARGS[2], $width, $height);
 		header("Content-type: image/jpeg");
-		ImageJPEG ($out, "", 100);
+		ImageJPEG ($out, NULL, 100);
 	}
 	
 	function get_name() {
