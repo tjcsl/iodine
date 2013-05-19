@@ -60,8 +60,10 @@ class Events extends Module {
 
 		$this->template = 'events_home.tpl';
 		$this->template_args['signed_up'] = Event::user_events();
+		//FIXME: implement non_user_events and verifier_events
 		//$this->template_args['may_sign_up'] = Event::non_user_events();
 		//$this->template_args['verifier_events'] = Event::verifier_events();
+		$this->template_args['verifier_events'] = NULL;
 	}
 
 	public function view() {
