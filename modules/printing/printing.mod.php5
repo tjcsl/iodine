@@ -29,40 +29,39 @@ class Printing {
 		}
 		else {
 			if($format == 'pdf') {
-				self::add_info($output, 'Parking', 'Parking Applications as of ' . date('F j, Y'), TRUE);
+				self::add_info($output,'Parking Module', 'Parking', 'Parking Applications as of ' . date('F j, Y'), 'Parking Module');
 			}
-			self::do_display($output, $format, 'Parking Applications as of ' . date('F j, Y'), TRUE);
+			self::do_display($output, $format, 'Parking Applications as of ' . date('F j, Y'), 'IodinePrinting', TRUE);
 		}
 	}
 
 	/**
 	* Prints the given LaTeX output.
 	*
-	* @access private
 	* @param string The LaTeX output to print.
 	*/
-	private static function do_print($output, $landscape = FALSE) {
-		$temp = tempnam('/tmp', 'IodinePrinting');
+	static function do_print($output, $landscape = FALSE) {
+		$temp = tempnam('/tmp', 'EighthPrinting');
 		file_put_contents($temp, $output);
 		exec("cd /tmp; latex {$temp}");
 		exec("cd /tmp; dvips {$temp}.dvi -t letter" . ($landscape ? ' -t landscape' : ''));
-		//$ftpconn = ftp_connect('198.38.28.59');
-		$ftpconn = ftp_connect(i2config_get('printer_ip', NULL, 'eighth'));
+		$ftpconn = ftp_connect(Eighth::printer_ip());
 		ftp_login($ftpconn, 'anonymous', '');
 		ftp_chdir($ftpconn, 'PORT1');
 		ftp_put($ftpconn, "{$temp}.ps", "{$temp}.ps", FTP_BINARY);
 		ftp_close($ftpconn);
+		unlink($temp . ".ps");
+		unlink($temp . ".dvi");
 	}
-	
+
 	/**
 	* Displays the given LaTeX output.
 	*
-	* @access private
 	* @param string The LaTeX output to print.
 	*/
-	private static function do_display($output, $format, $filename, $landscape = FALSE) {
+	static function do_display($output, $format, $filename, $temppath, $landscape = FALSE) {
 		Display::stop_display();
-		$temp = tempnam('/tmp', 'IodinePrinting');
+		$temp = tempnam('/tmp', $temppath);
 		file_put_contents("{$temp}", $output);
 		//$disposition = 'attachment';
 		$disposition = 'inline';
@@ -96,18 +95,18 @@ class Printing {
 			header('Content-type: application/rtf');
 		}
 		header("Content-Disposition: {$disposition}; filename=\"{$filename}.{$format}\"");
+		header("Pragma: ");
 		readfile("{$temp}.{$format}");
 	}
 
 	/**
 	* Takes input file and makes it into valid latex output
 	*
-	* @access private
 	* @param $filename string The filename
 	*/
-	private static function latexify($filename) {
+	static function latexify($filename) {
 		if(!self::$printing_path) {
-			self::$printing_path = i2config_get('printing_path', NULL, 'printing');
+			self::$printing_path = Eighth::printer_ip();
 		}
 		$lines = file(self::$printing_path . "{$filename}.tex.in");
 		self::$sections = [];
@@ -191,18 +190,19 @@ class Printing {
 	/**
 	* Add PDF information to the file
 	*
-	* @access private
 	* @param string The file contents
+	* @param string Author
 	* @param string Producer
 	* @param string Title
+	* @param string Creater
 	*/
-	private static function add_info(&$output, $producer = '', $title = '') {
+	static function add_info(&$output, $author='', $producer = '', $title = '', $creator = '') {
 		$output = "\pdfinfo {
-/Author (Eighth Period Office)
-/Producer ({$producer})
-/Title ({$title})
-/Creator (Eighth Period Office Online)
-}
-{$output}";
+		/Author ({$author})
+		/Producer ({$producer})
+		/Title ({$title})
+		/Creator ({$creator})
+		}
+		{$output}";
 	}
 }
