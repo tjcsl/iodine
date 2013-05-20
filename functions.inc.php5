@@ -81,8 +81,6 @@ function error($msg, $critical=FALSE) {
 * @param string $class_name Name of noninstantiated class.
 */
 function iodine_autoloader($class_name) {
-	global $I2_ERR;
-
 	// don't try to load smarty modules
 	if(strpos($class_name,'Smarty') !== false)
 		return;
@@ -172,7 +170,6 @@ function get_i2module($module_name) {
 * @return mixed The config value for the specified field, the default value if one was passed and if the specified key was not found, NULL otherwise.
 */
 function i2config_get($field, $default = NULL, $section = NULL) {
-	global $I2_ERR;
 	static $config = NULL;
 	
 	if ($config === NULL) { /*Parse the INI file*/
