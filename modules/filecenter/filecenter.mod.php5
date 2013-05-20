@@ -16,11 +16,6 @@
 class Filecenter extends Module {
 
 	/**
-	* The display object to use
-	*/
-	private $display;
-
-	/**
 	* Template for the specified action
 	*/
 	private $template = 'filecenter_pane.tpl';
@@ -299,7 +294,7 @@ class Filecenter extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
+	function display_pane($disp) {
 		global $I2_SQL, $I2_USER, $I2_QUERY;
 
 		// if the user didn't choose a filesystem
@@ -451,7 +446,7 @@ class Filecenter extends Module {
 			$this->template_args['adminperm'] = $this->filesystem->can_do($this->directory,'administer')?'true':'false';
 		}
 		
-		$display->disp($this->template, $this->template_args);
+		$disp->disp($this->template, $this->template_args);
 	}
 
 	/**
@@ -515,8 +510,8 @@ class Filecenter extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_box($display) {
-		$display->disp('filecenter_box.tpl', $this->box_args);
+	function display_box($disp) {
+		$disp->disp('filecenter_box.tpl', $this->box_args);
 	}
 
 	public function handle_upload($file) {

@@ -462,8 +462,8 @@ class StudentDirectory extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
-		$display->disp($this->template, $this->template_args);
+	function display_pane($disp) {
+		$disp->disp($this->template, $this->template_args);
 	}
 	
 	/**
@@ -476,9 +476,9 @@ class StudentDirectory extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_box($display) {
+	function display_box($disp) {
 		$template_args['suggestenabled']=false;
-		$display->disp('studentdirectory_box.tpl',$template_args);
+		$disp->disp('studentdirectory_box.tpl',$template_args);
 	}
 
 	/**

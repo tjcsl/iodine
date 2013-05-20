@@ -18,26 +18,25 @@ class Nags extends Module {
 	private $template = 'pane.tpl';
 	private $template_args = [];
 
-	public function get_name() {
+	function get_name() {
 		return 'nags';
 	}
 	
-	public function init_box() {
+	function init_box() {
 		return 'nags';
 	}
 
-	public function display_box($display) {
-		$display->disp('box.tpl');
+	function display_box($disp) {
+		$disp->disp('box.tpl');
 	}
 
-	public function init_pane() {
-		global $I2_USER,$I2_SQL;
+	function init_pane() {
 		$this->template_args['nags'] = Nag::get_user_nags();		
 		return 'Nags';
 	}
 
-	public function display_pane($display) {
-		$display->disp($this->template,$this->template_args);
+	function display_pane($disp) {
+		$disp->disp($this->template,$this->template_args);
 	}
 
 	/**

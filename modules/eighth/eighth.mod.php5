@@ -16,11 +16,6 @@
 class Eighth extends Module {
 
 	/**
-	* The display object to use
-	*/
-	private $display;
-
-	/**
 	* The title for the page
 	*/
 	private $title = '';
@@ -615,7 +610,7 @@ class Eighth extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
+	function display_pane($disp) {
 		global $I2_ARGS, $I2_USER;
 		if ($this->template == 'pane.tpl' && !$I2_USER->is_group_member('admin_eighth') && !$I2_USER->is_group_member('grade_staff')) {
 			redirect();
@@ -631,7 +626,7 @@ class Eighth extends Module {
 		}
 		
 		$this->template_args['defaultaid'] = i2config_get('default_aid','999','eighth');
-		$display->disp($this->template, $this->template_args);
+		$disp->disp($this->template, $this->template_args);
 	}
 
 	/**
@@ -656,8 +651,8 @@ class Eighth extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_box($display) {
-		$display->disp('box.tpl', $this->template_args);
+	function display_box($disp) {
+		$disp->disp('box.tpl', $this->template_args);
 	}
 	
 	/**

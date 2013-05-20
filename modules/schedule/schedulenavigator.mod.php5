@@ -17,19 +17,19 @@ class ScheduleNavigator extends Module {
 
 	private $sched;
 
-	public function init_box() {
+	function init_box() {
 		global $I2_USER;
 		$this->sched = new Schedule($I2_USER);
 		return 'Your Classes';
 	}
 
-	public function display_box($display) {
-		$display->assign('schedule',$this->sched);
+	function display_box($disp) {
+		$disp->assign('schedule',$this->sched);
 		//FIXME: make this actually display something
-		$display->disp('box.tpl');
+		$disp->disp('box.tpl');
 	}
 
-	public function get_name() {
+	function get_name() {
 		return 'ScheduleNavigator';
 	}
 

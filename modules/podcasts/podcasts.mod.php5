@@ -56,8 +56,8 @@ class Podcasts extends Module {
 	/**
 	 * Displays the pane.
 	 */
-	function display_pane($display) {
-		$display->disp($this->template, $this->template_args);
+	function display_pane($disp) {
+		$disp->disp($this->template, $this->template_args);
 	}
 
 	/**
@@ -79,8 +79,8 @@ class Podcasts extends Module {
 	/**
 	 * Displays the intranet box.
 	 */
-	function display_box($display) {
-		$display->disp('podcasts_box.tpl',$this->template_args);
+	function display_box($disp) {
+		$disp->disp('podcasts_box.tpl',$this->template_args);
 	}
 
 	/**

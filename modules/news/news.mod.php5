@@ -19,11 +19,6 @@ class News extends Module {
 	const PERM_POST = 'NEWS_POST';
 	
 	/**
-	* The display object to use
-	*/
-	private $display;
-
-	/**
 	* Template for the specified action
 	*/
 	private $template;
@@ -411,12 +406,10 @@ class News extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
-		global $I2_ARGS;
-		
+	function display_pane($disp) {
 		$this->template_args['newsadmin'] = $this->newsadmin;
 		$this->template_args['maypost'] = $this->maypost;
-		$display->disp($this->template, $this->template_args);
+		$disp->disp($this->template, $this->template_args);
 	}
 	
 	/**
@@ -442,8 +435,8 @@ class News extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_box($display) {
-		$display->disp('news_box.tpl',array('summaries'=>$this->summaries,'newsadmin'=>$this->newsadmin));
+	function display_box($disp) {
+		$disp->disp('news_box.tpl',array('summaries'=>$this->summaries,'newsadmin'=>$this->newsadmin));
 	}
 
 	/**

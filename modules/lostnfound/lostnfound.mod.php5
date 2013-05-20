@@ -16,11 +16,6 @@
 class LostNFound extends Module {
 
 	/**
-	* The display object to use
-	*/
-	private $display;
-
-	/**
 	* Template for the specified action
 	*/
 	private $template;
@@ -235,11 +230,9 @@ class LostNFound extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
-		global $I2_ARGS;
-		
+	function display_pane($disp) {
 		$this->template_args['is_admin'] = $this->is_admin;
-		$display->disp($this->template, $this->template_args);
+		$disp->disp($this->template, $this->template_args);
 	}
 	
 	/**
@@ -263,8 +256,8 @@ class LostNFound extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_box($display) {
-		$display->disp('lostnfound_box.tpl',array('summaries'=>$this->summaries,'is_admin'=>$this->is_admin));
+	function display_box($disp) {
+		$disp->disp('lostnfound_box.tpl',array('summaries'=>$this->summaries,'is_admin'=>$this->is_admin));
 	}
 
 	/**

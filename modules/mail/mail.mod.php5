@@ -100,9 +100,8 @@ class Mail extends Module {
 		 */
 	}
 
-	function display_pane($display) {
-		//		$display->disp('mailerr.tpl');
-		$display->disp('mail_pane.tpl', $this->pane_args);
+	function display_pane($disp) {
+		$disp->disp('mail_pane.tpl', $this->pane_args);
 	}
 
 	function init_box() {
@@ -147,10 +146,8 @@ class Mail extends Module {
 		return "Mail: {$this->nmsgs} message". ($this->nmsgs != 1 ? 's' : '') . ", {$this->nunseen} unread";
 	}
 
-	function display_box($display) {
-
-		//		$display->disp('mailerr.tpl',$this->box_args);
-		$display->disp('mail_box.tpl',$this->box_args);
+	function display_box($disp) {
+		$disp->disp('mail_box.tpl',$this->box_args);
 	}
 
 	function get_name() {

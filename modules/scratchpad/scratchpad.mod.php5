@@ -10,13 +10,13 @@ class Scratchpad extends Module {
 	private $template_args = [];
 	private $text;
 
-	public function init_box() {
+	function init_box() {
 		GLOBAL $I2_USER, $I2_SQL;
 		$this->template_args['text'] = 'Loading...'; //$I2_SQL->query('SELECT padtext FROM scratchpad WHERE uid=%d',$I2_USER->uid)->fetch_single_value();
 		return 'Scratchpad';
 	}
 
-	public function display_box($disp) {
+	function display_box($disp) {
 		$disp->disp('scratchpad_box.tpl', $this->template_args);
 		//$disp->disp('scratchpad_box.tpl', []);
 	}
@@ -26,7 +26,7 @@ class Scratchpad extends Module {
 	*	I2_ARGS[1] = whether to save or load
 	*	I2_ARGS[2] = text to save (if saving)
 	*/
-	public function init_pane() {
+	function init_pane() {
 		global $I2_ARGS,$I2_SQL,$I2_USER,$I2_LOG, $HTTP_RAW_POST_DATA;
 
 		if (!(isset($I2_ARGS[1]) && $I2_ARGS[1])) {
@@ -56,7 +56,7 @@ class Scratchpad extends Module {
 		}
 	}
 	
-	function display_pane($disp) { //returns text to AJAX
+	display_pane($disp) { //returns text to AJAX
 		global $I2_ARGS;
 		
 		if($I2_ARGS[1]=='load') {

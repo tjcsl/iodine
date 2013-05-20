@@ -16,11 +16,6 @@
 class Seniors extends Module {
 
 	/**
-	* The display object to use
-	*/
-	private $display;
-
-	/**
 	* Template for the specified action
 	*/
 	private $template;
@@ -208,8 +203,8 @@ class Seniors extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
-		$display->disp($this->template, $this->template_args);
+	function display_pane($disp) {
+		$disp->disp($this->template, $this->template_args);
 	}
 
 	/**
@@ -222,7 +217,7 @@ class Seniors extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_box($display) {
+	function display_box($disp) {
 		global $I2_SQL, $I2_USER;
 		$args = [];
 		$args['num_submitted'] = $I2_SQL->query('SELECT COUNT(*) FROM senior_destinations')->fetch_single_value();
@@ -232,7 +227,7 @@ class Seniors extends Module {
 				$args['has_submitted'] = 1;
 			}
 		}
-		$display->disp('box.tpl', $args);
+		$disp->disp('box.tpl', $args);
 	}
 	
 	/**

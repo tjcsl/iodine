@@ -102,7 +102,7 @@ class Weather extends Module {
 	* Setup the weather intrabox
 	* @return string Title
 	*/
-	public function init_box() {
+	function init_box() {
 		$this->makeData();
 		return 'Current Weather at TJ';
 	}
@@ -111,7 +111,7 @@ class Weather extends Module {
 	* Show the weather template
 	* @param Display $disp The Display object to use for output.
 	*/
-	public function display_box($disp) {
+	function display_box($disp) {
 		$disp->disp('weather_box.tpl', $this->template_args);
 	}
 	

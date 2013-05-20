@@ -15,14 +15,12 @@
 */
 class Remote extends Module {
 
-	private $template_args = [];
-	
 	function init_box() {
 		return 'Remote Access';
 	}
 
-	function display_box($display) {
-		$display->disp('list.tpl',$this->template_args);
+	function display_box($disp) {
+		$disp->disp('list.tpl');
 	}
 
 	function get_name() {

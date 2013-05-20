@@ -17,11 +17,6 @@
 class ServReq extends Module {
 
 	/**
-	* The display object to use
-	*/
-	private $display;
-
-	/**
 	* Template for the specified action
 	*/
 	private $template;
@@ -79,8 +74,8 @@ class ServReq extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
-		$display->disp($this->template,$this->template_args);
+	function display_pane($disp) {
+		$disp->disp($this->template,$this->template_args);
 	}
 	
 	/**
@@ -98,8 +93,8 @@ class ServReq extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_box($display) {
-		$display->disp('req_box.tpl',$this->box_args);
+	function display_box($disp) {
+		$disp->disp('req_box.tpl',$this->box_args);
 	}
 
 	/**

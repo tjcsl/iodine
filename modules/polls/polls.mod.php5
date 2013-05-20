@@ -56,8 +56,8 @@ class Polls extends Module {
 	/**
 	 * Displays the pane.
 	 */
-	function display_pane($display) {
-		$display->disp($this->template, $this->template_args);
+	function display_pane($disp) {
+		$disp->disp($this->template, $this->template_args);
 	}
 
 	/**
@@ -79,8 +79,8 @@ class Polls extends Module {
 	/**
 	 * Displays the intranet box.
 	 */
-	function display_box($display) {
-		$display->disp('polls_box.tpl',$this->template_args);
+	function display_box($disp) {
+		$disp->disp('polls_box.tpl',$this->template_args);
 	}
 
 	/**
