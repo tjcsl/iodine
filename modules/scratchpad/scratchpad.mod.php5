@@ -56,7 +56,7 @@ class Scratchpad extends Module {
 		}
 	}
 	
-	display_pane($disp) { //returns text to AJAX
+	function display_pane($disp) { //returns text to AJAX
 		global $I2_ARGS;
 		
 		if($I2_ARGS[1]=='load') {
