@@ -672,9 +672,8 @@ class Event {
 							$entryhasperm=(4&$entry['permissions'])!=0;
 							break;
 					}
-					if($entryhasperm){
+					if($entryhasperm)
 						return TRUE;
-					}
 				}
 			}
 		}
