@@ -35,24 +35,6 @@ class Parking extends Module {
 	*/
 	private $message;
 
-	private $sortmap = [
-		'none'			=> ['1', 'none (leave last on sorting if used)'],
-		'nameasc' 		=> ['name', 'name, A-Z'],
-		'namedesc' 		=> ['name DESC', 'name, Z-A'],
-		'gradeasc' 		=> ['grade', 'grade, rising juniors first'],
-		'gradedesc' 		=> ['grade DESC', 'grade, rising seniors first'],
-		'skipsasc' 		=> ['(skips + other_driver_skips)', '8th period skips, least to most'],
-		'skipsdesc'	 	=> ['(skips + other_driver_skips) DESC', '8th period skips, most to least'],
-		'mentorshipasc' 	=> ['mentorship', 'mentorship, not first'],
-		'mentorshipdesc'	=> ['mentorship DESC', 'mentorship, yes first'],
-		'jointdesc' 		=> ['(other_driver!="")', 'joint applications, first'],
-		'assignedasc' 		=> ['assigned_sort', 'assigned spot, ascending'],
-		'assigneddesc' 		=> ['assigned_sort DESC', 'assigned spot, descending'],
-		'timeasc' 		=> ['timestamp', 'time submitted, earliest first'],
-		'timedesc' 		=> ['timestamp DESC', 'time submtted, latest first'],
-		'random' 		=> ['RAND()', 'randomize within last category']
-		];
-
 	/**
 	 * WARNING: HACKY. HACKY. HACKY. BAD.
 	 * The mysql query to select apps, correctly sorted, since I can't think
@@ -304,6 +286,22 @@ class Parking extends Module {
 			redirect('parking');
 		}
 
+		$sortmap = array(	'none' 			=> array('1', 'none (leave last on sorting if used)'),
+					'nameasc' 		=> array('name', 'name, A-Z'),
+					'namedesc' 		=> array('name DESC', 'name, Z-A'),
+					'gradeasc' 		=> array('grade', 'grade, rising juniors first'),
+					'gradedesc' 		=> array('grade DESC', 'grade, rising seniors first'),
+					'skipsasc' 		=> array('(skips + other_driver_skips)', '8th period skips, least to most'),
+					'skipsdesc' 		=> array('(skips + other_driver_skips) DESC', '8th period skips, most to least'),
+					'mentorshipasc' 	=> array('mentorship', 'mentorship, not first'),
+					'mentorshipdesc' 	=> array('mentorship DESC', 'mentorship, yes first'),
+					'jointdesc' 		=> array('(other_driver!="")', 'joint applications, first'),
+					'assignedasc' 		=> array('assigned_sort', 'assigned spot, ascending'),
+					'assigneddesc' 		=> array('assigned_sort DESC', 'assigned spot, descending'),
+					'timeasc' 		=> array('timestamp', 'time submitted, earliest first'),
+					'timedesc' 		=> array('timestamp DESC', 'time submtted, latest first'),
+					'random' 		=> array('RAND()', 'randomize within last category')
+				);
 		$sortarr = [];
 		if(isset($_REQUEST['parking_admin_form'])) {
 			if($_REQUEST['parking_admin_form'] == 'changedeadline') {
@@ -316,7 +314,7 @@ class Parking extends Module {
 				$this->template_args['sort_selected'] = [];
 				for($n = 1; $n <= 5; $n++) {
 					$sort = $_REQUEST["sort$n"];
-					$sortarr[] = self::$sortmap[$sort][0];
+					$sortarr[] = $sortmap[$sort][0];
 					$this->template_args['sort_selected'][$n] = $sort;
 
 					// yes, i know this is not good form. for now, i don't care.
@@ -353,11 +351,11 @@ class Parking extends Module {
 			foreach($this->template_args['sort_selected'] as $key => $val) {
 				d($key . ": " . $val);
 			}
-			$sortarr = array(	self::$sortmap[$sorts['sort1']][0],
-						self::$sortmap[$sorts['sort2']][0],
-						self::$sortmap[$sorts['sort3']][0],
-						self::$sortmap[$sorts['sort4']][0],
-						self::$sortmap[$sorts['sort5']][0]
+			$sortarr = array(	$sortmap[$sorts['sort1']][0],
+						$sortmap[$sorts['sort2']][0],
+						$sortmap[$sorts['sort3']][0],
+						$sortmap[$sorts['sort4']][0],
+						$sortmap[$sorts['sort5']][0]
 					);
 		}
 
@@ -524,7 +522,7 @@ class Parking extends Module {
 			}
 		}
 
-		$this->template_args['options'] = self::$sortmap;
+		$this->template_args['options'] = $sortmap;
 
 		$this->template = 'parking_admin.tpl';
 	}
@@ -565,14 +563,30 @@ class Parking extends Module {
 			redirect('parking');
 		}
 
+		$sortmap = array(	'none' 			=> array('1', 'none (leave last on sorting if used)'),
+					'nameasc' 		=> array('name', 'name, A-Z'),
+					'namedesc' 		=> array('name DESC', 'name, Z-A'),
+					'gradeasc' 		=> array('grade', 'grade, rising juniors first'),
+					'gradedesc' 		=> array('grade DESC', 'grade, rising seniors first'),
+					'skipsasc' 		=> array('(skips + other_driver_skips)', '8th period skips, least to most'),
+					'skipsdesc' 		=> array('(skips + other_driver_skips) DESC', '8th period skips, most to least'),
+					'mentorshipasc' 	=> array('mentorship', 'mentorship, not first'),
+					'mentorshipdesc' 	=> array('mentorship DESC', 'mentorship, yes first'),
+					'jointdesc' 		=> array('(other_driver!="")', 'joint applications, first'),
+					'assignedasc' 		=> array('assigned_sort', 'assigned spot, ascending'),
+					'assigneddesc' 		=> array('assigned_sort DESC', 'assigned spot, descending'),
+					'timeasc' 		=> array('timestamp', 'time submitted, earliest first'),
+					'timedesc' 		=> array('timestamp DESC', 'time submtted, latest first'),
+					'random' 		=> array('RAND()', 'randomize within last category')
+				);
 		$sortarr = [];
 		if(count($sortarr) == 0) {
 			$sorts = $I2_SQL->query('SELECT sort1, sort2, sort3, sort4, sort5 FROM parking_settings')->fetch_array();
-			$sortarr = array(	self::$sortmap[$sorts['sort1']][0],
-						self::$sortmap[$sorts['sort2']][0],
-						self::$sortmap[$sorts['sort3']][0],
-						self::$sortmap[$sorts['sort4']][0],
-						self::$sortmap[$sorts['sort5']][0]
+			$sortarr = array(	$sortmap[$sorts['sort1']][0],
+						$sortmap[$sorts['sort2']][0],
+						$sortmap[$sorts['sort3']][0],
+						$sortmap[$sorts['sort4']][0],
+						$sortmap[$sorts['sort5']][0]
 					);
 		}
 
