@@ -152,19 +152,20 @@ class LostNFound extends Module {
 				return array('aaAdd Lost Item', 'Add Lost Item');
 
 			case 'edit':
+				//FIXME: make this do something.
 				$this->template = 'lost_edit.tpl';
 				if( !isset($I2_ARGS[2]) ) {
 					throw new I2Exception('ID of article to edit not specified.');
 				}
 
 				try {
-					$item = new Newsitem($I2_ARGS[2]);
+					$item = new Lostitem($I2_ARGS[2]);
 				} catch(I2Exception $e) {
-					throw new I2Exception("Specified article ID {$I2_ARGS[2]} is invalid.");
+					throw new I2Exception("Specified item ID {$I2_ARGS[2]} is invalid.");
 				}
 
 				if( !$item->editable() ) {
-					throw new I2Exception('You do not have permission to edit this article.');
+					throw new I2Exception('You do not have permission to edit this item.');
 				}
 
 				if( isset($_REQUEST['edit_form']) ) {
@@ -175,7 +176,7 @@ class LostNFound extends Module {
 					$groups = Group::generate($_REQUEST['add_groups']);
 					$public = isSet($_REQUEST['edit_public']) ? 1 : 0;
 					$item->edit($title, $text, $groups,$expire,$visible,$public);
-					$item = new Newsitem($I2_ARGS[2], TRUE);
+					$item = new Lostitem($I2_ARGS[2]);
 					$this->template_args['edited'] = 1;
 				}
 				
@@ -184,8 +185,8 @@ class LostNFound extends Module {
 				$item->text = htmlspecialchars_decode($item->text);
 				$item->text = preg_replace('/<br\\s*?\/??>/i', "\n", $item->text);
 				// To fix highlighting in vim, since it thinks we just closed the tag: <?php
-				$this->template_args['newsitem'] = $item;
-				return 'Edit News Post';
+				$this->template_args['item'] = $item;
+				return 'Edit Lost Item';
 				
 			case 'delete':
 				$this->template = 'lostnfound_delete.tpl';
