@@ -3,18 +3,23 @@
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js"></script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/schedule.js"></script>
 <p id='sched_tools'>
-	<button id="week_b[<$box>]" onclick="day_click[<$box>]('[<$day-1>]')" style=''>←</button>
+	<button id="week_b[<$box>]" onclick="schedule_click[<$box>]('[<$day-1>]')" style=''>←</button>
 	[<if $has_custom_day>]
 		[<if $tomorrow>]
-			<button id="week_today[<$box>]" onclick="day_click[<$box>]('1')">Tomorrow</button>
+			<button id="week_today[<$box>]" onclick="schedule_click[<$box>]('1')">Tomorrow</button>
 		[<else>]
-			<button id="week_today[<$box>]" onclick="day_click[<$box>]('0')">Today</button>
+			<button id="week_today[<$box>]" onclick="schedule_click[<$box>]('0')">Today</button>
+		[</if>]
+	[<else>] [<* keep a space here so that the buttons always stay in the same place *>]
+		[<if $is_intrabox>]
+			<button style="visibility: hidden">[<if $tomorrow>]Tomorrow[<else>]Today[</if>]</button>
 		[</if>]
 	[</if>]
 	[<if !$is_intrabox>]
 		<button id="week_click" onclick="week_click([<$day>]);">Week</button>
+		<button id="week_thiswk" onclick="schedule_reset()" style='display: none'>This Week</button>
 	[</if>]
-	<button id="week_f[<$box>]" onclick="day_click[<$box>]('[<$day+1>]')">→</button>
+	<button id="week_f[<$box>]" onclick="schedule_click[<$box>]('[<$day+1>]')">→</button>
 </p>
 <div id="schedule[<$box>]">
 

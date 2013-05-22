@@ -2,12 +2,15 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="Description" content="The TJ Intranet allows students at the Thomas Jefferson High School for Science and Technology to sign up for activities, access their school files and perform other tasks." />
-
+	<meta name="Description" content="The TJ Intranet allows students at the Thomas Jefferson High School for Science and Technology to sign up for activities, access files, and perform other tasks." />
+	<meta name="keywords" content="TJHSST, TJ Intranet, Intranet2" />
+	<meta name="robots" content="index, follow" />
+	<meta name="author" content="The Intranet2 Development Team" />
+	<link rel="canonical" href="[<$I2_ROOT>]" />
 	<!-- zoom in mobile browsers -->
 	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=1">
 	<title>TJHSST Intranet2: Login</title>
-
+	
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-ui-light.css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-login-default.css" />
@@ -19,6 +22,14 @@
 	<script type="text/javascript">
 	//Set some variables so that any script can use them.
 	var i2root="[<$I2_ROOT>]";
+	prep_init = function() {
+		day_parsehash();
+	}
+	if(!!window.addEventListener) {
+		window.addEventListener("load", prep_init, false);
+	} else {
+		window.onload = prep_init;
+	}
 	</script>
 	[<if isset($bgjs)>]
 	<script type="text/javascript" src="[<$I2_ROOT>][<$bgjs>]"></script>

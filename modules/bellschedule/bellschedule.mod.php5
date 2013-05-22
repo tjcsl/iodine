@@ -336,10 +336,7 @@ class BellSchedule extends Module {
 		$md = isset($I2_QUERY['day']) ? date('Ymd', self::parse_day_query()) : null;
 		$ws = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : null;
 		$we = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : null;
-		$schedules = self::get_schedule_week($ws, $we, $md);
-
-		d(var_dump($schedules));
-		d("hi");
+		$schedules = self::get_schedule_week($ws, $we, $md);	
 		$c.= "<table class='weeksched'><tr class='h' style='min-height: 40px;max-height: 40px;line-height: 25px'>";
 		foreach($schedules as $day=>$schedule) {
 			$nday = date('l, F j', strtotime($day));
