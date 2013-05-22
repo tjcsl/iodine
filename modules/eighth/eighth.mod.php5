@@ -2290,6 +2290,7 @@ class Eighth extends Module {
 					$this->template_args['users'] = User::search_info("{$this->args['fname']} {$this->args['name_id']}");
 				}
 				else {
+					$this->args['name_id'] = isset($this->args['name_id']) ? $this->args['name_id'] : "";
 					$this->template_args['users'] = User::search_info("{$this->args['name_id']}");
 				}
 			}
