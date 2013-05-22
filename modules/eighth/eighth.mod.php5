@@ -1214,21 +1214,21 @@ class Eighth extends Module {
 			self::start_undo_transaction();
 			$usedtobename = $activity->name;
 			$activity->name = $this->args['name'];
-			$activity->sponsors = $this->args['sponsors'];
-			$activity->rooms = $this->args['rooms'];
-			$usedtobedescription=$activity->description;
+			$activity->sponsors = (isset($this->args['sponsors']) && $this->args['sponsors']);
+			$activity->rooms = (isset($this->args['rooms']) && $this->args['rooms']);
+			$usedtobedescription = $activity->description;
 			$activity->description = $this->args['description'];
-			$activity->restricted = ($this->args['restricted'] == 'on');
-			$activity->presign = ($this->args['presign'] == 'on');
-			$activity->oneaday = ($this->args['oneaday'] == 'on');
-			$activity->bothblocks = ($this->args['bothblocks'] == 'on');
-			$activity->sticky = ($this->args['sticky'] == 'on');
-			$usedtobespecial=$activity->special;
-			$activity->special = ($this->args['special'] == 'on');
+			$activity->restricted = (isset($this->args['restricted']) && $this->args['restricted'] == 'on');
+			$activity->presign = (isset($this->args['presign']) && $this->args['presign'] == 'on');
+			$activity->oneaday = (isset($this->args['oneaday']) && $this->args['oneaday'] == 'on');
+			$activity->bothblocks = (isset($this->args['bothblocks']) && $this->args['bothblocks'] == 'on');
+			$activity->sticky = (isset($this->args['sticky']) && $this->args['sticky'] == 'on');
+			$usedtobespecial = $activity->special;
+			$activity->special = (isset($this->args['special']) && $this->args['special'] == 'on');
 			// This is marking it as _always_ calendarworthy
 			// Normally, you should use the individual block's calendarworthiness setting
-			$usedtobecalendar=$activity->calendar;
-			$activity->calendar = ($this->args['calendar'] == 'on');
+			$usedtobecalendar = $activity->calendar;
+			$activity->calendar = (isset($this->args['calendar']) && $this->args['calendar'] == 'on');
 			// All 8th period activities should have calendar events
 			// Handle the permamarking removal or addition
 			global $I2_SQL;
