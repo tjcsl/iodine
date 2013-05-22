@@ -1,5 +1,4 @@
 [<* included in bellschedule/schedule.tpl and login/login.tpl *>]
-<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/schedule.css" />
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js"></script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/schedule.js"></script>
 <p id='sched_tools'>
