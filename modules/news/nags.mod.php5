@@ -45,13 +45,15 @@ class Nags extends Module {
 	* @return mixed FALSE if the user was not 'hooked' - display should continue if so.
 	*/
 	public static function login_hook() {
-		global $I2_USER, $I2_SQL, $I2_ARGS;
-		//return FALSE;
-		//return TRUE;
-		$res = $I2_SQL->query('SELECT nid FROM nag_group_map WHERE active=1 AND critical=1');
+		global $I2_USER, $I2_SQL, $I2_ARGS, $I2_CACHE;
+		$res = unserialize($I2_CACHE->read(get_class(),'nag_group_map'));
+		if($res === FALSE) {
+			$res = $I2_SQL->query('SELECT nid FROM nag_group_map WHERE active=1 AND critical=1')->fetch_all_arrays(Result::ASSOC);;
+			$I2_CACHE->store(get_class(),'nag_group_map',serialize($res),strtotime('1 hour'));
+		}
 		$loc = implode('/',$I2_ARGS);
 		$visible = FALSE;
-		while ($row = $res->fetch_array(Result::ASSOC)) {
+		foreach ($res as $row) {
 			$nag = new Nag($row['nid']);
 			if ($nag->is_visible($I2_USER)) {
 				if ($nag->allows_visit($loc)) {

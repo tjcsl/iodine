@@ -214,7 +214,7 @@ class User {
 	* @return mixed The data you requested.
 	*/
 	public function __get( $name ) {
-		global $I2_SQL,$I2_ERR,$I2_LDAP;
+		global $I2_SQL, $I2_ERR, $I2_LDAP, $I2_CACHE;
 
 		if(!$this->username) {
 			throw new I2Exception('Tried to retrieve information for nonexistant user! UID: '.$this->myuid);
@@ -235,7 +235,12 @@ class User {
 			case 'info':
 				return $this->info;
 			case 'allowed_modules':
-				$this->info['allowed_modules']=$I2_SQL->query("SELECT module FROM allowed_modules WHERE userclass=%s",$this->__get("objectclass"))->fetch_all_single_values();
+				$allowed_modules = unserialize($I2_CACHE->read($this,'allowed_modules'));
+				if($allowed_modules === FALSE) {
+					$allowed_modules = $I2_SQL->query("SELECT module FROM allowed_modules WHERE userclass=%s",$this->__get("objectclass"))->fetch_all_single_values();
+					$I2_CACHE->store($this,'allowed_modules',serialize($allowed_modules),strtotime('1 hour'));
+				}
+				$this->info['allowed_modules'] = $allowed_modules;
 				return $this->info['allowed_modules'];
 			case 'name':
 				$nick = $this->__get('nickname');
