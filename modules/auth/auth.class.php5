@@ -590,9 +590,13 @@ class Auth {
 	* @return string The path, relative to the Iodine root, of the background tile image (or null if today is not "special")
 	*/
 	private static function getSpecialBG() {
-		global $I2_SQL;
+		global $I2_SQL, $I2_CACHE;
 
-		$rows = $I2_SQL->query('SELECT startdt, enddt, background, js FROM special_backgrounds');
+		$rows = unserialize($I2_CACHE->read(get_class(),'special_backgrounds'));
+		if($rows === FALSE) {
+			$rows = $I2_SQL->query('SELECT startdt, enddt, background, js FROM special_backgrounds')->fetch_all_arrays();
+			$I2_CACHE->store(get_class(),'special_backgrounds',serialize($rows),strtotime('1 hour'));
+		}
 
 		$timestamp = time();
 
