@@ -194,7 +194,7 @@ class News extends Module {
 			$I2_ARGS[1] = '';
 		}
 		
-		if (!isSet($this->newsadmin)) {
+		if (!isset($this->newsadmin)) {
 			$this->set_news_admin();
 		}
 
@@ -209,9 +209,9 @@ class News extends Module {
 					$title = stripslashes($_REQUEST['add_title']);
 					$text = stripslashes($_REQUEST['add_text']);
 					$expire = $_REQUEST['add_expire'];
-					$visible = isSet($_REQUEST['add_visible']) ? 1 : 0;
+					$visible = isset($_REQUEST['add_visible']) ? 1 : 0;
 					$groups = Group::generate($_REQUEST['add_groups']);
-					$public = isSet($_REQUEST['add_public']) ? 1 : 0;
+					$public = isset($_REQUEST['add_public']) ? 1 : 0;
 
 					if(Newsitem::post_item($I2_USER, $title, $text, $groups, $expire, $visible, $public)) {
 						$this->template_args['added'] = 1;
@@ -253,9 +253,9 @@ class News extends Module {
 					$title = stripslashes($_REQUEST['edit_title']);
 					$text = stripslashes($_REQUEST['edit_text']);
 					$expire = $_REQUEST['edit_expire'];
-					$visible = isSet($_REQUEST['edit_visible']) ? 1 : 0;
+					$visible = isset($_REQUEST['edit_visible']) ? 1 : 0;
 					$groups = Group::generate($_REQUEST['add_groups']);
-					$public = isSet($_REQUEST['edit_public']) ? 1 : 0;
+					$public = isset($_REQUEST['edit_public']) ? 1 : 0;
 					$item->edit($title, $text, $groups,$expire,$visible,$public);
 					$item = new Newsitem($I2_ARGS[2], TRUE);
 					$this->template_args['edited'] = 1;
@@ -426,7 +426,7 @@ class News extends Module {
 			}
 		}
 		$num = count($this->summaries);
-		if (!isSet($this->newsadmin)) {
+		if (!isset($this->newsadmin)) {
 			$this->set_news_admin();
 		}
 		return 'News: '.$num.' post'.($num==1?'':'s').' to read';

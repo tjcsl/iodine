@@ -187,11 +187,11 @@ class Seniors extends Module {
 		if (! $this->is_admin) {
 			redirect('seniors');
 		}
-		if (isSet($_POST['add_college'])) {
+		if (isset($_POST['add_college'])) {
 			$I2_SQL->query('INSERT INTO CEEBMap SET CEEB=%d, CollegeName=%s;', $_POST['ceeb'], $_POST['college']);
 			redirect('seniors');
 		}
-		if (isSet($_POST['add_major'])) {
+		if (isset($_POST['add_major'])) {
 	 		$I2_SQL->query('INSERT INTO MajorMap SET Major=%s;', $_POST['major']);	
 			redirect('seniors');
 		}

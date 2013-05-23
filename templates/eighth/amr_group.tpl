@@ -44,9 +44,9 @@
 </td><td style="vertical-align: top;">
 <a href="[<$I2_ROOT>]eighth/amr_group/remove/gid/[<$group->gid>]" onclick="if (confirm('Are you sure you want to delete this group?')) { window.location.href = this.href } return false;">Remove Group</a><br />
 <a href="[<$I2_ROOT>]eighth/amr_group/remove_all/gid/[<$group->gid>]" onclick="if (confirm('Are you sure you want to remove all members from this group?')) { window.location.href = this.href } return false;">Remove all members from group</a><br />
-[<if isSet($lastaction)>]<b>[<$lastaction>]</b><br />[</if>]
+[<if isset($lastaction)>]<b>[<$lastaction>]</b><br />[</if>]
 	<fieldset style="width: 220px;">
-	[<if isSet($info)>]
+	[<if isset($info)>]
 		[<include file="search/search_results_pane.tpl">]
 	[<else>]
 		[<include file="search/search_pane.tpl">]

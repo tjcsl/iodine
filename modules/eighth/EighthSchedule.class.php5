@@ -62,10 +62,10 @@ class EighthSchedule {
 		$result = $I2_SQL->query_arr($query,$queryarg);
 		if ($old) {
 			$invquery = $query;
-			if (!isSet($old['comment'])) {
+			if (!isset($old['comment'])) {
 					  $old['comment'] = '';
 			}
-			if (!isSet($old['advertisement'])) {
+			if (!isset($old['advertisement'])) {
 					  $old['advertisement'] = '';
 			}
 			$invarg = array($old['bid'],$old['activityid'],explode(',',$old['sponsors']),explode(',',$old['rooms']),$old['comment'],$old['attendancetaken'],$old['cancelled'],$old['advertisement'],$old['capacity']);

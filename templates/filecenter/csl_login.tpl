@@ -1,4 +1,4 @@
-[<if isSet($csl_failed_login)>]
+[<if isset($csl_failed_login)>]
 I'm sorry, but the Intranet was unable to access your files. Please type your <b>Computer Systems Lab</b> user and password to allow Intranet to access these files.
 [</if>]
 <form method="post" action="[<$I2_ROOT>]filecenter/cslauth">

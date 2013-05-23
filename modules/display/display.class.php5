@@ -264,7 +264,7 @@ class Display {
 	*/
 	public static function style_changed() {
 		global $I2_USER;
-		if (isSet($I2_USER)) {
+		if (isset($I2_USER)) {
 			$I2_USER->recache('style');
 			self::$style = ($I2_USER->style);
 			CSS::flush_cache($I2_USER);
@@ -282,7 +282,7 @@ class Display {
 	 public static function style_set() {
 		  global $I2_USER;
 		  if (self::$style == NULL) {
-			  if (isSet($I2_USER)) {
+			  if (isset($I2_USER)) {
 					  $I2_USER->recache('style');
 					  self::$style = ($I2_USER->style);
 			  }
@@ -338,7 +338,7 @@ class Display {
 		$this->smarty->assign('I2_SELF', $I2_SELF);
 		$this->smarty->assign('I2_ARGSTRING', implode('/',$I2_ARGS));
 		$this->smarty->assign('I2_MODNAME', $module);
-		if( isSet($I2_USER) ) {
+		if( isset($I2_USER) ) {
 			$this->smarty->assign('I2_UID', $I2_USER->uid);
 			$this->smarty->assign('I2_USER', $I2_USER);
 			$this->smarty->assign('I2_CSS', "{$I2_ROOT}css/".self::$style.'.css/'.$I2_USER->uid);

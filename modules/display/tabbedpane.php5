@@ -33,7 +33,7 @@ class TabbedPane extends Module {
 
 	public function init_pane() {
 		global $I2_USER,$I2_ARGS,$I2_ROOT;
-		if (isSet($I2_ARGS[1])) {
+		if (isset($I2_ARGS[1])) {
 			$this->mod = $I2_ARGS[1];
 		} else  {
 			$this->mod = $I2_USER->startpage;

@@ -143,9 +143,9 @@ class Logging {
 		global $I2_API;
 		$trace_arr = [];
 		foreach(array_slice(debug_backtrace(),1) as $trace) {
-			if (isSet($trace['file']) && isSet($trace['line'])) {
+			if (isset($trace['file']) && isset($trace['line'])) {
 				$trace_arr[] = basename($trace['file'],'.php5') .':'. $trace['line'];
-			} else if (isSet($trace['line'])) {
+			} else if (isset($trace['line'])) {
 				$trace_arr[] = 'Unknown file:'. $trace['line'];	
 			} else {
 				$trace_arr[] = 'Unknown file: Unknown line';

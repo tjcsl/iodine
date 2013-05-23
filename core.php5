@@ -40,7 +40,7 @@ $I2_DOMAIN = $_SERVER['HTTP_HOST'];
 /**
 * 'core.php5' is nine letters
 */
-$I2_ROOT = (isSet($_SERVER['HTTPS'])?'https://':'http://') . $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,-9);
+$I2_ROOT = (isset($_SERVER['HTTPS'])?'https://':'http://') . $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,-9);
 //$I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
 $I2_FS_ROOT = substr($_SERVER['SCRIPT_FILENAME'],0,-9);
 //$I2_FS_ROOT = i2config_get('root_path', '/var/wwww/iodine/', 'core');
@@ -243,7 +243,7 @@ try {
 	// Starts with whatever module the user specified, otherwise
 	// default to 'welcome'
 	$module = "";
-	if(isSet($I2_ARGS[0])) {
+	if(isset($I2_ARGS[0])) {
 		$module = $I2_ARGS[0];
 	} elseif($I2_USER->startpage) {
 		$module = $I2_USER->startpage;
@@ -258,7 +258,7 @@ try {
 		// disable backtraces by default
 		$I2_API->backtrace=false;
 		array_shift($I2_ARGS);
-		if(isSet($I2_ARGS[0])) {
+		if(isset($I2_ARGS[0])) {
 			$module = $I2_ARGS[0];
 		} else {
 			$I2_API->startElement('invalid');

@@ -52,8 +52,8 @@ class Auth {
 		}
 
 		if( isset($I2_ARGS[0]) && $I2_ARGS[0] == 'logout' ) {
-				//if (isSet($_SESSION['i2_uid'])) {
-				if (isSet($_SESSION['i2_username'])) {
+				//if (isset($_SESSION['i2_uid'])) {
+				if (isset($_SESSION['i2_username'])) {
 					self::log_out();
 				} else {
 					/*
@@ -93,7 +93,7 @@ class Auth {
 			/*
 			 ** mod_auth_kerb/WebAuth authentication
 			 */
-			if (isSet($_SERVER['REMOTE_USER'])) {
+			if (isset($_SERVER['REMOTE_USER'])) {
 				$_SESSION['i2_login_time'] = time();
 				/*
 				 ** Strip kerberos realm if necessary
@@ -290,7 +290,7 @@ class Auth {
 			// if login fails, something else will set it
 			$modauth_loginfailed = FALSE;
 
-			if(!isSet($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
+			if(!isset($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
 				$_SESSION['logout_funcs'] = [];
 			}
 			//$this->cache_password($_REQUEST['login_password']);

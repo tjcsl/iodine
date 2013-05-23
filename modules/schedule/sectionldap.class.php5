@@ -91,7 +91,7 @@ class SectionLDAP implements Section {
 
 	public function get_students() {
 		global $I2_LDAP;
-		if (!isSet($this->info['students'])) {
+		if (!isset($this->info['students'])) {
 				  $this->info['students'] = [];
 				  $res = $I2_LDAP->search(LDAP::get_user_dn(),'enrolledClass='.LDAP::get_schedule_dn($this->info['sectionid']),array('iodineUid'));
 				  while ($row = $res->fetch_array(Result::ASSOC)) {

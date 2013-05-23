@@ -62,7 +62,7 @@ class Mail extends Module {
 		$this->pane_args['gnmsgs'] = 0;
 		$this->pane_args['offset'] = 0;
 
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clear') {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'clear') {
 			// Clear the cache
 			$this->clear_cache($this->cache_file);
 			redirect(implode('/',array_slice($I2_ARGS,2)));

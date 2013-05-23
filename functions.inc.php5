@@ -24,7 +24,7 @@
 */
 function d($text, $level = 9) {
 	global $I2_LOG;
-	if (isSet($I2_LOG)) {
+	if (isset($I2_LOG)) {
 		$I2_LOG->log_debug($text, $level);
 	}
 }
@@ -207,7 +207,7 @@ function i2config_get($field, $default = NULL, $section = NULL) {
 
 	/* If we were called by a class, use the config section
 	for that class. */
-	if (isSet($trace[1]['class'])) {
+	if (isset($trace[1]['class'])) {
 		return i2config_get($field, $default, strtolower($trace[1]['class']));
 	}
 	

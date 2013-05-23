@@ -49,27 +49,27 @@ class Prefs extends Module {
 
 			if (is_int($I2_USER->grade)) {
 				foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showeighthself','showmapself','showpictureself','showfreshmanpictureself','showsophomorepictureself','showjuniorpictureself','showseniorpictureself','showlockerself','newsforwarding','eighthalert','eighthnightalert') as $pref) {
-					$I2_USER->$pref = isSet($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';
+					$I2_USER->$pref = isset($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';
 				}
-				if (isSet($_REQUEST['relationship'])) {
+				if (isset($_REQUEST['relationship'])) {
 					$I2_USER->relationship = $_REQUEST['relationship'];
 				}
 			} else {
 				foreach (array('showaddressself','showphoneself','showbdayself','showpictureself') as $pref) {
-					$I2_USER->$pref = isSet($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';
+					$I2_USER->$pref = isset($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';
 				}
 			}
 
-			if (isSet($_REQUEST['pref_style']) || isSet($_REQUEST['pref_boxcolor']) || isSet($_REQUEST['pref_boxtitlecolor'])) {
+			if (isset($_REQUEST['pref_style']) || isset($_REQUEST['pref_boxcolor']) || isset($_REQUEST['pref_boxtitlecolor'])) {
 				Display::style_changed();
 			}
 
-			if( isset($_REQUEST['add_intrabox']) && isSet($_REQUEST['add_boxid']) ) {
+			if( isset($_REQUEST['add_intrabox']) && isset($_REQUEST['add_boxid']) ) {
 				foreach($_REQUEST['add_boxid'] as $box){
 					Intrabox::add_box($box);
 				}
 			}
-			if( isset($_REQUEST['delete_intrabox']) && isSet($_REQUEST['delete_boxid']) ) {
+			if( isset($_REQUEST['delete_intrabox']) && isset($_REQUEST['delete_boxid']) ) {
 				foreach($_REQUEST['delete_boxid'] as $box){
 					Intrabox::delete_box($box);
 				}

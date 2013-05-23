@@ -32,7 +32,7 @@ class EighthRoom {
 			d('Null room constructed...',3);
 			return;
 		}
-		if (isSet($cache[$roomid])) {
+		if (isset($cache[$roomid])) {
 				  $this->data = &self::$cache[$roomid]->data;
 		} else {
 			$this->data = $I2_SQL->query('SELECT * FROM eighth_rooms WHERE rid=%d', $roomid)->fetch_array(Result::ASSOC);

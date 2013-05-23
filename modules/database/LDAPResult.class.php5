@@ -282,14 +282,14 @@ class LDAPResult implements Result {
 		if (!$row) {
 			return FALSE;
 		}
-		if (isSet($row[0])) {
+		if (isset($row[0])) {
 			return $row[0];
 		}
-		if (isSet($row['dn'])) {
+		if (isset($row['dn'])) {
 			return $row['dn'];
 		}
 		$keys = array_keys($row);
-		if (isSet($keys[0])) {
+		if (isset($keys[0])) {
 			return $row[$keys[0]];
 		}
 		return FALSE;
@@ -298,7 +298,7 @@ class LDAPResult implements Result {
 	public function fetch_col($colname) {
 		$ret = [];
 		while ($arr = $this->fetch_array(Result::BOTH)) {
-			if (isSet($arr[$colname])) {
+			if (isset($arr[$colname])) {
 				$ret[] = $arr[$colname];
 			}
 		}

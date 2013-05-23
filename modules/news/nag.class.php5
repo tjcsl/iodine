@@ -24,7 +24,7 @@ class Nag {
 	public function __get($name) {
 		global $I2_SQL;
 		$name = strtolower($name);
-		if (isSet($this->data[$name])) {
+		if (isset($this->data[$name])) {
 			return $this->data[$name];
 		}
 		switch ($name) {

@@ -1,5 +1,5 @@
 [<include file="eighth/header.tpl">]
-<div style="font-weight: bold; font-size: 24pt;">Absences [<if isSet($dstart)>]from $dstart to $dend[</if>]</div>
+<div style="font-weight: bold; font-size: 24pt;">Absences [<if isset($dstart)>]from $dstart to $dend[</if>]</div>
 <div style="float: right">
 	<form action="[<$I2_ROOT>]eighth/vp_delinquent/sort/" method="get">
 		<fieldset>

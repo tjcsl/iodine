@@ -28,7 +28,7 @@ class EighthSponsor {
 	*/
 	public function __construct($sponsorid) {
 		global $I2_SQL;
-		if (isSet(self::$cache[$sponsorid])) {
+		if (isset(self::$cache[$sponsorid])) {
 				  $this->data = &self::$cache[$sponsorid]->data;
 		} else {
 			$this->data = $I2_SQL->query('SELECT * FROM eighth_sponsors WHERE sid=%d', $sponsorid)->fetch_array(Result::ASSOC);
@@ -59,7 +59,7 @@ class EighthSponsor {
 			$sponsors = explode(',',$row['sponsors']);
 			$rooms = explode(',',$row['rooms']);
 			foreach ($sponsors as $sponsorid) {
-				if (!isSet($sponsorstorooms[$sponsorid])) {
+				if (!isset($sponsorstorooms[$sponsorid])) {
 					$sponsorstorooms[$sponsorid] = [];
 				}
 				foreach ($rooms as $room) {
@@ -74,7 +74,7 @@ class EighthSponsor {
 				continue;
 			}
 			foreach ($rooms as $room) {
-				if (!isSet($ret[$room])) {
+				if (!isset($ret[$room])) {
 					$ret[$room] = [];
 				}
 				$sponsorotherrooms = [];
@@ -254,7 +254,7 @@ class EighthSponsor {
 		}
 		else if($name == 'name_comma') {
 			//Allow hacky last-name-only sponsors from old Intranet
-			if (isSet($this->data['fname']) && trim($this->data['fname']) != '') {
+			if (isset($this->data['fname']) && trim($this->data['fname']) != '') {
 				return "{$this->data['lname']}, {$this->data['fname']}";
 			}
 			return $this->data['lname'];

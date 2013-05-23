@@ -18,15 +18,15 @@ class Search extends Module {
 
 	public function init_pane() {
 			  global $I2_ARGS;
-			  if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'results') {
+			  if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'results') {
 						 
-						 if (!isSet($_REQUEST['name']) || $_REQUEST['name'] == '') {
+						 if (!isset($_REQUEST['name']) || $_REQUEST['name'] == '') {
 									$name = '*';
 						 } else {
 									$name = $_REQUEST['name'];
 						 }
 
-						 if (!isSet($_REQUEST['graduationYear'])) {
+						 if (!isset($_REQUEST['graduationYear'])) {
 									$gradyear = NULL;
 						 } else {
 									$gradyear = $_REQUEST['graduationYear'];
@@ -34,17 +34,17 @@ class Search extends Module {
 						
 						 $res = User::search_info($name,$gradyear);
 						 $_SESSION['search_results'] = $res;
-			  } elseif (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clear') {
+			  } elseif (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'clear') {
 						 self::clear_results();
 			  }
-			  if (isSet($I2_ARGS[2])) {
+			  if (isset($I2_ARGS[2])) {
 				  redirect(implode('/',array_slice($I2_ARGS,2)));
 			  }
 			  return 'Advanced Search';
 	}
 
 	public static function get_results() {
-		if (!isSet($_SESSION['search_results'])) {
+		if (!isset($_SESSION['search_results'])) {
 			return FALSE;
 		}
 		return $_SESSION['search_results'];
@@ -55,7 +55,7 @@ class Search extends Module {
 	}
 
 	public function display_pane($disp) {
-		if (isSet($_SESSION['search_results'])) {
+		if (isset($_SESSION['search_results'])) {
 			$disp->smarty_assign('info',$_SESSION['search_results']);
 			$disp->smarty_assign('numresults',count($_SESSION['search_results']));
 			$disp->smarty_assign('results_destination','studentdirectory/info/');

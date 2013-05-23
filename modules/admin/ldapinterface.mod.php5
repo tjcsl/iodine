@@ -74,19 +74,19 @@ class LDAPInterface extends Module {
 		}
 		
 		if( isset($_POST['ldapinterface_submit']) && $_POST['ldapinterface_submit']) {
-			if (isSet($_POST['ldapinterface_query'])) {
+			if (isset($_POST['ldapinterface_query'])) {
 				$this->query = $_POST['ldapinterface_query'];
 			} elseif (!$this->query) {
 				$this->query = 'objectClass=*';
 			}
 			
-			if (isSet($_POST['ldapinterface_dn'])) {
+			if (isset($_POST['ldapinterface_dn'])) {
 				$this->dn = $_POST['ldapinterface_dn'];
 			} else {
 				$this->dn = i2config_get('base_dn','dc=tjhsst,dc=edu','ldap');
 			}
 			
-			if (isSet($_POST['ldap_searchtype'])) {
+			if (isset($_POST['ldap_searchtype'])) {
 				if ($_POST['ldap_searchtype'] == 'list') {
 					$this->searchtype = 'list';
 				} else if ($_POST['ldap_searchtype'] == 'search') {
@@ -102,7 +102,7 @@ class LDAPInterface extends Module {
 
 			$myattrs = array('*');
 
-			if (isSet($_POST['ldapinterface_attrs']) && $_POST['ldapinterface_attrs'] != '') {
+			if (isset($_POST['ldapinterface_attrs']) && $_POST['ldapinterface_attrs'] != '') {
 				$this->attrs = $_POST['ldapinterface_attrs'];
 				$myattrs = explode(',',$this->attrs);
 			} else {
@@ -122,7 +122,7 @@ class LDAPInterface extends Module {
 					$res = $ldap->search_base($this->dn);
 					$this->query_data = $res->fetch_all_arrays(Result::ASSOC);
 				} else if ($this->searchtype == 'delete') {
-					if (isSet($this->query)) {
+					if (isset($this->query)) {
 						$res = $ldap->search($this->dn,$this->query,array('dn'));
 						while ($dn = $res->fetch_single_value()) {
 							$res = $ldap->delete($dn);

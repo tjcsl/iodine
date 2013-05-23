@@ -253,13 +253,13 @@ class Eighth extends Module {
 	}
 
 	public static function init_undo() {
-		if (isSet($_SESSION['eighth_undo'])) {
+		if (isset($_SESSION['eighth_undo'])) {
 			self::$undo = &$_SESSION['eighth_undo'];
 		} elseif (!self::$undo) {
 			self::$undo = [];
 			$_SESSION['eighth_undo'] = [];
 		}
-		if (isSet($_SESSION['eighth_redo'])) {
+		if (isset($_SESSION['eighth_redo'])) {
 			self::$redo = &$_SESSION['eighth_redo'];
 		} elseif (!self::$redo) {
 			self::$redo = [];
@@ -556,7 +556,7 @@ class Eighth extends Module {
 		$this->template_args['eighth_admin'] = $this->admin;
 		
 		//Every time a user logs in, set start_date to default
-		if(! isSet($_SESSION['eighth']['start_date'])) {
+		if(! isset($_SESSION['eighth']['start_date'])) {
 			$_SESSION['eighth']['start_date'] = self::$default_start_date;
 		}
 		//This may be clobbered later in REQUEST (for vcp_schedule and chg_start)
@@ -621,7 +621,7 @@ class Eighth extends Module {
 		$this->template_args['last_redo'] = self::get_redo_name();
 
 		//For header.tpl and vcp_schedule
-		if(! isSet($this->template_args['start_date'])) {
+		if(! isset($this->template_args['start_date'])) {
 			$this->template_args['start_date'] = $this->args['start_date'];
 		}
 		
@@ -720,7 +720,7 @@ class Eighth extends Module {
 		if ($start_date === NULL) {
 			$start_date = $this->args['start_date'];
 		}
-		if ($daysf === NULL && isSet($this->args['daysforward'])) {
+		if ($daysf === NULL && isset($this->args['daysforward'])) {
 			$daysf = $this->args['daysforward'];
 		} else {
 			$daysf = 99999;
@@ -934,7 +934,7 @@ class Eighth extends Module {
 	*/
 	private function amr_group() {
 		if($this->op == '' || $this->op == 'added') {
-			if (!isSet($this->args['gid'])) {
+			if (!isset($this->args['gid'])) {
 				$this->args['gid'] = FALSE;
 			}
 			$this->setup_group_selection(true,'Select a group',$this->args['gid']);
@@ -959,11 +959,11 @@ class Eighth extends Module {
 			$this->template = 'amr_group.tpl';
 			$this->template_args['group'] = $group;
 			$this->template_args['first_year'] = User::get_gradyear(12);
-			if (isSet($this->args['lastadded'])) {
+			if (isset($this->args['lastadded'])) {
 					$user = new User($this->args['lastadded']);
 					$this->template_args['lastaction'] = 'Added user '.$user->fullname_comma;
 			}
-			if (isSet($this->args['lastremoved'])) {
+			if (isset($this->args['lastremoved'])) {
 					$user = new User($this->args['lastremoved']);
 					$this->template_args['lastaction'] = 'Removed user '.$user->fullname_comma;
 			}
@@ -1005,7 +1005,7 @@ class Eighth extends Module {
 		else if($this->op == 'add_member') {
 			$group = new Group($this->args['gid']);
 			//TODO: this should be up in 'view', so as to avoid duplicate code
-			if (!isSet($this->args['uid']) && Search::get_results()) {
+			if (!isset($this->args['uid']) && Search::get_results()) {
 				$this->template_args['info'] = Search::get_results();
 				$this->template_args['results_destination'] = 'eighth/amr_group/add_member/gid/'.$this->args['gid'].'/uid/';
 				$this->template_args['return_destination'] = 'eighth/amr_group/view/gid/'.$this->args['gid'];
@@ -1081,7 +1081,7 @@ class Eighth extends Module {
 			$this->template_args['activity'] = new EighthActivity($this->args['aid']);
 			$this->template_args['groups'] = Group::get_all_groups('eighth');
 			$this->template_args['first_year'] = User::get_gradyear(12);
-			if (isSet($this->args['searchdone']) && Search::get_results()) {
+			if (isset($this->args['searchdone']) && Search::get_results()) {
 				$this->template_args['results_destination'] = 'eighth/alt_permissions/add_member/aid/'.$this->args['aid'].'/uid/';
 				$this->template_args['return_destination'] = 'eighth/alt_permissions/view/aid/'.$this->args['aid'];
 				$this->template_args['info'] = Search::get_results();
@@ -1356,7 +1356,7 @@ class Eighth extends Module {
 	*/
 	private function amr_room() {
 		if($this->op == '' || $this->op == 'select') {
-			if (!isSet($this->args['rid'])) {
+			if (!isset($this->args['rid'])) {
 				$this->args['rid'] = FALSE;
 			}
 			$this->setup_room_selection(true,'Select a room:',$this->args['rid']);
@@ -1367,7 +1367,7 @@ class Eighth extends Module {
 			$this->title = 'View Rooms';
 		}
 		else if($this->op == 'add') {
-			if (!isSet($this->args['capacity']) || !$this->args['capacity'] || !is_numeric($this->args['capacity'])) {
+			if (!isset($this->args['capacity']) || !$this->args['capacity'] || !is_numeric($this->args['capacity'])) {
 				$this->args['capacity'] = -1;
 			}
 			self::start_undo_transaction();
@@ -1690,16 +1690,16 @@ class Eighth extends Module {
 			$this->template_args['bid'] = $this->args['bid'];
 			$this->template_args['aid'] = $this->args['aid'];
 			$this->template_args['first_year'] = User::get_gradyear(12);
-			if (isSet($this->args['rescheduled'])) {
+			if (isset($this->args['rescheduled'])) {
 				$this->template_args['lastuser'] = new User($this->args['rescheduled']);
 			}
-			if(isSet($this->args['studentId'])) {
+			if(isset($this->args['studentId'])) {
 				$this->template_args['user'] = new User($this->args['studentId']);
 				if (!$this->template_args['user']->is_valid()) {
 					redirect('eighth/res_student/user/bid/'.$this->args['bid'].'/aid/'.$this->args['aid']);
 				}
 			}
-			if (isSet($this->args['searchdone']) && Search::get_results()) {
+			if (isset($this->args['searchdone']) && Search::get_results()) {
 					  $this->template_args['results_destination'] = 'eighth/res_student/reschedule/bid/'.$this->args['bid'].'/aid/'.$this->args['aid'].'/uid/';
 					  $this->template_args['return_destination'] = 'eighth/res_student/user/bid/'.$this->args['bid'].'/aid/'.$this->args['aid'];
 					  $this->template_args['info'] = Search::get_results();
@@ -1781,10 +1781,10 @@ class Eighth extends Module {
 			$members = $activity->members;
 			self::start_undo_transaction();
 			foreach($members as $member) {
-				if(isSet($this->args['attendies']) && is_array($this->args['attendies']) && !in_array($member, $this->args['attendies'])) {
+				if(isset($this->args['attendies']) && is_array($this->args['attendies']) && !in_array($member, $this->args['attendies'])) {
 					EighthSchedule::add_absentee($this->args['bid'], $member, $issponsor);
 				}
-				else if(!isSet($this->args['attendies']) || !is_array($this->args['attendies'])) {
+				else if(!isset($this->args['attendies']) || !is_array($this->args['attendies'])) {
 					EighthSchedule::add_absentee($this->args['bid'], $member, $issponsor);
 				}
 				else {
@@ -1861,7 +1861,7 @@ class Eighth extends Module {
 			$this->template_args['date'] = $block->date;
 			$this->template_args['block'] = $block->block;
 			$this->template_args['bid'] = $this->args['bid'];
-			if (isSet($this->args['lastuid'])) {
+			if (isset($this->args['lastuid'])) {
 				$this->template_args['lastuid'] = $this->args['lastuid'];
 				$user = new User($this->args['lastuid']);
 				$this->template_args['lastname'] = $user->name;
@@ -2285,7 +2285,7 @@ class Eighth extends Module {
 				$this->template_args['users'] = array(new User($this->args['uid']));
 			}
 			else {
-				if (isSet($this->args['fname']) && $this->args['fname']!="")
+				if (isset($this->args['fname']) && $this->args['fname']!="")
 				{
 					$this->template_args['users'] = User::search_info("{$this->args['fname']} {$this->args['name_id']}");
 				}

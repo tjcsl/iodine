@@ -1,7 +1,7 @@
 [<if $usermail>]
 <form method="post" class="boxform" action="[<$I2_ROOT>]suggestion">
 [</if>]
-[<if isSet($mailed)>]
+[<if isset($mailed)>]
 	<br />
 	[<if $mailed>]
 		Your suggestion has been submitted. Thank you for your input.

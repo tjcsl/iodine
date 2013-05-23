@@ -69,7 +69,7 @@ class User {
 			if( isset($_SESSION['i2_username']) ) {
 				$this->username = $_SESSION['i2_username'];
 				$uid = $this->username;
-				if (isset(self::$usernametouid[$uid])&&isSet(self::$cache[self::$usernametouid[$uid]])) {
+				if (isset(self::$usernametouid[$uid])&&isset(self::$cache[self::$usernametouid[$uid]])) {
 					$this->info = &self::$cache[self::$usernametouid[$uid]];
 				} else {
 					$this->info = [];
@@ -101,7 +101,7 @@ class User {
 				throw new I2Exception('Blank uidnumber used in User construction'.$this->username);
 			}
 			$this->info = [];
-			if (isSet(self::$cache[$uid]) && isSet(self::$cache[$uid]['iodineuid'])) {
+			if (isset(self::$cache[$uid]) && isset(self::$cache[$uid]['iodineuid'])) {
 				$this->info = self::$cache[$uid];
 			} else {
 				$blah = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUidNumber=$uid")->fetch_array(Result::ASSOC);
@@ -462,7 +462,7 @@ class User {
 		}
 		
 		//Check which table the information is in
-		if( $this->info != NULL && isSet($this->info[$name])) {
+		if( $this->info != NULL && isset($this->info[$name])) {
 			//returned cached info if we are caching
 			return $this->info[$name];
 		}
@@ -562,7 +562,7 @@ class User {
 		if (!$grade || $grade < 9 || $grade > 12) {
 			d('Grade out-of-bounds passed to get_gradyear',5);
 		}
-		if (! isSet(self::$senior_gradyear)) {
+		if (! isset(self::$senior_gradyear)) {
 			$date = getdate();
 			self::$senior_gradyear = $date['year'] + ($date['mon'] >= 7 ? 1 : 0);
 		}
@@ -1128,7 +1128,7 @@ class User {
 						} else {
 							$key = strtolower($boom[0]);
 							//Apply attributename translation
-							/*if (isSet($maptable[$key])) {
+							/*if (isset($maptable[$key])) {
 								d($key.' remapped to '.print_r($maptable[$key],1),8);
 								$key = $maptable[$key];
 							}*/
@@ -1159,10 +1159,10 @@ class User {
 							$tok = self::get_gradyear($tok);
 							$key = 'graduationYear';
 						}
-						if (isSet($soundexed[$key])) {
+						if (isset($soundexed[$key])) {
 							$tok = soundex($tok);
 						}
-						if (isSet($maptable[$key])) {
+						if (isset($maptable[$key])) {
 							$key = $maptable[$key];
 						}
 						if (!is_array($key)) {
@@ -1287,7 +1287,7 @@ class User {
 					,array('iodineUid'));
 
 					while ($uid = $res->fetch_single_value()) {
-						if (!$firstres && !isSet($preres[$uid])) {
+						if (!$firstres && !isset($preres[$uid])) {
 							  // Results which weren't previously found should be discarded
 							  continue;
 						} elseif (!$firstres) {

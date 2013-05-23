@@ -363,7 +363,7 @@ class EighthActivity {
 			if(mysql_error()) {
 				$ret = -1;
 			}
-			if (isSet($this->data['member_count'])) {
+			if (isset($this->data['member_count'])) {
 				$this->data['member_count']++;
 			}
 		}
@@ -441,7 +441,7 @@ class EighthActivity {
 		$invarg = $queryarg;
 		$I2_SQL->query_arr($query, $queryarg);
 		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Remove Student From Activity');
-		if (isSet($this->data['member_count'])) {
+		if (isset($this->data['member_count'])) {
 				  $this->data['member_count']--;
 		}
 	}
@@ -1039,7 +1039,7 @@ class EighthActivity {
 				if ($namelen >= 70) {
 					return $this->data['name'];
 				}
-				if (isSet($this->data['comment'])) {
+				if (isset($this->data['comment'])) {
 					$comment = $this->data['comment'];
 					$commentlen = strlen($comment);
 				} else {
@@ -1048,7 +1048,7 @@ class EighthActivity {
 				}
 				return ((isset($this->data['special']) && $this->data['special']) ? 'SPECIAL: ' : '') . $this->data['name'] . ($commentlen ? ' - ' . substr($comment,0,70-$namelen).(70-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
 			case 'name_comment_r':
-				if (isSet($this->data['comment'])) {
+				if (isset($this->data['comment'])) {
 					$comment = $this->data['comment'];
 				} else {
 					$comment = '';
@@ -1130,7 +1130,7 @@ class EighthActivity {
 				usort($members,array($this,'sort_by_name'));
 				return $members;
 			case 'capacity':
-				if (!isSet($this->data['block_rooms']) || count($this->data['block_rooms']) == 0) {
+				if (!isset($this->data['block_rooms']) || count($this->data['block_rooms']) == 0) {
 					return -1;
 				}
 				$this->data['capacity'] = $I2_SQL->query('SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)', 

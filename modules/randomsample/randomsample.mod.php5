@@ -41,7 +41,7 @@ class Randomsample extends Module {
 				  ** Mail gets special treatment
 				  */
 				  $row = $res->fetch_array(Result::ASSOC);
-				  if ($mail && !isSet($row['mail'])) {
+				  if ($mail && !isset($row['mail'])) {
 						 $row['mail'] = $row['iodineUid'].'@tjhsst.edu';
 				  }
 				  if ($mail && !$username) {
@@ -58,7 +58,7 @@ class Randomsample extends Module {
 		$selected = [];
 		while ($numselected < $size) {
 				  $choice = rand(0,$popsize-$numselected-1);
-				  if (isSet($selected[$choice])) {
+				  if (isset($selected[$choice])) {
 							 continue;
 				  }
 				 
@@ -71,7 +71,7 @@ class Randomsample extends Module {
 
 	public function init_pane() {
 		global $I2_ARGS;
-		if (!isSet($I2_ARGS[1]) || $I2_ARGS[1] != 'results') {
+		if (!isset($I2_ARGS[1]) || $I2_ARGS[1] != 'results') {
 			return 'Take a Random Sample';
 		} else {
 			$this->attrs = explode(',',$_REQUEST['attrs']);
@@ -84,7 +84,7 @@ class Randomsample extends Module {
 
 	public function display_pane($disp) {
 		$args = [];
-		if (isSet($this->sample)) {
+		if (isset($this->sample)) {
 				  $args['sample'] = $this->sample;
 				  $args['cols'] = $this->attrs;
 		}

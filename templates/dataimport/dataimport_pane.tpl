@@ -10,7 +10,7 @@ Database update procedure:
 	<li>Set the "Student Schedule" and "Course Information" files. Again, you need to enter the locations of the files on the server.</li>
 	<li>Click "Import Schedule Data". This takes ~5 minutes.</li>
 </ol>
-[<if isSet($userdata)>]
+[<if isset($userdata)>]
 	[<*'
 	[<foreach from=$userdata item=row>]
 		[<foreach from=$row key=key item=value>]

@@ -121,11 +121,11 @@ class LostNFound extends Module {
 			$I2_ARGS[1] = '';
 		}
 		
-		if (!isSet($this->is_admin)) {
+		if (!isset($this->is_admin)) {
 			$this->set_is_admin();
 		}
 		
-		if(!isSet($this->blacklisted)) {
+		if(!isset($this->blacklisted)) {
 			$this->set_blacklisted();
 		}
 		$this->template_args['blacklisted'] = $this->blacklisted;
@@ -136,7 +136,7 @@ class LostNFound extends Module {
 			case 'add':
 				$this->template = 'lost_add.tpl';
 				// if an item was just submitted
-				if(isSet($_REQUEST['add_form'])) {
+				if(isset($_REQUEST['add_form'])) {
 					$title = stripslashes($_REQUEST['title']);
 					$text = stripslashes($_REQUEST['text']);
 
@@ -172,9 +172,9 @@ class LostNFound extends Module {
 					$title = stripslashes($_REQUEST['edit_title']);
 					$text = stripslashes($_REQUEST['edit_text']);
 					$expire = $_REQUEST['edit_expire'];
-					$visible = isSet($_REQUEST['edit_visible']) ? 1 : 0;
+					$visible = isset($_REQUEST['edit_visible']) ? 1 : 0;
 					$groups = Group::generate($_REQUEST['add_groups']);
-					$public = isSet($_REQUEST['edit_public']) ? 1 : 0;
+					$public = isset($_REQUEST['edit_public']) ? 1 : 0;
 					$item->edit($title, $text, $groups,$expire,$visible,$public);
 					$item = new Lostitem($I2_ARGS[2]);
 					$this->template_args['edited'] = 1;
@@ -248,7 +248,7 @@ class LostNFound extends Module {
 			$this->summaries[] = array('title' => $item->title, 'id' => $item->id);
 		}
 		$num = count($this->summaries);
-		if (!isSet($this->is_admin)) {
+		if (!isset($this->is_admin)) {
 			$this->set_is_admin();
 		}
 		return 'Lost & Found: '.$num.' item'.($num==1?'':'s').' missing';

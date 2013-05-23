@@ -20,12 +20,12 @@ class Privacy extends Module {
 
 	public function init_pane() {
 		global $I2_USER,$I2_AUTH,$I2_ARGS;
-		if (isSet($_REQUEST['update'])) {
+		if (isset($_REQUEST['update'])) {
 			$user = new User($_REQUEST['uid']);
 			$prefs = array(
 				'showaddressself','showphoneself','showbdayself','showscheduleself','showpictureself','showfreshmanpictureself','showsophomorepictureself','showjuniorpictureself','showseniorpictureself','showlockerself','showeighthself','showaddress','showphone','showbdate','showschedule','showpictures','showlocker','showeighth');
 			foreach ($prefs as $pref) {
-				if (isSet($_REQUEST['perm_'.$pref])) {
+				if (isset($_REQUEST['perm_'.$pref])) {
 					$user->$pref = 'TRUE';
 				} else {
 					$user->$pref = 'FALSE';
@@ -37,7 +37,7 @@ class Privacy extends Module {
 		if ($I2_USER->is_ldap_admin()) {
 			$this->template = 'master.tpl';
 			$this->template_args['first_year'] = User::get_gradyear(12);
-			if (isSet($I2_ARGS[1])) {
+			if (isset($I2_ARGS[1])) {
 				$this->template_args['user'] = new User($I2_ARGS[1]);
 				$photonames = $this->template_args['user']->photonames;
 				$this->photonames = [];

@@ -56,7 +56,7 @@ class StudentDirectory extends Module {
 				$this->template_args['user'] = $user;
 				return array('Pictures: '.$user->fname.' '.$user->lname, $user->fname.' '.$user->lname);
 			case 'search':
-				if( !isSet($I2_QUERY['q']) || $I2_QUERY['q'] == '') {
+				if( !isset($I2_QUERY['q']) || $I2_QUERY['q'] == '') {
 					$this->template = 'studentdirectory_help.tpl';
 					return array('Directory Help', 'Searching Help');
 				} else {
@@ -77,7 +77,7 @@ class StudentDirectory extends Module {
 				}
 				break;
 			case 'class':
-				if(!isSet($I2_ARGS[2])) {
+				if(!isset($I2_ARGS[2])) {
 					redirect();
 				}
 				$sec = Schedule::section($I2_ARGS[2]);
@@ -105,7 +105,7 @@ class StudentDirectory extends Module {
 				$this->template_args['aim'] = $aim_sns;
 				return "Students in {$sec->name}, Period {$sec->period}";
 			case 'section':
-				if (isSet($I2_ARGS[2])) {
+				if (isset($I2_ARGS[2])) {
 					$classid = $I2_ARGS[2];
 				} else {
 					$classid = NULL;
@@ -311,7 +311,7 @@ class StudentDirectory extends Module {
 			$url .= "&t=" . urlencode($aim);
 		}
 		$fp = @fopen($url, 'r');
-		if (isSet($fp) && $fp) {
+		if (isset($fp) && $fp) {
 			$response = '';
 			do {
 				$response .= fread($fp, 128);
@@ -351,7 +351,7 @@ class StudentDirectory extends Module {
 		}
 		foreach(array_keys($sns) as $aim) {
 			$aimid = str_replace(' ','',strtolower($aim));
-			$sns[$aim] = isSet($statuses[$aimid]) ? $statuses[$aimid] : self::IM_UNKNOWN;
+			$sns[$aim] = isset($statuses[$aimid]) ? $statuses[$aimid] : self::IM_UNKNOWN;
 		}
 		return $sns;
 	}
@@ -372,7 +372,7 @@ class StudentDirectory extends Module {
 			$url = '/status.php';
 			$file = file('http://' . $server . $url . '?jid=' . $jabber . '&type=text');
 			$status = '';
-			if (isSet($file) && $file) {
+			if (isset($file) && $file) {
 				$status = join($file,'');
 				$status = substr($status, 0, strpos($status, ':'));
 			}

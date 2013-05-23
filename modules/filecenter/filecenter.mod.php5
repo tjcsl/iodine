@@ -72,14 +72,14 @@ class Filecenter extends Module {
 
 		//Make sure the address ends in a trailing slash.
 		//...but only if first arg isn't cslauth.  Yes this is hackish. --wyang
-		if(isSet($I2_ARGS[1]) && $I2_ARGS[1] != "cslauth")
+		if(isset($I2_ARGS[1]) && $I2_ARGS[1] != "cslauth")
 		{
 			$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
 			if(substr($_SERVER['REDIRECT_QUERY_STRING'], $index-1, 1) != "/")
 				redirect(substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index) . "/");
 		}
 
-		$system_type = isSet($I2_ARGS[1]) ? $I2_ARGS[1] : 'undefined';
+		$system_type = isset($I2_ARGS[1]) ? $I2_ARGS[1] : 'undefined';
 		
 		if (!isset($_SESSION['csl_show_hidden_files'])) {
 			$_SESSION['csl_show_hidden_files'] = FALSE;
@@ -102,7 +102,7 @@ class Filecenter extends Module {
 			$_SESSION['csl_password'] = $_REQUEST['password'];
 			redirect('filecenter/csl/user/'.$_SESSION['csl_username'].'/');
 		}
-		else if (!isSet($_SESSION['csl_username'])) {
+		else if (!isset($_SESSION['csl_username'])) {
 			$_SESSION['csl_username'] = $_SESSION['i2_username'];
 			$_SESSION['csl_password'] = $I2_AUTH->get_user_password();
 		}
@@ -149,29 +149,29 @@ class Filecenter extends Module {
 					die;
 				}
 			}
-		} else if (isSet($I2_QUERY['rename'])) {
+		} else if (isset($I2_QUERY['rename'])) {
 			$from = $this->directory . $I2_QUERY['rename'];
 			$to = $this->directory . $I2_QUERY['to'];
 			if ($from != $to) {
 				$this->filesystem->move_file($from, $to);
 			}
 			redirect("filecenter/$system_type"."{$this->directory}");
-		} else if (isSet($_REQUEST['mkdir'])) {
+		} else if (isset($_REQUEST['mkdir'])) {
 			$this->filesystem->make_dir($this->directory . $_REQUEST['mkdir']);
 			redirect("filecenter/$system_type"."{$this->directory}");
-		} else if (isSet($I2_QUERY['rmf'])) {
+		} else if (isset($I2_QUERY['rmf'])) {
 			$this->filesystem->remove_file($this->directory . $I2_QUERY['rmf']);
 			redirect("filecenter/$system_type"."{$this->directory}");
-		} else if (isSet($I2_QUERY['rml'])) {
+		} else if (isset($I2_QUERY['rml'])) {
 			$this->filesystem->remove_link($this->directory . $I2_QUERY['rml']);
 			redirect("filecenter/$system_type"."{$this->directory}");
-		} else if (isSet($I2_QUERY['rmd'])) {
+		} else if (isset($I2_QUERY['rmd'])) {
 			$this->filesystem->remove_dir($this->directory . $I2_QUERY['rmd']);
 			redirect("filecenter/$system_type"."{$this->directory}");
-		} else if (isSet($I2_QUERY['rmld'])) {
+		} else if (isset($I2_QUERY['rmld'])) {
 			$this->filesystem->remove_link($this->directory . $I2_QUERY['rmld']);
 			redirect("filecenter/$system_type"."{$this->directory}");
-		} else if (isSet($I2_QUERY['rmd_recursive'])) {
+		} else if (isset($I2_QUERY['rmd_recursive'])) {
 			$this->filesystem->remove_dir_recursive($this->directory . $I2_QUERY['rmd_recursive']);
 			redirect("filecenter/$system_type"."{$this->directory}");
 		}
@@ -206,7 +206,7 @@ class Filecenter extends Module {
 		if($this->filesystem == 'listing') {
 			$this->template_args['i2_username'] = $_SESSION['i2_username'];
 			$this->template_args['grad_year'] = $I2_USER->grad_year;
-			if (isSet($_SESSION['csl_username'])) {
+			if (isset($_SESSION['csl_username'])) {
 				$this->template_args['csl_username'] = $_SESSION['csl_username'];
 			}
 			else {
@@ -397,7 +397,7 @@ class Filecenter extends Module {
 		// Most of this stuff isn't used, but keep it just in case.
 		$this->box_args['i2_username'] = $_SESSION['i2_username'];
 		$this->box_args['grad_year'] = $I2_USER->grad_year;
-		if (isSet($_SESSION['csl_username'])) {
+		if (isset($_SESSION['csl_username'])) {
 			$this->box_args['csl_username'] = $_SESSION['csl_username'];
 		} else {
 			$this->box_args['csl_username'] = $_SESSION['i2_username'];
@@ -507,7 +507,7 @@ class Filecenter extends Module {
 		$i2_username = $_SESSION['i2_username'];
 		$tj01path = ($I2_USER->grade!='staff') ? 'students/' . self::$standing[$I2_USER->grade] . '/' . $i2_username : "staff";
 		$studentorstaff = ($I2_USER->grade!='staff')?"students/".$grad_year:"staff"; //Used for the unix files entry
-		if (isSet($_SESSION['csl_username'])) {
+		if (isset($_SESSION['csl_username'])) {
 			$csl_username = $_SESSION['csl_username'];
 		} else {
 			$csl_username = $i2_username;

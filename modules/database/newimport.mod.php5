@@ -682,7 +682,7 @@ class Newimport extends Module {
 
 			$classdn = LDAP::get_schedule_dn($class);
 
-			if (!isSet($students[$studentid])) {
+			if (!isset($students[$studentid])) {
 				$students[$studentid] = [];
 			}
 			$students[$studentid][] = $classdn;

@@ -4,7 +4,7 @@
 //Get these, because we'll need them.
 $v1=explode('/',$_SERVER["SCRIPT_NAME"]);
 $namelen=strlen(end($v1));
-$I2_ROOT = (isSet($_SERVER['HTTPS'])?'https://':'http://') . $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,-($namelen+9));
+$I2_ROOT = (isset($_SERVER['HTTPS'])?'https://':'http://') . $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,-($namelen+9));
 $I2_FS_ROOT = substr($_SERVER['SCRIPT_FILENAME'],0,-($namelen+9));
 
 //Get the session variables from normal iodine, so that we can check authentication.

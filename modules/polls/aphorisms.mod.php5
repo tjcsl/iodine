@@ -66,7 +66,7 @@ class Aphorisms extends Module {
 		$admin = $I2_USER->is_group_member('admin_aphorisms');
 		$this->template_args['username'] = $I2_USER->name;
 		$this->template_args['admin_aphorisms'] = $admin;
-		if (isSet($I2_ARGS[1])) {
+		if (isset($I2_ARGS[1])) {
 			if ($I2_ARGS[1] == 'choose') {
 				$this->template = 'choose.tpl';
 				$this->template_args['search_destination'] = 'aphorisms/searched/';
@@ -130,16 +130,16 @@ class Aphorisms extends Module {
 		if ($I2_USER->grade != 12) {
 				  throw new I2Exception('User is not a senior!');
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'edit') {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'edit') {
 		}
-		if (isSet($_REQUEST['posting'])) {
+		if (isset($_REQUEST['posting'])) {
 		   if (strlen(preg_replace("\n| |\t|\r\n","",$_REQUEST['aphorism'])) >= 205) {
 				throw new I2Exception('Your aphorism may not be longer than 200 characters, excluding spaces!');
 			}
 		/*	$I2_SQL->query('REPLACE INTO aphorisms SET uid=%d,college=%s,nationalmeritsemifinalist=%d,nationalmeritfinalist=%d,
 					  nationalachievement=%d,hispanicachievement=%d,honor1=%s,honor2=%s,honor3=%s,aphorism=%s',$uidnumber,
-					  $_REQUEST['college'],isSet($_REQUEST['nationalmeritsemifinalist'])?1:0,
-					  isSet($_REQUEST['nationalmeritfinalist'])?1:0,isSet($_REQUEST['nationalachievement'])?1:0,isSet($_REQUEST['hispanicachievement'])?1:0,
+					  $_REQUEST['college'],isset($_REQUEST['nationalmeritsemifinalist'])?1:0,
+					  isset($_REQUEST['nationalmeritfinalist'])?1:0,isset($_REQUEST['nationalachievement'])?1:0,isset($_REQUEST['hispanicachievement'])?1:0,
 					  $_REQUEST['honor1'],$_REQUEST['honor2'],$_REQUEST['honor3'],$_REQUEST['aphorism']
 			);*/
 			$I2_SQL->query('REPLACE INTO aphorisms SET uid=%d,college=%s,honor1=%s,honor2=%s,honor3=%s,aphorism=%s',$uidnumber,
