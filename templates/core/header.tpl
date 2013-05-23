@@ -17,6 +17,7 @@
 
 <title>TJHSST Intranet2[<if $title != "" >]: [<$title>][</if>]</title>
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/debug.css" />
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js">/* woo hoo jquery */</script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/common.js"></script>
