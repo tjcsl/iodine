@@ -35,7 +35,7 @@ class Parking extends Module {
 	*/
 	private $message;
 
-	private $sortmap = [
+	private static $sortmap = [
 		'none'			=> ['1', 'none (leave last on sorting if used)'],
 		'nameasc' 		=> ['name', 'name, A-Z'],
 		'namedesc' 		=> ['name DESC', 'name, Z-A'],
