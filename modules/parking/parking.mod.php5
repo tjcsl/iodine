@@ -105,7 +105,7 @@ class Parking extends Module {
 
 		$settings = $I2_SQL->query('SELECT * FROM parking_settings')->fetch_array();
 
-		if(! (/*$I2_USER->is_group_member('class_2014') ||*/ $I2_USER->is_group_member('class_2013') || $I2_USER->is_group_member('admin_parking'))) {
+		if(! ($I2_USER->grade == 11 || $I2_USER->grade == 12 || $I2_USER->is_group_member('admin_parking'))) {
 			redirect('');
 		}
 
@@ -127,7 +127,7 @@ class Parking extends Module {
 
 		$settings = $I2_SQL->query('SELECT * FROM parking_settings')->fetch_array();
 
-		if(! (/*$I2_USER->is_group_member('class_2014') ||*/ $I2_USER->is_group_member('class_2013') || $I2_USER->is_group_member('admin_parking'))) {
+		if(! ($I2_USER->grade == 11 || $I2_USER->grade == 12 || $I2_USER->is_group_member('admin_parking'))) {
 			redirect('');
 		}
 
@@ -237,7 +237,7 @@ class Parking extends Module {
 
 		$settings = $I2_SQL->query('SELECT * FROM parking_settings')->fetch_array();
 
-		if(! (/*$I2_USER->is_group_member('class_2014') ||*/ $I2_USER->is_group_member('class_2013') || $I2_USER->is_group_member('admin_parking'))) {
+		if(! ($I2_USER->grade == 11 || $I2_USER->grade == 12 || $I2_USER->is_group_member('admin_parking'))) {
 			redirect('');
 		}
 
