@@ -115,7 +115,7 @@ class Filecenter extends Module {
 		//HACK: find a better way to do this
 		$this->commonserver = i2config_get('cifs_common_server','','filecenter');
 
-		eval($I2_SQL->query('SELECT `code` FROM filecenter_filesystems WHERE `name`=%s',$system_type)->fetch_single_value());
+		eval($I2_SQL->query('SELECT code FROM filecenter_filesystems WHERE name=%s',$system_type)->fetch_single_value());
 		if($return) return $return;//We have to do this, because if you return inside the eval, it just exits the eval.
 
 		if(!isset($this->filesystem)) {
@@ -228,7 +228,7 @@ class Filecenter extends Module {
 						break;
 					case 'remove':
 						if(isset($I2_QUERY['name']) && isset($I2_QUERY['path']))
-							$I2_SQL->query("DELETE FROM filecenter_folders WHERE `uid`=%d AND `name`=%s AND `path`=%s",$I2_USER->uid,$I2_QUERY['name'],$I2_QUERY['path']);
+							$I2_SQL->query("DELETE FROM filecenter_folders WHERE uid=%d AND name=%s AND path=%s",$I2_USER->uid,$I2_QUERY['name'],$I2_QUERY['path']);
 						break;
 				}
 				redirect("{$I2_ROOT}filecenter/bookmarks");
@@ -488,9 +488,9 @@ class Filecenter extends Module {
 	static function get_additional_dirs() {
 		global $I2_USER, $I2_SQL, $I2_ROOT;
 		$dirs = [];
-		$dirs = $I2_SQL->query('SELECT `path`,`name` FROM filecenter_folders WHERE `uid`=%d',$I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
+		$dirs = $I2_SQL->query('SELECT path,name FROM filecenter_folders WHERE uid=%d',$I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
 		// Find out all of a user's groups, then dynamic groups
-		$groups = $I2_SQL->query('SELECT `gid` FROM groups_static WHERE `uid`=%d',$I2_USER->uid)->fetch_all_single_values();
+		$groups = $I2_SQL->query('SELECT gid FROM groups_static WHERE uid=%d',$I2_USER->uid)->fetch_all_single_values();
 		$dynagroups = [];
 		$dynagroupsarray = $I2_SQL->query('SELECT * FROM groups_dynamic')->fetch_all_arrays(Result::ASSOC);
 		$user = $I2_USER;
@@ -500,7 +500,7 @@ class Filecenter extends Module {
 					$dynagroups[] = $dynagroup['gid'];
 			} // TODO: handle other types of dynamic groups. No other kinds are used right now, so it's relatively safe to have this open.
 		}
-		$groupdirs = $I2_SQL->query('SELECT `path`,`name` FROM filecenter_folders_groups WHERE gid IN (%D)',array_merge($groups,$dynagroups))->fetch_all_arrays(Result::ASSOC);
+		$groupdirs = $I2_SQL->query('SELECT path,name FROM filecenter_folders_groups WHERE gid IN (%D)',array_merge($groups,$dynagroups))->fetch_all_arrays(Result::ASSOC);
 		$outarray = array_merge($dirs,$groupdirs);
 		// Magic words. Lets the entries be customized for each student.
 		$grad_year = $I2_USER->grad_year;
@@ -526,13 +526,13 @@ class Filecenter extends Module {
 	static function get_additional_dirs_onlymine() {
 		global $I2_USER, $I2_SQL;
 		$dirs = [];
-		$dirs = $I2_SQL->query('SELECT `path`,`name` FROM filecenter_folders WHERE `uid`=%d',$I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
+		$dirs = $I2_SQL->query('SELECT path,name FROM filecenter_folders WHERE uid=%d',$I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
 		return $dirs;
 	}
 
 	static function get_additional_dirs_onlygroup($gid) {
 		global $I2_SQL;
-		return $I2_SQL->query('SELECT `path`,`name` FROM filecenter_folders_groups WHERE gid=%d',$gid)->fetch_all_arrays(Result::ASSOC);
+		return $I2_SQL->query('SELECT path,name FROM filecenter_folders_groups WHERE gid=%d',$gid)->fetch_all_arrays(Result::ASSOC);
 	}
 	/**
 	* Required by the {@link Module} interface.

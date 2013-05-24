@@ -290,10 +290,6 @@ class Display {
 			  }
 			  d('Style set to '.self::$style,7);
 		  }
-		  else
-		  {
-			  d('The style is already set and will not be reset');
-		  }
 	 }
 
 
