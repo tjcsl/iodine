@@ -696,8 +696,8 @@ class GroupSQL extends Group {
 		if(self::$gid_map !== NULL) {
 			self::$gid_map[$name] = $gid;
 			self::$name_map[$gid] = $name;
-			$I2_CACHE->delete(get_class(),'gid_map');
-			$I2_CACHE->delete(get_class(),'name_map');
+			$I2_CACHE->remove(get_class(),'gid_map');
+			$I2_CACHE->remove(get_class(),'name_map');
 		}
 		return $gid;
 	}
