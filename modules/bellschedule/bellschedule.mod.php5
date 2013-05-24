@@ -310,7 +310,6 @@ class BellSchedule extends Module {
 	*/
 	function display_pane($disp) {
 		global $I2_QUERY;
-		d_r(self::$apExamSchedule);
 		// Week view
 		// FIXME: week is badly broken
 		if(isset($I2_QUERY['week'])) {
@@ -586,7 +585,6 @@ class BellSchedule extends Module {
 		$day = isset($day) ? $day : date('Ymd',strtotime($dateoffset.' days'));
 
 		$doy = ((int)date('z', strtotime($day)));
-		d('DOY: '.$doy);
 		if($doy > 168 && $doy < 246) {
 			return ['description' => 'No school', 'schedule' => '<center><b>Have a great summer!</b></center>'];
 		}
@@ -615,15 +613,12 @@ class BellSchedule extends Module {
 				       	$d = substr($d, 1);
 				}
 				if(date('M', strtotime($day)) == 'Jun') $d = ((int)$d) + 31;
-				d('Day: '.$day, 1);
-				if((date('Y M', strtotime($day)) == '2013 May' || date('Y M', strtotime($day)) == '2013 Jun') && isset(self::$apExamSchedule[$d]) || isset(self::$apExamSchedule[$d+31])) {
+				if((date('Y M', strtotime($day)) == '2013 May' || date('Y M', strtotime($day)) == '2013 Jun') &&isset(self::$apExamSchedule[$d]) || isset(self::$apExamSchedule[$d+31])) {
 					
-
-					d('Modified AP Day: '.$d.' exists: '.isset(self::$apExamSchedule[$d]));
 					if(isset(self::$apExamSchedule[$d])) {
 						return ['description' => self::$apExamSchedule[$d]['description'], 'schedule' => self::$apExamSchedule[$d]['schedule']];
 					} else {
-						d('Using default schedule--may not be correct!');
+						d('Using default schedule--may not be correct!', 3);
 						return self::get_default_schedule(null, $dwk);
 					}
 
