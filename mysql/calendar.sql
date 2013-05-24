@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS calendar;
 CREATE TABLE calendar (
 	id VARCHAR(30) UNIQUE NOT NULL,
-	PRIMARY KEY(`id`),
+	PRIMARY KEY(id),
 	blocknottime TINYINT(1) NOT NULL DEFAULT 0,
 	blockdate DATE,
 	startblock VARCHAR(3),
