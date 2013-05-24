@@ -198,7 +198,7 @@ class GroupSQL extends Group {
 	}
 
 	public function add_user(User $user) {
-		global $I2_SQL, $I2_USER;
+		global $I2_SQL, $I2_USER, $I2_CACHE;
 
 		if($this->has_member($user)) {
 			// Meh? they're already a member
@@ -220,6 +220,7 @@ class GroupSQL extends Group {
 			if(isset($this->info['members'])) {
 				$this->info['members'][] = $user->uid;
 			}
+			$I2_CACHE->remove($this,'groups_static_'.$user->uid);
 			return $I2_SQL->query('INSERT INTO groups_static (gid,uid) VALUES (%d,%d)',$this->gid,$user->uid);
 		} else {
 			throw new I2Exception('You are not authorized to add users into this group!');
@@ -227,7 +228,7 @@ class GroupSQL extends Group {
 	}
 
 	public function remove_user(User $user) {
-		global $I2_SQL, $I2_USER;
+		global $I2_SQL, $I2_USER, $I2_CACHE;
 
 		if(!$this->has_member($user)) {
 			// Meh? they're already not a member
@@ -248,6 +249,7 @@ class GroupSQL extends Group {
 			if(isset($this->info['members']) && ($key = array_search($user->uid,$this->info['members']))) {
 				unset($this->info['members'][$key]);
 			}
+			$I2_CACHE->remove($this,'groups_static_'.$user->uid);
 			return $I2_SQL->query('DELETE FROM groups_static WHERE gid=%d AND uid=%d',$this->gid,$user->uid);
 		} else {
 			throw new I2Exception('You are not authorized to remove users from this group!');
@@ -255,7 +257,7 @@ class GroupSQL extends Group {
 	}
 
 	public function remove_static_members() {
-		global $I2_SQL,$I2_USER;
+		global $I2_SQL, $I2_USER, $I2_CACHE;
 
 		if (	// Admins can remove anyone from a group
 			self::admin_all()->has_member($I2_USER) ||
@@ -268,6 +270,7 @@ class GroupSQL extends Group {
 			if(isset($this->info['members'])) {
 				unset($this->info['members']);
 			}
+			$I2_CACHE->remove($this,'groups_static_'.$user->uid);
 			return $I2_SQL->query('DELETE FROM groups_static WHERE gid=%d', $this->gid);
 		} else {
 			throw new I2Exception('You are not authorized to remove users from groups!');
@@ -573,10 +576,10 @@ class GroupSQL extends Group {
 	}
 
 	public static function get_static_groups(User $user, $perms = NULL) {
-		global $I2_SQL, $I2_USER;
+		global $I2_SQL, $I2_USER, $I2_CACHE;
 		$ret = [];
 
-		if ($user->uid != $I2_USER->uid && !Group::admin_all()->has_member($I2_USER)) {
+		if ($user->uid != $I2_USER->uid && !self::admin_all()->has_member($I2_USER)) {
 			throw new I2Exception('You are not authorized to view this user\'s group membership');
 		}
 
@@ -591,20 +594,15 @@ class GroupSQL extends Group {
 				}
 			}
 		}
-		
-		// If only one permission was specified, do the permission restricting in the database
-		/*if(is_array($perms) && count($perms) == 1) {
-			$res = $I2_SQL->query('SELECT grp.gid FROM groups_static AS grp LEFT JOIN (groups_user_perms AS perm) ON (grp.uid=perm.uid AND grp.gid=perm.gid) WHERE grp.uid=%d AND perm.pid=%d',$user->uid, $perms[0]->pid);
-		} else {
-			$res = $I2_SQL->query('SELECT gid FROM groups_static WHERE uid=%d',$user->uid);
-		}*/
-		// Can't do permission restricting in the database because of permission inheritance
-		// (ADMIN_GROUP has all other permissions, etc.)
-		$res = $I2_SQL->query('SELECT gid FROM groups_static WHERE uid=%d',$user->uid);
+		$res = unserialize($I2_CACHE->read(get_class(),'groups_static_'.$user->uid));
+		if ($res === FALSE) {
+			$res = $I2_SQL->query('SELECT gid FROM groups_static WHERE uid=%d',$user->uid)->fetch_all_single_values();
+			$I2_CACHE->store(get_class(),'groups_static_'.$user->uid,serialize($res));
+		}
 		
 		$ret = [];
 		foreach($res as $row) {
-			$grp = new Group($row[0]);
+			$grp = new Group($row);
 			$ret[] = $grp;
 			if(is_array($perms)) {
 				// Make sure the user has each of those permissions in the group before including that group in the return array
