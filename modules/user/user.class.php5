@@ -46,6 +46,24 @@ class User {
 	
 	private static $senior_gradyear;
 
+	private function get_uid($username) {
+		global $I2_LDAP, $I2_CACHE;
+		if (isset(self::$usernametouid[$username]))
+			return self::$usernametouid[$username];
+		else {
+			$uid = $I2_CACHE->read($this,'iodine_uid_'.$username);
+			if($uid === FALSE) {
+				$uid = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid=$this->username","iodineUidNumber")->fetch_single_value();
+				if(!$uid) {
+					throw new I2Exception("invalid iodineUidNumber");
+				}
+				$I2_CACHE->store($this,'iodine_uid_'.$username,$uid,strtotime("1 hour"));
+				return $uid;
+			}
+			return $uid;
+		}
+	}
+
 	/**
 	* The User class constructor.
 	*
@@ -62,22 +80,23 @@ class User {
 	* @access public
 	*/
 	public function __construct($uid = NULL) {
-		global $I2_ERR, $I2_LDAP;
+		global $I2_ERR, $I2_LDAP, $I2_CACHE;
 		if( $uid === NULL ) {
-			//if( isset($_SESSION['i2_uid']) ) {
-			//	$this->username = $_SESSION['i2_uid'];
 			if( isset($_SESSION['i2_username']) ) {
 				$this->username = $_SESSION['i2_username'];
-				$uid = $this->username;
-				if (isset(self::$usernametouid[$uid])&&isset(self::$cache[self::$usernametouid[$uid]])) {
-					$this->info = &self::$cache[self::$usernametouid[$uid]];
+				$uid = self::get_uid($this->username);
+				if (isset($uid) && isset(self::$cache[$uid])) {
+					$this->info = &self::$cache[$uid];
 				} else {
-					$this->info = [];
-					$blah = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
-					foreach ($blah as $key=>$val) {
-						$this->info[strtolower($key)] = $val;
+					$this->info = unserialize($I2_CACHE->read($this,'ldap_user_info_'.$uid));
+					if($this->info === FALSE) {
+						$info = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid=$this->username")->fetch_array(RESULT::ASSOC);
+						foreach ($info as $key=>$val) {
+							$this->info[strtolower($key)] = $val;
+						}
+						$this->info['allset'] = TRUE;
 					}
-					$this->info['allset']=True;
+
 				}
 				$this->myuid = $this->info['iodineuidnumber'];
 				$_SESSION['i2_userid']=$this->myuid;
@@ -89,8 +108,8 @@ class User {
 
 		else if ($uid instanceof User) {
 			/*
-			** Someone tried new User(user object), so we'll just let them be stupid.
-			*/
+			 ** Someone tried new User(user object), so we'll just let them be stupid.
+			 */
 			$this->myuid = $uid->uid;
 			$this->username = $uid->username;
 			$this->info = $uid->info;
@@ -104,18 +123,22 @@ class User {
 			if (isset(self::$cache[$uid]) && isset(self::$cache[$uid]['iodineuid'])) {
 				$this->info = self::$cache[$uid];
 			} else {
-				$blah = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUidNumber=$uid")->fetch_array(Result::ASSOC);
-				if ($blah) {
-					foreach ($blah as $key=>$val) {
-						$this->info[strtolower($key)] = $val;
+				$this->info = unserialize($I2_CACHE->read($this,'ldap_user_info_'.$uid));
+				if($this->info === FALSE) {
+					$info = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUidNumber=$uid")->fetch_array(Result::ASSOC);
+					if ($info) {
+						foreach ($info as $key=>$val) {
+							$this->info[strtolower($key)] = $val;
+						}
+						$this->info['allset']=True;
+					} else {
+						throw new I2Exception('Invalid iodineUidNumber '.$uid);
+						// Below two lines are 9996 replacement hack;
+						// while this can be safely removed once we are sure we properly clean out all the users from all the tables upon deletion using dataimport,
+						// I recommend leaving it in place in case other coding errors cause the same effect, as occurred 9/2009. --wyang, comment modified 2009/09/12
+						$this->info['iodineuid']="nostudent";
+						$this->info['iodineuidnumber']=$uid;
 					}
-					$this->info['allset']=True;
-				} else {
-					throw new I2Exception('Invalid iodineUidNumber '.$uid);
-					//warn('Invalid iodineUidNumber '.$uid);
-					//Below two lines are 9996 replacement hack; while this can be safely removed once we are sure we properly clean out all the users from all the tables upon deletion using dataimport, I recommend leaving it in place in case other coding errors cause the same effect, as occurred 9/2009. --wyang, comment modified 2009/09/12
-					$this->info['iodineuid']="nostudent";
-					$this->info['iodineuidnumber']=$uid;
 				}
 			}
 			$this->username = $this->info['iodineuid'];
@@ -123,17 +146,18 @@ class User {
 		}
 
 		/*
-		** Set the null array
-		*/
+		 ** Set the null array
+		 */
 		if(!isset($this->info['__nulls']))
 			$this->info['__nulls']=[];
 		/*
-		** Put info in cache
-		*/
+		 ** Put info in cache
+		 */
 		self::$cache[$this->myuid] = &$this->info;
+		$I2_CACHE->store($this,'ldap_user_info_'.$this->myuid,serialize($this->info),strtotime('1 hour'));
 		/*
-		** Cache the username->uid connection
-		*/
+		 ** Cache the username->uid connection
+		 */
 		self::$usernametouid[$this->username]=$this->myuid;
 	}
 
@@ -142,8 +166,9 @@ class User {
 	}
 
 	public function recache($field) {
-		global $I2_LDAP;
+		global $I2_LDAP, $I2_CACHE;
 		$this->info[$field] = $I2_LDAP->search_base(LDAP::get_user_dn_username($this->username),array($field))->fetch_single_value();
+		$I2_CACHE->remove($this,'ldap_user_info_'.$this->myuid);
 	}
 
 	/**
