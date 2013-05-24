@@ -137,7 +137,7 @@ class BellSchedule extends Module {
 		],
 		22 => [
 			'description' => 'Modified Red Day',
-			'schedule' => 'SOL: 8:30 - 10:40<br />Period 5: 10:50 - 12:10<br />Lunch: 12:10 - 1:00<br />Period 6: 1:00 - 2:20<br />Period 7: 2:20 - 3:50'
+			'schedule' => 'SOL: 8:30 - 10:40<br />Period 5: 10:50 - 12:10<br />Lunch: 12:10 - 1:00<br />Period 6: 1:00 - 2:20<br />Period 7: 2:30 - 3:50'
 		],
 		23 => [
 			'description' => 'Modified Blue Day',
@@ -145,7 +145,7 @@ class BellSchedule extends Module {
 		],
 		24 => [
 			'description' => 'Modified Red Day',
-			'schedule' => 'SOL: 8:30 - 10:40<br />Period 5: 10:50 - 12:10<br />Lunch: 12:10 - 1:00<br />Period 6: 1:00 - 2:20<br />Period 7: 2:20 - 3:50'
+			'schedule' => 'SOL: 8:30 - 10:40<br />Period 5: 10:50 - 12:10<br />Lunch: 12:10 - 1:00<br />Period 6: 1:00 - 2:20<br />Period 7: 2:30 - 3:50'
 		],
 		27 => ['description' => 'No school', 'schedule' => ''],
 		28 => [
