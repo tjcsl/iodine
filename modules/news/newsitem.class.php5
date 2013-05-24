@@ -102,7 +102,7 @@ class NewsItem {
 			$item->info['groups'] = [];
 		}
 
-		foreach($I2_SQL->query('SELECT `nid`,`gid` FROM news_group_map WHERE `nid` IN (%D)', array_keys(self::$unfetched)) as $row) {
+		foreach($I2_SQL->query('SELECT nid,gid FROM news_group_map WHERE nid IN (%D)', array_keys(self::$unfetched)) as $row) {
 			$item = self::$unfetched[$row['nid']];
 			try{
 				$item->info['groups'][] = new Group($row['gid']);
@@ -115,11 +115,11 @@ class NewsItem {
 		foreach(self::$unfetched as $item) {
 			$item->info['read'] = FALSE;
 		}
-		foreach($I2_SQL->query('SELECT `nid` FROM news_read_map WHERE `uid` = %d AND `nid` IN (%D)', $I2_USER->uid, array_keys(self::$unfetched)) as $row) {
+		foreach($I2_SQL->query('SELECT nid FROM news_read_map WHERE uid = %d AND nid IN (%D)', $I2_USER->uid, array_keys(self::$unfetched)) as $row) {
 			self::$unfetched[$row['nid']]->info['read'] = TRUE;
 		}
 
-		foreach($I2_SQL->query('SELECT `id`,`title`,`authorID`,`posted`,`expire`,`visible`,`public`,`text` FROM news WHERE `id` IN (%D)', array_keys(self::$unfetched)) as $row) {
+		foreach($I2_SQL->query('SELECT id,title,authorID,posted,expire,visible,public,text FROM news WHERE id IN (%D)', array_keys(self::$unfetched)) as $row) {
 			$item = self::$unfetched[$row['id']];
 			$item->info['title'] = $row['title'];
 			$item->info['authorID'] = $row['authorID'];
@@ -133,9 +133,9 @@ class NewsItem {
 		}
 		
 		// get the number of users who have "liked" the news post
-		// check if the user has "liked" the news post with the `uid`=%d select trick
-		$checkstr='`uid`='.$I2_USER->uid;
-		foreach($I2_SQL->query('SELECT COUNT(*),`nid`,`uid`=%d FROM news_likes WHERE `nid` IN (%D) GROUP BY `nid`', $I2_USER->uid, array_keys(self::$unfetched)) as $row) {
+		// check if the user has "liked" the news post with the uid=%d select trick
+		$checkstr='uid='.$I2_USER->uid;
+		foreach($I2_SQL->query('SELECT COUNT(*),nid,uid=%d FROM news_likes WHERE nid IN (%D) GROUP BY nid', $I2_USER->uid, array_keys(self::$unfetched)) as $row) {
 			self::$unfetched[$row['nid']]->info['likecount'] = $row['COUNT(*)'];
 			self::$unfetched[$row['nid']]->info['liked'] = $row[$checkstr];
 		}

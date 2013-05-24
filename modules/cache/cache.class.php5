@@ -56,7 +56,7 @@ class Cache {
 		else $name=get_class($module);
 		$hash=sha1($I2_FS_ROOT."??".$name."::".$key);
 		if(!isset($expire)) $expire=intval(MEMCACHE_DEFAULT_TIMEOUT);
-		d("Storing item in memcached: $name, $key, $hash");
+		d("Storing item in memcached: $name::$key");
 		return $this->mcache->set($hash, $val, 0, $expire);
 	}
 
@@ -88,15 +88,15 @@ class Cache {
 		if(gettype($module)=="string") $name=$module;
 		else $name=get_class($module);
 		$hash=sha1($I2_FS_ROOT."??".$name."::".$key);
-		d("reading ".$name."::".$key." from memcache",7);
+		d("reading $name::$key from memcache",7);
 		if($hash===null) return false;
 		$val=$this->mcache->get($hash);
 		if($val===false)
 		{
-			d($name."::".$key." not found in memcache",6);
+			d("$name::$key not found in memcache",6);
 			return false;
 		}
-		d("memcache lookup ".$name."::".$key." succeeded",7);
+		d("memcache lookup $name::$key succeeded",7);
 		return $val;
 	}
 }
