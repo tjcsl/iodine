@@ -156,9 +156,9 @@ class GroupLDAP {
 	}
 
 	public function has_member($user=NULL) {
-		global $I2_LDAP;
+		global $I2_LDAP, $I2_USER;
 		if($user === NULL) {
-			$user= $GLOBALS['I2_USER'];
+			$user = $I2_USER;
 		}
 		if(substr($this->name, 0, 6) == 'admin_' && $this->name != 'admin_all' && Group::admin_all()->has_member($user)) {
 			return TRUE;
@@ -213,8 +213,8 @@ class GroupLDAP {
 	}
 	
 	public function delete_group() {
-		global $I2_LDAP;
-		if(!Group::admin_groups()->has_member($GLOBALS['I2_USER']) && !(Group::admin_eighth()->has_member($GLOBALS['I2_USER']) && substr($this->name, 0, 7) == 'eighth_')) {
+		global $I2_LDAP, $I2_USER;
+		if(!Group::admin_groups()->has_member($I2_USER) && !(Group::admin_eighth()->has_member($I2_USER) && substr($this->name, 0, 7) == 'eighth_')) {
 			throw new I2Exception('User is not authorized to delete groups.');
 		}
 
@@ -222,8 +222,8 @@ class GroupLDAP {
 	}
 
 	public static function add_group($name) {
-		global $I2_LDAP, $I2_AUTH;
-		if(!$I2_AUTH->user_master_password() && !Group::admin_groups()->has_member($GLOBALS['I2_USER']) && !(Group::admin_eighth()->has_member($GLOBALS['I2_USER']) && substr($name, 0, 7) == 'eighth_')) {
+		global $I2_LDAP, $I2_AUTH, $I2_USER;
+		if(!$I2_AUTH->user_master_password() && !Group::admin_groups()->has_member($I2_USER) && !(Group::admin_eighth()->has_member($I2_USER) && substr($name, 0, 7) == 'eighth_')) {
 			throw new I2Exception('User is not authorized to create groups.');
 		}
 		if($gid === NULL) {

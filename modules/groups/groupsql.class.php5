@@ -409,10 +409,10 @@ class GroupSQL extends Group {
 	}
 	
 	public function has_member($subject = NULL) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_USER;
 
 		if($subject === NULL) {
-			$subject = $GLOBALS['I2_USER'];
+			$subject = $I2_USER;
 		}
 
 		// If the user is in admin_all, they're also admin_anything

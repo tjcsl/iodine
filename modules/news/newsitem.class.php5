@@ -440,10 +440,10 @@ class NewsItem {
 	 * @param User $user The user for which to determine permission.
 	 */
 	public function readable($user = NULL) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_USER;
 
 		if($user===NULL) {
-			$user = $GLOBALS['I2_USER'];
+			$user = $I2_USER;
 		}
 
 		$groups = $this->groups;
@@ -557,10 +557,10 @@ class NewsItem {
 	 * @param User $user The user for which to determine permission.
 	 */
 	public function editable($user = NULL) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_USER;
 		
 		if($user===NULL) {
-			$user = $GLOBALS['I2_USER'];
+			$user = $I2_USER;
 		}
 
 		if($user->uid == $this->authorID || $user->is_group_member('admin_news')) {

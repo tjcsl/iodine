@@ -248,10 +248,10 @@ class LostItem {
 	 * @return boolean Whether the item is editable or not
 	 */
 	public function editable($user = NULL) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_USER;
 		
 		if($user === NULL) {
-			$user = $GLOBALS['I2_USER'];
+			$user = $I2_USER;
 		}
 
 		if($user->uid == $this->ownerID || $user->is_group_member('admin_all')) {

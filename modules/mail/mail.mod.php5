@@ -105,7 +105,7 @@ class Mail extends Module {
 	}
 
 	function init_box() {
-		global $I2_USER, $I2_AUTH;
+		global $I2_USER, $I2_AUTH, $I2_ROOT;
 		// only for regular users (the master password won't work!)
 		if ($I2_AUTH->get_auth_method() != 'kerberos') {
 			return FALSE;
@@ -142,7 +142,7 @@ class Mail extends Module {
 		}
 
 		$this->box_args['messages'] = &$this->box_messages;
-		$this->box_args['readmail_url'] = $GLOBALS['I2_ROOT'] . i2config_get('webmail_module', 'zimbramail', 'mail');
+		$this->box_args['readmail_url'] = $I2_ROOT . i2config_get('webmail_module', 'zimbramail', 'mail');
 		return "Mail: {$this->nmsgs} message". ($this->nmsgs != 1 ? 's' : '') . ", {$this->nunseen} unread";
 	}
 
