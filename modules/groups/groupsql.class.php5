@@ -141,9 +141,15 @@ class GroupSQL extends Group {
 	}
 
 	public function get_static_members() {
-		global $I2_SQL;
-		if(!isset(self::$members_cache[$this->gid]))
-			self::$members_cache[$this->gid]=flatten($I2_SQL->query('SELECT uid FROM groups_static WHERE gid=%d',$this->gid)->fetch_all_arrays(Result::NUM));
+		global $I2_SQL, $I2_CACHE;
+		if(!isset(self::$members_cache[$this->gid])) {
+			$members = unserialize($I2_CACHE->read($this,'members_cache_'.$this->gid));
+			if ($members === FALSE) {
+				$members = flatten($I2_SQL->query('SELECT uid FROM groups_static WHERE gid=%d',$this->gid)->fetch_all_arrays(Result::NUM));
+				$I2_CACHE->store($this,'members_cache_'.$this->gid,serialize($members));
+			}
+			self::$members_cache[$this->gid] = $members;
+		}
 		return self::$members_cache[$this->gid];
 	}
 
