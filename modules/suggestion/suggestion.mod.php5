@@ -5,60 +5,9 @@
 * @subpackage suggestion
 */
 
-class Suggestion implements Module {
+class Suggestion extends Module {
 
-	private $template_args = array();
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	public function init_box() {
-		return FALSE;
-	}
-
-	public function display_box($disp) {
-		return FALSE;
-	}	
+	private $template_args = [];
 	
 	public function init_pane() {
 		global $I2_USER;
@@ -82,7 +31,7 @@ class Suggestion implements Module {
 		$to = i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion');
 		switch ($_REQUEST['sendchoice']) {
 			case 'SGA':
-				$to='sga@lists.tjhsst.edu';
+				$to='sga.tjhsst@gmail.com';
 				$mesg .= "\r\n\r\nSent through Intranet.";
 				break;
 			case 'intranet':
@@ -107,10 +56,6 @@ class Suggestion implements Module {
 	}
 
 	function get_name() {
-		return 'Suggestion';
-	}
-
-	function is_intrabox() {
 		return 'Suggestion';
 	}
 }

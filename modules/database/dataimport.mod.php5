@@ -13,12 +13,12 @@
 * @package modules
 * @subpackage Admin
 */
-class dataimport implements Module {
+class dataimport extends Module {
 
 	private $oldsql;
 	private $usertable;
 	private $teachertable;
-	private $args = array();
+	private $args = [];
 	private $admin_pass;
 	private $num = 10000;
 	private $last_to_people;
@@ -80,12 +80,12 @@ class dataimport implements Module {
 		d("Importing data from teacher data file $filename...",6);
 		
 		$line = null;
-		$this->teachertable = array();
+		$this->teachertable = [];
 
 		/*
 		** Store a map of last names => people, for later use
 		*/
-		$this->last_to_people = array();
+		$this->last_to_people = [];
 
 		$numlines = 0;
 
@@ -102,7 +102,7 @@ class dataimport implements Module {
 		
 			d("Teacher: $id = $lastname,$firstname",3);
 
-			if (isSet($this->last_to_people[$lastname])) {
+			if (isset($this->last_to_people[$lastname])) {
 				d("Adding alternate for $lastname - $firstname",5);
 				$this->last_to_people[$lastname][] = array('fname'=>$firstname,'id'=>$id);
 			} else {
@@ -139,9 +139,9 @@ class dataimport implements Module {
 		//$teacherldap = LDAP::get_simple_bind($user,$pass,$server);
 		$teacherldap = LDAP::get_user_bind($server);
 		$res = $teacherldap->search('ou=Staff,dc=local,dc=tjhsst,dc=edu','cn=*',array('cn','sn','givenName'));
-		$validteachers = array();
+		$validteachers = [];
 		while ($teacher = $res->fetch_array()) {
-			if (!isSet($teacher['sn'])) {
+			if (!isset($teacher['sn'])) {
 				continue;
 			}
 			$farr = array(
@@ -150,7 +150,7 @@ class dataimport implements Module {
 				'username' => $teacher['cn']
 			);
 			d("Working on teacher {$farr['fname']} {$farr['lname']}",6);
-			if (!isSet($this->last_to_people[$farr['lname']])) {
+			if (!isset($this->last_to_people[$farr['lname']])) {
 				d('No first name for '.$farr['lname'].'- skipping.',5);
 				continue;
 			}
@@ -197,7 +197,7 @@ class dataimport implements Module {
 
 		$file = @fopen($teachersfiletwo,'r');
 
-		$validteachers = array();
+		$validteachers = [];
 
 		while (list($username, , , $firstname, $lastname) = fgetcsv($file,0,';')) {
 			$username = strtolower($username);
@@ -205,7 +205,7 @@ class dataimport implements Module {
 			$lastname = ucfirst(strtolower($lastname));
 			d("Teacher ($firstname $lastname): $username",3);
 			
-			if (!isSet($this->last_to_people[$lastname])) {
+			if (!isset($this->last_to_people[$lastname])) {
 				//TODO: how to handle this?  Should we try weird name-guessing games?
 				d("Last name \"$lastname\" not recognized",1);
 				continue;
@@ -215,14 +215,14 @@ class dataimport implements Module {
 					/*
 					** We have exactly one match.  We've got our teacher.
 					*/
-					$newteach = array();
+					$newteach = [];
 					$newteach['username'] = $username;
 					$newteach['id'] = $choices[0]['id'];
 					$newteach['lname'] = $lastname;
 					$newteach['fname'] = $choices[0]['fname'];
 					$validteachers[] = $newteach;
 				} else {
-					$valid = array();
+					$valid = [];
 					d("Multiple choices for last name \"$lastname\"",6);
 					foreach ($choices as $choice) {
 						/*
@@ -245,7 +245,7 @@ class dataimport implements Module {
 						d("There is no \"$firstname $lastname\"!",1);
 						continue;
 					}
-					$newteach = array();
+					$newteach = [];
 					$newteach['username'] = $username;
 					$newteach['id'] = $valid[0]['id'];
 					$newteach['lname'] = $lastname;
@@ -306,7 +306,7 @@ class dataimport implements Module {
 
 		$oldusers = $ldap->search(LDAP::get_user_dn(), 'objectClass=tjhsstStudent', 'iodineUid')->fetch_col('iodineUid');
 
-		$newusers = array();
+		$newusers = [];
 		
 		$filename = $this->userfile;
 		$file = @fopen($filename, 'r');
@@ -315,7 +315,7 @@ class dataimport implements Module {
 
 		$line = null;
 
-		$this->usertable = array();
+		$this->usertable = [];
 
 		$numlines = 0;
 
@@ -413,7 +413,7 @@ class dataimport implements Module {
 			'links'=>'Useful Links',
 			'scratchpad'=>'ScratchPad'
 		);
-		$desiredboxes = array();
+		$desiredboxes = [];
 		foreach ($this->boxes as $desiredbox=>$name) {
 			$boxnum = $I2_SQL->query('SELECT boxid FROM intrabox WHERE name=%s',$desiredbox)->fetch_single_value();
 			$desiredboxes[$boxnum] = $name;
@@ -430,7 +430,7 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}
-		$newteach = array();
+		$newteach = [];
 		//$newteach['objectClass'] = 'tjhsstTeacher';
 		//$newteach['iodineUid'] = $teacher['username'];
 		//$newteach['iodineUidNumber'] = $teacher['id'];
@@ -455,7 +455,7 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}
-		$newteach = array();
+		$newteach = [];
 		$newteach['objectClass'] = 'tjhsstTeacher';
 		$newteach['iodineUid'] = $teacher['username'];
 		$newteach['iodineUidNumber'] = $teacher['id'];
@@ -493,7 +493,7 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}
-		$usernew = array();
+		$usernew = [];
 		$usernew['objectClass'] = 'tjhsstStudent';
 		//$usernew['graduationYear'] = (12-$user['grade'])+i2config_get('senior_gradyear',date('Y'),'user');
 		$usernew['graduationYear'] = User::get_gradyear($user['grade']);
@@ -543,7 +543,7 @@ class dataimport implements Module {
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}
-		$usernew = array();
+		$usernew = [];
 		$usernew['cn'] = $user['fname'].' '.$user['lname'];
 		$usernew['sn'] = $user['lname'];
 		$usernew['postalCode'] = $user['zip'];
@@ -691,7 +691,7 @@ class dataimport implements Module {
 
 		// We're going to dispose of all the bad rooms - this means consolidation.
 		// So, we'll reroute all the bad room IDs into the (fewer) good ones.
-		$room_mappings = array();
+		$room_mappings = [];
 
 		/*
 		** Create rooms
@@ -778,7 +778,7 @@ class dataimport implements Module {
 
 
 			// Collect the rooms the activity occurs in
-			$validrooms = array();
+			$validrooms = [];
 
 			if ($sponsors && $sponsors != '') {
 				$sponsors = $this->create_sponsor($sponsors);
@@ -821,7 +821,7 @@ class dataimport implements Module {
 				}
 
 				// If we have a bad (to-be-eliminated) RoomID, use the good one instead
-				if (isSet($room_mappings[$brooms])) {
+				if (isset($room_mappings[$brooms])) {
 						  $brooms = $room_mappings[$brooms];
 				}
 
@@ -862,13 +862,13 @@ class dataimport implements Module {
 		$num = 0;
 
 		//Badly named - keys are studentids, vals are uids
-		$studentids = array();
+		$studentids = [];
 		$ldap = LDAP::get_admin_bind($this->admin_pass);
 		$res = $ldap->search('ou=people','objectClass=tjhsstStudent',array('tjhsstStudentId','iodineUidNumber'));
 		$total = $res->num_rows();
 		while ($num < $total) {
 			$row = $res->fetch_array(Result::ASSOC);
-			if (isSet($row['iodineUidNumber'])) {
+			if (isset($row['iodineUidNumber'])) {
 				$studentids[$row['tjhsstStudentId']] = $row['iodineUidNumber'];
 			}
 			$num++;
@@ -892,7 +892,7 @@ class dataimport implements Module {
 			}
 			$activity = new EighthActivity($aid);
 			$bid = EighthBlock::add_block($date,$block,FALSE);
-			if (!isSet($studentids[$studentid])) {
+			if (!isset($studentids[$studentid])) {
 				//There's quite a bit of bogus data in the old DB - this filters it
 				$uid = User::studentid_to_uid($studentid);
 				if (!$uid) {
@@ -1008,7 +1008,7 @@ class dataimport implements Module {
 	private function import_schedules() {
 		global $I2_LDAP,$I2_LOG;
 		
-		if (isSet($this->admin_pw)) {
+		if (isset($this->admin_pw)) {
 			$ldap = LDAP::get_admin_bind($this->admin_pw);
 		} else {
 			$ldap = $I2_LDAP;
@@ -1056,7 +1056,7 @@ class dataimport implements Module {
 		/*
 		** Set up student <=> course mappings
 		*/
-		$students = array();
+		$students = [];
 		$schedulefile = $this->schedulefile;
 		d("Reading from schedule file: $schedulefile...", 6);
 		$studentcoursefile = @fopen($schedulefile,'r');
@@ -1074,8 +1074,8 @@ class dataimport implements Module {
 			}
 			$studentdn = LDAP::get_user_dn($studentid);
 
-			if (!isSet($students[$studentdn])) {
-				$students[$studentdn] = array();
+			if (!isset($students[$studentdn])) {
+				$students[$studentdn] = [];
 			}
 			$students[$studentdn][] = $classdn;
 		}
@@ -1141,7 +1141,7 @@ class dataimport implements Module {
 		global $I2_SQL, $I2_LDAP;
 		$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
 
-		$nonexistant = array();
+		$nonexistant = [];
 
 		$I2_SQL->query('DELETE FROM parking_apps WHERE special_name IS NOT NULL');
 
@@ -1197,7 +1197,7 @@ class dataimport implements Module {
 		$res = $I2_LDAP->search('','objectClass=tjhsstTeacher',array('givenName','sn'));
 		while ($res->more_rows()) {
 			$row = $res->fetch_array(Result::ASSOC);
-			if (isSet($row['givenName']) && isSet($row['sn'])) {
+			if (isset($row['givenName']) && isset($row['sn'])) {
 				EighthSponsor::add_sponsor($row['givenName'],$row['sn']);
 			}
 		}
@@ -1311,11 +1311,11 @@ class dataimport implements Module {
 		global $I2_SQL,$I2_LOG;
 		$res = $I2_SQL->query("SELECT * FROM $table");
 		while ($row = $res->fetch_array(Result::ASSOC)) {
-			if (!isSet($row[$column])) {
+			if (!isset($row[$column])) {
 				throw new I2Exception('Column '.$column.' not set');
 			}
 			$query = "UPDATE $table SET ";
-			$queryarr = array();
+			$queryarr = [];
 			$studentid = $row[$column];
 			$user = new User($studentid);
 			$uid = $user->uid;
@@ -1348,7 +1348,7 @@ class dataimport implements Module {
 		/*
 		** Make the SQL database presentable
 		*/
-		$essentialgroups = array('admin_all','admin_mysql','admin_groups','admin_news','admin_eighth');
+		$essentialgroups = array('admin_all','admin_ldap','admin_mysql','admin_news','admin_eighth');
 		foreach ($essentialgroups as $groupname) {
 			$I2_SQL->query('INSERT INTO groups (name) VALUES (%s)',$groupname);
 		}
@@ -1427,9 +1427,9 @@ class dataimport implements Module {
 	private function import_polls() {
 			global $I2_SQL, $I2_LOG;
 			$oldsql = new MySQL($this->intranet_server,$this->intranet_db,$this->intranet_user,$this->intranet_pass);
-			$answerstopolls = array();
-			$answerstoquestions = array();
-			$questionstopolls=array();
+			$answerstopolls = [];
+			$answerstoquestions = [];
+			$questionstopolls=[];
 			/*
 			** Import polls
 			*/
@@ -1509,9 +1509,9 @@ class dataimport implements Module {
 								 d('Invalid studentid '.$studentid,3);
 								 continue;
 					  }
-					  if (isSet($questionstopolls[$questionid])) {
+					  if (isset($questionstopolls[$questionid])) {
 						  // We need to remove the bitwise OR encoding used on these answers <sigh>
-						  /*$aidparts = array();
+						  /*$aidparts = [];
 						  // I know this isn't the normal way to decode the data but I feel safer doing it this way than
 						  // trusting myself to use bitshifts correctly.  This makes for simpler, safer code.
 						  $bin = decbin($answerid);
@@ -1615,57 +1615,6 @@ class dataimport implements Module {
 		return 'dataimport';
 	}
 
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-	public function init_box() {
-		return FALSE;
-	}
-
-	public function display_box($disp) {
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
 	public function init_pane() {
 		global $I2_ARGS,$I2_USER;
 
@@ -1673,88 +1622,88 @@ class dataimport implements Module {
 		//if (!$I2_USER->is_group_member('admin_all')) {
 			return FALSE;
 		}
-		if (isSet($_REQUEST['start_year'])) {
+		if (isset($_REQUEST['start_year'])) {
 			$_SESSION['start_year'] = 1;
 		}
-		if (isSet($_REQUEST['admin_pass'])) {
+		if (isset($_REQUEST['admin_pass'])) {
 			$_SESSION['ldap_admin_pass'] = $_REQUEST['admin_pass'];
 		}
-		if (isSet($_REQUEST['schedulefile']) && isSet($_REQUEST['classfile'])) {
+		if (isset($_REQUEST['schedulefile']) && isset($_REQUEST['classfile'])) {
 			$_SESSION['classfile'] = $_REQUEST['classfile'];
 			$_SESSION['schedulefile'] = $_REQUEST['schedulefile'];
 		}
-		if (isSet($_REQUEST['intranet_db']) && isSet($_REQUEST['intranet_pass']) 
-				&& isSet($_REQUEST['intranet_server']) && isSet($_REQUEST['intranet_user'])) {
+		if (isset($_REQUEST['intranet_db']) && isset($_REQUEST['intranet_pass']) 
+				&& isset($_REQUEST['intranet_server']) && isset($_REQUEST['intranet_user'])) {
 			$_SESSION['intranet_pass'] = $_REQUEST['intranet_pass'];
 			$_SESSION['intranet_server'] = $_REQUEST['intranet_server'];
 			$_SESSION['intranet_db'] = $_REQUEST['intranet_db'];
 			$_SESSION['intranet_user'] = $_REQUEST['intranet_user'];
 		}
-		if (isSet($_SESSION['start_year'])) {
+		if (isset($_SESSION['start_year'])) {
 			$this->startyear = $_SESSION['start_year'];
 		}
-		if (isSet($_SESSION['ldap_admin_pass'])) {
+		if (isset($_SESSION['ldap_admin_pass'])) {
 			$this->admin_pass = $_SESSION['ldap_admin_pass'];
 		}
-		if (isSet($_SESSION['intranet_pass'])) {
+		if (isset($_SESSION['intranet_pass'])) {
 			$this->intranet_pass = $_SESSION['intranet_pass'];
 		}
-		if (isSet($_SESSION['intranet_db'])) {
+		if (isset($_SESSION['intranet_db'])) {
 			$this->intranet_db = $_SESSION['intranet_db'];
 		}
-		if (isSet($_SESSION['intranet_server'])) {
+		if (isset($_SESSION['intranet_server'])) {
 			$this->intranet_server = $_SESSION['intranet_server'];
 		}
-		if (isSet($_SESSION['intranet_user'])) {
+		if (isset($_SESSION['intranet_user'])) {
 			$this->intranet_user = $_SESSION['intranet_user'];
 		}
-		if (isSet($_SESSION['schedulefile'])) {
+		if (isset($_SESSION['schedulefile'])) {
 			$this->schedulefile = $_SESSION['schedulefile'];
 		}
-		if (isSet($_SESSION['classfile'])) {
+		if (isset($_SESSION['classfile'])) {
 			$this->classfile = $_SESSION['classfile'];
 		}
-		if (isSet($_SESSION['userfile'])) {
+		if (isset($_SESSION['userfile'])) {
 			$this->userfile = $_SESSION['userfile'];
 		}
-		if (isSet($_SESSION['teacherfile'])) {
+		if (isset($_SESSION['teacherfile'])) {
 			$this->teacherfile = $_SESSION['teacherfile'];
 		}
-		if (isSet($_SESSION['school_ldap_server'])) {
+		if (isset($_SESSION['school_ldap_server'])) {
 			$this->school_ldap_server = $_SESSION['school_ldap_server'];
 		}
-		if (isSet($_SESSION['school_ldap_user'])) {
+		if (isset($_SESSION['school_ldap_user'])) {
 			$this->school_ldap_user = $_SESSION['school_ldap_user'];
 		}
-		if (isSet($_SESSION['school_ldap_pass'])) {
+		if (isset($_SESSION['school_ldap_pass'])) {
 			$this->school_ldap_pass = $_SESSION['school_ldap_pass'];
 		}
-		if (isSet($_SESSION['stafffile'])) {
+		if (isset($_SESSION['stafffile'])) {
 			$this->stafffile = $_SESSION['stafffile'];
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_startyear') {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_startyear') {
 			unset($_SESSION['startyear']);
 			$this->startyear = 0;
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_pass') {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_pass') {
 			unset($_SESSION['ldap_admin_pass']);
 			unset($this->admin_pass);
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_user') {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_user') {
 			unset($_SESSION['userfile']);
 			unset($this->userfile);
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_schedule') {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_schedule') {
 			unset($_SESSION['schedulefile']);
 			unset($this->schedulefile);
 			unset($_SESSION['classfile']);
 			unset($this->classfile);
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_teacher') {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_teacher') {
 			unset($_SESSION['school_ldap_server']);
 			unset($this->school_ldap_server);
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_intranet') {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'unset_intranet') {
 			unset($_SESSION['intranet_server']);
 			unset($this->intranet_server);
 			unset($_SESSION['intranet_pass']);
@@ -1764,13 +1713,13 @@ class dataimport implements Module {
 			unset($_SESSION['intranet_user']);
 			unset($this->intranet_user);
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'userdata' && isSet($_REQUEST['userfile'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'userdata' && isset($_REQUEST['userfile'])) {
 			$this->userfile = $_REQUEST['userfile'];
 			$_SESSION['userfile'] = $_REQUEST['userfile'];
 			//$this->import_student_data($_REQUEST['userfile']);
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherdata' && isSet($_REQUEST['teacherfile']) && isSet($_REQUEST['teacherserver'])
-		&& isSet($_REQUEST['teacherdn']) && isSet($_REQUEST['teacherpass']) && $_REQUEST['teacherserver'] != '') {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherdata' && isset($_REQUEST['teacherfile']) && isset($_REQUEST['teacherserver'])
+		&& isset($_REQUEST['teacherdn']) && isset($_REQUEST['teacherpass']) && $_REQUEST['teacherserver'] != '') {
 			//$this->import_teacher_data_file_one($_REQUEST['teacherfile']);
 			$this->teacherfile = $_REQUEST['teacherfile'];
 			$_SESSION['teacherfile'] = $_REQUEST['teacherfile'];
@@ -1781,85 +1730,85 @@ class dataimport implements Module {
 			$this->school_ldap_pass = $_REQUEST['teacherpass'];
 			$_SESSION['school_ldap_pass'] = $_REQUEST['teacherpass'];
 			//$this->import_teacher_data_ldap($_REQUEST['teacherserver'],$_REQUEST['teacherdn'],$_REQUEST['teacherpass']);
-		} elseif (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherdata' && isSet($_REQUEST['teacherfile']) && isSet($_REQUEST['stafffile'])) {
+		} elseif (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherdata' && isset($_REQUEST['teacherfile']) && isset($_REQUEST['stafffile'])) {
 			$this->staffile = $_REQUEST['stafffile'];
 			$_SESSION['stafffile'] = $_REQUEST['stafffile'];
 			$this->teacherfile = $_REQUEST['teacherfile'];
 			$_SESSION['teacherfile'] = $_REQUEST['teacherfile'];
 			//$this->import_teacher_data_file($_REQUEST['teacherfile'],$_REQUEST['stafffile']);
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'eighthdata' && isSet($_REQUEST['doit'])) {
-			if (isSet($_REQUEST['startdate']) && isSet($_REQUEST['enddate'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'eighthdata' && isset($_REQUEST['doit'])) {
+			if (isset($_REQUEST['startdate']) && isset($_REQUEST['enddate'])) {
 				$this->import_eighth_data($_REQUEST['startdate'],$_REQUEST['enddate']);
-			} elseif (isSet($_REQUEST['startdate'])) {
+			} elseif (isset($_REQUEST['startdate'])) {
 				$this->import_eighth_data($_REQUEST['startdate']);
 			} else {
 				$this->import_eighth_data();
 			}
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'clean' && isset($_REQUEST['doit'])) {
 			$this->clean_up();
 			$this->init_db();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_eighth_groups' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_eighth_groups' && isset($_REQUEST['doit'])) {
 			$this->clean_eighth_groups();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_teachers' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_teachers' && isset($_REQUEST['doit'])) {
 			$this->clean_teachers();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'eighth_absences' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'eighth_absences' && isset($_REQUEST['doit'])) {
 			$this->clean_eighth_absences();
 			$this->import_eighth_absences();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'eighth_groups' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'eighth_groups' && isset($_REQUEST['doit'])) {
 				  $this->clean_eighth_groups();
 				  $this->import_eighth_groups();
 				  $this->import_eighth_group_memberships();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_eighth' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_eighth' && isset($_REQUEST['doit'])) {
 			$this->clean_eighth();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_other' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'clean_other' && isset($_REQUEST['doit'])) {
 			$this->clean_other();
 			$this->init_db();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'studentinfo' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'studentinfo' && isset($_REQUEST['doit'])) {
 			$this->expand_student_info();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'eighth_permissions' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'eighth_permissions' && isset($_REQUEST['doit'])) {
 			$this->import_eighth_permissions();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teachersponsors' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'teachersponsors' && isset($_REQUEST['doit'])) {
 			$this->make_teachers_sponsors();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'doeverything' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'doeverything' && isset($_REQUEST['doit'])) {
 			$this->do_imports();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'polls' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'polls' && isset($_REQUEST['doit'])) {
 			//$this->clean_polls();
 			$this->import_polls();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'aphorisms' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'aphorisms' && isset($_REQUEST['doit'])) {
 			$this->import_aphorisms();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherparking' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'teacherparking' && isset($_REQUEST['doit'])) {
 			$this->import_teacherparking();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'fixit' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'fixit' && isset($_REQUEST['doit'])) {
 			$this->init_db();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'fixuser' && isSet($_REQUEST['studentid'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'fixuser' && isset($_REQUEST['studentid'])) {
 			$this->fix_broken_user($_REQUEST['studentid']);
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'teachers' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'teachers' && isset($_REQUEST['doit'])) {
 			//$this->clean_teachers();
 			$this->import_teacher_data_file_one();
 			$this->import_teacher_data_file();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'students' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'students' && isset($_REQUEST['doit'])) {
 			$this->import_student_data();
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'schedules' && isSet($_REQUEST['doit'])) {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'schedules' && isset($_REQUEST['doit'])) {
 			$this->clean_schedules();
 			$this->import_schedules();
 		}
@@ -1870,12 +1819,12 @@ class dataimport implements Module {
 		$disp->disp('dataimport_pane.tpl',array(
 				'startyear' => $this->startyear,
 				'userdata' => $this->usertable, 
-				'admin_pass' => isSet($this->admin_pass)?TRUE:FALSE,
-				'intranet_pass' => isSet($this->intranet_pass)?TRUE:FALSE,
-				'userfile' => isSet($this->userfile)?TRUE:FALSE,
-				'schedulefile' => isSet($this->schedulefile)?TRUE:FALSE,
+				'admin_pass' => isset($this->admin_pass)?TRUE:FALSE,
+				'intranet_pass' => isset($this->intranet_pass)?TRUE:FALSE,
+				'userfile' => isset($this->userfile)?TRUE:FALSE,
+				'schedulefile' => isset($this->schedulefile)?TRUE:FALSE,
 				//FIXME: meh, not quite userproof.
-				'teacherfile' => (isSet($this->teacherfile)&&(isSet($this->staffile)||isSet($this->school_ldap_server)))?TRUE:FALSE
+				'teacherfile' => (isset($this->teacherfile)&&(isset($this->staffile)||isset($this->school_ldap_server)))?TRUE:FALSE
 				));
 	}
 }

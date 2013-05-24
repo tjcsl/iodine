@@ -5,11 +5,13 @@
 * @package modules
 * @subpackage Filecenter
 * @filesource
+* Implements {@link Filesystem} for windows shares
 */
 
 /**
 * @package modules
 * @subpackage Filecenter
+* Implements {@link Filesystem} for windows shares
 */
 class CIFS extends Filesystem {
 
@@ -82,7 +84,10 @@ class CIFS extends Filesystem {
 			mkdir($mount_point, 0755, TRUE);
 		}
 
-		$user = isset($this->domain) ? $this->domain . "/" . $user : $user;
+
+		$cifscommand = "sudo /sbin/mount.cifs //{$this->server}/{$this->share} $mount_point";
+		$cifscommand .= isset($this->domain) ? " -o domain=\"$this->domain\"" : "";
+		$cifscommand .= " -o username=\"$user\"";
 
 		//$status = exec("/sbin/mount.cifs //{$this->server}/{$this->share} $mount_point -o username=\"$user\",password=\"$pass\"");
 		$descriptors = array(
@@ -90,18 +95,19 @@ class CIFS extends Filesystem {
 			1=>array("pipe","w"),
 			2=>array("file","/tmp/i2cifserr.log","a")
 		);
-		$pp=proc_open("/sbin/mount.cifs //{$this->server}/{$this->share} $mount_point -o username=\"$user\"", $descriptors,$pipes);
+		$pp=proc_open($cifscommand,$descriptors,$pipes);
 		if(is_resource($pp)) {
 			fwrite($pipes[0],$pass);
 			fclose($pipes[0]);
-			d("mount.ciffs output: ".stream_get_contents($pipes[1]),7);
+			$outputstring=stream_get_contents($pipes[1]);
+			d("mount.cifs output: ".$outputstring,7);
 			fclose($pipes[1]);
 			$retval = proc_close($pp);
 			if ($retval != 0) {
-				throw new I2Exception("/sbin/mount.cifs exited with status $retval");
+				throw new I2Exception("sudo /sbin/mount.cifs exited with status $retval, command was ($cifscommand), Command Output was ($outputstring)");
 			}
 		} else {
-			throw new I2Exception("falied to start /sbin/mount.cifs process");
+			throw new I2Exception("failed to start /sbin/mount.cifs process");
 		}
 
 
@@ -110,18 +116,21 @@ class CIFS extends Filesystem {
 	/**
 	 * Unmount a CIFS share and removes the temporary mount point.
 	 * 
-	 * Uses /sbin/umount.cifs to unmount a specified mount point.
+	 * Uses /bin/umount to unmount a specified mount point.
 	 *
 	 * @access public
 	 * @param string $mount_point The directory used as a mount point.
 	 */
 	public static function umount($mount_point) {
 		d("Unmounting $mount_point");
-		exec("/usr/bin/umount.cifs $mount_point",$out,$status);
-		d("Unmount status: $status");
-
+		// check if the share is actually mounted
+		exec("grep -qs ".$mount_point." /proc/mounts",$out,$status);
 		if($status == "0") {
-			d("Removing mount point $mount_point");
+			exec("sudo umount $mount_point",$out,$status);
+			d("Unmount status: $status");
+		}
+		d("Removing mount point $mount_point");
+		if(is_dir($mount_point)) {
 			$status = exec("rmdir $mount_point");
 			d("Mount point removal status: $status");
 		}

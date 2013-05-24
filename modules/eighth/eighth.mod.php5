@@ -13,12 +13,7 @@
 * @package modules
 * @subpackage Eighth
 */
-class Eighth implements Module {
-
-	/**
-	* The display object to use
-	*/
-	private $display;
+class Eighth extends Module {
 
 	/**
 	* The title for the page
@@ -38,7 +33,7 @@ class Eighth implements Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* The user is an 8th-period admin
@@ -53,7 +48,7 @@ class Eighth implements Module {
 	/**
 	* The arguments to a method;
 	*/
-	private $args = array();
+	private $args = [];
 
 	/**
 	* The undo stack for internal use
@@ -117,7 +112,7 @@ class Eighth implements Module {
 	}
 	private static function fix_undoredo_stack($stack) {	
 		if ($stack == NULL || count($stack) == 0) {
-			return array();
+			return [];
 		}
 		$start = TRUE;
 		$end = FALSE;
@@ -258,17 +253,17 @@ class Eighth implements Module {
 	}
 
 	public static function init_undo() {
-		if (isSet($_SESSION['eighth_undo'])) {
+		if (isset($_SESSION['eighth_undo'])) {
 			self::$undo = &$_SESSION['eighth_undo'];
 		} elseif (!self::$undo) {
-			self::$undo = array();
-			$_SESSION['eighth_undo'] = array();
+			self::$undo = [];
+			$_SESSION['eighth_undo'] = [];
 		}
-		if (isSet($_SESSION['eighth_redo'])) {
+		if (isset($_SESSION['eighth_redo'])) {
 			self::$redo = &$_SESSION['eighth_redo'];
 		} elseif (!self::$redo) {
-			self::$redo = array();
-			$_SESSION['eighth_redo'] = array();
+			self::$redo = [];
+			$_SESSION['eighth_redo'] = [];
 		}
 		d('8th-period undo stack: '.count(self::$undo).' element(s), topped by '.self::get_undo_name(),7);
 		foreach ((self::$undo) as $undo) {
@@ -308,7 +303,7 @@ class Eighth implements Module {
 		//array_push($_SESSION['eighth_undo'],$undo);
 		
 		self::trim_undo_stack();
-		self::$redo = array();
+		self::$redo = [];
 	}
 
 	private static function get_undoredo_name($stack) {
@@ -329,24 +324,6 @@ class Eighth implements Module {
 	}
 
 	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
 	* Initialize variables for CLIodine
 	*/
 	function init_cli() {
@@ -356,9 +333,8 @@ class Eighth implements Module {
 	/**
 	* Display a text version of the eighth period module.
 	*
-	* @param Display $disp The Display object to use for output.
 	*/
-	function display_cli($disp) {
+	function display_cli() {
 		global $I2_ARGS;
 		$valid_commands = array("list","signup","old","archived");
 		if(!isset($I2_ARGS[2]) || !in_array(strtolower($I2_ARGS[2]),$valid_commands) ) {
@@ -412,12 +388,161 @@ class Eighth implements Module {
 		}
 	}
 
+	private static function print_block($block,$userid) {
+		global $I2_API;
+		$I2_API->startElement('block');
+		$I2_API->writeElement('bid',$block['bid']);
+		$I2_API->startElement('date');
+		$I2_API->writeElement('str',$block['date']);
+		$I2_API->writeElement('iso',date('c',strtotime($block['date'])));
+		$I2_API->writeElement('disp',date('F j, Y',strtotime($block['date'])));
+		$I2_API->endElement();
+		$I2_API->writeElement('disp',date('l F jS, Y',strtotime($block['date']))." Block ".$block['block']);
+		$I2_API->writeElement('type',$block['block']);
+		$I2_API->writeElement('locked',$block['locked']);
+		$act = EighthSchedule::get_activities_by_block($userid,$block['bid']);
+		if($act)
+			self::print_activity(new EighthActivity($act,$block['bid']));
+		else
+			$I2_API->writeElement('activity',"No activity found. You may not have permissions to view this user's activities.");
+		$I2_API->endElement();
+	}
+	private static function print_activity($act) {
+		global $I2_API;
+		$I2_API->startElement('activity');
+		foreach($act->get_data() as $name=>$value) {
+			if(is_array($value)) {
+				$I2_API->startElement($name);
+				foreach($value as $arrkey=>$arrvalue) {
+						//FIXME: hack to make singular
+						$innername=substr($name,0,-1);
+						// we can't just use $arrkey because 0, etc. are not valid xml elements.
+						$I2_API->writeElement($innername,$arrvalue);
+				}
+				$I2_API->endElement();
+			}
+			else if(is_object($value)) {
+				$I2_API->startElement($name);
+				foreach($value->get_data() as $arrkey=>$arrvalue) {
+					$I2_API->writeElement($arrkey,$arrvalue);
+				}
+				$I2_API->endElement();
+			}
+			else {
+				$I2_API->writeElement($name,$value);
+			}
+		}
+		$I2_API->endElement();
+	}
 	/**
-	* We don't really support this yet, but make it look like we do.
+	* Now partially supported! Still work to do.
 	*
-	* @param Display $disp The Display object to use for output.
 	*/
-	function api($disp) {
+	function api() {
+		global $I2_ARGS,$I2_QUERY,$I2_USER,$I2_API;
+		if(!isset($I2_ARGS[1])) {
+			throw new I2Exception("eighth module needs argument");
+		}
+		switch($I2_ARGS[1]) {
+			// $I2_ARGS[2] == user id
+			case 'list_blocks':
+				if(isset($I2_ARGS[2])) {
+					$user = new User($I2_ARGS[2]);
+				}
+				else {
+					$user = $I2_USER;
+				}
+				if (!isset($I2_QUERY['start_date'])) {
+					$start_date = EighthSchedule::get_next_date();
+				} else {
+					$start_date = $I2_QUERY['start_date'];
+				}
+				if (!isset($I2_QUERY['daysforward'])) {
+					$daysf = 99999;
+				} else {
+					$daysf = $I2_QUERY['daysforward'];
+				}
+				$blocks = EighthBlock::get_all_blocks($start_date, $daysf);
+				$I2_API->startElement('blocks');
+				foreach($blocks as $block) {
+					self::print_block($block,$user->uid);
+				}
+				$I2_API->endElement();
+				break;
+			// $I2_ARGS[2] == block id
+			case 'list_activities':
+				if (!isset($I2_ARGS[2])) {
+					throw new I2Exception("No block id given");
+				}
+				$acts = EighthActivity::get_all_activities($I2_ARGS[2],FALSE);
+				set_time_limit(2);
+				if(empty($acts)) {
+					throw new I2Exception("No activities found. Invalid block id given?");
+				}
+				$I2_API->startElement('activities');
+				foreach($acts as $act) {
+					self::print_activity($act);
+				}
+				$I2_API->endElement();
+				break;
+
+			// $I2_ARGS[2] == block id
+			// $I2_ARGS[3] == activity id
+			// $I2_ARGS[4] == user id
+			case 'signup_activity':
+				if(!isset($I2_ARGS[2], $I2_ARGS[3])) {
+					throw new I2Exception("missing parameters: arguments should be bid, aid, uid (defaults to self if not specified)");
+					
+				}
+				if(isset($I2_ARGS[4])) {
+					$user = new User($I2_ARGS[4]);
+				}
+				else {
+					$user = $I2_USER;
+				}
+				// (aid, bid)
+				$activity = new EighthActivity($I2_ARGS[3]);
+				if(!EighthBlock::block_exists($I2_ARGS[2]))
+					throw new I2Exception("Block does not exist");
+				$success = ($activity->add_member($user, FALSE, $I2_ARGS[2]));
+				$I2_API->startElement('signup');
+				$I2_API->writeElement('bid',$I2_ARGS[2]);
+				$I2_API->writeElement('aid',$I2_ARGS[3]);
+				$I2_API->writeElement('uid',$user->uid);
+				$I2_API->writeElement('success',$success==0?1:0);
+				$I2_API->writeElement('result',$success);
+				$I2_API->endElement();
+				break;
+			default:
+				throw new I2Exception("Invalid argument given to eighth module.");
+		}
+		return false;
+	}
+
+	/**
+	* Build the dtd.
+	*/
+	function api_build_dtd() {
+		global $I2_ARGS, $I2_API;
+		if(!isset($I2_ARGS[1])) {
+			return false;
+		}
+		switch($I2_ARGS[1]) {
+			case 'list_blocks':
+				$I2_API->writeDTDElement('body','(block*)');
+				$I2_API->writeDTDElement('block','(bid,date,type,locked)');
+				$I2_API->writeDTDElement('bid','(#PCDATA)');
+				$I2_API->writeDTDElement('date','(#PCDATA)');
+				$I2_API->writeDTDElement('type','(#PCDATA)');
+				$I2_API->writeDTDElement('locked','(#PCDATA)');
+				return true;
+			case 'list_activities':
+				// TODO: Add DTD
+				break;
+			case 'signup_activity':
+				// TODO: Add DTD
+				break;
+		}
 		return false;
 	}
 
@@ -426,12 +551,12 @@ class Eighth implements Module {
 	*/
 	function init_pane() {
 		global $I2_ARGS, $I2_USER, $I2_QUERY;
-		$this->args = array();
+		$this->args = [];
 		$this->admin = self::is_admin();
 		$this->template_args['eighth_admin'] = $this->admin;
 		
 		//Every time a user logs in, set start_date to default
-		if(! isSet($_SESSION['eighth']['start_date'])) {
+		if(! isset($_SESSION['eighth']['start_date'])) {
 			$_SESSION['eighth']['start_date'] = self::$default_start_date;
 		}
 		//This may be clobbered later in REQUEST (for vcp_schedule and chg_start)
@@ -485,7 +610,7 @@ class Eighth implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
+	function display_pane($disp) {
 		global $I2_ARGS, $I2_USER;
 		if ($this->template == 'pane.tpl' && !$I2_USER->is_group_member('admin_eighth') && !$I2_USER->is_group_member('grade_staff')) {
 			redirect();
@@ -496,12 +621,12 @@ class Eighth implements Module {
 		$this->template_args['last_redo'] = self::get_redo_name();
 
 		//For header.tpl and vcp_schedule
-		if(! isSet($this->template_args['start_date'])) {
+		if(! isset($this->template_args['start_date'])) {
 			$this->template_args['start_date'] = $this->args['start_date'];
 		}
 		
 		$this->template_args['defaultaid'] = i2config_get('default_aid','999','eighth');
-		$display->disp($this->template, $this->template_args);
+		$disp->disp($this->template, $this->template_args);
 	}
 
 	/**
@@ -517,7 +642,7 @@ class Eighth implements Module {
 			$this->template_args['activities'] = EighthActivity::id_to_activity(EighthSchedule::get_activities($I2_USER->uid, $date, 1), FALSE);
 		}
 		else {
-			$this->template_args['activities'] = array();
+			$this->template_args['activities'] = [];
 		}
 		$dates = array($date => date('n/j/Y', @strtotime($date)), date('Y-m-d') => 'Today', date('Y-m-d', time() + 3600 * 24) => 'Tomorrow', '' => 'None Scheduled');
 		return "8th Period: {$dates[$date]}";
@@ -526,8 +651,8 @@ class Eighth implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_box($display) {
-		$display->disp('box.tpl', $this->template_args);
+	function display_box($disp) {
+		$disp->disp('box.tpl', $this->template_args);
 	}
 	
 	/**
@@ -557,6 +682,16 @@ class Eighth implements Module {
 		global $I2_USER;
 		return $I2_USER->is_group_member('admin_eighth_signup');
 	}
+
+	public static function is_sponsor($aid) {
+		global $I2_USER;
+		$activity = new EighthActivity($aid);
+		if ($activity->is_user_sponsor($I2_USER) > 0) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
 	
 	public static function check_admin() {
 		if (!self::is_admin()) {
@@ -585,7 +720,7 @@ class Eighth implements Module {
 		if ($start_date === NULL) {
 			$start_date = $this->args['start_date'];
 		}
-		if ($daysf === NULL && isSet($this->args['daysforward'])) {
+		if ($daysf === NULL && isset($this->args['daysforward'])) {
 			$daysf = $this->args['daysforward'];
 		} else {
 			$daysf = 99999;
@@ -695,7 +830,7 @@ class Eighth implements Module {
 	* @access private
 	* @param string $module The module that we are printing from.
 	*/
-	private function setup_format_selection($module, $title = '', $args = array(), $user = FALSE) {
+	private function setup_format_selection($module, $title = '', $args = [], $user = FALSE) {
 		$this->template = 'format_selection.tpl';
 		$this->template_args['module'] = $module;
 		$this->template_args['title'] = $title;
@@ -760,10 +895,10 @@ class Eighth implements Module {
 	*
 	*/
 	public static function clear_undoredo_stack() {
-		$_SESSION['eighth_undo'] = array();
-		self::$undo = array();
-		$_SESSION['eighth_redo'] = array();
-		self::$redo = array();
+		$_SESSION['eighth_undo'] = [];
+		self::$undo = [];
+		$_SESSION['eighth_redo'] = [];
+		self::$redo = [];
 	}
 
 	private function undoit() {
@@ -799,7 +934,7 @@ class Eighth implements Module {
 	*/
 	private function amr_group() {
 		if($this->op == '' || $this->op == 'added') {
-			if (!isSet($this->args['gid'])) {
+			if (!isset($this->args['gid'])) {
 				$this->args['gid'] = FALSE;
 			}
 			$this->setup_group_selection(true,'Select a group',$this->args['gid']);
@@ -823,15 +958,16 @@ class Eighth implements Module {
 			$group = new Group($this->args['gid']);
 			$this->template = 'amr_group.tpl';
 			$this->template_args['group'] = $group;
-			if (isSet($this->args['lastadded'])) {
+			$this->template_args['first_year'] = User::get_gradyear(12);
+			if (isset($this->args['lastadded'])) {
 					$user = new User($this->args['lastadded']);
 					$this->template_args['lastaction'] = 'Added user '.$user->fullname_comma;
 			}
-			if (isSet($this->args['lastremoved'])) {
+			if (isset($this->args['lastremoved'])) {
 					$user = new User($this->args['lastremoved']);
 					$this->template_args['lastaction'] = 'Removed user '.$user->fullname_comma;
 			}
-			$membersorted = array();
+			$membersorted = [];
 			$membersorted = $group->members_obj;
 			usort($membersorted,array('User','name_cmp'));
 			if ($this->op == 'view') {
@@ -869,14 +1005,14 @@ class Eighth implements Module {
 		else if($this->op == 'add_member') {
 			$group = new Group($this->args['gid']);
 			//TODO: this should be up in 'view', so as to avoid duplicate code
-			if (!isSet($this->args['uid']) && Search::get_results()) {
+			if (!isset($this->args['uid']) && Search::get_results()) {
 				$this->template_args['info'] = Search::get_results();
 				$this->template_args['results_destination'] = 'eighth/amr_group/add_member/gid/'.$this->args['gid'].'/uid/';
 				$this->template_args['return_destination'] = 'eighth/amr_group/view/gid/'.$this->args['gid'];
 				if(count($this->template_args['info']) == 1) {
 					redirect($this->template_args['results_destination'] . $this->template_args['info'][0]->uid);
 				}
-				$membersorted = array();
+				$membersorted = [];
 				$membersorted = $group->members_obj;
 				usort($membersorted,array('User','name_cmp'));
 				$this->template_args['membersorted'] = $membersorted;
@@ -944,7 +1080,8 @@ class Eighth implements Module {
 			$this->template = 'alt_permissions.tpl';
 			$this->template_args['activity'] = new EighthActivity($this->args['aid']);
 			$this->template_args['groups'] = Group::get_all_groups('eighth');
-			if (isSet($this->args['searchdone']) && Search::get_results()) {
+			$this->template_args['first_year'] = User::get_gradyear(12);
+			if (isset($this->args['searchdone']) && Search::get_results()) {
 				$this->template_args['results_destination'] = 'eighth/alt_permissions/add_member/aid/'.$this->args['aid'].'/uid/';
 				$this->template_args['return_destination'] = 'eighth/alt_permissions/view/aid/'.$this->args['aid'];
 				$this->template_args['info'] = Search::get_results();
@@ -1057,6 +1194,9 @@ class Eighth implements Module {
 		else if($this->op == 'view') {
 			$this->template = 'amr_activity.tpl';
 			$this->template_args['activity'] = new EighthActivity($this->args['aid']);
+			$this->template_args['sponsors'] = EighthSponsor::id_to_sponsor($this->template_args['activity']->sponsors);
+			$this->template_args['sponsorcount'] = count($this->template_args['activity']->sponsors);
+			$this->template_args['rooms'] = EighthRoom::id_to_room($this->template_args['activity']->rooms);
 			$this->title = 'View Activities';
 		}
 		else if($this->op == 'add') {
@@ -1065,7 +1205,7 @@ class Eighth implements Module {
 				$newid = $this->args['aid'];
 			}
 			self::start_undo_transaction();
-			$aid = EighthActivity::add_activity($this->args['name'], array(), array(), '', FALSE, FALSE, FALSE, FALSE, $newid);
+			$aid = EighthActivity::add_activity($this->args['name'], [], [], '', FALSE, FALSE, FALSE, FALSE, $newid);
 			self::end_undo_transaction();
 			redirect("eighth/amr_activity/view/aid/{$aid}");
 		}
@@ -1074,21 +1214,21 @@ class Eighth implements Module {
 			self::start_undo_transaction();
 			$usedtobename = $activity->name;
 			$activity->name = $this->args['name'];
-			$activity->sponsors = $this->args['sponsors'];
-			$activity->rooms = $this->args['rooms'];
-			$usedtobedescription=$activity->description;
+			$activity->sponsors = (isset($this->args['sponsors']) && $this->args['sponsors']);
+			$activity->rooms = (isset($this->args['rooms']) && $this->args['rooms']);
+			$usedtobedescription = $activity->description;
 			$activity->description = $this->args['description'];
-			$activity->restricted = ($this->args['restricted'] == 'on');
-			$activity->presign = ($this->args['presign'] == 'on');
-			$activity->oneaday = ($this->args['oneaday'] == 'on');
-			$activity->bothblocks = ($this->args['bothblocks'] == 'on');
-			$activity->sticky = ($this->args['sticky'] == 'on');
-			$usedtobespecial=$activity->special;
-			$activity->special = ($this->args['special'] == 'on');
+			$activity->restricted = (isset($this->args['restricted']) && $this->args['restricted'] == 'on');
+			$activity->presign = (isset($this->args['presign']) && $this->args['presign'] == 'on');
+			$activity->oneaday = (isset($this->args['oneaday']) && $this->args['oneaday'] == 'on');
+			$activity->bothblocks = (isset($this->args['bothblocks']) && $this->args['bothblocks'] == 'on');
+			$activity->sticky = (isset($this->args['sticky']) && $this->args['sticky'] == 'on');
+			$usedtobespecial = $activity->special;
+			$activity->special = (isset($this->args['special']) && $this->args['special'] == 'on');
 			// This is marking it as _always_ calendarworthy
 			// Normally, you should use the individual block's calendarworthiness setting
-			$usedtobecalendar=$activity->calendar;
-			$activity->calendar = ($this->args['calendar'] == 'on');
+			$usedtobecalendar = $activity->calendar;
+			$activity->calendar = (isset($this->args['calendar']) && $this->args['calendar'] == 'on');
 			// All 8th period activities should have calendar events
 			// Handle the permamarking removal or addition
 			global $I2_SQL;
@@ -1216,7 +1356,7 @@ class Eighth implements Module {
 	*/
 	private function amr_room() {
 		if($this->op == '' || $this->op == 'select') {
-			if (!isSet($this->args['rid'])) {
+			if (!isset($this->args['rid'])) {
 				$this->args['rid'] = FALSE;
 			}
 			$this->setup_room_selection(true,'Select a room:',$this->args['rid']);
@@ -1227,7 +1367,7 @@ class Eighth implements Module {
 			$this->title = 'View Rooms';
 		}
 		else if($this->op == 'add') {
-			if (!isSet($this->args['capacity']) || !$this->args['capacity'] || !is_numeric($this->args['capacity'])) {
+			if (!isset($this->args['capacity']) || !$this->args['capacity'] || !is_numeric($this->args['capacity'])) {
 				$this->args['capacity'] = -1;
 			}
 			self::start_undo_transaction();
@@ -1307,8 +1447,8 @@ class Eighth implements Module {
 					EighthSchedule::unschedule_activity($bid, $this->args['aid']);
 				}
 				else {
-					$sponsorlist = array();
-					$roomlist = array();
+					$sponsorlist = [];
+					$roomlist = [];
 					$commentslist = NULL;
 					$aid = NULL;
 					if (isset($this->args['aid'])) {
@@ -1386,10 +1526,10 @@ class Eighth implements Module {
 			$this->template = 'vp_room_view.tpl';
 			$this->template_args['block'] = new EighthBlock($this->args['bid']);
 			if(!isset($this->args['include']))
-				$this->args['include']=array();
+				$this->args['include']=[];
 			$this->template_args['utilizations'] = EighthRoom::get_utilization($this->args['bid'], $this->args['include'], 
 					  !empty($this->args['overbooked']),$this->args['sort']);
-			$inc = array();
+			$inc = [];
 			foreach ($this->args['include'] as $include) {
 					  $inc[$include] = 1;
 			}
@@ -1549,16 +1689,17 @@ class Eighth implements Module {
 			$this->template_args['act'] = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->template_args['bid'] = $this->args['bid'];
 			$this->template_args['aid'] = $this->args['aid'];
-			if (isSet($this->args['rescheduled'])) {
+			$this->template_args['first_year'] = User::get_gradyear(12);
+			if (isset($this->args['rescheduled'])) {
 				$this->template_args['lastuser'] = new User($this->args['rescheduled']);
 			}
-			if(isSet($this->args['studentId'])) {
+			if(isset($this->args['studentId'])) {
 				$this->template_args['user'] = new User($this->args['studentId']);
 				if (!$this->template_args['user']->is_valid()) {
 					redirect('eighth/res_student/user/bid/'.$this->args['bid'].'/aid/'.$this->args['aid']);
 				}
 			}
-			if (isSet($this->args['searchdone']) && Search::get_results()) {
+			if (isset($this->args['searchdone']) && Search::get_results()) {
 					  $this->template_args['results_destination'] = 'eighth/res_student/reschedule/bid/'.$this->args['bid'].'/aid/'.$this->args['aid'].'/uid/';
 					  $this->template_args['return_destination'] = 'eighth/res_student/user/bid/'.$this->args['bid'].'/aid/'.$this->args['aid'];
 					  $this->template_args['info'] = Search::get_results();
@@ -1640,7 +1781,10 @@ class Eighth implements Module {
 			$members = $activity->members;
 			self::start_undo_transaction();
 			foreach($members as $member) {
-				if(isSet($this->args['absentees']) && is_array($this->args['absentees']) && in_array($member, $this->args['absentees'])) {
+				if(isset($this->args['attendies']) && is_array($this->args['attendies']) && !in_array($member, $this->args['attendies'])) {
+					EighthSchedule::add_absentee($this->args['bid'], $member, $issponsor);
+				}
+				else if(!isset($this->args['attendies']) || !is_array($this->args['attendies'])) {
 					EighthSchedule::add_absentee($this->args['bid'], $member, $issponsor);
 				}
 				else {
@@ -1686,7 +1830,7 @@ class Eighth implements Module {
 					break;
 				}
 				$aidlist=$I2_SQL->query('SELECT activityid FROM eighth_block_map WHERE bid=%d AND attendancetaken=0',$this->args['bid'])->fetch_all_single_values();
-				$actlist=array();
+				$actlist=[];
 				foreach($aidlist as $aid)
 					$actlist[]=new EighthActivity($aid,$this->args['bid']);
 				$this->template_args['acts']=$actlist;
@@ -1717,7 +1861,7 @@ class Eighth implements Module {
 			$this->template_args['date'] = $block->date;
 			$this->template_args['block'] = $block->block;
 			$this->template_args['bid'] = $this->args['bid'];
-			if (isSet($this->args['lastuid'])) {
+			if (isset($this->args['lastuid'])) {
 				$this->template_args['lastuid'] = $this->args['lastuid'];
 				$user = new User($this->args['lastuid']);
 				$this->template_args['lastname'] = $user->name;
@@ -1756,7 +1900,7 @@ class Eighth implements Module {
 			$start = null;
 			$end = null;
 			$sort = 'name';
-			$grades = array();
+			$grades = [];
 			$legal_sorts = array(
 				'name' => 'Alphabetically',
 				'name_desc' => 'Alphabetically, descending',
@@ -1810,7 +1954,7 @@ class Eighth implements Module {
 			if ($this->op == 'sort' || $this->op == 'csv') {
 				// so, get the data
 				$alldelinquents = EighthSchedule::get_delinquents($lower, $upper, $start, $end);
-				$wanteddelinquents = array();
+				$wanteddelinquents = [];
 				foreach ($alldelinquents as $delinquent) {
 					$user = new User($delinquent['userid']);
 					if (in_array($user->grade, $grades)) {
@@ -1829,7 +1973,7 @@ class Eighth implements Module {
 				// move the data to the format of choice
 				if ($this->op == 'sort') {
 					$this->template_args['show'] = TRUE;
-					$this->template_args['delinquents'] = array();
+					$this->template_args['delinquents'] = [];
 					$this->template_args['delinquents'] = $wanteddelinquents;
 				}
 				elseif ($this->op == 'csv') {
@@ -2090,7 +2234,7 @@ class Eighth implements Module {
 			$bids = $I2_SQL->query('SELECT bid FROM eighth_blocks WHERE date >= %s', $start_date)->fetch_col('bid');
 			$default_aid = i2config_get('default_aid',999,'eighth');
 			foreach($bids as $bid) {
-				$uidstofix = array();
+				$uidstofix = [];
 				$members = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%s', $bid)->fetch_col('userid');
 				if (count($members) != $numuids) {
 					warn('Found missing members! (blockid ' . $bid . ')');
@@ -2105,6 +2249,26 @@ class Eighth implements Module {
 			//redirect('eighth');
 		}
 	}
+
+	public function migrate_passes() {
+		global $I2_SQL;
+		if($this->op == '') {
+			$this->template = 'migrate_passes.tpl';
+			$start_date = $this->args['start_date'];
+			$this->template_args['blocks'] = EighthBlock::get_all_blocks($start_date);
+			$this->title = 'Migrate Outstanding Passes';
+		}
+		else if($this->op == 'migrate') {
+			self::start_undo_transaction();
+			$defaid = i2config_get('default_aid', 999, 'eighth');
+			$query = 'UPDATE eighth_activity_map SET aid=%d WHERE bid=%d AND pass=1';
+			$args = array($defaid, $this->args['bid']);
+			$result = $I2_SQL->query_arr($query, $args);
+			self::end_undo_transaction();
+			redirect('eighth/migrate_passes');
+		}
+	}
+
 
 	/**
 	* View, change, or print student schedule
@@ -2121,11 +2285,12 @@ class Eighth implements Module {
 				$this->template_args['users'] = array(new User($this->args['uid']));
 			}
 			else {
-				if (isSet($this->args['fname']) && $this->args['fname']!="")
+				if (isset($this->args['fname']) && $this->args['fname']!="")
 				{
 					$this->template_args['users'] = User::search_info("{$this->args['fname']} {$this->args['name_id']}");
 				}
 				else {
+					$this->args['name_id'] = isset($this->args['name_id']) ? $this->args['name_id'] : "";
 					$this->template_args['users'] = User::search_info("{$this->args['name_id']}");
 				}
 			}
@@ -2230,21 +2395,21 @@ class Eighth implements Module {
 			EighthPrint::print_student_schedule($this->args['uid'], $this->args['start_date'], $this->args['format']);
 		}
 		else if($this->op == 'choose') {
-			$valids = array();
-			$validdata = array();
+			$valids = [];
+			$validdata = [];
 			$activities = EighthActivity::get_all_activities($this->args['bids'],FALSE);
 			if(count($this->args['bids'])==1)
-				$selected_aid = EighthSchedule::get_activities_by_block($this->args['uid'],$this->args['bids']);
+				$selected_aid = EighthSchedule::get_activities_by_block($this->args['uid'],$this->args['bids'][0]);
 			else
 				$selected_aid = "";
 
-			$faves = array();
-			$restricted = array();
-			$general = array();
-			$full = array();
-			$filling = array();
-			$selected = array();
-			$cancelled = array();
+			$faves = [];
+			$restricted = [];
+			$general = [];
+			$full = [];
+			$filling = [];
+			$selected = [];
+			$cancelled = [];
 			foreach ($activities as $i) {
 				if($i->aid == $selected_aid)
 					$selected[] = $i;
@@ -2307,7 +2472,7 @@ class Eighth implements Module {
 				redirect("eighth/vcp_schedule/roster/bid/{$this->args['bids']}/aid/{$this->args['aid']}");
 			}
 			if (isset($this->args['bids']) && isset($this->args['aid'])) {
-				$status = array();
+				$status = [];
 				$bids = explode(',', $this->args['bids']);
 				foreach($bids as $bid) {
 					if(EighthSchedule::is_activity_valid($this->args['aid'], $bid)) {
@@ -2319,7 +2484,7 @@ class Eighth implements Module {
 						$ret = $activity->add_member(new User($this->args['uid']), isset($this->args['force']));
 						self::end_undo_transaction();
 						
-						$act_status = array();
+						$act_status = [];
 						if($ret & EighthActivity::CANCELLED) {
 							$act_status['cancelled'] = TRUE;
 						}
@@ -2369,6 +2534,36 @@ class Eighth implements Module {
 				$this->template_args['aid'] = $this->args['aid'];
 			}
 		}
+		else if($this->op == 'callin') {
+			if (isset($this->args['name_id']) && isset($this->args['bid']) && isset($this->args['aid'])) {
+
+					$users = User::search_info("{$this->args['name_id']}");
+					if (count($users) == 1) {
+						$user = $users[0];
+						$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
+						$activity->add_member_callin($user, $this->args['aid'], $this->args['bid']);
+						redirect("eighth/vcp_attendance/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
+					} else {
+						throw new I2Exception("You did not provide enough information to unambiguously identify a student");
+					}
+
+			} else {
+				throw new I2Exception("You did not provide a required argument");
+			}
+
+		}
+		else if($this->op == 'acceptallpasses') {
+			if(isset($this->args['bid']) && isset($this->args['aid'])) {
+
+				$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
+				$activity->accept_all_passes($this->args['aid'], $this->args['bid']);
+				redirect("eighth/vcp_attendance/view/bid/{$this->args['bid']}/aid/{$this->args['aid']}");
+
+			} else {
+				throw new I2Exception("you did not provide a required argument");
+			}
+
+		}
 		else if($this->op == 'roster') {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$this->template_args['activity'] = $activity;
@@ -2381,6 +2576,7 @@ class Eighth implements Module {
 			$user = new User($this->args['uid']);
 			$this->template_args['user'] = $user;
 			$this->template_args['admin'] = $this->admin;
+			$this->template_args['count'] = count($absences);
 			$this->template = 'vcp_schedule_absences.tpl';
 		}
 		else if($this->op == 'remove_absence') {
@@ -2479,7 +2675,7 @@ class Eighth implements Module {
 			/* We want all rooms where room name starts with Out of Building (ignore case, trim); */
 			$aids = $I2_SQL->query('SELECT activityid FROM eighth_block_map LEFT JOIN eighth_rooms ON rooms=rid' .
 				' WHERE bid=%d AND LEFT(LTRIM(LOWER(eighth_rooms.name)),15)="out of building"',$bid)->fetch_all_arrays();
-			$activities = array();
+			$activities = [];
 			foreach ($aids as $aid) {
 				$activity = new EighthActivity($aid[0], $bid);
 				// Ignore the excused absence, etc.
@@ -2495,7 +2691,7 @@ class Eighth implements Module {
 			/* We want all rooms where room name starts with Out of Building (ignore case, trim); */
 			$aids = $I2_SQL->query('SELECT activityid FROM eighth_block_map LEFT JOIN eighth_rooms ON rooms=rid' .
 				' WHERE bid=%d AND LEFT(LTRIM(LOWER(eighth_rooms.name)),15)="out of building"',$bid)->fetch_all_arrays();
-			$activities = array();
+			$activities = [];
 			foreach ($aids as $aid) {
 				$activity = new EighthActivity($aid[0], $bid);
 				// Ignore the excused absence, etc.
@@ -2571,8 +2767,8 @@ class Eighth implements Module {
 			$this->template_args['start_date']=strtotime($starttime,$curtime);
 			$dat=$I2_SQL->query('SELECT * FROM eighth_postsigns WHERE time>%T AND time<%T',$starttime,$endtime)->fetch_all_arrays(Result::ASSOC);
 			$this->template='postsigns.tpl';
-			$cids=array();
-			$acts=array();
+			$cids=[];
+			$acts=[];
 			for($i=0;$i<count($dat);$i++) {
 				if(!in_array($dat[$i]['fromaid'],$acts)) {
 					try{

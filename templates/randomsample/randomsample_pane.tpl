@@ -1,4 +1,4 @@
-[<if isSet($sample)>]
+[<if isset($sample)>]
 	<table>
 		<tr>
 			[<foreach from=$cols item="col">]

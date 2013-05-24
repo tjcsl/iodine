@@ -14,10 +14,10 @@
 * @package modules
 * @subpackage StudentDirectory
 */
-class StudentDirectory implements Module {
+class StudentDirectory extends Module {
 	
 	private $template;
-	private $template_args = array();
+	private $template_args = [];
 		
 	const IM_AVAILABLE = 'available.png';
 	const IM_AVAILABLE_IDLE = 'available.png';
@@ -25,49 +25,6 @@ class StudentDirectory implements Module {
 	const IM_AWAY_IDLE = 'away.png';
 	const IM_OFFLINE = 'offline.png';
 	const IM_UNKNOWN = FALSE;
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
 
 	/**
 	* Required by the {@link Module} interface.
@@ -99,7 +56,7 @@ class StudentDirectory implements Module {
 				$this->template_args['user'] = $user;
 				return array('Pictures: '.$user->fname.' '.$user->lname, $user->fname.' '.$user->lname);
 			case 'search':
-				if( !isSet($I2_QUERY['q']) || $I2_QUERY['q'] == '') {
+				if( !isset($I2_QUERY['q']) || $I2_QUERY['q'] == '') {
 					$this->template = 'studentdirectory_help.tpl';
 					return array('Directory Help', 'Searching Help');
 				} else {
@@ -120,7 +77,7 @@ class StudentDirectory implements Module {
 				}
 				break;
 			case 'class':
-				if(!isSet($I2_ARGS[2])) {
+				if(!isset($I2_ARGS[2])) {
 					redirect();
 				}
 				$sec = Schedule::section($I2_ARGS[2]);
@@ -148,13 +105,13 @@ class StudentDirectory implements Module {
 				$this->template_args['aim'] = $aim_sns;
 				return "Students in {$sec->name}, Period {$sec->period}";
 			case 'section':
-				if (isSet($I2_ARGS[2])) {
+				if (isset($I2_ARGS[2])) {
 					$classid = $I2_ARGS[2];
 				} else {
 					$classid = NULL;
 				}
 				$sectionids = Schedule::sections($classid);
-				$classes = array();
+				$classes = [];
 				foreach ($sectionids as $sectionid) {
 					$sec = Schedule::section($sectionid);
 					$classes[] = array('class'=>$sec);
@@ -166,7 +123,7 @@ class StudentDirectory implements Module {
 				return "Sections of $classname";
 			case 'roster':
 				$sectionids = Schedule::roster();
-				$classes = array();
+				$classes = [];
 				foreach ($sectionids as $sectionid) {
 					$sec = Schedule::section($sectionid);
 					$classes[] = $sec;
@@ -243,7 +200,7 @@ class StudentDirectory implements Module {
 
 				$tempmaillist = $user->mail;
 				if(is_array($tempmaillist)) {
-					$this->template_args['maillist']=array();
+					$this->template_args['maillist']=[];
 					foreach($tempmaillist as $email) {
 						$this->template_args['maillist'][] = str_replace("?","",$email);
 					}
@@ -285,7 +242,7 @@ class StudentDirectory implements Module {
 
 	function logic_eval($input) {
 		// http://en.wikipedia.org/wiki/Logical_connective
-		$vartable = array(); //TODO: finish parse_logicelement, make display nicer
+		$vartable = []; //TODO: finish parse_logicelement, make display nicer
 		if(has_unlogical($input))
 			return false;
 		$rootnode = parse_logicelement($input,$vartable);
@@ -354,7 +311,7 @@ class StudentDirectory implements Module {
 			$url .= "&t=" . urlencode($aim);
 		}
 		$fp = @fopen($url, 'r');
-		if (isSet($fp) && $fp) {
+		if (isset($fp) && $fp) {
 			$response = '';
 			do {
 				$response .= fread($fp, 128);
@@ -394,7 +351,7 @@ class StudentDirectory implements Module {
 		}
 		foreach(array_keys($sns) as $aim) {
 			$aimid = str_replace(' ','',strtolower($aim));
-			$sns[$aim] = isSet($statuses[$aimid]) ? $statuses[$aimid] : self::IM_UNKNOWN;
+			$sns[$aim] = isset($statuses[$aimid]) ? $statuses[$aimid] : self::IM_UNKNOWN;
 		}
 		return $sns;
 	}
@@ -415,7 +372,7 @@ class StudentDirectory implements Module {
 			$url = '/status.php';
 			$file = file('http://' . $server . $url . '?jid=' . $jabber . '&type=text');
 			$status = '';
-			if (isSet($file) && $file) {
+			if (isset($file) && $file) {
 				$status = join($file,'');
 				$status = substr($status, 0, strpos($status, ':'));
 			}
@@ -505,8 +462,8 @@ class StudentDirectory implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
-		$display->disp($this->template, $this->template_args);
+	function display_pane($disp) {
+		$disp->disp($this->template, $this->template_args);
 	}
 	
 	/**
@@ -519,9 +476,9 @@ class StudentDirectory implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_box($display) {
+	function display_box($disp) {
 		$template_args['suggestenabled']=false;
-		$display->disp('studentdirectory_box.tpl',$template_args);
+		$disp->disp('studentdirectory_box.tpl',$template_args);
 	}
 
 	/**

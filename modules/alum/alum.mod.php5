@@ -8,56 +8,13 @@
  * @filesource
  */
 
-class Alum implements Module {
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
+/**
+ * Contains helper methods for Alumni
+ */
+class Alum extends Module {
 
 	function init_pane() {
-		global $I2_USER,$I2_ARGS,$I2_SQL;
-
 		return 'Alumni Intranet';
-
 	}
 
 	function display_pane($display) {
@@ -280,14 +237,6 @@ $info["pass"] = "test";
 		else {		
 			$display->disp('alum_copy_pane.tpl');
 		}
-	}
-
-	function init_box() {
-		return FALSE;
-	}
-
-	function display_box($display) {
-		return FALSE;
 	}
 
 	function get_name() {

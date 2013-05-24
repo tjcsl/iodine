@@ -13,74 +13,24 @@
 * @package modules
 * @subpackage Discussions
 */
-class RichEdit implements Module {
+class RichEdit extends Module {
 
 	// Variable removed after budget cuts
 	//private $OMGPONIES
 
 	private static $bb_otags, $bb_ctags, $bb_nostrip, $errs;
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
 
 	function init_pane() {
 		return 'RichEdit';
 	}
-	
+
 	function display_pane($display) {
 		global $I2_FS_ROOT;
 		// This just makes basically a blank page with just the css set
 		// That way the editor already has the css loaded for you
-		echo $display->fetch($I2_FS_ROOT . "templates/richedit/richeditwindow.tpl", array(), FALSE);
+		echo $display->fetch($I2_FS_ROOT."templates/richedit/richeditwindow.tpl", [], FALSE);
 		Display::stop_display();
 		exit;
-	}
-	
-	function init_box() {
-		return FALSE;
-	}
-
-	function display_box($display) {
-		return FALSE;
 	}
 
 	function get_name() {
@@ -116,13 +66,13 @@ class RichEdit implements Module {
 		$bb_otags=array('lb'=>'[','rb'=>']', 'hr'=>"<div class='bb_hr'></div>", 'hairline'=>"<div class='bb_hr'></div>", 'b'=>"<span class='bb_bold'>", 'bold'=>"<span class='bb_bold'>", 'i'=>"<span class='bb_italic'>", 'ital'=>"<span class='bb_italic'>", 'italic'=>"<span class='bb_italic", 'u'=>"<span class='bb_underline'>", 'under'=>"<span class='bb_underline'>", 'underline'=>"span class='bb_underline'", 'hl'=>"<span class='bb_highlight'>", 'high'=>"<span class='bb_highlight'", 'highlight'=>"<span class='bb_highlight'>", 's'=>"<span class='bb_strike'>", 'strike'=>"<span class='bb_strike'>", 'strikethrough'=>"<span class='bb_strikethrough'>", 'a='=>array("<a href='", "'>", 'safe'=>'strtr'), 'anchor='=>array("a href='","'>", 'safe'=>'strtr'), 'img='=>array("<img src='", "' alt='User Picture' />", 'safe'=>'strtr'), 'image='=>array("<img src='","' alt='User Picture' />", 'safe'=>'strtr'), 'color='=>array("<span style='color:","'>",'safe'=>'strtr'), 'url='=>array("<a href='","'>", 'safe'=>'strtr'));
 		$bb_ctags=array('b'=>'</span>', 'bold'=>'</span>', 'i'=>'</span>', 'ital'=>'</span>', 'italic'=>'</span>', 'u'=>'</span>', 'under'=>'</span>', 'underline'=>'</span>', 'hl'=>'</span>', 'high'=>'</span>', 'highlight'=>'</span>', 's'=>'</span>', 'strike'=>'</span>', 'strikethrough'=>'</span', 'a'=>'</a>', 'color'=>'</span>', 'url'=>'</a>', 'anchor'=>'</a>');
 		$bb_nostrip=array('lb'=>1, 'rb'=>1);
-		$errs = array();
-		
+		$errs = [];
+
 		return Discussion::bbCodeConvert($post);
 		if(count($errs)>0)
 			foreach($errs as $i)
 				throw new I2Exception($i);
-			
+
 	}
 	private static function bbCodeConvert($in) {
 		global $bb_otags, $bb_ctags;
@@ -139,9 +89,9 @@ class RichEdit implements Module {
 	}
 	private static function recursiveConverter($in, $table, $otags, $ctags, $depth, $tag=false, $tags=false) {
 		global $errs;
-		
+
 		if($tags===false) {
-			$tags=array();
+			$tags=[];
 		}
 		if($depth<0) {
 			$errs[] = "One of the posters in this thread has tried to overnest BBCode elements. There can be no more than 50 nested BBCode elements.";
@@ -151,7 +101,7 @@ class RichEdit implements Module {
 		$out="";
 		while(1) {
 			$pos=strpos($in, '[');
-			
+
 			if($pos===false) {
 				$out.=strtr($in, $table);
 				$in="";
@@ -160,28 +110,28 @@ class RichEdit implements Module {
 			}
 			$out.=strtr(substr($in, 0, $pos), $table);
 			$in=substr($in, $pos);
-			
+
 			$epos=strpos($in, ']');
-			
+
 			if($epos===false) {
 				$out.=strtr($in, $table);
 				$in="";
 				$fail=true;
 				break;
 			}
-			
+
 			$nxcstag=substr($in, 1, $epos-1);
 			$nxtag=strtolower($nxcstag);
-			
+
 			$qpos=strpos($nxtag, "=");
-			
+
 			if($qpos !== false) {
 				$nxetag=substr($nxtag, 0, $qpos);
 				$nxqtag=substr($nxtag, 0, $qpos+1);
 				$eparam=substr($nxcstag, $qpos+1);
-				
+
 				//print ';'.$nxetag.';'."\n";
-				
+
 				if(isset($otags[$nxqtag])&&isset($ctags[$nxetag])) {
 					$tags[]=$nxetag;
 					$rco = Discussion::recursiveConverter(substr($in, strlen($nxtag)+2), $table, $otags, $ctags, $depth-1, $nxetag, $tags);
@@ -241,7 +191,7 @@ class RichEdit implements Module {
 	}
 	private static function bb_param_otag($otags, $eparam, $nxqtag, $table) {
 		$out="";
-		
+
 		if($otags[$nxqtag]['safe']=='strtr') {
 			$out.=$otags[$nxqtag][0].strtr($eparam, $table).$otags[$nxqtag][1];
 		} else if($otags[$nxqtag]['safe']=='slashes') {

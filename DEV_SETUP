@@ -8,31 +8,16 @@ Dependencies:
    * latex, dvips, latex2rtf, pdflatex
    * zip, unzip
    * cifs / smb
+   * pecl-memcache / memcached
+   * smarty
+   * mariadb
 
-PHP Compilation:
-   Iodine requires a number of standard PHP functions that are included
-   with most standard Linux distributions. However, in Debian, SASL
-   for LDAP is not built by default. Thus, it is necessary to custom
-   build PHP for Debian.
-
-   Steps to build Iodine's PHP for Debian:
-   1. apt-get source php5     # get the sources
-   2. apt-get build-dep php5  # install the build dependencies
-   3. in the sources directory, edit debian/rules
-      add --with-ldap-sasl and --with-mcrypt to the COMMON_CONFIG
-      list of options
-   4. In the root of the source directory, run debuild -us -uc
-   5. Eat a sandwich while PHP compiles. This takes approximately 40
-      minutes on a recent HP server in the lab.
-   6. Install the .deb files placed in the directory above the source
-      directory (dpkg -i ../*deb)
-   7. Restart apache2
-   
-   It is necessary to complete these compilation steps for every PHP
-   upgrade.
+PHP Modules:
+	PHP must be built with
+	USE="mysqli curl ldap xmlwriter imap gd"
 
 PHP Configuration:
-   In addition to the custom compilation, several PHP options need to
+   Several PHP options need to
    be changed in order for iodine to work correctly:
    These settings should be set in /etc/php5/apache2/php.ini:
    * expose_php = Off
@@ -46,17 +31,12 @@ PHP Configuration:
    * register_argc_argv = Off
    * post_max_size = 256M
    * magic_quotes_gpc = Off
-   * include_path = ".:/usr/share/php/smarty/libs:/usr/share/php"
    * enable_dl = On
    * upload_max_filesize = 256M
    * date.timezone = 'America/New_York'
    * session.gc_probability = 1
-   * asession.gc_maxlifetime = 3600
+   * session.gc_maxlifetime = 3600
      3600 must be larger than the iodine session timeout
-
-Current issues:
-   * The following warning in CLI PHP can be ignored:
-	  PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20060613+lfs/sybase_ct.so' - /usr/lib/php5/20060613+lfs/sybase_ct.so: cannot open shared object file: No such file or directory in Unknown on line 0
 
 LDAP Configuration:
    In order to have LDAP not barf all over you, you have to have the 

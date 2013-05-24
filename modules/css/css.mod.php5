@@ -6,19 +6,21 @@
 * @package modules
 * @subpackage CSS
 * @filesource
+* Handles CSS
 */
 
 /**
 * @package modules
 * @subpackage CSS
+* Handles CSS
 */
-class CSS implements Module {
+class CSS extends Module {
 
 	private $style_sheet;
 
 	private $css_text;
 
-	private $warnings = array();
+	private $warnings = [];
 
 	private $style_cache;
 
@@ -28,63 +30,6 @@ class CSS implements Module {
 
 	private $current_style;
 
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return FALSE;
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function display_box($disp) {
-		return FALSE;
-	}
-	
 	/**
 	* Required by the {@link Module} interface.
 	*/
@@ -199,7 +144,7 @@ class CSS implements Module {
 		$contents .= $this->style_sheet->__toString();
 		$contents .= "//$this->current_style";
 		file_put_contents($this->style_cache, $contents);
-		$text=$I2_DISP->fetch($this->style_cache,array(),FALSE);
+		$text=$I2_DISP->fetch($this->style_cache,[],FALSE);
 		unlink($this->style_cache);
 		file_put_contents($this->style_cache, $text);
 	}
@@ -210,7 +155,7 @@ class CSS implements Module {
 		global $I2_FS_ROOT;
 		$style_path = $I2_FS_ROOT . 'styles/';
 		
-		$styles = array();
+		$styles = [];
 		
 		$handle = opendir($style_path);
 		while (($name = readdir($handle)) !== FALSE) {
@@ -313,7 +258,8 @@ class CSS implements Module {
 	public static function flush_cache(User $user) {
 		$cache_dir = i2config_get('cache_dir', NULL, 'core') . 'styles/';
 		$style_cache = $cache_dir . $user->uid;
-		exec("rm -f $style_cache");
+		if(is_file($style_cache))
+			unlink($style_cache);
 	}
 	// Skip most of the stuff if just reading from cache. In fact, no mysql or ldap connection nor user object has been made at this point.
 	// Just a relatively quick function.

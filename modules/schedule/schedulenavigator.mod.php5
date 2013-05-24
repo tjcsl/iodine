@@ -13,78 +13,23 @@
 * @package modules
 * @subpackage StudentDirectory
 */
-class ScheduleNavigator implements Module {
+class ScheduleNavigator extends Module {
 
-	private $template;
-	private $template_args;
 	private $sched;
 
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	public function init_box() {
+	function init_box() {
 		global $I2_USER;
 		$this->sched = new Schedule($I2_USER);
 		return 'Your Classes';
 	}
 
-	public function display_box($display) {
-		$display->assign('schedule',$sched);
-		$display->disp('box.tpl');
+	function display_box($disp) {
+		$disp->assign('schedule',$this->sched);
+		//FIXME: make this actually display something
+		$disp->disp('box.tpl');
 	}
 
-	public function init_pane() {
-		global $I2_ARGS,$I2_USER;
-
-		return FALSE;
-	}
-
-	public function display_pane($display) {
-		$display->assign_array($this->template_args);
-		$display->disp($this->template);
-	}
-
-	public function get_name() {
+	function get_name() {
 		return 'ScheduleNavigator';
 	}
 

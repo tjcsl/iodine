@@ -13,51 +13,9 @@
 * @package modules
 * @subpackage SGD
 */
-class SGD implements Module {
+class SGD extends Module {
 	private $template;
-	private $template_args = array();
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
+	private $template_args = [];
 
 	function init_pane() {
 		return 'Sun Global Desktop';
@@ -78,14 +36,6 @@ class SGD implements Module {
 			Display::stop_display();
 			exit;
 		}
-	}
-	
-	function init_box() {
-		return FALSE;
-	}
-
-	function display_box($display) {
-		return FALSE;
 	}
 
 	function get_name() {

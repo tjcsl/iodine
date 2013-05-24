@@ -1,76 +1,24 @@
 <?php
 /**
-* Just contains the definition for the interface {@link Module}.
+* Just contains the definition for the {@link Aphorisms}.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
 * @copyright 2005-2006 The Intranet 2 Development Team
-* @package core
-* @subpackage Module
+* @package modules
+* @subpackage Aphorisms
 * @filesource
 */
 
 /**
-* The API for all Intranet2 modules to extend.
+* A {@link Module} to display Aphorisms.
 * @package core
 * @subpackage Module
 */
-class Aphorisms implements Module {
+class Aphorisms extends Module {
 
 		  private $aphorism = '';
 		  private $updated = FALSE;
 		  private $template = 'aphorisms_pane.tpl';
-		  private $template_args = array();
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* Displays all of a module's ibox content.
-	*
-	* @param Display $disp The Display object to use for output.
-	* @abstract
-	*/
-	function display_box($disp) {
-	}
+		  private $template_args = [];
 	
 	/**
 	* Displays all of a module's main content.
@@ -94,18 +42,9 @@ class Aphorisms implements Module {
 			  return 'Aphorisms';
 	  }
 
-	/**
-	* Performs all initialization necessary for this module to be 
-	* displayed in an ibox.
-	*
-	* @returns string The title of the box if it is to be displayed,
-	*                 otherwise FALSE if this module doesn't have an
-	*                 intrabox.
-	* @abstract
-	*/
-		  function init_box() {
-					 return FALSE;
-		  }
+	function ec($str) {
+		return str_replace('"','“',$str);
+	}
 
 	/**
 	* Performs all initialization necessary for this module to be
@@ -121,25 +60,24 @@ class Aphorisms implements Module {
 	*                return FALSE.
 	* @abstract
 	*/
-	function ec($str) {
-		return str_replace('"','“',$str);
-	}
 	function init_pane() {
 		global $I2_USER,$I2_SQL,$I2_ARGS;
 		$uidnumber = FALSE;
 		$admin = $I2_USER->is_group_member('admin_aphorisms');
 		$this->template_args['username'] = $I2_USER->name;
 		$this->template_args['admin_aphorisms'] = $admin;
-		if (isSet($I2_ARGS[1])) {
+		if (isset($I2_ARGS[1])) {
 			if ($I2_ARGS[1] == 'choose') {
 				$this->template = 'choose.tpl';
 				$this->template_args['search_destination'] = 'aphorisms/searched/';
+				$this->template_args['first_year'] = User::get_gradyear(12);
 				return 'Find a Student';
 			} else if ($I2_ARGS[1] == 'searched') {
 				$this->template = 'choose.tpl';
 				$this->template_args['results_destination'] = 'aphorisms/';
 				$this->template_args['return_destination'] = 'aphorisms/choose/';
 				$this->template_args['info'] = Search::get_results();
+				$this->template_args['first_year'] = User::get_gradyear(12);
 				return 'Search Results';
 			} else if($I2_ARGS[1] == 'data') {
 				if(!$admin) {
@@ -148,8 +86,8 @@ class Aphorisms implements Module {
 				}
 				$this->template = 'data.tpl';
 				$data = $I2_SQL->query('SELECT * FROM aphorisms ORDER BY uid')->fetch_all_arrays(Result::ASSOC);
-				$this->template_args['data'] = array();
-				$this->template_args['users'] = array();
+				$this->template_args['data'] = [];
+				$this->template_args['users'] = [];
 				foreach($data as $row) {
 					$this->template_args['users'][] = new User($row['uid']);
 					$this->template_args['data'][$row['uid']] = $row;
@@ -161,8 +99,8 @@ class Aphorisms implements Module {
 					return;
 				}
 				$in_data = $I2_SQL->query('SELECT * FROM aphorisms ORDER BY uid')->fetch_all_arrays(Result::ASSOC);
-				$data = array();
-				$users = array();
+				$data = [];
+				$users = [];
 				foreach($in_data as $row) {
 					$users[] = new User($row['uid']);
 					$data[$row['uid']] = $row;
@@ -192,16 +130,16 @@ class Aphorisms implements Module {
 		if ($I2_USER->grade != 12) {
 				  throw new I2Exception('User is not a senior!');
 		}
-		if (isSet($I2_ARGS[1]) && $I2_ARGS[1] == 'edit') {
+		if (isset($I2_ARGS[1]) && $I2_ARGS[1] == 'edit') {
 		}
-		if (isSet($_REQUEST['posting'])) {
+		if (isset($_REQUEST['posting'])) {
 		   if (strlen(preg_replace("\n| |\t|\r\n","",$_REQUEST['aphorism'])) >= 205) {
 				throw new I2Exception('Your aphorism may not be longer than 200 characters, excluding spaces!');
 			}
 		/*	$I2_SQL->query('REPLACE INTO aphorisms SET uid=%d,college=%s,nationalmeritsemifinalist=%d,nationalmeritfinalist=%d,
 					  nationalachievement=%d,hispanicachievement=%d,honor1=%s,honor2=%s,honor3=%s,aphorism=%s',$uidnumber,
-					  $_REQUEST['college'],isSet($_REQUEST['nationalmeritsemifinalist'])?1:0,
-					  isSet($_REQUEST['nationalmeritfinalist'])?1:0,isSet($_REQUEST['nationalachievement'])?1:0,isSet($_REQUEST['hispanicachievement'])?1:0,
+					  $_REQUEST['college'],isset($_REQUEST['nationalmeritsemifinalist'])?1:0,
+					  isset($_REQUEST['nationalmeritfinalist'])?1:0,isset($_REQUEST['nationalachievement'])?1:0,isset($_REQUEST['hispanicachievement'])?1:0,
 					  $_REQUEST['honor1'],$_REQUEST['honor2'],$_REQUEST['honor3'],$_REQUEST['aphorism']
 			);*/
 			$I2_SQL->query('REPLACE INTO aphorisms SET uid=%d,college=%s,honor1=%s,honor2=%s,honor3=%s,aphorism=%s',$uidnumber,

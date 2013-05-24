@@ -1,5 +1,5 @@
 [<foreach from=$im_networks key=network item=description>]
-  [<if isSet($im_sns[$network])>]
+  [<if isset($im_sns[$network])>]
     [<$description>][<if count($im_sns[$network]) > 1>]s[</if>]:
     <ul class="none">
        [<foreach from=$im_sns[$network] key=sn item=status>]

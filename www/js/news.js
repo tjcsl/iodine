@@ -14,8 +14,21 @@ function doNewsShade(nid) {
 	newsSendReq("shade/" + nid);
 	return false;
 }
+function doNewsRead(nid){
+	var content = document.getElementById("newspost" + nid);
+	content.style.display = "none";
+	newsSendReq("read/" + nid);
+	return false;
+}
+function doNewsUnread(nid){
+	e = document.getElementById('unreadlink_'+nid);
+	if(typeof e!='undefined') e.innerHTML=(e.innerHTML=='Mark unread'?'Mark read':'Mark unread');
+	newsSendReq("unread/" + nid);
+	return false;
+}
 function newsSendReq(info) {
-	http.open('GET', news_root + info); // To whoever wrote this line, you are missing an argument.  Sincerely, Zachary Yaro
+	http.open('GET', news_root + info, {});	// To whoever wrote this line, you are missing an argument.  Sincerely, Zachary Yaro
+											// Happy now?
 	http.onreadystatechange = newsHandleResponse;
 	http.send(null);
 }

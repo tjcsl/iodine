@@ -17,8 +17,10 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, ".earthscape.org") ||
 		dnsDomainIs(host, ".ebscohost.com") ||
 		dnsDomainIs(host, ".ebsco-content.com") ||
+		dnsDomainIs(host, "search.serialssolutions.com") ||
 		dnsDomainIs(host, "ehrafworldcultures.yale.edu") ||
 		dnsDomainIs(host, ".galegroup.com") ||
+		dnsDomainIs(host, "nelnetsolutions.com") ||
 		dnsDomainIs(host, ".grolier.com") ||
 		dnsDomainIs(host, "jchemed.chem.wisc.edu") ||
 		dnsDomainIs(host, "www.jstor.org") ||
@@ -49,7 +51,13 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, ".jove.com") ||
 		dnsDomainIs(host, ".marshallcavendishdigital.com") ||
 		dnsDomainIs(host, ".salempress.com") ||
-		dnsDomainIs(host, "whiv.alexanderstreet.com")
+		dnsDomainIs(host, ".booksinprint.com") ||
+		dnsDomainIs(host, "whiv.alexanderstreet.com") ||
+		dnsDomainIs(host, ".ebrary.com") ||
+		dnsDomainIs(host, ".oxfordartonline.com") ||
+		dnsDomainIs(host, ".apimages.com") ||
+		dnsDomainIs(host, ".sciencemag.org") ||
+		dnsDomainIs(host, "charon.tjhsst.edu")
 
 	)
 			return "PROXY local.border.tjhsst.edu:8080";

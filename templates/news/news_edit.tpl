@@ -50,14 +50,12 @@ Your news post has been changed.<br />
 		if(!formfield) {
 			formfield = document.getElementById("RichForm").contentDocument;
 		}
-		alert(formfield);
 		formfield.designMode='on';
 		fillinarea();
 	}, false);
 	function fillinarea() {
-		formfield.execCommand("inserthtml",false,"[<$newsitem->text|replace:'"':"'"|replace:"\n":'<br />'>]");
-		alert("ran command");
-		var subhead = formfield.getElementsByTagName("head")[0];
+		formfield.body.innerHTML = "[<$newsitem->text|replace:'"':"'"|replace:"\n":'<br />'>]";
+    var subhead = formfield.getElementsByTagName("head")[0];
 		var css = formfield.createElement("link");
 		css.setAttribute("rel", "stylesheet");
 		css.setAttribute("type", "text/css");

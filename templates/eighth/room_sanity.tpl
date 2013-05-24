@@ -10,7 +10,7 @@
 				<td style="padding-left: 5px;"><a href="[<$I2_ROOT>]eighth/sch_activity/view/aid/[<$activity.aid>]">[<$activity.name>] - [<$activity.aid>]</a></td>
 			</tr>
 		[</foreach>]
-		[<if isSet($sponsorconflicts.$room)>]
+		[<if isset($sponsorconflicts.$room)>]
 			<tr>
 			[<foreach from=$sponsorconflicts.$room item="arr">]
 				[<foreach from=$arr key="sponsorid" item="subarr">]

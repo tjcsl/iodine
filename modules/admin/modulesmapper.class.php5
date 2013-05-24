@@ -9,13 +9,14 @@
 */
 
 /**
+* Generates modules map
 * @package modules
 * @subpackage Admin
 */
 
 class ModulesMapper {
 	
-	static $map = array();
+	static $map = [];
 
 	private static function process_dir($dir) {
 		if ($handle = opendir($dir)) {
@@ -49,6 +50,10 @@ class ModulesMapper {
 		
 		if (!self::process_dir($module_path)) {
 			error("Error! Could not process modules directory $module_path");
+		}
+
+		if (!file_exists($cache_dir) && !mkdir($cache_dir)) {
+			error("Error! Could not create $cache_dir");
 		}
 
 		if (file_exists($map_file) && !unlink($map_file)) {

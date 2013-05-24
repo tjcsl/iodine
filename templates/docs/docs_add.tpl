@@ -1,6 +1,6 @@
 <a href="[<$I2_ROOT>]docs">Documents Home</a><br /><br />
 
-[<if $error>]<p>[<$error>]</p>[</if>]
+[<if $error>]<p style="color:red">[<$error>]</p>[</if>]
 
 <p>Note that the document you upload must be less than 10 megabytes and must be one of the following file types: [<$exts>]</p>
 <form method="post" action="[<$I2_ROOT>]docs/add" class="boxform" enctype="multipart/form-data">
@@ -29,10 +29,10 @@
 </select></td>
 <td><input type="checkbox" checked="checked" name="view[0]" /></td>
 <td><input type="checkbox" name="edit[0]" /></td>
-<td><a onclick="docs_deleteGroup(event)" href="">remove</a></td>
+<!-- <td><a onclick="docs_deleteGroup(event)" href="">remove</a></td> -->
 </tr><tr>
 <td></td>
-<td><a href="" onclick="docs_addGroup(event)">Add another group</a></td>
+<!-- <td><a href="" onclick="docs_addGroup(event)">Add another group</a></td> -->
 <td></td>
 </tr>
 </tbody>

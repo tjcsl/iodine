@@ -40,7 +40,7 @@ $I2_DOMAIN = $_SERVER['HTTP_HOST'];
 /**
 * 'core.php5' is nine letters
 */
-$I2_ROOT = (isSet($_SERVER['HTTPS'])?'https://':'http://') . $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,-9);
+$I2_ROOT = (isset($_SERVER['HTTPS'])?'https://':'http://') . $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,-9);
 //$I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
 $I2_FS_ROOT = substr($_SERVER['SCRIPT_FILENAME'],0,-9);
 //$I2_FS_ROOT = i2config_get('root_path', '/var/wwww/iodine/', 'core');
@@ -54,9 +54,9 @@ if(version_compare(PHP_VERSION, '5.1.0', '>')) {
 }
 
 /*
-The actual config file in HG is config.user.ini and config.server.ini
+The actual config file in Git is config.user.ini and config.server.ini
 When you check out intranet2 to run it from your personal space, run
-setup. Do _NOT_ add config.ini to HG, as it's different for
+setup. Do _NOT_ add config.ini.php5 to Git, as it's different for
 everyone. Edit config.server.ini to edit the server (production) config.
 */
 
@@ -64,8 +64,7 @@ everyone. Edit config.server.ini to edit the server (production) config.
 try {
 	load_module_map();
 
-	//session_set_save_handler(open,close,read,write,destroy,gc);
-	session_set_save_handler(array('SessionGC','open'),array('SessionGC','close'),array('SessionGC','read'),array('SessionGC','write'),array('SessionGC','destroy'),array('SessionGC','gc'));
+	session_set_save_handler(new SessionGC());
 
 	session_start();
 
@@ -88,7 +87,7 @@ try {
 	*
 	* @global array $I2_ARGS
 	*/
-	$I2_ARGS = array();
+	$I2_ARGS = [];
 
 	/**
 	* The global associative array for a module's query arguments.
@@ -99,7 +98,7 @@ try {
 	*
 	* @global array $I2_QUERY
 	*/
-	$I2_QUERY = array();
+	$I2_QUERY = [];
 
 	/* Eliminates extraneous slashes in the PATH_INFO
 	** And splits them into the global I2_ARGS array
@@ -150,6 +149,7 @@ try {
 	 *
 	 * @global Logging $I2_LOG
 	 */
+
 	$I2_LOG = new Logging();
 	
 	/**
@@ -171,6 +171,22 @@ try {
 	$I2_SQL = new MySQL();
 
 	/**
+	 * The Api object.
+	 * Used in Auth, so must come first.
+	 *
+	 * @global Api $I2_API
+	 */
+	$I2_API  = new Api();
+
+	/**
+	 * The control mechanism for all Asynchonous Javascript and XML.
+	 * Used in Auth, so must come first.
+	 *
+	 * @global Ajax $I2_AJAX
+	 */
+	$I2_AJAX  = new Ajax();
+
+	/**
 	 * The global authentication mechanism.
 	 *
 	 * Use this {@link Auth} object for authenticating users.
@@ -186,7 +202,13 @@ try {
 	 *
 	 * @global LDAP $I2_LDAP
 	 */
-	if(isset($I2_ARGS[0]) && ($I2_ARGS[0]=='feeds' || ($I2_ARGS[0]=='calendar' && !$I2_AUTH->is_authenticated(TRUE)))) {
+	$ldap_excludes = (isset($I2_ARGS[0]) &&
+		($I2_ARGS[0] == 'feeds' ||
+		$I2_ARGS[0] == 'calendar' ||
+			(isset($I2_ARGS[1]) &&
+			($I2_ARGS[0] == 'api' && $I2_ARGS[1] == 'bellschedule') ||
+			($I2_ARGS[0] == 'ajax' && $I2_ARGS[1] == 'bellschedule'))));
+	if($ldap_excludes && !$I2_AUTH->is_authenticated(TRUE)) {
 		//don't try to bind when you're in generic mode.
 		$I2_LDAP = LDAP::get_generic_bind();
 		$I2_USER = new User(9999);
@@ -216,19 +238,12 @@ try {
 	 */
 	$I2_DISP = new Display();
 
-	/**
-	 * The control mechanism for all Asynchonous Javascript and XML.
-	 *
-	 * @global Ajax $I2_AJAX
-	 */
-	$I2_AJAX  = new Ajax();
-
 	/* $I2_WHATEVER = new Whatever(); (Hopefully there won't be much more here) */
 
 	// Starts with whatever module the user specified, otherwise
 	// default to 'welcome'
 	$module = "";
-	if(isSet($I2_ARGS[0])) {
+	if(isset($I2_ARGS[0])) {
 		$module = $I2_ARGS[0];
 	} elseif($I2_USER->startpage) {
 		$module = $I2_USER->startpage;
@@ -238,6 +253,36 @@ try {
 
 	if(strtolower($module) == 'ajax') {
 		$I2_AJAX->returnResponse($I2_ARGS[1]);
+	} elseif(strtolower($module) == 'api') {
+		$I2_API->init();
+		// disable backtraces by default
+		$I2_API->backtrace=false;
+		array_shift($I2_ARGS);
+		if(isset($I2_ARGS[0])) {
+			$module = $I2_ARGS[0];
+		} else {
+			$I2_API->startElement('invalid');
+			throw new I2Exception("No module specified. Currently supported modules are news and eighth.");
+		}
+		d('Passing module' . $module . ' api call', 8);
+
+		if(!get_i2module($module)) {
+			$I2_API->startElement($module);
+			throw new I2Exception("Not a module");
+		} else {
+			$mod = new $module();
+			$I2_API->startDTD($module);
+			$I2_API->writeDTDElement($module,'(body,error,debug)');
+			if($mod->api_build_dtd()==false) {
+				// no module-specific dtd
+				$I2_API->writeDTDElement('body','(#PCDATA)');
+			}
+			$I2_API->writeDTDElement('error','(#PCDATA)');
+			$I2_API->writeDTDElement('debug','(#PCDATA)');
+			$I2_API->endDTD();
+			$I2_API->startElement($module);
+			$mod->api($I2_DISP);
+		}
 	}
 	else {
 		/* Display will instantiate the module, we just pass the name */

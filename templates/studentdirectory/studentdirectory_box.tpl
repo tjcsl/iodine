@@ -1,9 +1,9 @@
 <form action="[<$I2_ROOT>]StudentDirectory/search/" method="get" class="directory">
-<table width="100%">
+<table style="width:100%;">
 <tr>
-<td align="center">
-<script language="javascript" type="text/javascript" src="[<$I2_ROOT>]www/js/ajax.js"></script>
-<script language="javascript" type="text/javascript">
+<td style="text-align:center;">
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/ajax.js"></script>
+<script type="text/javascript">
 	var xmlhttp;
 	function showResult(str) {
 		if (str.length<3)
@@ -38,13 +38,13 @@
 <!-- Add onkeyup="showResult(this.value)" for suggestions -->
 <input name="q" type="search" results="0" placeholder="Search the Directory" class="directory-field" id="studentdirectory_query"/>
 <div id="livesearch" style="margin:0px; width:194px; align=left;"></div>
-</td><td align="center">
+</td><td style="text-align:center;">
 <input type="submit" value="Search" class="directory-button" />
 </td>
 </tr>
 </table>
 </form>
-<script language="javascript" type="text/javascript">
+<script type="text/javascript">
 	if(navigator.userAgent.indexOf('Safari') != -1) {
 		var s = document.getElementById('studentdirectory_query')
 		s.setAttribute("autosave", "iodine-studentdirectory-search");

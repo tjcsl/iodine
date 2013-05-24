@@ -15,7 +15,7 @@
 * @subpackage Scheduling
 */
 class SectionSQL implements Section {
-	private $info_arr = array();
+	private $info_arr = [];
 	private $mysectionid = NULL;
 
 	/**
@@ -58,7 +58,7 @@ class SectionSQL implements Section {
 	*/
 	public function get_students() {
 		global $I2_SQL;
-		$ret = array();
+		$ret = [];
 
 		foreach($I2_SQL->query('SELECT uid FROM userinfo LEFT JOIN student_section_map USING (studentid) WHERE student_section_map.sectionid = %d;', $this->mysectionid) as $row) {
 			$ret[] = new User($row[0]);
@@ -70,7 +70,7 @@ class SectionSQL implements Section {
 	public static function generate($section_ids) {
 		global $I2_SQL;
 		if(is_array($section_ids)) {
-			$ret = array();
+			$ret = [];
 			foreach($I2_SQL->query('SELECT * FROM section_course_map WHERE sectionid IN (%D);',$section_ids) as $row) {
 				$ret[] = new SectionSQL($row);
 			}

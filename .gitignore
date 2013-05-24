@@ -1,9 +1,10 @@
 .htaccess
+*.sw?
 config.ini.php5
+phpdoc.xml
 update
 commit
 test
 convert
 /runtime/
 /uploads/
-/background/chatrelay/Relay

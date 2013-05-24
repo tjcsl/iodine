@@ -15,12 +15,12 @@
 * @subpackage Scheduling
 */
 class ScheduleSQL implements Iterator {
-	private $class_arr = array();
+	private $class_arr = [];
 
 	public function __construct(User $user) {
 		global $I2_SQL;
 
-		$sids = array();
+		$sids = [];
 		foreach($I2_SQL->query('SELECT sectionid FROM student_section_map WHERE studentid = %d;',$user->studentid) as $row) {
 			$sids[] = $row[0];
 		}

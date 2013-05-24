@@ -4,7 +4,7 @@
 * @package modules
 * @subpackage Docs
 */
-class Calendar implements Module {
+class Calendar extends Module {
 
 	/**
 	* The display object to use
@@ -19,55 +19,12 @@ class Calendar implements Module {
 	/**
 	* Arguments for the template
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* Declaring some global variables
 	*/
 	private $message;
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
 
 	/**
 	* Required by the {@link Module} interface.
@@ -91,18 +48,16 @@ class Calendar implements Module {
 	}
 
 	function display_pane($display) {
-		$display->disp($this->template, $this->template_args);
+		global $I2_USER;
+		//FIXME: calendar is full of security holes
+		if($I2_USER->is_group_member('admin_all') || $I2_USER->is_group_member('admin_calendar'))
+			$display->disp($this->template, $this->template_args);
+		else
+			return FALSE;
 	}
 
 	function get_name() {
 		return 'Calendar';
-	}
-
-	function init_box() {
-		return FALSE;
-	}
-
-	function display_box($display) {
 	}
 
 	/**
@@ -127,18 +82,18 @@ class Calendar implements Module {
 		$this->template_args['startdate']=$startdate;
 		$this->template_args['enddate']=$enddate;
 
-		$data_time = $I2_SQL->query('SELECT * FROM calendar WHERE blocknottime=0')->fetch_all_arrays(MYSQL_ASSOC);
-		$data_block = $I2_SQL->query('SELECT * FROM calendar WHERE blocknottime=1')->fetch_all_arrays_keyed_list('blockdate',MYSQL_ASSOC);
+		$data_time = $I2_SQL->query('SELECT * FROM calendar WHERE blocknottime=0')->fetch_all_arrays(MYSQLI_ASSOC);
+		$data_block = $I2_SQL->query('SELECT * FROM calendar WHERE blocknottime=1')->fetch_all_arrays_keyed_list('blockdate',MYSQLI_ASSOC);
 
-		$blocksraw = $I2_SQL->query('SELECT * FROM calendar_schedule')->fetch_all_arrays(MYSQL_ASSOC);
-		$blocks = array();
+		$blocksraw = $I2_SQL->query('SELECT * FROM calendar_schedule')->fetch_all_arrays(MYSQLI_ASSOC);
+		$blocks = [];
 		foreach($blocksraw as $block) {
 			$blocklist = explode('|',$block['blocksarray']);
 			//print_r($blocklist);
-			$addarray=array();
+			$addarray=[];
 			foreach($blocklist as $shard) {
 				$blockparts = explode(',',$shard);
-				$ret=array();
+				$ret=[];
 				$ret['name']=$blockparts[0];
 				//echo "(".$block['day'].' '.$blockparts[1].")\r\n";
 				$ret['starttime']=strtotime($block['day'].' '.$blockparts[1]);
@@ -147,7 +102,7 @@ class Calendar implements Module {
 			}
 			$blocks[$block['day']]=$addarray;
 		}
-		$data = array();
+		$data = [];
 		foreach($data_time as $row) {
 			$data[date("Y-m-d",strtotime($row['starttime']))][]=array('title'=>$row['title'],'id'=>$row['id'],'text'=>$row['text']);
 		}
@@ -155,7 +110,7 @@ class Calendar implements Module {
 		//print_r($blocks);
 		// TODO: Get working
 		/*if(isset($I2_USER) && $I2_USER->iodineUIDNumber !=9999) {
-			$userdata = $I2_SQL->query('SELECT * FROM calendar_user WHERE uid=%s',$I2_USER->iodineUIDNumber)->fetch_all_arrays_keyed_list('day',MYSQL_ASSOC);
+			$userdata = $I2_SQL->query('SELECT * FROM calendar_user WHERE uid=%s',$I2_USER->iodineUIDNumber)->fetch_all_arrays_keyed_list('day',MYSQLI_ASSOC);
 			$data = array_merge($data,$userdata);
 			$this->template_args['extraline']='';
 		} else {
@@ -164,12 +119,12 @@ class Calendar implements Module {
 		
 		
 
-		$weeks=array();
+		$weeks=[];
 		$thisdate=$starttime;
 		for($i=0;$i<5;$i++) {
-			$weeks[]=array();
+			$weeks[]=[];
 			for($j=0;$j<7;$j++) {
-				$weeks[$i][]=array();
+				$weeks[$i][]=[];
 				$weeks[$i][$j]['day']=date("j",$thisdate);
 				$weeks[$i][$j]['monthodd']=date("n",$thisdate)%2;
 				/*$text="";

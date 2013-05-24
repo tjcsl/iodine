@@ -54,12 +54,9 @@ class Cache {
 		global $I2_FS_ROOT;
 		if(gettype($module)=="string") $name=$module;
 		else $name=get_class($module);
-		//$db=i2config_get('database','iodine','mysql');
-		//$hash=sha1($db."??".$name."::".$key);
 		$hash=sha1($I2_FS_ROOT."??".$name."::".$key);
-		//if(!isset($expire)) $expire=intval(i2config_get('expire', '120', 'memcached'));
 		if(!isset($expire)) $expire=intval(MEMCACHE_DEFAULT_TIMEOUT);
-		d("Storing item in memcached: $name, $key, $hash");
+		d("Storing item in memcached: $name::$key");
 		return $this->mcache->set($hash, $val, 0, $expire);
 	}
 
@@ -75,7 +72,6 @@ class Cache {
 		global $I2_FS_ROOT;
 		if(gettype($module)=="string") $name=$module;
 		$name=get_class($module);
-		#$hash=sha1(i2config_get('database','iodine','mysql')."??".$name."::".$key);
 		$hash=sha1($I2_FS_ROOT."??".$name."::".$key);
 		return $this->mcache->delete($hash);
 	}
@@ -91,21 +87,16 @@ class Cache {
 		global $I2_FS_ROOT;
 		if(gettype($module)=="string") $name=$module;
 		else $name=get_class($module);
-		#$hash=sha1(i2config_get('database','iodine','mysql')."??".$name."::".$key);
 		$hash=sha1($I2_FS_ROOT."??".$name."::".$key);
-		d("reading $hash from memcache",7);
+		d("reading $name::$key from memcache",7);
 		if($hash===null) return false;
 		$val=$this->mcache->get($hash);
 		if($val===false)
 		{
-			d("$hash not found in memcache",6);
+			d("$name::$key not found in memcache",6);
 			return false;
 		}
-		d("memcache lookup $hash succeeded",7);
-		d(print_r($val,true),7);
-		//$val2=unserialize($val);
-		//print_r($val);
-		//if($val2!==false) $val=$val2;
+		d("memcache lookup $name::$key succeeded",7);
 		return $val;
 	}
 }

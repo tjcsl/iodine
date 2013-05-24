@@ -56,6 +56,10 @@ function addQuestion(event) {
 	option.appendChild(document.createTextNode("Standard other"));
 	option.setAttribute("value","standard_other");
 	select.appendChild(option);
+	option = document.createElement("option");
+	option.appendChild(document.createTextNode("Identity Listing"));
+	option.setAttribute("value","identity");
+	select.appendChild(option);
 	cell = document.createElement("td");
 	cell.appendChild(select);
 	row.appendChild(cell);

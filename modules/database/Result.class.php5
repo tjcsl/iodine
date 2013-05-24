@@ -16,9 +16,9 @@
 */			
 interface Result extends Iterator {
 
-	const BOTH = MYSQL_BOTH;
-	const NUM = MYSQL_NUM;
-	const ASSOC = MYSQL_ASSOC;
+	const BOTH = MYSQLI_BOTH;
+	const NUM = MYSQLI_NUM;
+	const ASSOC = MYSQLI_ASSOC;
 
 	/**
 	* Fetches the next ungotten row in the resultset.  This function will return FALSE

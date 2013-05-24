@@ -2,7 +2,7 @@
 <script type="text/javascript">
 	var news_root = '[<$I2_ROOT>]news/';
 </script>
-<div align="left" style="margin-bottom:3px;">
+<div style="text-align:left; margin-bottom:3px;">
 [<if $newsadmin || $maypost>]
 	<a href="[<$I2_ROOT>]news/add">Post a news article</a>
 [</if>]
@@ -16,6 +16,9 @@
 <div>
 [<foreach from=$stories item=story>]
 		[<include file="news/news-disp.tpl">]
+[<foreachelse>]
+		<br />
+		<p>There are no newsposts that can be displayed this time. You can individually re-add posts that you want to see by clicking "Old news" below and selecting "Mark as unread."</p>
 [</foreach>]
 </div>
 <br/>

@@ -43,7 +43,7 @@ class Schedule implements Iterator {
 	public function __construct(User $user) {
 		global $I2_LDAP;
 		$this->ldap = $I2_LDAP;
-		$this->sections = array();
+		$this->sections = [];
 		if ($user->is_group_member('grade_staff')) {
 			$res = $this->ldap->search(LDAP::get_schedule_dn(),'sponsorDN='.LDAP::get_user_dn($user),array('tjhsstSectionId','quarterNumber','roomNumber','cn','classPeriod','sponsorDn','tjhsstClassId'));
 			if ($res) {
@@ -96,7 +96,7 @@ class Schedule implements Iterator {
 		if($res->num_rows() < 1) {
 			throw new I2Exception('Invalid Class ID passed to Schedule::sections(): '.$classid);
 		}
-		$ret = array();
+		$ret = [];
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 			$ret[] = $row['tjhsstSectionId'];
 		}
@@ -111,7 +111,7 @@ class Schedule implements Iterator {
 	public static function roster() {
 		global $I2_LDAP;
 		$res = $I2_LDAP->search(LDAP::get_schedule_dn(),"objectClass=tjhsstClass",array('tjhsstSectionId'));
-		$ret = array();
+		$ret = [];
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 			$ret[] = $row['tjhsstSectionId'];
 		}

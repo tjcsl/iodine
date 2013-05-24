@@ -13,7 +13,7 @@
 * @package modules
 * @subpackage Parking
 */
-class Parking implements Module {
+class Parking extends Module {
 
 	/**
 	* The display object to use
@@ -28,12 +28,30 @@ class Parking implements Module {
 	/**
 	* Arguments for the template
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* Declaring some global variables
 	*/
 	private $message;
+
+	private static $sortmap = [
+		'none'			=> ['1', 'none (leave last on sorting if used)'],
+		'nameasc' 		=> ['name', 'name, A-Z'],
+		'namedesc' 		=> ['name DESC', 'name, Z-A'],
+		'gradeasc' 		=> ['grade', 'grade, rising juniors first'],
+		'gradedesc' 		=> ['grade DESC', 'grade, rising seniors first'],
+		'skipsasc' 		=> ['(skips + other_driver_skips)', '8th period skips, least to most'],
+		'skipsdesc'	 	=> ['(skips + other_driver_skips) DESC', '8th period skips, most to least'],
+		'mentorshipasc' 	=> ['mentorship', 'mentorship, not first'],
+		'mentorshipdesc'	=> ['mentorship DESC', 'mentorship, yes first'],
+		'jointdesc' 		=> ['(other_driver!="")', 'joint applications, first'],
+		'assignedasc' 		=> ['assigned_sort', 'assigned spot, ascending'],
+		'assigneddesc' 		=> ['assigned_sort DESC', 'assigned spot, descending'],
+		'timeasc' 		=> ['timestamp', 'time submitted, earliest first'],
+		'timedesc' 		=> ['timestamp DESC', 'time submtted, latest first'],
+		'random' 		=> ['RAND()', 'randomize within last category']
+		];
 
 	/**
 	 * WARNING: HACKY. HACKY. HACKY. BAD.
@@ -55,49 +73,6 @@ class Parking implements Module {
 			(skips < 12 AND other_driver_skips * other_driver_approved < 12) as s4
 			FROM parking_apps WHERE uid IS NOT NULL
 			ORDER BY grade DESC, s0 DESC, s1 DESC, s2 DESC, s3 DESC, s4 DESC, RAND();';
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
 
 	/**
 	* Required by the {@link Module} interface.
@@ -130,7 +105,7 @@ class Parking implements Module {
 
 		$settings = $I2_SQL->query('SELECT * FROM parking_settings')->fetch_array();
 
-		if(! (/*$I2_USER->is_group_member('class_2014') ||*/ $I2_USER->is_group_member('class_2013') || $I2_USER->is_group_member('admin_parking'))) {
+		if(! ($I2_USER->grade == 11 || $I2_USER->grade == 12 || $I2_USER->is_group_member('admin_parking'))) {
 			redirect('');
 		}
 
@@ -152,7 +127,7 @@ class Parking implements Module {
 
 		$settings = $I2_SQL->query('SELECT * FROM parking_settings')->fetch_array();
 
-		if(! (/*$I2_USER->is_group_member('class_2014') ||*/ $I2_USER->is_group_member('class_2013') || $I2_USER->is_group_member('admin_parking'))) {
+		if(! ($I2_USER->grade == 11 || $I2_USER->grade == 12 || $I2_USER->is_group_member('admin_parking'))) {
 			redirect('');
 		}
 
@@ -217,7 +192,7 @@ class Parking implements Module {
 		$this->template_args['grade'] = $I2_USER->grade;
 		$this->template_args['skips'] = count(EighthSchedule::get_absences($I2_USER->uid));
 
-		$this->template_args['cars'] = array();
+		$this->template_args['cars'] = [];
 
 		if($I2_SQL->query('SELECT COUNT(*) FROM parking_apps WHERE uid=%d', $I2_USER->uid)->fetch_single_value() != 0) {
 
@@ -242,7 +217,7 @@ class Parking implements Module {
 		}
 
 		$res = $I2_SQL->query('SELECT uid FROM parking_apps WHERE other_driver=%d', $I2_USER->uid);
-		$pot_parts = array();
+		$pot_parts = [];
 		while ($row = $res->fetch_array()) {
 			$pot_parts[] = new User($row['uid']);
 		}
@@ -262,7 +237,7 @@ class Parking implements Module {
 
 		$settings = $I2_SQL->query('SELECT * FROM parking_settings')->fetch_array();
 
-		if(! (/*$I2_USER->is_group_member('class_2014') ||*/ $I2_USER->is_group_member('class_2013') || $I2_USER->is_group_member('admin_parking'))) {
+		if(! ($I2_USER->grade == 11 || $I2_USER->grade == 12 || $I2_USER->is_group_member('admin_parking'))) {
 			redirect('');
 		}
 
@@ -313,6 +288,7 @@ class Parking implements Module {
 			$this->template_args['action_name'] = 'Find Person';
 		}
 
+		$this->template_args['first_year'] = User::get_gradyear(12);
 		$this->template = 'parking_partner.tpl';
 	}
 
@@ -328,23 +304,7 @@ class Parking implements Module {
 			redirect('parking');
 		}
 
-		$sortmap = array(	'none' 			=> array('1', 'none (leave last on sorting if used)'),
-					'nameasc' 		=> array('name', 'name, A-Z'),
-					'namedesc' 		=> array('name DESC', 'name, Z-A'),
-					'gradeasc' 		=> array('grade', 'grade, rising juniors first'),
-					'gradedesc' 		=> array('grade DESC', 'grade, rising seniors first'),
-					'skipsasc' 		=> array('(skips + other_driver_skips)', '8th period skips, least to most'),
-					'skipsdesc' 		=> array('(skips + other_driver_skips) DESC', '8th period skips, most to least'),
-					'mentorshipasc' 	=> array('mentorship', 'mentorship, not first'),
-					'mentorshipdesc' 	=> array('mentorship DESC', 'mentorship, yes first'),
-					'jointdesc' 		=> array('(other_driver!="")', 'joint applications, first'),
-					'assignedasc' 		=> array('assigned_sort', 'assigned spot, ascending'),
-					'assigneddesc' 		=> array('assigned_sort DESC', 'assigned spot, descending'),
-					'timeasc' 		=> array('timestamp', 'time submitted, earliest first'),
-					'timedesc' 		=> array('timestamp DESC', 'time submtted, latest first'),
-					'random' 		=> array('RAND()', 'randomize within last category')
-				);
-		$sortarr = array();
+		$sortarr = [];
 		if(isset($_REQUEST['parking_admin_form'])) {
 			if($_REQUEST['parking_admin_form'] == 'changedeadline') {
 				$I2_SQL->query('UPDATE parking_settings SET deadline=%s', $_REQUEST['deadline']);
@@ -353,10 +313,10 @@ class Parking implements Module {
 				$I2_SQL->query('UPDATE parking_settings SET startdate=%s', $_REQUEST['startdate']);
 			}
 			if($_REQUEST['parking_admin_form'] == 'sort') {
-				$this->template_args['sort_selected'] = array();
+				$this->template_args['sort_selected'] = [];
 				for($n = 1; $n <= 5; $n++) {
 					$sort = $_REQUEST["sort$n"];
-					$sortarr[] = $sortmap[$sort][0];
+					$sortarr[] = self::$sortmap[$sort][0];
 					$this->template_args['sort_selected'][$n] = $sort;
 
 					// yes, i know this is not good form. for now, i don't care.
@@ -393,11 +353,11 @@ class Parking implements Module {
 			foreach($this->template_args['sort_selected'] as $key => $val) {
 				d($key . ": " . $val);
 			}
-			$sortarr = array(	$sortmap[$sorts['sort1']][0],
-						$sortmap[$sorts['sort2']][0],
-						$sortmap[$sorts['sort3']][0],
-						$sortmap[$sorts['sort4']][0],
-						$sortmap[$sorts['sort5']][0]
+			$sortarr = array(	self::$sortmap[$sorts['sort1']][0],
+						self::$sortmap[$sorts['sort2']][0],
+						self::$sortmap[$sorts['sort3']][0],
+						self::$sortmap[$sorts['sort4']][0],
+						self::$sortmap[$sorts['sort5']][0]
 					);
 		}
 
@@ -415,8 +375,8 @@ class Parking implements Module {
 			$I2_SQL->query('UPDATE parking_apps SET other_driver_skips=%d WHERE other_driver=%d', count(EighthSchedule::get_absences($uid)), $uid);
 		}
 
-		$this->template_args['people'] = array();
-		$driveruids = array();
+		$this->template_args['people'] = [];
+		$driveruids = [];
 		//$res = $I2_SQL->query('SELECT assigned FROM parking_apps ORDER BY '.join(", ", $sortarr));
 		//while ($record = $res->fetch_array()) {
 		//	print_r($record);
@@ -430,7 +390,7 @@ class Parking implements Module {
 				continue;
 			}
 
-			$person = array();
+			$person = [];
 
 			if($record['special_name'] != "") {
 				$person['isTeacher'] = TRUE;
@@ -486,7 +446,7 @@ class Parking implements Module {
 				}
 			}
 			$person['numcars'] = 0;
-			$person['cars'] = array();
+			$person['cars'] = [];
 			$car_res = $I2_SQL->query('SELECT plate, make, model, year FROM parking_cars WHERE uid=%d', $record['uid']);
 			$n = 0;
 			while ($car = $car_res->fetch_array()) {
@@ -564,7 +524,7 @@ class Parking implements Module {
 			}
 		}
 
-		$this->template_args['options'] = $sortmap;
+		$this->template_args['options'] = self::$sortmap;
 
 		$this->template = 'parking_admin.tpl';
 	}
@@ -605,30 +565,14 @@ class Parking implements Module {
 			redirect('parking');
 		}
 
-		$sortmap = array(	'none' 			=> array('1', 'none (leave last on sorting if used)'),
-					'nameasc' 		=> array('name', 'name, A-Z'),
-					'namedesc' 		=> array('name DESC', 'name, Z-A'),
-					'gradeasc' 		=> array('grade', 'grade, rising juniors first'),
-					'gradedesc' 		=> array('grade DESC', 'grade, rising seniors first'),
-					'skipsasc' 		=> array('(skips + other_driver_skips)', '8th period skips, least to most'),
-					'skipsdesc' 		=> array('(skips + other_driver_skips) DESC', '8th period skips, most to least'),
-					'mentorshipasc' 	=> array('mentorship', 'mentorship, not first'),
-					'mentorshipdesc' 	=> array('mentorship DESC', 'mentorship, yes first'),
-					'jointdesc' 		=> array('(other_driver!="")', 'joint applications, first'),
-					'assignedasc' 		=> array('assigned_sort', 'assigned spot, ascending'),
-					'assigneddesc' 		=> array('assigned_sort DESC', 'assigned spot, descending'),
-					'timeasc' 		=> array('timestamp', 'time submitted, earliest first'),
-					'timedesc' 		=> array('timestamp DESC', 'time submtted, latest first'),
-					'random' 		=> array('RAND()', 'randomize within last category')
-				);
-		$sortarr = array();
+		$sortarr = [];
 		if(count($sortarr) == 0) {
 			$sorts = $I2_SQL->query('SELECT sort1, sort2, sort3, sort4, sort5 FROM parking_settings')->fetch_array();
-			$sortarr = array(	$sortmap[$sorts['sort1']][0],
-						$sortmap[$sorts['sort2']][0],
-						$sortmap[$sorts['sort3']][0],
-						$sortmap[$sorts['sort4']][0],
-						$sortmap[$sorts['sort5']][0]
+			$sortarr = array(	self::$sortmap[$sorts['sort1']][0],
+						self::$sortmap[$sorts['sort2']][0],
+						self::$sortmap[$sorts['sort3']][0],
+						self::$sortmap[$sorts['sort4']][0],
+						self::$sortmap[$sorts['sort5']][0]
 					);
 		}
 
@@ -642,10 +586,10 @@ class Parking implements Module {
 			$I2_SQL->query('UPDATE parking_apps SET other_driver_skips=%d WHERE other_driver=%d', count(EighthSchedule::get_absences($uid)), $uid);
 		}
 
-		$people = array();
+		$people = [];
 		$res = $I2_SQL->query($this->query);
 		while ($record = $res->fetch_array()) {
-			$person = array();
+			$person = [];
 
 			if($record['special_name'] != "") {
 				$person['isTeacher'] = TRUE;
@@ -686,7 +630,7 @@ class Parking implements Module {
 				$person['otherdriver'] = $user->name;
 			}
 			$person['numcars'] = 0;
-			$person['cars'] = array();
+			$person['cars'] = [];
 			$car_res = $I2_SQL->query('SELECT plate, make, model, year FROM parking_cars WHERE uid=%d', $record['uid']);
 			$n = 0;
 			while ($car = $car_res->fetch_array()) {
@@ -712,19 +656,6 @@ class Parking implements Module {
 	function display_pane($display) {
 		global $I2_SQL, $I2_USER;
 		$display->disp($this->template, $this->template_args);
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return FALSE;
-	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function display_box($display) {
 	}
 	
 	/**

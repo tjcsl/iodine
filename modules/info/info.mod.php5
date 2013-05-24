@@ -14,60 +14,8 @@
 * @package modules
 * @subpackage Info
 */
-class Info implements Module {
+class Info extends Module {
 	private $info_tpl;
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* Displays all of a module's ibox content.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_box($disp) {
-		return FALSE;
-	}
 	
 	/**
 	* Displays all of a module's main content.
@@ -93,17 +41,6 @@ class Info implements Module {
 	function get_name() {
 		return 'info';
 	}
-	/**
-	* Performs all initialization necessary for this module to be 
-	* displayed in an ibox.
-	*
-	* @returns string The title of the box if it is to be displayed,
-	*                 otherwise FALSE if this module doesn't have an
-	*                 intrabox.
-	*/
-	function init_box() {
-		return FALSE;
-	}
 
 	/**
 	* Performs all initialization necessary for this module to be
@@ -123,9 +60,11 @@ class Info implements Module {
 		
 		if(isset($I2_ARGS[1])) {
 			$arr = array_slice($I2_ARGS, 1);
+			$mainhelppage = false;
 		} else {
 			// They might have hit 'help' when on the main page, when there are no arguments, so load the help for their startpage
 			$arr = array($I2_USER->startpage);
+			$mainhelppage = true;
 		}
 		
 		$last_try = FALSE;
@@ -139,7 +78,6 @@ class Info implements Module {
 			if(Display::is_template('info/'.$this->info_tpl)) {
 				break;
 			}
-			
 			if(array_pop($arr) === NULL) {
 				$this->info_tpl = 'error.tpl';
 				break;
@@ -148,6 +86,8 @@ class Info implements Module {
 			
 		if(isset($I2_ARGS[1])) {
 			return 'Iodine Info: '.ucfirst($I2_ARGS[1]);
+		}else if($mainhelppage) {
+			return;
 		}
 		return 'Error';
 	}

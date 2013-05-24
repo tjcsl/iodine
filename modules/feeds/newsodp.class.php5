@@ -63,7 +63,9 @@ class NewsODP {
 		$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'newsodp.cache';
 		$contents = NewsODP::create_contents_docbook();// If the contents of the file havn't been made yet.
 		NewsODP::store_cache($contents,"$cachefile.temp");
-		unlink($cachefile); // Otherwise docbook2odf won't write to it.
+		if(file_exists($cachefile)) {
+			unlink($cachefile); // Otherwise docbook2odf won't write to it.
+		}
 		exec("docbook2odf $cachefile.temp --output-file $cachefile");
 		unlink("$cachefile.temp"); // We don't need this file afterwards. Comment this line out if you want more info for debugging this module.
 		$contents = NewsODP::get_cache($cachefile);

@@ -13,7 +13,7 @@
 * @package core
 * @subpackage Display
 */
-class TabbedPane implements Module {
+class TabbedPane extends Module {
 
 	/**
 	* Wrapped module name 
@@ -27,21 +27,13 @@ class TabbedPane implements Module {
 
 	private $template = 'pane.tpl';
 
-	private $template_args = array();
+	private $template_args = [];
 
 	private $title;
 
-	public function init_box() {
-		return FALSE;
-	}
-
-	public function display_box($display) {
-		return FALSE;
-	}
-
 	public function init_pane() {
 		global $I2_USER,$I2_ARGS,$I2_ROOT;
-		if (isSet($I2_ARGS[1])) {
+		if (isset($I2_ARGS[1])) {
 			$this->mod = $I2_ARGS[1];
 		} else  {
 			$this->mod = $I2_USER->startpage;
@@ -54,7 +46,8 @@ class TabbedPane implements Module {
 		// Chop off the 'tabbedpane' at the front of I2_ARGS.
 		$I2_ARGS = array_slice($I2_ARGS,1);
 		// Make links point to tabbedpane
-		$I2_ROOT .= 'tabbedpane/';
+		//FIXME: breaks js/css
+		//$I2_ROOT .= 'tabbedpane/';
 		$this->title = $this->wrapmodule->init_pane();
 		if (!$this->title) {
 			return FALSE;
@@ -80,7 +73,7 @@ class TabbedPane implements Module {
 	}
 
 	public function get_name() {
-		return 'Nags';
+		return 'TabbedPane';
 	}
 
 }

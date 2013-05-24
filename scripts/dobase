@@ -1,12 +1,10 @@
 #!/bin/bash
 
-cd ${HOME}/intranet2
+test -f config.ini.php5 || cd ${HOME}/intranet2
 
 echo "Creating mysql databases..."
 source scripts/mysqltables
 echo "Populating DBs"
-
-cd ${HOME}/intranet2
 
 for i in `ls -1 --color=never mysql/base/*.sql`; do
 	mysql -u iodine --password="${passwd}" -D iodine -e "source $i"
@@ -14,4 +12,3 @@ done
 
 echo "Creating LDAP base"
 ldapadd -Q -c -f ldap/base.ldif
-ldapmodify -Q -c -f ldap/base.ldif

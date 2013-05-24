@@ -6,11 +6,13 @@
 * @package modules
 * @subpackage CSS
 * @filesource
+* Handles css blocks
 */
 
 /**
 * @package modules
 * @subpackage CSS
+* Handles css blocks
 */
 class CSSBlock {
 

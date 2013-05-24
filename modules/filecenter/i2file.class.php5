@@ -4,11 +4,13 @@
 * @copyright 2005 The Intranet 2 Development Team
 * @package modules
 * @subpackage Filecenter
+* PHP wrapper for files
 */
 
 /**
 * @package modules
 * @subpackage Filecenter
+* PHP wrapper for files
 */
 class I2File {
 
@@ -97,7 +99,7 @@ class I2File {
 
 	public function read_cache_arrays() {
 		$contents = explode("\n",file_get_contents($this->absolute_path));
-		$output = array();
+		$output = [];
 		$index = 0;
 		foreach ($contents as $content) {
 			$arr = explode(" ",$content);

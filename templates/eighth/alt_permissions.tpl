@@ -24,7 +24,7 @@ Restricted Members of [<$activity->name_full_r>]<br />
 </table>
 </td><td style="vertical-align: top;">
 	<fieldset style="width: 250px;">
-	[<if isSet($search_destination)>]
+	[<if isset($search_destination)>]
 		[<include file="search/search_pane.tpl">]
 	[<else>]
 		[<include file="search/search_results_pane.tpl">]

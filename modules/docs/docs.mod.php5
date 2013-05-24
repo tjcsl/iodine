@@ -5,7 +5,7 @@
 * @package modules
 * @subpackage Docs
 */
-class Docs implements Module {
+class Docs extends Module {
 
 	/**
 	* The display object to use
@@ -20,55 +20,12 @@ class Docs implements Module {
 	/**
 	* Arguments for the template
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* Declaring some global variables
 	*/
 	private $message;
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
 
 	/**
 	* Required by the {@link Module} interface.
@@ -99,13 +56,6 @@ class Docs implements Module {
 		return 'I2 Documents';
 	}
 
-	function init_box() {
-		return FALSE;
-	}
-
-	function display_box($display) {
-	}
-
 	/**
 	* View the files you are authorized to access
 	*/
@@ -124,6 +74,7 @@ class Docs implements Module {
 		if($doc->can_see()) {
 			$size=filesize("$doc->path");
 			$begin=0;
+			$cur=0;
 			$end=$size;
 			$filename = substr(strrchr($doc->path,'/'),1);
 			if(isset($_SERVER['HTTP_RANGE'])) {
@@ -176,13 +127,8 @@ class Docs implements Module {
 		$max_size = 10485760; // 10 MB
 		if(count($_POST) > 0) {
 			$fname = $_FILES['upfile']['name'];
-			//$ext = strrchr($fname,'.'); //We shouldn't do extension-based file determination.
-			//$typer = new finfo(FILEINFO_MIME); //FileInfo should be enabled by default, but for some reason php can't find it.
-			//$filetype = $typer->file($this->path); //So for now we'll just use `file`.
-			$filetype = exec("file ".escapeshellarg($_FILES['upfile']['tmp_name'])." -bi");
-			$filetype = str_replace(';','',$filetype);
-			if(stripos($filetype," ")) //Remove encoding information
-				$filetype = substr($filetype,0,stripos($filetype," "));
+			$typer = new finfo(FILEINFO_MIME_TYPE);
+			$filetype = $typer->file($_FILES['upfile']['tmp_name']);
 			if(in_array($filetype,$allowed_types) && filesize($_FILES['upfile']['tmp_name']) <= $max_size) {
 				$upload_dir = i2config_get('upload_dir', NULL, 'core');
 				if(is_writable($upload_dir)) {
@@ -196,7 +142,7 @@ class Docs implements Module {
 							$g = $_POST['group_gids'][$id];
 							$d->add_group_id($g, array(isset($_POST['view'][$id])?1:0, isset($_POST['edit'][$id])?1:0));
 						}
-						$_POST = array();
+						$_POST = [];
 						$I2_ARGS[2] = $d->docid;
 						$this->edit();
 					} else {
@@ -210,6 +156,9 @@ class Docs implements Module {
 			}
 			if(isset($this->template_args['error'])) {
 				$this->template = 'docs_add.tpl';
+			}
+			else {
+				redirect('docs');
 			}
 		} else {
 			$this->template_args['error'] = NULL;
@@ -225,8 +174,29 @@ class Docs implements Module {
 		$doc = new Doc($I2_ARGS[2]);
 		
 		$this->template = 'docs_edit.tpl';
+		$upload_dir = i2config_get('upload_dir', NULL, 'core');
+		$this->template_args['upload_dir'] = $upload_dir;
 		$this->template_args['doc'] = $doc;
 		$this->template_args['groups'] = Group::get_all_groups();
+		//FIXME: implement support for multiple groups
+		$gid = array_keys($doc->groups)[0];
+		$this->template_args['gid'] = $gid;
+		$this->template_args['view'] = $doc->groups[$gid][0];
+		$this->template_args['edit'] = $doc->groups[$gid][1];
+		$this->template_args['error'] = NULL;
+		$typer = new finfo(FILEINFO_MIME_TYPE);
+		$this->template_args['type'] = $typer->file($doc->path);
+		if(count($_POST)>0) {
+			if(empty($_POST['name']) || empty($_POST['path']) || empty($_POST['type'])) {
+				$this->template_args['error'] = "Blank fields are not allowed.";
+			}
+			else {
+				$gid = $_POST['group_gids'][$_POST['groups'][0]];
+				$doc->edit_doc($_POST['name'], $upload_dir.$_POST['path'], isset($_POST['visible'])?1:0, $_POST['type']);
+				$doc->edit_group_id($gid, array(isset($_POST['view'])?1:0, isset($_POST['edit'])?1:0));
+				redirect('docs');
+			}
+		}
 	}
 
 	/**
@@ -239,12 +209,7 @@ class Docs implements Module {
 		$docid = $I2_ARGS[2];
 		$name = $I2_SQL->query('SELECT name FROM docs WHERE docid=%d',$docid)->fetch_single_value();
 		$this->template_args['docname'] = $name;
-		if(isset($_REQUEST['docs_delete_form'])) {
-			if($_REQUEST['docs_delete_form'] == 'delete_doc') {
-				Doc::delete_doc($docid);
-				$this->template_args['deleted'] = TRUE;
-			}
-		}
+		Doc::delete_doc($docid);
 		$this->template = 'docs_delete.tpl';
 	}
 }

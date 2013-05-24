@@ -13,69 +13,19 @@
 * @package core
 * @subpackage Module
 */
-class Privacy implements Module {
+class Privacy extends Module {
 
 	private $template = 'view.tpl';
-	private $template_args = array();
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	public function init_box() {
-		return FALSE;
-	}
-
-	public function display_box($display) {
-	}
+	private $template_args = [];
 
 	public function init_pane() {
 		global $I2_USER,$I2_AUTH,$I2_ARGS;
-		if (isSet($_REQUEST['update'])) {
+		if (isset($_REQUEST['update'])) {
 			$user = new User($_REQUEST['uid']);
 			$prefs = array(
 				'showaddressself','showphoneself','showbdayself','showscheduleself','showpictureself','showfreshmanpictureself','showsophomorepictureself','showjuniorpictureself','showseniorpictureself','showlockerself','showeighthself','showaddress','showphone','showbdate','showschedule','showpictures','showlocker','showeighth');
 			foreach ($prefs as $pref) {
-				if (isSet($_REQUEST['perm_'.$pref])) {
+				if (isset($_REQUEST['perm_'.$pref])) {
 					$user->$pref = 'TRUE';
 				} else {
 					$user->$pref = 'FALSE';
@@ -86,10 +36,11 @@ class Privacy implements Module {
 		}
 		if ($I2_USER->is_ldap_admin()) {
 			$this->template = 'master.tpl';
-			if (isSet($I2_ARGS[1])) {
+			$this->template_args['first_year'] = User::get_gradyear(12);
+			if (isset($I2_ARGS[1])) {
 				$this->template_args['user'] = new User($I2_ARGS[1]);
 				$photonames = $this->template_args['user']->photonames;
-				$this->photonames = array();
+				$this->photonames = [];
 				foreach ($photonames as $photo) {
 					$text = ucfirst(strtolower(substr($photo, 0, -5)));
 					$this->photonames[$photo] = $text;
@@ -105,7 +56,7 @@ class Privacy implements Module {
 		} else {
 			$this->template_args['user'] = $I2_USER;
 			$photonames = $this->template_args['user']->photonames;
-			$this->photonames = array();
+			$this->photonames = [];
 			foreach ($photonames as $photo) {
 				$text = ucfirst(strtolower(substr($photo, 0, -5)));
 				$this->photonames[$photo] = $text;

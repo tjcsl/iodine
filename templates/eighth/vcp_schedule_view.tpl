@@ -47,7 +47,7 @@
 		<a href="[<$I2_ROOT>]eighth/view/student/uid/[<$user->uid>]">Edit Student</a><br />
 	</div>
 	<b>Counselor: [<$counselor_name>]</b><br />
-	<span style="color: #FF0000; font-weight: bold;">Comments: [<if isSet($comments) && $comments != "">][<$comments>][<else>]none[</if>]</span><br />
+	<span style="color: #FF0000; font-weight: bold;">Comments: [<if isset($comments) && $comments != "">][<$comments>][<else>]none[</if>]</span><br />
 	<a href="[<$I2_ROOT>]eighth/view/comments/uid/[<$user->uid>]">Edit Comments</a><br />
 	<br /><br />
 [<else>]

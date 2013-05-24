@@ -61,8 +61,8 @@ class LDAPResult implements Result {
 		$this->ldap = $ldap;
 		$this->ldap_result = $result;
 		$this->query_type = $type;
-		$this->dns = array();
-		$this->rows = array();
+		$this->dns = [];
+		$this->rows = [];
 		//FIXME: fix whatever else is broken that requires this +1
 		if ($type == LDAP::LDAP_SEARCH) {
 			$rows = ldap_count_entries($ldap,$result);
@@ -152,7 +152,7 @@ class LDAPResult implements Result {
 
 		$rawres = ldap_get_attributes($this->ldap,$row);
 
-		$res = array();
+		$res = [];
 		$i = 0;
 		
 		foreach ($rawres as $key=>$value) {
@@ -178,7 +178,7 @@ class LDAPResult implements Result {
 				} else {
 					unset($value['count']);
 				}
-				/*$subarray = array();
+				/*$subarray = [];
 				for ($i=0;$i<$value['count'];$i++) {
 					$subarray[] = $value[$i];
 				}
@@ -198,7 +198,7 @@ class LDAPResult implements Result {
 	}
 	
 	public function fetch_all_arrays($type=Result::BOTH) {
-		$retarr = array();
+		$retarr = [];
 
 		for ($a = 0; $a < $this->num_rows-1; $a++) {
 			if ($type == Result::NUM || $type == Result::BOTH) {
@@ -282,23 +282,23 @@ class LDAPResult implements Result {
 		if (!$row) {
 			return FALSE;
 		}
-		if (isSet($row[0])) {
+		if (isset($row[0])) {
 			return $row[0];
 		}
-		if (isSet($row['dn'])) {
+		if (isset($row['dn'])) {
 			return $row['dn'];
 		}
 		$keys = array_keys($row);
-		if (isSet($keys[0])) {
+		if (isset($keys[0])) {
 			return $row[$keys[0]];
 		}
 		return FALSE;
 	}
 
 	public function fetch_col($colname) {
-		$ret = array();
+		$ret = [];
 		while ($arr = $this->fetch_array(Result::BOTH)) {
-			if (isSet($arr[$colname])) {
+			if (isset($arr[$colname])) {
 				$ret[] = $arr[$colname];
 			}
 		}
@@ -306,7 +306,7 @@ class LDAPResult implements Result {
 	}
 
 	public function fetch_all_single_values() {
-		$ret = array();
+		$ret = [];
 		while ($row = $this->fetch_array(Result::NUM)) {
 			$ret[] = $row[0];
 		}

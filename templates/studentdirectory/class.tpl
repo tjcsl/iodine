@@ -26,7 +26,7 @@
     </td>
     <td class="directory-table">
     [<foreach from=$student->aim item=username key=k>]
-      <img src="[<$im_icons>][<$aim[$username]>]" alt="" /> <a href="aim:goim?screenname=[<$username|escape:'url'>]">[<$username|escape:'html'>]</a>
+      <a href="aim:goim?screenname=[<$username|escape:'url'>]">[<$username|escape:'html'>]</a>
     [</foreach>]
     </td>
   </tr>

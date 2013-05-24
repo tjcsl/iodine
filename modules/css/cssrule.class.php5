@@ -6,17 +6,19 @@
 * @package modules
 * @subpackage CSS
 * @filesource
+* Handles css rules
 */
 
 /**
 * @package modules
 * @subpackage CSS
+* Handles css rules
 */
 class CSSRule {
 	
-	private $selectors = array();
+	private $selectors = [];
 	
-	private $properties = array();
+	private $properties = [];
 
 	public function add_selector($selector) {
 		$this->selectors[] = $selector;

@@ -56,7 +56,7 @@ class Group {
 	/**
 	* Group membership cache.
 	*/
-	private static $group_cache = array();
+	private static $group_cache = [];
 
 	/**
 	* The encapsulated Group backend object to use for Group database info.
@@ -421,7 +421,7 @@ class Group {
 	*/
 	public static function generate($gids) {
 		if(is_array($gids)) {
-			$ret = array();
+			$ret = [];
 			foreach($gids as $gid) {
 				$ret[] = new Group($gid);
 			}

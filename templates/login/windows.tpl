@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 	<title>Welcome to Microsoft Intranet</title>
@@ -165,7 +165,7 @@ IE7_PNG_SUFFIX = ".png";
 		</table>
 	</form>
 <!--	<div style="text-align: right">
-		<a href="http://www.tjhsst.edu/">TJHSST</a> &ndash; <a href="https://webmail.tjhsst.edu/">Mail</a> &ndash; <a href="http://postman.tjhsst.edu/">Postman (Calendar)</a>
+		<a href="http://www.tjhsst.edu/">TJHSST</a> &ndash; <a href="https://webmail.tjhsst.edu/">Mail</a> &ndash; <a href="http://www.calendarwiz.com/calendars/calendar.php?crd=tjhsstcalendar">Calendar</a>
 	</div>-->
 </div>
 <div id="verisign_box" class="box">

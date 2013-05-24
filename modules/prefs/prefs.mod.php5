@@ -14,7 +14,7 @@
 * @package modules
 * @subpackage Prefs
 */
-class Prefs implements Module {
+class Prefs extends Module {
 
 	/**
 	* An associative array containing all of the preferences for the user.
@@ -24,49 +24,6 @@ class Prefs implements Module {
 	protected $user_intraboxen;
 	protected $nonuser_intraboxen;
 	private $themes;
-	
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
 
 	function init_pane() {
 		global $I2_USER,$I2_ARGS,$I2_SQL;
@@ -92,27 +49,27 @@ class Prefs implements Module {
 
 			if (is_int($I2_USER->grade)) {
 				foreach (array('showaddressself','showphoneself','showbdayself','showscheduleself','showeighthself','showmapself','showpictureself','showfreshmanpictureself','showsophomorepictureself','showjuniorpictureself','showseniorpictureself','showlockerself','newsforwarding','eighthalert','eighthnightalert') as $pref) {
-					$I2_USER->$pref = isSet($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';
+					$I2_USER->$pref = isset($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';
 				}
-				if (isSet($_REQUEST['relationship'])) {
+				if (isset($_REQUEST['relationship'])) {
 					$I2_USER->relationship = $_REQUEST['relationship'];
 				}
 			} else {
 				foreach (array('showaddressself','showphoneself','showbdayself','showpictureself') as $pref) {
-					$I2_USER->$pref = isSet($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';
+					$I2_USER->$pref = isset($_REQUEST[$pref]) ? 'TRUE' : 'FALSE';
 				}
 			}
 
-			if (isSet($_REQUEST['pref_style']) || isSet($_REQUEST['pref_boxcolor']) || isSet($_REQUEST['pref_boxtitlecolor'])) {
+			if (isset($_REQUEST['pref_style']) || isset($_REQUEST['pref_boxcolor']) || isset($_REQUEST['pref_boxtitlecolor'])) {
 				Display::style_changed();
 			}
 
-			if( isset($_REQUEST['add_intrabox']) && isSet($_REQUEST['add_boxid']) ) {
+			if( isset($_REQUEST['add_intrabox']) && isset($_REQUEST['add_boxid']) ) {
 				foreach($_REQUEST['add_boxid'] as $box){
 					Intrabox::add_box($box);
 				}
 			}
-			if( isset($_REQUEST['delete_intrabox']) && isSet($_REQUEST['delete_boxid']) ) {
+			if( isset($_REQUEST['delete_intrabox']) && isset($_REQUEST['delete_boxid']) ) {
 				foreach($_REQUEST['delete_boxid'] as $box){
 					Intrabox::delete_box($box);
 				}
@@ -124,7 +81,7 @@ class Prefs implements Module {
 		$this->prefs = $I2_USER->info();
 
 		$photonames = $I2_USER->photoNames;
-		$this->photonames = array();
+		$this->photonames = [];
 		foreach ($photonames as $photo) {
 			$text = ucfirst(strtolower(substr($photo, 0, -5)));
 			$this->photonames[$photo] = $text;
@@ -153,6 +110,7 @@ class Prefs implements Module {
 		$this->prefs['showphone'] = $I2_USER->showphone=='TRUE'?TRUE:FALSE;
 		$this->prefs['showlockerself'] = $I2_USER->showlockerself=='TRUE'?TRUE:FALSE;
 		$this->prefs['showlocker'] = $I2_USER->showlocker=='TRUE'?TRUE:FALSE;
+		$this->prefs['mailentries'] = isset($I2_USER->mailentries) ? $I2_USER->mailentries : -1;
 
 		$this->user_intraboxen = Intrabox::get_boxes_info(Intrabox::USED);
 		$this->nonuser_intraboxen = Intrabox::get_boxes_info(Intrabox::UNUSED);
@@ -171,14 +129,6 @@ class Prefs implements Module {
 							'themes' => $this->themes,
 							'photonames' => $this->photonames
 		));
-	}
-	
-	function init_box() {
-		return FALSE;
-	}
-
-	function display_box($display) {
-		return FALSE;
 	}
 
 	function get_name() {

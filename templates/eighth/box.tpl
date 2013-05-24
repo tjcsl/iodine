@@ -1,7 +1,7 @@
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/eighth_box.js"></script>
 [<if $absent > 2 >]<span style="font-size: 20pt; color: #FF0000;">[</if>]You have been absent <a href="[<$I2_ROOT>]eighth/vcp_schedule/absences/uid/[<$I2_UID>]">[<$absent>] time[<if $absent != 1 >]s[</if>]</a>.[<if $absent > 2 >]</span>[</if>]
 [<if isset($activities) && count($activities) > 0 >]
-	<table style="width: 100%; border: 0px; padding: 0px; margin: 0px" cellspacing="0">
+	<table style="width: 100%; border: 0px; padding: 0px; margin: 0px; border-spacing: 0px;">
 		<tr>
 			<th style="width: 50%;">Activity</th>
 			<th style="width: 25%;">Room(s)</th>

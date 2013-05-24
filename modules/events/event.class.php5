@@ -9,6 +9,7 @@
 */
 
 /**
+* Contains helper methods for the {@link Event} module
 * @package modules
 * @subpackage Events
 */
@@ -24,7 +25,7 @@ class Event {
 	 */
 	private $myeid;
 
-	private $info = array();
+	private $info = [];
 
 	/**
 	 * The php magical __get method.
@@ -55,8 +56,8 @@ class Event {
 			case 'admingroups':
 			case 'admins':
 				$ids = $I2_SQL->query('SELECT gidoruid,id,permissions FROM event_permissions WHERE eid=%d',$this->myeid)->fetch_all_arrays(Result::ASSOC);
-				$this->info['admins']=array();
-				$this->info['admingroups']=array();
+				$this->info['admins']=[];
+				$this->info['admingroups']=[];
 				foreach ($ids as $id) {
 					if(($id['permissions']&1)!=0) {
 						if($id['gidoruid']==0) { // gid
@@ -66,14 +67,14 @@ class Event {
 						}
 					}
 				}
-				$this->info[$var] = array();
+				$this->info[$var] = [];
 				foreach ($uids as $uid) {
 					$this->info[$var][] = new User($uid);
 				}
 				break;
 			case 'verifiers':
 				$uids = $I2_SQL->query('SELECT uid FROM event_verifiers WHERE eid=%d', $this->myeid)->fetch_col('uid');
-				$this->info[$var] = array();
+				$this->info[$var] = [];
 				foreach ($uids as $uid) {
 					try {
 						$verifier =  new User($uid);
@@ -326,7 +327,7 @@ class Event {
 			$verifier = $I2_USER;
 		}
 
-		$ret = array();
+		$ret = [];
 		$res = $I2_SQL->query('SELECT uid FROM event_signups WHERE vid=%d AND eid=%d AND paid=0', $verifier->uid, $this->myeid);
 		foreach ($res->fetch_col('uid') as $uid) {
 			$ret[] = new User($uid);
@@ -513,7 +514,7 @@ class Event {
 			$uids = $I2_SQL->query('SELECT uid FROM event_signups WHERE eid=%d AND bid=%d', $this->myeid, $block->bid)->fetch_col('uid');
 		}
 
-		$users = array();
+		$users = [];
 		foreach ($uids as $uid) {
 			$users[] = new User($uid);
 		}
@@ -559,7 +560,7 @@ class Event {
 	 * @param array $info An associative array containing the initial description of the event
 	 * @return Event An object representing the new event
 	 */
-	public static function create_event($title, $info = array()) {
+	public static function create_event($title, $info = []) {
 		global $I2_SQL, $I2_USER;
 
 		if (! self::user_can_create($I2_USER)) {
@@ -594,7 +595,7 @@ class Event {
 	 */
 	public static function all_events() {
 		global $I2_SQL;
-		$ret = array();
+		$ret = [];
 		$res = $I2_SQL->query('SELECT id FROM events');
 		foreach ($res->fetch_col('id') as $id) {
 			$ret[] = new Event($id);
@@ -612,7 +613,7 @@ class Event {
 		if($user==NULL)
 			$user=$I2_USER;
 		$events=Event::all_events();
-		$ret=array();
+		$ret=[];
 		foreach($events as $event) {
 			if($event->has_permission('view') || $event->has_permission('signup')) {
 				$ret[]=$event;
@@ -671,9 +672,8 @@ class Event {
 							$entryhasperm=(4&$entry['permissions'])!=0;
 							break;
 					}
-					if($entryhasperm){
+					if($entryhasperm)
 						return TRUE;
-					}
 				}
 			}
 		}

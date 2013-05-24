@@ -19,54 +19,8 @@
 * @package core
 * @subpackage Module
 */
-class Barcode implements Module {
+class Barcode extends Module {
 
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	function display_box($disp) {
-	}
-	
 	function display_pane($disp) {
 		global $I2_ARGS;
 		Display::stop_display();
@@ -75,19 +29,15 @@ class Barcode implements Module {
 		$height = isset($I2_ARGS[4]) ? $I2_ARGS[4] : 60;
 		$out = Barcode::gen_barcode($I2_ARGS[1], $I2_ARGS[2], $width, $height);
 		header("Content-type: image/jpeg");
-		ImageJPEG ($out, "", 100);
+		ImageJPEG ($out, NULL, 100);
 	}
 	
 	function get_name() {
 		return "Barcode";
 	}
 
-	function init_box() {
-		return FALSE;
-	}
-
 	function init_pane() {
-		return "";
+		return "Barcode";
 	}
 
 	static function gen_barcode($str, $text, $width, $height) {

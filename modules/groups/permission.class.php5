@@ -28,9 +28,9 @@ class Permission {
 	 * Helper method to generate PID/name maps
 	 */
 	private static function gen_maps() {
-		global $I2_SQL;
-		self::$pid_map = array();
-		self::$name_map = array();
+		global $I2_SQL, $I2_CACHE;
+		self::$pid_map = [];
+		self::$name_map = [];
 		$res = $I2_SQL->query('SELECT name,pid FROM permissions');
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 			self::$pid_map[$row['name']] = $row['pid'];
@@ -70,7 +70,7 @@ class Permission {
 	}
 	
 	public static function getPermission($perm) {
-		if (isSet(self::$perm_cache[$perm])) {
+		if (isset(self::$perm_cache[$perm])) {
 			return self::$perm_cache[$perm];
 		} else {
 			return new Permission($perm);
@@ -106,7 +106,7 @@ class Permission {
 			self::gen_maps();
 		}
 
-		$ret = array();
+		$ret = [];
 		foreach (self::$pid_map as $name=>$pid) {
 			d($pid);
 			$ret[] = self::getPermission($pid);

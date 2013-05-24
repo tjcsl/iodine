@@ -29,8 +29,8 @@ if (window.ActiveXObject) {
 } else if (window.XMLHttpRequest) {
 	http = new XMLHttpRequest();
 }
-//window.onload = function(){
-window.addEventListener("load", function() {
+//window.onload = function(){m,
+scratchpad_load = function() {
 	// Set up tab functions
 	tabInfo.list = document.getElementById("tabs");
 	tabInfo.values = new Array();
@@ -44,7 +44,20 @@ window.addEventListener("load", function() {
 	http.onreadystatechange = function() {
 		try {
 			if(http.readyState == 4 && http.status == 200) {
-				var all = http.responseText.split("&");
+				window.scratchpadData = http.responseText;
+				if(window.scratchpadData.substring(0,17) !== "SCRATCHPAD_DATA::") {
+					console.log("Did not get scratchpad data.");
+					window.doUnLoad = false;
+					return false;
+				}
+				window.scratchpadData = window.scratchpadData.substring(17);
+				if(window.scratchpadData.indexOf('TJHSST Intranet2: Login') !==-1) {
+					console.log('Got login page as result. You may need to re-login.');
+					document.getElementById("text").value = "Data could not be loaded. You may need to re-login.";
+					window.doUnLoad = false;
+					return false;
+				}
+				var all = window.scratchpadData.split("&");
 				for (var i = 0; i < all.length; i++) {
 					var junk = all[i].split("=");
 					makeTab(decodeURIComponent(junk[0]),decodeURIComponent(junk[1]));
@@ -58,14 +71,20 @@ window.addEventListener("load", function() {
 				tabInfo.list.childNodes.item(0).className = "active";
 			}
 		} catch (e) {
-			window.onunload = null;
+			window.doUnLoad = false;
+			try {document.getElementById("text").value = "Data could not be loaded. You may need to re-login.";}catch(e){}
 		}
 	};
 	http.open('GET', load_page, true);
 	http.send(null);
-}, false);
+};
+window.addEventListener("load", scratchpad_load, false);
 
-window.addEventListener("unload", function() {
+scratchpad_unload = function() {
+	if (typeof window.doUnLoad !== 'undefined' && window.doUnLoad == false) {
+		console.log('Not saving');
+		return;
+	}
 	if (tabInfo.all == null) // We did not download anything
 		return;
 	for (var i=0;i<tabInfo.list.childNodes.length;i++) {
@@ -74,9 +93,13 @@ window.addEventListener("unload", function() {
 			break;
 		}
 	}
-	http.open('POST', save_page,false);
+	http.open('POST', save_page, false);
 	http.setRequestHeader('Content-Type','text/plain');
-	http.onreadystatechange = function () {};
+	http.onreadystatechange = function () {
+		if(http.readyState == 4 && http.status == 200) {
+			console.log('Saved scratchpad contents.');
+		}
+	};
 	var arr = [];
 	for (var i=0;i<tabInfo.names.length;i++) {
 		var str = encodeURIComponent(tabInfo.names[i]);
@@ -88,13 +111,53 @@ window.addEventListener("unload", function() {
 		arr[i] = str;
 	}
 	http.send(arr.join('&'));
-}, false);
-
+};
+window.addEventListener("unload", scratchpad_unload, false);
+// Save state every minute if the text has changed
+// Interval for autosave
+scratchpad_autosaveint = 60000;
+scratchpad_autosave = function() {
+	if (tabInfo.all == null) // We did not download anything
+	return;
+	for (var i=0;i<tabInfo.list.childNodes.length;i++) {
+		if (tabInfo.list.childNodes.item(i).className == "active") {
+			tabInfo.values[i] = document.getElementById("text").value;
+			break;
+		}
+	}
+	var arr = [];
+	for (var i=0;i<tabInfo.names.length;i++) {
+		var str = encodeURIComponent(tabInfo.names[i]);
+		str += '=';
+		if (tabInfo.values[i].length > 1000) {
+			tabInfo.values[i] = tabInfo.values[i].substring(0,1000);
+		}
+		str += encodeURIComponent(tabInfo.values[i]);
+		arr[i] = str;
+	}
+	window.scratchpadCur = arr.join('&');
+	if(window.scratchpadData !== window.scratchpadCur) {
+		console.log('Starting autosave');
+		scratchpad_unload();
+	} else {
+		console.log('Autosave not needed');
+	}
+};
+if(typeof setInterval !== 'undefined') {
+	setInterval(scratchpad_autosave, scratchpad_autosaveint);
+} else if(typeof setTimeout !== 'undefined') {
+	scratchpad_to = function() {
+		scratchpad_autosave();
+		setTimeout(scratchpad_to, scratchpad_autosaveint);
+	};
+	setTimeout(scratchpad_to, scratchpad_autosaveint);
+}
 // TAB FUNCTIONS
 var tabInfo = new Object();
 function makeTab(name, value) {
 	if (tabInfo.num == 5) {
-		alert("You can only have 5 tabs.");
+		//alert("You can only have 5 tabs.");
+		console.log("You can only have 5 tabs.");
 		return;
 	}
 

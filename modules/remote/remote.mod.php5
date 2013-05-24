@@ -13,65 +13,14 @@
 * @package modules
 * @subpackage Remote
 */
-class Remote implements Module {
-	private $template_args = array();
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
+class Remote extends Module {
 
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	function init_pane() {
-		return FALSE;
-	}
-	
-	function display_pane($display) {
-		return FALSE;
-	}
-	
 	function init_box() {
 		return 'Remote Access';
 	}
 
-	function display_box($display) {
-		$display->disp('list.tpl',$this->template_args);
+	function display_box($disp) {
+		$disp->disp('list.tpl');
 	}
 
 	function get_name() {

@@ -5,11 +5,13 @@
 * @package modules
 * @subpackage Filecenter
 * @filesource
+* Implements {@link Filesystem} for afs
 */
 
 /**
 * @package modules
 * @subpackage Filecenter
+* Implements {@link Filesystem} for afs
 */
 class CSLFilesystem extends Filesystem {
 

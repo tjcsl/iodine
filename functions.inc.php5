@@ -24,7 +24,7 @@
 */
 function d($text, $level = 9) {
 	global $I2_LOG;
-	if (isSet($I2_LOG)) {
+	if (isset($I2_LOG)) {
 		$I2_LOG->log_debug($text, $level);
 	}
 }
@@ -71,7 +71,7 @@ function error($msg, $critical=FALSE) {
 }
 
 /**
-* The __autoload function, used for autoloading modules.
+* The iodine_autoloader function, used for autoloading modules.
 *
 * This is the function used by PHP as a last resort for loading 
 * noninstantiated classes before it throws an error. It checks for
@@ -80,8 +80,11 @@ function error($msg, $critical=FALSE) {
 * 
 * @param string $class_name Name of noninstantiated class.
 */
-function __autoload($class_name) {
-	global $I2_ERR;
+function iodine_autoloader($class_name) {
+	// don't try to load smarty modules
+	if(strpos($class_name,'Smarty') !== false)
+		return;
+
 	d("Loading $class_name");
 	$class_file = '';
 
@@ -92,6 +95,8 @@ function __autoload($class_name) {
 		require_once($class_file);
 	}
 }
+
+spl_autoload_register('iodine_autoloader');
 
 /**
 * Loads the module map.
@@ -165,7 +170,6 @@ function get_i2module($module_name) {
 * @return mixed The config value for the specified field, the default value if one was passed and if the specified key was not found, NULL otherwise.
 */
 function i2config_get($field, $default = NULL, $section = NULL) {
-	global $I2_ERR;
 	static $config = NULL;
 	
 	if ($config === NULL) { /*Parse the INI file*/
@@ -203,7 +207,7 @@ function i2config_get($field, $default = NULL, $section = NULL) {
 
 	/* If we were called by a class, use the config section
 	for that class. */
-	if (isSet($trace[1]['class'])) {
+	if (isset($trace[1]['class'])) {
 		return i2config_get($field, $default, strtolower($trace[1]['class']));
 	}
 	
@@ -249,7 +253,7 @@ function redirect($url = NULL,$postrelay=false) {
 * @return Array The flattened array.
 */
 function flatten($arr) {
-	$ret = array();
+	$ret = [];
 	foreach($arr as $item) {
 		if( is_array($item) ) {
 			$ret = array_merge($ret,$item);
@@ -268,7 +272,7 @@ function flatten($arr) {
 * @return Array The flattened array.
 */
 function flatten_values($arr) {
-	$ret = array();
+	$ret = [];
 	foreach($arr as $item) {
 		if( is_array($item) ) {
 			$ret = array_merge($ret, array_values($item));
@@ -342,7 +346,13 @@ function tempname($prefix, $suffix='') {
 */
 function i2_mail($to, $subject, $message_content, $news=false) {
 	$date = date("r",time());
-	$separator = "--MAIL-" . md5($message_content."_".$to."_".$date);	
+	$separator = "";
+
+	if(gettype($to)=="array") {
+		$separator = "--MAIL-" . md5($message_content."_".$to[0]."_".$date);
+	} else if($to) {
+		$separator = "--MAIL-" . md5($message_content."_".$to."_".$date);
+	}
 
 	$from = "TJHSST Intranet <".i2config_get('sendto', 'intranet@tjhsst.edu', 'suggestion').">";
 	if($news)
@@ -366,12 +376,15 @@ function i2_mail($to, $subject, $message_content, $news=false) {
 	$message .= $message_content;
 	$message .= "\r\n--".$separator."--"; // end with separator, make amavis happy
 
+
+	$root = i2config_get('root_path', '/var/wwww/iodine/', 'core');
+	
 	if(gettype($to)=="array") {
 		foreach($to as $mail) {
-			mail($mail,$subject,$message,$headers);
+			system("php ".$root."bin/mailsender.php5 ".escapeshellarg($mail)." ".escapeshellarg($subject)." ".escapeshellarg($message)." ".escapeshellarg($headers)." 1>/dev/null 2>&1 &");
 		}
 	} else if($to) {
-		mail($to,$subject,$message,$headers);
+		system("php ".$root."bin/mailsender.php5 ".escapeshellarg($to)." ".escapeshellarg($subject)." ".escapeshellarg($message)." ".escapeshellarg($headers)." 1>/dev/null 2>&1 &");
 	}	// if there's no $to... well, derp?
 }
 

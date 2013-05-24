@@ -14,55 +14,58 @@
 * @package core
 * @subpackage Auth
 */
-class SessionGC {
+class SessionGC implements SessionHandlerInterface {
 	/**
 	* The directory where all PHP session files reside.
 	*/
-	const SESS_DIR = '/var/lib/php5/iodine';
+	const SESS_DIR = '/var/lib/php5/iodine/';
 
 	/**
-	* Emulates default session handling behavior; required by session_set_save_handler().
+	* Emulates default session handling behavior; required by SessionHandlerInterface.
 	*/
-	public static function open($save_path, $sess_name) {
+	public function open($save_path, $name) {
+		if(!is_dir(self::SESS_DIR) || !is_writable(self::SESS_DIR))
+			die("Session dir ".self::SESS_DIR." does not exist. It should be owned by apache and chmodded to 1711");
 		return TRUE;
 	}
 	/**
-	* Emulates default session handling behavior; required by session_set_save_handler().
+	* Emulates default session handling behavior; required by SessionHandlerInterface.
 	*/
-	public static function close() {
+	public function close() {
 		return TRUE;
 	}
 	/**
-	* Emulates default session handling behavior; required by session_set_save_handler().
+	* Emulates default session handling behavior; required by SessionHandlerInterface.
 	*/
-	public static function read($sessid) {
+	public function read($sessid) {
 		return @file_get_contents(self::SESS_DIR . 'sess_' . $sessid);
 	}
 	/**
-	* Emulates default session handling behavior; required by session_set_save_handler().
+	* Emulates default session handling behavior; required by SessionHandlerInterface.
 	*/
-	public static function write($sessid, $value) {
+	public function write($sessid, $value) {
 		return file_put_contents(self::SESS_DIR . 'sess_' . $sessid, $value) > 0;
 	}
 	/**
-	* Emulates default session handling behavior; required by session_set_save_handler().
+	* Emulates default session handling behavior; required by SessionHandlerInterface.
 	*/
-	public static function destroy($sessid) {
+	public function destroy($sessid) {
 		if(file_exists(self::SESS_DIR . 'sess_' . $sessid)) {
-			return @unlink(self::SESS_DIR . 'sess_' . $sessid);
+			return unlink(self::SESS_DIR . 'sess_' . $sessid);
 		}
 		return FALSE;
 	}
 
 	/**
+	* Required by SessionHandlerInterface.
 	* Cleans up expired sessions, and executes their $_SESSION['logout_funcs'] functions.
 	*
 	* @param int $max_lifetime Passed by session_set_save_handler(), unused here.
 	* @return bool TRUE on success, FALSE on error.
 	*/
-	public static function gc($max_lifetime) {
+	public function gc($max_lifetime) {
 		clearstatcache();
-		exec("date >>/tmp/gclog"); // This is temporary, until I can see that it works correctly.
+		//exec("date >>/tmp/gclog"); // This is temporary, until I can see that it works correctly.
 		foreach (glob(self::SESS_DIR."sess_*") as $filename) {
 			if(is_file($filename) && is_readable($filename)) {
 				$contents = file_get_contents($filename);
@@ -94,7 +97,7 @@ class SessionGC {
 	public static function logoutfuncs($sess) {
 		if(isset($sess['logout_funcs'])) {
 			foreach($sess['logout_funcs'] as $callback) {
-				exec("echo ".$callback[0].":".$callback[1]." >> /tmp/gcrunlog");
+				//file_put_contents("/tmp/gcrunlog",$callback[0][0]."->".$callback[0][1].":".implode($callback[1])."\n",FILE_APPEND);
 				if(is_callable($callback[0])) {
 					call_user_func_array($callback[0], $callback[1]);
 				}

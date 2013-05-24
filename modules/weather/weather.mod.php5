@@ -5,10 +5,26 @@
 * @subpackage weather
 */
 
-class Weather implements Module {
+/**
+* The Weather class
+* @package modules
+* @subpackage weather
+*/
+class Weather extends Module {
 
-	private $template_args = array();
+	/**
+	* Holds the processed weather data
+	*/
+	private $template_args = [];
+	/**
+	* Holds the raw data from the weather station
+	*/
 	private $data;
+	/**
+	* Process raw data from weather
+	* @param string $server The weather server
+	* @param int $port The post to use
+	*/
 
 	private function makeData($server = 'weather.tjhsst.edu', $port=8889) {
 		global $I2_CACHE;
@@ -19,7 +35,7 @@ class Weather implements Module {
 		}
 		$this->template_args=unserialize($I2_CACHE->read($this,'template_args'));
 		if($this->template_args===false) {
-			$connection = @fsockopen($server, $port, $errno, $errstr);
+			$connection = @fsockopen($server, $port, $errno, $errstr,1);
 			// We don't assume that weather is always up.
 			if (!$connection) {
 				$this->template_args['data'] = 0;
@@ -60,24 +76,6 @@ class Weather implements Module {
 	}
 
 	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
 	* Build the dataset for the cli
 	*/
 	function init_cli() {
@@ -86,11 +84,11 @@ class Weather implements Module {
 	}
 
 	/**
-	* Unused; Not supported for this module.
+	* Display the cli.
 	*
 	* @param Display $disp The Display object to use for output.
 	*/
-	function display_cli($disp) {
+	function display_cli() {
 		if( isset($this->template_args['error']) ) {
 			return "<div>".$this->template_args['error']."</div>";
 		}
@@ -101,40 +99,27 @@ class Weather implements Module {
 	}
 
 	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
+	* Setup the weather intrabox
+	* @return string Title
 	*/
-	function api($disp) {
-		return false;
-	}
-
-	public function init_box() {
+	function init_box() {
 		$this->makeData();
 		return 'Current Weather at TJ';
 	}
 
-	public function display_box($disp) {
+	/**
+	* Show the weather template
+	* @param Display $disp The Display object to use for output.
+	*/
+	function display_box($disp) {
 		$disp->disp('weather_box.tpl', $this->template_args);
 	}
 	
 	/**
-	* I2_ARGS accepted:
+	* Required by the {@link Module} interface.
 	*/
-	public function init_pane() {
-		return FALSE;
-	}
-	
-	function display_pane($disp) {
-		global $I2_ARGS;
-	}
-
 	function get_name() {
 		return 'weather';
-	}
-
-	function is_intrabox() {
-		return true;
 	}
 }
 ?>

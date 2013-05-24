@@ -1,7 +1,7 @@
 [<if $blacklisted>]
 	<p>Your ability to post lost items has been revoked, likely due to your abuse of the Intranet lost &amp; found system.  Please contact [<mailto address=$iodinemail encode=hex>] for information about regaining this privilege.</p>
 [<else>]
-	[<if isSet($added)>]
+	[<if isset($added)>]
 		[<if $added>]
 			Your item has been added.
 		[<else>]

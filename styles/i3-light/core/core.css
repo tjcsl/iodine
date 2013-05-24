@@ -32,6 +32,11 @@
 	left:0px;
 	top:4px;
 }
+
+.logo a:hover {
+	text-decoration:none;
+}
+
 #logotext {
 	margin-left:55px;
 	display:inline;

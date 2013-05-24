@@ -77,28 +77,29 @@ class Logging {
 		/* If not defined in config.ini, the log paths are absolute. */
 		$log_dir = i2config_get('log_dir', NULL, 'logging');
 		if($log_dir === NULL) {
-			$debug_file = i2config_get('debug_log');
-			$access_file = i2config_get('access_log');
-			$error_file = i2config_get('error_log');
-			$auth_file = i2config_get('auth_log');
+			$this->debug_log = i2config_get('debug_log');
+			$this->access_log = i2config_get('access_log');
+			$this->error_log = i2config_get('error_log');
+			$this->auth_log = i2config_get('auth_log');
 		} else { 
-			$debug_file = $log_dir . i2config_get('debug_log','iodine-debug.log','logging');
-			$access_file = $log_dir . i2config_get('access_log','iodine-access.log','logging');
-			$error_file = $log_dir . i2config_get('error_log','iodine-error.log','logging');
-			$auth_file = $log_dir . i2config_get('auth_log','iodine-auth.log','logging');
+			$this->debug_log = $log_dir . i2config_get('debug_log','iodine-debug.log','logging');
+			$this->access_log = $log_dir . i2config_get('access_log','iodine-access.log','logging');
+			$this->error_log = $log_dir . i2config_get('error_log','iodine-error.log','logging');
+			$this->auth_log = $log_dir . i2config_get('auth_log','iodine-auth.log','logging');
 		}
 		
-		if (!$access_file || !($this->access_log = fopen($access_file, 'a'))) {
+
+		if (!file_exists($this->access_log) && !file_put_contents($this->access_log,"Iodine Access Log created at: ".date('d/M/Y:H:i:s O')."\n")) {
 			$I2_ERR->fatal_error('The main iodine access log cannot be accessed.');
 		}
 		$this->log_access();
-		if (!$debug_file || !($this->debug_log = fopen($debug_file, 'a'))) {
+		if (!file_exists($this->debug_log) && !file_put_contents($this->debug_log,"Iodine Debug Log created at: ".date('d/M/Y:H:i:s O')."\n")) {
 			$I2_ERR->fatal_error('The main iodine debug log cannot be accessed.');
 		}
-		if (!$error_file || !($this->error_log = fopen($error_file, 'a'))) {
+		if (!file_exists($this->error_log) && !file_put_contents($this->error_log,"Iodine Error Log created at: ".date('d/M/Y:H:i:s O')."\n")) {
 			$I2_ERR->fatal_error('The main iodine error log cannot be accessed.');
 		}
-		if (!$auth_file || !($this->auth_log = fopen($auth_file, 'a'))) {
+		if (!file_exists($this->auth_log) && !file_put_contents($this->auth_log,"Iodine Auth Log created at: ".date('d/M/Y:H:i:s O')."\n")) {
 			$I2_ERR->fatal_error('The main iodine authentication log cannot be accessed.');
 		}
 		$this->default_debug_level = i2config_get('default_debug_level', 0, 'logging');
@@ -106,14 +107,8 @@ class Logging {
 		$this->debug_profile = i2config_get('debug_profile', false, 'logging');
 		$this->screen_debug = i2config_get('screen_debug', 1, 'logging');
 		
-		register_shutdown_function(array($this, 'flush_debug_output'));
-	}
-
-	public function __destruct() {
-		fclose($this->debug_log);
-		fclose($this->access_log);
-		fclose($this->auth_log);
-		fclose($this->error_log);
+		register_shutdown_function(array($this,'flush_debug_output'));
+		
 	}
 
 	/**
@@ -124,13 +119,14 @@ class Logging {
 	* 'IP - username - [Apache-style date format] "Request" "Referrer" "User-Agent"'.
 	*/
 	public function log_access() {
-		fwrite($this->access_log,
+		file_put_contents($this->access_log,
 			$_SERVER['REMOTE_ADDR'] . ' - ' .
 			(isset($_SESSION['i2_username'])?$_SESSION['i2_username']:'not_logged_in') . ' - [' .
 			date('d/M/Y:H:i:s O') . '] "' .
 			$_SERVER['REQUEST_URI'] . '" "' .
 			(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'') . '" "' .
-			(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'') . '"' ."\n"
+			(isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'') . '"' ."\n",
+			FILE_APPEND
 		);
 	}
 
@@ -144,26 +140,30 @@ class Logging {
 	* @param string $msg The error message to record.
 	*/
 	public function log_error($msg) {
-		$trace_arr = array();
+		global $I2_API;
+		$trace_arr = [];
 		foreach(array_slice(debug_backtrace(),1) as $trace) {
-			if (isSet($trace['file']) && isSet($trace['line'])) {
+			if (isset($trace['file']) && isset($trace['line'])) {
 				$trace_arr[] = basename($trace['file'],'.php5') .':'. $trace['line'];
-			} else if (isSet($trace['line'])) {
+			} else if (isset($trace['line'])) {
 				$trace_arr[] = 'Unknown file:'. $trace['line'];	
 			} else {
 				$trace_arr[] = 'Unknown file: Unknown line';
 			}
 		}
 		
-		fwrite($this->error_log,
+		file_put_contents($this->error_log,
 			$_SERVER['REMOTE_ADDR'] . ' - [' .
 			@date('d/M/Y:H:i:s O') . '] [' .
 			implode($trace_arr, ',') . '] "' .
 			$_SERVER['REQUEST_URI'] . '" "' .
-			$msg . '"' ."\n"
+			$msg . '"' ."\n",
+			FILE_APPEND
 		);
-
-		$this->error_buf .= "\r\n<p>$msg</p>";
+		if($I2_API->api && $I2_API->backtrace==false)
+			$this->error_buf .= $msg;
+		else
+			$this->error_buf .= "\r\n<p>$msg</p>";
 	}
 	
 	/**
@@ -187,22 +187,18 @@ class Logging {
 		if ($level === NULL) { /* If not set, get default debug level */
 			$level = $this->default_debug_level;
 		}
+		$msg = 'Level '.$level.' debug: '.$msg;
 		if(is_int($level)) {
 			if ($level > $this->debug_loglevel) {
 				return;
 			}
-			if ($this->screen_debug) {
-				$this->log_screen('Level '.$level.' debug: '.$msg);
-			} else {
-				$this->log_file($msg,$level);
-			}
-		} else {
-			if ($level == 'P' && $this->debug_profile)
-				if ($this->screen_debug) {
-					$this->log_screen('Level '.$level.' debug: '.$msg);
-				} else {
-					$this->log_file($msg,$level);
-				}
+			if ($this->screen_debug)
+				$this->log_screen($msg);
+			$this->log_file($msg,$level,$this->debug_log);
+		} else if ($level == 'P' && $this->debug_profile) {
+			if ($this->screen_debug)
+				$this->log_screen($msg);
+			$this->log_file($msg,$level);
 		}
 	}
 
@@ -214,22 +210,28 @@ class Logging {
 	 * @param string $msg The message to log.
 	 */
 	function log_auth($msg) {
-		fwrite($this->auth_log, $msg."\n");
+		file_put_contents($this->auth_log,
+			$msg."\n",
+			FILE_APPEND
+		);
 	}
 
 	/**
 	* Logs directly to a file
 	*/
-	public function log_file($msg,$level=NULL) {
-		if ($level === NULL) { /* If not set, get default debug level */
+	public function log_file($msg, $level=NULL, $logfile=NULL) {
+		if ($level === NULL) /* If not set, get default debug level */
 			$level = $this->default_debug_level;
-		}
-		if ($level > $this->debug_loglevel) {
+		if ($logfile === NULL)
+			$logfile = $this->error_log;
+		if ($level > $this->debug_loglevel)
 			return;
-		}
-		fprintf($this->debug_log,$msg."\n");
-		fflush($this->debug_log);
+		file_put_contents($logfile,
+			$msg."\n",
+			FILE_APPEND
+		);
 	}
+
 
 	/**
 	* Logs a message to the screen.
@@ -271,8 +273,22 @@ class Logging {
 	* the applicatioan just dies halfway through.
 	*/
 	public function flush_debug_output() {
-		global $I2_DISP;
+		global $I2_DISP,$I2_API,$I2_ARGS;
 		
+		if($I2_API->api) {
+			if($I2_API->logging==false)
+				return;
+			$I2_API->writeElement('error',$this->error_buf);
+			$I2_API->startElement('debug');
+			$I2_API->writeRaw($this->debug_buf);
+			$I2_API->endElement();
+			$this->error_buf = NULL;
+			$this->debug_buf = NULL;
+			return;
+		}
+		// don't bother setting up Display if we're logging out
+		if(isset($I2_ARGS[0]) && $I2_ARGS[0] == 'logout')
+			return;
 		try {
 			if( ! isset($I2_DISP) ) {
 				$I2_DISP = new Display();

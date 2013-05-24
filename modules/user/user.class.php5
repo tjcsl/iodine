@@ -20,12 +20,12 @@ class User {
 	/**
 	* Keeps track of all cached sets of user information so we don't have to do two lookups.
 	*/
-	private static $cache = array();
+	private static $cache = [];
 	
 	/**
-	*
+	* Contains the user's uid
 	*/
-	private static $usernametouid = array();
+	private static $usernametouid = [];
 
 	/**
 	* Information about the user, only stored if this User object
@@ -46,6 +46,24 @@ class User {
 	
 	private static $senior_gradyear;
 
+	private function get_uid($username) {
+		global $I2_LDAP, $I2_CACHE;
+		if (isset(self::$usernametouid[$username]))
+			return self::$usernametouid[$username];
+		else {
+			$uid = $I2_CACHE->read($this,'iodine_uid_'.$username);
+			if($uid === FALSE) {
+				$uid = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid=$this->username","iodineUidNumber")->fetch_single_value();
+				if(!$uid) {
+					throw new I2Exception("invalid iodineUidNumber");
+				}
+				$I2_CACHE->store($this,'iodine_uid_'.$username,$uid,strtotime("1 hour"));
+				return $uid;
+			}
+			return $uid;
+		}
+	}
+
 	/**
 	* The User class constructor.
 	*
@@ -62,22 +80,23 @@ class User {
 	* @access public
 	*/
 	public function __construct($uid = NULL) {
-		global $I2_ERR, $I2_LDAP;
+		global $I2_ERR, $I2_LDAP, $I2_CACHE;
 		if( $uid === NULL ) {
-			//if( isset($_SESSION['i2_uid']) ) {
-			//	$this->username = $_SESSION['i2_uid'];
 			if( isset($_SESSION['i2_username']) ) {
 				$this->username = $_SESSION['i2_username'];
-				$uid = $this->username;
-				if (isset(self::$usernametouid[$uid])&&isSet(self::$cache[self::$usernametouid[$uid]])) {
-					$this->info = &self::$cache[self::$usernametouid[$uid]];
+				$uid = self::get_uid($this->username);
+				if (isset($uid) && isset(self::$cache[$uid])) {
+					$this->info = &self::$cache[$uid];
 				} else {
-					$this->info = array();
-					$blah = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid=$uid")->fetch_array(RESULT::ASSOC);
-					foreach ($blah as $key=>$val) {
-						$this->info[strtolower($key)] = $val;
+					$this->info = unserialize($I2_CACHE->read($this,'ldap_user_info_'.$uid));
+					if($this->info === FALSE) {
+						$info = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid=$this->username")->fetch_array(RESULT::ASSOC);
+						foreach ($info as $key=>$val) {
+							$this->info[strtolower($key)] = $val;
+						}
+						$this->info['allset'] = TRUE;
 					}
-					$this->info['allset']=True;
+
 				}
 				$this->myuid = $this->info['iodineuidnumber'];
 				$_SESSION['i2_userid']=$this->myuid;
@@ -89,8 +108,8 @@ class User {
 
 		else if ($uid instanceof User) {
 			/*
-			** Someone tried new User(user object), so we'll just let them be stupid.
-			*/
+			 ** Someone tried new User(user object), so we'll just let them be stupid.
+			 */
 			$this->myuid = $uid->uid;
 			$this->username = $uid->username;
 			$this->info = $uid->info;
@@ -100,22 +119,26 @@ class User {
 			if (!$uid) {
 				throw new I2Exception('Blank uidnumber used in User construction'.$this->username);
 			}
-			$this->info = array();
-			if (isSet(self::$cache[$uid]) && isSet(self::$cache[$uid]['iodineuid'])) {
+			$this->info = [];
+			if (isset(self::$cache[$uid]) && isset(self::$cache[$uid]['iodineuid'])) {
 				$this->info = self::$cache[$uid];
 			} else {
-				$blah = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUidNumber=$uid")->fetch_array(Result::ASSOC);
-				if ($blah) {
-					foreach ($blah as $key=>$val) {
-						$this->info[strtolower($key)] = $val;
+				$this->info = unserialize($I2_CACHE->read($this,'ldap_user_info_'.$uid));
+				if($this->info === FALSE) {
+					$info = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUidNumber=$uid")->fetch_array(Result::ASSOC);
+					if ($info) {
+						foreach ($info as $key=>$val) {
+							$this->info[strtolower($key)] = $val;
+						}
+						$this->info['allset']=True;
+					} else {
+						throw new I2Exception('Invalid iodineUidNumber '.$uid);
+						// Below two lines are 9996 replacement hack;
+						// while this can be safely removed once we are sure we properly clean out all the users from all the tables upon deletion using dataimport,
+						// I recommend leaving it in place in case other coding errors cause the same effect, as occurred 9/2009. --wyang, comment modified 2009/09/12
+						$this->info['iodineuid']="nostudent";
+						$this->info['iodineuidnumber']=$uid;
 					}
-					$this->info['allset']=True;
-				} else {
-					throw new I2Exception('Invalid iodineUidNumber '.$uid);
-					//warn('Invalid iodineUidNumber '.$uid);
-					//Below two lines are 9996 replacement hack; while this can be safely removed once we are sure we properly clean out all the users from all the tables upon deletion using dataimport, I recommend leaving it in place in case other coding errors cause the same effect, as occurred 9/2009. --wyang, comment modified 2009/09/12
-					$this->info['iodineuid']="nostudent";
-					$this->info['iodineuidnumber']=$uid;
 				}
 			}
 			$this->username = $this->info['iodineuid'];
@@ -123,17 +146,18 @@ class User {
 		}
 
 		/*
-		** Set the null array
-		*/
+		 ** Set the null array
+		 */
 		if(!isset($this->info['__nulls']))
-			$this->info['__nulls']=array();
+			$this->info['__nulls']=[];
 		/*
-		** Put info in cache
-		*/
+		 ** Put info in cache
+		 */
 		self::$cache[$this->myuid] = &$this->info;
+		$I2_CACHE->store($this,'ldap_user_info_'.$this->myuid,serialize($this->info),strtotime('1 hour'));
 		/*
-		** Cache the username->uid connection
-		*/
+		 ** Cache the username->uid connection
+		 */
 		self::$usernametouid[$this->username]=$this->myuid;
 	}
 
@@ -142,8 +166,9 @@ class User {
 	}
 
 	public function recache($field) {
-		global $I2_LDAP;
+		global $I2_LDAP, $I2_CACHE;
 		$this->info[$field] = $I2_LDAP->search_base(LDAP::get_user_dn_username($this->username),array($field))->fetch_single_value();
+		$I2_CACHE->remove($this,'ldap_user_info_'.$this->myuid);
 	}
 
 	/**
@@ -214,7 +239,7 @@ class User {
 	* @return mixed The data you requested.
 	*/
 	public function __get( $name ) {
-		global $I2_SQL,$I2_ERR,$I2_LDAP;
+		global $I2_SQL, $I2_ERR, $I2_LDAP, $I2_CACHE;
 
 		if(!$this->username) {
 			throw new I2Exception('Tried to retrieve information for nonexistant user! UID: '.$this->myuid);
@@ -235,7 +260,12 @@ class User {
 			case 'info':
 				return $this->info;
 			case 'allowed_modules':
-				$this->info['allowed_modules']=$I2_SQL->query("SELECT module FROM allowed_modules WHERE userclass=%s",$this->__get("objectclass"))->fetch_all_single_values();
+				$allowed_modules = unserialize($I2_CACHE->read($this,'allowed_modules'));
+				if($allowed_modules === FALSE) {
+					$allowed_modules = $I2_SQL->query("SELECT module FROM allowed_modules WHERE userclass=%s",$this->__get("objectclass"))->fetch_all_single_values();
+					$I2_CACHE->store($this,'allowed_modules',serialize($allowed_modules),strtotime('1 hour'));
+				}
+				$this->info['allowed_modules'] = $allowed_modules;
 				return $this->info['allowed_modules'];
 			case 'name':
 				$nick = $this->__get('nickname');
@@ -308,7 +338,7 @@ class User {
 				$phone = $this->__get('telephoneNumber');
 				if($phone) {
 					if(is_array($phone)) {
-						$numbers = array();
+						$numbers = [];
 						foreach($phone as $key => $value) {
 							$value = preg_replace('/[^0-9]/', '', $value);
 							$international = strlen($value) - 10;
@@ -457,7 +487,7 @@ class User {
 		}
 		
 		//Check which table the information is in
-		if( $this->info != NULL && isSet($this->info[$name])) {
+		if( $this->info != NULL && isset($this->info[$name])) {
 			//returned cached info if we are caching
 			return $this->info[$name];
 		}
@@ -557,7 +587,7 @@ class User {
 		if (!$grade || $grade < 9 || $grade > 12) {
 			d('Grade out-of-bounds passed to get_gradyear',5);
 		}
-		if (! isSet(self::$senior_gradyear)) {
+		if (! isset(self::$senior_gradyear)) {
 			$date = getdate();
 			self::$senior_gradyear = $date['year'] + ($date['mon'] >= 7 ? 1 : 0);
 		}
@@ -596,7 +626,7 @@ class User {
 			throw new I2Exception('User entries without usernames cannot be modified!');
 		}*/
 		if ($val == '') {
-			$val = array();
+			$val = [];
 		}
 			
 		if($name == 'mobile' || $name == 'homephone' || $name == 'telephoneNumber') {
@@ -753,7 +783,7 @@ class User {
 		}
 		
 		if($val==NULL) {
-			$val=array(); //LDAP will not like you if you give it null entries (i.e. the modify fails)
+			$val=[]; //LDAP will not like you if you give it null entries (i.e. the modify fails)
 		}
 		$ldap->modify_val(LDAP::get_user_dn_username($this->username),$name,$val);
 	}
@@ -1123,7 +1153,7 @@ class User {
 						} else {
 							$key = strtolower($boom[0]);
 							//Apply attributename translation
-							/*if (isSet($maptable[$key])) {
+							/*if (isset($maptable[$key])) {
 								d($key.' remapped to '.print_r($maptable[$key],1),8);
 								$key = $maptable[$key];
 							}*/
@@ -1154,10 +1184,10 @@ class User {
 							$tok = self::get_gradyear($tok);
 							$key = 'graduationYear';
 						}
-						if (isSet($soundexed[$key])) {
+						if (isset($soundexed[$key])) {
 							$tok = soundex($tok);
 						}
-						if (isSet($maptable[$key])) {
+						if (isset($maptable[$key])) {
 							$key = $maptable[$key];
 						}
 						if (!is_array($key)) {
@@ -1186,7 +1216,7 @@ class User {
 			  }
 
 			  $res = $I2_LDAP->search(LDAP::get_user_dn(),$prefix.$infix.$postfix,array('iodineUid'));
-			  $ret = array();
+			  $ret = [];
 			  while ($row = $res->fetch_array(Result::ASSOC)) {
 			  	$ret[] = $row['iodineUid'];
 			  }
@@ -1218,7 +1248,7 @@ class User {
 		// User is trying an LDAP query
 		if (strpos($str,'&') !== FALSE || strpos($str,'|') !== FALSE) {
 			$res = $I2_LDAP->search(LDAP::get_user_dn(),"$str",array('iodineUid'));
-			$results = array();
+			$results = [];
 			while ($row = $res->fetch_array(Result::ASSOC)) {
 				$results[] = $row['iodineUid'];
 			}
@@ -1252,7 +1282,7 @@ class User {
 			$str = trim($str);
 
 
-			$results = array();
+			$results = [];
 			$firstres = TRUE;
 		
 			if (!$str || $str == '') {
@@ -1274,7 +1304,7 @@ class User {
 				$numtokens = 0;
 				$separator = " \t";
 				$tok = strtok($str,$separator);
-				$preres = array();
+				$preres = [];
 
 				while ($tok !== FALSE) {
 					$res = $I2_LDAP->search(LDAP::get_user_dn(),
@@ -1282,7 +1312,7 @@ class User {
 					,array('iodineUid'));
 
 					while ($uid = $res->fetch_single_value()) {
-						if (!$firstres && !isSet($preres[$uid])) {
+						if (!$firstres && !isset($preres[$uid])) {
 							  // Results which weren't previously found should be discarded
 							  continue;
 						} elseif (!$firstres) {
@@ -1300,7 +1330,7 @@ class User {
 				}
 
 				if ($numtokens == 0) {
-					  $results = array();
+					  $results = [];
 				} elseif ($numtokens == 1) {
 					  $results = array_keys($preres);
 				} else {
@@ -1333,7 +1363,7 @@ class User {
 	* @return array An array of {@link User} objects.
 	*/
 	public static function id_to_user($userids) {
-		$ret = array();
+		$ret = [];
 		if (!is_array($userids)) {
 			$userids = array($userids);
 		}
@@ -1446,7 +1476,7 @@ class User {
 		$data = $I2_LDAP->search(LDAP::get_user_dn(),$query.")",$attributes);
 		while($row=$data->fetch_array(Result::ASSOC)) {
 			$index=$row['iodineUidNumber'];
-			$info=array();
+			$info=[];
 			foreach($row as $key=>$val) {
 				$info[strtolower($key)]=$val;
 			}

@@ -13,7 +13,7 @@
 * @package modules
 * @subpackage News
 */
-class Events implements Module {
+class Events extends Module {
 
 	/**
 	* The display object to use
@@ -28,50 +28,7 @@ class Events implements Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $template_args = array();
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
+	private $template_args = [];
 
 	/**
 	* Required by the {@link Module} interface.
@@ -79,7 +36,7 @@ class Events implements Module {
 	function init_pane() {
 		global $I2_ARGS, $I2_USER;
 
-		$args = array();
+		$args = [];
 		if(count($I2_ARGS) <= 1) {
 			$this->home();
 			return array('Events: Home', 'Events');
@@ -103,8 +60,10 @@ class Events implements Module {
 
 		$this->template = 'events_home.tpl';
 		$this->template_args['signed_up'] = Event::user_events();
+		//FIXME: implement non_user_events and verifier_events
 		//$this->template_args['may_sign_up'] = Event::non_user_events();
 		//$this->template_args['verifier_events'] = Event::verifier_events();
+		$this->template_args['verifier_events'] = NULL;
 	}
 
 	public function view() {
@@ -244,21 +203,6 @@ class Events implements Module {
 	*/
 	function display_pane($display) {
 		$display->disp($this->template, $this->template_args);
-	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return false;
-		//return 'News: '.$num.' post'.($num==1?'':'s').' to read';
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function display_box($display) {
-		//$display->disp('news_box.tpl',array('summaries'=>$this->summaries,'newsadmin'=>$this->newsadmin));
 	}
 
 	/**

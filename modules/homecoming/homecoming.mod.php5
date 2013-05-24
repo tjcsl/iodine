@@ -13,7 +13,7 @@
 * @package modules
 * @subpackage Homecoming
 */
-class Homecoming implements Module {
+class Homecoming extends Module {
 
 	/**
 	* Template for the specified action
@@ -23,50 +23,7 @@ class Homecoming implements Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $template_args = array();
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
+	private $template_args = [];
 
 	/**
 	* Required by the {@link Module} interface.
@@ -74,7 +31,7 @@ class Homecoming implements Module {
 	public function init_pane() {
 		global $I2_ARGS, $I2_USER, $I2_SQL;
 
-		$args = array();
+		$args = [];
 		if(count($I2_ARGS) <= 1) {
 			$this->template = 'homecoming_pane.tpl';
 
@@ -110,25 +67,12 @@ class Homecoming implements Module {
 	public function display_pane($display) {
 		$display->disp($this->template, $this->template_args);
 	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	public function init_box() {
-		return FALSE;
-	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	public function display_box($display) {
-	}
 	
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	public function get_name() {
-		return 'Groups';
+		return 'Homecoming';
 	}
 
 	/**
@@ -218,7 +162,7 @@ class Homecoming implements Module {
 		$this->template = 'homecoming_votees_all.tpl';
 		if (isset($I2_ARGS[2])) {
 			$myuids = $I2_SQL->query("SELECT uid,male,female FROM homecoming_votes where grade={$I2_ARGS[2]}")->fetch_all_arrays();
-			$this->template_args['voters'] = array();
+			$this->template_args['voters'] = [];
 			foreach($myuids as $line) {
 				$voter = array('user' => new User($line['uid']));
 				if($line['male'])
@@ -268,7 +212,7 @@ class Homecoming implements Module {
 		$this->template = 'homecoming_voters.tpl';
 		if (isset($I2_ARGS[2])) {
 			$myuids = $I2_SQL->query("SELECT uid FROM homecoming_votes WHERE male={$I2_ARGS[2]} OR female={$I2_ARGS[2]}")->fetch_col('uid');
-			$voters = array();
+			$voters = [];
 			foreach($myuids as $i) {
 				$voters[] = array('user' => new User($i));
 			}
@@ -300,8 +244,8 @@ class Homecoming implements Module {
 			$this->template_args['numvotees_male'] = count($muids);
 			$this->template_args['numvotees_female'] = count($fuids);
 
-			$males = array();
-			$females = array();
+			$males = [];
+			$females = [];
 
 			$mtotal = 0;
 			$ftotal = 0;

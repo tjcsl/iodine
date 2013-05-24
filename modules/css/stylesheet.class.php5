@@ -6,16 +6,18 @@
 * @package modules
 * @subpackage CSS
 * @filesource
+* Contains helper methods for CSS
 */
 
 /**
 * @package modules
 * @subpackage CSS
+* Contains helper methods for CSS
 */
 class StyleSheet {
 
-	private $rulesets = array();
-	//private $currentAdd = array();
+	private $rulesets = [];
+	//private $currentAdd = [];
 
 	/**
 	 * Tells the class that a new CSS file is being parsed.
@@ -23,7 +25,7 @@ class StyleSheet {
 	 * is used with two different rules in the same file.
 	 */
 	public function newFile() {
-	//	$this->currentAdd = array();
+	//	$this->currentAdd = [];
 	}
 
 	/**
@@ -65,7 +67,7 @@ class StyleSheet {
 		} else {
 			$arr =& $this->get_ruleset($ruleset->get_parent());
 			if (!isset($arr[$ruleset->get_name()]))
-				$arr[$ruleset->get_name()] = array();
+				$arr[$ruleset->get_name()] = [];
 			return $arr[$ruleset->get_name()];
 		}
 	}

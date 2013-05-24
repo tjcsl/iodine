@@ -17,7 +17,7 @@
   <span class="bold">&middot;</span>
   <a id="menu_cred" href="[<$I2_ROOT>]info/credits" [<if $I2_ARGSTRING|substr:0:12  == "info/credits">]class="currentmodule" [</if>]style="opacity: 1;" onmouseover="menuitem_onmouseover('menu_cred','menu_news','menu_eighth','menu_polls','menu_prefs','menu_suggest','menu_help','menu_logout')" onmouseout="menuitem_onmouseout('menu_cred')">Credits</a>
   <span class="bold">&middot;</span>
-  <a id="menu_help" href="[<$I2_ROOT>]info/[<$I2_ARGSTRING>]" [<if $I2_MODNAME == "info" && $I2_ARGSTRING|substr:0:12 != "info/credits">]class="currentmodule" [</if>]style="opacity: 1;" onmouseover="menuitem_onmouseover('menu_help','menu_news','menu_eighth','menu_polls','menu_prefs','menu_suggest','menu_cred','menu_logout')" onmouseout="menuitem_onmouseout('menu_help')">Help</a>
+  <a id="menu_help" href="[<$I2_ROOT>]info/[<$I2_ARGSTRING|replace:'info/':''>]" [<if $I2_MODNAME == "info" && $I2_ARGSTRING|substr:0:12 != "info/credits">]class="currentmodule" [</if>]style="opacity: 1;" onmouseover="menuitem_onmouseover('menu_help','menu_news','menu_eighth','menu_polls','menu_prefs','menu_suggest','menu_cred','menu_logout')" onmouseout="menuitem_onmouseout('menu_help')">Help</a>
   <span class="bold">&middot;</span>
   <a id="menu_logout" href="[<$I2_ROOT>]logout" style="opacity: 1;" onmouseover="menuitem_onmouseover('menu_logout','menu_news','menu_eighth','menu_polls','menu_prefs','menu_suggest','menu_cred','menu_help')" onmouseout="menuitem_onmouseout('menu_logout')">Logout</a>
 </div>

@@ -13,49 +13,7 @@
 * @package modules
 * @subpackage Feeds
 */
-class Feeds implements Module {
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
+class Feeds extends Module {
 
 	/**
 	* Required by the {@link Module} interface.
@@ -105,19 +63,6 @@ class Feeds implements Module {
 		ATOM::update();
 		NewsODP::update();
 	}
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return FALSE;
-	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function display_box($display) {
-		return FALSE;
-	}
 	
 	/**
 	* Required by the {@link Module} interface.
@@ -127,7 +72,7 @@ class Feeds implements Module {
 	}
 	public static function getItems() {
 		$news = NewsItem::get_all_items_nouser();
-		$returner = array();
+		$returner = [];
 		foreach($news as $item) {
 			if($item->public==0) //Only display stuff that's public.
 				continue;

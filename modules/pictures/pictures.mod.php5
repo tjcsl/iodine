@@ -13,53 +13,7 @@
 * @package core
 * @subpackage Module
 */
-class Pictures implements Module {
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	function display_box($disp) {
-	}
+class Pictures extends Module {
 	
 	function display_pane($disp) {
 		global $I2_FS_ROOT, $I2_ARGS, $I2_LDAP;
@@ -89,12 +43,8 @@ class Pictures implements Module {
 		return "Pictures";
 	}
 
-	function init_box() {
-		return FALSE;
-	}
-
 	function init_pane() {
-		return "";
+		return "Pictures";
 	}
 }
 ?>

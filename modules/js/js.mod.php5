@@ -4,20 +4,22 @@
 * @package modules
 * @subpackage JS
 * @filesource
+* Supports theme-specific javascript
 */
 
 /**
 * @package modules
 * @subpackage JS
+* Supports theme-specific javascript
 */
 // This is to allow for theme-specific javascript
 // Note that most of this is copied from css.mod.php5
 // Although it's not as powerful, or as complex
 // But it should be faster, and the javascript for the
 // styles isn't likely to be too complex anyway.
-class JS implements Module {
+class JS extends Module {
 
-	private $warnings = array();
+	private $warnings = [];
 
 	private $date;
 
@@ -26,62 +28,6 @@ class JS implements Module {
 	private $script_cache;
 
 	private $current_style;
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return FALSE;
-	}
-
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function display_box($disp) {
-		return FALSE;
-	}
 	
 	/**
 	* Required by the {@link Module} interface.
@@ -148,7 +94,7 @@ class JS implements Module {
 
 		$this->script_cache = $script_cache;
 
-		//Recomi)le the cache if it's stale
+		//Recompile the cache if it's stale
 		if (!file_exists($script_cache)) {
 			// || (filemtime($script_cache) < filemtime($this->script_path))
 			$this->recache();
@@ -178,7 +124,7 @@ class JS implements Module {
 			$contents .= "/* WARNING: $message */\n";
 		}
 		$parser = new Display();
-		$contents .= $parser->fetch($this->script_path,array(),FALSE);
+		$contents .= $parser->fetch($this->script_path,[],FALSE);
 		$contents .= "\n/* End of file */\n";
 		$contents .= "//$this->current_style";
 		file_put_contents($this->script_cache,$contents);
@@ -187,7 +133,8 @@ class JS implements Module {
 	public static function flush_cache(User $user) {
 		$cache_dir = i2config_get('cache_dir', NULL, 'core') . 'javascriptstyles/';
 		$style_cache = $cache_dir . $user->uid;
-		exec("rm -f $style_cache");
+		if(is_file($style_cache))
+			unlink($style_cache);
 	}
 }
 

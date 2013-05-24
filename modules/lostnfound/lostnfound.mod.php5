@@ -13,12 +13,7 @@
 * @package modules
 * @subpackage LostNFound
 */
-class LostNFound implements Module {
-
-	/**
-	* The display object to use
-	*/
-	private $display;
+class LostNFound extends Module {
 
 	/**
 	* Template for the specified action
@@ -28,7 +23,7 @@ class LostNFound implements Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* A 1-dimensional array of all the items
@@ -38,7 +33,7 @@ class LostNFound implements Module {
 	/**
 	* A 1-dimensional array containing all of the titles for all news posts.
 	*/
-	private $summaries = array();
+	private $summaries = [];
 
 	/**
 	* Whether the current user is an Intranet administrator
@@ -95,9 +90,8 @@ class LostNFound implements Module {
 	/**
 	* Handle the lostnfound command.
 	*
-	* @param Display $disp The Display object to use for output.
 	*/
-	function display_cli($disp) {
+	function display_cli() {
 		global $I2_ARGS;
 		$valid_commands = array("list-lost","list-found");
 		if(!isset($I2_ARGS[2]) || !in_array(strtolower($I2_ARGS[2]),$valid_commands) ) {
@@ -119,15 +113,6 @@ class LostNFound implements Module {
 	}
 
 	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
@@ -136,11 +121,11 @@ class LostNFound implements Module {
 			$I2_ARGS[1] = '';
 		}
 		
-		if (!isSet($this->is_admin)) {
+		if (!isset($this->is_admin)) {
 			$this->set_is_admin();
 		}
 		
-		if(!isSet($this->blacklisted)) {
+		if(!isset($this->blacklisted)) {
 			$this->set_blacklisted();
 		}
 		$this->template_args['blacklisted'] = $this->blacklisted;
@@ -151,7 +136,7 @@ class LostNFound implements Module {
 			case 'add':
 				$this->template = 'lost_add.tpl';
 				// if an item was just submitted
-				if(isSet($_REQUEST['add_form'])) {
+				if(isset($_REQUEST['add_form'])) {
 					$title = stripslashes($_REQUEST['title']);
 					$text = stripslashes($_REQUEST['text']);
 
@@ -167,30 +152,31 @@ class LostNFound implements Module {
 				return array('aaAdd Lost Item', 'Add Lost Item');
 
 			case 'edit':
+				//FIXME: make this do something.
 				$this->template = 'lost_edit.tpl';
 				if( !isset($I2_ARGS[2]) ) {
 					throw new I2Exception('ID of article to edit not specified.');
 				}
 
 				try {
-					$item = new Newsitem($I2_ARGS[2]);
+					$item = new Lostitem($I2_ARGS[2]);
 				} catch(I2Exception $e) {
-					throw new I2Exception("Specified article ID {$I2_ARGS[2]} is invalid.");
+					throw new I2Exception("Specified item ID {$I2_ARGS[2]} is invalid.");
 				}
 
 				if( !$item->editable() ) {
-					throw new I2Exception('You do not have permission to edit this article.');
+					throw new I2Exception('You do not have permission to edit this item.');
 				}
 
 				if( isset($_REQUEST['edit_form']) ) {
 					$title = stripslashes($_REQUEST['edit_title']);
 					$text = stripslashes($_REQUEST['edit_text']);
 					$expire = $_REQUEST['edit_expire'];
-					$visible = isSet($_REQUEST['edit_visible']) ? 1 : 0;
+					$visible = isset($_REQUEST['edit_visible']) ? 1 : 0;
 					$groups = Group::generate($_REQUEST['add_groups']);
-					$public = isSet($_REQUEST['edit_public']) ? 1 : 0;
+					$public = isset($_REQUEST['edit_public']) ? 1 : 0;
 					$item->edit($title, $text, $groups,$expire,$visible,$public);
-					$item = new Newsitem($I2_ARGS[2], TRUE);
+					$item = new Lostitem($I2_ARGS[2]);
 					$this->template_args['edited'] = 1;
 				}
 				
@@ -199,8 +185,8 @@ class LostNFound implements Module {
 				$item->text = htmlspecialchars_decode($item->text);
 				$item->text = preg_replace('/<br\\s*?\/??>/i', "\n", $item->text);
 				// To fix highlighting in vim, since it thinks we just closed the tag: <?php
-				$this->template_args['newsitem'] = $item;
-				return 'Edit News Post';
+				$this->template_args['item'] = $item;
+				return 'Edit Lost Item';
 				
 			case 'delete':
 				$this->template = 'lostnfound_delete.tpl';
@@ -245,11 +231,9 @@ class LostNFound implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
-		global $I2_ARGS;
-		
+	function display_pane($disp) {
 		$this->template_args['is_admin'] = $this->is_admin;
-		$display->disp($this->template, $this->template_args);
+		$disp->disp($this->template, $this->template_args);
 	}
 	
 	/**
@@ -264,7 +248,7 @@ class LostNFound implements Module {
 			$this->summaries[] = array('title' => $item->title, 'id' => $item->id);
 		}
 		$num = count($this->summaries);
-		if (!isSet($this->is_admin)) {
+		if (!isset($this->is_admin)) {
 			$this->set_is_admin();
 		}
 		return 'Lost & Found: '.$num.' item'.($num==1?'':'s').' missing';
@@ -273,8 +257,8 @@ class LostNFound implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_box($display) {
-		$display->disp('lostnfound_box.tpl',array('summaries'=>$this->summaries,'is_admin'=>$this->is_admin));
+	function display_box($disp) {
+		$disp->disp('lostnfound_box.tpl',array('summaries'=>$this->summaries,'is_admin'=>$this->is_admin));
 	}
 
 	/**
@@ -287,7 +271,7 @@ class LostNFound implements Module {
 		$this->template = 'lostnfound_pane.tpl';
 		$I2_ARGS[1] = '';
 		
-		$this->template_args['items'] = array();
+		$this->template_args['items'] = [];
 
 		if( $this->items === NULL) {
 			$this->items = LostItem::get_all_items();

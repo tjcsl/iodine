@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ${HOME}/intranet2
+test -f config.ini.php5 || cd ${HOME}/intranet2
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!!!!!         Warning!         !!!!!"
@@ -26,11 +26,13 @@ echo "Extracting MySQL password from config.ini..."
 passwd=`scripts/mysqlpass`
 echo "Done!"
 
-cd mysql
+pushd mysql
 
 echo "Executing all .sql files in the mysql/ directory..."
 for i in `ls -1 *.sql`; do 
 		  mysql -D iodine -u iodine --password=$passwd -e "source $i"
 done
+
+popd
 
 echo "Done!"

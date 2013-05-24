@@ -15,7 +15,7 @@
 */
 class Kerberos implements AuthType {
 	private $cache;
-	private $realms = array();
+	private $realms = [];
 	private $realm;
 
 	public function __construct($realm=NULL) {
@@ -132,6 +132,9 @@ class Kerberos implements AuthType {
 			
 			$status = proc_close($process);
 
+			// If kinit didn't create the cache file don't run kgetcred
+			if(!file_exists($cache))
+				return FALSE;
 			exec('export KRB5CCNAME='.$cache.';/usr/bin/kgetcred ldap/iodine.tjhsst.edu@CSL.TJHSST.EDU');
 			
 			if($status == 0) {
@@ -139,7 +142,7 @@ class Kerberos implements AuthType {
 				return $cache;
 			}
 	   }
-      return FALSE;	
+	return FALSE;
 	}
 
 	/**

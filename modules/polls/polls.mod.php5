@@ -14,55 +14,12 @@
  * @package modules
  * @subpackage Polls
  */
-class Polls implements Module {
+class Polls extends Module {
 
 	/** The template to use. */
 	private $template;
 	/** Arguments for said template. */
-	private $template_args = array();
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
+	private $template_args = [];
 
 	/**
 	 * Initalizes the pane.
@@ -99,8 +56,8 @@ class Polls implements Module {
 	/**
 	 * Displays the pane.
 	 */
-	function display_pane($display) {
-		$display->disp($this->template, $this->template_args);
+	function display_pane($disp) {
+		$disp->disp($this->template, $this->template_args);
 	}
 
 	/**
@@ -108,7 +65,7 @@ class Polls implements Module {
 	 */
 	function init_box() {
 		$polls = Poll::accessible_polls(FALSE);
-		$open = array();
+		$open = [];
 		$time = time();
 		foreach($polls as $poll) {
 			if(strtotime($poll->startdt) < $time && strtotime($poll->enddt) > $time && $poll->visible)
@@ -122,8 +79,8 @@ class Polls implements Module {
 	/**
 	 * Displays the intranet box.
 	 */
-	function display_box($display) {
-		$display->disp('polls_box.tpl',$this->template_args);
+	function display_box($disp) {
+		$disp->disp('polls_box.tpl',$this->template_args);
 	}
 
 	/**
@@ -131,13 +88,6 @@ class Polls implements Module {
 	 */
 	function get_name() {
 		return 'I2 Polls';
-	}
-
-	/**
-	 * Returns false.
-	 */
-	function is_intrabox() {
-		return false;
 	}
 
 	/////////////
@@ -152,9 +102,9 @@ class Polls implements Module {
 		global $I2_USER;
 
 		$polls = Poll::accessible_polls(FALSE);
-		$open = array();
-		$finished = array();
-		$unstarted = array();
+		$open = [];
+		$finished = [];
+		$unstarted = [];
 		$time = time();
 		foreach ($polls as $poll) {
 			if (strtotime($poll->startdt) > $time)
@@ -200,7 +150,7 @@ class Polls implements Module {
 					isset($_POST['results'][$id])?1:0
 				));
 			}
-			$_POST = array(); // Unset post vars
+			$_POST = []; // Unset post vars
 			$I2_ARGS[2] = $p->pid;
 			$this->edit();
 		} else {
@@ -253,7 +203,7 @@ class Polls implements Module {
 				$_POST['visible'] == 'on' ? 1 : 0;
 			$poll->edit_poll($_POST['name'],$_POST['intro'],
 				$_POST['startdt'],$_POST['enddt'],$on);
-			$seen = array();
+			$seen = [];
 			foreach($_POST['question'] as $id) {
 				$name = $_POST["q_{$id}_name"];
 				$type = $_POST["q_{$id}_type"];
@@ -269,7 +219,7 @@ class Polls implements Module {
 				}
 				$seen[] = $id;
 				if (isset($_POST['a_'.$id])) {
-					$a_seen = array();
+					$a_seen = [];
 					$q = $poll->questions[$id];
 					foreach($_POST['a_'.$id] as $aid) {
 						$v = $_POST["a_{$id}_{$aid}"];
@@ -297,9 +247,9 @@ class Polls implements Module {
 			if (!array_key_exists('groups', $_POST)) {
 				// Someone deleted all the groups.
 				// We'll just fake that something exists
-				$_POST['groups'] = array();
+				$_POST['groups'] = [];
 			}
-			$seen = array();
+			$seen = [];
 			$gs = $poll->groups;
 			foreach ($_POST['groups'] as $key => $id) {
 				$g = $_POST['group_gids'][$id];
@@ -374,7 +324,7 @@ class Polls implements Module {
 				if (isset($_POST[$q->qid])) {
 					if ($q->maxvotes > 0 && count($_POST[$q->qid]) > $q->maxvotes) {
 						$i = 0;
-						$arr = array();
+						$arr = [];
 						foreach ($ans as $key=>$val) {
 							if ($i == $q->maxvotes)
 								break;
@@ -387,6 +337,9 @@ class Polls implements Module {
 						strlen($_POST[$q->qid]) == 0)
 						continue;
 					$q->vote($_POST[$q->qid],$uid);
+				}
+				if($q->answertype=='identity') {
+					$q->vote("",$uid);
 				}
 			}
 			$poll->cache_ldap();
@@ -427,15 +380,15 @@ class Polls implements Module {
 			$this->template = 'polls_results_freeresponse.tpl';
 			return;
 		}
-		$qs = array();
+		$qs = [];
 		$questions = $poll->questions;
 		foreach($questions as $question) {
-			$q = array();
+			$q = [];
 			$q['answertype'] = $question->answertype;
 			$q['text'] = $question->question;
 			$q['qid'] = $question->qid;
 
-			$q['total'] = array();
+			$q['total'] = [];
 			$q['total']['T'] = 0;
 			$q['total']['M'] = 0;
 			$q['total']['F'] = 0;
@@ -445,13 +398,13 @@ class Polls implements Module {
 				$q['total'][$g.'F'] = 0;
 			}
 			$q['total']['staffT'] = 0;
-			$q['answers'] = array();
+			$q['answers'] = [];
 			$as = $question->answers;
 			foreach ($as as $aid => $text) {
-				$ans = array();
+				$ans = [];
 				$ans['text'] = $text;
 
-				$ans['votes'] = array();
+				$ans['votes'] = [];
 				$ans['votes']['T'] = 0;
 				$ans['votes']['M'] = 0;
 				$ans['votes']['F'] = 0;
@@ -532,7 +485,7 @@ class Polls implements Module {
 			'WHERE pid = %d', $I2_ARGS[2])->
 			fetch_all_single_values();
 
-		$list = array();
+		$list = [];
 		foreach ($poll->questions as $q) {
 			switch($q->answertype) {
 				case 'free_response':
@@ -541,13 +494,14 @@ class Polls implements Module {
 				case 'split_approval':
 				case 'short_response':
 				case 'standard_other':
+				case 'identity':
 					// Escape the quotes, they break csv file format
 					$list[$q->qid] = '"'.str_replace('"','“',$q->question).'"';
 			}
 		}
 
 		echo implode(',',$list)."\r\n"; // Print out the header
-		$newlist = array();
+		$newlist = [];
 		foreach ($list as $qid=>$text) {
 			$q = $poll->questions[$qid];
 			$newlist[$qid] = array($q, $q->answers);
@@ -555,12 +509,13 @@ class Polls implements Module {
 		$list = $newlist;
 
 		foreach ($users as $user) {
-			$responses = array();
+			$responses = [];
 			foreach ($list as $qid => $info) {
 				$answer = $info[0]->get_response($user);
 				switch($info[0]->answertype) {
 					case 'free_response':
 					case 'short_response':
+					case 'identity':
 						// Don't break the csv file format with quotes!!!
 						$responses[] = '"'.str_replace('"','“',$answer).'"';
 						break;

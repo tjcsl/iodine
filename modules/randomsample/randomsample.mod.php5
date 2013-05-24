@@ -13,14 +13,14 @@
 * @package modules
 * @subpackage Info
 */
-class Randomsample implements Module {
+class Randomsample extends Module {
 
 		  private $sample;
 		  private $attrs;
 
 	private function take_sample($filter,$size,$attrs) {
 		global $I2_LDAP,$I2_LOG;
-		$samp = array();
+		$samp = [];
 		$mail = FALSE;
 		$username = FALSE;
 		if (in_array('iodineUid',$attrs)) {
@@ -33,7 +33,7 @@ class Randomsample implements Module {
 				  }
 		}
 		$res = $I2_LDAP->search('ou=people',$filter,$attrs);
-		$pop = array();
+		$pop = [];
 		$ct = 0;
 		$rows = $res->num_rows();
 		while ($ct < $rows) {
@@ -41,7 +41,7 @@ class Randomsample implements Module {
 				  ** Mail gets special treatment
 				  */
 				  $row = $res->fetch_array(Result::ASSOC);
-				  if ($mail && !isSet($row['mail'])) {
+				  if ($mail && !isset($row['mail'])) {
 						 $row['mail'] = $row['iodineUid'].'@tjhsst.edu';
 				  }
 				  if ($mail && !$username) {
@@ -55,10 +55,10 @@ class Randomsample implements Module {
 		if ($size > $popsize) {
 			return -1;
 		}
-		$selected = array();
+		$selected = [];
 		while ($numselected < $size) {
 				  $choice = rand(0,$popsize-$numselected-1);
-				  if (isSet($selected[$choice])) {
+				  if (isset($selected[$choice])) {
 							 continue;
 				  }
 				 
@@ -69,52 +69,9 @@ class Randomsample implements Module {
 		return $samp;
 	}
 
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
 	public function init_pane() {
 		global $I2_ARGS;
-		if (!isSet($I2_ARGS[1]) || $I2_ARGS[1] != 'results') {
+		if (!isset($I2_ARGS[1]) || $I2_ARGS[1] != 'results') {
 			return 'Take a Random Sample';
 		} else {
 			$this->attrs = explode(',',$_REQUEST['attrs']);
@@ -126,19 +83,12 @@ class Randomsample implements Module {
 	}
 
 	public function display_pane($disp) {
-		$args = array();
-		if (isSet($this->sample)) {
+		$args = [];
+		if (isset($this->sample)) {
 				  $args['sample'] = $this->sample;
 				  $args['cols'] = $this->attrs;
 		}
 		$disp->disp('randomsample_pane.tpl',$args);
-	}
-
-	public function init_box() {
-		return FALSE;
-	}
-
-	public function display_box($disp) {
 	}
 
 	public function get_name() {

@@ -1,4 +1,4 @@
-#!/etc/iodine/php_wrapper
+#!/usr/bin/php
 <?php
 /**
 * A script to generate the map mapping modules to filenames.

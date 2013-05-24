@@ -16,8 +16,9 @@
 
 class EighthActivity {
 
-	static $membercache = array();
-	private $data = array();
+	static $membercache = [];
+	static $passcache = [];
+	private $data = [];
 	const CANCELLED = 1;
 	const PERMISSIONS = 2;
 	const CAPACITY = 4;
@@ -58,8 +59,8 @@ class EighthActivity {
 				$this->data['sticky']=0;
 				$this->data['special']=0;
 				$this->data['calendar']=0;
-				$this->data['sponsors'] = array();
-				$this->data['rooms'] = array();
+				$this->data['sponsors'] = [];
+				$this->data['rooms'] = [];
 				$this->data['aid'] = $activityid;
 				if($blockid) {
 					$this->data['bid']=$blockid;
@@ -70,8 +71,8 @@ class EighthActivity {
 					$this->data['comment']='';
 					$this->data['advertisement']='';
 					$this->data['capacity']=9001;
-					$this->data['block_sponsors'] = array();
-					$this->data['block_rooms'] = array();
+					$this->data['block_sponsors'] = [];
+					$this->data['block_rooms'] = [];
 				}
 				return;
 			}
@@ -79,20 +80,20 @@ class EighthActivity {
 		}
 		if ($activityid != NULL && $activityid != '') {
 			$this->data = $I2_SQL->query('SELECT * FROM eighth_activities WHERE aid=%d', $activityid)->fetch_array(Result::ASSOC);
-			$this->data['sponsors'] = (!empty($this->data['sponsors']) ? explode(',', $this->data['sponsors']) : array());
-			$this->data['rooms'] = (!empty($this->data['rooms']) ? explode(',', $this->data['rooms']) : array());
+			$this->data['sponsors'] = (!empty($this->data['sponsors']) ? explode(',', $this->data['sponsors']) : []);
+			$this->data['rooms'] = (!empty($this->data['rooms']) ? explode(',', $this->data['rooms']) : []);
 			$this->data['aid'] = $activityid;
 			if($blockid) {
 				$this->data['block'] = new EighthBlock($blockid);
-				$additional = $I2_SQL->query('SELECT bid,sponsors AS block_sponsors,rooms AS block_rooms,cancelled,comment,advertisement,attendancetaken FROM eighth_block_map WHERE bid=%d AND activityid=%d', $blockid, $activityid)->fetch_array(MYSQL_ASSOC);
+				$additional = $I2_SQL->query('SELECT bid,sponsors AS block_sponsors,rooms AS block_rooms,cancelled,comment,advertisement,attendancetaken FROM eighth_block_map WHERE bid=%d AND activityid=%d', $blockid, $activityid)->fetch_array(MYSQLI_ASSOC);
 				if(!$additional)
 					throw new I2Exception("Activity $activityid does not exist for block $blockid ({$this->data['block']->date}, {$this->data['block']->block} block)!");
 				$this->data = array_merge($this->data, $additional);
-				$this->data['block_sponsors'] = (!empty($this->data['block_sponsors']) ? explode(',', $this->data['block_sponsors']) : array());
-				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(',', $this->data['block_rooms']) : array());
+				$this->data['block_sponsors'] = (!empty($this->data['block_sponsors']) ? explode(',', $this->data['block_sponsors']) : []);
+				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(',', $this->data['block_rooms']) : []);
 			}
 			// Import favorites data. This is a _good_thing_. I think.
-			$this->data['favorite']=sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $activityid)->fetch_array(MYSQL_ASSOC))>1?TRUE:FALSE;
+			$this->data['favorite']=sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $activityid)->fetch_array(MYSQLI_ASSOC))>1?TRUE:FALSE;
 		}
 	}
 
@@ -111,6 +112,67 @@ class EighthActivity {
 	public static function add_member_to_activity($aid, User $user, $force = FALSE, $blockid = NULL) {
 			  $act = new EighthActivity($aid);
 			  return $act->add_member($user,$force,$blockid);
+	}
+
+	public function add_member_callin($user, $aid, $blockid) {
+
+		global $I2_SQL,$I2_USER,$I2_LOG;
+		$defaid = i2config_get('default_aid', 999, 'eighth');
+
+		if (! $user instanceof User) {
+			$userid = $user;
+		} else {
+			$userid = $user->uid;
+		}
+
+		$admin = Eighth::is_admin();
+		$signup_admin = Eighth::is_signup_admin();
+		//$sponsor = Eighth::is_sponsor($aid);
+
+		/*Emergency comment due to is_sponsor not working
+		if (!$admin && !$signup_admin && !$sponsor) {
+			throw new I2Exception("Only Iodine Admins or Activity Sponsors can call a student into an activity");
+		}
+		*/
+
+		$oldaid = EighthSchedule::get_activities_by_block($userid, $blockid);
+		$oldactivity = new EighthActivity($oldaid, $blockid);
+		if($oldactivity->sticky) {
+			throw new I2Exception("Student has been stickied into an activity for this block and may not be called in");
+		}
+
+		//Postsign stuff, helps the 8th office track trends.
+		if(time()>(strtotime($this->data['block']->date)+60*60*13)){
+			d('old aid is '.$oldaid);
+			$psq = 'INSERT INTO eighth_postsigns (cid,uid,time,fromaid,toaid,bid) VALUES (%d,%d,%s,%d,%d,%d)';
+			$I2_SQL->query($psq,$I2_USER->uid,$userid,date("o-m-d H:i:s"),isset($oldaid)?$oldaid:$defaid,$this->data['aid'],$blockid);
+		}
+		//Now actual stuff...
+		$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid,pass) VALUES (%d,%d,%d,0)';
+		$args = array($this->data['aid'],$blockid,$userid);
+		$result = $I2_SQL->query_arr($query, $args);
+
+		//Clear their absence if they have one for the block already
+		//This is needed for when a teacher marks a student absent before another teacher calls them in
+		$query = 'DELETE FROM eighth_absentees WHERE bid=%d AND userid=%d';
+		$args = array($blockid, $userid);
+		$result = $I2_SQL->query_arr($query, $args);
+
+	}
+	public function accept_all_passes($aid, $blockid) {
+
+		global $I2_SQL,$I2_USER,$I2_LOG;
+		$admin = Eighth::is_admin();
+
+		$signup_admin = Eighth::is_signup_admin();
+
+		if(!$admin && !$signup_admin) {
+			throw new I2Exception("Only Iodine Admins can accept all passes");
+		}
+
+		$query = 'UPDATE eighth_activity_map SET pass=0 WHERE aid=%d AND bid=%d';
+		$args = array($aid, $blockid);
+		$result = $I2_SQL->query_arr($query, $args);
 	}
 
 	/**
@@ -238,7 +300,7 @@ class EighthActivity {
 		}
 
 		$query_excludes = $I2_SQL->query('SELECT * FROM eighth_excludes WHERE bid = %d',$blockid)->fetch_all_arrays(Result::ASSOC);	// mutually exclusive blocks
-		$excludes = array();
+		$excludes = [];
 		foreach($query_excludes as $r) {
 			$exclude_bid=$r['target_bid'];
 			$exclude_aid=EighthSchedule::get_activities_by_block($userid,$exclude_bid);
@@ -265,7 +327,12 @@ class EighthActivity {
 				$I2_SQL->query($psq,$I2_USER->uid,$userid,date("o-m-d H:i:s"),isset($oldaid)?$oldaid:$defaid,$this->data['aid'],$blockid);
 			}
 			//Now actual stuff...
-			$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES (%d,%d,%d)';
+			if ($block->locked) {
+				$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid,pass) VALUES (%d,%d,%d,1)';
+			} else {
+				
+				$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid,pass) VALUES (%d,%d,%d,0)';
+			}
 			$args = array($this->data['aid'],$blockid,$userid);
 			$result = $I2_SQL->query_arr($query, $args);
 			
@@ -288,7 +355,7 @@ class EighthActivity {
 				$inverse = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d';
 				$invargs = $args;
 			} else {
-				$inverse = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
+				$inverse = 'REPLACE INTO eighth_activity_map (aid,bid,userid,pass) VALUES(%d,%d,%d,0)';
 				$invargs = array($oldaid,$blockid,$userid);
 			}
 			//$I2_LOG->log_file('Changing activity');
@@ -296,7 +363,7 @@ class EighthActivity {
 			if(mysql_error()) {
 				$ret = -1;
 			}
-			if (isSet($this->data['member_count'])) {
+			if (isset($this->data['member_count'])) {
 				$this->data['member_count']++;
 			}
 		}
@@ -309,7 +376,7 @@ class EighthActivity {
 
 	public function num_members() {
 		global $I2_SQL;
-		return $I2_SQL->query('SELECT COUNT(bid) FROM eighth_activity_map WHERE aid=%d AND bid=%d',$this->data['aid'],$this->data['bid'])->fetch_single_value();
+		return $I2_SQL->query('SELECT COUNT(bid) FROM eighth_activity_map WHERE aid=%d AND bid=%d AND pass=0',$this->data['aid'],$this->data['bid'])->fetch_single_value();
 	}
 
 	public static function add_members_to_activity($aid,$userids,$force = FALSE, $blockid = NULL) {
@@ -370,11 +437,11 @@ class EighthActivity {
 		}
 		$queryarg = array($this->data['aid'], $blockid, $userid);
 		$query = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d';
-		$invquery = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
+		$invquery = 'REPLACE INTO eighth_activity_map (aid,bid,userid,pass) VALUES(%d,%d,%d,0)';
 		$invarg = $queryarg;
 		$I2_SQL->query_arr($query, $queryarg);
 		Eighth::push_undoable($query,$queryarg,$invquery,$invarg,'Remove Student From Activity');
-		if (isSet($this->data['member_count'])) {
+		if (isset($this->data['member_count'])) {
 				  $this->data['member_count']--;
 		}
 	}
@@ -421,6 +488,43 @@ class EighthActivity {
 		$I2_SQL->query('UPDATE eighth_activity_map SET aid=%d WHERE aid=%d AND bid=%d', $this->data['aid'], $old_aid, $bid);
 	}
 
+	public function get_passes($blockid = NULL) {
+
+		global $I2_SQL, $I2_USER;
+		if($blockid == NULL) {
+			if($this->data['bid']) {
+				$blockid = $this->data['bid'];
+			} else {
+				return [];
+			}
+		}
+		if(isset(self::$passcache[$this->data['aid']][$blockid]))
+			return self::$passcache[$this->data['aid']][$blockid];
+
+		$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d AND pass=1', $blockid, $this->data['aid'])->fetch_all_arrays(Result::ASSOC);
+		$tocache=[];
+		foreach($res as $row) {
+			$tocache[] = $row['userid'];
+		}
+		User::cache_users($tocache,array('nickname','mail','sn','givenname','graduationyear'));
+		$ret = [];
+		if($this->is_user_sponsor($I2_USER)) {
+			foreach ($res as $row) {
+				$ret[] = $row['userid'];
+			}
+		} else {
+			foreach ($res as $row) {
+				$user = new User($row['userid']);
+				if (EighthSchedule::can_view_schedule($user)) {
+					$ret[] = $user->uid;
+				}
+			}
+		}
+		self::$passcache[$this->data['aid']][$blockid] = $ret;
+		return $ret;
+
+	}
+
 	/**
 	* Gets the members of the activity.
 	*
@@ -434,18 +538,18 @@ class EighthActivity {
 					  $blockid = $this->data['bid'];
 			}
 			else {
-				return array();
+				return [];
 			}
 		}
 		if(isset(self::$membercache[$this->data['aid']][$blockid]))
 			return self::$membercache[$this->data['aid']][$blockid];
-		$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d', $blockid, $this->data['aid'])->fetch_all_arrays(Result::ASSOC);
-		$tocache=array();
+		$res = $I2_SQL->query('SELECT userid FROM eighth_activity_map WHERE bid=%d AND aid=%d AND pass=0', $blockid, $this->data['aid'])->fetch_all_arrays(Result::ASSOC);
+		$tocache=[];
 		foreach($res as $row) {
 			$tocache[]=$row['userid'];
 		}
 		User::cache_users($tocache,array('nickname','mail','sn','givenname','graduationyear'));
-		$ret = array();
+		$ret = [];
 		// Only show students who want to be found, unless the person asking is the activity sponsor
 		if($this->is_user_sponsor($I2_USER)) {
 			foreach ($res as $row) {
@@ -503,7 +607,7 @@ class EighthActivity {
 		$query = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d';
 		$undoquery = 'DELETE FROM eighth_activity_map WHERE aid=%d AND bid=%d AND userid=%d';
 		$queryarg = array($this->data['aid'], $blockid);
-		$invquery = 'REPLACE INTO eighth_activity_map (aid,bid,userid) VALUES(%d,%d,%d)';
+		$invquery = 'REPLACE INTO eighth_activity_map (aid,bid,userid,pass) VALUES(%d,%d,%d,0)';
 		foreach($result->fetch_col('userid') as $userid) {
 			d($userid);
 			Eighth::push_undoable($undoquery,$queryarg+array($userid),$invquery,$queryarg+array($userid),'Remove All [student]');
@@ -757,7 +861,7 @@ class EighthActivity {
 	*/
 	public static function favorite_change($aid) {
 		global $I2_USER,$I2_SQL;
-		if(sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $aid)->fetch_array(MYSQL_ASSOC))>1)
+		if(sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $aid)->fetch_array(MYSQLI_ASSOC))>1)
 			$I2_SQL->query('DELETE FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $aid);
 		else
 			$I2_SQL->query('INSERT INTO eighth_favorites (uid,aid) VALUES (%d,%d)', $I2_USER->uid, $aid);
@@ -808,7 +912,7 @@ class EighthActivity {
 	* @param string $description The description of the activity.
 	* @param bool $restricted If this is a restricted activity.
 	*/
-	public static function add_activity($name, $sponsors = array(), $rooms = array(), $description = '', 
+	public static function add_activity($name, $sponsors = [], $rooms = [], $description = '', 
 			$restricted = FALSE, $sticky = FALSE, $bothblocks = FALSE, $presign = FALSE, $aid = NULL, $special = FALSE) {
 		Eighth::check_admin();
 		global $I2_SQL;
@@ -884,7 +988,7 @@ class EighthActivity {
 	*/
 	public function remove() {
 		$this->remove_activity($this->data['aid']);
-		$this->data = array();
+		$this->data = [];
 	}
 
 	/**
@@ -906,6 +1010,12 @@ class EighthActivity {
 		}
 		else if($name == 'members_obj' && $this->data['bid']) {
 			return User::sort_users($this->get_members());
+		}
+		else if($name == 'passes' && $this->data['bid']) {
+			return $this->get_passes();
+		}
+		else if($name == 'passes_obj' && $this->data['bid']) {
+			return User::sort_users($this->get_passes());
 		}
 		else if($name == 'absentees' && $this->data['bid']) {
 			return EighthSchedule::get_absentees($this->data['bid'], $this->data['aid']);
@@ -929,16 +1039,16 @@ class EighthActivity {
 				if ($namelen >= 70) {
 					return $this->data['name'];
 				}
-				if (isSet($this->data['comment'])) {
+				if (isset($this->data['comment'])) {
 					$comment = $this->data['comment'];
 					$commentlen = strlen($comment);
 				} else {
 					$commentlen = 0;
 					$comment = '';
 				}
-				return ($this->data['special'] ? 'SPECIAL: ' : '') . $this->data['name'] . ($commentlen ? ' - ' . substr($comment,0,70-$namelen).(70-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
+				return ((isset($this->data['special']) && $this->data['special']) ? 'SPECIAL: ' : '') . $this->data['name'] . ($commentlen ? ' - ' . substr($comment,0,70-$namelen).(70-$namelen<$commentlen?'...':'') : '') . ($this->__get('restricted') ? ' (R)' : '') . ($this->data['bothblocks'] ? ' (BB)' : '') . ($this->data['sticky'] ? ' (S)' : '');
 			case 'name_comment_r':
-				if (isSet($this->data['comment'])) {
+				if (isset($this->data['comment'])) {
 					$comment = $this->data['comment'];
 				} else {
 					$comment = '';
@@ -952,14 +1062,14 @@ class EighthActivity {
 				return $this->data['name'].' - '.$comment;
 			case 'sponsors_comma':
 				$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
-				$temp_sponsors = array();
+				$temp_sponsors = [];
 				foreach($sponsors as $sponsor) {
 					$temp_sponsors[] = $sponsor->name;
 				}
 				return implode(', ', $temp_sponsors);
 			case 'sponsors_lname_comma':
 				$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
-				$temp_sponsors = array();
+				$temp_sponsors = [];
 				foreach($sponsors as $sponsor) {
 					$temp_sponsors[] = $sponsor->lname;
 				}
@@ -970,7 +1080,7 @@ class EighthActivity {
 					return 'CANCELLED';
 				}
 				$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
-				$temp_sponsors = array();
+				$temp_sponsors = [];
 				foreach($sponsors as $sponsor) {
 					$temp_sponsors[] = $sponsor->name_comma;
 				}
@@ -980,7 +1090,7 @@ class EighthActivity {
 					return 'CANCELLED';
 				}
 				$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
-				$temp_sponsors = array();
+				$temp_sponsors = [];
 				foreach($sponsors as $sponsor) {
 					$temp_sponsors[] =  $sponsor->lname . ($sponsor->fname ? ', ' . substr($sponsor->fname, 0, 1) . '.' : '');
 				}
@@ -989,14 +1099,14 @@ class EighthActivity {
 				return $sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
 			case 'pickups_comma':
 				$sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
-				$temp_pickups = array();
+				$temp_pickups = [];
 				foreach($sponsors as $sponsor) {
 					$temp_pickups[] = $sponsor->pickup;
 				}
 				return implode(', ', array_unique($temp_pickups));
 			case 'rooms_comma':
 				$rooms = EighthRoom::id_to_room($this->data['rooms']);
-				$temp_rooms = array();
+				$temp_rooms = [];
 				foreach($rooms as $room) {
 					$temp_rooms[] = $room->name;
 				}
@@ -1006,7 +1116,7 @@ class EighthActivity {
 					return '';
 				}
 				$rooms = EighthRoom::id_to_room($this->data['block_rooms']);
-				$temp_rooms = array();
+				$temp_rooms = [];
 				foreach($rooms as $room) {
 					$temp_rooms[] = $room->name;
 				}
@@ -1020,7 +1130,7 @@ class EighthActivity {
 				usort($members,array($this,'sort_by_name'));
 				return $members;
 			case 'capacity':
-				if (!isSet($this->data['block_rooms']) || count($this->data['block_rooms']) == 0) {
+				if (!isset($this->data['block_rooms']) || count($this->data['block_rooms']) == 0) {
 					return -1;
 				}
 				$this->data['capacity'] = $I2_SQL->query('SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)', 
@@ -1032,6 +1142,16 @@ class EighthActivity {
 			case 'percent_full':
 				return (100*$this->__get('member_count'))/($this->__get('capacity'));
 		}
+	}
+
+	/**
+	* get private data.
+	* only for use by the api.
+	*
+	* @access public
+	*/
+	public function get_data() {
+		return $this->data;
 	}
 
 	public function sort_by_name($one,$two) {
@@ -1154,11 +1274,19 @@ class EighthActivity {
 	* @param int $activityids The activity IDs.
 	*/
 	public static function id_to_activity($activityids, $exceptionsok = TRUE) {
-		$ret = array();
+		$ret = [];
 		foreach($activityids as $activityid) {
 			if(is_array($activityid)) {
 				if($exceptionsok || EighthSchedule::is_activity_valid($activityid[0], $activityid[1])||$activityid[0]==-3)
-					$ret[] = new EighthActivity($activityid[0], $activityid[1]);
+					/* If this is not surrounded by a try-catch,
+					 * the whole module will fail when a user is
+					 * signed up for a nonexistant activity! */
+					try {
+						$ret[] = new EighthActivity($activityid[0], $activityid[1]);
+					} catch (Exception $e) {
+						// Allow the program to continue
+						d("Activity with ID {$activityid[0]} does not exist for block {$activityid[1]}.", 4);
+					}
 				else {
 					d("Activity $activityid[0] not scheduled for block $activityid[1], returning EighthActivity object with CANCELLED handler.");
 					$ret[] = new EighthActivity($activityid[0], $activityid[1], "CANCELLED");

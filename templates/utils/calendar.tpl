@@ -1,51 +1,20 @@
-[<* calendar.tpl, written by Joshua Cranmer
-Last update: 04/15/07
+[<* calendar.tpl, originally written by Joshua Cranmer
 USAGE: include file='utils/calendar.tpl' post_var='var'
 'var' should be replaced with the expected variable of the form.
-'var'_mon, 'var'_year, 'var'_day, 'var'_hour, 'var'_min, 'var'_sec are all reserved by this template.
+'var'_mon, 'var'_year, and 'var'_day are all reserved by this template.
 *>]
 <input type="hidden" name="[<$post_var>]" value="3000-01-01 00:00:00"/>
 <input type="checkbox" name="[<$post_var>]_allow" checked="checked" onchange="disable(this);"/>
-<select id="[<$post_var>]_mon" onchange="submit_form_[<$post_var>]()">
-  <option value="0">Month</option>
-  <option value="1">Jan</option>
-  <option value="2">Feb</option>
-  <option value="3">Mar</option>
-  <option value="4">Apr</option>
-  <option value="5">May</option>
-  <option value="6">Jun</option>
-  <option value="7">Jul</option>
-  <option value="8">Aug</option>
-  <option value="9">Sep</option>
-  <option value="10">Oct</option>
-  <option value="11">Nov</option>
-  <option value="12">Dec</option>
-</select>
-<select id="[<$post_var>]_day" onchange="submit_form_[<$post_var>]()">
-  <option value="0">Day</option>
-[<php>]
-  for ($i=1;$i<=31;$i++) {
-    echo "<option value=\"$i\">$i</option>\n";
-  }
-[</php>]
-</select>
-[<php>]
-	$today = getdate();
-	if ($today['mon'] < 6) {
-		$year2 = $today['year'];
-		$year1 = $year2-1;
-	} else {
-		$year1 = $today['year'];
-		$year2 = $year1+1;
-	}
-	$this->assign('y1',$year1);
-	$this->assign('y2',$year2);
-[</php>]
-<select id="[<$post_var>]_year" onchange="submit_form_[<$post_var>]()">
-  <option value="0">Year</option>
-  <option value="[<$y1>]">[<$y1>]</option>
-  <option value="[<$y2>]">[<$y2>]</option>
-</select>
+[<if $smarty.now|date_format:'%m' < 6 >]
+[<assign var="first_year" value="-1">]
+[<assign var="last_year" value="+0">]
+[<else>]
+[<assign var="first_year" value="+0">]
+[<assign var="last_year" value="+1">]
+[</if>]
+[<html_select_date month_empty="Month" month_format="%b" month_extra="id=`$post_var`_mon onchange=submit_form_`$post_var`()"
+ day_empty="Day" day_format="%d" day_extra="id=`$post_var`_day onchange=submit_form_`$post_var`()"
+ year_empty="Year" year_extra="id=`$post_var`_year onchange=submit_form_`$post_var`()" start_year=$first_year end_year=$last_year time=$smarty.now>]
 <span id="alerter" style="color: #ff0000"></span>
 <script type="text/javascript">
 [<* This code will select the last year, the current year, and next year for year *>]
@@ -80,7 +49,8 @@ function validate_[<$post_var>](month, year, day) {
 	var days = [-1, 31, leap+28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 	if (month == 0 || year == 0 || day == 0)
 		return false;
-	if (day > days[month])
+	// remove leading zeros
+	if (day > days[month.replace(/^0+/, '')])
 		return false;
 	return true;
 }

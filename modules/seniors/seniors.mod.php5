@@ -13,67 +13,19 @@
 * @package modules
 * @subpackage Seniors
 */
-class Seniors implements Module {
-
-	/**
-	* The display object to use
-	*/
-	private $display;
+class Seniors extends Module {
 
 	/**
 	* Template for the specified action
 	*/
 	private $template;
-	private $template_args = array();
+	private $template_args = [];
 
-	private $college_cache = array();
-	private $major_cache = array();
+	private $college_cache = [];
+	private $major_cache = [];
 
 	private $is_admin = false;
 	
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
 	/**
 	* Required by the {@link Module} interface.
 	*/
@@ -82,7 +34,7 @@ class Seniors implements Module {
 
 		$this->is_admin = $I2_USER->is_group_member('admin_all');
 		
-		$args = array();
+		$args = [];
 		if(count($I2_ARGS) <= 1) {
 			return $this->sort();
 		}
@@ -129,11 +81,11 @@ class Seniors implements Module {
 		}
 		$this->template_args['sortnormal'] = ($sortdir == 'ASC');
 
-		$this->template_args['seniors'] = array();
+		$this->template_args['seniors'] = [];
 
 		$rows = $I2_SQL->query("SELECT uid, CollegeName, college_certain, MajorMap.Major, major_certain FROM senior_destinations LEFT JOIN CEEBMap USING (CEEB) LEFT JOIN MajorMap ON senior_destinations.Major=MajorMap.MajorID ORDER BY $sort $sortdir")->fetch_all_arrays(Result::ASSOC);
 		foreach ($rows as $row) {
-			$senior = array();
+			$senior = [];
 			$senior['user'] = new $I2_USER($row['uid']);
 			#$senior['dest'] = $this->get_college($row['ceeb']);
 			$senior['dest'] = $row['CollegeName'];
@@ -235,11 +187,11 @@ class Seniors implements Module {
 		if (! $this->is_admin) {
 			redirect('seniors');
 		}
-		if (isSet($_POST['add_college'])) {
+		if (isset($_POST['add_college'])) {
 			$I2_SQL->query('INSERT INTO CEEBMap SET CEEB=%d, CollegeName=%s;', $_POST['ceeb'], $_POST['college']);
 			redirect('seniors');
 		}
-		if (isSet($_POST['add_major'])) {
+		if (isset($_POST['add_major'])) {
 	 		$I2_SQL->query('INSERT INTO MajorMap SET Major=%s;', $_POST['major']);	
 			redirect('seniors');
 		}
@@ -251,8 +203,8 @@ class Seniors implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
-		$display->disp($this->template, $this->template_args);
+	function display_pane($disp) {
+		$disp->disp($this->template, $this->template_args);
 	}
 
 	/**
@@ -265,9 +217,9 @@ class Seniors implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_box($display) {
+	function display_box($disp) {
 		global $I2_SQL, $I2_USER;
-		$args = array();
+		$args = [];
 		$args['num_submitted'] = $I2_SQL->query('SELECT COUNT(*) FROM senior_destinations')->fetch_single_value();
 		if ($I2_USER->grade == 12) {
 			$args['is_senior'] = 1;
@@ -275,14 +227,14 @@ class Seniors implements Module {
 				$args['has_submitted'] = 1;
 			}
 		}
-		$display->disp('box.tpl', $args);
+		$disp->disp('box.tpl', $args);
 	}
 	
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function get_name() {
-		return "Calculator Registration";
+		return "Senior College Destinations";
 	}
 }
 

@@ -14,15 +14,10 @@
 * @package modules
 * @subpackage News
 */
-class News implements Module {
+class News extends Module {
 
 	const PERM_POST = 'NEWS_POST';
 	
-	/**
-	* The display object to use
-	*/
-	private $display;
-
 	/**
 	* Template for the specified action
 	*/
@@ -31,7 +26,7 @@ class News implements Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
 	/**
 	* A 1-dimensional array of all the stories
@@ -41,7 +36,7 @@ class News implements Module {
 	/**
 	* A 1-dimensional array containing all of the titles for all news posts.
 	*/
-	private $summaries = array();
+	private $summaries = [];
 
 	/**
 	* Whether the current user is a news administrator.
@@ -91,9 +86,8 @@ class News implements Module {
 	/**
 	* Handle the news command.
 	*
-	* @param Display $disp The Display object to use for output.
 	*/
-	function display_cli($disp) {
+	function display_cli() {
 		global $I2_ARGS;
 		$valid_commands = array("list","show","old","archived");
 		if(!isset($I2_ARGS[2]) || !in_array(strtolower($I2_ARGS[2]),$valid_commands) ) {
@@ -145,13 +139,49 @@ class News implements Module {
 		}
 	}
 
+	private function print_story($story) {
+		global $I2_API;
+		$I2_API->startElement('post');
+		$I2_API->writeElement('id',$story->nid);
+		$I2_API->writeElement('title',$story->title);
+		$I2_API->startElement('text');
+		$I2_API->writeCData($story->text);
+		$I2_API->endElement();
+		$I2_API->startElement('text_strip');
+		$I2_API->writeCData(strip_tags($story->text));
+		$I2_API->endElement();
+	}
+
 	/**
-	* We don't really support this yet, but make it look like we do.
+	* Handle the api.
 	*
-	* @param Display $disp The Display object to use for output.
 	*/
-	function api($disp) {
-		return false;
+	function api() {
+		global $I2_ARGS;
+		if(!isset($I2_ARGS[1])) {
+			throw new I2Exception('Arguments not specified. Possible arguments are list, show.');
+		}
+		switch (strtolower($I2_ARGS[1])) {
+			case "list":
+				if( $this->stories === NULL) {
+					$this->stories = Newsitem::get_all_items(false);
+				}
+				foreach($this->stories as $story) {
+					if ((!$story->has_been_read()) && $story->readable()) {
+						self::print_story($story);
+					}
+				}
+				break;
+			case "show":
+				if(!isset($I2_ARGS[2])) {
+					throw new I2Exception('ID of article to read not specified.');
+				}
+				$story = new Newsitem($I2_ARGS[2]);
+				self::print_story($story);
+				break;
+			default:
+				throw new I2Exception('Error: unrecognizable input');
+		}
 	}
 
 	/**
@@ -164,7 +194,7 @@ class News implements Module {
 			$I2_ARGS[1] = '';
 		}
 		
-		if (!isSet($this->newsadmin)) {
+		if (!isset($this->newsadmin)) {
 			$this->set_news_admin();
 		}
 
@@ -179,9 +209,9 @@ class News implements Module {
 					$title = stripslashes($_REQUEST['add_title']);
 					$text = stripslashes($_REQUEST['add_text']);
 					$expire = $_REQUEST['add_expire'];
-					$visible = isSet($_REQUEST['add_visible']) ? 1 : 0;
+					$visible = isset($_REQUEST['add_visible']) ? 1 : 0;
 					$groups = Group::generate($_REQUEST['add_groups']);
-					$public = isSet($_REQUEST['add_public']) ? 1 : 0;
+					$public = isset($_REQUEST['add_public']) ? 1 : 0;
 
 					if(Newsitem::post_item($I2_USER, $title, $text, $groups, $expire, $visible, $public)) {
 						$this->template_args['added'] = 1;
@@ -223,9 +253,9 @@ class News implements Module {
 					$title = stripslashes($_REQUEST['edit_title']);
 					$text = stripslashes($_REQUEST['edit_text']);
 					$expire = $_REQUEST['edit_expire'];
-					$visible = isSet($_REQUEST['edit_visible']) ? 1 : 0;
+					$visible = isset($_REQUEST['edit_visible']) ? 1 : 0;
 					$groups = Group::generate($_REQUEST['add_groups']);
-					$public = isSet($_REQUEST['edit_public']) ? 1 : 0;
+					$public = isset($_REQUEST['edit_public']) ? 1 : 0;
 					$item->edit($title, $text, $groups,$expire,$visible,$public);
 					$item = new Newsitem($I2_ARGS[2], TRUE);
 					$this->template_args['edited'] = 1;
@@ -376,12 +406,10 @@ class News implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
-		global $I2_ARGS;
-		
+	function display_pane($disp) {
 		$this->template_args['newsadmin'] = $this->newsadmin;
 		$this->template_args['maypost'] = $this->maypost;
-		$display->disp($this->template, $this->template_args);
+		$disp->disp($this->template, $this->template_args);
 	}
 	
 	/**
@@ -398,7 +426,7 @@ class News implements Module {
 			}
 		}
 		$num = count($this->summaries);
-		if (!isSet($this->newsadmin)) {
+		if (!isset($this->newsadmin)) {
 			$this->set_news_admin();
 		}
 		return 'News: '.$num.' post'.($num==1?'':'s').' to read';
@@ -407,8 +435,8 @@ class News implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_box($display) {
-		$display->disp('news_box.tpl',array('summaries'=>$this->summaries,'newsadmin'=>$this->newsadmin));
+	function display_box($disp) {
+		$disp->disp('news_box.tpl',array('summaries'=>$this->summaries,'newsadmin'=>$this->newsadmin));
 	}
 
 	/**
@@ -417,11 +445,12 @@ class News implements Module {
 	function get_name() {
 		return 'News';
 	}
+
 	function display_news($archive = false,$title='Recent News Posts',$expired = false) {	
 		$this->template = 'news_pane.tpl';
 		$I2_ARGS[1] = '';
 
-		$this->template_args['stories'] = array();
+		$this->template_args['stories'] = [];
 
 		if( $this->stories === NULL) {
 			$this->stories = Newsitem::get_all_items($expired);
@@ -437,28 +466,32 @@ class News implements Module {
 		$this->template_args['weatherstatus']=$this->get_emerg_message();
 		return array('News',$title);
 	}
+
 	/**
 	* Get the emergency messages from FCPS.
 	* This is stuff like weather-related cancellations.
 	*/
 	function get_emerg_message() {
-		global $I2_ROOT;
+		global $I2_ROOT,$I2_QUERY;
 		$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'emerg.cache';
-		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile)>600)) { //Don't let the cache get older than an hour.
+		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile)>600) || isset($I2_QUERY['get_new_message'])) { //Don't let the cache get older than an hour.
 			$contents = $this->get_new_message();
 			$this->store_emerg_message($cachefile,$contents);
 		}
 		return $contents;
 	}
+
 	private function store_emerg_message($cachefile,$string) {
 		$fh = fopen($cachefile,'w');
 		fwrite($fh,$string);
 		fclose($fh);
 	}
+
 	private function get_new_message() {
+		global $I2_FS_ROOT;
 		// HTTPS because otheriwse it gets cached by the proxy, which is bad.
 		// It endangers kittens because they don't get information quickly enough.
-		$url = i2config_get('emerg_url','https://www.fcps.edu/content/emergencyContent.html','emergency'); // FCPS Emergency announcement _really_ short summary page.
+		/*$url = i2config_get('emerg_url','https://www.fcps.edu/content/emergencyContent.html','emergency'); // FCPS Emergency announcement _really_ short summary page.
 		if( $str = $this->curl_file_get_contents($url) ) { // Returns false if can't get anything.
 			$starter= i2config_get('emerg_starter','<h3 >','emergency');
 			$ender  = i2config_get('emerg_ender','</h3>','emergency');
@@ -480,7 +513,56 @@ class News implements Module {
 			}
 		} else {
 			return "<!-- ERROR: We can't reach FCPS' page. -->"; // If fcps isn't up, don't bother showing anything.
+		}*/
+		d('Checking FCPS emerg msgs and including simple_html_dom', 9);
+		require_once $I2_FS_ROOT.'lib/simple_html_dom.php';
+		$url = "http://www.fcps.edu/news/emerg.shtml";
+		try {
+			if($fgetc = $this->curl_file_get_contents($url)) {
+				$html = str_get_html($fgetc);
+				//$false_str = "There are no emergency announcements at this time";
+				// The string used for there being no emergency messages
+				$false_str = "There are no emergency messages at this time"; 
+				$con = $html->find('div[id=mainContent]');
+				$snowdayd = $con[0]->innertext;
+				$snowday = (strpos($snowdayd, $false_str)!==false);
+				// This is the message that ends the emergency text;
+				// it is currently the text of the header below
+				$end_str = "Go to The Source";
+				$d = explode($end_str, $con[0]->plaintext);
+				$dn = explode($false_str, $d[0]);
+				if(!$snowday) {
+					d("Emergency info: no snow day");
+					return "<!-- !snowday, ".$false_str." -->";
+				}
+				if(!empty($d[0]) && !empty($dn[0])) {
+					$ddate = explode("--", $dn[0]);
+					// FCPS doesn't really like to delete old emerg messages
+					// This was the last emerg message of 2013
+					if(trim($ddate[0]) == "Monday, March 25") {
+						$einfo= "<!-- Got old emergency message, not showing -->";
+					} else if(stristr($dn[0], $false_str)) {
+						$einfo= "<!-- snowday,".$false_str." -->";
+					} else {
+						$einfo= "<!-- ".print_r($d,1).print_r($dn,1)." -->".
+								"<p style='color: red'>".trim($dn[0])."</p>";
+					}
+					//echo "<a href='{$url}'>Click here for more information</a>";
+				} else {
+					//echo "Unable to fetch information on emergency announcements. <a href='{$url}'>Click here to check manually.</a>";
+					$einfo = "<!-- Unable to fetch emerg announcements -->";
+				}
+				d("Emergency info:".$einfo, 5);
+				return $einfo;
+			} else {
+				d("Emergency info: Could not fetch FCPS' site",5);
+				return "Emergency info: Could not fetch FCPS' site";
+			}
+		} catch(Exception $e) {
+			d("Emergency info: Error parsing FCPS' emergency site",5);
+			return "<!-- Error parsing FCPS' emergency site -->";
 		}
+
 	}
 	private function curl_file_get_contents($URL)
 	{

@@ -13,49 +13,7 @@
 * @package modules
 * @subpackage Suggest
 */
-class Suggest implements Module {
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
+class Suggest extends Module {
 
 	/**
 	* Required by the {@link Module} interface.
@@ -72,13 +30,6 @@ class Suggest implements Module {
 		if(!isset($I2_ARGS[1]) || !isset($I2_ARGS[2])) {
 			redirect();
 		} else if($I2_ARGS[1] == 'searchsuggest') {
-			/*
-			header("Content-Type: application/xml");
-			$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'rss.cache';
-			if(!($contents = RSS::get_cache($cachefile))) {
-				$contents = RSS::update($cachefile);
-			}
-			unserialize($contents);*/
 			if(strlen($I2_ARGS[2])>=3) {
 				$arr = User::search_info($I2_ARGS[2]);
 				if(count($arr)>10) {
@@ -96,49 +47,12 @@ class Suggest implements Module {
 		}
 	}
 
-	public static function update() {
-		RSS::update();
-		ATOM::update();
-	}
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function init_box() {
-		return FALSE;
-	}
-	
-	/**
-	* Required by the {@link Module} interface.
-	*/
-	function display_box($display) {
-		return FALSE;
-	}
 	
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function get_name() {
-		return "Feeds";
-	}
-	public static function getItems() {
-		$news = NewsItem::get_all_items_nouser();
-		$returner = array();
-		foreach($news as $item) {
-			if($item->public==0) //Only display stuff that's public.
-				continue;
-			$test=FALSE;	//Stuff only goes on the feed if "all" can see it.
-			foreach ($item->groups as $group) {
-				if($group->gid == 1) {
-					$test=TRUE;
-					break;
-				}
-			}
-			if(!$test) {
-				continue;
-			}
-			$returner[] = $item;
-		}
-		return $returner;
+		return "Suggest";
 	}
 }
 

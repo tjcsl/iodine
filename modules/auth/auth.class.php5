@@ -24,7 +24,7 @@ class Auth {
 	* Authentication object used.
 	*/
 	private $auth;
-	
+
 	/**
 	* Location of credentials cache
 	*/
@@ -35,15 +35,15 @@ class Auth {
 	*/
 	private $auth_type;
 
+	public $template_args = [];
 	/**
 	* The Auth class constructor.
-	* 
+	*
 	* This constructor determines if a user is logged in, and if not,
 	* displays the login page, and checks the username and password.
 	*/
-	public function __construct() {	
+	public function __construct() {
 		global $I2_ARGS;
-
 		$this->encryption = i2config_get('pass_encrypt',1,'core');
 
 		if($this->encryption && !function_exists('mcrypt_module_open')) {
@@ -52,8 +52,8 @@ class Auth {
 		}
 
 		if( isset($I2_ARGS[0]) && $I2_ARGS[0] == 'logout' ) {
-				//if (isSet($_SESSION['i2_uid'])) {
-				if (isSet($_SESSION['i2_username'])) {
+				//if (isset($_SESSION['i2_uid'])) {
+				if (isset($_SESSION['i2_username'])) {
 					self::log_out();
 				} else {
 					/*
@@ -70,7 +70,7 @@ class Auth {
 		if( isset($I2_ARGS[0]) && $I2_ARGS[0] == 'feeds' ) {
 			return true;
 		}
-		
+
 		if( !$this->is_authenticated() && !$this->login() ) {
 			die();
 		}
@@ -93,7 +93,7 @@ class Auth {
 			/*
 			 ** mod_auth_kerb/WebAuth authentication
 			 */
-			if (isSet($_SERVER['REMOTE_USER'])) {
+			if (isset($_SERVER['REMOTE_USER'])) {
 				$_SESSION['i2_login_time'] = time();
 				/*
 				 ** Strip kerberos realm if necessary
@@ -113,8 +113,8 @@ class Auth {
 			/*
 			 ** Iodine proprietary authentication (of all kinds)
 			 */
-			//if (	isset($_SESSION['i2_uid']) 
-			if (	isset($_SESSION['i2_username']) 
+			//if (	isset($_SESSION['i2_uid'])
+			if (	isset($_SESSION['i2_username'])
 					&& isset($_SESSION['i2_login_time'])) {
 
 				$this->auth_type = $_SESSION['auth_type'];
@@ -139,7 +139,7 @@ class Auth {
 		 * @return bool TRUE if the user should be automatically logged out, FALSE otherwise.
 		 */
 		public static function should_autologout($login_time,$i2_username=NULL) {
-			if ($_SESSION['i2_username'] == 'eighthoffice'||$i2_username=='eighthoffice') {
+			if ( (isset($_SESSION['i2_username']) && $_SESSION['i2_username'] == 'eighthoffice') || $i2_username=='eighthoffice') {
 				return FALSE;
 			}
 			return ( time() > $login_time + i2config_get('timeout',600,'login') );
@@ -235,12 +235,21 @@ class Auth {
 		 * @return bool	TRUE, FALSE otherwise.
 		 */
 		public function check_user($user, $password) {
-			global $modauth_loginfailed;
+			global $modauth_loginfailed, $modauth_err;
 
 			// The admin should be using the master password and approved above
 			// If it gets to here, their login fails and we don't want kerberos even trying
 			if ($user == 'admin') {
 				return self::validate($user,$password,array('master'));
+			}
+			// Another temporary "hack"; this will be actually fixed
+			// soon by not logging in when an account doesn't exist in LDAP
+
+			// Also, to those reading this in September 2013: REMOVE THIS
+			if (substr($user,0,4) == '2017') {
+				$modauth_err = "Your account is not ready yet. Incoming freshman will be able to log in to Intranet at the start of the school year.";
+				$modauth_loginfailed = 1;
+				return FALSE;
 			}
 
 			if(self::validate($user,$password)) {
@@ -275,19 +284,17 @@ class Auth {
 		 * @returns bool Whether or not the user has successfully logged in.
 		 */
 		public function login() {
-			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $modauth_loginfailed;
+			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $I2_API, $I2_AJAX, $modauth_loginfailed, $modauth_err, $I2_QUERY, $template_args;
 
 			// the log function uses this to tell if the login was successful
 			// if login fails, something else will set it
 			$modauth_loginfailed = FALSE;
 
-			if(!isSet($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
-				$_SESSION['logout_funcs'] = array();
+			if(!isset($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
+				$_SESSION['logout_funcs'] = [];
 			}
 			//$this->cache_password($_REQUEST['login_password']);
-
 			if (isset($_REQUEST['login_username']) && isset($_REQUEST['login_password'])) {
-
 				if (($check_result = $this->check_user($_REQUEST['login_username'],$_REQUEST['login_password']))) {
 
 					//$_SESSION['i2_uid'] = strtolower($_REQUEST['login_username']);
@@ -322,43 +329,39 @@ class Auth {
 					// Attempted login failed
 					// $modauth_loginfailed is now set where it fails so we know why.
 					$uname = $_REQUEST['login_username'];
+
+					if(isset($I2_ARGS[0]) && $I2_ARGS[0] == 'api') {
+						$I2_API->init();
+						$I2_API->logging = false;
+						$I2_API->startElement('auth');
+						$I2_API->startElement('error');
+						$I2_API->writeElement('success',$modauth_loginfailed==1?'false':'true');
+						$I2_API->writeElement('loginerror',$modauth_err);
+						$I2_API->writeElement('id',$modauth_loginfailed);
+						$I2_API->writeElement('message','Login failed.');
+						$I2_API->writeElement('login_base_url',$I2_ROOT);
+						$I2_API->endElement();
+						$I2_API->endElement();
+						exit(0);
+					}
 				}
 			} else {
 				$modauth_loginfailed = FALSE;
 				$uname='';
 			}
 
-			// try to get a special image for a holiday, etc.
-			$imagearr = self::getSpecialBG();
-			$image = $imagearr[0];
-			$imagejs = $imagearr[1];
+			self::init_backgrounds();
+			// Show the login box
+			$template_args['failed'] = $modauth_loginfailed;
+			$template_args['uname'] = $uname;
 
-			// if no special image, get a random normal one
-			if (! isset($image)) {
 
-				$images = array();
-				$dirpath = $I2_FS_ROOT . 'www/pics/logins';
-				$dir = opendir($dirpath);
-				while ($file = readdir($dir)) {
-					if (! is_dir($dirpath . '/' . $file)) {
-						$images[] = $file;
-					}
-				}
-
-				$image = 'www/pics/logins/' . $images[rand(0,count($images)-1)];
+			if(isset($modauth_err)) {
+				d($modauth_err, 5);
+				$template_args['err'] = $modauth_err;
 			}
 
-			// Show the login box
-			$template_args = array(
-					'failed' => $modauth_loginfailed,
-					'uname' => $uname,
-					'bg' => $image,
-					'bgjs' => $imagejs);
-			
-			// Schedule data
-			$schedule = BellSchedule::get_schedule();
-			$template_args['schedule'] = $schedule;
-			
+			self::init_schedule();
 			// Save any post data that we get and pass it to the html. (except for a password field)
 			$str="";
 			foreach (array_keys($_POST) as $post) {
@@ -372,9 +375,41 @@ class Auth {
 					}
 			}
 			$template_args['posts']=$str;
+
 			$disp = new Display('login');
-			if(isset($I2_ARGS[1]) && $I2_ARGS[1]=='api') {
-				$disp->disp('login_api.tpl', $template_args);
+
+			$disp->smarty_assign('backgrounds', self::get_background_images());
+			//FIXME: all these special cases should not be in the login() function.
+			if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='api') {
+
+				$I2_API->init();
+				$I2_API->logging = false;
+				if(isset($I2_ARGS[1]) && $I2_ARGS[1] == 'bellschedule') {
+					$module = 'bellschedule';
+					$mod = new $module();
+					$I2_API->startDTD($module);
+					$I2_API->writeDTDElement($module,'(body,error,debug)');
+					if($mod->api_build_dtd()==false) {
+						// no module-specific dtd
+						$I2_API->writeDTDElement('body','(#PCDATA)');
+					}
+					$I2_API->writeDTDElement('error','(#PCDATA)');
+					$I2_API->writeDTDElement('debug','(#PCDATA)');
+					$I2_API->endDTD();
+					$I2_API->startElement($module);
+					$I2_API->writeElement('loggedin', 0);
+					$mod->api($I2_DISP);
+					exit(0);
+				}
+				$I2_API->startElement('auth');
+				$I2_API->startElement('error');
+				$I2_API->writeElement('message','You are not logged in.');
+				$I2_API->writeElement('login_base_url',$I2_ROOT);
+				$I2_API->endElement();
+				$I2_API->endElement();
+				exit(0);
+			} else if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='ajax' && $I2_ARGS[1]=='bellschedule') {
+				$I2_AJAX->returnResponse($I2_ARGS[1]);
 			} else {
 				$disp->disp('login.tpl', $template_args);
 				//$disp->disp('fb.tpl', $template_args);
@@ -383,38 +418,117 @@ class Auth {
 
 			return FALSE;
 	}
-	
+
+	private function init_backgrounds() {
+		global $I2_QUERY, $I2_FS_ROOT, $template_args;
+		// try to get a special image for a holiday, etc.
+		$imagearr = self::getSpecialBG();
+		$image = $imagearr[0];
+		$imagejs = $imagearr[1];
+		$url_prefix = "www/pics/logins/";
+		if(isset($I2_QUERY['background']) && !strstr($I2_QUERY['background'], "..") && $I2_QUERY['background'] !== 'random') {
+			d("Custom background set in query: ".$I2_QUERY['background'], 8);
+			$image = $url_prefix.$I2_QUERY['background'];
+			$_COOKIE['background'] = $I2_QUERY['background'];
+			setcookie("background", $I2_QUERY['background'], time()+60*60*24*30);
+		}
+		if(isset($_COOKIE['background']) && !strstr($_COOKIE['background'], "..") && $_COOKIE['background'] !== 'random') {
+			d("Custom background loaded from cookie: ".$_COOKIE['background'], 8);
+			$image = $url_prefix.$_COOKIE['background'];
+		}
+		if(isset($_COOKIE['background']) && (isset($I2_QUERY['background']) && $I2_QUERY['background'] == 'random')) {
+			setcookie("background", "", time()-3600);
+			unset($_COOKIE['background']);
+		}
+		if(isset($image) && !@file_exists($I2_FS_ROOT . $image)) {
+			d("Background image ({$image}) did not exist.", 8);
+			unset($image);
+			setcookie("background", "", time()-3600);
+			unset($_COOKIE['background']);
+		}
+		// if no special image, get a random normal one
+		if (! isset($image)) {
+
+			$images = [];
+			$dirpath = $I2_FS_ROOT . $url_prefix;
+			$dir = opendir($dirpath);
+			while ($file = readdir($dir)) {
+				if (! is_dir($dirpath . '/' . $file)) {
+					$images[] = $file;
+				}
+			}
+
+			$image = $url_prefix . $images[rand(0,count($images)-1)];
+			d("Using random background image {$image}", 8);
+		}
+		$template_args['bg'] = $image;
+		$template_args['bgjs'] = $imagejs;
+
+	}
+	public static function init_schedule($rtn = null) {
+		global $I2_QUERY, $disp, $template_args;
+		// Week view
+		if(isset($I2_QUERY['week'])) {
+			BellSchedule::display_week($disp);
+			exit();
+		}
+		$args = BellSchedule::gen_day_view();
+		$template_args = array_merge($template_args, $args);
+		$schedule = BellSchedule::get_schedule();
+		$template_args['schedday'] = BellSchedule::parse_schedule_day($schedule['description']);
+		if(strpos($schedule['description'], 'Modified')!==false)
+			$schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
+		$template_args['schedule'] = $schedule;
+	}
+	/**
+	* Gets all of the background images that can be used on Iodine.
+	*
+	* @return Array An array containing the URLs of pictures in www/pics/logins.
+	*/
+	public function get_background_images() {
+		global $I2_FS_ROOT;
+			$images = [];
+			$dirpath = $I2_FS_ROOT . 'www/pics/logins';
+			$dir = opendir($dirpath);
+			while ($file = readdir($dir)) {
+				if (! is_dir($dirpath . '/' . $file)) {
+					$images[] = $file;
+				}
+			}
+		return $images;
+	}
+
 	/**
 	* Encrypts a string with the given key.
 	*
-	* encrypt() takes $str, and uses $key to encrypt it. It uses the TripleDES in CBC mode as the encryption algorithm, with /dev/urandom as a random source.
+	* encrypt() takes $str, and uses $key to encrypt it. It uses Rijndael 128 in CBC mode as the encryption algorithm, with /dev/urandom as a random source.
 	*
 	* @return Array An array containing three elements. The first one is the encrypted string, the second is the key used (if it was altered at all from the one passed), and the third is the initialization vector used to encrypt the string. You will need all three of these items in order to decrypt the string again.
 	*/
 	public static function encrypt($str, $key) {
-		$td = mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
+		$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128,'',MCRYPT_MODE_CBC,'');
 		$iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td),MCRYPT_DEV_URANDOM);
 		$keysize = mcrypt_enc_get_key_size($td);
-		$mkey = substr(md5($key),0,$keysize);
+		$mkey = substr(hash('sha256',$key),0,$keysize);
 		mcrypt_generic_init($td,$mkey,$iv);
 		$ret = mcrypt_generic($td, $str);
 		mcrypt_generic_deinit($td);
 		mcrypt_module_close($td);
 		return array($ret,$key,$iv);
-	
+
 	}
 
 	/**
 	* Decrypts a string with the given key and initialization vector.
 	*
-	* decrypt() takes $str, and uses $key and $iv to decrypt it (all items that are returned by encrypt()). It uses the TripleDES in CBC mode as the encryption algorithm.
+	* decrypt() takes $str, and uses $key and $iv to decrypt it (all items that are returned by encrypt()). It uses Rijndael 128 in CBC mode as the encryption algorithm.
 	*
 	* @return String The decrypted string.
 	*/
 	public static function decrypt($str, $key, $iv) {
-		$td = mcrypt_module_open(MCRYPT_TRIPLEDES,'',MCRYPT_MODE_CBC,'');
+		$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128,'',MCRYPT_MODE_CBC,'');
 		$keysize = mcrypt_enc_get_key_size($td);
-		$key = substr(md5($key),0,$keysize);
+		$key = substr(hash('sha256',$key),0,$keysize);
 		mcrypt_generic_init($td, $key, $iv);
 		$ret = mdecrypt_generic($td, $str);
 		mcrypt_generic_deinit($td);
@@ -476,9 +590,13 @@ class Auth {
 	* @return string The path, relative to the Iodine root, of the background tile image (or null if today is not "special")
 	*/
 	private static function getSpecialBG() {
-		global $I2_SQL;
+		global $I2_SQL, $I2_CACHE;
 
-		$rows = $I2_SQL->query('SELECT startdt, enddt, background, js FROM special_backgrounds');
+		$rows = unserialize($I2_CACHE->read(get_class(),'special_backgrounds'));
+		if($rows === FALSE) {
+			$rows = $I2_SQL->query('SELECT startdt, enddt, background, js FROM special_backgrounds')->fetch_all_arrays();
+			$I2_CACHE->store(get_class(),'special_backgrounds',serialize($rows),strtotime('1 hour'));
+		}
 
 		$timestamp = time();
 
@@ -488,7 +606,7 @@ class Auth {
 			}
 		}
 	}
-	
+
 	/**
 	 * Log the login (attempt)
 	 *
@@ -516,7 +634,7 @@ class Auth {
 
 	/**
 	 * Get the user's active kerberos realm.
-	 * When using multiple realms in the config, this lets afs know 
+	 * When using multiple realms in the config, this lets afs know
 	 * which you want to check against for login.
 	 *
 	 * $return string Realm name, or FALSE on failure.

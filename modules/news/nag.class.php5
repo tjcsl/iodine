@@ -24,7 +24,7 @@ class Nag {
 	public function __get($name) {
 		global $I2_SQL;
 		$name = strtolower($name);
-		if (isSet($this->data[$name])) {
+		if (isset($this->data[$name])) {
 			return $this->data[$name];
 		}
 		switch ($name) {
@@ -71,7 +71,7 @@ class Nag {
 		if (!$user) {
 			$user = $I2_USER;
 		}
-		$ret = array();
+		$ret = [];
 		$nags = self::get_active_nags();
 		foreach ($nags as $nag) {
 			if ($nag->is_visible($user)) {
@@ -94,7 +94,7 @@ class Nag {
 	public static function get_active_nags() {
 		global $I2_SQL;
 		$res = $I2_SQL->query('SELECT DISTINCT nid FROM nag_group_map WHERE active=1');
-		$ret = array();
+		$ret = [];
 		while ($row = $res->fetch_array(Result::ASSOC)) {
 			$ret[] = new Nag($row['nid']);
 		}

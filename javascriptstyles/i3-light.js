@@ -1,8 +1,13 @@
 preload();
 function preload() {
 }
+[<include file="../javascriptstyles/includes/ibtoggle.js">]
+
+[<include file="../javascriptstyles/includes/mobile.js">]
 function page_init() {
 	//shrinkBlurb();
+	intrabox_upd();
+	mobiletweak();
 }
 function intrabox_onmouseover(div_id) {
 }

@@ -23,12 +23,12 @@ class LostItem {
 	/**
 	* An associative array containing various information about the lostitem
 	*/
-	protected $info = array();
+	protected $info = [];
 
 	/**
 	* An array of NewsItem objects whose info hasn't been fetched yet.
 	*/
-	private static $unfetched = array();
+	private static $unfetched = [];
 
 	/**
 	 * The php magical __get method.
@@ -92,7 +92,7 @@ class LostItem {
 			$item->info['posted'] = $row['posted'];
 			$item->info['text'] = $row['text'];
 		}
-		self::$unfetched = array();
+		self::$unfetched = [];
 	}
 
 	/**
@@ -122,7 +122,7 @@ class LostItem {
 	 */
 	public static function get_all_items() {
 		global $I2_SQL;
-		$allitems = array();
+		$allitems = [];
 		$qstring = 'SELECT id FROM lostitems ORDER BY posted DESC';
 		foreach($I2_SQL->query($qstring)->fetch_all_single_values() as $id) {
 			$allitems[] = new LostItem($id);

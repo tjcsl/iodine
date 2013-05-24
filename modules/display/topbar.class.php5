@@ -18,16 +18,16 @@ class TopBar {
 		global $I2_USER, $I2_SQL;
 		if($I2_USER->header=='TRUE' && $chrome && !$nagging) {
 			$date = EighthSchedule::get_next_date();
-			$arr = array();
+			$arr = [];
 			if($date) {
 			        $activities = EighthActivity::id_to_activity(EighthSchedule::get_activities($I2_USER->uid, $date, 1), FALSE);
 				$dates = array($date => date("n/j/Y", @strtotime($date)), date('Y-m-d') => 'today', date('Y-m-d', time() + 3600 * 24) => 'tomorrow', '' => 'none');
-				if (isSet($activities)) {
+				if (isset($activities)) {
 					$arr['activities'] = $activities;
 				} else {
-					$arr['activities'] = array();
+					$arr['activities'] = [];
 				}
-				if (isSet($dates) && isSet($date)) {
+				if (isset($dates) && isset($date)) {
 					$arr['date'] = $dates[$date];
 				} else {
 					$arr['date'] = 'none';

@@ -14,57 +14,12 @@
  * @package modules
  * @subpackage Podcasts
  */
-class Podcasts implements Module {
+class Podcasts extends Module {
 
 	/** The template to use. */
 	private $template;
 	/** Arguments for said template. */
-	private $template_args = array();
-
-	/**
-	* Unused; Not supported for this module.
-	* Should be implemented, many will access this module from a mobile device.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	* Should be implemented, many will access this module from a mobile device.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
+	private $template_args = [];
 
 	/**
 	 * Initalizes the pane.
@@ -101,8 +56,8 @@ class Podcasts implements Module {
 	/**
 	 * Displays the pane.
 	 */
-	function display_pane($display) {
-		$display->disp($this->template, $this->template_args);
+	function display_pane($disp) {
+		$disp->disp($this->template, $this->template_args);
 	}
 
 	/**
@@ -110,7 +65,7 @@ class Podcasts implements Module {
 	 */
 	function init_box() {
 		$podcasts = Podcast::accessible_podcasts(FALSE);
-		$open = array();
+		$open = [];
 		$time = time();
 		foreach($podcasts as $podcast) {
 			if(strtotime($podcast->startdt) < $time && strtotime($podcast->enddt) > $time && $podcast->visible)
@@ -124,8 +79,8 @@ class Podcasts implements Module {
 	/**
 	 * Displays the intranet box.
 	 */
-	function display_box($display) {
-		$display->disp('podcasts_box.tpl',$this->template_args);
+	function display_box($disp) {
+		$disp->disp('podcasts_box.tpl',$this->template_args);
 	}
 
 	/**
@@ -133,13 +88,6 @@ class Podcasts implements Module {
 	 */
 	function get_name() {
 		return 'I2 Podcasts';
-	}
-
-	/**
-	 * Returns false.
-	 */
-	function is_intrabox() {
-		return false;
 	}
 
 	/////////////
@@ -154,9 +102,9 @@ class Podcasts implements Module {
 		global $I2_USER;
 
 		$podcasts = Podcast::accessible_podcasts(FALSE);
-		$open = array();
-		$finished = array();
-		$unstarted = array();
+		$open = [];
+		$finished = [];
+		$unstarted = [];
 		$time = time();
 		foreach ($podcasts as $podcast) {
 			if (strtotime($podcast->startdt) > $time)
@@ -202,7 +150,7 @@ class Podcasts implements Module {
 					isset($_POST['results'][$id])?1:0
 				));
 			}
-			$_POST = array(); // Unset post vars
+			$_POST = []; // Unset post vars
 			$I2_ARGS[2] = $p->pid;
 			$this->edit();
 		} else {
@@ -255,7 +203,7 @@ class Podcasts implements Module {
 				$_POST['visible'] == 'on' ? 1 : 0;
 			$podcast->edit_podcast($_POST['name'],$_POST['intro'],
 				$_POST['startdt'],$_POST['enddt'],$on);
-			$seen = array();
+			$seen = [];
 			foreach($_POST['question'] as $id) {
 				$name = $_POST["q_{$id}_name"];
 				$type = $_POST["q_{$id}_type"];
@@ -271,7 +219,7 @@ class Podcasts implements Module {
 				}
 				$seen[] = $id;
 				if (isset($_POST['a_'.$id])) {
-					$a_seen = array();
+					$a_seen = [];
 					$q = $podcast->questions[$id];
 					foreach($_POST['a_'.$id] as $aid) {
 						$v = $_POST["a_{$id}_{$aid}"];
@@ -299,9 +247,9 @@ class Podcasts implements Module {
 			if (!array_key_exists('groups', $_POST)) {
 				// Someone deleted all the groups.
 				// We'll just fake that something exists
-				$_POST['groups'] = array();
+				$_POST['groups'] = [];
 			}
-			$seen = array();
+			$seen = [];
 			$gs = $podcast->groups;
 			foreach ($_POST['groups'] as $key => $id) {
 				$g = $_POST['group_gids'][$id];
@@ -376,7 +324,7 @@ class Podcasts implements Module {
 				if (isset($_POST[$q->qid])) {
 					if ($q->maxvotes > 0 && count($_POST[$q->qid]) > $q->maxvotes) {
 						$i = 0;
-						$arr = array();
+						$arr = [];
 						foreach ($ans as $key=>$val) {
 							if ($i == $q->maxvotes)
 								break;
@@ -429,15 +377,15 @@ class Podcasts implements Module {
 			$this->template = 'podcasts_results_freeresponse.tpl';
 			return;
 		}
-		$qs = array();
+		$qs = [];
 		$questions = $podcast->questions;
 		foreach($questions as $question) {
-			$q = array();
+			$q = [];
 			$q['answertype'] = $question->answertype;
 			$q['text'] = $question->question;
 			$q['qid'] = $question->qid;
 
-			$q['total'] = array();
+			$q['total'] = [];
 			$q['total']['T'] = 0;
 			$q['total']['M'] = 0;
 			$q['total']['F'] = 0;
@@ -447,13 +395,13 @@ class Podcasts implements Module {
 				$q['total'][$g.'F'] = 0;
 			}
 			$q['total']['staffT'] = 0;
-			$q['answers'] = array();
+			$q['answers'] = [];
 			$as = $question->answers;
 			foreach ($as as $aid => $text) {
-				$ans = array();
+				$ans = [];
 				$ans['text'] = $text;
 
-				$ans['votes'] = array();
+				$ans['votes'] = [];
 				$ans['votes']['T'] = 0;
 				$ans['votes']['M'] = 0;
 				$ans['votes']['F'] = 0;
@@ -534,7 +482,7 @@ class Podcasts implements Module {
 			'WHERE pid = %d', $I2_ARGS[2])->
 			fetch_all_single_values();
 
-		$list = array();
+		$list = [];
 		foreach ($podcast->questions as $q) {
 			switch($q->answertype) {
 				case 'free_response':
@@ -548,7 +496,7 @@ class Podcasts implements Module {
 		}
 
 		echo implode(',',$list)."\r\n"; // Print out the header
-		$newlist = array();
+		$newlist = [];
 		foreach ($list as $qid=>$text) {
 			$q = $podcast->questions[$qid];
 			$newlist[$qid] = array($q, $q->answers);
@@ -556,7 +504,7 @@ class Podcasts implements Module {
 		$list = $newlist;
 
 		foreach ($users as $user) {
-			$responses = array();
+			$responses = [];
 			foreach ($list as $qid => $info) {
 				$answer = $info[0]->get_response($user);
 				switch($info[0]->answertype) {

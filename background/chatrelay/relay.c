@@ -11,6 +11,7 @@
 #include <sys/ipc.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -19,7 +20,7 @@
 
 #define NUMSOCKS 1000
 //Just using this for testing right now, something more permanent later.
-#define IRCSERVER "blackhole.homelinux.com"
+#define IRCSERVER "iodine.tjhsst.edu"
 #define MAXSTRLENGTH 1000
 /* We use the key 15 for messages just recieved from the user */
 /* Set up the reference to the recieving message queue */

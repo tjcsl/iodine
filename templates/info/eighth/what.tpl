@@ -16,7 +16,7 @@
 </p>
 
 <p>
-      Students must select their activities before the end of lunch on the day of the activity.  They may select their activities on-line from home via their student account on the TJ Intranet, from most computers in the school, or in person at the Eighth Period Office (236 wk). Most activities are posted 8 weeks in advance, although last minute changes do occur. A complete listing of the schedule of activities offered for both blocks of the upcoming day is posted in advance at numerous locations throughout the building.   
+      Students must select their activities before the end of lunch on the day of the activity.  They may select their activities on-line from home via their student account on the TJ Intranet, from most computers in the school, or in person at the Eighth Period Office (134). Most activities are posted 8 weeks in advance, although last minute changes do occur. A complete listing of the schedule of activities offered for both blocks of the upcoming day is posted in advance at numerous locations throughout the building.   
 </p>
 
 <p>
@@ -34,4 +34,3 @@
 <p>
       For more information about eighth period, you may call 703-750-5078.
 </p>
-

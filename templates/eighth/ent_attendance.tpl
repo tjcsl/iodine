@@ -1,6 +1,6 @@
 [<include file="eighth/header.tpl">]
 This is block [<$block>] on [<$date>]<br />
-[<if isSet($lastuid)>]
+[<if isset($lastuid)>]
 You have marked <span class="bold">[<$lastname>] ([<$studentid>])</span> absent from <span class="bold">[<$activity->name>]</span>.<br />
 <a href="[<$I2_ROOT>]eighth/ent_attendance/unmark_absent/bid/[<$bid>]/uid/[<$lastuid>]">Click here to undo</a>
 [</if>]

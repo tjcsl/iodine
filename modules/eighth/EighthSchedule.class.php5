@@ -24,15 +24,15 @@ class EighthSchedule {
 	* @param array $sponsors The sponsors for that activity for that block.
 	* @param array $rooms The rooms for that activity for that block.
 	*/
-	public static function schedule_activity($blockid, $activityid, $sponsors = array(), $rooms = array(), $comment = '', 
+	public static function schedule_activity($blockid, $activityid, $sponsors = [], $rooms = [], $comment = '', 
 		$attendancetaken = FALSE, $cancelled = FALSE, $advertisement='',$capacity = -1) {
 		global $I2_SQL;
 		Eighth::check_admin();
 		if (!$sponsors) {
-			  $sponsors = array();
+			  $sponsors = [];
 		}
 		if (!$rooms) {
-		   $rooms = array();
+		   $rooms = [];
 		}
 		if(!is_array($sponsors)) {
 			$sponsors = array($sponsors);
@@ -62,10 +62,10 @@ class EighthSchedule {
 		$result = $I2_SQL->query_arr($query,$queryarg);
 		if ($old) {
 			$invquery = $query;
-			if (!isSet($old['comment'])) {
+			if (!isset($old['comment'])) {
 					  $old['comment'] = '';
 			}
-			if (!isSet($old['advertisement'])) {
+			if (!isset($old['advertisement'])) {
 					  $old['advertisement'] = '';
 			}
 			$invarg = array($old['bid'],$old['activityid'],explode(',',$old['sponsors']),explode(',',$old['rooms']),$old['comment'],$old['attendancetaken'],$old['cancelled'],$old['advertisement'],$old['capacity']);
@@ -181,7 +181,7 @@ class EighthSchedule {
 	*/
 	public static function get_delinquents($lower = 1, $upper = 1000, $start = null, $end = null) {
 		global $I2_SQL;
-		$wheres = array();
+		$wheres = [];
 		if($start != null) {
 			$wheres[] = 'date >= %t';
 		}
@@ -208,7 +208,7 @@ class EighthSchedule {
 			if (!($I2_USER->is_group_member('grade_staff') || $I2_USER->is_group_member('admin_eighth'))) {
 				//throw new I2Exception('Unauthorized request for absence information!');
 				//Fail silently so students may also use vcp_schedule interface to view other students schedules, but still within the user's privacy settings.
-				return array();
+				return [];
 			}
 		}
 		return $I2_SQL->query('SELECT aid,eighth_activity_map.bid FROM eighth_absentees LEFT JOIN eighth_activity_map USING (userid,bid) LEFT JOIN eighth_blocks USING (bid) WHERE eighth_absentees.userid=%d ORDER BY date,block', $userid)->fetch_all_arrays(Result::NUM);
@@ -256,7 +256,7 @@ class EighthSchedule {
 			}
 			return $I2_SQL->query('SELECT aid,eighth_blocks.bid FROM eighth_activity_map LEFT JOIN eighth_blocks USING (bid) WHERE userid=%d AND date >= %t AND date < ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block', $userid, $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::NUM);
 		}
-		return array();  // I guess this person doesn't want to be found.
+		return [];  // I guess this person doesn't want to be found.
 	}
 
 	/**
@@ -277,13 +277,13 @@ class EighthSchedule {
 		$hosts = $I2_SQL->query("SELECT sid FROM eighth_sponsors WHERE userid=%d",$userid)->fetch_col('sid');
 		// If they don't host anything, don't bother with further checks.
 		if(empty($hosts))
-			return array();
+			return [];
 		if($starting_date == NULL) {
 			$starting_date = date('Y-m-d');
 		}
 		$res=$I2_SQL->query('SELECT activityid,eighth_blocks.bid FROM eighth_block_map LEFT JOIN eighth_blocks USING (bid) WHERE sponsors REGEXP "(^|,)(%X)($|,)" AND date >= %t AND date < ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block',implode("|",$hosts), $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::NUM);
 		// We do not want the Z-HASNOTSELECTED links in this, so we'll filter them out.
-		$ret=array();
+		$ret=[];
 		$default_aid=i2config_get('default_aid','999','eighth');
 		foreach($res as $r) { // There's probably a more efficient function that does this...
 			if($r[0]!=$default_aid)
@@ -314,8 +314,8 @@ class EighthSchedule {
 	public static function get_activity_schedule($activityid, $starting_date = NULL, $number_of_days = 999) {
 		global $I2_SQL;
 		$blocks = EighthBlock::get_all_blocks($starting_date, $number_of_days);
-		$unscheduled_blocks = array();
-		$activities = array();
+		$unscheduled_blocks = [];
+		$activities = [];
 		foreach($blocks as $block) {
 			$scheduled = TRUE;
 			$result = $I2_SQL->query('SELECT rooms,sponsors,cancelled,comment from eighth_block_map WHERE bid=%d AND activityid=%d', $block['bid'], $activityid);
@@ -326,14 +326,14 @@ class EighthSchedule {
 			$data = $result->fetch_array(Result::ASSOC);
 			$data['rooms_array'] = "'" . strtr($data['rooms'], array(',' => "','")) . "'";
 			$data['rooms_obj'] = EighthRoom::id_to_room(array_filter(explode(',', $data['rooms'])));
-			$data['rooms_name_array'] = array();
+			$data['rooms_name_array'] = [];
 			foreach($data['rooms_obj'] as $room) {
 				$data['rooms_name_array'][] = $room->name;
 			}
 			$data['rooms_name_array'] = "'" . implode("','", $data['rooms_name_array']) . "'";
 			$data['sponsors_array'] = "'" . strtr($data['sponsors'], array(',' => "','")) . "'";
 			$data['sponsors_obj'] = EighthSponsor::id_to_sponsor(array_filter(explode(',', $data['sponsors'])));
-			$data['sponsors_name_array'] = array();
+			$data['sponsors_name_array'] = [];
 			foreach($data['sponsors_obj'] as $sponsor) {
 				$data['sponsors_name_array'][] = $sponsor->name_comma;
 			}

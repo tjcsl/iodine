@@ -1,12 +1,13 @@
-[< assign var='proxyscript' value='https://iodine.tjhsst.edu/www/proxy.pac' >]
-[< assign var='proxyhost' value='local.border.tjhsst.edu' >]
-[< assign var='proxyport' value='8080' >]
-[< assign var='dbsite' value='http://www.tjhsst.edu/curriculum/library/databases.php' >]
+[<assign var='proxyscript' value='https://iodine.tjhsst.edu/www/proxy.pac' >]
+[<assign var='proxyhost' value='local.border.tjhsst.edu' >]
+[<assign var='proxyport' value='8080' >]
+[<assign var='dbsite' value='http://www.tjhsst.edu/curriculum/library/wordpress/databases/' >]
 <h1 style="text-align: center; font-weight: bold; line-height:95%;">
   Internet Set-Up for Using TJHSST Library
   <br />Online Databases From Home
 </h1>
 
+<p><strong>A full PDF pictorial guide to configuring your TJHSST Database access is available at <a href="[<$I2_ROOT>]www/info/dbproxy.pdf">this link</a>.</strong></p>
 <p>
 Our library subscribes to online databases with high quality, authoritative resources that are
 essential for your high school research. On campus, they open automatically because the
@@ -30,12 +31,8 @@ You can access the databases at the Library's
    web page. You will need to go to 
    <a href="[<$dbsite>]">[<$dbsite>]</a>.
 <br /><br />
-When you connect to a database through the proxy, you will need to log in. Use the same username and password that you
-use for the TJHSST Intranet.
-<br /><br />
 If you are asked to log in by a particular database, please <strong>report it to the TJ Librarians</strong> so that they can fix problems with subscriptions.
 </p>
-<p><strong>For a full PDF pictorial guide, see <a href="[<$I2_ROOT>]www/info/dbproxy.pdf">this link</a>.</strong></p>
 <br />
 
 <h3>Internet Explorer 8</h3>
@@ -47,13 +44,13 @@ If you are asked to log in by a particular database, please <strong>report it to
   <li> Automatic Configuration 
   <ul>
   	<li> Check the box next to "Use automatic configuration script". </li>
-	<li> In the Address box, put in <b>[<$proxyscript>]</b>. </li>
+	<li> In the Address box, put in <b>[<$proxyscript>]</b> </li>
   </ul>
   <em>OR</em> Manual Configuration
   <ul>
   	<li> Check the box next to "Use a proxy server for your LAN". Then click on the "Advanced" button. </li>
-	<li> In the HTTP box, put in <b>[<$proxyhost>]</b>. </li>
-	<li> In the Port box, put in <b>[<$proxyport>]</b>. </li>
+	<li> In the HTTP box, put in <b>[<$proxyhost>]</b> </li>
+	<li> In the Port box, put in <b>[<$proxyport>]</b> </li>
 	<li> Click on OK to close the advanced settings window. </li>
   </ul>
   </li>
@@ -72,18 +69,18 @@ If you are asked to log in by a particular database, please <strong>report it to
   <li>Automatic Configuration - Windows
   <ul>
   	<li>Check the box next to &ldquo;Use automatic configuration script.&rdquo;</li>
-	<li>In the Address box, put in <b>[<$proxyscript>]</b>.</li>
+	<li>In the Address box, put in <b>[<$proxyscript>]</b></li>
   </ul>
   <em>OR</em> Automatic Configuration - Linux
   <ul>
   	<li>Click the radio button next to &ldquo;Automatic proxy configuration.&rdquo;</li>
-	<li>In the &ldquo;Autoconfiguration URL&rdquo; box, put in <b>[<$proxyscript>]</b>.</li>
+	<li>In the &ldquo;Autoconfiguration URL&rdquo; box, put in <b>[<$proxyscript>]</b></li>
   </ul>
   <em>OR</em> Manual Configuration 
   <ul>
   	<li>Check the box next to "Use a proxy server for your LAN". Then click on the "Advanced" button.</li>
-	<li>In the HTTP box, put in <b>[<$proxyhost>]</b>. </li>
-	<li>In the Port box, put in <b>[<$proxyport>]</b>. </li>
+	<li>In the HTTP box, put in <b>[<$proxyhost>]</b> </li>
+	<li>In the Port box, put in <b>[<$proxyport>]</b> </li>
 	<li>Click on OK to close the advanced settings window. </li>
   </ul>
   </li>
@@ -103,13 +100,13 @@ If you are asked to log in by a particular database, please <strong>report it to
   <li>Automatic Configuration:
   <ul>
   	<li>Select the radio button next to &ldquo;Automatic proxy configuration URL.&rdquo; </li>
-	<li>In the Address box, put in <b>[<$proxyscript>]</b>.</li>
+	<li>In the Address box, put in <b>[<$proxyscript>]</b></li>
   </ul>
   <em>OR</em> Manual Configuration:
   <ul>
   	<li>Select the radio button next to "Manual proxy configuration". </li>
-	<li>In the "HTTP Proxy" box, put in <b>[<$proxyhost>]</b>. </li>
-	<li>In the "Port" box, put in <b>[<$proxyport>]</b>. </li>
+	<li>In the "HTTP Proxy" box, put in <b>[<$proxyhost>]</b> </li>
+	<li>In the "Port" box, put in <b>[<$proxyport>]</b> </li>
 	<li>Make sure the "Use this proxy server for all protocols" box is checked </li>
   </ul>
   </li>
@@ -133,8 +130,8 @@ If you are asked to log in by a particular database, please <strong>report it to
   <li> Click on the "Proxies" tab. </li>
   <li> Check the box that says "Web Proxy (HTTP)" in the list under "Select a
     proxy server to configure:". </li>
-  <li> Under "Web Proxy Server", enter <b>[<$proxyhost>]</b>; after the
-    colon, set the port to <b>[<$proxyport>]</b>. </li>
+  <li> Under "Web Proxy Server", enter <b>[<$proxyhost>]</b> and after the
+    colon, set the port to <b>[<$proxyport>]</b> </li>
   <li> Click the "Apply Now" button at the lower-right of the window. </li>
   <li> Go to the <a href="[<$dbsite>]">TJ
     Library Online Database</a> page and refresh it (press Command-R). </li>
@@ -153,8 +150,8 @@ If you are asked to log in by a particular database, please <strong>report it to
 	window). </li>
   <li> Check the box that says "Web Proxy (HTTP)" in the list under "Select a
     proxy server to configure:". </li>
-  <li> Under "Web Proxy Server", enter <b>[<$proxyhost>]</b>; after the
-    colon, set the port to <b>[<$proxyport>]</b>. </li>
+  <li> Under "Web Proxy Server", enter <b>[<$proxyhost>]</b> and after the
+    colon, set the port to <b>[<$proxyport>]</b> </li>
   <li> Click the "Apply Now" button at the lower-right of the window. </li>
   <li> Go back to Safari and close the "Advanced" settings window. </li>
   <li> Go to the <a href="[<$dbsite>]">TJ
@@ -171,13 +168,13 @@ If you are asked to log in by a particular database, please <strong>report it to
   <li> Automatic Configuration
   <ul>
   	<li> Check the "Use automatic proxy configuration" checkbox </li>
-	<li> In the box below it, put in <b>[<$proxyscript>]</b>. </li>
+	<li> In the box below it, put in <b>[<$proxyscript>]</b> </li>
   </ul>
   <em>OR</em> Manual Configuration
   <ul>
   	<li> Check the "HTTP" box. </li>
-	<li> In the "HTTP" box, put in <b>[<$proxyhost>]</b>. </li>
-	<li> In the "Port" box, put in <b>[<$proxyport>]</b>. </li>
+	<li> In the "HTTP" box, put in <b>[<$proxyhost>]</b> </li>
+	<li> In the "Port" box, put in <b>[<$proxyport>]</b> </li>
   </ul>
   </li>
   <li> Click Ok to close the Proxy servers window, then Ok to close the Opera Preferences window. </li>
@@ -196,13 +193,13 @@ If you are asked to log in by a particular database, please <strong>report it to
   <li> Automatic Configuration
   <ul>
   	<li> Select the radio button next to "Use proxy configuration URL". </li>
-	<li> In the Address box, put in <b>[<$proxyscript>]</b>. </li>
+	<li> In the Address box, put in <b>[<$proxyscript>]</b> </li>
   </ul>
   <em>OR</em> Manual Configuration 
   <ul>
   	<li> Select the radio button next to "Manually specify the proxy settings," then click "Setup". </li>
-	<li> In the "HTTP Proxy" box, put in <b>[<$proxyhost>]</b>. </li>
-	<li> In the "Port" box, put in <b>[<$proxyport>]</b>. </li>
+	<li> In the "HTTP Proxy" box, put in <b>[<$proxyhost>]</b> </li>
+	<li> In the "Port" box, put in <b>[<$proxyport>]</b> </li>
 	<li> Make sure the "Use the same proxy server for all protocols" box is checked </li>
 	<li> Click Ok. </li>
   </ul>
@@ -230,7 +227,7 @@ If you are asked to log in by a particular database, please <strong>report it to
   <li> In the Edit TCP/IP: LAN or ISP window, select "Manual Proxy 
     Configuration," then click "Next". </li>
   <li> In the "Edit Manual Proxy Configuration" window, enter 
-    <b>[<$proxyhost>]</b> and set the port to <b>[<$proxyport>]</b>. Then click "Next". </li>
+    <b>[<$proxyhost>]</b> and set the port to <b>[<$proxyport>]</b> Then click "Next". </li>
   <li> In the "Summary" window, click "Sign On to AOL Now" to sign on
     immediately or click "Make More Changes" to make additional changes. </li>
 </ol>
@@ -243,7 +240,7 @@ If you are asked to log in by a particular database, please <strong>report it to
 </p>
          
 <p>
-  [Last updated November 12, 2010] <br />
+  [Last updated September 19, 2012] <br />
 </p>
 
 </div>

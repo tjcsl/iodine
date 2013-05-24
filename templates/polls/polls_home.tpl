@@ -15,6 +15,8 @@
     <td>[<$poll->startdt>] to [<$poll->enddt>]</td>
     [</if>]
   </tr>
+[<foreachelse>]
+<tr><td>No polls are available at this time.</td></tr>
 [</foreach>]
 [<if isset($admin)>]
   <tr><td colspan="5"><b>Finished polls</b></td></tr>
@@ -27,6 +29,8 @@
     <td><a href="[<$I2_ROOT>]polls/delete/[<$poll->pid>]">Delete</a></td>
     <td>[<$poll->startdt>] to [<$poll->enddt>]</td>
   </tr>
+[<foreachelse>]
+<tr><td>No polls are available at this time.</td></tr>
 [</foreach>]
   <tr><td colspan="5"><b>Unstarted polls</b></td></tr>
 [<foreach from=$unstarted item=poll>]
@@ -38,6 +42,8 @@
     <td><a href="[<$I2_ROOT>]polls/delete/[<$poll->pid>]">Delete</a></td>
     <td>[<$poll->startdt>] to [<$poll->enddt>]</td>
   </tr>
+[<foreachelse>]
+<tr><td>No polls are available at this time.</td></tr>
 [</foreach>]
 [</if>]
 </table>

@@ -2,7 +2,7 @@
 
 Parking applicants,<br /><br />
 
-<p>For the 2012-2013 school year, an unknown number of parking spaces will be available for student parking. The TJHSST campus will be going through many changes as we get closer to the start of renovation. Due to changes during the summer/fall of 2012 only <b>SENIORS</b> will be allowed to park on campus with mentorship students being given the highest priority.</p>
+<p>For the 2013-2014 school year, an unknown number of parking spaces will be available for student parking. The TJHSST campus will be going through many changes as we start and undergo renovation. Due to changes during the summer/fall of 2013 on1y <b>SENIORS</b> will be allowed to park on campus with mentorship students being given the highest priority.</p>
 
 <p>
 Complete the following online application no
@@ -10,7 +10,7 @@ later than [<$deadline>].
 In addition to completing this online component, <b>there is a paper application available from the main office that must be filled out and returned to the security office by the same date.
 Students failing to apply online and by paper application during the designated "application period" will be allocated a parking space AFTER all other spaces have been assigned, if any are available.</b>
 <b>Do not include payment with the application; payment is due in the fall when you pick up your parking permit.</b>
-You must also plan to have your driver's license by September 5, 2012 and have no more than 5 eighth period unexcused absences to be eligible. <b> You must have no outstanding debts to TJHSST.</b>
+You must also plan to have your driver's license by September 3, 2013 and have no more than 5 eighth period unexcused absences to be eligible. <b> You must have no outstanding debts to TJHSST.</b>
 </p>
 <p>
 Based on the number of student applications received, the following prioritized criteria will be used for allocating student parking spaces:<br />

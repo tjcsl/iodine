@@ -5,10 +5,10 @@
 [<include file="eighth/block_selection.tpl" header="FALSE" title='' method='res_student' op='user' field='bid' bid=$block->bid>]
 [<include file="eighth/include_list_close.tpl">]
 </td><td style="vertical-align: top;">
-[<if isSet($lastuser)>]<b>Rescheduled [<$lastuser->fullname>]</b>[</if>]
-[<if isSet($search_destination)>]
+[<if isset($lastuser)>]<b>Rescheduled [<$lastuser->fullname>]</b>[</if>]
+[<if isset($search_destination)>]
 [<include file="search/search_pane.tpl">]
-[<elseif isSet($results_destination)>]
+[<elseif isset($results_destination)>]
 [<include file="search/search_results_pane.tpl">]
 [</if>]
 </td></tr></table>

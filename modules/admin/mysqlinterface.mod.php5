@@ -15,62 +15,11 @@
 * @package modules
 * @subpackage Admin
 */
-class MySQLInterface implements Module {
+class MySQLInterface extends Module {
+
 	private $query_data = FALSE;
 	private $query = FALSE;
 
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Better message.
-	*/
-	function init_cli() {
-		return "mysqlinterface";
-	}
-
-	/**
-	* Make it look like it works, even though it doesn't.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return "<div>Access Denied</div>";
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
-
-	/**
-	* Unused; we don't display a box (yet)
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_box($disp) {
-		return FALSE;
-	}
-	
 	/**
 	* Displays all of a module's main content.
 	*
@@ -80,7 +29,7 @@ class MySQLInterface implements Module {
 		$header_data = NULL;
 		if(!is_string($this->query_data)) {
 			if($this->query_data != NULL) {
-				$header_data = array();
+				$header_data = [];
 				foreach($this->query_data as $dat) {
 					foreach($dat as $key=>$unused) {
 						if(!is_int($key))
@@ -101,17 +50,6 @@ class MySQLInterface implements Module {
 	*/
 	function get_name() {
 		return 'mysqlinterface';
-	}
-
-	/**
-	* Unused; we don't display a box
-	*
-	* @returns string The title of the box if it is to be displayed,
-	*                 otherwise FALSE if this module doesn't have an
-	*                 intrabox.
-	*/
-	function init_box() {
-		return FALSE;
 	}
 
 	/**

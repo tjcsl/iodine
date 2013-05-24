@@ -16,8 +16,8 @@
 
 class EighthBlock {
 
-	private $data = array();
-	private $restrictionlists = array(); //Lists of group-specific restrictions.
+	private $data = [];
+	private $restrictionlists = []; //Lists of group-specific restrictions.
 
 	/**
 	* The constructor for the {@link EighthBlock} class.
@@ -32,6 +32,17 @@ class EighthBlock {
 		foreach($temp as $entry) {
 			$restrictionlists[] = array('gid'=>$temp['gid'], 'aidlist'=>explode(',',$temp['aidlist']));
 		}
+	}
+	/**
+	* Check whether an block exists.
+	*
+	* @access public
+	* @param int $bid The block ID.
+	* @return boolean
+	*/
+	public static function block_exists($bid) {
+		global $I2_SQL;
+		return $I2_SQL->query('SELECT COUNT(*) FROM eighth_blocks WHERE bid=%d', $bid)->fetch_single_value();
 	}
 
 	/**
@@ -115,6 +126,16 @@ class EighthBlock {
 			$starting_date = i2config_get('start_date', date('Y-m-d'), 'eighth');
 		}
 		return $I2_SQL->query('SELECT * FROM eighth_blocks WHERE date >= %t AND date <= ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block', $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::ASSOC);
+	}
+
+	/**
+	* get private data.
+	* only for use by api.
+	*
+	* @access public
+	*/
+	public function get_data() {
+		return $this->data;
 	}
 
 	/**

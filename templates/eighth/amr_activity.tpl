@@ -9,10 +9,7 @@
 			<td>Sponsor(s):</td>
 			<td>
 [<if count($activity->sponsors) > 0 >]
-				<select name="sponsors[]" id="sponsors" size="[<php>] echo count($this->_tpl_vars['activity']->sponsors); [</php>]">
-[<php>]
-	$this->_tpl_vars['sponsors'] = EighthSponsor::id_to_sponsor($this->_tpl_vars['activity']->sponsors);
-[</php>]
+				<select name="sponsors[]" id="sponsors" size="[<$sponsorcount>]">
 [<foreach from=$sponsors item='sponsor'>]
 					<option value="[<$sponsor->sid>]">[<$sponsor->name_comma>]</option>
 [</foreach>]
@@ -44,9 +41,6 @@
 				<div id="roomdiv" style="display:none">
 [<if count($activity->rooms) > 0 >]
 				<select name="rooms[]" id="rooms" size="[<$activity->rooms|@count>]">
-[<php>]
-	$this->_tpl_vars['rooms'] = EighthRoom::id_to_room($this->_tpl_vars['activity']->rooms);
-[</php>]
 [<foreach from=$rooms item='room'>]
 					<option value="[<$room->rid>]">[<$room->name>]</option>
 [</foreach>]

@@ -14,12 +14,7 @@
 * @subpackage ServReq
 */
 
-class ServReq implements Module {
-
-	/**
-	* The display object to use
-	*/
-	private $display;
+class ServReq extends Module {
 
 	/**
 	* Template for the specified action
@@ -29,57 +24,14 @@ class ServReq implements Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $template_args = array();
+	private $template_args = [];
 
-	private $box_args = array();
+	private $box_args = [];
 
 	/**
 	* Whether the current user is a teacher/admin.
 	*/
 	private $admin;
-	
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function init_mobile() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_mobile($disp) {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*/
-	function init_cli() {
-		return FALSE;
-	}
-
-	/**
-	* Unused; Not supported for this module.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function display_cli($disp) {
-		return FALSE;
-	}
-
-	/**
-	* We don't really support this yet, but make it look like we do.
-	*
-	* @param Display $disp The Display object to use for output.
-	*/
-	function api($disp) {
-		return false;
-	}
 
 	/**
 	* Required by the {@link Module} interface.
@@ -100,29 +52,30 @@ class ServReq implements Module {
 
 			case 'add':
 				$group = new Group(8); //all staff
-				$this->template_args['approvers'] = array();
+				$this->template_args['approvers'] = [];
 				$users = $group->members_obj_sorted;
 				foreach($users as $person){
-					$person_array = array();
+					$person_array = [];
 					$person_array['name'] = $person->name;
 					$person_array['uid'] = $person->uid;
 					$this->template_args['approvers'][] = $person_array;
 				}
 				$this->template = 'req_add.tpl';
-				
+				break;				
 			case 'edit':
 				$this->template = 'req_edit.tpl';
-				
+				break;				
 			case 'approve':
 				$this->template = 'req_app.tpl';
+				break;
 		}
 	}
 
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
-		$display->disp($this->template,$this->template_args);
+	function display_pane($disp) {
+		$disp->disp($this->template,$this->template_args);
 	}
 	
 	/**
@@ -140,8 +93,8 @@ class ServReq implements Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_box($display) {
-		$display->disp('req_box.tpl',$this->box_args);
+	function display_box($disp) {
+		$disp->disp('req_box.tpl',$this->box_args);
 	}
 
 	/**

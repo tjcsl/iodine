@@ -258,6 +258,10 @@ In a relationship with:
  <td><input type="checkbox" id="eighthnightalert" name="eighthnightalert"[<if $I2_USER->eighthnightalert>] checked="checked"[</if>] /></td>
  <td><label for="eighthnightalert" style="cursor:text;">Send an e-mail to me at 9pm the night before an 8th period day if I have not signed up yet</label></td>
 </tr>[</if>]
+<tr>
+ <td><input type="checkbox" onclick="window.location=(typeof i2root!=='undefined'?i2root:'/')+'?creffett=1'" /></td>
+ <td><label>Enable creffett mode</label></td>
+</tr>
 [</if>]
 </table>
 <strong>Display Options</strong><br />

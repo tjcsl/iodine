@@ -23,12 +23,12 @@ class NewsItem {
 	/**
 	* An associative array containing various information about the newsitem.
 	*/
-	protected $info = array();
+	protected $info = [];
 
 	/**
 	* An array of NewsItem objects whose info hasn't been fetched yet.
 	*/
-	private static $unfetched = array();
+	private static $unfetched = [];
 
 	/**
 	* The list of what's shaded and what's not.
@@ -99,10 +99,10 @@ class NewsItem {
 		}
 		// Fetches the groups to which the item was posted
 		foreach(self::$unfetched as $item) {
-			$item->info['groups'] = array();
+			$item->info['groups'] = [];
 		}
 
-		foreach($I2_SQL->query('SELECT `nid`,`gid` FROM news_group_map WHERE `nid` IN (%D)', array_keys(self::$unfetched)) as $row) {
+		foreach($I2_SQL->query('SELECT nid,gid FROM news_group_map WHERE nid IN (%D)', array_keys(self::$unfetched)) as $row) {
 			$item = self::$unfetched[$row['nid']];
 			try{
 				$item->info['groups'][] = new Group($row['gid']);
@@ -115,11 +115,11 @@ class NewsItem {
 		foreach(self::$unfetched as $item) {
 			$item->info['read'] = FALSE;
 		}
-		foreach($I2_SQL->query('SELECT `nid` FROM news_read_map WHERE `uid` = %d AND `nid` IN (%D)', $I2_USER->uid, array_keys(self::$unfetched)) as $row) {
+		foreach($I2_SQL->query('SELECT nid FROM news_read_map WHERE uid = %d AND nid IN (%D)', $I2_USER->uid, array_keys(self::$unfetched)) as $row) {
 			self::$unfetched[$row['nid']]->info['read'] = TRUE;
 		}
 
-		foreach($I2_SQL->query('SELECT `id`,`title`,`authorID`,`posted`,`expire`,`visible`,`public`,`text` FROM news WHERE `id` IN (%D)', array_keys(self::$unfetched)) as $row) {
+		foreach($I2_SQL->query('SELECT id,title,authorID,posted,expire,visible,public,text FROM news WHERE id IN (%D)', array_keys(self::$unfetched)) as $row) {
 			$item = self::$unfetched[$row['id']];
 			$item->info['title'] = $row['title'];
 			$item->info['authorID'] = $row['authorID'];
@@ -133,14 +133,14 @@ class NewsItem {
 		}
 		
 		// get the number of users who have "liked" the news post
-		// check if the user has "liked" the news post with the `uid`=%d select trick
-		$checkstr='`uid`='.$I2_USER->uid;
-		foreach($I2_SQL->query('SELECT COUNT(*),`nid`,`uid`=%d FROM news_likes WHERE `nid` IN (%D) GROUP BY `nid`', $I2_USER->uid, array_keys(self::$unfetched)) as $row) {
+		// check if the user has "liked" the news post with the uid=%d select trick
+		$checkstr='uid='.$I2_USER->uid;
+		foreach($I2_SQL->query('SELECT COUNT(*),nid,uid=%d FROM news_likes WHERE nid IN (%D) GROUP BY nid', $I2_USER->uid, array_keys(self::$unfetched)) as $row) {
 			self::$unfetched[$row['nid']]->info['likecount'] = $row['COUNT(*)'];
 			self::$unfetched[$row['nid']]->info['liked'] = $row[$checkstr];
 		}
 
-		self::$unfetched = array();
+		self::$unfetched = [];
 	}
 
 	/**
@@ -172,8 +172,8 @@ class NewsItem {
 	 */
 	public static function get_all_items($expired = false) {
 		global $I2_SQL;
-		$allitems = array();
-		$myitems = array();
+		$allitems = [];
+		$myitems = [];
 		$qstring = 'SELECT id FROM news ' . ($expired ? '' : 'WHERE expire > NOW() OR expire IS NULL ') .
 			'ORDER BY posted DESC';
 		foreach($I2_SQL->query($qstring)->fetch_all_single_values() as $nid) {
@@ -198,8 +198,8 @@ class NewsItem {
 	 */
 	public static function get_all_items_nouser($expired = false) {
 		global $I2_SQL;
-		$allitems = array();
-		$myitems = array();
+		$allitems = [];
+		$myitems = [];
 		$qstring = 'SELECT id FROM news ' . ($expired ? '' : 'WHERE expire > NOW() OR expire IS NULL ') .
 			'ORDER BY posted DESC';
 		foreach($I2_SQL->query($qstring)->fetch_all_single_values() as $nid) {
@@ -275,8 +275,9 @@ class NewsItem {
 		$groupstring = substr($groupstring, 0,-2);
 		$subj = "[Iodine-news] ".strip_tags($title);
 		
-		$messagecontents = "Posted by " . $author->fullname . " to " . $groupstring . ":<br />\r\n<br />\r\n" . $text ."<br />\r\n<br />\r\n-----------------------------------------<br />\r\nAutomatically sent by the Iodine news feed. Do not reply to this email. To unsubscribe from these messages, unselect 'Send all news posts to me by e-mail' in your Iodine preferences. If you are not a TJHSST student and believe that you are receiving this message in error, contact intranet@tjhsst.edu for assistance.";
+		$messagecontents = "Posted by " . $author->name . " to " . $groupstring . ":<br />\r\n<br />\r\n" . $text ."<br />\r\n<br />\r\n-----------------------------------------<br />\r\nAutomatically sent by the Iodine news feed. Do not reply to this email. To unsubscribe from these messages, unselect 'Send all news posts to me by e-mail' in your Iodine preferences. If you are not a TJHSST student and believe that you are receiving this message in error, contact intranet@tjhsst.edu for assistance.";
 
+		d($messagecontents);
 		// Check permissions and send mail
 		$news = new NewsItem($nid);
 		foreach($I2_SQL->query('SELECT * FROM news_forwarding')->fetch_all_arrays() as $target) {
@@ -345,7 +346,7 @@ class NewsItem {
 		$newsadm = new Group('admin_news');
 		if(!$newsadm->has_member()) {
 			//You can't delete a news item unless you can manage news for ALL the groups it is posted to.
-			$groups = array();
+			$groups = [];
 			foreach($I2_SQL->query('SELECT gid FROM news_group_map WHERE nid=%d', $nid)->fetch_all_arrays() as $group)
 			{
 				$groups[] = new Group($group[0]);
@@ -596,7 +597,7 @@ class NewsItem {
 	 */
 	private static function regenshadecache(){
 		global $I2_SQL,$I2_USER;
-		self::$shadecache = $I2_SQL->query('SELECT nid FROM news_shaded_map WHERE uid=%d', $I2_USER->uid)->fetch_all_single_values(MYSQL_ASSOC);
+		self::$shadecache = $I2_SQL->query('SELECT nid FROM news_shaded_map WHERE uid=%d', $I2_USER->uid)->fetch_all_single_values(MYSQLI_ASSOC);
 	}
 }
 ?>
