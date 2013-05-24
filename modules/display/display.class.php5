@@ -283,7 +283,6 @@ class Display {
 		  global $I2_USER;
 		  if (self::$style == NULL) {
 			  if (isset($I2_USER)) {
-					  $I2_USER->recache('style');
 					  self::$style = ($I2_USER->style);
 			  }
 			  else {
