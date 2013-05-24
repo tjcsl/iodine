@@ -48,27 +48,25 @@ class GroupSQL extends Group {
 	* @param mixed $group Either a group name, a GID, or a Group object, as outlined above.
 	*/
 	public function __construct($group) {
-		global $I2_SQL, $I2_CACHE;
-		// Generate the GID/name maps if they do not exist
-		if(self::$gid_map === NULL)
-			self::$gid_map = unserialize($I2_CACHE->read($this,'gid_map'));
-		if(self::$name_map === NULL)
-			self::$name_map = unserialize($I2_CACHE->read($this,'name_map'));
-		if(self::$gid_map === FALSE || self::$name_map === FALSE) {
-			$res = $I2_SQL->query('SELECT name,gid FROM groups_name')->fetch_all_arrays(Result::ASSOC);
-			foreach($res as $row) {
-				self::$gid_map[$row['name']] = $row['gid'];
-				self::$name_map[$row['gid']] = $row['name'];
-			}
-			$I2_CACHE->store($this,'gid_map',serialize(self::$gid_map),strtotime('1 hour'));
-			$I2_CACHE->store($this,'name_map',serialize(self::$name_map),strtotime('1 hour'));
-		}
+		global $I2_SQL;
 
-		if(self::$rules_map === NULL)
-			self::$rules_map = unserialize($I2_CACHE->read($this,'rules_map'));
-		if(self::$rules_map === FALSE) {
-			self::$rules_map = $I2_SQL->query('SELECT dbtype, query, gid FROM groups_dynamic')->fetch_all_arrays_keyed_list('gid',Result::ASSOC);
-			$I2_CACHE->store($this,'rules_map',serialize(self::$rules_map),strtotime('1 hour'));
+		// Generate the GID/name maps if they do not exist
+		if (self::$gid_map === NULL) {
+			 self::$gid_map = [];
+			 self::$name_map = [];
+			 $res = $I2_SQL->query('SELECT name,gid FROM groups_name');
+			 while ($row = $res->fetch_array(Result::ASSOC)) {
+			 	self::$gid_map[$row['name']] = $row['gid'];
+				self::$name_map[$row['gid']] = $row['name'];
+			 }
+			 self::$rules_map = [];
+			 $res = $I2_SQL->query('SELECT dbtype, query, gid FROM groups_dynamic');
+			 while ($row = $res->fetch_array(Result::ASSOC)) {
+			 	if(!isset(self::$rules_map[$row['gid']])) {
+					self::$rules_map[$row['gid']]=[];
+				}
+			 	self::$rules_map[$row['gid']][]= array('dbtype'=>$row['dbtype'],'query'=>$row['query']);
+			 }
 		}
 
 		if(is_numeric($group)) {
@@ -676,7 +674,7 @@ class GroupSQL extends Group {
 	}
 
 	public static function add_group($name,$description='No description available',$gid=NULL) {
-		global $I2_SQL, $I2_AUTH, $I2_CACHE;
+		global $I2_SQL,$I2_AUTH;
 
 		if (!Group::user_can_create($name)) {
 			throw new I2Exception("User is not authorized to create group $name.");
@@ -696,8 +694,6 @@ class GroupSQL extends Group {
 		if(self::$gid_map !== NULL) {
 			self::$gid_map[$name] = $gid;
 			self::$name_map[$gid] = $name;
-			$I2_CACHE->remove(get_class(),'gid_map');
-			$I2_CACHE->remove(get_class(),'name_map');
 		}
 		return $gid;
 	}
