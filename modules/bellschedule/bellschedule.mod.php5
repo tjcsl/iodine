@@ -146,6 +146,67 @@ class BellSchedule extends Module {
 		24 => [
 			'description' => 'Modified Red Day',
 			'schedule' => 'SOL: 8:30 - 10:40<br />Period 5: 10:50 - 12:10<br />Lunch: 12:10 - 1:00<br />Period 6: 1:00 - 2:20<br />Period 7: 2:20 - 3:50'
+		],
+		27 => ['description' => 'No school', 'schedule' => ''],
+		28 => [
+			'description' => 'Anchor Day',
+			'schedule' => 'Period 1: 8:30 - 9:15<br />Period 2: 9:25 - 10:05<br />Period 3: 10:15 - 10:55<br />Period 4: 11:05 - 11:45<br />
+				Lunch: 11:45 - 12:35<br />Period 5: 12:35 - 1:15<br />Period 6: 1:25 - 2:05<br />Period 7: 2:15 - 2:55<br />Break: 2:55 - 3:10<br />Period 8: 3:10 - 3:50'
+		],
+		29 => [
+			'description' => 'TJStar Day',
+			'schedule' => 'Block A: 8:30 - 9:20<br />Block B: 9:30 - 10:15<br />Block C: 10:25 - 11:00<br />Block D: 11:20 - 12:05<br />Lunch: 12:05 - 12:50<br />Block E: 12:50 - 1:35<br />Block F: 1:45 - 2:30<br />Block G: 2:40 - 3:45'
+		],
+		30 => [
+			'description' => 'Blue Day',
+			'schedule' => 'Period 1: 8:30 - 10:05<br />Period 2: 10:15 - 11:45<br />
+				Lunch: 11:45 - 12:30<br />Period 3: 12:30 - 2:05<br />Break: 2:05 - 2:20<br />Period 4: 2:20 - 3:50'
+		],
+		31 => [
+			'description' => 'Modified Red Day - J-Day',
+			'schedule' => 'Period 5: 8:30 - 9:40<br />Period 6: 9:45 - 10:50<br />Period 7: 10:55 - 12:00<br />Lunch: 12:00 - 12:30<br />J-Day: 12:30 - 3:50'
+		],
+		/* 32 = Jun 1 and so on */
+
+		36 => [
+			'description' => 'Red Day with Sr Exams 5&7',
+			'schedule' => 'Period 5: 8:30 - 10:05<br />Period 6: 10:15 - 11:45<br />
+				Lunch: 11:45 - 12:30<br />Period 7: 12:30 - 2:05<br />Break: 2:05 - 2:20<br />Period 8A: 2:20 - 3:00<br />Period 8B: 3:10 - 3:50'
+		],
+		37 => [
+			'description' => 'Blue Day with Sr Exams 2&4',
+			'schedule' => 'Period 1: 8:30 - 10:05<br />Period 2: 10:15 - 11:45<br />
+				Lunch: 11:45 - 12:30<br />Period 3: 12:30 - 2:05<br />Break: 2:05 - 2:20<br />Period 4: 2:20 - 3:50'
+		],
+		38 => [
+			'description' => 'Red Day with Sr Exam 6',
+			'schedule' => 'Period 5: 8:30 - 10:05<br />Period 6: 10:15 - 11:45<br />
+				Lunch: 11:45 - 12:30<br />Period 7: 12:30 - 2:05<br />Break: 2:05 - 2:20<br />Period 8A: 2:20 - 3:00<br />Period 8B: 3:10 - 3:50'
+		],
+		41 => [
+			'description' => 'Blue Day with Sr Exams 1&3',
+			'schedule' => 'Period 1: 8:30 - 10:05<br />Period 2: 10:15 - 11:45<br />
+				Lunch: 11:45 - 12:30<br />Period 3: 12:30 - 2:05<br />Break: 2:05 - 2:20<br />Period 4: 2:20 - 3:50'
+		],
+		43 => [
+			'description' => 'Final Exams 5 and 7',
+			'schedule' => 'TBD'
+		],
+		44 => [
+			'description' => 'Final Exams 2 and 4',
+			'schedule' => 'TBD'
+		],
+		45 => [
+			'description' => 'Final Exams 1 and 3',
+			'schedule' => 'TBD'
+		],
+		48 => [
+			'description' => 'Final Exam 6 and Makeups',
+			'schedule' => 'TBD'
+		],
+		49 => [
+			'description' => 'Last Day of School',
+			'schedule' => 'TBD<center><b>Have a great summer!</b></center>'
 		]
 	];
 
@@ -249,6 +310,7 @@ class BellSchedule extends Module {
 	*/
 	function display_pane($disp) {
 		global $I2_QUERY;
+		d_r(self::$apExamSchedule);
 		// Week view
 		// FIXME: week is badly broken
 		if(isset($I2_QUERY['week'])) {
@@ -522,6 +584,13 @@ class BellSchedule extends Module {
 		global $I2_QUERY;
 		$dateoffset = self::parse_day_query(TRUE);
 		$day = isset($day) ? $day : date('Ymd',strtotime($dateoffset.' days'));
+
+		$doy = ((int)date('z', strtotime($day)));
+		d('DOY: '.$doy);
+		if($doy > 168 && $doy < 246) {
+			return ['description' => 'No school', 'schedule' => '<center><b>Have a great summer!</b></center>'];
+		}
+
 		$start = 'DTSTART;VALUE=DATE:'. $day;
 		$end = 'END:VEVENT';
 		$dwk = date('N', strtotime($day));
@@ -530,9 +599,35 @@ class BellSchedule extends Module {
 		// Is any type of schedule set?
 		if(preg_match($regex, $str, $dayTypeMatches) > 0) {
 			// Does it have a day type described?
-			if(preg_match('/SUMMARY:.(Blue Day - Adjusted Schedule for Mid Term Exams|Red Day - Adjusted Schedule for Mid Term Exams|JLC Blue Day - Adjusted Schedule for Mid Term Exams|AMC Blue Day|Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break|Modified Blue Day|Modified Red Day|Modified Anchor Day)/', $dayTypeMatches[0], $descriptionMatches) > 0) {
+			if(preg_match('/SUMMARY:.(Blue Day - Adjusted Schedule for Mid Term Exams|Red Day - Adjusted Schedule for Mid Term Exams|JLC Blue Day - Adjusted Schedule for Mid Term Exams|AMC Blue Day|Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break|Modified Blue Day|Modified Red Day|Modified Anchor Day|tjSTAR Day|Modified Red Day - J-Day|Final Exams|Last Day of School)/', $dayTypeMatches[0], $descriptionMatches) > 0) {
 				d("DM: ".$descriptionMatches[1]);
-				if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'||$descriptionMatches[1]=='Winter Break'||$descriptionMatches[1]=='Spring Break'){
+
+				/*
+				* 2013 AP EXAMS AND END OF YEAR
+				* FIXME: hard coded
+				*/
+				if(isset($I2_QUERY['start_date'])) {
+				       	$d = substr($I2_QUERY['start_date'], 6);
+				} else {
+				       	$d = date('j', strtotime($day));
+				}
+				if(substr($d, 0, 1) == '0') {
+				       	$d = substr($d, 1);
+				}
+				if(date('M', strtotime($day)) == 'Jun') $d = ((int)$d) + 31;
+				d('Day: '.$day, 1);
+				if((date('Y M', strtotime($day)) == '2013 May' || date('Y M', strtotime($day)) == '2013 Jun') && isset(self::$apExamSchedule[$d]) || isset(self::$apExamSchedule[$d+31])) {
+					
+
+					d('Modified AP Day: '.$d.' exists: '.isset(self::$apExamSchedule[$d]));
+					if(isset(self::$apExamSchedule[$d])) {
+						return ['description' => self::$apExamSchedule[$d]['description'], 'schedule' => self::$apExamSchedule[$d]['schedule']];
+					} else {
+						d('Using default schedule--may not be correct!');
+						return self::get_default_schedule(null, $dwk);
+					}
+
+				}else if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'||$descriptionMatches[1]=='Winter Break'||$descriptionMatches[1]=='Spring Break'){
 					return self::get_default_schedule('noschool');
 				} else if($descriptionMatches[1]=='Blue Day - Adjusted Schedule for Mid Term Exams'){
 					return self::get_default_schedule('bluemidterm');
@@ -545,25 +640,7 @@ class BellSchedule extends Module {
 						return self::get_default_schedule('amcblueday');
 				} else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams'){
 						return self::get_default_schedule('jlcmidterm');
-				/*
-				* 2013 AP EXAMS
-				* FIXME: hard coded
-				*/
-				} else if(($descriptionMatches[1] == 'Modified Blue Day' || $descriptionMatches[1] == 'Modified Red Day' || $descriptionMatches[1] == 'Modified Anchor Day')
-					&& date('Y M', strtotime($day)) == '2013 May' && isset(self::$apExamSchedule[date('j',strtotime($day))]) && date('j',strtotime($dateoffset.' days'))>=6) {
-					if(isset($I2_QUERY['start_date']))
-					       	$d = substr($I2_QUERY['start_date'], 6);
-					else
-					       	$d = date('j', strtotime($day));
-					if(substr($d, 0, 1) == '0')
-					       	$d = substr($d, 1);
-					d('Modified AP Day: '.$d.' exists: '.isset(self::$apExamSchedule[$d]));
-					if(isset(self::$apExamSchedule[$d])) {
-						return ['description' => self::$apExamSchedule[$d]['description'], 'schedule' => self::$apExamSchedule[$d]['schedule']];
-					} else {
-						d('Using default schedule--may not be correct!');
-						return self::get_default_schedule(null, $dwk);
-					}
+				
 				} else {
 					d('no descriptionMatches');
 					return self::get_default_schedule(null, $dwk);
