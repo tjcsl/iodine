@@ -29,12 +29,16 @@ class Permission {
 	 */
 	private static function gen_maps() {
 		global $I2_SQL, $I2_CACHE;
-		self::$pid_map = [];
-		self::$name_map = [];
-		$res = $I2_SQL->query('SELECT name,pid FROM permissions');
-		while ($row = $res->fetch_array(Result::ASSOC)) {
-			self::$pid_map[$row['name']] = $row['pid'];
-			self::$name_map[$row['pid']] = $row['name'];
+		self::$pid_map = unserialize($I2_CACHE->read(get_class(),'pid_map'));
+		self::$name_map = unserialize($I2_CACHE->read(get_class(),'name_map'));
+		if(self::$pid_map === FALSE) {
+			$res = $I2_SQL->query('SELECT name,pid FROM permissions')->fetch_all_arrays(Result::ASSOC);
+			foreach ($res as $row) {
+				self::$pid_map[$row['name']] = $row['pid'];
+				self::$name_map[$row['pid']] = $row['name'];
+			}
+			$I2_CACHE->store(get_class(),'pid_map',serialize(self::$pid_map));
+			$I2_CACHE->store(get_class(),'name_map',serialize(self::$name_map));
 		}
 	}
 
@@ -42,7 +46,7 @@ class Permission {
 	 * The constructor
 	 */
 	private function __construct($perm) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_CACHE;
 
 		// Generate the PID/name maps if they do not exist
 		if (self::$pid_map === NULL) {
@@ -53,14 +57,22 @@ class Permission {
 			// Passed PID
 			$this->pid = $perm;
 			$this->name = self::$name_map[$perm];
-			$this->desc = $I2_SQL->query('SELECT description FROM permissions WHERE pid=%d', $perm)->fetch_single_value();
+			$this->desc = $I2_CACHE->read($this,'desc_'.$this->pid);
+			if ($this->desc === FALSE) {
+				$this->desc = $I2_SQL->query('SELECT description FROM permissions WHERE pid=%d', $perm)->fetch_single_value();
+				$I2_CACHE->store($this,'desc_'.$this->pid,$this->desc);
+			}
 		}
 		elseif (isset(self::$pid_map[$perm])) {
 			// Passed permission name
 			$perm = strtoupper($perm);
 			$this->name = $perm;
 			$this->pid = self::$pid_map[$perm];
-			$this->desc = $I2_SQL->query('SELECT description FROM permissions WHERE name=%s', $perm)->fetch_single_value();
+			$this->desc = $I2_CACHE->read($this,'desc_'.$this->pid);
+			if ($this->desc === FALSE) {
+				$this->desc = $I2_SQL->query('SELECT description FROM permissions WHERE name=%s', $perm)->fetch_single_value();
+				$I2_CACHE->store($this,'desc_'.$this->pid,$this->desc);
+			}
 		}
 		else {
 			throw new I2Exception("Nonexistant Permission $perm given to the Permission constructor");

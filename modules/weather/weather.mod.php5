@@ -71,7 +71,7 @@ class Weather extends Module {
 			$this->template_args['wind_dir'] = $this->data[38];
 			$this->template_args['rain'] = $this->data[47];
 			$this->template_args['rain_int'] = $this->data[50];
-			$I2_CACHE->store('Weather','template_args',serialize($this->template_args),60*5);
+			$I2_CACHE->store('Weather','template_args',serialize($this->template_args));
 		}
 	}
 

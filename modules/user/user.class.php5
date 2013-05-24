@@ -57,7 +57,7 @@ class User {
 				if(!$uid) {
 					throw new I2Exception("invalid iodineUidNumber");
 				}
-				$I2_CACHE->store($this,'iodine_uid_'.$username,$uid,strtotime("1 hour"));
+				$I2_CACHE->store($this,'iodine_uid_'.$username,$uid);
 				return $uid;
 			}
 			return $uid;
@@ -154,7 +154,7 @@ class User {
 		 ** Put info in cache
 		 */
 		self::$cache[$this->myuid] = &$this->info;
-		$I2_CACHE->store($this,'ldap_user_info_'.$this->myuid,serialize($this->info),strtotime('1 hour'));
+		$I2_CACHE->store($this,'ldap_user_info_'.$this->myuid,serialize($this->info));
 		/*
 		 ** Cache the username->uid connection
 		 */
@@ -263,7 +263,7 @@ class User {
 				$allowed_modules = unserialize($I2_CACHE->read($this,'allowed_modules'));
 				if($allowed_modules === FALSE) {
 					$allowed_modules = $I2_SQL->query("SELECT module FROM allowed_modules WHERE userclass=%s",$this->__get("objectclass"))->fetch_all_single_values();
-					$I2_CACHE->store($this,'allowed_modules',serialize($allowed_modules),strtotime('1 hour'));
+					$I2_CACHE->store($this,'allowed_modules',serialize($allowed_modules));
 				}
 				$this->info['allowed_modules'] = $allowed_modules;
 				return $this->info['allowed_modules'];

@@ -595,7 +595,7 @@ class Auth {
 		$rows = unserialize($I2_CACHE->read(get_class(),'special_backgrounds'));
 		if($rows === FALSE) {
 			$rows = $I2_SQL->query('SELECT startdt, enddt, background, js FROM special_backgrounds')->fetch_all_arrays();
-			$I2_CACHE->store(get_class(),'special_backgrounds',serialize($rows),strtotime('1 hour'));
+			$I2_CACHE->store(get_class(),'special_backgrounds',serialize($rows));
 		}
 
 		$timestamp = time();

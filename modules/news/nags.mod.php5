@@ -49,7 +49,7 @@ class Nags extends Module {
 		$res = unserialize($I2_CACHE->read(get_class(),'nag_group_map'));
 		if($res === FALSE) {
 			$res = $I2_SQL->query('SELECT nid FROM nag_group_map WHERE active=1 AND critical=1')->fetch_all_arrays(Result::ASSOC);;
-			$I2_CACHE->store(get_class(),'nag_group_map',serialize($res),strtotime('1 hour'));
+			$I2_CACHE->store(get_class(),'nag_group_map',serialize($res));
 		}
 		$loc = implode('/',$I2_ARGS);
 		$visible = FALSE;

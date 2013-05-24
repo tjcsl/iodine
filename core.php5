@@ -29,7 +29,7 @@ define('CONFIG_FILENAME', 'config.ini.php5');
 */
 define('MEMCACHE_SERVER', 'localhost');
 define('MEMCACHE_PORT', '11211');
-define('MEMCACHE_DEFAULT_TIMEOUT', '120');
+define('MEMCACHE_DEFAULT_TIMEOUT', strtotime("1 hour"));
 
 /**
 * A few helpful globals, which need to be generated, so they cannot simply be define()'d.

@@ -60,15 +60,15 @@ class GroupSQL extends Group {
 				self::$gid_map[$row['name']] = $row['gid'];
 				self::$name_map[$row['gid']] = $row['name'];
 			}
-			$I2_CACHE->store($this,'gid_map',serialize(self::$gid_map),strtotime('1 hour'));
-			$I2_CACHE->store($this,'name_map',serialize(self::$name_map),strtotime('1 hour'));
+			$I2_CACHE->store($this,'gid_map',serialize(self::$gid_map));
+			$I2_CACHE->store($this,'name_map',serialize(self::$name_map));
 		}
 
 		if(self::$rules_map === NULL)
 			self::$rules_map = unserialize($I2_CACHE->read($this,'rules_map'));
 		if(self::$rules_map === FALSE) {
 			self::$rules_map = $I2_SQL->query('SELECT dbtype, query, gid FROM groups_dynamic')->fetch_all_arrays_keyed_list('gid',Result::ASSOC);
-			$I2_CACHE->store($this,'rules_map',serialize(self::$rules_map),strtotime('1 hour'));
+			$I2_CACHE->store($this,'rules_map',serialize(self::$rules_map));
 		}
 
 		if(is_numeric($group)) {
@@ -696,8 +696,8 @@ class GroupSQL extends Group {
 		if(self::$gid_map !== NULL) {
 			self::$gid_map[$name] = $gid;
 			self::$name_map[$gid] = $name;
-			$I2_CACHE->store(get_class(),'gid_map',serialize(self::$gid_map),strtotime('1 hour'));
-			$I2_CACHE->store(get_class(),'name_map',serialize(self::$name_map),strtotime('1 hour'));
+			$I2_CACHE->store(get_class(),'gid_map',serialize(self::$gid_map));
+			$I2_CACHE->store(get_class(),'name_map',serialize(self::$name_map));
 		}
 		return $gid;
 	}
