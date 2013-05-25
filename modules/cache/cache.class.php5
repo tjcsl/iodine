@@ -73,6 +73,7 @@ class Cache {
 		if(gettype($module)=="string") $name=$module;
 		$name=get_class($module);
 		$hash=sha1($I2_FS_ROOT."??".$name."::".$key);
+		d("deleting $name::$key from memcache",7);
 		return $this->mcache->delete($hash);
 	}
 	/**
