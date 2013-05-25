@@ -23,7 +23,7 @@ class Crash extends Module {
 	* @param Display $disp The Display object to use for output.
 	*/
 	function display_pane($disp) {
-		throw new I2Exception("Crashing iodine!");
+		throw new I2Exception("MS BOB ATTACK!");
 	}
 
 	/**
