@@ -15,9 +15,8 @@ require('functions.inc.php5');
 /**
 * The current version of Iodine running.
 *
-* Don't increment this until we have something runnable.
 */
-define('I2_VERSION', 1.00);
+define('I2_VERSION', 1.01);
 
 /**
 * The path to the master Iodine configuration file.
