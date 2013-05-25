@@ -27,7 +27,7 @@ class Cache {
 	{
 		$this->mcache=new Memcache;
 		d("connecting to memcached: server ".MEMCACHE_SERVER." on port ".MEMCACHE_PORT);
-		$result = $this->mcache->connect(MEMCACHE_SERVER,MEMCACHE_PORT);
+		$result = $this->mcache->pconnect(MEMCACHE_SERVER,MEMCACHE_PORT);
 		if(!$result)
 		{
 			global $I2_ERR;
