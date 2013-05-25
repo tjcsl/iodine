@@ -91,6 +91,7 @@ class User {
 					$this->info = unserialize($I2_CACHE->read($this,'ldap_user_info_'.$uid));
 					if($this->info === FALSE) {
 						$info = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUid=$this->username")->fetch_array(RESULT::ASSOC);
+						$store = TRUE;
 						foreach ($info as $key=>$val) {
 							$this->info[strtolower($key)] = $val;
 						}
@@ -126,6 +127,7 @@ class User {
 				$this->info = unserialize($I2_CACHE->read($this,'ldap_user_info_'.$uid));
 				if($this->info === FALSE) {
 					$info = $I2_LDAP->search(LDAP::get_user_dn(),"iodineUidNumber=$uid")->fetch_array(Result::ASSOC);
+					$store = TRUE;
 					if ($info) {
 						foreach ($info as $key=>$val) {
 							$this->info[strtolower($key)] = $val;
@@ -153,8 +155,10 @@ class User {
 		/*
 		 ** Put info in cache
 		 */
-		self::$cache[$this->myuid] = &$this->info;
-		$I2_CACHE->store($this,'ldap_user_info_'.$this->myuid,serialize($this->info));
+		if(isset($store)) {
+			self::$cache[$this->myuid] = &$this->info;
+			$I2_CACHE->store($this,'ldap_user_info_'.$this->myuid,serialize($this->info));
+		}
 		/*
 		 ** Cache the username->uid connection
 		 */
