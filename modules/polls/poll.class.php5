@@ -65,37 +65,23 @@ class Poll {
 	public function __construct($pid, $loadq=TRUE) {
 		global $I2_SQL,$I2_LOG;
 
-		if(!isset(Poll::$pollcache)) {
-			$pollinfo = $I2_SQL->query('SELECT name,introduction,startdt,'.
-				'enddt, visible FROM polls WHERE pid=%d', $pid)->
-				fetch_array(Result::ASSOC);
+		if(!isset(self::$pollcache) || !isset(self::$permissionscache))
+			self::generate_cache();
+		$this->poll_id = $pid;
+		$this->title = self::$pollcache[$pid]['name'];
+		$this->blurb = self::$pollcache[$pid]['introduction'];
+		$this->begin = self::$pollcache[$pid]['startdt'];
+		$this->end = self::$pollcache[$pid]['enddt'];
+		$this->visibility = self::$pollcache[$pid]['visible'] == 1 ? true : false;
 
-			$this->poll_id = $pid;
-			$this->title = $pollinfo['name'];
-			$this->blurb = $pollinfo['introduction'];
-			$this->begin = $pollinfo['startdt'];
-			$this->end = $pollinfo['enddt'];
-			$this->visibility = $pollinfo['visible'] == 1 ? true : false;
-
-			$gs = $I2_SQL->query('SELECT * FROM poll_permissions WHERE '.
-				'pid=%d',$pid)->fetch_all_arrays();
-		} else {
-			$this->poll_id = $pid;
-			$this->title = self::$pollcache[$pid]['name'];
-			$this->blurb = self::$pollcache[$pid]['introduction'];
-			$this->begin = self::$pollcache[$pid]['startdt'];
-			$this->end = self::$pollcache[$pid]['enddt'];
-			$this->visibility = self::$pollcache[$pid]['visible'] == 1 ? true : false;
-
-			$gs= isset(self::$permissionscache[$pid])?self::$permissionscache[$pid]:Array();
-		}
 		if($loadq) {
 			$this->load_poll_questions();
 		}
 
+		$gs = isset(self::$permissionscache[$pid]) ? self::$permissionscache[$pid] : [];
+
 		foreach ($gs as $g) {
-			$this->gs[$g['gid']] = array($g['vote'], $g['modify'],
-				$g['results']);
+			$this->gs[$g['gid']] = [$g['vote'], $g['modify'],$g['results']];
 		}
 	}
 
@@ -124,8 +110,9 @@ class Poll {
 	 * @return Poll The new poll
 	 */
 	public static function add_poll($name, $intro, $begin, $end, $visible) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_CACHE;
 
+		$I2_CACHE->delete(get_class(),'pollcache');
 		$pid = $I2_SQL->query('INSERT INTO polls SET name=%s, '.
 			'introduction=%s, startdt=%s, enddt=%s, visible=%d',
 			$name, $intro, $begin, $end, $visible)->get_insert_id();
@@ -143,7 +130,9 @@ class Poll {
 	 * @param boolean $visible If it is visible
 	 */
 	public function edit_poll($name, $intro, $begin, $end, $visible) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_CACHE;
+
+		$I2_CACHE->delete(get_class(),'pollcache');
 		$I2_SQL->query('UPDATE polls SET name=%s, introduction=%s,'.
 			'startdt=%s, enddt=%s, visible=%d WHERE pid=%d',
 			$name, $intro, $begin, $end, $visible, $this->poll_id);
@@ -160,7 +149,10 @@ class Poll {
 	 * @param int $pid The poll id
 	 */
 	public static function delete_poll($pid) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_CACHE;
+
+		$I2_CACHE->delete(get_class(),'pollcache');
+		$I2_CACHE->delete(get_class(),'permissionscache');
 
 		$I2_SQL->query('DELETE FROM polls WHERE pid=%d', $pid);
 		$I2_SQL->query('DELETE FROM poll_questions WHERE pid=%d', $pid);
@@ -180,8 +172,9 @@ class Poll {
 	 */
 	public static function all_polls($loadq=TRUE) {
 		global $I2_SQL;
-		Poll::generate_cache();
 
+		if(!isset(self::$pollcache) || !isset(self::$permissionscache))
+			self::generate_cache();
 		$pids = array_keys(self::$pollcache);
 		$polls = [];
 		foreach ($pids as $pid) {
@@ -197,15 +190,18 @@ class Poll {
 	*
 	*/
 	private static function generate_cache() {
-		global $I2_SQL;
-		if(isset(self::$pollcache)) {
-			return;
+		global $I2_SQL, $I2_CACHE;
+		self::$pollcache = unserialize($I2_CACHE->read(get_class(),'pollcache'));
+		if (self::$pollcache === FALSE) {
+			self::$pollcache = $I2_SQL->query('SELECT * FROM polls ORDER BY pid DESC')->fetch_all_arrays_keyed('pid',Result::ASSOC);
+			$I2_CACHE->store(get_class(),'pollcache',serialize(self::$pollcache));
 		}
-		self::$pollcache = $I2_SQL->query('SELECT name,introduction,startdt,'.
-			'enddt, visible, pid FROM polls ORDER BY pid DESC')->
-			fetch_all_arrays_keyed('pid',Result::ASSOC);
-		self::$permissionscache = $I2_SQL->query('SELECT * FROM poll_permissions')->
-			fetch_all_arrays_keyed_list('pid',Result::ASSOC);
+
+		self::$permissionscache = unserialize($I2_CACHE->read(get_class(),'permissionscache'));
+		if (self::$permissionscache === FALSE) {
+			self::$permissionscache = $I2_SQL->query('SELECT * FROM poll_permissions')->fetch_all_arrays_keyed_list_keyed('pid','gid',Result::ASSOC);
+			$I2_CACHE->store(get_class(),'permissionscache',serialize(self::$permissionscache));
+		}
 	}
 	/**
 	 * Returns all polls that the user can see.
@@ -217,7 +213,6 @@ class Poll {
 		global $I2_USER, $I2_SQL;
 
 		$polls = Poll::all_polls($loadq);
-//		$gs = $I2_SQL->query('SELECT * FROM poll_permissions')->fetch_all_arrays();
 		if($I2_USER->is_group_member('admin_polls'))
 			return $polls;
 		$ugroups = Group::get_user_groups($I2_USER);
@@ -298,13 +293,15 @@ class Poll {
 	 * @param integer gid The group id
 	 * @param array perm An array of permissions stipulated above.
 	 */
-	public function add_group_id($gid, $perm = array(TRUE,FALSE,FALSE)) {
-		global $I2_SQL;
+	public function add_group_id($gid, $perm = [TRUE,FALSE,FALSE]) {
+		global $I2_SQL, $I2_CACHE;
 
-		if ($gid != -1)
+		if ($gid != -1) {
+			$I2_CACHE->delete(get_class(),'permissionscache');
 			$I2_SQL->query('INSERT INTO poll_permissions SET pid=%d, '.
 				'gid=%d, vote=%d, modify=%d, results=%d ',
 				$this->poll_id,$gid, $perm[0], $perm[1], $perm[2]);
+		}
 		$this->gs[$gid] = $perm;
 	}
 
@@ -319,8 +316,9 @@ class Poll {
 	 * @param array perm An array of permissions stipulated above.
 	 */
 	public function edit_group_id($gid, $perm) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_CACHE;
 
+		$I2_CACHE->delete(get_class(),'permissionscache');
 		$I2_SQL->query('UPDATE poll_permissions SET vote=%d, modify=%d'.
 		       ', results=%d WHERE pid=%d AND gid=%d',
 			$perm[0], $perm[1], $perm[2], $this->poll_id, $gid);
@@ -333,8 +331,9 @@ class Poll {
 	 * @param integer gid The group id
 	 */
 	public function remove_group_id($gid) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_CACHE;
 
+		$I2_CACHE->delete(get_class(),'permissionscache');
 		$I2_SQL->query('DELETE FROM poll_permissions WHERE pid=%d AND '.
 		       'gid=%d',$this->poll_id,$gid);
 		unset($this->gs[$gid]);
