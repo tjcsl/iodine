@@ -26,10 +26,7 @@ class Cache {
 	public function __construct()
 	{
 		$this->mcache=new Memcache;
-		//$server=i2config_get('server','localhost','memcached');
-		//$port=intval(i2config_get('port','11211','memcached'));
 		d("connecting to memcached: server ".MEMCACHE_SERVER." on port ".MEMCACHE_PORT);
-		//$result = $this->mcache->connect($server, $port);
 		$result = $this->mcache->connect(MEMCACHE_SERVER,MEMCACHE_PORT);
 		if(!$result)
 		{
@@ -52,8 +49,10 @@ class Cache {
 	public function store($module, $key, $val, $expire=null)
 	{
 		global $I2_FS_ROOT;
-		if(gettype($module)=="string") $name=$module;
-		else $name=get_class($module);
+		if(gettype($module)=="string")
+		       $name=$module;
+		else
+		       $name=get_class($module);
 		$hash=sha1($I2_FS_ROOT."??".$name."::".$key);
 		if(!isset($expire)) $expire=intval(MEMCACHE_DEFAULT_TIMEOUT);
 		d("Storing item in memcached: $name::$key");
@@ -70,8 +69,10 @@ class Cache {
 	public function remove($module, $key)
 	{
 		global $I2_FS_ROOT;
-		if(gettype($module)=="string") $name=$module;
-		$name=get_class($module);
+		if(gettype($module)=="string")
+			$name=$module;
+		else
+			$name=get_class($module);
 		$hash=sha1($I2_FS_ROOT."??".$name."::".$key);
 		d("deleting $name::$key from memcache",7);
 		return $this->mcache->delete($hash);
@@ -86,8 +87,10 @@ class Cache {
 	public function read($module, $key)
 	{
 		global $I2_FS_ROOT;
-		if(gettype($module)=="string") $name=$module;
-		else $name=get_class($module);
+		if(gettype($module)=="string")
+			$name=$module;
+		else
+			$name=get_class($module);
 		$hash=sha1($I2_FS_ROOT."??".$name."::".$key);
 		d("reading $name::$key from memcache",7);
 		if($hash===null) return false;
