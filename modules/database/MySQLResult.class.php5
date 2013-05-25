@@ -165,6 +165,14 @@ class MySQLResult implements Result {
 		return $sum;
 	}
 
+	function fetch_all_arrays_keyed_list_keyed($key,$listkey,$type = MYSQLI_BOTH) {
+		$sum = [];
+		while ($arr = $this->fetch_array($type)) {
+			$sum[$arr[$key]][$arr[$listkey]] = $arr;
+		}
+		return $sum;
+	}
+
 	function fetch_array_keyed($key,$val) {
 		$sum = [];
 		while ($arr = $this->fetch_array(MYSQLI_ASSOC)) {
