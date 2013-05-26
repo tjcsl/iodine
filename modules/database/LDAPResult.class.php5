@@ -205,7 +205,7 @@ class LDAPResult implements Result {
 				$retarr[$a] = $this->fetch_row($a,$type);
 			}
 			if ($type == Result::ASSOC || $type == Result::BOTH) {
-				$retarr[$this->get_dn($a)] = $this->fetch_row($a,$type);
+				$retarr[$this->get_dn($a,$type)] = $this->fetch_row($a,$type);
 			}
 		}
 		
@@ -231,8 +231,8 @@ class LDAPResult implements Result {
 		}
 	}
 
-	private function get_dn($rownum) {
-		$this->fetch_to($rownum);
+	private function get_dn($rownum,$type=Result::BOTH) {
+		$this->fetch_to($rownum,$type);
 		return $this->dns[$rownum];
 	}
 	
