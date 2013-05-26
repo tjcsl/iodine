@@ -80,6 +80,11 @@ class MySQLResult implements Result {
 	}
 	
 	function fetch_array($type = MYSQLI_BOTH) {
+		// DELETE, UPDATE, etc. return bools
+		if (is_bool($this->mysql_result)) {
+			$this->current_row_number++;
+			return ($this->current_row = ['Query succeded']);
+		}
 		$row = mysqli_fetch_array($this->mysql_result, $type);
 		if ($row) {
 			$this->current_row_number++;
@@ -226,6 +231,8 @@ class MySQLResult implements Result {
 	* @return bool Valid until we reach the end of the result set
 	*/
 	function valid() {
+		if (is_bool($this->mysql_result))
+			return $this->current_row_number == 0;
 		return $this->current() !== FALSE;
 	}
 	
