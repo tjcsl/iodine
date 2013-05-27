@@ -53,7 +53,7 @@ class CodeInterface extends Module {
 	* @abstract
 	*/
 	function init_pane() {
-		global $I2_SQL, $I2_USER;
+		global $I2_USER;
 
 		// Only available to people in the 'admin_all' group
 		if (! $I2_USER->is_group_member('admin_all')) {

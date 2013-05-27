@@ -30,15 +30,14 @@ class LDAPInterface extends Module {
 	* @param Display $disp The Display object to use for output.
 	*/
 	function display_pane($disp) {
-		$header_data = NULL;
-		$disp->disp('ldapinterface_pane.tpl', 
-			array( 
-				'query_data' => $this->query_data, 
-				'query' => addslashes($this->query), 
-				'last_dn' => addslashes($this->dn),
-				'searchtype' => $this->searchtype,
-				'last_attrs' => $this->attrs
-			));
+
+		$args['query_data'] = $this->query_data;
+		$args['query'] = addslashes($this->query);
+		$args['last_dn'] = addslashes($this->dn);
+		$args['searchtype'] = $this->searchtype;
+		$args['last_attrs'] = $this->attrs;
+
+		$disp->disp('ldapinterface_pane.tpl',$args);
 	}
 	
 	/**
@@ -65,7 +64,7 @@ class LDAPInterface extends Module {
 	* @abstract
 	*/
 	function init_pane() {
-		global $I2_LDAP, $I2_ARGS, $I2_USER;
+		global $I2_LDAP, $I2_USER;
 
 		// Only available to people with LDAP admin privs
 		// TODO: It may be permissible to allow non-admins with user bind

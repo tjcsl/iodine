@@ -7,11 +7,6 @@
 class Calendar extends Module {
 
 	/**
-	* The display object to use
-	*/
-	private $display;
-
-	/**
 	* Template for the specified action
 	*/
 	private $template;
@@ -22,15 +17,10 @@ class Calendar extends Module {
 	private $template_args = [];
 
 	/**
-	* Declaring some global variables
-	*/
-	private $message;
-
-	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_USER, $I2_ARGS;
+		global $I2_ARGS;
 
 		if (count($I2_ARGS) <= 1) {
 			$I2_ARGS[1] = 'view';
@@ -47,11 +37,11 @@ class Calendar extends Module {
 		}
 	}
 
-	function display_pane($display) {
+	function display_pane($disp) {
 		global $I2_USER;
 		//FIXME: calendar is full of security holes
 		if($I2_USER->is_group_member('admin_all') || $I2_USER->is_group_member('admin_calendar'))
-			$display->disp($this->template, $this->template_args);
+			$disp->disp($this->template, $this->template_args);
 		else
 			return FALSE;
 	}
@@ -66,8 +56,8 @@ class Calendar extends Module {
 
 
 	function view() {
-		global $I2_USER, $I2_ARGS, $I2_SQL, $I2_ROOT, $I2_QUERY;
-		$curtime  =time();
+		global $I2_SQL, $I2_QUERY;
+		$curtime  = time();
 		if(!isset($I2_QUERY['startdate'])) {
 			$starttime=$curtime;
 			$starttime=$starttime-date('w',$starttime)*60*60*24;
@@ -83,7 +73,7 @@ class Calendar extends Module {
 		$this->template_args['enddate']=$enddate;
 
 		$data_time = $I2_SQL->query('SELECT * FROM calendar WHERE blocknottime=0')->fetch_all_arrays(MYSQLI_ASSOC);
-		$data_block = $I2_SQL->query('SELECT * FROM calendar WHERE blocknottime=1')->fetch_all_arrays_keyed_list('blockdate',MYSQLI_ASSOC);
+		//$data_block = $I2_SQL->query('SELECT * FROM calendar WHERE blocknottime=1')->fetch_all_arrays_keyed_list('blockdate',MYSQLI_ASSOC);
 
 		$blocksraw = $I2_SQL->query('SELECT * FROM calendar_schedule')->fetch_all_arrays(MYSQLI_ASSOC);
 		$blocks = [];
@@ -150,7 +140,6 @@ class Calendar extends Module {
 	*/
 
 	function add() {
-		global $I2_USER, $I2_ARGS, $I2_SQL;
 		$this->template_args['error']='';
 		if(isset($_POST['action'])) {
 			//$allowed=self::get_allowed_targets();
@@ -188,7 +177,7 @@ class Calendar extends Module {
 	* Get the groups a user can post to.
 	*/
 	static function get_allowed_targets() {
-		global $I2_USER, $I2_SQL;
+		global $I2_USER;
 		$ret=array('self');
 		if($I2_USER->is_group_member('admin_calendar'))
 			$ret[]='1';
@@ -304,7 +293,7 @@ class Calendar extends Module {
 			return false;
 		}
 		if($isablock) { // Timeslot is locked to a block, as opposed to an actual time.
-			$I2_SQL->query("UPDATE calendar SET blocknottime=1, blockdate=%s, startblock=%s, endblock=%s, title=%s, text=%s WHERE id=%s",date("Y-m-d",$firsttimearg),$secondtimearg[0],$secondtimearg[1],$title,$text,$tags,$eventid);
+			$I2_SQL->query("UPDATE calendar SET blocknottime=1, blockdate=%s, startblock=%s, endblock=%s, title=%s, text=%s WHERE id=%s",date("Y-m-d",$firsttimearg),$secondtimearg[0],$secondtimearg[1],$title,$text,$eventid);
 		} else { // Timeslot is locked to an actual start and end time
 			$I2_SQL->query("UPDATE calendar SET blocknottime=0, starttime=%s, endtime=%s, title=%s, text=%s WHERE id=%s",date("Y-m-d H:i:s",$firsttimearg),date("Y-m-d H:i:s",$secondtimearg),$title,$text,$eventid);
 		}

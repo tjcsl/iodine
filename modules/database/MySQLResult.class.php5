@@ -27,11 +27,6 @@ class MySQLResult implements Result {
 	private $query_type = NULL;
 	
 	/*
-	** Cached information resolving column names to numbers.
-	*/
-	private $schema = [];
-
-	/*
 	** The current row.
 	*/
 	private $current_row = NULL;
@@ -53,7 +48,7 @@ class MySQLResult implements Result {
 	* @param mixed $query_type See join_right.
 	*/
 	function __construct($mysql_result,$query_type) {
-		global $I2_LOG, $I2_SQL;
+		global $I2_SQL;
 		if (!$mysql_result) {
 			d('Null SQL result constructed.',6);
 			/* Haha, it's brilliant!

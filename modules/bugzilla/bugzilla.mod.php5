@@ -51,7 +51,7 @@ class Bugzilla extends Module {
 	 * @abstract
 	 */
 	function init_pane() {
-		global $I2_USER, $I2_AUTH, $I2_ARGS;
+		global $I2_USER;
 
 		$bug_server = i2config_get('bugzilla_server', 'mysql.tjhsst.edu', 'bugzilla');
 		$bug_db = i2config_get('bugzilla_db', 'bugs', 'bugzilla');

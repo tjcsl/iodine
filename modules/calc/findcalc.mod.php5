@@ -16,11 +16,6 @@
 class Findcalc extends Module {
 
 	/**
-	* The display object to use
-	*/
-	private $display;
-
-	/**
 	* Template for the specified action
 	*/
 	private $template = "findcalc_pane.tpl";
@@ -34,7 +29,7 @@ class Findcalc extends Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_USER, $I2_ARGS, $I2_SQL;
+		global $I2_USER, $I2_SQL;
 		if ($I2_USER->objectClass != 'tjhsstTeacher' && !$I2_USER->is_group_member('admin_calc')) {
 				  return FALSE;
 		}
@@ -89,8 +84,8 @@ class Findcalc extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
-		$display->disp($this->template, $this->template_args);
+	function display_pane($disp) {
+		$disp->disp($this->template, $this->template_args);
 	}
 
 	/**

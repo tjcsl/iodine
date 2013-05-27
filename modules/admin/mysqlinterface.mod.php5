@@ -31,7 +31,7 @@ class MySQLInterface extends Module {
 			if($this->query_data != NULL) {
 				$header_data = [];
 				foreach($this->query_data as $dat) {
-					foreach($dat as $key=>$unused) {
+					foreach(array_keys($dat) as $key) {
 						if(!is_int($key))
 							$header_data[] = $key;
 					}

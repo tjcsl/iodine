@@ -158,7 +158,7 @@ class CLIodine extends Module {
 			"bach"=>"Sorry, music playback not supported at this time."
 		);
 		$commandlist=array("apt-get","bash","cat","cliodine","codeinterface","date","echo","ed","emacs","exit","finger","gedit","halt","help","kate","kill","ldapinterface","lpr","mysqlinterface","nano","news","phpinfo","poweroff","pwd","quit","reboot","shutdown","ssh","su","sudo","uname","vi","vim","weather","whoami");
-		$hiddencommands=array("i read the source code","hello","hi","lol","wtf","bach","rickroll","o hai thar","screw you",":(){ :|:& };:","lost the game","i lost the game");
+		//$hiddencommands=array("i read the source code","hello","hi","lol","wtf","bach","rickroll","o hai thar","screw you",":(){ :|:& };:","lost the game","i lost the game");
 		//foreach ($commandlist as $i) {
 		$this->singles["help"]="<table class='termtable'>";
 		for($i=0;$i<(int)(sizeof($commandlist)/2);$i++) {

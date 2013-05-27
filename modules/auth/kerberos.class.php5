@@ -125,9 +125,9 @@ class Kerberos implements AuthType {
 			fwrite($pipes[0], "$password\n");
 			fclose($pipes[0]);
 
-			$output = fread($pipes[1], 1024);
+			//$output = fread($pipes[1], 1024);
 			fclose($pipes[1]);
-			$output2 = fread($pipes[2], 1024);
+			//$output2 = fread($pipes[2], 1024);
 			fclose($pipes[2]);
 			
 			$status = proc_close($process);

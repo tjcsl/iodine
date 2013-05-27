@@ -18,8 +18,6 @@ class CSS extends Module {
 
 	private $style_sheet;
 
-	private $css_text;
-
 	private $warnings = [];
 
 	private $style_cache;
@@ -264,7 +262,7 @@ class CSS extends Module {
 	// Skip most of the stuff if just reading from cache. In fact, no mysql or ldap connection nor user object has been made at this point.
 	// Just a relatively quick function.
 	public static function showcss() {
-		global $I2_ARGS, $I2_FS_ROOT;
+		global $I2_ARGS;
 		
 		$current_style = $I2_ARGS[1];
 		if(!isset($I2_ARGS[2]))

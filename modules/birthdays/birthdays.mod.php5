@@ -27,7 +27,6 @@ class Birthdays extends Module {
 	private $tmp_ldap;
 
 	function init_box() {
-		global $I2_ROOT;
 
 		$this->cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'birthdays.cache';
 		$mytime = getdate();

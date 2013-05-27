@@ -130,14 +130,13 @@ class dataimport extends Module {
 	private function import_teacher_data_ldap() {
 		global $I2_LOG;
 	
-		$server = $this->school_ldap_server;
 		$user = $this->school_ldap_user;
 		$pass = $this->school_ldap_pass;
 		
 		$count = 0;
 		
 		//$teacherldap = LDAP::get_simple_bind($user,$pass,$server);
-		$teacherldap = LDAP::get_user_bind($server);
+		$teacherldap = LDAP::get_user_bind();
 		$res = $teacherldap->search('ou=Staff,dc=local,dc=tjhsst,dc=edu','cn=*',array('cn','sn','givenName'));
 		$validteachers = [];
 		while ($teacher = $res->fetch_array()) {

@@ -163,7 +163,6 @@ class Auth {
 		 *		otherwise.
 		 */
 		private static function validate($user,$password,$auth_methods=NULL) {
-			global $I2_LOG;
 			if($auth_methods==NULL)
 				$auth_methods = explode(',', i2config_get('methods',NULL,'auth'));
 
@@ -284,7 +283,7 @@ class Auth {
 		 * @returns bool Whether or not the user has successfully logged in.
 		 */
 		public function login() {
-			global $I2_ROOT, $I2_FS_ROOT, $I2_ARGS, $I2_API, $I2_AJAX, $modauth_loginfailed, $modauth_err, $I2_QUERY, $template_args;
+			global $I2_ROOT, $I2_ARGS, $I2_API, $I2_AJAX, $modauth_loginfailed, $modauth_err, $template_args;
 
 			// the log function uses this to tell if the login was successful
 			// if login fails, something else will set it
@@ -295,7 +294,7 @@ class Auth {
 			}
 			//$this->cache_password($_REQUEST['login_password']);
 			if (isset($_REQUEST['login_username']) && isset($_REQUEST['login_password'])) {
-				if (($check_result = $this->check_user($_REQUEST['login_username'],$_REQUEST['login_password']))) {
+				if ($this->check_user($_REQUEST['login_username'],$_REQUEST['login_password'])) {
 
 					//$_SESSION['i2_uid'] = strtolower($_REQUEST['login_username']);
 					$_SESSION['i2_username'] = strtolower($_REQUEST['login_username']);
@@ -398,7 +397,7 @@ class Auth {
 					$I2_API->endDTD();
 					$I2_API->startElement($module);
 					$I2_API->writeElement('loggedin', 0);
-					$mod->api($I2_DISP);
+					$mod->api();
 					exit(0);
 				}
 				$I2_API->startElement('auth');
@@ -465,7 +464,7 @@ class Auth {
 		$template_args['bgjs'] = $imagejs;
 
 	}
-	public static function init_schedule($rtn = null) {
+	public static function init_schedule() {
 		global $I2_QUERY, $disp, $template_args;
 		// Week view
 		if(isset($I2_QUERY['week'])) {

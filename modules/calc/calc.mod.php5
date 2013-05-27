@@ -16,11 +16,6 @@
 class Calc extends Module {
 
 	/**
-	* The display object to use
-	*/
-	private $display;
-
-	/**
 	* Template for the specified action
 	*/
 	private $template = "calc_pane.tpl";
@@ -35,7 +30,7 @@ class Calc extends Module {
 	*/
 	function init_pane() {
 		
-		global $I2_USER, $I2_ARGS, $I2_SQL;
+		global $I2_USER, $I2_SQL;
 
 		if( isset($_REQUEST['calc_form']) ) {
 			//form submitted
@@ -82,10 +77,10 @@ class Calc extends Module {
 	/**
 	* Required by the {@link Module} interface.
 	*/
-	function display_pane($display) {
+	function display_pane($disp) {
 		global $I2_SQL, $I2_USER;
 		$calcs = $I2_SQL->query('SELECT calcsn, calcid FROM calculators WHERE uid=%d', $I2_USER->uid)->fetch_all_arrays(Result::ASSOC);
-		$display->disp($this->template, array( 'message' => $this->message ,
+		$disp->disp($this->template, array( 'message' => $this->message ,
 							'calcs' => $calcs));
 	}
 

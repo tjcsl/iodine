@@ -27,7 +27,6 @@ class LDAP {
 	private $dnbase;
 	private static $ou_bases = [];
 	private $bind;
-	private $bindtype;
 	private $conn;
 	private $server;
 	private $sizelimit;
@@ -35,8 +34,7 @@ class LDAP {
 	
 	private $conns = [];
 	
-	function __construct($dn=NULL,$pass=NULL,$server=NULL,$gssapi=FALSE,$proxydn='') {
-		global $I2_USER, $I2_ERR, $I2_AUTH;
+	function __construct($dn=NULL,$pass=NULL,$server=NULL,$gssapi=FALSE) {
 		if ($server !== NULL) {
 			$this->server = $server;
 		} else {
@@ -139,14 +137,14 @@ class LDAP {
 	/**
 	* Rebind if necessary to chase a referral
 	*/ 
-	private function rebind($conn,$url) {
+	/* private function rebind($conn,$url) {
 		$this->conn_options($conn);
 		$bind = ldap_sasl_bind($conn,'','','GSSAPI');
 		$this->conns[] = $conn;
 		if (!$bind) {
 			$I2_ERR->nonfatal_error("Unable to bind to LDAP server chasing referral to \"$url\"!");
 		}
-	}
+	} */
 
 	public static function get_anonymous_bind() {
 		return new LDAP();
@@ -155,7 +153,7 @@ class LDAP {
 	/**
 	* Asks auth for an appropriate user bind
 	*/
-	public static function get_user_bind($server = NULL) {
+	public static function get_user_bind() {
 		global $I2_AUTH;
 		return $I2_AUTH->get_ldap_bind();
 	}
@@ -303,7 +301,7 @@ class LDAP {
 		** Find all objects below the given DN and delete each one
 		*/
 		$res = $this->search_one($dn,$filter,array('dn'),$bind,TRUE)->fetch_all_arrays(RESULT::ASSOC);
-		foreach ($res as $itemdn=>$meh) {
+		foreach (array_keys($res) as $itemdn) {
 			/*
 			** Avoid weird results of recursing into self
 			*/
