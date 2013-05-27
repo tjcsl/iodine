@@ -75,8 +75,8 @@ class Logging {
 		$this->my_email = i2config_get('email', 'iodine-errors@tjhsst.edu', 'logging');
 	
 		/* If not defined in config.ini, the log paths are absolute. */
-		$log_dir = i2config_get('log_dir', NULL, 'logging');
-		if($log_dir === NULL) {
+		$log_dir = i2config_get('log_dir', "", 'logging');
+		if($log_dir == "") {
 			$this->debug_log = i2config_get('debug_log');
 			$this->access_log = i2config_get('access_log');
 			$this->error_log = i2config_get('error_log');

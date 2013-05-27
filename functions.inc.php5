@@ -23,9 +23,17 @@
 *                   is 9, the highest standard level.)
 */
 function d($text, $level = 9) {
+	static $logcache;
 	global $I2_LOG;
 	if (isset($I2_LOG)) {
+		if(isset($logcache)) {
+			foreach($logcache as $log)
+				$I2_LOG->log_debug($log['text'],$log['level']);
+			$logcache = NULL;
+		}
 		$I2_LOG->log_debug($text, $level);
+	} else {
+		$logcache[] = ['text' => $text, 'level' => $level];
 	}
 }
 
