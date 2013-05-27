@@ -24,6 +24,14 @@ define('I2_VERSION', 1.01);
 define('CONFIG_FILENAME', 'config.ini.php5');
 
 /**
+* If this line is not present, it generates a lot of warning messages in recent
+* versions of PHP.
+*/
+if(version_compare(PHP_VERSION, '5.1.0', '>')) {
+	date_default_timezone_set(i2config_get('timezone','America/New_York','core'));
+}
+
+/**
 * The information about the memcache server.
 */
 define('MEMCACHE_SERVER', 'localhost');
@@ -43,14 +51,6 @@ $I2_ROOT = (isset($_SERVER['HTTPS'])?'https://':'http://') . $_SERVER['HTTP_HOST
 //$I2_ROOT = i2config_get('www_root', 'https://iodine.tjhsst.edu/','core');
 $I2_FS_ROOT = substr($_SERVER['SCRIPT_FILENAME'],0,-9);
 //$I2_FS_ROOT = i2config_get('root_path', '/var/wwww/iodine/', 'core');
-
-/**
-* If this line is not present, it generates a lot of warning messages in recent
-* versions of PHP.
-*/
-if(version_compare(PHP_VERSION, '5.1.0', '>')) {
-	date_default_timezone_set(i2config_get('timezone','America/New_York','core'));
-}
 
 /*
 The actual config file in Git is config.user.ini and config.server.ini
