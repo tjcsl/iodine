@@ -379,7 +379,7 @@ class BellSchedule extends Module {
 		}
 		$args['header'] .= $args['date'];
 		$schedule = self::get_schedule();
-		$args['schedday'] = self::parse_schedule_day($schedule['description']);
+		$args['schedday'] = self::day_to_index($schedule['description']);
 		if(strpos($schedule['description'], 'Modified')!==false)
 			$schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
 		$args['schedule'] = $schedule;
@@ -409,7 +409,7 @@ class BellSchedule extends Module {
 			$nday = date('l, F j', strtotime($day));
 			if(strpos($schedule['description'], 'Modified')!==false)
 				$schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
-			$c.="<td class='desc schedule-".self::parse_schedule_day($schedule['description'])."'>";
+			$c.="<td class='desc schedule-".self::day_to_index($schedule['description'])."'>";
 			$c.=$schedule['description']."</td>";
 		}
 		$c.= "</tr><tr>";
@@ -433,23 +433,13 @@ class BellSchedule extends Module {
 	*/
 	public static function get_schedule() {
 		global $I2_QUERY;
-		// Get the cache file location
-		$cachedir = i2config_get('cache_dir','/var/cache/iodine/','core');
-		$cachefile = $cachedir . 'bellschedule.cache';
-
-		// Don't let the cache get older than an hour, and update if the day the file was updated is not today
-		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile) > 600) || date('z', filemtime($cachefile)) != date('z') || isset($I2_QUERY['update_schedule'])) {
-			$contents = self::update_schedule();
-			file_put_contents($cachefile, serialize($contents));
-		// do not update cache
-		} else if(isset($I2_QUERY['start_date'])) {
+		if(isset($I2_QUERY['start_date'])) {
 			$contents = self::update_schedule($I2_QUERY['start_date']);
 		} else if(isset($I2_QUERY['day'])) {
 			$date = date('Ymd', self::parse_day_query());
-			$rawical = self::get_saved_schedule($cachedir . 'bellschedule-ical.cache');
-			$contents = self::parse_schedule($rawical, $date);
+			$contents = self::update_schedule($date);
 		} else {
-			$contents = unserialize($contents);
+			$contents = self::update_schedule();
 		}
 		return $contents;
 	}
@@ -479,7 +469,7 @@ class BellSchedule extends Module {
 	* @param string $desc The schedule description
 	* @return string The schedule array index
 	*/
-	public static function parse_schedule_day($desc) {
+	public static function day_to_index($desc) {
 		if(strpos($desc, "Blue")!==false)
 			return 'blue';
 		else if(strpos($desc, "Red")!==false)
@@ -501,15 +491,6 @@ class BellSchedule extends Module {
 	* @return array An array containing schedule description and periods for each day
 	*/
 	public static function get_schedule_week($start=null, $end=null, $mid=null) {
-		$cachedir = i2config_get('cache_dir','/var/cache/iodine/','core');
-		$cachefile = $cachedir.'bellschedule-ical.cache';
-		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile) > 600) || date('z', filemtime($cachefile)) != date('z') || isset($I2_QUERY['update_schedule'])) {
-			$contents = self::update_schedule();
-			file_put_contents($cachefile, serialize($contents));
-		} else {
-			$contents = self::get_saved_schedule($cachedir . 'bellschedule-ical.cache');
-		}
-
 		if(!isset($mid))
 		       	$mid = ((int)date('Ymd'));
 		if(!isset($start))
@@ -518,7 +499,7 @@ class BellSchedule extends Module {
 		       	$end = $mid + 2;
 		$contentsr = [];
 		for($i=$start; $i<($end); $i++) {
-			$contentsr[$i] = self::parse_schedule($contents, $i);
+			$contentsr[$i] = self::update_schedule($i);
 			$contentsr[$i]['day'] = $i;
 		}
 		return $contentsr;
@@ -527,36 +508,18 @@ class BellSchedule extends Module {
 	// Private helper methods
 
 	/**
-	* Get the cached ical file.
-	*
-	* @param string $cachefile The path to the cachefile.
-	* @return string The raw ical file.
-	*/
-	private static function get_saved_schedule($cachefile) {
-		d('Getting saved calendar contents');
-		if(!file_exists($cachefile)) {
-			$fc = file_put_contents($cachefile, self::get_calendar_contents());
-			return $fc;
-		}
-		$fc = file_get_contents($cachefile);
-		return $fc;
-	}
-
-	/**
 	* Get the raw ical file.
 	*
 	* @return string The raw ical file.
 	*/
-	private static function get_calendar_contents() {
-		$cachedir = i2config_get('cache_dir','/var/cache/iodine/','core');
-		$cachefile = $cachedir . 'bellschedule-ical.cache';
-		d('Getting new calendar contents');
-		if($rawical = self::curl_file_get_contents(self::$url)) {
-			file_put_contents($cachefile, $rawical);
-			return $rawical;
-		} else {
-			return FALSE;
+	private static function get_ical() {
+		global $I2_CACHE;
+		$ical = unserialize($I2_CACHE->read(get_class(),'ical'));
+		if($ical === FALSE) {
+			$ical = self::curl_file_get_contents(self::$url);
+			$I2_CACHE->store(get_class(),'ical',serialize($ical));
 		}
+		return $ical;
 	}
 
 	/**
@@ -566,8 +529,17 @@ class BellSchedule extends Module {
 	* @return string The calendar for the specified date.
 	*/
 	private static function update_schedule($day=null) {
-		if($rawical = self::get_calendar_contents()) // Returns false if can't get anything
-			return self::parse_schedule($rawical, $day);
+		global $I2_CACHE;
+		$dateoffset = self::parse_day_query(TRUE);
+		$day = isset($day) ? $day : date('Ymd',strtotime($dateoffset.' days'));
+		if($ical = self::get_ical()) { // Returns false if can't get anything
+			$schedule = unserialize($I2_CACHE->read(get_class(),'schedule_'.$day));
+			if($schedule === FALSE) {
+				$schedule = self::parse_schedule($ical, $day);
+				$I2_CACHE->store(get_class(),'schedule_'.$day,serialize($schedule));
+			}
+			return $schedule;
+		}
 		else
 			return ['description' => 'Error: Could not load schedule', 'schedule' => ''];
 	}
@@ -579,10 +551,8 @@ class BellSchedule extends Module {
 	* @param string The date (defaults to today).
 	* @return string The calendar for the specified date.
 	*/
-	private static function parse_schedule($str, $day=null) {
+	private static function parse_schedule($str, $day) {
 		global $I2_QUERY;
-		$dateoffset = self::parse_day_query(TRUE);
-		$day = isset($day) ? $day : date('Ymd',strtotime($dateoffset.' days'));
 
 		$doy = ((int)date('z', strtotime($day)));
 		if($doy > 168 && $doy < 246) {

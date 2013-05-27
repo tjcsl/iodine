@@ -475,7 +475,7 @@ class Auth {
 		$args = BellSchedule::gen_day_view();
 		$template_args = array_merge($template_args, $args);
 		$schedule = BellSchedule::get_schedule();
-		$template_args['schedday'] = BellSchedule::parse_schedule_day($schedule['description']);
+		$template_args['schedday'] = BellSchedule::day_to_index($schedule['description']);
 		if(strpos($schedule['description'], 'Modified')!==false)
 			$schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
 		$template_args['schedule'] = $schedule;
