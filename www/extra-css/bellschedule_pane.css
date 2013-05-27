@@ -1,7 +1,7 @@
 #schedule_week {
 	display: none;
 }
-#schedule_week.ibox_exp {
+#schedule_week.exp {
 	position: fixed;
 	width: 100%;
 	z-index: 9999;

@@ -8,7 +8,7 @@ schedule_reset = function() {
 	return week_show(0);
 };
 schedule_click = function(day, box, cache) {
-	is_week = $('#subPane').hasClass('exp');
+	is_week = $('#subPane').hasClass('exp') || $('#schedule_week').hasClass('exp');
 	if(is_week) {
 		// get the number of days until next monday
 		if(typeof week_inc == 'undefined') {
@@ -68,7 +68,7 @@ week_show = function(dayoffset) {
 	$sp = $('#schedule_week').parent();
 	if($sp.hasClass('boxcontent')) {
 		h = $sp.css('height');
-		$('#schedule_week').addClass('ibox_exp');
+		$('#schedule_week').addClass('exp');
 		$sp.css('height', h);
 	}
 
@@ -134,7 +134,7 @@ week_hide = function() {
 
 	$sp = $('#schedule_week').parent();
 	if($sp.hasClass('boxcontent')) {
-		$('#schedule_week').removeClass('ibox_exp');
+		$('#schedule_week').removeClass('exp');
 		$sp.css('height', 'auto');
 	}
 	window.location.hash = '';
