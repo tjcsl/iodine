@@ -25,10 +25,7 @@ class Ajax {
 
 		if(get_i2module($module)) {
 			$mod = new $module();
-			if(method_exists($mod,'ajax'))
-				return $mod->ajax();
-			else
-				echo "Error: Attempted to use a module that does not support ajax.";
+			return $mod->ajax();
 		}
 
       /*if($module == "intrabox") {

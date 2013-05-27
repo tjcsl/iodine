@@ -61,6 +61,16 @@ abstract class Module {
 	}
 
 	/**
+	* Returns text to be displayed for ajax.
+	*
+	* @returns boolean FALSE if the module lacks a ajax support.
+	*/
+	function ajax() {
+		return FALSE;
+	}
+
+
+	/**
 	* Returns DTD for the api response.
 	*
 	* @returns boolean TRUE if the module has a dtd, FALSE otherwise.
