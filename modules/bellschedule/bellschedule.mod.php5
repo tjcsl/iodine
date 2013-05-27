@@ -367,9 +367,7 @@ class BellSchedule extends Module {
 
 		if($day == 0) {
 			$args['header'] = "Today's Schedule<br />";
-			if($tomorrow)
-				$args['has_custom_day'] = true;
-			else $args['has_custom_day'] = false;
+			$args['has_custom_day'] = $tomorrow ? true : false;
 		} else if($day == 1 && $tomorrow) {
 			$args['header'] = "Tomorrow's Schedule<br />";
 			$args['has_custom_day'] = false;
@@ -392,12 +390,8 @@ class BellSchedule extends Module {
 	* @param bool $ajax are we using ajax?
 	*/
 	public static function display_week($ajax) {
-		global $I2_QUERY;
 		$c = "<span style='display:none'>::START::</span>";
-		$md = isset($I2_QUERY['day']) ? date('Ymd', self::parse_day_query()) : null;
-		$ws = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : null;
-		$we = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : null;
-		$schedules = self::get_schedule_week($ws, $we, $md);	
+		$schedules = self::get_schedule_week();
 		$c.= "<table class='weeksched'><tr class='h' style='min-height: 40px;max-height: 40px;line-height: 25px'>";
 		foreach($schedules as $day=>$schedule) {
 			$nday = date('l, F j', strtotime($day));
@@ -485,24 +479,19 @@ class BellSchedule extends Module {
 	/**
 	* Get a week view
 	*
-	* @param string $start (Optional) The start of the week
-	* @param string $end (Optional) The end of the week
-	* @param string $mid (Optional) The middle of the week
 	* @return array An array containing schedule description and periods for each day
 	*/
-	public static function get_schedule_week($start=null, $end=null, $mid=null) {
-		if(!isset($mid))
-		       	$mid = ((int)date('Ymd'));
-		if(!isset($start))
-		       	$start = $mid - 2;
-		if(!isset($end))
-		       	$end = $mid + 2;
-		$contentsr = [];
-		for($i=$start; $i<($end); $i++) {
-			$contentsr[$i] = self::update_schedule($i);
-			$contentsr[$i]['day'] = $i;
+	public static function get_schedule_week() {
+		global $I2_QUERY;
+		$mid = isset($I2_QUERY['day']) ? date('Ymd', self::parse_day_query()) : date('Ymd');
+		$start = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : $mid-2;
+		$end = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : $mid+2;
+		$contents = [];
+		for($i=$start; $i<$end; $i++) {
+			$contents[$i] = self::update_schedule($i);
+			$contents[$i]['day'] = $i;
 		}
-		return $contentsr;
+		return $contents;
 	}
 
 	// Private helper methods
