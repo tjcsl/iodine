@@ -156,8 +156,6 @@ day_click = function(day, box, cache) {
 	if(day == 0) {
 		window.location.hash = '';
 	}
-	$sp = $('#schedule_week').parent();
-	if($sp.hasClass('boxcontent')) box = true;
 
 	if(typeof box != 'undefined') {
 		u = u + '&box';
