@@ -13,12 +13,9 @@ class StudentOfTheDay extends Module {
 	}
 
 	public function display_pane($disp) {
-		global $I2_ROOT;
-		$student = $this->user->name;
-		$uidnumber = $this->user->iodineUidNumber;
-		$disp->raw_display("<span style=\"font-weight: bold;font-size: 24px\">The student of the day is....</span>
-			<br /> <span style='font-size: 32px; font-weight: bold'>$student!!!!!</span><br />
-			<img src=\"$I2_ROOT/pictures/$uidnumber\" /><br />To retrieve your prize, send a box of cookies to the Intranet development team.");
+		$args['student'] = $this->user->name;
+		$args['uidnumber'] = $this->user->iodineUidNumber;
+		$disp->disp('studentoftheday.tpl',$args);
 	}
 }
 ?>
