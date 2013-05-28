@@ -73,13 +73,9 @@ class Display {
 	* @param string $module_name The name of the module this Display object applies to.
 	*/
 	public function __construct($module_name='core') {
-		global $I2_FS_ROOT, $I2_LOG;
+		global $I2_FS_ROOT;
 		require_once('smarty/Smarty.class.php');
 		$this->smarty = new Smarty;
-		//$this->smarty->register_prefilter(array(&$this,'prefilter'));
-		//$this->smarty->load_filter('pre','strip');
-		//$this->smarty->register_postfilter(array(&$this,'postfilter'));
-		//$this->smarty->register_outputfilter(array(&$this,'outputfilter'));
 		$this->smarty->left_delimiter = '[<';
 		$this->smarty->right_delimiter = '>]';
 		$this->smarty->setCompileDir(i2config_get('cache_dir', NULL, 'core') . 'smarty/');
@@ -127,7 +123,7 @@ class Display {
 	*					 panel and give processing control to.
 	*/
 	public function display_loop($module) {
-		global $I2_ERR,$I2_USER,$I2_ARGS,$I2_LOG,$I2_SQL;
+		global $I2_ERR, $I2_USER;
 
 		if (self::$display_stopped) {
 			return;
@@ -380,7 +376,7 @@ class Display {
 	public function fetch($template, $args=[], $validate = TRUE) {
 		$this->assign_i2vals();
 		$this->smarty_assign($args);
-		if( (($tpl = self::get_template(strtolower($this->my_module_name).'/'.$template)) === NULL) ) {
+		if(self::get_template(strtolower($this->my_module_name).'/'.$template) === NULL) {
 			if($validate)
 				throw new I2Exception('Invalid template `'.$this->my_module_name.'/'.$template.'` passed to Display');
 		}
@@ -496,34 +492,6 @@ class Display {
 	*/
 	public function close_content_pane() {
 		$this->disp('closemainbox.tpl');
-	}
-
-	/**
-	* Wraps templates in {strip} tags before compilation if debugging is on.
-	*
-	* @param string $source The uncompiled template file.
-	* @param object $smarty The Smarty object.
-	* @return string The source, wrapped in {strip} tags if appropriate.
-	*/
-	public function prefilter($source,&$smarty) {
-		if (!$debug) {
-			return '[<strip>]'.$source.'[</strip>]';
-		}
-		return $source;
-	}
-
-	/**
-	* The postfilter smarty function. Not currently in use.
-	*/
-	public function postfilter($source,&$smarty) {
-		return $source;
-	}
-
-	/**
-	* The outputfilter smarty function. Not currently in use.
-	*/
-	public function outputfilter($output,&$smarty) {
-		return $output;
 	}
 
 	/**

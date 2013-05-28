@@ -131,7 +131,6 @@ class MySQL {
 	* @return resource A raw mysql result resourse.
 	*/
 	function raw_query($query) {
-		global $I2_ERR;
 		d('Running MySQL query: '.$query,7);
 		$r = mysqli_query($this->link, $query);
 		if ($err = mysqli_error($this->link)) {
@@ -203,7 +202,6 @@ class MySQL {
 	* @return Result The results of the query run.
 	*/
 	public function query_arr($query, $args = NULL) {
-		global $I2_ERR,$I2_LOG;
 
 		$argc = $args == NULL ? 0 : count($args);
 		$argv = $args;

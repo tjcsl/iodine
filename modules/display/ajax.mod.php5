@@ -17,7 +17,7 @@ class Ajax {
 	 * function, where $module is I2_ARGS[1].
 	 **/
 	function returnResponse($module) {
-		global $I2_SQL, $I2_ARGS, $I2_LDAP, $I2_DISP;
+		global $I2_ARGS, $I2_LDAP, $I2_DISP;
 
 		// Stop the display of debugging information
 		if(isset($I2_DISP))
