@@ -275,6 +275,7 @@ class MySQL {
 	}
 
 	private function replace_tag($arg, $tag) {
+		global $I2_ERR;
 		switch($tag) {
 			/* 'argument' tags first */
 			

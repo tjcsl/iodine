@@ -26,7 +26,6 @@ class Doc {
          * docid, name, visible, groups, path, type
          */
         public function __get($var) {
-                global $I2_SQL;
                 switch($var) {
                         case 'docid':
                                 return $this->doc_id;
@@ -128,7 +127,7 @@ class Doc {
         * @return array All documents the user can see
         */
         public static function accessible_docs() {
-                global $I2_USER, $I2_SQL;
+                global $I2_USER;
                 $docs = Doc::all_docs();
                 if($I2_USER->is_group_member('admin_all'))
                         return $docs;

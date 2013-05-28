@@ -367,7 +367,7 @@ class Newimport extends Module {
 	* Update student data from a SASI dump file (INTRANET.***) into LDAP
 	*/
 	private function import_student_data($filename) {
-		global $I2_LOG, $I2_LDAP;
+		global $I2_LDAP;
 
 		$ldap = $I2_LDAP;
 
@@ -518,7 +518,7 @@ class Newimport extends Module {
 		//warn("Creating user \"{$usernew['iodineUid']}\"...");
 		$ldap->add($dn,$usernew);
 		$box_order = 1;
-		foreach ($this->boxids as $boxid=>$name) {
+		foreach (array_keys($this->boxids) as $boxid) {
 			$I2_SQL->query('INSERT INTO intrabox_map (uid,boxid,box_order) VALUES(%d,%d,%d)',$usernew['iodineUidNumber'],$boxid,$box_order++);
 		}
 	}
@@ -527,7 +527,7 @@ class Newimport extends Module {
 	* Updates a user's info from the given data
 	*/
 	private function update_user($user,$ldap=NULL) {
-		global $I2_LDAP,$I2_SQL;
+		global $I2_LDAP;
 		if (!$ldap) {
 			$ldap = $I2_LDAP;
 		}

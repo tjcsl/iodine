@@ -8,11 +8,6 @@
 class Docs extends Module {
 
 	/**
-	* The display object to use
-	*/
-	private $display;
-
-	/**
 	* Template for the specified action
 	*/
 	private $template;
@@ -23,15 +18,10 @@ class Docs extends Module {
 	private $template_args = [];
 
 	/**
-	* Declaring some global variables
-	*/
-	private $message;
-
-	/**
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_USER, $I2_ARGS;
+		global $I2_ARGS;
 
 		if (count($I2_ARGS) <= 1) {
 			$I2_ARGS[1] = 'home';
@@ -48,8 +38,8 @@ class Docs extends Module {
 		}
 	}
 
-	function display_pane($display) {
-		$display->disp($this->template, $this->template_args);
+	function display_pane($disp) {
+		$disp->disp($this->template, $this->template_args);
 	}
 
 	function get_name() {
@@ -69,7 +59,7 @@ class Docs extends Module {
 	}
 
 	function view() {
-		global $I2_USER, $I2_ARGS;
+		global $I2_ARGS;
 		$doc = new Doc($I2_ARGS[2]);
 		if($doc->can_see()) {
 			$size=filesize("$doc->path");
@@ -119,7 +109,7 @@ class Docs extends Module {
 	* Upload a document
 	*/
 	function add() {
-		global $I2_USER, $I2_ARGS;
+		global $I2_ARGS;
 		$this->template_args['groups'] = Group::get_all_groups();
 		$allowed_extensions = array('.txt','.rtf','.doc','.docx','.pdf','.jpg');
 		$allowed_types = array('text/plain','application/rtf','application/msword','application/vnd.ms-excel','application/pdf','application/vnd.ms-office','application/octet-stream','image/jpeg');
@@ -138,7 +128,7 @@ class Docs extends Module {
 						$visible = isset($_POST['visible']) && $_POST['visible'] == 'on' ? 1 : 0;
 						$d = Doc::add_doc($name, $path, $visible, $filetype);
 						$_POST['groups'] = array_unique($_POST['groups']);
-						foreach($_POST['groups'] as $key => $id) {
+						foreach($_POST['groups'] as $id) {
 							$g = $_POST['group_gids'][$id];
 							$d->add_group_id($g, array(isset($_POST['view'][$id])?1:0, isset($_POST['edit'][$id])?1:0));
 						}
@@ -170,7 +160,7 @@ class Docs extends Module {
 	* Edit a document
 	*/
 	function edit() {
-		global $I2_USER, $I2_ARGS;
+		global $I2_ARGS;
 		$doc = new Doc($I2_ARGS[2]);
 		
 		$this->template = 'docs_edit.tpl';
@@ -203,7 +193,7 @@ class Docs extends Module {
 	* Delete a document
 	*/
 	function delete() {
-		global $I2_USER, $I2_ARGS, $I2_SQL;
+		global $I2_ARGS, $I2_SQL;
 		if(!isset($I2_ARGS[2]))
 			$this->home();
 		$docid = $I2_ARGS[2];
