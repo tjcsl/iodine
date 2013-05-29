@@ -103,7 +103,7 @@ class StudentDirectory extends Module {
 				$this->template_args['students'] = $students;
 				$this->template_args['im_icons'] = $I2_ROOT . 'www/status/';
 				$this->template_args['aim'] = $aim_sns;
-				return "Students in {$sec->name}, Period {$sec->period}";
+				return "Students in {$sec->name}, Period {$sec->periods}";
 			case 'section':
 				if (isset($I2_ARGS[2])) {
 					$classid = $I2_ARGS[2];
