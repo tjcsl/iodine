@@ -35,7 +35,8 @@ class Auth {
 	*/
 	private $auth_type;
 
-	public $template_args = [];
+	private $template_args = [];
+
 	/**
 	* The Auth class constructor.
 	*
@@ -283,7 +284,7 @@ class Auth {
 		 * @returns bool Whether or not the user has successfully logged in.
 		 */
 		public function login() {
-			global $I2_ROOT, $I2_ARGS, $I2_API, $I2_AJAX, $modauth_loginfailed, $modauth_err, $template_args;
+			global $I2_ROOT, $I2_ARGS, $I2_API, $I2_AJAX, $modauth_loginfailed, $modauth_err;
 
 			// the log function uses this to tell if the login was successful
 			// if login fails, something else will set it
@@ -351,13 +352,13 @@ class Auth {
 
 			self::init_backgrounds();
 			// Show the login box
-			$template_args['failed'] = $modauth_loginfailed;
-			$template_args['uname'] = $uname;
+			$this->template_args['failed'] = $modauth_loginfailed;
+			$this->template_args['uname'] = $uname;
 
 
 			if(isset($modauth_err)) {
 				d($modauth_err, 5);
-				$template_args['err'] = $modauth_err;
+				$this->template_args['err'] = $modauth_err;
 			}
 
 			self::init_schedule();
@@ -373,7 +374,7 @@ class Auth {
 						$str.="<input type='hidden' name='".$post."' value='".$_POST[$post]."' />";
 					}
 			}
-			$template_args['posts']=$str;
+			$this->template_args['posts']=$str;
 
 			$disp = new Display('login');
 
@@ -410,7 +411,7 @@ class Auth {
 			} else if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='ajax' && $I2_ARGS[1]=='bellschedule') {
 				$I2_AJAX->returnResponse($I2_ARGS[1]);
 			} else {
-				$disp->disp('login.tpl', $template_args);
+				$disp->disp('login.tpl', $this->template_args);
 				//$disp->disp('fb.tpl', $template_args);
 				//$disp->disp('windows.tpl', $template_args);
 			}
@@ -419,7 +420,7 @@ class Auth {
 	}
 
 	private function init_backgrounds() {
-		global $I2_QUERY, $I2_FS_ROOT, $template_args;
+		global $I2_QUERY, $I2_FS_ROOT;
 		// try to get a special image for a holiday, etc.
 		$imagearr = self::getSpecialBG();
 		$image = $imagearr[0];
@@ -460,24 +461,25 @@ class Auth {
 			$image = $url_prefix . $images[rand(0,count($images)-1)];
 			d("Using random background image {$image}", 8);
 		}
-		$template_args['bg'] = $image;
-		$template_args['bgjs'] = $imagejs;
+		$this->template_args['bg'] = $image;
+		$this->template_args['bgjs'] = $imagejs;
 
 	}
-	public static function init_schedule() {
-		global $I2_QUERY, $disp, $template_args;
+	public function init_schedule() {
+		global $I2_QUERY;
 		// Week view
 		if(isset($I2_QUERY['week'])) {
-			BellSchedule::display_week($disp);
-			exit();
+			$args = BellSchedule::gen_schedule_week();
+			$this->template_args = array_merge($this->template_args, $args);
+		} else {
+			$args = BellSchedule::gen_day_view();
+			$this->template_args = array_merge($this->template_args, $args);
+			$schedule = BellSchedule::get_schedule();
+			$this->template_args['schedday'] = BellSchedule::day_to_index($schedule['description']);
+			if(strpos($schedule['description'], 'Modified')!==false)
+				$schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
+			$this->template_args['schedule'] = $schedule;
 		}
-		$args = BellSchedule::gen_day_view();
-		$template_args = array_merge($template_args, $args);
-		$schedule = BellSchedule::get_schedule();
-		$template_args['schedday'] = BellSchedule::day_to_index($schedule['description']);
-		if(strpos($schedule['description'], 'Modified')!==false)
-			$schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
-		$template_args['schedule'] = $schedule;
 	}
 	/**
 	* Gets all of the background images that can be used on Iodine.

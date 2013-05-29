@@ -273,7 +273,11 @@ class Logging {
 	* the applicatioan just dies halfway through.
 	*/
 	public function flush_debug_output() {
-		global $I2_DISP,$I2_API,$I2_ARGS;
+		global $I2_DISP, $I2_API, $I2_AJAX, $I2_ARGS;
+
+		// don't show debug output for ajax
+		if($I2_AJAX->ajax)
+			return;
 		
 		if($I2_API->api) {
 			if($I2_API->logging==false)

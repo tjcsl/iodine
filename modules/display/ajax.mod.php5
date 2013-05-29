@@ -11,6 +11,10 @@
  * Contains Ajax support
  */
 class Ajax {
+
+	// is this a ajax request
+	public $ajax = false;
+
 	/**
 	 * If the requested iodine module is ajax, the core will not call the
 	 * display_loop for a module named ajax, but instead will call this
@@ -18,6 +22,8 @@ class Ajax {
 	 **/
 	function returnResponse($module) {
 		global $I2_ARGS, $I2_LDAP, $I2_DISP;
+
+		$this->ajax = true;
 
 		// Stop the display of debugging information
 		if(isset($I2_DISP))

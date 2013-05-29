@@ -224,18 +224,18 @@ class BellSchedule extends Module {
 	function ajax() {
 		global $I2_QUERY, $I2_FS_ROOT;
 		$disp = new Display('bellschedule');
-		//FIXME: week is a HACK
 		if(isset($I2_QUERY['week'])) {
-			echo self::display_week(true);
-			return;
+			$args = self::gen_schedule_week();
+			echo $disp->fetch($I2_FS_ROOT.'templates/bellschedule/week.tpl',$args, FALSE);
+		} else {
+			$template_args = self::gen_day_view();
+			$template_args['ajax'] = TRUE;
+			if(isset($I2_QUERY['box'])) {
+				$template_args['is_intrabox'] = TRUE;
+				$template_args['box'] = "_box";
+			}
+			echo $disp->fetch($I2_FS_ROOT.'templates/bellschedule/schedule.tpl', $template_args, FALSE);
 		}
-		$template_args = self::gen_day_view();
-		$template_args['ajax'] = TRUE;
-		if(isset($I2_QUERY['box'])) {
-			$template_args['is_intrabox'] = TRUE;
-			$template_args['box'] = "_box";
-		}
-		echo $disp->fetch($I2_FS_ROOT.'templates/bellschedule/schedule.tpl', $template_args, FALSE);
 	}
 
 	/**
@@ -310,13 +310,14 @@ class BellSchedule extends Module {
 	*/
 	function display_pane($disp) {
 		global $I2_QUERY;
-		// Week view
-		// FIXME: week is badly broken
+
 		if(isset($I2_QUERY['week'])) {
-			return self::display_week(FALSE);
+			$args = self::gen_schedule_week();
+			$disp->disp('week.tpl',$args);
+		} else {
+			$template_args = self::gen_day_view();
+			$disp->disp('schedule.tpl', $template_args);
 		}
-		$template_args = self::gen_day_view();
-		$disp->disp('schedule.tpl', $template_args);
 	}
 
 	/**
@@ -378,46 +379,12 @@ class BellSchedule extends Module {
 		$args['header'] .= $args['date'];
 		$schedule = self::get_schedule();
 		$args['schedday'] = self::day_to_index($schedule['description']);
+		//FIXME: there has to be a better way to do this.
 		if(strpos($schedule['description'], 'Modified')!==false)
 			$schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
 		$args['schedule'] = $schedule;
 
 		return $args;
-	}
-
-	/**
-	* display a week view
-	* @param bool $ajax are we using ajax?
-	*/
-	public static function display_week($ajax) {
-		$c = "<span style='display:none'>::START::</span>";
-		$schedules = self::get_schedule_week();
-		$c.= "<table class='weeksched'><tr class='h' style='min-height: 40px;max-height: 40px;line-height: 25px'>";
-		foreach($schedules as $day=>$schedule) {
-			$nday = date('l, F j', strtotime($day));
-			$c.= "<td style='font-size: 16px;font-weight: bold'>Schedule for<br />".$nday."</td>";
-		}
-		$c.= "</tr><tr>";
-
-		foreach($schedules as $day=>$schedule) {
-			$nday = date('l, F j', strtotime($day));
-			if(strpos($schedule['description'], 'Modified')!==false)
-				$schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
-			$c.="<td class='desc schedule-".self::day_to_index($schedule['description'])."'>";
-			$c.=$schedule['description']."</td>";
-		}
-		$c.= "</tr><tr>";
-		foreach($schedules as $day=>$schedule) {
-			$c.= "<td>".$schedule['schedule']."</td>";
-		}
-		$c.= "</tr></table>";
-		$c.="<p><span style='max-width: 500px'>Schedules are subject to change.</span></p>";
-		$c.="<span style='display:none'>::END::</span>";
-		if($ajax)
-			return $c;
-		$disp = new Display('bellschedule');
-		$disp->raw_display($c);
-		return FALSE;
 	}
 
 	/**
@@ -481,7 +448,7 @@ class BellSchedule extends Module {
 	*
 	* @return array An array containing schedule description and periods for each day
 	*/
-	public static function get_schedule_week() {
+	public static function gen_schedule_week() {
 		global $I2_QUERY;
 		$mid = isset($I2_QUERY['day']) ? date('Ymd', self::parse_day_query()) : date('Ymd');
 		$start = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : $mid-2;
@@ -490,8 +457,13 @@ class BellSchedule extends Module {
 		for($i=$start; $i<$end; $i++) {
 			$contents[$i] = self::update_schedule($i);
 			$contents[$i]['day'] = $i;
+			$contents[$i]['index'] = self::day_to_index($contents[$i]['description']);
+			$contents[$i]['dayformat'] = date('l, F j', strtotime($i));
+			//FIXME: there has to be a better way to do this.
+			if(strpos($contents[$i]['description'], 'Modified')!==false)
+				$contents[$i]['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $contents[$i]['description']);
 		}
-		return $contents;
+		return ['schedules' => $contents];
 	}
 
 	// Private helper methods

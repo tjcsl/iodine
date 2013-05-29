@@ -15,7 +15,7 @@
 		[</if>]
 	[</if>]
 	[<if !$is_intrabox>]
-		<button id="week_click" onclick="week_click([<$day>]);">Week</button>
+		<button id="week_click" onclick="week_click('0');">Week</button>
 		<button id="week_thiswk" onclick="schedule_reset()" style='display: none'>This Week</button>
 	[</if>]
 	<button id="week_f[<$box>]" onclick="schedule_click[<$box>]('[<$day+1>]')">→</button>
@@ -27,7 +27,7 @@
 	<div style='height: 160px;float: center'>[<$schedule.schedule>]</div>
 
 </div>
-<div id="schedule_week">
+<div id="schedule_week[<$box>]">
 	<p>One moment please..</p>
 	<p>If the page doesn't load, <a href='http://www.calendarwiz.com/calendars/calendar.php?crd=tjhsstcalendar'>click to view the main TJ calendar.</a></p>
 </div>
