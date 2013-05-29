@@ -141,7 +141,7 @@ class Filecenter extends Module {
 			if ($file->is_directory()) {
 				$this->send_zipped_dir($this->directory);
 			} else {
-				if ($I2_QUERY['download'] == 'zip') {
+				if (isset($I2_QUERY['download']) && $I2_QUERY['download'] == 'zip') {
 					$this->send_zipped_file($this->directory);
 				} else {
 					$this->file_header($file->get_name(), $file->get_size());
