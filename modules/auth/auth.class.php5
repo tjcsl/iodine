@@ -37,6 +37,9 @@ class Auth {
 
 	private $template_args = [];
 
+	private $modauth_err;
+	private $modauth_loginfailed;
+
 	/**
 	* The Auth class constructor.
 	*
@@ -235,7 +238,14 @@ class Auth {
 		 * @return bool	TRUE, FALSE otherwise.
 		 */
 		public function check_user($user, $password) {
-			global $modauth_loginfailed, $modauth_err;
+
+			// make sure the user exists in ldap not just kerberos.
+			$ldap = LDAP::get_generic_bind();
+			if ($ldap->search_one(LDAP::get_user_dn(), "iodineUid=$user", 'iodineUidNumber')->fetch_single_value() == NULL) {
+				$this->modauth_err = "Your account does not exist in LDAP. If you are a incoming freshman, you will be able to log in to Intranet at the start of the school year.";
+				$this->modauth_loginfailed = 1;
+				return FALSE;
+			}
 
 			// The admin should be using the master password and approved above
 			// If it gets to here, their login fails and we don't want kerberos even trying
@@ -243,20 +253,11 @@ class Auth {
 				return self::validate($user,$password,['master']);
 			}
 
-			// make sure the user exists in ldap not just kerberos.
-			$ldap = LDAP::get_generic_bind();
-			if ($ldap->search_one(LDAP::get_user_dn(), "iodineUid=$user", 'iodineUidNumber')->fetch_single_value() == NULL) {
-				$modauth_err = "Your account does not exist in LDAP. If you are a incoming freshman, you will be able to log in to Intranet at the start of the school year.";
-				$modauth_loginfailed = 1;
-				return FALSE;
-			}
-
-
 			if(self::validate($user,$password)) {
 				return TRUE;
 			}
 
-			$modauth_loginfailed = 1;
+			$this->modauth_loginfailed = 1;
 			return FALSE;
 		}
 
@@ -284,11 +285,11 @@ class Auth {
 		 * @returns bool Whether or not the user has successfully logged in.
 		 */
 		public function login() {
-			global $I2_ROOT, $I2_ARGS, $I2_API, $I2_AJAX, $modauth_loginfailed, $modauth_err;
+			global $I2_ROOT, $I2_ARGS, $I2_API, $I2_AJAX;
 
 			// the log function uses this to tell if the login was successful
 			// if login fails, something else will set it
-			$modauth_loginfailed = FALSE;
+			$this->modauth_loginfailed = FALSE;
 
 			if(!isset($_SESSION['logout_funcs']) || !is_array($_SESSION['logout_funcs'])) {
 				$_SESSION['logout_funcs'] = [];
@@ -335,9 +336,9 @@ class Auth {
 						$I2_API->logging = false;
 						$I2_API->startElement('auth');
 						$I2_API->startElement('error');
-						$I2_API->writeElement('success',$modauth_loginfailed==1?'false':'true');
-						$I2_API->writeElement('loginerror',$modauth_err);
-						$I2_API->writeElement('id',$modauth_loginfailed);
+						$I2_API->writeElement('success',$this->modauth_loginfailed==1?'false':'true');
+						$I2_API->writeElement('loginerror',$this->modauth_err);
+						$I2_API->writeElement('id',$this->modauth_loginfailed);
 						$I2_API->writeElement('message','Login failed.');
 						$I2_API->writeElement('login_base_url',$I2_ROOT);
 						$I2_API->endElement();
@@ -346,19 +347,19 @@ class Auth {
 					}
 				}
 			} else {
-				$modauth_loginfailed = FALSE;
+				$this->modauth_loginfailed = FALSE;
 				$uname='';
 			}
 
 			self::init_backgrounds();
 			// Show the login box
-			$this->template_args['failed'] = $modauth_loginfailed;
+			$this->template_args['failed'] = $this->modauth_loginfailed;
 			$this->template_args['uname'] = $uname;
 
 
-			if(isset($modauth_err)) {
-				d($modauth_err, 5);
-				$this->template_args['err'] = $modauth_err;
+			if(isset($this->modauth_err)) {
+				d($this->modauth_err, 5);
+				$this->template_args['err'] = $this->modauth_err;
 			}
 
 			self::init_schedule();
