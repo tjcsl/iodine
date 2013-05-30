@@ -65,11 +65,7 @@ class GroupSQL extends Group {
 		}
 
 		if(self::$rules_map === NULL)
-			self::$rules_map = unserialize($I2_CACHE->read($this,'rules_map'));
-		if(self::$rules_map === FALSE) {
 			self::$rules_map = $I2_SQL->query('SELECT dbtype, query, gid FROM groups_dynamic')->fetch_all_arrays_keyed_list('gid',Result::ASSOC);
-			$I2_CACHE->store($this,'rules_map',serialize(self::$rules_map));
-		}
 
 		if(is_numeric($group)) {
 			// Passed GID, check existence
