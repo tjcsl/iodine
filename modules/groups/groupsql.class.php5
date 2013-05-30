@@ -115,7 +115,7 @@ class GroupSQL extends Group {
 			case 'description':
 				return $I2_SQL->query('SELECT description FROM groups_name WHERE gid=%d', $this->__get('gid'))->fetch_single_value();
 			case 'members':
-				$this->info[$var] = array_unique(array_merge($this->get_static_members(), $this->get_dynamic_members()));
+				$this->info[$var] = $this->get_static_members();
 				break;
 			case 'members_obj':
 				return User::id_to_user($this->__get('members'));
@@ -123,6 +123,11 @@ class GroupSQL extends Group {
 				$members = $this->__get('members_obj');
 				usort($members,array($this,'sort_by_name'));
 				return $members;
+			case 'members_obj_sorted_dyn':
+				$members = $this->get_dynamic_members();
+				$members_obj = User::id_to_user($members);
+				usort($members_obj,array($this,'sort_by_name'));
+				return $members_obj;
 		}
 
 		if(!isset($this->info[$var])) {
@@ -159,6 +164,17 @@ class GroupSQL extends Group {
 				break;
 			case 'MYSQL':
 				$rulemembers = $I2_SQL->query($row['query'])->fetch_col(0);
+				$newmembers = array_diff($rulemembers, $members);
+				$members = array_merge($members, $newmembers);
+				break;
+			case 'PHP':
+				$users = $I2_LDAP->search(LDAP::get_user_dn(),'iodineUid=*')->fetch_col('iodineUidNumber');
+				$rulemembers = [];
+				foreach($users as $uid) {
+					$user = new User($uid);
+					if(eval($row['query']))
+						$rulemembers[] = $uid;
+				}
 				$newmembers = array_diff($rulemembers, $members);
 				$members = array_merge($members, $newmembers);
 				break;
@@ -712,7 +728,7 @@ class GroupSQL extends Group {
 			case 'PHP':
 				return eval($query);
 			case 'LDAP':
-				$res = $I2_LDAP->search(LDAP::get_user_dn($user->uid),$query,array('iodineUidNumber'));
+				$res = $I2_LDAP->search(LDAP::get_user_dn($user->uid),$query,'iodineUidNumber');
 				break;
 			case 'MYSQL':
 				$res = $I2_SQL->query($query);

@@ -357,7 +357,8 @@ class Groups extends Module {
 		}
 
 		$this->template_args['members'] = self::get_memberinfo($group);
-		$this->template_args['dynamic_members'] = self::get_dynamic_members($group);
+		$this->template_args['dynamic_member_rules'] = self::get_dynamic_member_rules($group);
+		$this->template_args['dynamic_members'] = self::get_memberinfo($group,TRUE);
 		$this->template_args['perm_users'] = self::get_perm_users($group);
 		$this->template_args['perm_groups'] = self::get_perm_groups($group);
 		$this->template = 'groups_group.tpl';
@@ -367,10 +368,9 @@ class Groups extends Module {
 	/**
 	 * Private helper function
 	 */
-	private static function get_memberinfo(Group $group) {
+	private static function get_memberinfo(Group $group, $dynamic = FALSE) {
 		$group_members = [];
-		
-		$users = $group->members_obj_sorted;
+		$users = $dynamic ? $group->members_obj_sorted_dyn : $group->members_obj_sorted;
 		foreach($users as $person_user) {
 			$person_array = [];
 
@@ -386,7 +386,7 @@ class Groups extends Module {
 	/**
 	* Helper function to get info about dynamic member rules
 	*/
-	private static function get_dynamic_members(Group $group) {
+	private static function get_dynamic_member_rules(Group $group) {
 		$ret = $group->list_dynamic_rules();
 		foreach($ret as &$rule) {
 			if($rule['type'] == 'JOIN') {

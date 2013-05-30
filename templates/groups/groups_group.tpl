@@ -103,7 +103,7 @@ Group: <strong>[<$group>]</strong><br />
 </table>
 [</if>]
 <h3>Membership</h3>
-[<if count($dynamic_members) > 0>]
+[<if count($dynamic_member_rules) > 0>]
 <p>This group has the following dynamic membership rules:</p>
 <table>
  <thead>
@@ -112,7 +112,7 @@ Group: <strong>[<$group>]</strong><br />
 [<if $global_admin>]  <th>Delete</th>[</if>]
  </thead>
  <tbody>
- [<foreach from=$dynamic_members item=member>]
+ [<foreach from=$dynamic_member_rules item=member>]
   <tr class="[<cycle values="c1,c2">]">
    <td>[<$member.type>]</td>
    [<if $member.type == 'JOIN'>]
@@ -150,6 +150,27 @@ Group: <strong>[<$group>]</strong><br />
 </table>
 [<else>]
 <p>This group has no static members.</p>
+[</if>]
+[<if count($dynamic_members) > 0>]
+<p>This group has the following dynamic members:</p>
+<table style="width: 30em;">
+ <thead>
+  <th>User</th>
+  [<if $can_remove>]<th>Remove</th>[</if>]
+ </thead>
+ <tbody>
+[<foreach from=$dynamic_members item=person>]
+  <tr class="[<cycle values="c1,c2">]">
+   <td style="text-align: center;"><a href="[<$I2_ROOT>]studentdirectory/info/[<$person.uid>]">[<$person.name>]</a></td>
+   [<if $can_remove>]
+    <td style="text-align: center;"><a href="[<$I2_ROOT>]groups/remove/[<$person.uid>]/[<$gid>]">[remove this person from this group]</a></td>
+   [</if>]
+  </tr>
+[</foreach>]
+ </tbody>
+</table>
+[<else>]
+<p>This group has no dynamic members.</p>
 [</if>]
 <h3>Special Properties</h3>
 <p>This group has the following filecenter bookmarks:</p>
