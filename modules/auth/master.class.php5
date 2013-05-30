@@ -27,7 +27,7 @@ class Master implements AuthType {
 				d("Login with master password failed. Check if LDAP and authuser are configured correctly.", 1);
 				return FALSE;
 			}
-			if ($ldap->search_one(LDAP::get_user_dn(), "iodineUid=$user", array('iodineUidNumber'))->fetch_single_value() == NULL) {
+			if ($ldap->search_one(LDAP::get_user_dn(), "iodineUid=$user", 'iodineUidNumber')->fetch_single_value() == NULL) {
 				d("You can't log in as someone who doesn't exist.", 1);
 				return FALSE;
 			}

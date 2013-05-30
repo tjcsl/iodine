@@ -240,17 +240,17 @@ class Auth {
 			// The admin should be using the master password and approved above
 			// If it gets to here, their login fails and we don't want kerberos even trying
 			if ($user == 'admin') {
-				return self::validate($user,$password,array('master'));
+				return self::validate($user,$password,['master']);
 			}
-			// Another temporary "hack"; this will be actually fixed
-			// soon by not logging in when an account doesn't exist in LDAP
 
-			// Also, to those reading this in September 2013: REMOVE THIS
-			if (substr($user,0,4) == '2017') {
-				$modauth_err = "Your account is not ready yet. Incoming freshman will be able to log in to Intranet at the start of the school year.";
+			// make sure the user exists in ldap not just kerberos.
+			$ldap = LDAP::get_generic_bind();
+			if ($ldap->search_one(LDAP::get_user_dn(), "iodineUid=$user", 'iodineUidNumber')->fetch_single_value() == NULL) {
+				$modauth_err = "Your account does not exist in LDAP. If you are a incoming freshman, you will be able to log in to Intranet at the start of the school year.";
 				$modauth_loginfailed = 1;
 				return FALSE;
 			}
+
 
 			if(self::validate($user,$password)) {
 				return TRUE;
