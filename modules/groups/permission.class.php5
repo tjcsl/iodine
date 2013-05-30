@@ -120,7 +120,6 @@ class Permission {
 
 		$ret = [];
 		foreach (self::$pid_map as $name=>$pid) {
-			d($pid);
 			$ret[] = self::getPermission($pid);
 		}
 		return $ret;
