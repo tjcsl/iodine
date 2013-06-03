@@ -5,8 +5,8 @@ import os
 import sys
 
 if not os.path.exists("config.ini.php5"):
-   sys.stderr.write("This program must be run from the root directory of iodine.\n")
-   sys.exit(1)
+    sys.stderr.write("This program must be run from the root directory of iodine.\n")
+    sys.exit(1)
 
 links_file = open('templates/info/links.tpl', 'w', encoding='UTF-8')
 proxy_file = open('www/proxy.pac', 'w')
@@ -15,43 +15,43 @@ page = urlopen("http://www.tjhsst.edu/curriculum/library/wordpress/databases")
 soup = BeautifulSoup(page)
 domains = []
 for link in soup('a'):
-   if link.span:
-      href = link.get('href')
-      if href == None or href.count("http") == 0 or href.count("fcps.edu") > 0 or href.count("tjhsst.edu") > 0 or href.count("co.fairfax.va.us") > 0:
-         continue
-      href = ' '.join(href.split())
-      href = str.replace(href, '  ', ' ')
-      href = str.replace(href, '  ', ' ')
-      href = href.lower()
-      contents = ""
-      for i in range(0, len(link.contents)):
-         contents += " " + ''.join(link.contents[i])
-      contents = ' '.join(contents.split())
-      contents = str.replace(contents, '&nbsp;', ' ')
-      contents = str.replace(contents, '  ', ' ')
-      contents = str.replace(contents, '  ', ' ')
-      contents = str.replace(contents, '  ', ' ')
-      if href.count(".eb.com") > 0:
-         contents = "Britannica's Online Reference - " + contents
-      links_file.write("<li><a href=\"" + href + "\">"+contents+"</a></li>\n")
-      domains.append(href.split("/")[2])
-   else:
-      href = link.get('href')
-      if href == None or href.count("http") == 0 or href.count("fcps.edu") > 0 or href.count("tjhsst.edu") > 0 or href.count("co.fairfax.va.us") > 0:
-         continue
-      href = ' '.join(href.split())
-      href = str.replace(href, '  ', ' ')
-      href = str.replace(href, '  ', ' ')
-      href = href.lower()
-      contents = ''.join(str(x) for x in link.contents)
-      contents = ' '.join(contents.split())
-      contents = str.replace(contents, '&nbsp;', ' ')
-      contents = str.replace(contents, '  ', ' ')
-      contents = str.replace(contents, '  ', ' ')
-      if href.count(".eb.com") > 0:
-         contents = "Britannica's Online Reference - " + contents
-      links_file.write("<li><a href=\"" + href + "\">"+contents+"</a></li>\n")
-      domains.append(href.split("/")[2])
+    if link.span:
+        href = link.get('href')
+        if href is None or href.count("http") == 0 or href.count("fcps.edu") > 0 or href.count("tjhsst.edu") > 0 or href.count("co.fairfax.va.us") > 0:
+            continue
+        href = ' '.join(href.split())
+        href = str.replace(href, '  ', ' ')
+        href = str.replace(href, '  ', ' ')
+        href = href.lower()
+        contents = ""
+        for i in range(0, len(link.contents)):
+            contents += " " + ''.join(link.contents[i])
+        contents = ' '.join(contents.split())
+        contents = str.replace(contents, '&nbsp;', ' ')
+        contents = str.replace(contents, '  ', ' ')
+        contents = str.replace(contents, '  ', ' ')
+        contents = str.replace(contents, '  ', ' ')
+        if href.count(".eb.com") > 0:
+            contents = "Britannica's Online Reference - " + contents
+        links_file.write("<li><a href=\"" + href + "\">"+contents+"</a></li>\n")
+        domains.append(href.split("/")[2])
+    else:
+        href = link.get('href')
+        if href is None or href.count("http") == 0 or href.count("fcps.edu") > 0 or href.count("tjhsst.edu") > 0 or href.count("co.fairfax.va.us") > 0:
+            continue
+        href = ' '.join(href.split())
+        href = str.replace(href, '  ', ' ')
+        href = str.replace(href, '  ', ' ')
+        href = href.lower()
+        contents = ''.join(str(x) for x in link.contents)
+        contents = ' '.join(contents.split())
+        contents = str.replace(contents, '&nbsp;', ' ')
+        contents = str.replace(contents, '  ', ' ')
+        contents = str.replace(contents, '  ', ' ')
+        if href.count(".eb.com") > 0:
+            contents = "Britannica's Online Reference - " + contents
+        links_file.write("<li><a href=\"" + href + "\">"+contents+"</a></li>\n")
+        domains.append(href.split("/")[2])
 
 proxy_file.write("""/***********************************************************
 ** TJHSST Proxy Auto-Configuration Script                 **
@@ -66,11 +66,11 @@ function FindProxyForURL(url, host)
 {
 \tif (\n""")
 for i in range(0, len(domains)):
-   proxy_file.write("\t\tdnsDomainIs(host, \"" + domains[i] + "\")")
-   if i != len(domains) - 1:
-      proxy_file.write(" ||\n")
-   else:
-      proxy_file.write("\n")
+    proxy_file.write("\t\tdnsDomainIs(host, \"" + domains[i] + "\")")
+    if i != len(domains) - 1:
+        proxy_file.write(" ||\n")
+    else:
+        proxy_file.write("\n")
 proxy_file.write("""
 \t)
 \t\t\treturn "PROXY local.border.tjhsst.edu:8080";
