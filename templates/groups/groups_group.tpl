@@ -153,18 +153,14 @@ Group: <strong>[<$group>]</strong><br />
 [</if>]
 [<if count($dynamic_members) > 0>]
 <p>This group has the following dynamic members:</p>
-<table style="width: 30em;">
+<table style="width: 15em;">
  <thead>
   <th>User</th>
-  [<if $can_remove>]<th>Remove</th>[</if>]
  </thead>
  <tbody>
 [<foreach from=$dynamic_members item=person>]
   <tr class="[<cycle values="c1,c2">]">
    <td style="text-align: center;"><a href="[<$I2_ROOT>]studentdirectory/info/[<$person.uid>]">[<$person.name>]</a></td>
-   [<if $can_remove>]
-    <td style="text-align: center;"><a href="[<$I2_ROOT>]groups/remove/[<$person.uid>]/[<$gid>]">[remove this person from this group]</a></td>
-   [</if>]
   </tr>
 [</foreach>]
  </tbody>
