@@ -112,7 +112,7 @@ class Poll {
 	public static function add_poll($name, $intro, $begin, $end, $visible) {
 		global $I2_SQL, $I2_CACHE;
 
-		$I2_CACHE->delete(get_class(),'pollcache');
+		$I2_CACHE->remove(get_class(),'pollcache');
 		$pid = $I2_SQL->query('INSERT INTO polls SET name=%s, '.
 			'introduction=%s, startdt=%s, enddt=%s, visible=%d',
 			$name, $intro, $begin, $end, $visible)->get_insert_id();
@@ -132,7 +132,7 @@ class Poll {
 	public function edit_poll($name, $intro, $begin, $end, $visible) {
 		global $I2_SQL, $I2_CACHE;
 
-		$I2_CACHE->delete(get_class(),'pollcache');
+		$I2_CACHE->remove(get_class(),'pollcache');
 		$I2_SQL->query('UPDATE polls SET name=%s, introduction=%s,'.
 			'startdt=%s, enddt=%s, visible=%d WHERE pid=%d',
 			$name, $intro, $begin, $end, $visible, $this->poll_id);
@@ -151,8 +151,8 @@ class Poll {
 	public static function delete_poll($pid) {
 		global $I2_SQL, $I2_CACHE;
 
-		$I2_CACHE->delete(get_class(),'pollcache');
-		$I2_CACHE->delete(get_class(),'permissionscache');
+		$I2_CACHE->remove(get_class(),'pollcache');
+		$I2_CACHE->remove(get_class(),'permissionscache');
 
 		$I2_SQL->query('DELETE FROM polls WHERE pid=%d', $pid);
 		$I2_SQL->query('DELETE FROM poll_questions WHERE pid=%d', $pid);
@@ -297,7 +297,7 @@ class Poll {
 		global $I2_SQL, $I2_CACHE;
 
 		if ($gid != -1) {
-			$I2_CACHE->delete(get_class(),'permissionscache');
+			$I2_CACHE->remove(get_class(),'permissionscache');
 			$I2_SQL->query('INSERT INTO poll_permissions SET pid=%d, '.
 				'gid=%d, vote=%d, modify=%d, results=%d ',
 				$this->poll_id,$gid, $perm[0], $perm[1], $perm[2]);
@@ -318,7 +318,7 @@ class Poll {
 	public function edit_group_id($gid, $perm) {
 		global $I2_SQL, $I2_CACHE;
 
-		$I2_CACHE->delete(get_class(),'permissionscache');
+		$I2_CACHE->remove(get_class(),'permissionscache');
 		$I2_SQL->query('UPDATE poll_permissions SET vote=%d, modify=%d'.
 		       ', results=%d WHERE pid=%d AND gid=%d',
 			$perm[0], $perm[1], $perm[2], $this->poll_id, $gid);
@@ -333,7 +333,7 @@ class Poll {
 	public function remove_group_id($gid) {
 		global $I2_SQL, $I2_CACHE;
 
-		$I2_CACHE->delete(get_class(),'permissionscache');
+		$I2_CACHE->remove(get_class(),'permissionscache');
 		$I2_SQL->query('DELETE FROM poll_permissions WHERE pid=%d AND '.
 		       'gid=%d',$this->poll_id,$gid);
 		unset($this->gs[$gid]);
