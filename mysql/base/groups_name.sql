@@ -19,5 +19,6 @@ INSERT INTO groups_name (name,description) VALUES('admin_testing','Testing admin
 INSERT INTO groups_name (name,description) VALUES('admin_aphorisms','Aphorism administrators');
 INSERT INTO groups_name (name,description) VALUES('admin_calendar','Calendar administrators');
 INSERT INTO groups_name (name,description) VALUES('admin_podcasts','Podcast administrators');
+INSERT INTO groups_name (name,description) VALUES('admin_docs','Docs administrators');
 /* misc. necessary groups */
 INSERT INTO groups_name (name,description) VALUES('lostnfound_blacklist','People blacklisted from Lost-n-Found');

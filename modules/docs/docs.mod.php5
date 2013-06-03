@@ -53,7 +53,7 @@ class Docs extends Module {
 		global $I2_USER;
 
 		$validdocs = Doc::accessible_docs();
-		$this->template_args['is_admin'] = $I2_USER->is_group_member('admin_all');
+		$this->template_args['is_admin'] = $I2_USER->is_group_member('admin_docs');
 		$this->template_args['docs'] = $validdocs;
 		$this->template = 'docs_pane.tpl';
 	}
