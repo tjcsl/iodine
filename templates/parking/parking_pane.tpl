@@ -2,7 +2,7 @@
 
 Parking applicants,<br /><br />
 
-<p>For the 2013-2014 school year, an unknown number of parking spaces will be available for student parking. The TJHSST campus will be going through many changes as we start and undergo renovation. Due to changes during the summer/fall of 2013 on1y <b>SENIORS</b> will be allowed to park on campus with mentorship students being given the highest priority.</p>
+<p>For the 2013-2014 school year, an unknown number of parking spaces will be available for student parking. The TJHSST campus will be going through many changes as we start and undergo renovation. Due to changes during the summer/fall of 2013 only <b>SENIORS</b> will be allowed to park on campus with mentorship students being given the highest priority.</p>
 
 <p>
 Complete the following online application no
