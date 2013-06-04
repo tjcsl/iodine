@@ -108,7 +108,6 @@ week_show = function(dayoffset) {
 
 	u+= '&start='+(d);
 	u+= '&end='+(d+5);
-	alert('Fetching '+u);
 	if(typeof window.cached_req[u] == 'undefined') {
 		$.get(u, {}, function(d) {
 			d = week_stripjs(d);
