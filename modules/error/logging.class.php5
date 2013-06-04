@@ -163,7 +163,7 @@ class Logging {
 		if($I2_API->api && $I2_API->backtrace==false)
 			$this->error_buf .= $msg;
 		else
-			$this->error_buf .= "\r\n<p>$msg</p>";
+			$this->error_buf .= nl2br("\r\n<p>$msg</p>");
 	}
 	
 	/**
