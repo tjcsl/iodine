@@ -54,8 +54,8 @@ class EighthSponsor {
 		global $I2_SQL;
 		$conflicts = [];
 		$sponsorstorooms = [];
-		$res = $I2_SQL->query('SELECT rooms,sponsors FROM eighth_block_map WHERE bid=%d',$blockid);
-		while ($row = $res->fetch_array(Result::ASSOC)) {
+		$res = $I2_SQL->query('SELECT rooms,sponsors FROM eighth_block_map WHERE bid=%d',$blockid)->fetch_all_arrays(Result::ASSOC);
+		foreach ($res as $row) {
 			$sponsors = explode(',',$row['sponsors']);
 			$rooms = explode(',',$row['rooms']);
 			foreach ($sponsors as $sponsorid) {
@@ -86,9 +86,11 @@ class EighthSponsor {
 						$sponsorotherrooms[] = $checkroom;
 					}
 				}
-				$sponsor = new EighthSponsor($sponsorid);
-				//d(print_r($sponsor->name,1),1);
-				$ret[$room][] = array($sponsorid => array('sponsor'=>$sponsor,'rooms'=>$sponsorotherrooms));
+				if(is_numeric($sponsorid)) {
+					$sponsor = new EighthSponsor($sponsorid);
+					//d(print_r($sponsor->name,1),1);
+					$ret[$room][] = [$sponsorid => ['sponsor'=>$sponsor,'rooms'=>$sponsorotherrooms]];
+				}
 			}
 		}
 		return $ret;
