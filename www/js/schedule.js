@@ -63,7 +63,7 @@ function getMonday(d) {
 	return new Date(d.setDate(d.getDate() + offset));
 }
 week_show = function(dayoffset) {
-
+	running_week = true;
 
 	$sp = $('#schedule_week').parent();
 	if($sp.hasClass('boxcontent')) {
@@ -86,15 +86,17 @@ week_show = function(dayoffset) {
 	$('#week_today').hide();
 
 	var daygetvar = "";
-	if(typeof dayoffset == 'undefined') dayoffset = 0;
-
-	if (window.location.search.indexOf('day=')!==-1) {
-		dayoffset = parseInt(window.location.search.split('day=')[1], 10);
+	if(typeof dayoffset == 'undefined') {
+		if (window.location.search.indexOf('day=')!==-1) {
+			dayoffset = parseInt(window.location.search.split('day=')[1], 10);
+		} else {
+			dayoffset = 0;
+		}
 	}
 	daygetvar = "&day=" + dayoffset;
 	window.location.hash = '#offset=' + dayoffset;
 	m = new Date();
-	m.setDate(m.getDate() + dayoffset);
+	m.setDate(m.getDate() + parseInt(dayoffset));
 	m = getMonday(m);
 	dy = m.getFullYear();
 	dm = m.getMonth()+1;
@@ -106,12 +108,14 @@ week_show = function(dayoffset) {
 
 	u+= '&start='+(d);
 	u+= '&end='+(d+5);
+	alert('Fetching '+u);
 	if(typeof window.cached_req[u] == 'undefined') {
 		$.get(u, {}, function(d) {
 			d = week_stripjs(d);
 			window.getd = d;
 			window.cached_req[u] = d;
 			week_showget(d, u);
+			running_week = false;
 		}, 'text');
 	} else {
 		week_showget(window.cached_req[u], u);
@@ -192,12 +196,13 @@ day_preload = function() {
 };
 
 day_parsehash = function() {
+	if(typeof(running_week) !== 'undefined' && running_week) return;
 	h = window.location.hash.replace(/#/, '');
 	if(h.indexOf('day=') !== -1) {
 		day_click(h.split('day=')[1]);
 	} else if(h.indexOf('offset=') !== -1) {
-		week_click(0);
-		schedule_click(h.split('offset=')[1]);
+		// week_click(0);
+		week_click(parseInt(h.split('offset=')[1]));
 	}
 };
 
