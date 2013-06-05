@@ -51,7 +51,7 @@ cn: Admin
 sn: Admin
 iodineUidNumber: 9998
 style: default
-startPage: dataimport
+startPage: newimport
 header: FALSE
 chrome: FALSE
 

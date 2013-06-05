@@ -53,7 +53,7 @@ class EighthSchedule {
 			$comment = '';
 		}
 		/*
-		** Warning: adding a check for $aid validity will break dataimport.
+		** Warning: adding a check for $aid validity will break newimport.
 		*/
 		$old = $I2_SQL->query('SELECT * FROM eighth_block_map WHERE activityid=%d and bid=%d',$activityid,$blockid)->fetch_array(Result::ASSOC);
 		
