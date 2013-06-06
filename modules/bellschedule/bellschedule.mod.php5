@@ -194,23 +194,23 @@ class BellSchedule extends Module {
 		],
 		43 => [
 			'description' => 'Final Exams 5 and 7',
-			'schedule' => 'TBD'
+			'schedule' => 'Period 5: 8:30 - 10:30<br />Break: 10:30 - 10:50<br />Period 7: 10:50 - 12:50'
 		],
 		44 => [
 			'description' => 'Final Exams 2 and 4',
-			'schedule' => 'TBD'
+			'schedule' => 'Period 2: 8:30 - 10:30<br />Break: 10:30 - 10:50<br />Period 4: 10:50 - 12:50'
 		],
 		45 => [
 			'description' => 'Final Exams 1 and 3',
-			'schedule' => 'TBD'
+			'schedule' => 'Period 1: 8:30 - 10:30<br />Break: 10:30 - 10:50<br />Period 3: 10:50 - 12:50'
 		],
 		48 => [
 			'description' => 'Final Exam 6 and Makeups',
-			'schedule' => 'TBD'
+			'schedule' => 'Period 6: 8:30 - 10:30<br />Break: 10:30 - 10:50<br />Makeups: 10:50 - 12:50'
 		],
 		49 => [
 			'description' => 'Last Day of School',
-			'schedule' => 'TBD'
+			'schedule' => 'Last Day of School: 8:30 - 12:50<br />Dismissal: 12:50'
 		]
 	];
 
