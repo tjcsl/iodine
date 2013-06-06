@@ -65,7 +65,7 @@ class Nags extends Module {
 		}
 		if ($visible) {
 			// A nag is visible but the site the user wants is not allowed
-			redirect('nags');
+			//redirect('nags');
 		}
 		return FALSE;
 	}

@@ -153,13 +153,8 @@ class IntraBox {
 			self::$display = new Display('Intrabox');
 		}
 		
-		$openclass = null;
-
-		if ($I2_USER->header=='TRUE' && !$nags) {
-			$openclass = 'boxes';
-		} else {
-			$openclass = 'boxes_noheader';
-		}
+		$openclass = 'boxes';
+		
 
 		// Set the style if it is no already set - required for nags
 		Display::style_set();

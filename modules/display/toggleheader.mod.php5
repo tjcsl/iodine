@@ -23,12 +23,7 @@ class toggleheader extends Module {
 	function init_pane() {
 		global $I2_ARGS,$I2_USER;
 		$dest = null;
-		d("Args:".print_r($I2_ARGS,1));
-		if ($I2_USER->header != 'FALSE') {
-			$I2_USER->header = 'FALSE';
-		} else {
-			$I2_USER->header = 'TRUE';
-		}
+		$I2_USER->header = 'TRUE';
 		if (count($I2_ARGS) == 1) {
 			$dest = '';
 		} else {

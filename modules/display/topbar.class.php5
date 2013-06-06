@@ -16,7 +16,7 @@
 class TopBar {
 	public static function display($disp, $chrome, $nagging) {
 		global $I2_USER, $I2_SQL;
-		if($I2_USER->header=='TRUE' && $chrome && !$nagging) {
+		if($chrome && !$nagging) {
 			$date = EighthSchedule::get_next_date();
 			$arr = [];
 			if($date) {
@@ -42,9 +42,6 @@ class TopBar {
 				$arr['hosting'] = EighthSponsor::get_schedule_on($hosts,$date);
 			}
 			$disp->disp('header.tpl', $arr);
-		} else {
-			d('This user has minimized their header',6);
-			$disp->disp('header-small.tpl');
 		}
 	}
 }
