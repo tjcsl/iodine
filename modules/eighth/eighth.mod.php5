@@ -616,6 +616,7 @@ class Eighth extends Module {
 			redirect();
 		}
 		$argstr = implode('/', array_slice($I2_ARGS,1));
+		$this->display_obj = $disp;
 		$this->template_args['argstr'] = $argstr;
 		$this->template_args['last_undo'] = self::get_undo_name();
 		$this->template_args['last_redo'] = self::get_redo_name();
@@ -2387,7 +2388,79 @@ class Eighth extends Module {
 			}	
 			$this->title = 'Eighth Periods Attended';
 			$this->template = 'vcp_schedule_history.tpl';
+
 		}
+		else if($this->op == 'mostoften') {
+			// header
+			$user = new User($this->args['uid']);
+			$this->template_args['user'] = $user;
+			$this->template_args['comments'] = $user->comments;
+			$this->template_args['absences'] = EighthSchedule::get_absences($this->args['uid']);
+			//TODO: Do this in the the template
+			$this->template_args['absence_count'] = count($this->template_args['absences']);
+
+			if(strlen($user->counselor_name) == 0) {
+				$this->template_args['counselor_name'] = "N/A";
+			}
+			else {
+				$this->template_args['counselor_name'] = $user->counselor_name;
+			}
+
+			try {
+				if($user->schedule()->last() != null) {
+					$lastclass = $user->schedule()->last();
+					if($lastclass->period != 8) {
+						$this->template_args['ta'] = "N/A";
+					}
+					else {
+						$this->template_args['ta'] = $lastclass->teacher->sn;
+					}
+				}
+				else {
+					$this->template_args['ta'] = "N/A";
+				}
+			} catch (I2Exception $e) {
+				//There is something wrong with the schedule or teacher.	
+			}	
+			// end header
+			$uid = $this->args['uid'];
+			$date = getdate();
+			$date = ($date['mon'] > 7 ? $date['year'] : $date['year']-1).'-09-01';
+			$days = intval((time()-strtotime($date))/86400);
+			$acts = EighthActivity::id_to_activity(EighthSchedule::get_activities($uid, $date, $days), FALSE);
+
+			$this->template_args['activities'] = $acts;
+			$moa = array();
+			$actd = array();
+			// Loop through all activities and get counts
+			foreach($acts as $act) {
+				if(isset($moa[$act->aid])) {
+					$moa[$act->aid]++;
+				} else {
+					$moa[$act->aid] = 1;
+				}
+				// cut down on requests by saving the activity object
+				if(!isset($actd[$act->aid])) {
+					$actd[$act->aid] = $act;
+				}
+			}
+			// Sort highest to lowest by value
+			arsort($moa);
+			$moao = array();
+			// Loop through the sorted values and make an array with the activity object, not the id
+			foreach($moa as $aid => $mo) {
+				$moao[] = array(
+					"num" => $mo,
+					"act" => $actd[$aid]
+				);
+			}
+
+			$this->template_args['mostoften'] = $moao;
+
+			$this->title = 'Most Common Eighth Period Signups';
+			$this->template = 'vcp_schedule_mostoften.tpl';
+
+		}	
 		else if($this->op == 'format') {
 			$this->setup_format_selection('vcp_schedule', 'Student Schedule', array('uid' => $this->args['uid']), TRUE);
 		}

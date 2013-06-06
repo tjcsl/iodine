@@ -42,5 +42,8 @@
 
 		</div>
 	</div>
+
+[<foreachelse>]
+		<p>There is no information to be displayed at this time.</p>
 [</foreach>]
 
