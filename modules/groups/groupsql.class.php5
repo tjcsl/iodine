@@ -455,11 +455,14 @@ class GroupSQL extends Group {
 	}
 
 	public function set_group_name($name) {
-		global $I2_SQL, $I2_USER;
+		global $I2_SQL, $I2_USER, $I2_CACHE;
 		
 		if (!self::admin_all()->has_member($I2_USER)) {
 			throw new I2Exception('You are not authorized to change group names');
 		}
+
+		$I2_CACHE->remove($this,'name_map');
+		$I2_CACHE->remove($this,'gid_map');
 		
 		return $I2_SQL->query('UPDATE groups_name SET name=%s WHERE gid=%d',$name,$this->gid);
 	}
