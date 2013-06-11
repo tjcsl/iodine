@@ -42,6 +42,9 @@ class TopBar {
 				$arr['hosting'] = EighthSponsor::get_schedule_on($hosts,$date);
 			}
 			$disp->disp('header.tpl', $arr);
+		} else {
+			d('Header is set to small', 6);
+			$disp->disp('header-small.tpl', $arr);
 		}
 	}
 }
