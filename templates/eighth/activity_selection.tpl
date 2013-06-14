@@ -7,39 +7,17 @@
 </select>
 <br/>
 <!-- begin search box code -->
-Search: <input type="search" results="0" placeholder=" Search for an activity" onchange="filterList(value);" oninput="filterList(value);" onsearch="filterList(value);" style="margin-top:3px; width:256px;"/>
-<script type="text/javascript">
-	var activities = [];
-	function filterList(txt) {
-		txt = txt.toLowerCase();
-		txt = txt.split(" or ");
-		
-		var currentList = document.getElementById("activity_list");
-		currentList.innerHTML = "";
-		
-//              var listItems = savedList.getElementsByTagName("option");
-		var listItems = savedList.options;
-		for (var i = 0; i < listItems.length; i++) {
-			for (var j = 0; j < txt.length; j++) {
-				if (listItems[i].innerHTML.toLowerCase().indexOf(txt[j]) != -1) {
-					currentList.appendChild(listItems[i].cloneNode(true));
-					break;
-				}
-			}
-		}
-		
-//              currentList.innerHTML = newList.innerHTML;
-	}
-	var savedList = document.getElementById("activity_list").cloneNode(true);
-
-</script>
+Search: <input type="search" results="0" placeholder=" Search for an activity" id="search_box" style="margin-top:3px; width:256px;"/>
 <!-- end search box code -->
 <br/>
 <form name="activity_selection_form" action="[<$I2_ROOT>]eighth/[<$method>]/[<$op|default:"view">][<if isset($bid)>]/bid/[<$bid>][</if>]" method="get">
 	Activity ID: <input type="text" name="[<$field|default:"aid">]" />
 </form>
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/eighth_search.js"></script>
 <script language="javascript" type="text/javascript">
-	document.activity_selection_form.[<$field|default:"aid">].focus();
+document.activity_selection_form.[<$field|default:"aid">].focus();
+// Make the activity list searchable
+makeSearchable(document.getElementById("activity_list"), document.getElementById("search_box"));
 </script>
 [<if isset($add) >]
 <br />
