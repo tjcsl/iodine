@@ -7,24 +7,28 @@
 [<include file="eighth/include_list_close.tpl">]
 <br />
 [</if>]
-<h2>Passes</h2>
-<p>The following students were issued passes by the 8th period office.  When they arrive, please click the green button next to their name.</p>
-[<if $is_admin>]<p><a style="padding: 0px 5px; color: white; background-color: green;" href="[<$I2_ROOT>]eighth/vcp_schedule/acceptallpasses/bid/[<$act->bid>]/aid/[<$act->aid>]">Accept All Passes</a></p>[</if>]
-<table cellspacing="0" style="border: 0px; margin: 0px; padding: 0px;">
-	<tr><th>Name</th><th>Accept</th></tr>
-	[<foreach from=$act->passes_obj item=user>]
-		<tr class="c[<cycle values="1,2">]">
-			<td style="padding: 0px 5px;">[<$user->name_comma>] ([<$user->iodineUidNumber>])</td>
-			<td style="padding: 0px 5px; color: white; background-color: green;"><a style="color: white;" href="[<$I2_ROOT>]eighth/vcp_schedule/callin/bid/[<$act->bid>]/aid/[<$act->aid>]/name_id/[<$user->iodineUidNumber>]">Accept</a></td>
-		</tr>
-	[</foreach>]
+<div id="eighth_passes">
+	<h2>Passes</h2>
+	<p>The following students were issued passes by the 8th period office.  When they arrive, please click the green button next to their name.</p>
+	[<if $is_admin>]<p><a style="padding: 0px 5px; color: white; background-color: green;" href="[<$I2_ROOT>]eighth/vcp_schedule/acceptallpasses/bid/[<$act->bid>]/aid/[<$act->aid>]">Accept All Passes</a></p>[</if>]
+	<table cellspacing="0" style="border: 0px; margin: 0px; padding: 0px;">
+		<tr><th>Name</th><th>Accept</th></tr>
+		[<foreach from=$act->passes_obj item=user>]
+			<tr class="c[<cycle values="1,2">]">
+				<td style="padding: 0px 5px;">[<$user->name_comma>] ([<$user->iodineUidNumber>])</td>
+				<td style="padding: 0px 5px; color: white; background-color: green;"><a style="color: white;" href="[<$I2_ROOT>]eighth/vcp_schedule/callin/bid/[<$act->bid>]/aid/[<$act->aid>]/name_id/[<$user->iodineUidNumber>]">Accept</a></td>
+			</tr>
+		[</foreach>]
 	</table>
-<h2>Call-ins</h2>
-<p>Enter the Name or Student ID# of a student to call-in. Please note that call-ins cannot override Stickies.</p>
-<form name="vcp_callin_form" id="vcp_callin_form" action="[<$I2_ROOT>]eighth/vcp_schedule/callin/bid/[<$act->bid>]/aid/[<$act->aid>]" method="post">
-	<input type="search" name="name_id" id="query" results="0"/>
-	<input type="submit" value="Call in Student"/>
-</form>
+</div>
+<div id="eighth_call_ins">
+	<h2>Call-ins</h2>
+	<p>Enter the Name or Student ID# of a student to call-in. Please note that call-ins cannot override Stickies.</p>
+	<form name="vcp_callin_form" id="vcp_callin_form" action="[<$I2_ROOT>]eighth/vcp_schedule/callin/bid/[<$act->bid>]/aid/[<$act->aid>]" method="post">
+		<input type="search" name="name_id" id="query" results="0"/>
+		<input type="submit" value="Call in Student"/>
+	</form>
+</div>
 </td><td style="vertical-align: top;">
 <div id="eighth_call_in_numbers">
 	Call-in numbers: x5046 x2023 x5076 x5078

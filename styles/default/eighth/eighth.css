@@ -169,23 +169,37 @@
 }
 
 @media print {
+	body, .mainbox {
+		background: transparent !important;
+	}
+	.mainbox {
+		color: black !important;
+		-webkit-box-shadow: none !important;
+		   -moz-box-shadow: none !important;
+		        box-shadow: none !important;
+		padding-top: 24px !important;
+	}
+	.boxes,
 	#eighth_header,
 	#eighth_header_logo,
-	#eighth_include_list {
+	#eighth_include_list, #eighth_passes, #eighth_call_ins {
 		display: none;
 	}
+	#boxcontent {
+		overflow: visible;
+	}
 	#vcp_attendance_form input[type="checkbox"] {
-		-webkit-appearance:none;
-		   -moz-appearance:none;
-		    -ms-appearance:none;
-		     -o-appearance:none;
-		        appearance:none;
-		width:2em;
-		height:2em;
-		border-style:solid;
-		border-width:none;
-		border-color:black;
-		background-color:white;
+		-webkit-appearance: none !important;
+		   -moz-appearance: none !important;
+		    -ms-appearance: none !important;
+		     -o-appearance: none !important;
+		        appearance: none !important;
+		width: 2em !important;
+		height: 2em !important;
+		border-style: solid !important;
+		border-width: 3px !important;
+		border-color: black !important;
+		background: white !important;
 	}
 	#vcp_attendance_form input[type="button"],
 	#vcp_attendance_form input[type="submit"],
