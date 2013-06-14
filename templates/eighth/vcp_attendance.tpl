@@ -30,9 +30,6 @@
 	</form>
 </div>
 </td><td style="vertical-align: top;">
-<div id="eighth_call_in_numbers">
-	Call-in numbers: x5046 x2023 x5076 x5078
-</div>
 <div style="font-family: monospace;">
 Activity:&nbsp;[<$act->name>], ID [<$act->aid>]<br />
 Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<$act->block->date|date_format>], [<$act->block->block>] block<br />
