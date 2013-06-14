@@ -86,7 +86,7 @@ AID: <input type="text" name="aid"/>
 		<td style="width: 150px;"></td>
 	</tr>
 [<foreach from=$block_activities item="activity">]
-	<tr style="background-color: [<cycle values="#CCCCCC,#FFFFFF">]">
+	<tr class="[<cycle values="c1,c2">]">
 		<td class="eighth_sch_activity_checkcell"><a name="[<$activity.block.bid>]"></a><input type="checkbox" name="modify[]" value="[<$activity.block.bid>]" id="check_[<$activity.block.bid>]" onclick="CCA(this);" [<if $activity.scheduled>]checked="checked"[</if>]/></td>
 		<td class="eighth_sch_activity_datecell[<if !$activity.scheduled>]_unscheduled[</if>]">
 			[<$activity.block.date|date_format:"%a">] [<$activity.block.block>], [<$activity.block.date|date_format:"%m/%d/%y">]
