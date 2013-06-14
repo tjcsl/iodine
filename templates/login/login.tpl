@@ -70,7 +70,6 @@
 		[</if>]
 
 		<br />
-		<br />
 
 		<form name="login_form" action="[<$I2_SELF|escape>]" method="post">
 			[<$posts>]

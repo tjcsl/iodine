@@ -9,9 +9,6 @@ body.login #logo {
 	-ms-transition-duration: 0s;
 	max-width: 180px;
 }
-.login_msg {
-	display: inline-block;
-}
 
 #subPane {
 	padding-left:0;
