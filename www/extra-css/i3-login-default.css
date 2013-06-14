@@ -109,16 +109,6 @@ body {
 	margin:16px auto;
 }
 
-<<<<<<< Updated upstream
-=======
-.debug {
-	color:red;
-}
-.login_msg {
-	display: block;
-}
-
->>>>>>> Stashed changes
 @media (max-width:645px) {
 	body {
 		
