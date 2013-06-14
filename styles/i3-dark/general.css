@@ -19,9 +19,9 @@ button, input[type="button"], input[type="submit"], input[type="reset"] select:n
 	background-color:#202020;
 	background-image:-webkit-linear-gradient(#303030, #202020);
 	background-image:   -moz-linear-gradient(#303030, #202020);
-	background-image:    -ms-linear-gradient(#E8E8E8, #202020);
-	background-image:     -o-linear-gradient(#E8E8E8, #202020);
-	background-image:        linear-gradient(#E8E8E8, #202020);
+	background-image:    -ms-linear-gradient(#303030, #202020);
+	background-image:     -o-linear-gradient(#303030, #202020);
+	background-image:        linear-gradient(#303030, #202020);
 	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#303030, endColorstr=#202020);
 	-ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr=#303030, endColorstr=#202020)";
 	
