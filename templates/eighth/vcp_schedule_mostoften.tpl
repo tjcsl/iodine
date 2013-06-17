@@ -10,7 +10,7 @@
 	<a href="[<$I2_ROOT>]eighth/view/comments/uid/[<$user->uid>]">Edit Comments</a><br />
 	<br /><br />
 [<else>]
-	[<if $I2_USER->uid != $user->uid>]<h2>Most Often Activity Signups for [<$user->name>]</h2>[</if>]
+	[<if $I2_USER->uid != $user->uid>]<h2>Most Often Attended Activities for [<$user->name>]</h2>[</if>]
 [</if>]
 	<input type="button" value="Back" onclick="history.back()" />
 	<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; border: 0px; width: 100%;">
