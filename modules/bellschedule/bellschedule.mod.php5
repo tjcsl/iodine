@@ -210,7 +210,8 @@ class BellSchedule extends Module {
 		],
 		49 => [
 			'description' => 'Last Day of School',
-			'schedule' => 'Last Day of School: 8:30 - 12:50<br />Dismissal: 12:50'
+			'schedule' => 'Last Day of School: 8:30 - 10:50<br />Dismissal: 10:50<br />'
+
 		]
 	];
 

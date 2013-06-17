@@ -2721,17 +2721,16 @@ class Eighth extends Module {
 		else if($this->op == 'comments') {
 			/* Editing comments code */
 			$user = new User($this->args['uid']);
-			$I2_CACHE->remove($this,'ldap_user_info_'.$user->iodineuid);
 			$user->comments = $this->args['comments'];
+			$I2_CACHE->remove('User','ldap_user_info_'.$user->iodineuidnumber);
 			redirect('eighth/vcp_schedule/view/uid/'.$this->args['uid']);
 		}
 		else if($this->op == 'student') {
 			/* Editing student code */
 			$user = new User($this->args['uid']);
-			$I2_CACHE->remove($this,'ldap_user_info_'.$user->iodineuid);
-			foreach($this->args['eighth_user_data'] as $key => $value) {
+			foreach($this->args['eighth_user_data'] as $key => $value)
 				$user->$key = $value;
-			}
+			$I2_CACHE->remove('User','ldap_user_info_'.$user->iodineuidnumber);
 		}
 	}
 
