@@ -59,6 +59,7 @@
 	<td><input type="button" value="&lt; Back Two Weeks" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$prev_date>]'" /></td>
 	<td><input type="submit" value="Change Selected" /></td>
 	<td><input type="button" value="View Attended Activities" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/history/uid/[<$user->uid>]'"/></td>
+	<td><input type="button" value="View Most Often Activities" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/mostoften/uid/[<$user->uid>]'" /></td>
 	<td><input type="button" value="Forward Two Weeks &gt;" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$next_date>]'" /></td>
 	</tr>
 	</table>
@@ -92,7 +93,8 @@
 	<tr>
 	<td><input type="button" value="&lt; Back Two Weeks" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$prev_date>]'" /></td>
 	<td><input type="submit" value="Change Selected" /></td>
-	<td><input type="button" value="View Attended Activities" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/history/uid/[<$user->uid>]'"/></td>
+	<td><input type="button" value="View Attended Activities" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/history/uid/[<$user->uid>]'" /></td>
+	<td><input type="button" value="View Most Often Activities" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/mostoften/uid/[<$user->uid>]'" /></td>
 	<td><input type="button" value="Forward Two Weeks &gt;" onclick="location.href='[<$I2_ROOT>]eighth/vcp_schedule/view/uid/[<$user->uid>]/start_date/[<$next_date>]'" /></td>
 	</tr>
 	</table>

@@ -28,20 +28,20 @@ class JS extends Module {
 	private $script_cache;
 
 	private $current_style;
-	
+
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function display_pane($disp) {
-		
+
 		header('Content-type: text/javascript');
 		header("Last-Modified: {$this->gmdate}");
-		header('Cache-Control: public');
+		// header('Cache-Control: public');
 		header('Pragma:'); // Unset Pragma header
-		header('Expires:'); // Unset Expires header
+		// header('Expires:'); // Unset Expires header
 		echo "/* Server-Cache: {$this->script_cache} */\n";
 		echo "/* Client-Cached: {$this->date} */\n";
-		
+
 		$disp->clear_buffer();
 		$text = file_get_contents($this->script_cache); // Put something here!!!
 		if ($this->current_style != substr($text, -(strlen($this->current_style)))) {
@@ -49,12 +49,12 @@ class JS extends Module {
 			$text = file_get_contents($this->script_cache); // Put something here!!!
 		}
 		echo $text;
-		
+
 		Display::stop_display();
-		
+
 		exit;
 	}
-	
+
 	/**
 	* Required by the {@link Module} interface.
 	*/
@@ -67,13 +67,13 @@ class JS extends Module {
 	*/
 	function init_pane() {
 		global $I2_ARGS, $I2_USER, $I2_FS_ROOT;
-		
+
 		if(count($I2_ARGS)>1) {
 			$current_style = $I2_ARGS[1];
 		} else {
 			$current_style=$I2_USER->style;
 		}
-		
+
 		// this forces a theme (e.g. for April Fools' Day)
 		/*if($I2_USER->iodineUid != 'eighthOffice') {
 			$current_style = 'msoffice';
@@ -82,7 +82,7 @@ class JS extends Module {
 		if (ends_with($current_style, '.js')) {
 			$current_style = substr($current_style, 0, strlen($current_style) - 3);
 		}
-		
+
 		$this->current_style = $current_style;
 		$this->script_path = $I2_FS_ROOT . 'javascriptstyles/' . $current_style . '.js';
 		$cache_dir = i2config_get('cache_dir', NULL, 'core') . 'javascriptstyles/';
@@ -99,9 +99,9 @@ class JS extends Module {
 			// || (filemtime($script_cache) < filemtime($this->script_path))
 			$this->recache();
 		}
-		
+
 		$this->gmdate = gmdate('D, d M Y H:i:s', filemtime($script_cache)) . ' GMT';
-		
+
 		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 			$if_modified_since = preg_replace('/;.*$/', '', $_SERVER['HTTP_IF_MODIFIED_SINCE']);
 			if ($if_modified_since == $this->gmdate) {

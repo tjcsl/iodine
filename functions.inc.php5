@@ -31,7 +31,7 @@ function d($text, $level = 9) {
 				$I2_LOG->log_debug($log['text'],$log['level']);
 			$logcache = NULL;
 		}
-		$I2_LOG->log_debug($text, $level);
+		$I2_LOG->log_debug(round(microtime(true) * 1000)."-----".$text, $level);
 	} else {
 		$logcache[] = ['text' => $text, 'level' => $level];
 	}
@@ -81,11 +81,11 @@ function error($msg, $critical=FALSE) {
 /**
 * The iodine_autoloader function, used for autoloading modules.
 *
-* This is the function used by PHP as a last resort for loading 
+* This is the function used by PHP as a last resort for loading
 * noninstantiated classes before it throws an error. It checks for
 * readability of the module (if one exists) in the module path.
 * Triggers an error if it does not exist.
-* 
+*
 * @param string $class_name Name of noninstantiated class.
 */
 function iodine_autoloader($class_name) {
@@ -112,20 +112,20 @@ spl_autoload_register('iodine_autoloader');
 */
 function load_module_map() {
 	global $I2_MODULE_MAP;
-	
+
 	$filename = i2config_get('cache_dir', NULL, 'core') . 'module.map';
-	
+
 	if (!file_exists($filename)) {
 		d('Generating module map', 4);
 		require_once('modules/admin/modulesmapper.class.php5');
 		ModulesMapper::generate();
 	}
-	
+
 	$contents = file_get_contents($filename);
 	if ($contents === FALSE) {
 		error('Could not load module map: could not read file ' . $filename);
 	}
-	
+
 	$I2_MODULE_MAP = unserialize($contents);
 	if ($I2_MODULE_MAP === FALSE) {
 		error('Could not load module map: could unserialize contents of file ' . $filename);
@@ -145,16 +145,16 @@ function load_module_map() {
 */
 function get_i2module($module_name) {
 	global $I2_MODULE_MAP;
-	
+
 	/* Do not run autoload, since it will throw an exception if the
 	class does not exist */
 
 	$key = strtolower($module_name);
-	
+
 	if (!isset($I2_MODULE_MAP[$key])) {
 		return FALSE;
 	}
-	
+
 	$file = $I2_MODULE_MAP[$key];
 	if (is_readable($file)) {
 		return $file;
@@ -179,9 +179,9 @@ function get_i2module($module_name) {
 */
 function i2config_get($field, $default = NULL, $section = NULL) {
 	static $config = NULL;
-	
+
 	if ($config === NULL) { /*Parse the INI file*/
-	
+
 		if (!is_readable(CONFIG_FILENAME)) {
 			/* This is a critical error, but do not set the
 			critical error flag, because the email address
@@ -190,7 +190,7 @@ function i2config_get($field, $default = NULL, $section = NULL) {
 			/* hence, put a hard-coded mail() call here */
 			error('The master Iodine configuration file '.CONFIG_FILENAME.' cannot be read.');
 		}
-		
+
 		$config = parse_ini_file(CONFIG_FILENAME, TRUE);
 	}
 
@@ -205,12 +205,12 @@ function i2config_get($field, $default = NULL, $section = NULL) {
 		}
 		d("Using default value $default for $field in section $section", 2);
 		return $default;
-		
+
 	}
-	
+
 	/* If a section was not specified, try to guess it from getting
 	the class name of what called us. */
-	
+
 	$trace = debug_backtrace();
 
 	/* If we were called by a class, use the config section
@@ -218,7 +218,7 @@ function i2config_get($field, $default = NULL, $section = NULL) {
 	if (isset($trace[1]['class'])) {
 		return i2config_get($field, $default, strtolower($trace[1]['class']));
 	}
-	
+
 	/* If we were not called by a class, default to core, since
 	if we were called by core, it would not report a class. */
 
@@ -242,7 +242,7 @@ function redirect($url = NULL,$postrelay=false) {
 	if( headers_sent($file, $line) ) {
 		throw new I2Exception('A redirect was attempted, but headers have already been sent in file '.$file.' on line '.$line);
 	}
-	
+
 	$url = $I2_ROOT . $url;
 	d('Redirecting to '.$url);
 
@@ -377,7 +377,7 @@ function i2_mail($to, $subject, $message_content, $news=false) {
 
 	// multipart content headers
 	$headers .= "Content-Type: multipart/alternative; boundary=\"" . $separator . "\"\r\n";
-	
+
 	$message = "--" . $separator . "\r\nContent-Type: text/plain; charset=\"UTF-8\"\r\n\r\n";
 	$message .= strip_tags($message_content);
 	$message .= "\r\n--" . $separator . "\r\nContent-Type: text/html; charset=\"UTF-8\"\r\n\r\n";
@@ -386,7 +386,7 @@ function i2_mail($to, $subject, $message_content, $news=false) {
 
 
 	$root = i2config_get('root_path', '/var/wwww/iodine/', 'core');
-	
+
 	if(gettype($to)=="array") {
 		foreach($to as $mail) {
 			system("php ".$root."bin/mailsender.php5 ".escapeshellarg($mail)." ".escapeshellarg($subject)." ".escapeshellarg($message)." ".escapeshellarg($headers)." 1>/dev/null 2>&1 &");

@@ -74,22 +74,22 @@ class Docs extends Module {
 						$end=intval($matches[1]);
 				}
 			}
-			 
+
 			if($begin>0||$end<$size)
 				header('HTTP/1.0 206 Partial Content');
 			else
-				header('HTTP/1.0 200 OK');  
+				header('HTTP/1.0 200 OK');
 			header('Content-Description: File Transfer');
-			header('Expires: 0');
-			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+			// header('Expires: 0');
+			// header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 			header('Pragma: '); // IE won't download over SSL with default "Pragma: no-cache"
-			header('Content-Length: '.($end-$begin));	
+			header('Content-Length: '.($end-$begin));
 			header('Accept-Ranges: bytes');
 			header("Content-Range: bytes $begin-$end/$size");
 			header('Content-Transfer-Encoding: binary\n');
 			header('Content-Type: '.$doc->type);
 			header('Content-Disposition: attachment; filename="'.$filename.'"');
-	
+
 			// For _really_ big files, like Mathematica ISOs, set the time limit to 2 hours.
 			set_time_limit(10800);
 			$f=fopen($doc->path,'rb');
@@ -162,7 +162,7 @@ class Docs extends Module {
 	function edit() {
 		global $I2_ARGS;
 		$doc = new Doc($I2_ARGS[2]);
-		
+
 		$this->template = 'docs_edit.tpl';
 		$upload_dir = i2config_get('upload_dir', NULL, 'core');
 		$this->template_args['upload_dir'] = $upload_dir;

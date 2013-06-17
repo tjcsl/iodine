@@ -56,6 +56,8 @@ Sponsor(s):&nbsp;[<$act->block_sponsors_comma>]<br />
 			<td style="padding: 0px 5px;">[<$user->name_comma>] ([<$user->iodineUidNumber>])</td>
 			<td style="padding: 0px 5px;">[<$user->grade>]</td>
 		</tr>
+[<foreachelse>]
+		<p>There is no information to be displayed at this time.</p>
 [</foreach>]
 	</table><br />
 	[<if $is_admin || $is_sponsor>]<input type="submit" value="Update" />[</if>]

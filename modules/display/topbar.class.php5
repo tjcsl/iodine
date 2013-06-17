@@ -44,7 +44,7 @@ class TopBar {
 			$disp->disp('header.tpl', $arr);
 		} else {
 			d('Header is set to small', 6);
-			$disp->disp('header-small.tpl');
+			$disp->disp('header-small.tpl', $arr);
 		}
 	}
 }
