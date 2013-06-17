@@ -79,24 +79,24 @@ class Eighth extends Module {
 	* Array to mark the beginning of an undo or redo transaction.
 	*/
 	private static $start_undo = array(NULL, NULL, NULL, NULL, 'TRANSACTION_START');
-	
+
 	/**
 	* Array to mark the end of an undo or redo transaction.
 	*/
 	private static $end_undo = array(NULL, NULL, NULL, NULL, 'TRANSACTION_END');
-	
+
 	/**
 	* Maximum length of undo stack
 	*/
 	private static $max_undo = 10;
-	
+
 	/**
 	* Value for start_date on login
 	*/
 	public static $default_start_date;
-	
+
 	function __construct() {
-		self::$default_start_date = date('Y-m-d'); 
+		self::$default_start_date = date('Y-m-d');
 		self::init_undo();
 	}
 
@@ -110,7 +110,7 @@ class Eighth extends Module {
 		$this->template_args['undo'] = $undo;
 		$this->template_args['redo'] = $redo;
 	}
-	private static function fix_undoredo_stack($stack) {	
+	private static function fix_undoredo_stack($stack) {
 		if ($stack == NULL || count($stack) == 0) {
 			return [];
 		}
@@ -123,19 +123,19 @@ class Eighth extends Module {
 			//No reason for nulls
 			if($k == NULL) {
 				continue;
-			} 
+			}
 			//Found undo start, but already started
 			else if($k == self::$start_undo && $start) {
 				continue;
-			} 
+			}
 			//Found undo end, but already ended
 			else if($k == self::$end_undo && $end) {
 				continue;
-			} 
+			}
 			//Found undo end, but no action yet taken
 			else if($k == self::$end_undo && !$action) {
 				continue;
-			} 
+			}
 			//Probably should add k to new_stack
 			else {
 				//Start a new transaction
@@ -169,7 +169,7 @@ class Eighth extends Module {
 			array_push($new_stack, self::$end_undo);
 		}
 	}
-	
+
 	private static function undo($action) {
 		return $undoandredo;
 	}
@@ -188,16 +188,16 @@ class Eighth extends Module {
 		 * Uncomment if the stack gets dirty and throws errors.
 		 * Better yet, figure out why the stack is getting dirty
 		 * and fix that instead.
-		 */	
+		 */
 		//self::fix_undoredo_stack(self::$undo);
-		
+
 		if (count(self::$undo) == 0) {
 			return;
 		}
 		// Drop the last item if it is end_undo
 		if(self::$undo[-1] == self::$end_undo)
 			array_pop(self::$undo);
-		
+
 		$redo_queue = array(self::$end_undo);
 		do {
 			$action = array_pop(self::$undo);
@@ -214,14 +214,14 @@ class Eighth extends Module {
 
 	public static function redo_transaction() {
 		//self::fix_undoredo_stack(self::$redo);
-		
+
 		if (count(self::$redo) == 0) {
 			return;
 		}
 		// Drop the last item if it is start_undo
 		if(self::$redo[-1] == self::$start_undo)
-			array_pop(self::$redo); 
-		
+			array_pop(self::$redo);
+
 		$undo_queue = array(self::$end_undo);
 		do {
 			$action = array_pop(self::$redo);
@@ -239,11 +239,11 @@ class Eighth extends Module {
 	private static function start_undo_transaction() {
 		array_push(self::$undo, self::$start_undo);
 	}
-	
+
 	private static function start_redo_transaction() {
 		array_push(self::$redo, self::$start_undo);
 	}
-	
+
 	private static function end_undo_transaction() {
 		array_push(self::$undo, self::$end_undo);
 	}
@@ -278,14 +278,14 @@ class Eighth extends Module {
 	public static function undo_off() {
 		self::$doundo = FALSE;
 	}
-	
+
 	/**
 	* Trim the undo stack to $max_undo or less
 	*/
 	private static function trim_undo_stack() {
 		while(count(array_keys(self::$undo, self::$end_undo)) >= self::$max_undo) {
 			while(array_shift(self::$undo) != self::$end_undo);
-		}	
+		}
 	}
 
 	/**
@@ -301,7 +301,7 @@ class Eighth extends Module {
 		//$I2_LOG->log_file('PUSH UNDO: '.print_r($undo,1));
 		array_push(self::$undo,$undo);
 		//array_push($_SESSION['eighth_undo'],$undo);
-		
+
 		self::trim_undo_stack();
 		self::$redo = [];
 	}
@@ -318,7 +318,7 @@ class Eighth extends Module {
 	public static function get_undo_name() {
 		return self::get_undoredo_name(self::$undo);
 	}
-	
+
 	public static function get_redo_name() {
 		return self::get_undoredo_name(self::$redo);
 	}
@@ -492,7 +492,7 @@ class Eighth extends Module {
 			case 'signup_activity':
 				if(!isset($I2_ARGS[2], $I2_ARGS[3])) {
 					throw new I2Exception("missing parameters: arguments should be bid, aid, uid (defaults to self if not specified)");
-					
+
 				}
 				if(isset($I2_ARGS[4])) {
 					$user = new User($I2_ARGS[4]);
@@ -554,14 +554,14 @@ class Eighth extends Module {
 		$this->args = [];
 		$this->admin = self::is_admin();
 		$this->template_args['eighth_admin'] = $this->admin;
-		
+
 		//Every time a user logs in, set start_date to default
 		if(! isset($_SESSION['eighth']['start_date'])) {
 			$_SESSION['eighth']['start_date'] = self::$default_start_date;
 		}
 		//This may be clobbered later in REQUEST (for vcp_schedule and chg_start)
 		$this->args['start_date'] = $_SESSION['eighth']['start_date'];
-		
+
 		if(count($I2_ARGS) <= 1) {
 			if (!$this->admin) {
 				redirect();
@@ -578,7 +578,7 @@ class Eighth extends Module {
 			}
 			// Let POST clobber args. This may break things.
 			$this->args = array_merge($this->args, $_POST);
-			
+
 			// Add GET variables into the array - and let them clobber POST
 			foreach($I2_QUERY as $k=>$v) {
 				$this->args[$k]=$v;
@@ -625,7 +625,7 @@ class Eighth extends Module {
 		if(! isset($this->template_args['start_date'])) {
 			$this->template_args['start_date'] = $this->args['start_date'];
 		}
-		
+
 		$this->template_args['defaultaid'] = i2config_get('default_aid','999','eighth');
 		$disp->disp($this->template, $this->template_args);
 	}
@@ -648,14 +648,14 @@ class Eighth extends Module {
 		$dates = array($date => date('n/j/Y', @strtotime($date)), date('Y-m-d') => 'Today', date('Y-m-d', time() + 3600 * 24) => 'Tomorrow', '' => 'None Scheduled');
 		return "8th Period: {$dates[$date]}";
 	}
-	
+
 	/**
 	* Required by the {@link Module} interface.
 	*/
 	function display_box($disp) {
 		$disp->disp('box.tpl', $this->template_args);
 	}
-	
+
 	/**
 	* Required by the {@link Module} interface.
 	*/
@@ -693,7 +693,7 @@ class Eighth extends Module {
 			return FALSE;
 		}
 	}
-	
+
 	public static function check_admin() {
 		if (!self::is_admin()) {
 			throw new I2Exception('Attempted to perform an unauthorized 8th-period action!');
@@ -824,7 +824,7 @@ class Eighth extends Module {
 		$this->title = 'Select a Sponsor';
 		$this->help_text = 'Select a Sponsor';
 	}
-	
+
 	/**
 	* Sets up for displaying the printing format selection screen.
 	*
@@ -840,7 +840,7 @@ class Eighth extends Module {
 		$formats = array("pdf" => "PDF", "ps" => "PostScript", "dvi" => "DVI");
 		if(!$user) {
 			$formats = array("print" => "Print") + $formats + array("tex" => "LaTeX", "rtf" => "RTF");
-		}	
+		}
 		$this->template_args['formats'] = $formats;
 		foreach($args as $key=>$value) {
 			$this->template_args['args'] .= "/{$key}/{$value}";
@@ -859,7 +859,7 @@ class Eighth extends Module {
 	* @param array $this->args The arguments for the operation.
 	*/
 	private function reg_group() {
-		if($this->op == '') {	
+		if($this->op == '') {
 			$this->setup_block_selection();
 			$this->template_args['op'] = 'activity';
 		}
@@ -882,11 +882,11 @@ class Eighth extends Module {
 		else if($this->op == 'commit') {
 			$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
 			$group = new Group($this->args['gid']);
-			
+
 			self::start_undo_transaction();
 			$activity->add_members($group->members, TRUE);
 			self::end_undo_transaction();
-			
+
 			redirect('eighth');
 		}
 	}
@@ -1041,7 +1041,7 @@ class Eighth extends Module {
 			}
 			$file = $_FILES['textfile'];
 			$fname = $file['tmp_name'];
-			
+
 			$group = new Group($this->args['gid']);
 
 			$fd = fopen($fname, 'r');
@@ -1064,7 +1064,7 @@ class Eighth extends Module {
 			redirect("eighth/amr_group/view/error/$error/gid/{$this->args['gid']}/");
 		}
 	}
-	
+
 	/**
 	* Add students to a restricted activity
 	*
@@ -1101,19 +1101,19 @@ class Eighth extends Module {
 				$activity = new EighthActivity($this->args['aid']);
 				$group = new Group($this->args['gid']);
 				$activity->add_restricted_members($group->members);
-	
+
 				redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
 			}
 			else if($this->op == 'add_member') {
 				$activity = new EighthActivity($this->args['aid']);
 				$activity->add_restricted_member(new User($this->args['uid']));
-			
+
 				redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
 			}
 			else if($this->op == 'remove_member') {
 				$activity = new EighthActivity($this->args['aid']);
 				$activity->remove_restricted_member(new User($this->args['uid']));
-				
+
 				redirect("eighth/alt_permissions/view/aid/{$this->args['aid']}");
 			}
 			else if($this->op == 'remove_all') {
@@ -1528,7 +1528,7 @@ class Eighth extends Module {
 			$this->template_args['block'] = new EighthBlock($this->args['bid']);
 			if(!isset($this->args['include']))
 				$this->args['include']=[];
-			$this->template_args['utilizations'] = EighthRoom::get_utilization($this->args['bid'], $this->args['include'], 
+			$this->template_args['utilizations'] = EighthRoom::get_utilization($this->args['bid'], $this->args['include'],
 					  !empty($this->args['overbooked']),$this->args['sort']);
 			$inc = [];
 			foreach ($this->args['include'] as $include) {
@@ -1664,7 +1664,7 @@ class Eighth extends Module {
 			EighthPrint::print_activity_schedule($this->args['aid'], $this->args['format']);
 		}
 	}
-	
+
 	/**
 	* Reschedule students by student ID for a single activity
 	*
@@ -1718,14 +1718,14 @@ class Eighth extends Module {
 			$rescheduled = ($user->objectClass == "tjhsstStudent");
 			if ($rescheduled) {
 				$activity = new EighthActivity($this->args['aid'], $this->args['bid']);
-					
+
 				self::start_undo_transaction();
 				EighthSchedule::remove_absentee($this->args['bid'],$this->args['uid']);
 				$activity->add_member($user,TRUE);
 				self::end_undo_transaction();
-			}		
-			redirect("eighth/res_student/user/" 
-				. ($rescheduled ? "rescheduled/{$this->args['uid']}/" : "") 
+			}
+			redirect("eighth/res_student/user/"
+				. ($rescheduled ? "rescheduled/{$this->args['uid']}/" : "")
 				. "bid/{$this->args['bid']}/aid/{$this->args['aid']}");
 		}
 	}
@@ -2212,7 +2212,7 @@ class Eighth extends Module {
 			redirect('eighth/ar_excludes');
 		}
 	}
-	
+
 	/**
 	* Repair broken schedules
 	*
@@ -2303,7 +2303,7 @@ class Eighth extends Module {
 		}
 		else if($this->op == 'view') {
 			$start_date = $this->args['start_date'];
-			
+
 			$temp = new DateTime($start_date);
 			$temp->modify("+2 weeks");
 			$this->template_args['next_date'] = $temp->format("Y-m-d");
@@ -2326,7 +2326,7 @@ class Eighth extends Module {
 			else {
 				$this->template_args['counselor_name'] = $user->counselor_name;
 			}
-			
+
 			try {
 				if($user->schedule()->last() != null) {
 					$lastclass = $user->schedule()->last();
@@ -2341,9 +2341,9 @@ class Eighth extends Module {
 					$this->template_args['ta'] = "N/A";
 				}
 			} catch (I2Exception $e) {
-				//There is something wrong with the schedule or teacher.	
-			}	
-			
+				//There is something wrong with the schedule or teacher.
+			}
+
 			$this->template = 'vcp_schedule_view.tpl';
 			$this->title = 'View Schedule';
 		}
@@ -2352,7 +2352,7 @@ class Eighth extends Module {
 			$date = ($date['mon'] > 7 ? $date['year'] : $date['year']-1).'-09-01';
 			$days = intval((time()-strtotime($date))/86400);
 			$this->template_args['start_date'] = strtotime($date);
-			
+
 			$user = new User($this->args['uid']);
 			$this->template_args['user'] = $user;
 			$this->template_args['comments'] = $user->comments;
@@ -2384,8 +2384,8 @@ class Eighth extends Module {
 					$this->template_args['ta'] = "N/A";
 				}
 			} catch (I2Exception $e) {
-				//There is something wrong with the schedule or teacher.	
-			}	
+				//There is something wrong with the schedule or teacher.
+			}
 			$this->title = 'Eighth Periods Attended';
 			$this->template = 'vcp_schedule_history.tpl';
 
@@ -2420,8 +2420,8 @@ class Eighth extends Module {
 					$this->template_args['ta'] = "N/A";
 				}
 			} catch (I2Exception $e) {
-				//There is something wrong with the schedule or teacher.	
-			}	
+				//There is something wrong with the schedule or teacher.
+			}
 			// end header
 			$uid = $this->args['uid'];
 			$date = getdate();
@@ -2457,10 +2457,10 @@ class Eighth extends Module {
 
 			$this->template_args['mostoften'] = $moao;
 
-			$this->title = 'Most Common Eighth Period Signups';
+			$this->title = 'Most Often Attended Eighth Periods';
 			$this->template = 'vcp_schedule_mostoften.tpl';
 
-		}	
+		}
 		else if($this->op == 'format') {
 			$this->setup_format_selection('vcp_schedule', 'Student Schedule', array('uid' => $this->args['uid']), TRUE);
 		}
@@ -2486,14 +2486,14 @@ class Eighth extends Module {
 			foreach ($activities as $i) {
 				if($i->aid == $selected_aid)
 					$selected[] = $i;
-					
+
 				if($i->favorite)
 					$faves[] = $i;
-				
+
 				if($I2_USER->uid!=9999) { // Eighth office doesn't need sections
 					if($i->restricted)
 						$restricted[] = $i;
-				
+
 					if($i->capacity != -1) {
 						if($i->member_count>=$i->capacity)
 							$full[] = $i;
@@ -2507,7 +2507,7 @@ class Eighth extends Module {
 
 				$general[] = $i;
 			}
-			
+
 			$this->template_args['selected_aid']=$selected_aid;
 			$this->template_args['selected']=$selected;
 			//$this->template_args['restricted']=$restricted;
@@ -2550,13 +2550,13 @@ class Eighth extends Module {
 				foreach($bids as $bid) {
 					if(EighthSchedule::is_activity_valid($this->args['aid'], $bid)) {
 						$activity = new EighthActivity($this->args['aid'], $bid);
-						
+
 						self::start_undo_transaction();
 						if (self::is_admin())
 							EighthSchedule::remove_absentee($bid, $this->args['uid']);
 						$ret = $activity->add_member(new User($this->args['uid']), isset($this->args['force']));
 						self::end_undo_transaction();
-						
+
 						$act_status = [];
 						if($ret & EighthActivity::CANCELLED) {
 							$act_status['cancelled'] = TRUE;
@@ -2681,7 +2681,7 @@ class Eighth extends Module {
 		}
 		return $res;
 	}
-	
+
 	/**
 	* Sets 8th-period comments about a user
 	*
@@ -2690,7 +2690,7 @@ class Eighth extends Module {
 		global $I2_SQL;
 		return $I2_SQL->query('REPLACE INTO eighth_comments (uid,comments) VALUES (%d,%s)',$uid,$comments);
 	}
-	
+
 	public function view() {
 		global $I2_SQL;
 		if($this->op == '') {
