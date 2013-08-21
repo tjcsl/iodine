@@ -186,13 +186,13 @@ class EighthActivity {
 	public function add_member($user, $force = FALSE, $blockid = NULL) {
 		global $I2_SQL,$I2_USER,$I2_LOG;
 		$defaid = i2config_get('default_aid', 999, 'eighth');
-		
+
 		//Assume that we have an iodine uid number
 		if (! $user instanceof User) {
 			$userid = $user;
 		} else {
 			$userid = $user->uid;
-		}	
+		}
 		$admin = Eighth::is_admin();
 		$signup_admin = Eighth::is_signup_admin();
 		/*
@@ -263,11 +263,11 @@ class EighthActivity {
 		} else {
 			$oldact = FALSE;
 		}
-		
+
 		if ($oldact && $oldact->sticky) {
 			$ret |= EighthActivity::STICKY;
 		}
-		
+
 		$otheract = FALSE;
 		$dayacts = EighthSchedule::get_activities($userid, $block->date, 1);
 		foreach ($dayacts as $act) {
@@ -295,7 +295,7 @@ class EighthActivity {
 			// have to take them out of the other block
 			$signup_bothblocks = -1;
 		}
-		if ($signup_bothblocks != 0 && $otheract->sticky) { // Fix a loophole where the both blocks system circumvents the 
+		if ($signup_bothblocks != 0 && $otheract->sticky) { // Fix a loophole where the both blocks system circumvents the
 			$ret |= EighthActivity::STICKY;
 		}
 
@@ -330,12 +330,12 @@ class EighthActivity {
 			if ($block->locked) {
 				$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid,pass) VALUES (%d,%d,%d,1)';
 			} else {
-				
+
 				$query = 'REPLACE INTO eighth_activity_map (aid,bid,userid,pass) VALUES (%d,%d,%d,0)';
 			}
 			$args = array($this->data['aid'],$blockid,$userid);
 			$result = $I2_SQL->query_arr($query, $args);
-			
+
 			// now deal with bothblocks
 			if ($signup_bothblocks == 1) {
 				$this->add_member($userid, $force, $otheract->bid);
@@ -417,7 +417,7 @@ class EighthActivity {
 	public function remove_member(User $user, $blockid = NULL) {
 		global $I2_SQL;
 		$userid = $user->uid;
-	
+
 		/*
 		** Users need to be able to remove themselves from an activity
 		*/
@@ -446,7 +446,7 @@ class EighthActivity {
 		}
 	}
 
-	
+
 	public static function remove_members_from_activity($aid, $userids, $blockid = NULL) {
 			  $act = new EighthActivity($aid);
 			  $act->remove_members($userids,$blockid);
@@ -563,7 +563,7 @@ class EighthActivity {
 				}
 			}
 		}
-		
+
 		self::$membercache[$this->data['aid']][$blockid]=$ret;
 		return $ret;
 	}
@@ -772,7 +772,7 @@ class EighthActivity {
 			$this->__set('sponsors', $this->data['sponsors']);
 		}
 	}
-	
+
 	/**
 	* Adds a room to the activity.
 	*
@@ -800,7 +800,7 @@ class EighthActivity {
 			$this->__set('rooms', $this->data['rooms']);
 		}
 	}
-	
+
 	/**
 	* Gets all the available activities.
 	*
@@ -877,7 +877,7 @@ class EighthActivity {
 		global $I2_SQL;
 		return self::id_to_activity($I2_SQL->query('SELECT activityid,eighth_blocks.bid FROM eighth_blocks LEFT JOIN eighth_block_map ON (eighth_block_map.bid = eighth_blocks.bid) LEFT JOIN eighth_activities ON (eighth_activities.aid=eighth_block_map.activityid) WHERE date > %t GROUP BY activityid ORDER BY special DESC, name',$startdate)->fetch_all_arrays(Result::NUM));
 	}
-	
+
 	/**
 	* Gets all the blocks in which an activity is scheduled
 	*/
@@ -912,7 +912,7 @@ class EighthActivity {
 	* @param string $description The description of the activity.
 	* @param bool $restricted If this is a restricted activity.
 	*/
-	public static function add_activity($name, $sponsors = [], $rooms = [], $description = '', 
+	public static function add_activity($name, $sponsors = [], $rooms = [], $description = '',
 			$restricted = FALSE, $sticky = FALSE, $bothblocks = FALSE, $presign = FALSE, $aid = NULL, $special = FALSE) {
 		Eighth::check_admin();
 		global $I2_SQL;
@@ -924,7 +924,7 @@ class EighthActivity {
 		}
 		$result = NULL;
 		if ($aid === NULL) {
-			$query = "REPLACE INTO eighth_activities (name,sponsors,rooms,description,restricted,sticky,bothblocks,presign,special) 
+			$query = "REPLACE INTO eighth_activities (name,sponsors,rooms,description,restricted,sticky,bothblocks,presign,special)
 				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d,%d)";
 			$queryarg = array($name, $sponsors, $rooms, $description, ($restricted?1:0),($sticky?1:0),($bothblocks?1:0),($presign?1:0),($special?1:0));
 			$result = $I2_SQL->query_arr($query,$queryarg);
@@ -935,8 +935,8 @@ class EighthActivity {
 			return $result->get_insert_id();
 		} else {
 			$old = $I2_SQL->query('SELECT * FROM eighth_activities WHERE aid=%d',$aid)->fetch_array(Result::ASSOC);
-			$query = "REPLACE INTO eighth_activities 
-				(name,sponsors,rooms,description,restricted,sticky,bothblocks,presign,aid,special) 
+			$query = "REPLACE INTO eighth_activities
+				(name,sponsors,rooms,description,restricted,sticky,bothblocks,presign,aid,special)
 				VALUES (%s,'%D','%D',%s,%d,%d,%d,%d,%d,%d)";
 			$queryarg = array($name, $sponsors, $rooms, $description, ($restricted?1:0),($sticky?1:0),($bothblocks?1:0),($presign?1:0),$aid,($special?1:0));
 			$result = $I2_SQL->query_arr($query,$queryarg);
@@ -1133,7 +1133,7 @@ class EighthActivity {
 				if (!isset($this->data['block_rooms']) || count($this->data['block_rooms']) == 0) {
 					return -1;
 				}
-				$this->data['capacity'] = $I2_SQL->query('SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)', 
+				$this->data['capacity'] = $I2_SQL->query('SELECT SUM(capacity) FROM eighth_rooms WHERE rid IN (%D)',
 						  $this->data['block_rooms'])->fetch_single_value();
 				return $this->data['capacity'];
 		 	case 'member_count':
@@ -1336,7 +1336,7 @@ class EighthActivity {
 
 	/**
 	* Returns the class of the piechart div for this activity
-	* 
+	*
 	* @access public
 	*/
 	public function pieClass() {

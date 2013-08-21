@@ -20,7 +20,7 @@ class MySQL {
 	* The mysqli_connect() link
 	*/
 	private $link;
-	
+
 	/**
 	* Represents a SELECT query.
 	*/
@@ -41,7 +41,7 @@ class MySQL {
 	* Represents a REPLACE query.
 	*/
 	const REPLACE = 5;
-	
+
 	/**
 	* Represents input that is a string
 	*/
@@ -68,10 +68,10 @@ class MySQL {
 	* A string representing all custom printf tags for mysql queries which do not require an argument. Each character represents a different tag.
 	*/
 	const TAGS_NOARG = 'rV%';
-		
+
 	/**
 	* The MySQL class constructor.
-	* 
+	*
 	* @access public
 	*/
 	function __construct($server=NULL,$db=NULL,$user=NULL,$pass=NULL) {
@@ -113,7 +113,7 @@ class MySQL {
 		}
 		return $this->link;
 	}
-	
+
 	/**
 	* Select a MySQL database.
 	*
@@ -179,7 +179,7 @@ class MySQL {
 	*/
 	public function query($query) {
 		$args = NULL;
-		
+
 		if( func_num_args() > 1 ) {
 			$args = func_get_args();
 			array_shift($args);
@@ -207,8 +207,8 @@ class MySQL {
 		$argv = $args;
 
 		$query = trim($query);
-		
-		/* 
+
+		/*
 		** matches Iodine custom printf-style tags
 		*/
 		if( preg_match_all(
@@ -219,7 +219,7 @@ class MySQL {
 		) {
 			foreach (array_reverse($tags[0]) as $tag) {
 				/*$tag[0] is the string, $tag[1] is the offset*/
-				
+
 				/* tags that require an argument */
 				if ( strpos(self::TAGS_ARG, $tag[0][1]) !== FALSE) {
 					if($argc < 1) {
@@ -237,6 +237,9 @@ class MySQL {
 				if (!isset($arg) || $arg === NULL) {
 					$replacement = 'NULL';
 				} else {
+					if ($tag[0][1] == "D") {
+						$arg = array_map("intval", $arg);
+					}
 					$replacement = $this->replace_tag($arg, $tag[0][1]);
 					$tag[0][1] = $replacement;
 				}
@@ -278,7 +281,7 @@ class MySQL {
 		global $I2_ERR;
 		switch($tag) {
 			/* 'argument' tags first */
-			
+
 			/*alphanumeric string*/
 			case 'a':
 				if ( !ctype_alnum($arg) ) {
@@ -385,13 +388,13 @@ class MySQL {
 					}
 				}
 				throw new I2Exception('The string `'.$arg.'` is not a properly formatted datetime, but was passed as %T in a mysql query');
-			
+
 			/* Non-argument tags below here */
 
 			/* Repeat the last value */
 			case 'r':
 				return $arg;
-			
+
 			/*Iodine version string*/
 			case 'V':
 				return 'TJHSST Intranet2 Iodine version '.I2_VERSION;
@@ -404,7 +407,7 @@ class MySQL {
 				$I2_ERR->fatal_error('Internal error, undefined mysql printf tag `%'.$tag[0][1].'`', TRUE);
 		}
 	}
-	
+
 	/**
 	* Determines whether a certain column is in a certain table.
 	*
