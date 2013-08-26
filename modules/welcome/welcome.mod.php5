@@ -12,7 +12,7 @@ class Welcome extends Module {
 	private $data;
 
 	function init_pane() {
-		global $I2_USER;
+		global $I2_USER, $I2_CACHE;
 		if( isset($_REQUEST['posted']) ) {
 			//user finished the intro blurb
 			
@@ -29,6 +29,8 @@ class Welcome extends Module {
 
 			//reset to news
 			$I2_USER->startpage = "news";
+			$I2_CACHE->remove('User','ldap_user_info_'.$I2_USER->iodineuidnumber);
+
 
 			//where did they say they wanted to go
 			if($_REQUEST['prefs'])
