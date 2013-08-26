@@ -26,7 +26,9 @@
 		<td style="padding: 0px 5px; text-align: center;">[<$member->studentid>]</td>
 		<td style="padding: 0px 5px; text-align: center;">
 			[<if count($member->mail)>]
-				[<if count($member->mail) == 1>]
+				[<if count($member->mail) == 0>]
+					[<assign var="mail" value="">]
+				[<elseif count($member->mail) == 1>]
 					[<assign var="mail" value=$member->mail>]
 				[<else>]
 					[<assign var="mail" value=$member->mail.0>]
