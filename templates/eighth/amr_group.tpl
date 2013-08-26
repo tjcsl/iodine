@@ -26,12 +26,10 @@
 		<td style="padding: 0px 5px; text-align: center;">[<$member->studentid>]</td>
 		<td style="padding: 0px 5px; text-align: center;">
 			[<if count($member->mail)>]
-				[<if count($member->mail) == 0>]
-					[<assign var="mail" value="">]
-				[<elseif count($member->mail) == 1>]
-					[<assign var="mail" value=$member->mail>]
-				[<else>]
+				[<if is_array($member->mail)>]
 					[<assign var="mail" value=$member->mail.0>]
+				[<else>]
+					[<assign var="mail" value=$member->mail>]
 				[</if>]
 				[<assign var="mail" value=$mail|replace:'?':''>]
 				[<mailto address=$mail encode="hex">]
