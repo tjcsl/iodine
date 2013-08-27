@@ -24,8 +24,7 @@ class Cache {
 	 * @access public
 	 */
 	public function __construct()
-	{
-		$this->mcache=new Memcache;
+	{/*		$this->mcache=new Memcache;
 		d("connecting to memcached: server ".MEMCACHE_SERVER." on port ".MEMCACHE_PORT);
 		$result = $this->mcache->pconnect(MEMCACHE_SERVER,MEMCACHE_PORT);
 		if(!$result)
@@ -34,7 +33,7 @@ class Cache {
 			//XXX: Should this be a critical error? Currently it is.
 			$I2_ERR->fatal_error('memcache server connection failed!', 1);
 		}
-	}
+	*/}
 	
 	/**
 	 * Store a variable in memcached
@@ -47,7 +46,7 @@ class Cache {
 	 * @return bool true on success, false on failure.
 	 */
 	public function store($module, $key, $val, $expire=null)
-	{
+	{/*
 		global $I2_FS_ROOT;
 		if(gettype($module)=="string")
 		       $name=$module;
@@ -57,7 +56,7 @@ class Cache {
 		if(!isset($expire)) $expire=intval(MEMCACHE_DEFAULT_TIMEOUT);
 		d("Storing item in memcached: $name::$key");
 		return $this->mcache->set($hash, $val, 0, $expire);
-	}
+	*/}
 
 	/**
 	 * Remove a variable from memcached
@@ -67,7 +66,7 @@ class Cache {
 	 * @return bool true on success, false on failure
 	 */
 	public function remove($module, $key)
-	{
+	{/*
 		global $I2_FS_ROOT;
 		if(gettype($module)=="string")
 			$name=$module;
@@ -76,7 +75,7 @@ class Cache {
 		$hash=sha1($I2_FS_ROOT."??".$name."::".$key);
 		d("deleting $name::$key from memcache",7);
 		return $this->mcache->delete($hash);
-	}
+	*/}
 	/**
 	 * Read a variable form memcached
 	 * 
@@ -85,7 +84,7 @@ class Cache {
 	 * @param mixed $val FALSE on failure, otherwise the value that was stored with by the module with the key
 	 */
 	public function read($module, $key)
-	{
+	{/*
 		global $I2_FS_ROOT;
 		if(gettype($module)=="string")
 			$name=$module;
@@ -102,6 +101,6 @@ class Cache {
 		}
 		d("memcache lookup $name::$key succeeded",7);
 		return $val;
-	}
+	*/ return false; }
 }
 ?>
