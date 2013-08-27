@@ -24,7 +24,7 @@
 	</script>
 	How do you think improvements can be made for <select id="sendchoice" name="sendchoice" onchange="changeLink()">[<foreach from=$sendchoices item=choice>]<option value="[<$choice.name>]">[<$choice.name>]</option>[</foreach>]</select>?<br />
 	[<if $usermail>]
-		We will follow up with you at <strong>[<$usermail>]</strong> if needed.  If this e-mail address is incorrect, please update your preferences, or feel free to send an e-mail directly to <a id="mailtolink" href="mailto:[<$sendchoices[0].address>]">[<$sendchoices[0].address>]</a>.  If you send us an e-mail directly, don't forget to tell us who you are!<br />
+		We will follow up with you at <strong>[<$usermail|escape>]</strong> if needed.  If this e-mail address is incorrect, please update your preferences, or feel free to send an e-mail directly to <a id="mailtolink" href="mailto:[<$sendchoices[0].address>]">[<$sendchoices[0].address>]</a>.  If you send us an e-mail directly, don't forget to tell us who you are!<br />
 		<textarea name="submit_box" style="width:98%;height:150px" rows="10" cols="200"></textarea><br />
 		<input type="submit" value="Submit" name="submit_form" />
 		</form>
