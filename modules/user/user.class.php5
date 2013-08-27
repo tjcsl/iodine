@@ -1372,7 +1372,11 @@ class User {
 			if (!$userid) {
 				continue;
 			}
-			$ret[] = new User($userid);
+			try {
+				$ret[] = new User($userid);
+			} catch(Exception $e) {
+				
+			}
 		}
 		return $ret;
 	}
