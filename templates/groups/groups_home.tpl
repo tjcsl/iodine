@@ -28,7 +28,7 @@
  You are not a member of the following groups, but you may join them (click to join):<br />
  <ul>
  [<foreach from=$group_join item=grp>]
-  <li><a href="[<$I2_ROOT>]groups/sjoin/[<$grp->gid>]">[<$grp->name>]</a> ([<$grp->description>])</li>
+  <li><a href="[<$I2_ROOT>]groups/sjoin/[<$grp->gid>]">[<$grp->name>]</a> <a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">(view group)</a> ([<$grp->description>])</li>
  [</foreach>]
  </ul>
 [</if>]
