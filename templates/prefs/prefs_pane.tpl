@@ -3,6 +3,7 @@
 <a href="[<$I2_ROOT>]studentdirectory/preview/[<$I2_USER->uid>]">Preview your profile page as seen by others (Beta)</a><br />
 <form method="post" action="[<$I2_ROOT>]prefs" class="boxform">
 <input type="hidden" name="prefs_form" value="" />
+<input type="hidden" name="csrftok" value="[<$csrftok>]" />
 <strong>Personal Information</strong>
 <table>
 	<tr>

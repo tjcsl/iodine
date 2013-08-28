@@ -29,6 +29,11 @@ class Prefs extends Module {
 		global $I2_USER,$I2_ARGS,$I2_SQL;
 
 		if( isset($_REQUEST['prefs_form']) ) {
+			//
+			if(! isset($_REQUEST['csrftok']) || $_REQUEST['csrftok'] != sha1($_COOKIE['PHPSESSID'])){
+				throw new I2Exception("CSRF token invalid!");
+			}
+			//
 			$refreshmail=false;
 			if(isset($_REQUEST['pref_mailentries']) && $_REQUEST['pref_mailentries']!=$I2_USER->mailentries) {
 				$refreshmail=true;
@@ -127,7 +132,8 @@ class Prefs extends Module {
 							'nonuser_intraboxen' => $this->nonuser_intraboxen,
 							'curtheme' => $this->prefs['style'],
 							'themes' => $this->themes,
-							'photonames' => $this->photonames
+							'photonames' => $this->photonames,
+							'csrftok' => sha1($_COOKIE['PHPSESSID'])
 		));
 	}
 
