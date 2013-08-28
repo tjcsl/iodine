@@ -177,12 +177,12 @@ class Docs extends Module {
 		$typer = new finfo(FILEINFO_MIME_TYPE);
 		$this->template_args['type'] = $typer->file($doc->path);
 		if(count($_POST)>0) {
-			if(empty($_POST['name']) || empty($_POST['path']) || empty($_POST['type'])) {
+			if(empty($_POST['name']) || empty($_POST['type'])) {
 				$this->template_args['error'] = "Blank fields are not allowed.";
 			}
 			else {
 				$gid = $_POST['group_gids'][$_POST['groups'][0]];
-				$doc->edit_doc($_POST['name'], $upload_dir.$_POST['path'], isset($_POST['visible'])?1:0, $_POST['type']);
+				$doc->edit_doc($_POST['name'], doc->path, isset($_POST['visible'])?1:0, $_POST['type']);
 				$doc->edit_group_id($gid, array(isset($_POST['view'])?1:0, isset($_POST['edit'])?1:0));
 				redirect('docs');
 			}

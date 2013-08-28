@@ -183,7 +183,12 @@ class News extends Module {
 				throw new I2Exception('Error: unrecognizable input');
 		}
 	}
+	private function check_csrf(){
+		if(! isset($_REQUEST['csrftok']) || $_REQUEST['csrftok'] != sha1($_COOKIE['PHPSESSID'])){
+			throw new I2Exception("CSRF token invalid!");
+		}
 
+	}
 	/**
 	* Required by the {@link Module} interface.
 	*/
@@ -206,6 +211,7 @@ class News extends Module {
 				$this->template = 'news_add.tpl';
 				
 				if( isset($_REQUEST['add_form'])) {
+					$this->check_csrf();
 					$title = stripslashes($_REQUEST['add_title']);
 					$text = stripslashes($_REQUEST['add_text']);
 					$expire = $_REQUEST['add_expire'];
@@ -249,7 +255,8 @@ class News extends Module {
 					throw new I2Exception('You do not have permission to edit this article.');
 				}
 
-				if( isset($_REQUEST['edit_form']) ) {
+				if( isset($_REQUEST['edit_form']) ) {					
+					$this->check_csrf();
 					$title = stripslashes($_REQUEST['edit_title']);
 					$text = stripslashes($_REQUEST['edit_text']);
 					$expire = $_REQUEST['edit_expire'];
@@ -294,6 +301,7 @@ class News extends Module {
 				}
 
 				if( isset($_REQUEST['delete_confirm']) ) {
+					$this->check_csrf();
 					$item->delete();
 					return 'News Post Deleted';
 				}
@@ -374,7 +382,7 @@ class News extends Module {
 				$headers = "From: $usermail\r\n";
 				$headers .= "Reply-To: $usermail\r\n";
 				$headers .= "Return-Path: $to\r\n";
-		
+				$this->check_csrf();	
 				$this->template_args['mailed'] = mail($to,$subj,$mesg,$headers);
 				return 'News Request';
 			case 'shade':
@@ -409,6 +417,7 @@ class News extends Module {
 	function display_pane($disp) {
 		$this->template_args['newsadmin'] = $this->newsadmin;
 		$this->template_args['maypost'] = $this->maypost;
+		$this->template_args['csrftok'] = sha1($_COOKIE['PHPSESSID']);
 		$disp->disp($this->template, $this->template_args);
 	}
 	

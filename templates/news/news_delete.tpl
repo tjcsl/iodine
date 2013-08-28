@@ -6,6 +6,7 @@
  [<$newsitem->text>]
  <form action="[<$I2_SELF>]" method="post">
  <input type="hidden" name="delete_confirm" value="1" />
+ <input type="hidden" name="csrftok" value="[<$csrftok>]" />
  <br /><br /><input type="submit" value="Delete" name="submit" />
  </form>
 [<else>]

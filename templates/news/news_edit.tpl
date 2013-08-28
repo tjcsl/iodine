@@ -63,5 +63,6 @@ Your news post has been changed.<br />
 		subhead.appendChild(css);
 	}
  </script>
+ <input type="hidden" name="csrftok" value="[<$csrftok>]" />
  <input type="submit" value="Submit" name="submit" onclick="doonsubmit()" />
 </form>

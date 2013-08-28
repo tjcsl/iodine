@@ -1,5 +1,6 @@
 [<if $usermail>]
 <form method="post" class="boxform" id="post_form" action="[<$I2_ROOT>]news/request">
+ <input type="hidden" name="csrftok" value="[<$csrftok>]" />
 [</if>]
 [<if isset($mailed)>]
 	[<if $mailed>]

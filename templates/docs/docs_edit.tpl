@@ -5,7 +5,6 @@
 <form method="post" action="[<$I2_ROOT>]docs/edit/[<$doc->docid>]" class="boxform" enctype="multipart/form-data">
 <table>
 <tr><td>Document Name: </td><td><input type="text" name="name" value="[<$doc->name>]" maxlength="128" /></td></tr>
-<tr><td>Document Path: </td><td><input type="text" name="path" value="[<$doc->path|replace:$upload_dir:''>]" /></td></tr>
 <tr><td>Document Type: </td><td><input type="text" name="type" value="[<$type>]" /></td></tr>
 <tr><td>Visible: </td><td><input type="checkbox" name="visible" [<if $doc->visible>]checked="yes"[</if>]" /></td></tr>
 </table>
