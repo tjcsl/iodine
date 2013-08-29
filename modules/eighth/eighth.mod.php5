@@ -899,7 +899,7 @@ class Eighth extends Module {
 
 			self::end_undo_transaction();
 
-			// redirect('eighth');
+			redirect('eighth');
 		}
 	}
 
