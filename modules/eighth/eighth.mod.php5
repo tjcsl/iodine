@@ -884,10 +884,22 @@ class Eighth extends Module {
 			$group = new Group($this->args['gid']);
 
 			self::start_undo_transaction();
+			d("Adding these members to the activity:", 0);
+			d_r($group->members, 0);
 			$activity->add_members($group->members, TRUE);
+			$actmembers = $activity->get_members();
+			d("The activity now contains these members:", 0);
+			d_r($actmembers);
+			foreach($group->members as $mbr) {
+				if(!in_array($mbr, $actmembers)) {
+					d("UserID ".$mbr." wasn't in the activity! Added.", 0);
+					$activity->add_member($mbr);
+				}
+			}
+
 			self::end_undo_transaction();
 
-			redirect('eighth');
+			// redirect('eighth');
 		}
 	}
 
@@ -970,6 +982,7 @@ class Eighth extends Module {
 			}
 			$membersorted = [];
 			$membersorted = $group->members_obj;
+			d_r($membersorted);
 			usort($membersorted,array('User','name_cmp'));
 			if ($this->op == 'view') {
 				$this->template_args['membersorted'] = $membersorted;
@@ -2547,15 +2560,18 @@ class Eighth extends Module {
 			if (isset($this->args['bids']) && isset($this->args['aid'])) {
 				$status = [];
 				$bids = explode(',', $this->args['bids']);
+				d("force: ".isset($this->args['force']), 0);
 				foreach($bids as $bid) {
 					if(EighthSchedule::is_activity_valid($this->args['aid'], $bid)) {
 						$activity = new EighthActivity($this->args['aid'], $bid);
-
+						d("Current members of the activity: ".print_r($activity->get_members(), true), 0);
 						self::start_undo_transaction();
 						if (self::is_admin())
 							EighthSchedule::remove_absentee($bid, $this->args['uid']);
 						$ret = $activity->add_member(new User($this->args['uid']), isset($this->args['force']));
 						self::end_undo_transaction();
+
+
 
 						$act_status = [];
 						if($ret & EighthActivity::CANCELLED) {
@@ -2587,11 +2603,29 @@ class Eighth extends Module {
 							$status[$bid] = $act_status;
 							$stat = array_keys($act_status);
 							$this->template_args['forcereason'] = $stat[0];
+						} else {
+							$activity = new EighthActivity($this->args['aid'], $bid);
+							try {
+								$actmembers = $activity->get_members();
+								d("New members of the activity: ".print_r($actmembers, true), 0);
+								if(!in_array($this->args['uid'], $actmembers) && ($activity->restricted || $activity->sticky)) {
+									d("User ID ".$this->args['uid']." wasn't added into the activity! Trying again.", 0);
+									
+									
+									$ret = $activity->add_member(new User($this->args['uid']), isset($this->args['force']));
+									
+								}
+							} catch(Exception $e) {
+								d("Failed activity add member checking.", 0);
+							}
+
 						}
+
 						$this->template_args['act_status'] = $act_status;
 					}
 				}
 				if(count($status) == 0) {
+
 					$start_date = $this->args['start_date'];
 					if ($start_date !=  self::$default_start_date) {
 						$append = "/start_date/{$start_date}";
