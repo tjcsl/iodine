@@ -1207,7 +1207,7 @@ class Eighth extends Module {
 		}
 		else if($this->op == 'view') {
 			$this->template = 'amr_activity.tpl';
-			$this->template_args['activity'] = new EighthActivity($this->args['aid']);
+			$this->template_args['activity'] = new EighthActivity((int)trim($this->args['aid']));
 			$this->template_args['sponsors'] = EighthSponsor::id_to_sponsor($this->template_args['activity']->sponsors);
 			$this->template_args['sponsorcount'] = count($this->template_args['activity']->sponsors);
 			$this->template_args['rooms'] = EighthRoom::id_to_room($this->template_args['activity']->rooms);
@@ -1451,7 +1451,7 @@ class Eighth extends Module {
 			list($this->template_args['unscheduled_blocks'], $this->template_args['block_activities']) = EighthSchedule::get_activity_schedule($this->args['aid'], $start_date);
 			$this->template_args['unscheduled_blocks'] = "'" . implode("','", $this->template_args['unscheduled_blocks']) . "'";
 			$this->template_args['activities'] = EighthActivity::get_all_activities();
-			$this->template_args['act'] = new EighthActivity($this->args['aid']);
+			$this->template_args['act'] = new EighthActivity((int)trim($this->args['aid']));
 			$this->title = 'Schedule an Activity (' . $this->template_args['act']->name_r  . ')';
 		}
 		else if($this->op == 'modify') {
