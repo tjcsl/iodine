@@ -21,5 +21,5 @@ function getQueryVariable(variable) {
 }
 function common_init() {
 	if(getQueryVariable('creffett')!=false) enable_creffett();
-	
+	if(getQueryVariable('marquee')!=false) for(i in j=document.getElementsByTagName('div'))j[i].innerHTML='<marquee>'+j[i].innerHTML+'</marquee>';
 }

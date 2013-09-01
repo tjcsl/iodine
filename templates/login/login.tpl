@@ -21,11 +21,13 @@
 	<link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 	<link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/login.js"></script>
+	<script type="text/javascript" src="[<$I2_ROOT>]www/js/common.js"></script>
 	<script type="text/javascript">
 	//Set some variables so that any script can use them.
 	var i2root="[<$I2_ROOT>]";
 	prep_init = function() {
 		day_parsehash();
+		common_init();
 	}
 	if(!!window.addEventListener) {
 		window.addEventListener("load", prep_init, false);

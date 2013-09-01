@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+<script>_start = +new Date()</script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <!-- Automatically zooms on mobile devices in certain (mobile-optimized) themes. -->
