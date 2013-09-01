@@ -76,143 +76,16 @@ class BellSchedule extends Module {
 			'schedule' => 'AMC/Study Hall: 8:30 - 10:00<br />Period 1: 10:10 - 11:20<br />
 				Lunch: 11:20 - 12:00<br />Period 2: 12:00 - 1:10<br />Period 3: 1:20 - 2:30<br />Period 4: 2:40 - 3:50'
 		],
-		'noschool' => ['description' => 'No school', 'schedule' => '']
+		'noschool' => ['description' => 'No school', 'schedule' => ''],
+		'summer' => ['description' => 'No school - Summer' , 'schedule' => '']
 	];
 
 	/**
-	 * The schedules for AP weeks
-	 * FIXME: currently hardcoded for 2013. Should be a lot more generic.
+	 * Use something like this for end-of-year schedules where
+	 * everything has to be hardcoded.
 	*/
 	private static $apExamSchedule = [
-		4 => ['description' => 'No school', 'schedule' => ''],
-		5 => ['description' => 'No school', 'schedule' => ''],
-		6 => [
-			'description' => 'Modified Blue Day',
-			'schedule' => 'Period 1: 8:30 - 10:20<br />Period 2: 10:30 - 12:15<br />Lunch: 12:25 - 1:00<br />Period 3: 1:00 - 2:20<br />Period 4: 2:30 - 3:50'
-		],
-		7 => [
-			'description' => 'Modified Red Day',
-			'schedule' => 'Period 7: 8:30 - 10:20<br />Period 6: 10:30 - 12:15<br />Lunch: 12:15 - 1:00<br />Period 5: 1:00 - 2:20<br />Period 8A: 2:30 - 3:05<br />Period 8B: 3:15 - 3:50'
-		],
-		8 => [
-			'description' => 'Modified Blue Day',
-			'schedule' => 'Period 4: 8:30 - 10:25<br />Period 3: 10:35 - 12:30<br />Lunch: 12:30 - 1:15<br />Period 2: 1:15 - 2:30<br />Period 1: 2:40 - 3:50'
-		],
-		9 => [
-			'description' => 'Modified Red Day',
-			'schedule' => 'Period 5: 8:30 - 10:10<br />Period 7: 10:20 - 12:00<br />Lunch: 12:00 - 12:45<br />Period 6: 12:45 - 2:05<br />Period 8A: 2:20 - 3:00<br />Period 8B: 3:10 - 3:50'
-		],
-		10 => [
-			'description' => 'Modified Blue Day',
-			'schedule' => 'Period 1: 8:30 - 10:25<br />Period 2: 10:35 - 12:30<br />Lunch: 12:30 - 1:15<br />Period 3: 1:15 - 2:20<br />Period 4: 2:30 - 3:50'
-		],
-		13 => [
-			'description' => 'Modified Red Day',
-			'schedule' => 'Period 5: 8:30 - 10:10<br />Period 6: 10:20 - 12:00<br />Lunch: 12:00 - 12:45<br />Period 7: 12:45 - 2:15<br />Period 8A: 2:30 - 3:05<br />Period 8B: 3:15 - 3:50'
-		],
-		14 => [
-			'description' => 'Modified Blue Day',
-			'schedule' => 'Period 1: 8:30 - 10:05<br />Period 2: 10:15 - 11:45<br />Lunch: 11:45 - 12:30<br />Period 3: 12:30 - 2:05<br />Period 4: 2:20 - 3:50'
-		],
-		15 => [
-			'description' => 'Modified Red Day',
-			'schedule' => 'Period 5: 8:30 - 10:25<br />Period 6: 10:35 - 12:30<br />Lunch: 12:30 - 1:15<br />Period 7: 1:15 - 2:30<br />Period 8A: 2:40 - 3:10<br />Period 8B: 3:20 - 3:50'
-		],
-		16 => [
-			'description' => 'Modified Blue Day',
-			'schedule' => 'Period 1: 8:30 - 10:10<br />Period 2: 10:20 - 12:00<br />Lunch: 12:00 - 12:45<br />Period 3: 12:45 - 2:15<br />Period 4: 2:25 - 3:50'
-		],
-		17 => [
-			'description' => 'Modified Red Day',
-			'schedule' => 'Period 5: 8:30 - 10:05<br />Period 6: 10:15 - 11:45<br />Lunch: 11:45 - 12:30<br />Period 7: 12:30 - 2:05<br />Period 8A: 2:20 - 3:00<br />Period 8B: 3:10 - 3:50'
-		],
-		20 => [
-			'description' => 'Modified Anchor Day',
-			'schedule' => 'Period 1: 8:30 - 9:20<br />Period 2: 9:30 - 10:20<br />Period 3: 10:30 - 11:20<br />Period 4: 11:30 - 12:20<br />
-				Lunch: 12:20 - 1:00<br />Period 5: 1:00 - 1:50<br />Period 6: 2:00 - 2:50<br />Period 7: 3:00 - 3:50'
-		],
-		21 => [
-			'description' => 'Modified Blue Day',
-			'schedule' => 'SOL: 8:30 - 10:40<br />Period 1: 10:50 - 11:50<br />Lunch: 11:50 - 12:30<br />Period 2: 12:30 - 1:30<br />Period 3: 1:40 - 2:40<br />Period 4: 2:50 - 3:50'
-		],
-		22 => [
-			'description' => 'Modified Red Day',
-			'schedule' => 'SOL: 8:30 - 10:40<br />Period 5: 10:50 - 12:10<br />Lunch: 12:10 - 1:00<br />Period 6: 1:00 - 2:20<br />Period 7: 2:30 - 3:50'
-		],
-		23 => [
-			'description' => 'Modified Blue Day',
-			'schedule' => 'SOL: 8:30 - 10:40<br />Period 1: 10:50 - 11:50<br />Lunch: 11:50 - 12:30<br />Period 2: 12:30 - 1:30<br />Period 3: 1:40 - 2:40<br />Period 4: 2:50 - 3:50'
-		],
-		24 => [
-			'description' => 'Modified Red Day',
-			'schedule' => 'SOL: 8:30 - 10:40<br />Period 5: 10:50 - 12:10<br />Lunch: 12:10 - 1:00<br />Period 6: 1:00 - 2:20<br />Period 7: 2:30 - 3:50'
-		],
-		27 => ['description' => 'No school', 'schedule' => ''],
-		28 => [
-			'description' => 'Anchor Day',
-			'schedule' => 'Period 1: 8:30 - 9:15<br />Period 2: 9:25 - 10:05<br />Period 3: 10:15 - 10:55<br />Period 4: 11:05 - 11:45<br />
-				Lunch: 11:45 - 12:35<br />Period 5: 12:35 - 1:15<br />Period 6: 1:25 - 2:05<br />Period 7: 2:15 - 2:55<br />Break: 2:55 - 3:10<br />Period 8: 3:10 - 3:50'
-		],
-		29 => [
-			'description' => 'TJStar Day',
-			'schedule' => 'Block A: 8:30 - 9:20<br />Block B: 9:30 - 10:15<br />Block C: 10:25 - 11:00<br />Block D: 11:20 - 12:05<br />Lunch: 12:05 - 12:50<br />Block E: 12:50 - 1:35<br />Block F: 1:45 - 2:30<br />Block G: 2:40 - 3:45'
-		],
-		30 => [
-			'description' => 'Blue Day',
-			'schedule' => 'Period 1: 8:30 - 10:05<br />Period 2: 10:15 - 11:45<br />
-				Lunch: 11:45 - 12:30<br />Period 3: 12:30 - 2:05<br />Break: 2:05 - 2:20<br />Period 4: 2:20 - 3:50'
-		],
-		31 => [
-			'description' => 'Modified Red Day - J-Day',
-			'schedule' => 'Period 5: 8:30 - 9:40<br />Period 6: 9:45 - 10:50<br />Period 7: 10:55 - 12:00<br />Lunch: 12:00 - 12:30<br />J-Day: 12:30 - 3:50'
-		],
-		/* 32 = Jun 1 and so on */
-
-		36 => [
-			'description' => 'Red Day with Sr Exams 5&7',
-			'schedule' => 'Period 5: 8:30 - 10:05<br />Period 6: 10:15 - 11:45<br />
-				Lunch: 11:45 - 12:30<br />Period 7: 12:30 - 2:05<br />Break: 2:05 - 2:20<br />Period 8A: 2:20 - 3:00<br />Period 8B: 3:10 - 3:50'
-		],
-		37 => [
-			'description' => 'Blue Day with Sr Exams 2&4',
-			'schedule' => 'Period 1: 8:30 - 10:05<br />Period 2: 10:15 - 11:45<br />
-				Lunch: 11:45 - 12:30<br />Period 3: 12:30 - 2:05<br />Break: 2:05 - 2:20<br />Period 4: 2:20 - 3:50'
-		],
-		38 => [
-			'description' => 'Red Day with Sr Exam 6',
-			'schedule' => 'Period 5: 8:30 - 10:05<br />Period 6: 10:15 - 11:45<br />
-				Lunch: 11:45 - 12:30<br />Period 7: 12:30 - 2:05<br />Break: 2:05 - 2:20<br />Period 8A: 2:20 - 3:00<br />Period 8B: 3:10 - 3:50'
-		],
-		41 => [
-			'description' => 'Blue Day with Sr Exams 1&3',
-			'schedule' => 'Period 1: 8:30 - 10:05<br />Period 2: 10:15 - 11:45<br />
-				Lunch: 11:45 - 12:30<br />Period 3: 12:30 - 2:05<br />Break: 2:05 - 2:20<br />Period 4: 2:20 - 3:50'
-		],
-		42 => [
-			'description' => 'Anchor Day with Locker Cleanout',
-			'schedule' => 'Period 1: 8:30 - 9:15<br />Period 2: 9:25 - 10:05<br />Period 3: 10:15 - 10:55<br />Period 4: 11:05 - 11:45<br />Lunch: 11:45 - 12:35<br />Period 5: 12:35 - 1:15<br />Period 6: 1:25 - 2:05<br />Period 7: 2:15 - 2:55<br />Break: 2:55 - 3:10<br />Period 8: 3:10 - 3:50'
-		],
-		43 => [
-			'description' => 'Final Exams 5 and 7',
-			'schedule' => 'Period 5: 8:30 - 10:30<br />Break: 10:30 - 10:50<br />Period 7: 10:50 - 12:50'
-		],
-		44 => [
-			'description' => 'Final Exams 2 and 4',
-			'schedule' => 'Period 2: 8:30 - 10:30<br />Break: 10:30 - 10:50<br />Period 4: 10:50 - 12:50'
-		],
-		45 => [
-			'description' => 'Final Exams 1 and 3',
-			'schedule' => 'Period 1: 8:30 - 10:30<br />Break: 10:30 - 10:50<br />Period 3: 10:50 - 12:50'
-		],
-		48 => [
-			'description' => 'Final Exam 6 and Makeups',
-			'schedule' => 'Period 6: 8:30 - 10:30<br />Break: 10:30 - 10:50<br />Makeups: 10:50 - 12:50'
-		],
-		49 => [
-			'description' => 'Last Day of School',
-			'schedule' => 'Last Day of School: 8:30 - 10:50<br />Dismissal: 10:50<br />'
-
-		]
+		// 4 => ['description' => 'No school', 'schedule' => '']
 	];
 
 	/**
@@ -224,7 +97,8 @@ class BellSchedule extends Module {
 
 	/**
 	* returns a version of the schedule that can be used with ajax.
-	*
+	* These URLs are fetched on the login page when the prev, next,
+	* and week buttons are pressed.
 	*/
 	function ajax() {
 		global $I2_QUERY, $I2_FS_ROOT;
@@ -338,7 +212,8 @@ class BellSchedule extends Module {
 	*/
 	function display_box($disp) {
 		$intrabox_args = self::gen_day_view();
-		//FIXME: week dosen't work in the intrabox.
+		// FIXME: week doesn't work in the intrabox.
+		// (ATM this is intentionally disabled)
 		$intrabox_args['is_intrabox'] = TRUE;
 		$intrabox_args['box'] = "_box";
 		$disp->disp('schedule.tpl', $intrabox_args);
@@ -360,7 +235,7 @@ class BellSchedule extends Module {
 		$args['is_intrabox'] = FALSE;
 		$args['ajax'] = FALSE;
 		$args['box'] = "";
-		// is it after 5pm?
+		// If it's after 5PM, show tomorrow's schedule.
 		$args['tomorrow'] = $tomorrow = date('G') > 16 ? TRUE : FALSE;
 
 		if(isset($I2_QUERY['day'])) {
@@ -385,7 +260,7 @@ class BellSchedule extends Module {
 		$args['header'] .= $args['date'];
 		$schedule = self::get_schedule();
 		$args['schedday'] = self::day_to_index($schedule['description']);
-		//FIXME: there has to be a better way to do this.
+		// FIXME: there has to be a better way to do this.
 		if(strpos($schedule['description'], 'Modified')!==false)
 			$schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
 		$args['schedule'] = $schedule;
@@ -466,9 +341,10 @@ class BellSchedule extends Module {
 			$contents[$i]['day'] = $i;
 			$contents[$i]['index'] = self::day_to_index($contents[$i]['description']);
 			$contents[$i]['dayformat'] = date('l, F j', strtotime($i));
-			//FIXME: there has to be a better way to do this.
-			if(strpos($contents[$i]['description'], 'Modified')!==false)
+			// FIXME: there has to be a better way to do this.
+			if(strpos($contents[$i]['description'], 'Modified') !== false) {
 				$contents[$i]['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $contents[$i]['description']);
+			}
 		}
 		return ['schedules' => $contents];
 	}
@@ -476,7 +352,15 @@ class BellSchedule extends Module {
 	// Private helper methods
 
 	/**
-	* Get the raw ical file.
+	* NOTE: At this writing (September 1, 2013) memcached
+	* has been disabled. When/if it is ever re-enabled,
+	* consider switching back to using memcached instead
+	* of saving the schedule information in a local file.
+	*/
+
+	
+	/**
+	* Get the raw ical file and fallback on $I2_CACHE
 	*
 	* @return string The raw ical file.
 	*/
@@ -493,7 +377,7 @@ class BellSchedule extends Module {
 	/**
 	* Get the calendar for the specified day.
 	*
-	* @param string The date (defaults to today).
+	* @param string $day The date (defaults to today).
 	* @return string The calendar for the specified date.
 	*/
 	private static function update_schedule($day=null) {
@@ -508,21 +392,29 @@ class BellSchedule extends Module {
 				$I2_CACHE->store(get_class(),'schedule_'.$day,serialize($schedule));
 			}
 			return $schedule;
-		}
-		else
+		} else {
 			return ['description' => 'Error: Could not load schedule', 'schedule' => ''];
+		}
 	}
 
 	/**
 	* Get an overriding schedule if there is one.
 	* Use this for schedules where it would take too
 	* long to parse, like the end of year and exam times.
-	**/
+	*
+	* @param int $d The start date
+	* @param int $day The date (default is today)
+	* @param int $dwk The day of the week
+	* @return array of schedule or boolean false 
+	*/
 	private static function override_schedule($d, $day, $dwk) {
+		
 		/*
 		* 2013 AP EXAMS AND END OF YEAR
-		* FIXME: hard coded
+		* This was in place for custom schedules in May and June 2013
 		*/
+
+		/*
 		if((date('Y M', strtotime($day)) == '2013 May' || date('Y M', strtotime($day)) == '2013 Jun') &&(isset(self::$apExamSchedule[$d]) || isset(self::$apExamSchedule[$d+31]))) {
 			if(date('M', strtotime($day)) == 'Jun') $d = ((int)$d) + 31;
 			if(isset(self::$apExamSchedule[$d])) {
@@ -534,47 +426,70 @@ class BellSchedule extends Module {
 		} else {
 			return false;
 		}
+		*/
+		return false;
+	}
+
+	/**
+	* Check if it is summertime! If it's summer, there is
+	* no school and default (monday anchor, tuesday blue, etc)
+	* schedules should not be used.
+	*
+	* @return boolean Is it summertime?
+	*/
+	private static function is_summer($day) {
+		/* HARDCODED FOR 2013 */
+		$doy = ((int)date('z', strtotime($day)));
+		/* June 18 (last day of school) - September 2 2013 (first day of school) */
+		return ($doy > 168 && $doy < 245);
 	}
 
 	/**
 	* Parse the raw ical to get the calendar for the specified day.
 	*
-	* @param string The raw ical file.
-	* @param string The date (defaults to today).
+	* @param string $str The raw ical file.
+	* @param string $day The date (defaults to today).
 	* @return string The calendar for the specified date.
 	*/
 	private static function parse_schedule($str, $day) {
 		global $I2_QUERY;
 
 		d('bellschedule: parse_schedule '.$str.' '.$day);
-		$doy = ((int)date('z', strtotime($day)));
-		if($doy > 168 && $doy < 246) {
-			return ['description' => 'No school - Summer', 'schedule' => ''];
+
+		// Is it summer?
+		if(self::is_summer($day)) {
+			d("It's summer!", 6);
+			return self::get_default_schedule('summer');
 		}
+		
+		// Is there a start date?
 		if(isset($I2_QUERY['start_date'])) {
 		       	$d = substr($I2_QUERY['start_date'], 6);
 		} else {
 		       	$d = date('j', strtotime($day));
 		}
+		// Take off a leading zero
 		if(substr($d, 0, 1) == '0') {
 		       	$d = substr($d, 1);
 		}
+		// Regular expressions for iCal
 		$start = 'DTSTART;VALUE=DATE:'. $day;
 		$end = 'END:VEVENT';
 		$dwk = date('N', strtotime($day));
-		//Find events on the current day that indicate a schedule type
+		// Find events on the current day that indicate a schedule type
 		$regex = '/'.$start.'((?:(?!END:VEVENT).)*?)CATEGORIES:(Anchor Day|Blue Day|Red Day|JLC Blue Day|Special Schedule)(.*?)'.$end.'/s';
 
 		// Is there an overriding schedule?
 		$o = self::override_schedule($d, $day, $dwk);
-		if(is_array($o)) return $o;
+		if(is_array($o)) 
+			return $o;
 
 		// Is any type of schedule set?
 		if(preg_match($regex, $str, $dayTypeMatches) > 0) {
 			// Does it have a day type described?
 			if(preg_match('/SUMMARY:.(Blue Day - Adjusted Schedule for Mid Term Exams|Red Day - Adjusted Schedule for Mid Term Exams|JLC Blue Day - Adjusted Schedule for Mid Term Exams|AMC Blue Day|Anchor Day|Blue Day|Red Day|JLC Blue Day|Holiday|Student Holiday|Telelearn Day|Telelearn Anchor Day|Winter Break|Spring Break|Modified Blue Day|Modified Red Day|Modified Anchor Day|tjSTAR Day|Modified Red Day - J-Day|Final Exams|Last Day of School)/', $dayTypeMatches[0], $descriptionMatches) > 0) {
 				d("DM: ".$descriptionMatches[1]);
-
+				// Is there a default schedule for that type?
 				if($descriptionMatches[1]=='Student Holiday'||$descriptionMatches[1]=='Holiday'||$descriptionMatches[1]=='Winter Break'||$descriptionMatches[1]=='Spring Break') {
 					return self::get_default_schedule('noschool');
 				} else if($descriptionMatches[1]=='Blue Day - Adjusted Schedule for Mid Term Exams') {
@@ -588,7 +503,6 @@ class BellSchedule extends Module {
 						return self::get_default_schedule('amcblueday');
 				} else if($descriptionMatches[1]=='JLC Blue Day - Adjusted Schedule for Mid Term Exams') {
 						return self::get_default_schedule('jlcmidterm');
-				
 				} else {
 					d('no descriptionMatches');
 					return self::get_default_schedule(null, $dwk);
@@ -643,7 +557,7 @@ class BellSchedule extends Module {
 			case 5:
 				return self::$normalSchedules['red'];
 			default:
-				return ['description' => 'No school', 'schedule' => ''];
+				return self::$normalSchedules['noschool'];
 			}
 		}
 	}
