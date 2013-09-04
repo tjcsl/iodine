@@ -234,7 +234,7 @@ abstract class Question {
 			}
 			break;
 		case 'identity':
-			$idstr = $I2_USER->username . " (" . $I2_USER->fullname .") " . $I2_USER->mail;
+			$idstr = $I2_USER->username . " (" . $I2_USER->fullname .") " . is_array($I2_USER->mail) ? $I2_USER->mail[0] : $I2_USER->mail;
 			$I2_SQL->query('INSERT INTO '.static::$questiontype.'_votes SET pid=%d,qid=%d,uid=%d,written=%s',
 				$this->mypid,$this->myqid,$uid,$idstr);
 			break;
