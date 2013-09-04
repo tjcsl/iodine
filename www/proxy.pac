@@ -57,6 +57,7 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, ".oxfordartonline.com") ||
 		dnsDomainIs(host, ".apimages.com") ||
 		dnsDomainIs(host, ".sciencemag.org") ||
+		dnsDomainIs(host, ".booksinprint2.com") ||
 		dnsDomainIs(host, "charon.tjhsst.edu")
 
 	)
