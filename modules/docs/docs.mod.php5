@@ -182,7 +182,7 @@ class Docs extends Module {
 			}
 			else {
 				$gid = $_POST['group_gids'][$_POST['groups'][0]];
-				$doc->edit_doc($_POST['name'], doc->path, isset($_POST['visible'])?1:0, $_POST['type']);
+				$doc->edit_doc($_POST['name'], $doc->path, isset($_POST['visible'])?1:0, $_POST['type']);
 				$doc->edit_group_id($gid, array(isset($_POST['view'])?1:0, isset($_POST['edit'])?1:0));
 				redirect('docs');
 			}
