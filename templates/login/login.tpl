@@ -56,6 +56,10 @@
 		[<elseif $failed eq 1>]
 		<div class="login_msg" id="login_failed">
 			Your login[<if $uname>] as [<$uname|escape>][</if>] failed.  Maybe your password is incorrect?<br />
+			[<if $smarty.now|date_format:"%B" eq "September">]
+			<br />
+			Note: If your credentials are not working on all TJ services, you may have to reset your password for the new school year. Log into a school Windows computer on the LOCAL domain and follow the instructions to set a new password.
+			[</if>]
 		</div>
 		[<elseif $failed eq 2>]
 		<div class="login_msg" id="login_failed">
