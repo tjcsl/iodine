@@ -10,7 +10,7 @@
 	[</if>]
 [<else>]
 	Do you want to post an informational news article or announcement on Intranet? This page allows you to easily submit news for approval.<br />
-	<h2 style="color:red;font-weight:bold;">Due to a recent policy change, all news posts must be submitted or approved by staff members before they will be posted.</h2>
+	<h4 style="color:red;font-weight:bold;">All news posts must be submitted or approved by staff members before they will be posted.</h4>
 	[<if $usermail>]
 		We will follow up with you at <strong>[<$usermail>]</strong> if needed.  If this e-mail address is incorrect, please update your preferences, or feel free to send an e-mail directly to [<mailto address=$iodinemail encode=hex >].  If you send us an e-mail directly, make sure you include the title, content, expiration date, and other notes for your news post, and don't forget to tell us who you are!<br />
 		<br />
@@ -18,7 +18,8 @@
 		To increase the chances that your post comes up quickly, please mind the following:<br />
 		<ol>
 		<li>Use correct English grammar, punctuation, and spelling; <strong>do not</strong> use all caps; keep posts concise when possible, and use active voice for better clarity.</li>
-		<li>If you'd like us to attach a file to the post or put in an image, please leave a note to us in the note field. If you put a publicly-accessible URL there, we'll copy the file over to Intranet's servers for hosting.</li>
+		<!--li>If you'd like us to attach a file to the post or put in an image, please leave a note to us in the note field. If you put a publicly-accessible URL there, we'll copy the file over to Intranet's servers for hosting.</li-->
+		<li><strong>Embedded images are no longer permitted directly in news posts.</strong> If an image is crucial to the content of the post, a link to the image may be used instead of being embedded directly. If the image contains large amounts of text, please transcribe it instead of using an image.</li>
 		<li>If you have a link to an external website in your post, make sure that it can be accessed without having to register for that site or provide any personal information. Facebook links that require you to sign in cannot be used for this reason, and may be omitted. This is to improve compliance with the FCPS Network User Guidelines.</li>
 		<li>If you are talking about a club, activity, or event in your post, please put the location and time in your post body. Otherwise people will have no idea where or when it is.  Please also try to make your post unique; we do not need twenty posts all titled "Free food!"</li>
 		<li>If there's a well-defined group, such as "The class of 2012" or "Only male students" that you'd like to limit your post to, add that as a note in the notes field.  If we have that group in the system, then we will post it to that group; otherwise, we will e-mail you to try to get it worked out.  If you do not specify a group, your news post will be visible to all students if it is about an eighth period activity or to everyone if it is about anything else.</li>
