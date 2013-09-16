@@ -24,7 +24,7 @@
 
 	<h2 id="schedule_header">[<$header>]</h2>
 	<p class='desc[<if isset($schedday)>] schedule-[<$schedday>][</if>]'>[<$schedule.description>]</p>
-	<div style='height: 160px;float: center'>[<$schedule.schedule>]</div>
+	<div style='height: 180px;float: center'>[<$schedule.schedule>]</div>
 
 </div>
 <div id="schedule_week[<$box>]">
