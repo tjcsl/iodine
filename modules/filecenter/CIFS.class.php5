@@ -93,15 +93,20 @@ class CIFS extends Filesystem {
 		$descriptors = array(
 			0=>array("pipe","r"),
 			1=>array("pipe","w"),
-			2=>array("file","/tmp/i2cifserr.log","a")
+			2=>array("pipe","w"),
 		);
+		d($cifscommand, 7);
+
 		$pp=proc_open($cifscommand,$descriptors,$pipes);
+
 		if(is_resource($pp)) {
+			stream_get_contents($pipes[2], 2);
 			fwrite($pipes[0],$pass);
 			fclose($pipes[0]);
 			$outputstring=stream_get_contents($pipes[1]);
 			d("mount.cifs output: ".$outputstring,7);
 			fclose($pipes[1]);
+			fclose($pipes[2]);
 			$retval = proc_close($pp);
 			if ($retval != 0) {
 				throw new I2Exception("sudo /sbin/mount.cifs exited with status $retval, command was ($cifscommand), Command Output was ($outputstring)");
