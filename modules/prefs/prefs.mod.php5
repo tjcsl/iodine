@@ -80,6 +80,9 @@ class Prefs extends Module {
 				}
 			}
 
+			if(isset($_REQUEST['next'])) {
+				redirect($_REQUEST['next']);
+			}
 			//redirect('prefs');
 		}
 

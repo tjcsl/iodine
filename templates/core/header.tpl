@@ -19,6 +19,15 @@
 <title>TJHSST Intranet2[<if $title != "" >]: [<$title>][</if>]</title>
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/debug.css" />
+[<if $I2_CSS == "`$I2_ROOT`css/i3-light.css/`$I2_USER->iodineUIDNumber`" || $I2_CSS == "`$I2_ROOT`css/i3-dark.css/`$I2_USER->iodineUIDNumber`">]
+	<style>
+	.mobile-msg {
+		display: none;
+	}
+	</style>
+[<else>]
+	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/mobile-msg.css" />
+[</if>]
 <link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js">/* woo hoo jquery */</script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/common.js"></script>
@@ -51,6 +60,16 @@ IE7_PNG_SUFFIX = ".png";
 <![endif]-->
 </head>
 <body>
+<div class="mobile-msg" onclick="document.forms.mobileform.submit();">
+	<form name="mobileform" action="[<$I2_ROOT>]prefs" method="post">
+	<input type="hidden" name="prefs_form" value="" />
+	<input type="hidden" name="csrftok" value="[<$csrftok>]" />
+	<input type="hidden" name="next" value="/" />
+	<input type="hidden" name="pref_style" value="i3-light" />
+	<b>Mobile-friendly site available</b><br />
+	<span>Click for a site that is more accessible to mobile devices.</span>
+	</form>
+</div>
 <div style="height:100%; width:100%; position: fixed; top:0; left: 0; visibility: hidden; z-index:3">
 <div id="chat_area" style="float:right; height:100%">
 </div>

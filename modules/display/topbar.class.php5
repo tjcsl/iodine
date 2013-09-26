@@ -41,6 +41,8 @@ class TopBar {
 				$hosts = $I2_SQL->query("SELECT sid FROM eighth_sponsors WHERE userid=%d",$I2_USER->uid)->fetch_col('sid');
 				$arr['hosting'] = EighthSponsor::get_schedule_on($hosts,$date);
 			}
+			// Needed for the Iodine mobile pref change
+			$arr['csrftok'] = sha1($_COOKIE['PHPSESSID']);
 			$disp->disp('header.tpl', $arr);
 		} else {
 			d('Header is set to small', 6);

@@ -1,0 +1,26 @@
+.mobile-msg {
+	display: none;
+}
+@media (max-width: 550px) {
+	.mobile-msg {
+		display: block;
+		cursor: pointer;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 50px;
+		background-color: #f0f0f0;
+		z-index: 99;
+		background-image: url("/www/pics/styles/i3/logo-light.png");
+		background-repeat: no-repeat;
+		background-size: 23px 25px;
+		background-position: 5px center;
+		padding-left: 30px;
+		color: black !important;
+	}
+
+	.mobile-msg b {
+		font-size: 16px;
+	}
+}	
