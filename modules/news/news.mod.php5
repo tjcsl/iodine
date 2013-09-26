@@ -150,6 +150,7 @@ class News extends Module {
 		$I2_API->startElement('text_strip');
 		$I2_API->writeCData(strip_tags($story->text));
 		$I2_API->endElement();
+		$I2_API->endElement();
 	}
 
 	/**
