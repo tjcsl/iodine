@@ -409,6 +409,15 @@ class BellSchedule extends Module {
 	*/
 	private static function override_schedule($d, $day, $dwk) {
 		
+		/* Telelearn */
+		// 272 (Monday) - 274 (Wednesday)
+		$dy = ((int)date('z', strtotime($day)));
+		if(date('Y', strtotime($day)) == '2013') {
+			if($dy == 272) return self::$normalSchedules['red'];
+			if($dy == 273) return self::$normalSchedules['blue'];
+			if($dy == 274) return self::$normalSchedules['telelearnanchor'];
+		}
+
 		/*
 		* 2013 AP EXAMS AND END OF YEAR
 		* This was in place for custom schedules in May and June 2013
