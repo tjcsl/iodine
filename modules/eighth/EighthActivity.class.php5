@@ -36,7 +36,7 @@ class EighthActivity {
 	* @param int $activityid The activity ID.
 	* @param int $blockid The block ID for an activity, NULL in general.
 	*/
-	public function __construct($activityid, $blockid = NULL, $special = NULL) {
+	public function __construct($activityid, $blockid = NULL, $special = NULL, $data = NULL) {
 		global $I2_SQL,$I2_USER;
 		if ($special == "CANCELLED") {
 			$tmp = new EighthActivity($activityid);
@@ -47,6 +47,12 @@ class EighthActivity {
 			$this->data['aid'] = $activityid;
 			$this->data['bid'] = $blockid;
 			$this->data['block'] = new EighthBlock($blockid);
+			return;
+		}
+		if($special == "MASSLOAD") {
+			$this->data = $data;
+			$this->data['block_sponsors'] = (!empty($this->data['block_sponsors']) ? explode(",", $this->data['block_sponsors']) : []);
+			$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(",", $this->data['block_rooms']) : []);
 			return;
 		}
 		if (! self::activity_exists($activityid)) {
@@ -810,17 +816,33 @@ class EighthActivity {
 	public static function get_all_activities($blockids = NULL, $restricted = FALSE) {
 		global $I2_SQL;
 		if($blockids == NULL) {
-			$as = self::id_to_activity(flatten($I2_SQL->query('SELECT aid FROM eighth_activities ' . ($restricted ? 'WHERE restricted=1 ' : ''))->fetch_all_arrays(Result::NUM)));
-			usort($as,'EighthActivity::activity_compare');
-			return $as;
+			$activitydata = $I2_SQL->query('SELECT eighth_activities.* FROM eighth_activities ' . ($restricted ? 'WHERE restricted=1 ' : ''))->fetch_all_arrays(Result::ASSOC);
+			$activities = array();
+			foreach($activitydata as $ad) {
+				$activities[] = new EighthActivity($ad['aid'], NULL, "MASSLOAD", $ad);
+			}
+			usort($activities,'EighthActivity::activity_compare');
+			return $activities;
 		}
 		else {
 			if(!is_array($blockids)) {
 				settype($blockids, 'array');
 			}
-			$as = self::id_to_activity($I2_SQL->query('SELECT aid,bid FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid IN (%D) ' . ($restricted ? 'AND restricted=1 ' : '') . 'GROUP BY aid ORDER BY special DESC', $blockids)->fetch_all_arrays(Result::NUM));
-			usort($as,'EighthActivity::activity_compare');
-			return $as;
+			//FINDME: Once sponsor and rooms have been removed from eighth_activities
+			//The list of eighth_activity columns can be replaced with eighth_activities.* in the queries below
+			//Once the capacity column has been removed from eighth_block_map, the list of eighth_block_map columns
+			//can be replaced with eighth_block_map.* in the queries below.
+			if(count($blockids) == 1) {
+				$activitydata = $I2_SQL->query('SELECT eighth_activities.aid,name,description,restricted,presign,oneaday,bothblocks,sticky,special,calendar,eighth_block_map.bid,eighth_block_map.sponsors AS block_sponsors,eighth_block_map.rooms AS block_rooms,attendancetaken,cancelled,roomchanged,comment,advertisement,COUNT(eighth_activity_map.userid) AS member_count FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) LEFT JOIN eighth_activity_map ON (eighth_activities.aid=eighth_activity_map.aid AND eighth_block_map.bid=eighth_activity_map.bid) WHERE eighth_block_map.bid=%D ' . ($restricted ? 'AND restricted=1 ' : '') . 'GROUP BY aid ORDER BY special DESC', $blockids)->fetch_all_arrays(Result::ASSOC);
+			} else {
+				$activitydata = $I2_SQL->query('SELECT aid,name,description,restricted,presign,oneaday,bothblocks,sticky,special,calendar,eighth_block_map.bid,eighth_block_map.sponsors AS block_sponsors,eighth_block_map.rooms AS block_rooms,attendancetaken,cancelled,roomchanged,comment,advertisement FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid IN (%D) ' . ($restricted ? 'AND restricted=1 ' : '') . 'GROUP BY aid ORDER BY special DESC', $blockids)->fetch_all_arrays(Result::ASSOC);
+			}
+			$activities = array();
+			foreach($activitydata as $ad) {
+				$activities[] = new EighthActivity($ad['aid'], NULL, "MASSLOAD", $ad);
+			}
+			usort($activities,'EighthActivity::activity_compare');
+			return $activities;
 		}
 	}
 
