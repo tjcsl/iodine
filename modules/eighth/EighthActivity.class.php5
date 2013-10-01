@@ -828,17 +828,41 @@ class EighthActivity {
 			if(!is_array($blockids)) {
 				settype($blockids, 'array');
 			}
-			//FINDME: Once sponsor and rooms have been removed from eighth_activities
+			//FIXME: Once sponsor and rooms have been removed from eighth_activities
 			//The list of eighth_activity columns can be replaced with eighth_activities.* in the queries below
 			//Once the capacity column has been removed from eighth_block_map, the list of eighth_block_map columns
 			//can be replaced with eighth_block_map.* in the queries below.
+			//FIXME: long-term this should be cached instead of found and merged
 			if(count($blockids) == 1) {
 				$activitydata = $I2_SQL->query('SELECT eighth_activities.aid,name,description,restricted,presign,oneaday,bothblocks,sticky,special,calendar,eighth_block_map.bid,eighth_block_map.sponsors AS block_sponsors,eighth_block_map.rooms AS block_rooms,attendancetaken,cancelled,roomchanged,comment,advertisement,COUNT(eighth_activity_map.userid) AS member_count FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) LEFT JOIN eighth_activity_map ON (eighth_activities.aid=eighth_activity_map.aid AND eighth_block_map.bid=eighth_activity_map.bid) WHERE eighth_block_map.bid=%D ' . ($restricted ? 'AND restricted=1 ' : '') . 'GROUP BY aid ORDER BY special DESC', $blockids)->fetch_all_arrays(Result::ASSOC);
 			} else {
 				$activitydata = $I2_SQL->query('SELECT aid,name,description,restricted,presign,oneaday,bothblocks,sticky,special,calendar,eighth_block_map.bid,eighth_block_map.sponsors AS block_sponsors,eighth_block_map.rooms AS block_rooms,attendancetaken,cancelled,roomchanged,comment,advertisement FROM eighth_activities LEFT JOIN eighth_block_map ON (eighth_activities.aid=eighth_block_map.activityid) WHERE bid IN (%D) ' . ($restricted ? 'AND restricted=1 ' : '') . 'GROUP BY aid ORDER BY special DESC', $blockids)->fetch_all_arrays(Result::ASSOC);
 			}
+
+			//FIXME: this should be cached instead of being found and merged
+			$roomdata = $I2_SQL->query('SELECT * FROM eighth_rooms')->fetch_all_arrays(Result::ASSOC);
+			$rooms = array();
+			foreach($roomdata as $rd) {
+				$rid = $rd['rid'];
+				$rooms[$rid] = $rd;
+			}
+
 			$activities = array();
 			foreach($activitydata as $ad) {
+				$roomnames = array();
+				$roomids = explode(',', $ad['block_rooms']);
+				$capacity = 0;
+				if($ad['cancelled'] || $ad['block_rooms'] == '') {
+					$ad['block_rooms_comma'] = '';
+					$ad['capacity'] = -1;
+				} else {
+					foreach($roomids as $rid) {
+						$roomnames[] = $rooms[$rid]['name'];
+						$capacity += $rooms[$rid]['capacity'];
+					}
+					$ad['block_rooms_comma'] = implode(',', $roomnames);
+					$ad['capacity'] = $capacity;
+				}
 				$activities[] = new EighthActivity($ad['aid'], NULL, "MASSLOAD", $ad);
 			}
 			usort($activities,'EighthActivity::activity_compare');
