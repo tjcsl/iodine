@@ -18,6 +18,7 @@ class EighthActivity {
 
 	static $membercache = [];
 	static $passcache = [];
+	static $permissionscache = [];
 	private $data = [];
 	const CANCELLED = 1;
 	const PERMISSIONS = 2;
@@ -745,10 +746,19 @@ class EighthActivity {
 	*/
 	public function check_restricted_member($userid = NULL) {
 		global $I2_SQL, $I2_USER;
+
 		if($userid === NULL ) {
 			$userid = $I2_USER->uid;
 		}
-		return $I2_SQL->query('SELECT userid FROM eighth_activity_permissions WHERE aid=%d AND userid=%d', $this->data['aid'], $userid)->more_rows();
+
+
+		if (!array_key_exists($userid, self::$permissionscache)) {
+			$r = $I2_SQL->query('SELECT aid FROM eighth_activity_permissions WHERE userid=%d', $userid)->fetch_all_arrays(Result::NUM);
+			$r = array_map("intval", flatten($r));
+			self::$permissionscache[$userid] = $r;
+		}
+
+		return in_array($this->data['aid'], self::$permissionscache[$userid]);
 	}
 
 	/**
