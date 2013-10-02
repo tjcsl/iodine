@@ -1064,7 +1064,7 @@ class EighthActivity {
 	* @param string $name The name of the field to get.
 	*/
 	public function __get($name) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_USER;
 		if(array_key_exists($name, $this->data)) {
 			if($name == 'restricted') {
 				return ($this->data['restricted'] && !$this->check_restricted_member());
@@ -1208,7 +1208,7 @@ class EighthActivity {
 			case 'percent_full':
 				return (100*$this->__get('member_count'))/($this->__get('capacity'));
 			case 'favorite':
-				 return (sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $activityid)->fetch_array(MYSQLI_ASSOC))>1?TRUE:FALSE);
+				 return (sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $this->data['aid'])->fetch_array(MYSQLI_ASSOC))>1?TRUE:FALSE);
 
 		}
 	}
