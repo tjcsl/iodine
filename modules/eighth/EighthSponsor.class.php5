@@ -16,6 +16,7 @@
 
 class EighthSponsor {
 	private $data = [];
+	private static $cache = [];
 
 	/**
 	* The constructor for the {@link EighthSponsor} class.
@@ -24,16 +25,15 @@ class EighthSponsor {
 	* @param int $sponsorid The sponsor ID.
 	*/
 	public function __construct($sponsorid) {
-		global $I2_SQL, $I2_CACHE;
-		$cached = $I2_CACHE->read(get_class(), "sponsor_{$sponsorid}");
+		global $I2_SQL;
 
-
-		if ($cached != false) {
-			$this->data = unserialize($cached);
-		} else {
-			$this->data = $I2_SQL->query('SELECT * FROM eighth_sponsors WHERE sid=%d', $sponsorid)->fetch_array(Result::ASSOC);
-			$I2_CACHE->store(get_class(), "sponsor_{$sponsorid}", serialize($this->data), $expire=60*60*24*1);
-		}
+		if (isset(self::$cache[$sponsorid])) {
+	        $this->data = &self::$cache[$sponsorid];
+	    } else {
+            $bulk = $I2_SQL->query('SELECT * FROM eighth_sponsors')->fetch_all_arrays_keyed("sid", Result::ASSOC);
+            self::$cache = $bulk;
+            $this->data = $bulk[$sponsorid];
+	    }
 	}
 
 	/**

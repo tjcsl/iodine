@@ -752,7 +752,7 @@ class EighthActivity {
 		}
 
 
-		if (!array_key_exists($userid, self::$permissionscache)) {
+		if (!isset(self::$permissionscache[$userid])) {
 			$r = $I2_SQL->query('SELECT aid FROM eighth_activity_permissions WHERE userid=%d', $userid)->fetch_all_arrays(Result::NUM);
 			$r = array_map("intval", flatten($r));
 			self::$permissionscache[$userid] = $r;
