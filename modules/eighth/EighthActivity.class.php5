@@ -16,9 +16,9 @@
 
 class EighthActivity {
 
-	static $membercache = [];
-	static $passcache = [];
-	static $permissionscache = [];
+	private static $membercache = [];
+	private static $passcache = [];
+	private static $permissionscache = [];
 	private $data = [];
 	const CANCELLED = 1;
 	const PERMISSIONS = 2;

@@ -15,9 +15,6 @@
 */
 
 class EighthSponsor {
-
-	private static $cache = [];
-
 	private $data = [];
 
 	/**
@@ -27,12 +24,15 @@ class EighthSponsor {
 	* @param int $sponsorid The sponsor ID.
 	*/
 	public function __construct($sponsorid) {
-		global $I2_SQL;
-		if (isset(self::$cache[$sponsorid])) {
-				  $this->data = &self::$cache[$sponsorid]->data;
+		global $I2_SQL, $I2_CACHE;
+		$cached = $I2_CACHE->read(get_class(), "sponsor_{$sponsorid}");
+
+
+		if ($cached != false) {
+			$this->data = unserialize($cached);
 		} else {
 			$this->data = $I2_SQL->query('SELECT * FROM eighth_sponsors WHERE sid=%d', $sponsorid)->fetch_array(Result::ASSOC);
-			self::$cache[$sponsorid] = $this;
+			$I2_CACHE->store(get_class(), "sponsor_{$sponsorid}", serialize($this->data), $expire=60*60*24*1);
 		}
 	}
 
@@ -43,7 +43,7 @@ class EighthSponsor {
 	*/
 	public static function get_all_sponsors() {
 		global $I2_SQL;
-		return $I2_SQL->query("SELECT sid,pickup,fname,lname,userid,CONCAT(lname,', ',fname) 
+		return $I2_SQL->query("SELECT sid,pickup,fname,lname,userid,CONCAT(lname,', ',fname)
 			AS name_comma FROM eighth_sponsors ORDER BY lname,fname")->fetch_all_arrays(Result::ASSOC);
 	}
 
@@ -68,7 +68,7 @@ class EighthSponsor {
 			}
 		}
 		$ret = [];
-		
+
 		foreach ($sponsorstorooms as $sponsorid=>$rooms) {
 			if (count($rooms) < 2) {
 				continue;
@@ -115,7 +115,7 @@ class EighthSponsor {
 			}
 			return $activities;
 	}
-	
+
 	/**
 	* Gets a sponsor's schedule on the given date
 	* Can also handle an array of sponsors
