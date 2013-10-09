@@ -185,7 +185,8 @@ class Auth {
 				}
 			}
 
-			self::log_auth($user, FALSE, 'overall'); return FALSE;
+			self::log_auth($user, FALSE, 'overall'); 
+			return FALSE;
 		}
 
 		/**
@@ -249,7 +250,9 @@ class Auth {
 			// The admin should be using the master password and approved above
 			// If it gets to here, their login fails and we don't want kerberos even trying
 			if ($user == 'admin') {
-				return self::validate($user,$password,['master']);
+				$val = self::validate($user,$password,['master']);
+				if(!$val) $this->modauth_loginfailed = 3;
+				return $val;
 			}
 
 			if(self::validate($user,$password)) {
