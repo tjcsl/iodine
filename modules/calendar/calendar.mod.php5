@@ -20,13 +20,17 @@ class Calendar extends Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_ARGS;
+		global $I2_ARGS, $I2_AUTH;
 
 		if (count($I2_ARGS) <= 1) {
 			$I2_ARGS[1] = 'view';
 		}
 
 		$method = $I2_ARGS[1];
+		if(!$I2_AUTH->is_authenticated(true) && $method != 'view') {
+			redirect("");
+		}
+
 		if (method_exists($this, $method)) {
 			$this->$method();
 			$this->template_args['method'] = $method;

@@ -203,7 +203,7 @@ try {
 	 */
 	$ldap_excludes = (isset($I2_ARGS[0]) &&
 		($I2_ARGS[0] == 'feeds' ||
-		($I2_ARGS[0] == 'calendar' && (!isset($I2_ARGS[1]) || $I2_ARGS[1] == 'view')) ||
+		($I2_ARGS[0] == 'calendar') ||
 			(isset($I2_ARGS[1]) &&
 			($I2_ARGS[0] == 'api' && $I2_ARGS[1] == 'bellschedule') ||
 			($I2_ARGS[0] == 'ajax' && $I2_ARGS[1] == 'bellschedule'))));
