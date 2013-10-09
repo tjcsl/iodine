@@ -65,6 +65,10 @@
 		<div class="login_msg" id="login_failed">
 			Your password and username were correct, but you don't appear to exist in our database.  If this is a mistake, please contact the intranetmaster about it.
 		</div>
+		[<elseif $failed eq 3>]
+		<div class="login_msg" id="login_failed">
+			Your login[<if $uname>] as [<$uname|escape>][</if>] failed. Maybe your username is incorrect?
+		</div>
 		[<elseif $failed>]
 		<div class="login_msg" id="login_failed">
 			An unidentified error has occurred.  Please contact the Intranetmaster and tell him you received this error message.
