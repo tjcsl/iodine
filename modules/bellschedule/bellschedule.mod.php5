@@ -216,7 +216,11 @@ class BellSchedule extends Module {
 		// (ATM this is intentionally disabled)
 		$intrabox_args['is_intrabox'] = TRUE;
 		$intrabox_args['box'] = "_box";
-		$disp->disp('schedule.tpl', $intrabox_args);
+	//	$disp->disp('schedule.tpl', $intrabox_args);
+
+		$ds = new DaySchedule();
+		$ds->init_box();
+		$ds->display_box(new Display('dayschedule'));
 	}
 
 
