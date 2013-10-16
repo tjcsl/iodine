@@ -13,8 +13,13 @@ class DaySchedule extends Module {
 	* The TJ CalendarWiz iCal URL, which is used to find out
 	* what type of day it is.
 	**/
-
 	private static $iCalURL = 'https://www.calendarwiz.com/CalendarWiz_iCal.php?crd=tjhsstcalendar';
+
+	/**
+	* In seconds, how long the cached iCal should be saved.
+	* Currently 1 hour.
+	**/
+	private static $cache_length = 3600;
 
 	/**
 	* Values of the SUMMARY iCal field, which are then mapped
@@ -83,9 +88,11 @@ class DaySchedule extends Module {
 			array("Break", "2:13", "2:22"),
 			array("Period 4", "2:22", "3:50")
 		),
+		"error" => array('error' => 'No schedule information available.'),
 		"noschool" => array(),
 		"schoolclosed" => array()
 	);
+
 	/**
 	* A to-be-filled array containing the types of days for each day
 	**/
@@ -105,6 +112,7 @@ class DaySchedule extends Module {
 	* The template arguments
 	**/
 	private static $args = array();
+
 	/**
 	* The displayed name of the module (required)
 	**/
@@ -162,9 +170,9 @@ class DaySchedule extends Module {
 			}
 		}
 		self::init();
-
 		return "Day Schedule";
 	}
+
 	/**
 	* Displaying of the pane goes here
 	**/
@@ -174,7 +182,6 @@ class DaySchedule extends Module {
 			return;
 		}
 		self::gen_day_args();
-		d_r(self::$args,0);
 		$disp->disp('pane.tpl', self::$args);
 	}
 
@@ -184,8 +191,6 @@ class DaySchedule extends Module {
 	function init_box() {
 		self::init();
 		self::$args['type'] = 'box';
-
-
 		return "Day Schedule";
 	}
 
@@ -194,7 +199,6 @@ class DaySchedule extends Module {
 	**/
 	function display_box($disp) {
 		self::gen_day_args();
-		d('display box',0);
 		$disp->disp('pane.tpl', self::$args);
 
 	}
@@ -286,8 +290,9 @@ class DaySchedule extends Module {
 		self::$args['dayname'] = date('l, F j', strtotime($day));
 		self::$args['summaryid'] = $daytype;
 		self::$args['summary'] = self::get_display_summary($daytype);
-		self::$args['schedule'] = isset(self::$schedules[$daytype]) ? self::$schedules[$daytype] : array('error' => 'No schedule information available.');
+		self::$args['schedule'] = isset(self::$schedules[$daytype]) ? self::$schedules[$daytype] : self::$schedules['error'];
 	}
+
 	/**
     * Downloads a file.
     *
@@ -308,7 +313,15 @@ class DaySchedule extends Module {
 	* @return String the iCal files's contents
 	**/
 	private static function fetch_ical() {
-		self::$icsStr = self::curl_file_get_contents(self::$iCalURL);
+		global $I2_CACHE, $I2_QUERY;
+        self::$icsStr = unserialize($I2_CACHE->read(get_class(), 'ical'));
+        $cache_date = unserialize($I2_CACHE->read(get_class(), 'ical_date'));
+        if(self::$icsStr === false || isset($I2_QUERY['regenerate_schedule']) || (time() > ($cache_date + self::$cache_length))) {
+        	d('Reloading dayschedule cache', 4);
+			self::$icsStr = self::curl_file_get_contents(self::$iCalURL);
+        	$I2_CACHE->store(get_class(), 'ical', serialize(self::$icsStr));
+        	$I2_CACHE->store(get_class(), 'ical_date', serialize(time()));
+        }
 		return self::$icsStr;
 	}
 
@@ -339,7 +352,6 @@ class DaySchedule extends Module {
 	    self::$icsArr = $icsDates;
 	    return $icsDates;
 	}
-
 
 	/**
 	* Convert the iCal array (from convert_to_array) to an array
@@ -401,7 +413,6 @@ class DaySchedule extends Module {
 		}
 		return "Administration";
 	}
-	
 
 	/**
 	* Add custom summary information to the database
@@ -442,25 +453,36 @@ class DaySchedule extends Module {
 	* and append them to the current schedules and summaries
 	**/
 	private static function fetch_custom_entries() {
-		global $I2_SQL;
-/*
+		global $I2_SQL, $I2_CACHE;
 
-*/
 		/* TODO: cache */
 		
-		$custom_summaries = $I2_SQL->query('SELECT * FROM dayschedule_custom_summaries')->fetch_all_arrays(MYSQLI_ASSOC);
+		$custom_summaries = unserialize($I2_CACHE->read(get_class(), 'custom_summaries'));
+		$pretty_summaries = unserialize($I2_CACHE->read(get_class(), 'pretty_summaries'));
+		$custom_schedules = unserialize($I2_CACHE->read(get_class(), 'custom_schedules'));
+        $cache_date = unserialize($I2_CACHE->read(get_class(), 'custom_date'));
+
+        if(($custom_summaries === false || $pretty_summaries === false || $custom_schedules === false) ||
+           (isset($I2_QUERY['regenerate_schedule'])) ||
+           (time() > ($cache_date + self::$cache_length))
+        ) {
+        	d('Regenerating SQL cache', 4);
+			$custom_summaries = $I2_SQL->query('SELECT * FROM dayschedule_custom_summaries')->fetch_all_arrays(MYSQLI_ASSOC);
+			$pretty_summaries = $I2_SQL->query('SELECT * FROM dayschedule_pretty_summaries')->fetch_all_arrays(MYSQLI_ASSOC);
+			$custom_schedules = $I2_SQL->query('SELECT * FROM dayschedule_custom_schedules')->fetch_all_arrays(MYSQLI_ASSOC);
+			$I2_CACHE->store(get_class(), 'custom_summaries', serialize($custom_summaries));
+			$I2_CACHE->store(get_class(), 'pretty_summaries', serialize($pretty_summaries));
+			$I2_CACHE->store(get_class(), 'custom_schedules', serialize($custom_schedules));
+        	$I2_CACHE->store(get_class(), 'custom_date', serialize(time()));
+		}
 		foreach($custom_summaries as $s) {
 			self::$summaries[$s['daydesc']] = $s['daytype'];
 		}
 
-		$pretty_summaries = $I2_SQL->query('SELECT * FROM dayschedule_pretty_summaries')->fetch_all_arrays(MYSQLI_ASSOC);
 		foreach($pretty_summaries as $s) {
 			self::$pretty_summaries[$s['daytype']] = $s['daydesc'];
 		}
-		d_r(self::$pretty_summaries, 0);
 
-		
-		$custom_schedules = $I2_SQL->query('SELECT * FROM dayschedule_custom_schedules')->fetch_all_arrays(MYSQLI_ASSOC);
 		foreach($custom_schedules as $s) {
 			self::$schedules[$s['daytype']] = json_decode($s['json']);
 		}
