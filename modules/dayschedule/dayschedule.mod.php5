@@ -105,6 +105,7 @@ class DaySchedule extends Module {
 		} else {
 			self::$args['date'] = date('Ymd');
 		}
+		self::check_show_next_day();
 		/* load the custom sql entries */
 		self::fetch_custom_entries();
 
@@ -153,7 +154,7 @@ class DaySchedule extends Module {
 			for($i=0; $i<$d; $i++) {
 				$week[] = $disp->fetch($I2_FS_ROOT . 'templates/dayschedule/pane.tpl', self::$args, false);
 				/* make date be the next day */
-				self::$args['date'] = date('Ymd', strtotime('+1 day', strtotime(self::$args['date'])));
+				self::increment_date('+1 day');
 			}
 			echo json_encode($week);
 		} else {
@@ -172,6 +173,27 @@ class DaySchedule extends Module {
 	private static function get_display_summary($daytype) {
 		return array_search($daytype, self::$summaries);
 	}
+
+	/**
+	* Check if tomorrow's schedule should be shown
+	* Currently, this is after 4PM
+	**/
+	private static function check_show_next_day() {
+		$hr = (int)date('G');
+		if($hr >= 16) {
+			self::increment_date('+1 day');
+		}
+	}
+
+	/**
+	* Increment the args['date'] variable by a strtotime expression
+	* e.x. increment_date('+1 day')
+	* @attr String $inc the strtotime expression
+	**/
+	private static function increment_date($inc) {
+		self::$args['date'] = date('Ymd', strtotime($inc, strtotime(self::$args['date'])));
+	}
+
 	/**
 	* Calculate the schedule for today and return the array
 	* which is passed to $disp
