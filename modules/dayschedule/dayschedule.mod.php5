@@ -138,11 +138,14 @@ class DaySchedule extends Module {
 	function ajax() {
 		global $I2_AJAX, $I2_FS_ROOT, $I2_ARGS, $I2_QUERY;
 		$disp = new Display('dayschedule');
-		if(isset($I2_QUERY['date'])) {
-			self::$args['date'] = $I2_QUERY['date'];
-		} else {
-			self::$args['date'] = date('Ymd');
-		}
+		
+		/**
+		* Do initialization which is needed for the following code
+		* to work (specifically fetching the custom SQL and iCal)
+		**/
+
+		self::init_pane();
+
 		if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'week') {
 			$week = array();
 			$d = isset($I2_QUERY['days']) ? $I2_QUERY['days'] : 5;
