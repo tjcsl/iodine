@@ -16,7 +16,8 @@
 }
 .day-type.anchor { color: black; }
 .day-type.red { color: red; }
-.day-type.blue { color: blue; }
+.day-type.blue,
+.day-type.jlc{ color: blue; }
 .schedule-tbl {
 	margin-left: auto;
 	margin-right: auto;
