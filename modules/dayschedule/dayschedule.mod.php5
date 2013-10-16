@@ -257,8 +257,11 @@ class DaySchedule extends Module {
 	* Currently, this is after 4PM
 	**/
 	private static function check_show_next_day() {
+		global $I2_QUERY;
 		$hr = (int)date('G');
-		if($hr >= 16) {
+		// if it's after 4
+		// never do this if there's a custom date
+		if($hr >= 16 && !isset($I2_QUERY['date'])) {
 			self::increment_date('+1 day');
 		}
 	}
@@ -390,7 +393,7 @@ class DaySchedule extends Module {
 				self::add_summary($_POST['daytype'], $_POST['daydesc']);
 			}
 		} else if($page == 'summariesedit') {
-			
+
 		} else if($page == 'schedules') {
 			/**
 			* The schedule edit page
