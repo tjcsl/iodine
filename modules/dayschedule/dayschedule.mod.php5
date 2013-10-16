@@ -19,7 +19,7 @@ class DaySchedule extends Module {
 	/**
 	* Values of the SUMMARY iCal field, which are then mapped
 	* to IDs for the type of day (as defined in $default_day_schedules)
-	* Custom summaries should be stored in MySQL!
+	* Custom summaries should be stored in MySQL
 	**/
 	private static $summaries = array(
 		"Anchor Day" => "anchor",
@@ -34,9 +34,10 @@ class DaySchedule extends Module {
 	/**
 	* Maps a schedule type to a pretty name
 	* (e.g. jlc to JLC Blue Day and not JLC Blue)
+	* Custom summaries should be in MySQL
 	**/
 	private static $pretty_summaries = array(
-		"jlc" => "JLC Blue Day"
+		// "jlc" => "JLC Blue Day"
 	);
 
 	/**
@@ -152,6 +153,14 @@ class DaySchedule extends Module {
 	* Initialization for the pane goes here
 	**/
 	function init_pane() {
+		global $I2_ARGS, $I2_USER;
+		if(isset($I2_ARGS[1]) && $I2_ARGS[1] == 'admin') {
+			if($I2_USER->is_group_member('admin_all') || $I2_USER->is_group_member('admin_dayschedule')) {
+				return "".$this->admin();
+			} else {
+				throw new I2Exception("You aren't an admin.");
+			}
+		}
 		self::init();
 
 		return "Day Schedule";
@@ -160,6 +169,10 @@ class DaySchedule extends Module {
 	* Displaying of the pane goes here
 	**/
 	function display_pane($disp) {
+		if(isset(self::$args['template'])) {
+			$disp->disp(self::$args['template'], self::$args);
+			return;
+		}
 		self::gen_day_args();
 		d_r(self::$args,0);
 		$disp->disp('pane.tpl', self::$args);
@@ -352,23 +365,73 @@ class DaySchedule extends Module {
 	}
 
 	/**
+	* The administration interface.
+	**/
+	private static function admin() {
+		global $I2_ARGS;
+		self::$args['template'] = 'admin.tpl';
+		$page = isset($I2_ARGS[3]) ? $I2_ARGS[3] : 'home';
+		self::$args['page'] = $page;
+		if($page == 'home') {
+			/**
+			* The administration homepage.
+			**/
+			return "Administration";
+		} else if($page == 'summaries') {
+			/**
+			* The summary edit page
+			**/
+			self::$args['summaries'] = self::$summaries;
+		} else if($page == 'summariesadd') {
+			/**
+			* Add a summary
+			**/
+			if(isset($_POST['daytype'], $_POST['daydesc'])) {
+				self::add_summary($_POST['daytype'], $_POST['daydesc']);
+			}
+		} else if($page == 'summariesedit') {
+			
+		} else if($page == 'schedules') {
+			/**
+			* The schedule edit page
+			**/
+		}
+		return "Administration";
+	}
+	
+
+	/**
 	* Add custom summary information to the database
 	* @attr String $daytype Day type
 	* @attr String $daydesc the SUMMARY field from iCal
 	**/
 	private static function add_summary($daytype, $daydesc) {
-		// INSERT INTO `iodine-dev`.`dayschedule_custom_summaries` (`daytype`, `daydesc`) VALUES ('psat-half', 'PSAT (Early Dismissal for Students)');
+		global $I2_SQL;
+		return $I2_SQL->raw_query("INSERT INTO `dayschedule_custom_summaries` (`daytype`, `daydesc`) VALUES " .
+						   "('" . mysql_real_escape_string($daytype) . "', '" . mysql_real_escape_string($daydesc) . "');");
+	}
+
+	/**
+	* Add pretty summary information to the database
+	* @attr String $daytype Day type
+	* @attr String $daydesc the description
+	**/
+	private static function add_pretty_summary($daytype, $daydesc) {global $I2_SQL;
+		return $I2_SQL->raw_query("INSERT INTO `dayschedule_pretty_summaries` (`daytype`, `daydesc`) VALUES " .
+						   "('" . mysql_real_escape_string($daytype) . "', '" . mysql_real_escape_string($daydesc) . "');");
 	}
 
 	/**
 	* Add custom schedule information to the database
 	* @attr String $daytype Day type
-	* @attr String $json JSON containing the schedule
+	* @attr Array $arr Array containing the schedule, to be converted to JSON
 	* information, for example:
 	* [["Period 1", "8:30", "10:05"], ["Period 2", "10:15", "11:45"]]
 	**/
-	private static function add_schedule($daytype, $json) {
-		// INSERT INTO `iodine-dev`.`dayschedule_custom_summaries` (`daytype`, `daydesc`) VALUES ('psat-half', 'PSAT (Early Dismissal for Students)');
+	private static function add_schedule($daytype, $arr) {
+		$json = json_encode($arr);
+		return $I2_SQL->raw_query("INSERT INTO `dayschedule_custom_schedules` (`daytype`, `json`) VALUES " .
+						   "('" . mysql_real_escape_string($daytype) . "', '" . mysql_real_escape_string($json) . "');");
 	}
 
 	/**
@@ -378,14 +441,7 @@ class DaySchedule extends Module {
 	private static function fetch_custom_entries() {
 		global $I2_SQL;
 /*
-CREATE TABLE IF NOT EXISTS `dayschedule_custom_summaries` (
-  `daytype` varchar(32) NOT NULL,
-  `daydesc` varchar(128) NOT NULL
-)
-CREATE TABLE IF NOT EXISTS `dayschedule_custom_schedules` (
-  `daytype` varchar(32) NOT NULL,
-  `json` varchar(2048) NOT NULL
-)
+
 */
 		/* TODO: cache */
 		
@@ -393,14 +449,18 @@ CREATE TABLE IF NOT EXISTS `dayschedule_custom_schedules` (
 		foreach($custom_summaries as $s) {
 			self::$summaries[$s['daydesc']] = $s['daytype'];
 		}
-		d_r(self::$summaries, 0);
+
+		$pretty_summaries = $I2_SQL->query('SELECT * FROM dayschedule_pretty_summaries')->fetch_all_arrays(MYSQLI_ASSOC);
+		foreach($pretty_summaries as $s) {
+			self::$pretty_summaries[$s['daytype']] = $s['daydesc'];
+		}
+		d_r(self::$pretty_summaries, 0);
 
 		
 		$custom_schedules = $I2_SQL->query('SELECT * FROM dayschedule_custom_schedules')->fetch_all_arrays(MYSQLI_ASSOC);
 		foreach($custom_schedules as $s) {
 			self::$schedules[$s['daytype']] = json_decode($s['json']);
 		}
-		d_r(self::$schedules, 0);
 		
 		
 	}
