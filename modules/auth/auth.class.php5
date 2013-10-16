@@ -384,32 +384,7 @@ class Auth {
 			$disp->smarty_assign('backgrounds', self::get_background_images());
 			//FIXME: all these special cases should not be in the login() function.
 			if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='api') {
-
-				$I2_API->init();
-				$I2_API->logging = false;
-				if(isset($I2_ARGS[1]) && $I2_ARGS[1] == 'bellschedule') {
-					$module = 'bellschedule';
-					$mod = new $module();
-					$I2_API->startDTD($module);
-					$I2_API->writeDTDElement($module,'(body,error,debug)');
-					if($mod->api_build_dtd()==false) {
-						// no module-specific dtd
-						$I2_API->writeDTDElement('body','(#PCDATA)');
-					}
-					$I2_API->writeDTDElement('error','(#PCDATA)');
-					$I2_API->writeDTDElement('debug','(#PCDATA)');
-					$I2_API->endDTD();
-					$I2_API->startElement($module);
-					$I2_API->writeElement('loggedin', 0);
-					$mod->api();
-					exit(0);
-				}
-				$I2_API->startElement('auth');
-				$I2_API->startElement('error');
-				$I2_API->writeElement('message','You are not logged in.');
-				$I2_API->writeElement('login_base_url',$I2_ROOT);
-				$I2_API->endElement();
-				$I2_API->endElement();
+				self::auth_api();
 				exit(0);
 			} else if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='ajax' && $I2_ARGS[1]=='bellschedule') {
 				$I2_AJAX->returnResponse($I2_ARGS[1]);
@@ -421,7 +396,33 @@ class Auth {
 
 			return FALSE;
 	}
-
+	private function auth_api() {
+		$I2_API->init();
+		$I2_API->logging = false;
+		if(isset($I2_ARGS[1]) && $I2_ARGS[1] == 'bellschedule') {
+			$module = 'bellschedule';
+			$mod = new $module();
+			$I2_API->startDTD($module);
+			$I2_API->writeDTDElement($module,'(body,error,debug)');
+			if($mod->api_build_dtd()==false) {
+				// no module-specific dtd
+				$I2_API->writeDTDElement('body','(#PCDATA)');
+			}
+			$I2_API->writeDTDElement('error','(#PCDATA)');
+			$I2_API->writeDTDElement('debug','(#PCDATA)');
+			$I2_API->endDTD();
+			$I2_API->startElement($module);
+			$I2_API->writeElement('loggedin', 0);
+			$mod->api();
+			exit(0);
+		}
+		$I2_API->startElement('auth');
+		$I2_API->startElement('error');
+		$I2_API->writeElement('message','You are not logged in.');
+		$I2_API->writeElement('login_base_url',$I2_ROOT);
+		$I2_API->endElement();
+		$I2_API->endElement();
+	}
 	private function init_backgrounds() {
 		global $I2_QUERY, $I2_FS_ROOT;
 		// try to get a special image for a holiday, etc.
@@ -468,21 +469,13 @@ class Auth {
 		$this->template_args['bgjs'] = $imagejs;
 
 	}
-	public function init_schedule() {
+	private function init_schedule() {
 		global $I2_QUERY;
-		// Week view
-		if(isset($I2_QUERY['week'])) {
-			$args = BellSchedule::gen_schedule_week();
-			$this->template_args = array_merge($this->template_args, $args);
-		} else {
-			$args = BellSchedule::gen_day_view();
-			$this->template_args = array_merge($this->template_args, $args);
-			$schedule = BellSchedule::get_schedule();
-			$this->template_args['schedday'] = BellSchedule::day_to_index($schedule['description']);
-			if(strpos($schedule['description'], 'Modified')!==false)
-				$schedule['description'] = str_replace("Modified", "<span class='schedule-modified'>Modified</span>", $schedule['description']);
-			$this->template_args['schedule'] = $schedule;
-		}
+		$ds = new DaySchedule();
+		$ds->init_login();
+		d('auth args'.print_r($ds->get_args(),1), 0);
+		$this->template_args = array_merge($this->template_args, $ds->get_args());
+		$this->template_args['type'] = 'login';
 	}
 	/**
 	* Gets all of the background images that can be used on Iodine.

@@ -3,8 +3,14 @@
 	width: 300px;
 	text-align: center;
 }
+.dayschedule.box {
+	width: 220px;
+}
 .day-name {
 	font-size: 20px;
+}
+.dayschedule.box .day-name {
+	font-size: 18px;
 }
 .day-type {
 	font-size: 16px;
@@ -30,9 +36,24 @@
 	opacity: 0.3;
 }
 
+.dayschedule.box .day-left,
+.dayschedule.box .day-right {
+	font-size: 20px;
+}
+
 .day-left:hover, .day-right:hover {
 	opacity: 1;
 	cursor: pointer;
+}
+
+.schedule-tbl th {
+	text-align: right;
+	padding-right: 5px;
+}
+
+.schedule-tbl td {
+	text-align: left;
+	padding-left: 5px;
 }
 </style>
 <script type='text/javascript'>
@@ -54,17 +75,17 @@ day_jump = function(days) {
 	location.href = '?date=' + newdobj.yyyymmdd();
 }
 </script>
-<div class='dayschedule'>
-	<div class='day-left' onclick='day_jump(-1)'>
+<div class='dayschedule[<if isset($type)>] [<$type>][</if>]'>
+	<div class='day-left' onclick='day_jump(-1)' title='Go back one day'>
 	&#9668;
 	</div>
-	<div class='day-right' onclick='day_jump(1)'>
+	<div class='day-right' onclick='day_jump(1)' title='Go forward one day'>
 	&#9658;
 	</div>
 	<div class='day-name'>
 		[<$dayname>]
 	</div>
-	<div class='day-type [<$summaryid>]'>
+	<div class='day-type [<$summaryid>]' title='[<$summaryid>]'>
 		[<$summary>]
 	</div>
 	<div class='day-schedule'>

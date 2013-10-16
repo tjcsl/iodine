@@ -105,8 +105,7 @@
 		</div>
 	</div>
 	<div class="pane" id="subPane">
-		[<* the schedule *>]
-		[<include file='bellschedule/common.tpl'>]
+		[<include file='dayschedule/login.tpl'>]
 		<br /><br />
 		<ul id="links">
 			<li><a href="http://www.tjhsst.edu" target="_blank">TJHSST</a></li>

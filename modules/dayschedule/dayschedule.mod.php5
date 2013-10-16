@@ -32,6 +32,14 @@ class DaySchedule extends Module {
 	);
 
 	/**
+	* Maps a schedule type to a pretty name
+	* (e.g. jlc to JLC Blue Day and not JLC Blue)
+	**/
+	private static $pretty_summaries = array(
+		"jlc" => "JLC Blue Day"
+	);
+
+	/**
 	* The default schedule information (name, periods) for default days
 	* Custom schedules should be stored in MySQL!
 	**/
@@ -65,6 +73,15 @@ class DaySchedule extends Module {
 			array("Break", "2:55", "3:10"),
 			array("Period 8B", "3:10", "3:50")
 		),
+		"jlc" => array(
+			array("JLC", "8:00", "8:55"),
+			array("Period 1", "9:00", "10:28"),
+			array("Period 2", "10:37", "12:05"),
+			array("Lunch", "12:05", "12:45"),
+			array("Period 3", "12:45", "2:13"),
+			array("Break", "2:13", "2:22"),
+			array("Period 4", "2:22", "3:50")
+		),
 		"noschool" => array(),
 		"schoolclosed" => array()
 	);
@@ -95,9 +112,9 @@ class DaySchedule extends Module {
 	}
 
 	/**
-	* Initialization for the pane goes here
+	* General initilization
 	**/
-	function init_pane() {
+	public static function init() {
 		global $I2_QUERY;
 		/* set the day that we are querying */
 		if(isset($I2_QUERY['date'])) {
@@ -113,7 +130,29 @@ class DaySchedule extends Module {
 		$ical = self::convert_to_array(self::fetch_ical());
 		/* find the day types */
 		self::find_day_types($ical);
+	}
 
+	/**
+	* Get $args (used for login page)
+	* @return Array the template arguments
+	**/
+	public static function get_args() {
+		return self::$args;
+	}
+
+	/**
+	* Do initialization for the login page
+	**/
+	public static function init_login() {
+		self::init();
+		self::gen_day_args();
+	}
+
+	/**
+	* Initialization for the pane goes here
+	**/
+	function init_pane() {
+		self::init();
 
 		return "Day Schedule";
 	}
@@ -124,6 +163,27 @@ class DaySchedule extends Module {
 		self::gen_day_args();
 		d_r(self::$args,0);
 		$disp->disp('pane.tpl', self::$args);
+	}
+
+	/**
+	* Initialization of the intrabox
+	**/
+	function init_box() {
+		self::init();
+		self::$args['type'] = 'box';
+
+
+		return "Day Schedule";
+	}
+
+	/**
+	* Displaying of the intrabox
+	**/
+	function display_box($disp) {
+		self::gen_day_args();
+		d('display box',0);
+		$disp->disp('pane.tpl', self::$args);
+
 	}
 
 	/**
@@ -165,13 +225,18 @@ class DaySchedule extends Module {
 	}
 
 	/**
-	* Get the pretty name of a summary
-	* (e.x. get "Anchor Day" from "anchor")
+	* Get the default or pretty name of a summary
+	* (e.x. get "Anchor Day" from "anchor", and
+	* "JLC Blue Day" from "jlc")
 	* @attr String $daytype the ugly name
 	* @return String the pretty name
 	**/
 	private static function get_display_summary($daytype) {
-		return array_search($daytype, self::$summaries);
+		if(isset(self::$pretty_summaries[$daytype])) {
+			return self::$pretty_summaries[$daytype];
+		} else {
+			return array_search($daytype, self::$summaries);
+		}
 	}
 
 	/**
@@ -322,6 +387,7 @@ CREATE TABLE IF NOT EXISTS `dayschedule_custom_schedules` (
   `json` varchar(2048) NOT NULL
 )
 */
+		/* TODO: cache */
 		
 		$custom_summaries = $I2_SQL->query('SELECT * FROM dayschedule_custom_summaries')->fetch_all_arrays(MYSQLI_ASSOC);
 		foreach($custom_summaries as $s) {
