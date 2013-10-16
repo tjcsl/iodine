@@ -12,5 +12,6 @@ day_jump = function(days) {
 	var newdobj = new Date();
 	newdobj.setDate(dobj.getDate() + days);
 	// TODO: Ajax requests
-	location.href = '?date=' + newdobj.yyyymmdd();
+	// the & is needed for the i2_query bug on the main page
+	location.href = '?&date=' + newdobj.yyyymmdd();
 }
