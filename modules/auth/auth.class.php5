@@ -397,6 +397,7 @@ class Auth {
 			return FALSE;
 	}
 	private function auth_api() {
+		global $I2_API;
 		$I2_API->init();
 		$I2_API->logging = false;
 		if(isset($I2_ARGS[1]) && $I2_ARGS[1] == 'bellschedule') {

@@ -1,0 +1,56 @@
+.dayschedule {
+	width: 300px;
+	text-align: center;
+}
+.dayschedule.box {
+	width: 220px;
+}
+.day-name {
+	font-size: 20px;
+}
+.dayschedule.box .day-name {
+	font-size: 18px;
+}
+.day-type {
+	font-size: 16px;
+}
+.day-type.anchor { color: black; }
+.day-type.red { color: red; }
+.day-type.blue { color: blue; }
+.schedule-tbl {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.day-left {
+	float: left;
+}
+
+.day-right {
+	float: right;
+}
+
+.day-left, .day-right {
+	font-size: 40px;
+	opacity: 0.3;
+}
+
+.dayschedule.box .day-left,
+.dayschedule.box .day-right {
+	font-size: 20px;
+}
+
+.day-left:hover, .day-right:hover {
+	opacity: 1;
+	cursor: pointer;
+}
+
+.schedule-tbl th {
+	text-align: right;
+	padding-right: 5px;
+}
+
+.schedule-tbl td {
+	text-align: left;
+	padding-left: 5px;
+}
