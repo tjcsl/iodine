@@ -11,7 +11,10 @@ function FindProxyForURL(url, host)
 {
 	if (
 		dnsDomainIs(host, ".abc-clio.com") ||
-		dnsDomainIs(host, "www.accessscience.com") ||
+		dnsDomainIs(host, "accessscience.com") ||
+		dnsDomainIs(host, ".accessscience.com") ||
+		dnsDomainIs(host, "mcgraw-hill.com") ||
+		dnsDomainIs(host, ".mcgraw-hill.com") ||
 		dnsDomainIs(host, ".eb.com") ||
 		dnsDomainIs(host, "library.cqpress.com") ||
 		dnsDomainIs(host, ".earthscape.org") ||
@@ -52,7 +55,9 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, ".marshallcavendishdigital.com") ||
 		dnsDomainIs(host, ".salempress.com") ||
 		dnsDomainIs(host, "booksinprint.com") ||
+		dnsDomainIs(host, ".booksinprint.com") ||
 		dnsDomainIs(host, "booksinprint2.com") ||
+		dnsDomainIs(host, ".booksinprint2.com") ||
 		dnsDomainIs(host, "whiv.alexanderstreet.com") ||
 		dnsDomainIs(host, ".ebrary.com") ||
 		dnsDomainIs(host, ".oxfordartonline.com") ||
