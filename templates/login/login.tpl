@@ -20,6 +20,7 @@
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/debug.css" />
 	<link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 	<link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
+	<script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js"></script>
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/login.js"></script>
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/common.js"></script>
 	<script type="text/javascript">
@@ -27,6 +28,7 @@
 	var i2root="[<$I2_ROOT>]";
 	prep_init = function() {
 		common_init();
+		init_dayschedule();
 	}
 	if(!!window.addEventListener) {
 		window.addEventListener("load", prep_init, false);
