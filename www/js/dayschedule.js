@@ -14,3 +14,34 @@ day_jump = function(days) {
 	// the & is needed for the i2_query bug on the main page
 	location.href = '?&date=' + newdobj.yyyymmdd();
 }
+times = [];
+gettd = function(time) {
+	if(parseInt(time.split(':')[0]) < 4) time = (parseInt(time.split(':')[0])+12) + ':' + time.split(':')[1];
+	var d = new Date(), e = (''+d).split(' ');
+	return new Date(e[0]+' '+e[1]+' '+e[2]+' '+e[3]+' '+time+':00 '+e[5]+' '+e[6]);
+}
+get_times_array = function() {
+	$p = $('.schedule-tbl .schedule-day');
+	$p.each(function() {
+		times.push([$(this).attr('data-type'), gettd($(this).attr('data-start')), gettd($(this).attr('data-end'))]);
+
+	});
+}
+
+check_current_pd = function(d) {
+	for(i=0; i<times.length; i++) {
+		if(+d > times[i][1] && times[i][2] > +d) {
+			return times[i][0];
+		}
+	}
+}
+
+select_current_pd = function() {
+	get_times_array();
+	var c = check_current_pd(new Date());
+	$('.schedule-tbl .schedule-day[data-type='+c+']').addClass('now');
+}
+
+init_dayschedule = function() {
+	select_current_pd();
+}

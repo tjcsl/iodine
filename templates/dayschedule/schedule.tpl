@@ -3,19 +3,11 @@
 [<else>]
 	<table class='schedule-tbl'>
 	[<foreach from=$schedule item=s>]
-		<!--<span class='period'>
-			<span class='name'>
-				[<$s[0]>]: 
-			</span>
-			<span class='times'>
-				[<$s[1]>] - [<$s[2]>]
-			</span>
-		</span><br />-->
-		<tr>
-			<th>
+		<tr class='schedule-day' data-type="[<$s[0]>]" data-start="[<$s[1]>]" data-end="[<$s[2]>]">
+			<th class='type'>
 				[<$s[0]>]:
 			</th>
-			<td>
+			<td class='times'>
 				[<$s[1]>] - [<$s[2]>]
 			</td>
 		</tr>
