@@ -26,7 +26,6 @@
 	//Set some variables so that any script can use them.
 	var i2root="[<$I2_ROOT>]";
 	prep_init = function() {
-		day_parsehash();
 		common_init();
 	}
 	if(!!window.addEventListener) {
