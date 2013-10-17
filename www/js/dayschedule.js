@@ -7,10 +7,9 @@ Date.prototype.yyyymmdd = function() {
 day_jump = function(days) {
 	/*var qd = location.search.indexOf('date=') != -1 ? location.search.split('date=')[1] : null;*/
 	var qd = currentdate;
-	var dobj = (qd != null ? new Date(qd.substring(0,4), qd.substring(4,6), qd.substring(6,8)) : new Date());
-	
-	var newdobj = new Date();
-	newdobj.setDate(dobj.getDate() + days);
+	//var dobj = (qd != null ? new Date(qd.substring(0,4), parseInt(qd.substring(4,6))-1, qdsubstring(6,8)) : new Date());
+	var dobj = new Date(['','January','February','March','April','May','June','July','August','September','October','November','December'][qd.substring(4,6)] + ' ' + qd.substring(6,8) + ', ' + qd.substring(0,4));
+	var newdobj = new Date(dobj.getTime()+(86400000 * days));
 	// TODO: Ajax requests
 	// the & is needed for the i2_query bug on the main page
 	location.href = '?&date=' + newdobj.yyyymmdd();
