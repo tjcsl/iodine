@@ -2,7 +2,6 @@
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/dayschedule.js"></script>
 <script type='text/javascript'>
 var currentdate = '[<$date>]';
-init_dayschedule();
 </script>
 <div class='dayschedule[<if isset($type)>] [<$type>][</if>]'>
 	<div class='day-left' onclick='day_jump(-1)' title='Go back one day'>
@@ -20,6 +19,7 @@ init_dayschedule();
 	<div class='day-schedule'>
 		[<include file='dayschedule/schedule.tpl' schedule=$schedule>]
 	</div>
-
-
 </div>
+<script type="text/javascript">
+init_dayschedule();
+</script>
