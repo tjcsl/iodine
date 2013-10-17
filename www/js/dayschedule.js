@@ -39,7 +39,7 @@ check_current_pd = function(d) {
 select_current_pd = function() {
 	get_times_array();
 	var c = check_current_pd(new Date());
-	$('.schedule-tbl .schedule-day[data-type='+c+']').addClass('now');
+	$('.schedule-tbl .schedule-day[data-type="'+c+'"]').addClass('now');
 }
 
 init_dayschedule = function() {
