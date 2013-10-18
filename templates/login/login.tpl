@@ -28,7 +28,7 @@
 	var i2root="[<$I2_ROOT>]";
 	prep_init = function() {
 		common_init();
-		init_dayschedule();
+		Init_dayschedule();
 	}
 	if(!!window.addEventListener) {
 		window.addEventListener("load", prep_init, false);
@@ -48,7 +48,7 @@
 </head>
 <body style="background-image: url('[<$I2_ROOT>][<$bg|escape>]')" onLoad="document.getElementById('login_username').focus()" class="login">
 	<div class="pane" id="mainPane">
-		<a id="logo" href="/">Intranet</a>
+		<a id="logo" href="[<$I2_ROOT>]">Intranet</a>
 
 		[<if isset($err)>]
 		<div class="login_msg" id="login_failed">
