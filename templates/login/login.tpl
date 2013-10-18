@@ -48,7 +48,7 @@
 </head>
 <body style="background-image: url('[<$I2_ROOT>][<$bg|escape>]')" onLoad="document.getElementById('login_username').focus()" class="login">
 	<div class="pane" id="mainPane">
-		<a id="logo" href="">Intranet</a>
+		<a id="logo" href="/">Intranet</a>
 
 		[<if isset($err)>]
 		<div class="login_msg" id="login_failed">
