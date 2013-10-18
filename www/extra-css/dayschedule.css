@@ -30,14 +30,16 @@
 
 .day-left {
 	float: left;
+	margin-left: 10px;
 }
 
 .day-right {
 	float: right;
+	margin-right: 10px;
 }
 
 .day-left, .day-right {
-	font-size: 40px;
+	font-size: 28px;
 	opacity: 0.3;
 }
 
