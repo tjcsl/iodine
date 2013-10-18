@@ -207,7 +207,39 @@ class DaySchedule extends Module {
 	* Used for accessing data over the Iodine "API"
 	**/
 	function api() {
-		/* TODO */
+		global $I2_API, $I2_ARGS;
+		self::init();
+		self::gen_day_args();
+		$schedule = self::$args['schedule'];
+
+
+		$I2_API->writeElement('dayname', self::$args['dayname']);
+		$I2_API->writeElement('summary', self::$args['summary']);
+
+		$I2_API->startElement('date');
+		$I2_API->writeAttribute('tomorrow', date('Ymd', strtotime('+1 day', strtotime(self::$args['date']))));
+		$I2_API->writeAttribute('yesterday', date('Ymd', strtotime('-1 day', strtotime(self::$args['date']))));
+		$I2_API->text(self::$args['date']);
+		$I2_API->endElement();
+		
+		$I2_API->startElement('schedule');
+		$I2_API->writeAttribute('date', self::$args['date']);
+		$i = 1;
+		foreach($schedule as $s) {
+			$I2_API->startElement('period');
+			$I2_API->writeAttribute('num', $i++);
+			$I2_API->writeElement('name', $s[0]);
+
+			$I2_API->startElement('times');
+			$I2_API->writeAttribute('start', $s[1]);
+			$I2_API->writeAttribute('end', $s[2]);
+			$I2_API->text($s[1].' - '.$s[2]);
+			$I2_API->endElement();
+
+			$I2_API->endElement();
+		}
+		$I2_API->endElement();
+
 	}
 
 	/**
@@ -223,8 +255,37 @@ class DaySchedule extends Module {
 		**/
 
 		self::init_pane();
+		if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'json') {
+			self::gen_day_args();
+			$schedule = self::$args['schedule'];
+			$json = array();
+			$json['dayname'] = self::$args['dayname'];
+			$json['summary'] = self::$args['summary'];
 
-		if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'week') {
+			$json['date'] = array(
+				'tomorrow' => date('Ymd', strtotime('+1 day', strtotime(self::$args['date']))),
+				'yesterday' => date('Ymd', strtotime('-1 day', strtotime(self::$args['date']))),
+				'today' => self::$args['date']
+			);
+
+			$json['schedule'] = array(
+				'date' => self::$args['date'],
+				'period' => array()
+			);
+			$i = 1;
+			foreach($schedule as $s) {
+				$json['schedule']['period'][] = array(
+					'num' => $i++,
+					'name' => $s[0],
+					'times' => array(
+						'start' => $s[1],
+						'end' => $s[2],
+						'times' => $s[1].' - '.$s[2]
+					)
+				);
+			}
+			echo json_encode($json);
+		} else if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'week') {
 			$week = array();
 			$d = isset($I2_QUERY['days']) ? $I2_QUERY['days'] : 5;
 			self::gen_day_args();
