@@ -28,7 +28,7 @@
 	var i2root="[<$I2_ROOT>]";
 	prep_init = function() {
 		common_init();
-		Init_dayschedule();
+		init_dayschedule();
 	}
 	if(!!window.addEventListener) {
 		window.addEventListener("load", prep_init, false);
