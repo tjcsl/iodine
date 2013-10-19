@@ -65,7 +65,7 @@ try {
 
 	session_set_save_handler(new SessionGC());
 
-	SEssion_start();
+	session_start();
 
 	/**
 	* The global associative array for a module's arguments.
