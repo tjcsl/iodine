@@ -65,7 +65,7 @@ try {
 
 	session_set_save_handler(new SessionGC());
 
-	session_start();
+	SEssion_start();
 
 	/**
 	* The global associative array for a module's arguments.
@@ -75,7 +75,7 @@ try {
 	* to the Iodine application.
  	*
  	* As an example, the URL
-	* http://intranet.tjhsst.edu/birthday/10/16/87 will yield an
+	* Http://intranet.tjhsst.edu/birthday/10/16/87 will yield an
 	* $I2_ARGS of [0] => birthday, [1] => 10,
 	* [2] => 16, [3] => 87. The 'birthday' module's
 	* {@link init_pane()} and {@link display_pane()} functions will
@@ -201,12 +201,26 @@ try {
 	 *
 	 * @global LDAP $I2_LDAP
 	 */
-	$ldap_excludes = (isset($I2_ARGS[0]) &&
-		($I2_ARGS[0] == 'feeds' ||
-		($I2_ARGS[0] == 'calendar') ||
-			(isset($I2_ARGS[1]) &&
-			($I2_ARGS[0] == 'api' && $I2_ARGS[1] == 'bellschedule') ||
-			($I2_ARGS[0] == 'ajax' && $I2_ARGS[1] == 'bellschedule'))));
+
+	/**
+	 * Place here pages that are able to be accessed without requiring login.
+	 * For example, API pages for the schedule module
+	**/
+	$ldap_excludes = (
+	isset($I2_ARGS[0]) &&
+		(
+			($I2_ARGS[0] == 'feeds') ||
+			($I2_ARGS[0] == 'calendar') ||
+			(
+				isset($I2_ARGS[1]) && (
+					($I2_ARGS[0] == 'api' && $I2_ARGS[1] == 'bellschedule') ||
+					($I2_ARGS[0] == 'ajax' && $I2_ARGS[1] == 'bellschedule') ||
+					($I2_ARGS[0] == 'api' && $I2_ARGS[1] == 'dayschedule') ||
+					($I2_ARGS[0] == 'ajax' && $I2_ARGS[1] == 'dayschedule')
+				)
+			)
+		)
+);
 	if($ldap_excludes && !$I2_AUTH->is_authenticated(TRUE)) {
 		//don't try to bind when you're in generic mode.
 		$I2_LDAP = LDAP::get_generic_bind();

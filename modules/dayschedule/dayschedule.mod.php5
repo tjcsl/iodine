@@ -1,6 +1,6 @@
 <?php
 /**
-* The DaySchedule module, which shows a daily and week schedule,
+* the DaySchedule module, which shows a daily and week schedule,
 * as well as the current class period you're in during a school day.
 * @copyright 2013 The Intranet Development Team
 * @package modules
@@ -246,7 +246,7 @@ class DaySchedule extends Module {
 	* Used for accessing data on the client side through AJAX
 	**/
 	function ajax() {
-		global $I2_AJAX, $I2_FS_ROOT, $I2_ARGS, $I2_QUERY;
+		global $I2_FS_ROOT, $I2_ARGS, $I2_QUERY;
 		$disp = new Display('dayschedule');
 		
 		/**
