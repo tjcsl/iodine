@@ -16,7 +16,7 @@
 <!-- <meta http-equiv="CACHE-CONTROL" content="NO-CACHE"/> -->
 
 
-<title>TJHSST Intranet2[<if $title != "" >]: [<$title>][</if>]</title>
+<title>TJHSST Intranet[<if $title != "" >]: [<$title>][</if>]</title>
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/debug.css" />
 [<if $I2_CSS == "`$I2_ROOT`css/i3-light.css/`$I2_USER->iodineUIDNumber`" || $I2_CSS == "`$I2_ROOT`css/i3-dark.css/`$I2_USER->iodineUIDNumber`">]
@@ -74,7 +74,7 @@ IE7_PNG_SUFFIX = ".png";
 <div id="chat_area" style="float:right; height:100%">
 </div>
 </div>
-<div id="logo" class="logo"><a href="[<$I2_ROOT>]"><span id="logotext">Intranet2</span></a></div>
+<div id="logo" class="logo"><a href="[<$I2_ROOT>]"><span id="logotext">Intranet</span></a></div>
 <div class="header">
  <div class="title"> [<if $I2_USER->borntoday()>]Happy Birthday[<else>]Welcome[</if>], [<$I2_USER->firstornick>]!</div>
  <div class="blurb">Today is [<$smarty.now|date_format:"%B %e, %Y">]. 
