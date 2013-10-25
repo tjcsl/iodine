@@ -3,13 +3,14 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="Description" content="The TJ Intranet allows students at the Thomas Jefferson High School for Science and Technology to sign up for activities, access files, and perform other tasks." />
-	<meta name="keywords" content="TJHSST, TJ Intranet, Intranet2" />
+	<meta name="keywords" content="TJHSST, TJ Intranet, Intranet, Intranet2, Thomas Jefferson High School" />
 	<meta name="robots" content="index, follow" />
-	<meta name="author" content="The Intranet2 Development Team" />
+	<meta name="author" content="The Intranet Development Team" />
+	<link rel="author" href="http://www.tjhsst.edu/admin/livedoc/index.php/Iodine#Intranet_Credits" />
 	<link rel="canonical" href="[<$I2_ROOT>]" />
 	<!-- zoom in mobile browsers -->
 	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=1">
-	<title>TJHSST Intranet2: Login</title>
+	<title>TJHSST Intranet: Login</title>
 	
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-ui-light.css" />
@@ -29,6 +30,7 @@
 	prep_init = function() {
 		common_init();
 		init_dayschedule();
+		document.getElementById('login_username').focus()
 	}
 	if(!!window.addEventListener) {
 		window.addEventListener("load", prep_init, false);
@@ -45,10 +47,15 @@
 	</script>
 	<script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 	<![endif]-->
+	<style type="text/css">
+	body {
+		background-image: url('[<$I2_ROOT>][<$bg|escape>]')
+	}
+	</style>
 </head>
-<body style="background-image: url('[<$I2_ROOT>][<$bg|escape>]')" onLoad="document.getElementById('login_username').focus()" class="login">
+<body class="login">
 	<div class="pane" id="mainPane">
-		<a id="logo" href="[<$I2_ROOT>]">Intranet</a>
+		<a id="logo" href="[<$I2_ROOT>]" title="TJHSST Intranet">Intranet</a>
 
 		[<if isset($err)>]
 		<div class="login_msg" id="login_failed">
@@ -90,7 +97,7 @@
 			<br />
 			<br />
 			<label for="login_password">Password</label>
-			<input name="login_password" id="login_password" type="password" size="25" /><!--onkeydown="checkcl()" />-->
+			<input name="login_password" id="login_password" type="password" size="25" />
 			<br />
 			<br />
 			<button type="submit">Login</button>
@@ -99,7 +106,7 @@
 		<br />
 		<br />
 
-		<div style="text-align:center;">
+		<div style="text-align:center">
 			<div id="verisign_box" class="box" title="Click to Verify - This site chose VeriSign SSL for secure confidential communications.">
 				<script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=iodine.tjhsst.edu&amp;size=S&amp;use_flash=NO&amp;use_transparent=YES&amp;lang=en"></script><br/>
 			</div>
