@@ -386,7 +386,7 @@ class Auth {
 			if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='api') {
 				self::auth_api();
 				exit(0);
-			} else if(isset($I2_ARGS[0]) && $I2_ARGS[0]=='ajax' && $I2_ARGS[1]=='bellschedule') {
+			} else if(isset($I2_ARGS[0],$I2_ARGS[1]) && $I2_ARGS[0] == 'ajax' && $I2_ARGS[1]=='dayschedule') {
 				$I2_AJAX->returnResponse($I2_ARGS[1]);
 			} else {
 				$disp->disp('login.tpl', $this->template_args);
@@ -397,11 +397,11 @@ class Auth {
 			return FALSE;
 	}
 	private function auth_api() {
-		global $I2_API;
+		global $I2_API, $I2_ARGS;
 		$I2_API->init();
 		$I2_API->logging = false;
-		if(isset($I2_ARGS[1]) && $I2_ARGS[1] == 'bellschedule') {
-			$module = 'bellschedule';
+		if(isset($I2_ARGS[1]) && $I2_ARGS[1] == 'dayschedule') {
+			$module = 'dayschedule';
 			$mod = new $module();
 			$I2_API->startDTD($module);
 			$I2_API->writeDTDElement($module,'(body,error,debug)');
