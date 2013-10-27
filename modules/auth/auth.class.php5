@@ -287,7 +287,7 @@ class Auth {
 		 * @returns bool Whether or not the user has successfully logged in.
 		 */
 		public function login() {
-			global $I2_ROOT, $I2_ARGS, $I2_API, $I2_AJAX;
+			global $I2_ROOT, $I2_ARGS, $I2_QUERY, $I2_API, $I2_AJAX;
 
 			// the log function uses this to tell if the login was successful
 			// if login fails, something else will set it
@@ -378,6 +378,8 @@ class Auth {
 					}
 			}
 			$this->template_args['posts']=$str;
+
+			$this->template_args['querystring'] = (sizeof($I2_QUERY) > 0 ? '?' . http_build_query($I2_QUERY) : '');
 
 			$disp = new Display('login');
 
