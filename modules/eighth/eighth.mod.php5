@@ -486,31 +486,31 @@ class Eighth extends Module {
 				$I2_API->endElement();
 				break;
 
-			// $I2_ARGS[2] == block id
-			// $I2_ARGS[3] == activity id
-			// $I2_ARGS[4] == user id
+			// $_POST['bid'] == block id
+			// $_POST['aid'] == activity id
+			// $_POST['uid'] == user id
 			case 'signup_activity':
-				if(!isset($I2_ARGS[2], $I2_ARGS[3])) {
-					throw new I2Exception("missing parameters: arguments should be bid, aid, uid (defaults to self if not specified)");
+				if(!isset($_POST['bid'], $_POST['aid'])) {
+					throw new I2Exception("missing POST arguments bid, aid");
 
 				}
-				if(isset($I2_ARGS[4])) {
+				if(isset($_POST['uid'])) {
 					$user = new User($I2_ARGS[4]);
 				}
 				else {
 					$user = $I2_USER;
 				}
 				// (aid, bid)
-				$activity = new EighthActivity($I2_ARGS[3]);
-				if(!EighthBlock::block_exists($I2_ARGS[2]))
+				$activity = new EighthActivity($_POST['aid']);
+				if(!EighthBlock::block_exists($_POST['bid']))
 					throw new I2Exception("Block does not exist");
-				$success = ($activity->add_member($user, FALSE, $I2_ARGS[2]));
+				$success = ($activity->add_member($user, FALSE, $_POST['bid']));
 				$I2_API->startElement('signup');
-				$I2_API->writeElement('bid',$I2_ARGS[2]);
-				$I2_API->writeElement('aid',$I2_ARGS[3]);
-				$I2_API->writeElement('uid',$user->uid);
-				$I2_API->writeElement('success',$success==0?1:0);
-				$I2_API->writeElement('result',$success);
+				$I2_API->writeElement('bid', $_POST['bid']);
+				$I2_API->writeElement('aid', $_POST['aid']);
+				$I2_API->writeElement('uid', $user->uid);
+				$I2_API->writeElement('success', $success==0?1:0);
+				$I2_API->writeElement('result', $success);
 				$I2_API->endElement();
 				break;
 			default:
