@@ -67,7 +67,7 @@ IE7_PNG_SUFFIX = ".png";
 	<input type="hidden" name="next" value="/" />
 	<input type="hidden" name="pref_style" value="i3-light" />
 	<b>Mobile-friendly site available</b><br />
-	<span>Click for a site that is more accessible to mobile devices.</span>
+	<span>Tap for a site that is more accessible to mobile devices.</span>
 	</form>
 </div>
 <div style="height:100%; width:100%; position: fixed; top:0; left: 0; visibility: hidden; z-index:3">
