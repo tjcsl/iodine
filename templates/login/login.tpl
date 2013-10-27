@@ -89,7 +89,7 @@
 
 		<br />
 
-		<form name="login_form" action="[<$I2_SELF|escape>]" method="post">
+		<form name="login_form" action="[<$I2_SELF|escape>][<$querystring>]" method="post">
 			[<$posts>]
 			<label for="login_username">Username</label>
 			<br />
