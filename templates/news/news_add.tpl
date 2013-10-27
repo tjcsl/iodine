@@ -38,7 +38,7 @@
   Text: <br />
   [<*<textarea id="news_add_text" name="add_text" rows="15"></textarea><br />*>]
   [<include file="richedit/editor.tpl">]
-  <input type="hidden" id="text" name="add_text" /> [<* text field that the output from the rich-text formatter will be fed into *>]
+  <input type="hidden" id="add_text" name="add_text" /> [<* text field that the output from the rich-text formatter will be fed into *>]
  <input type="hidden" name="csrftok" value="[<$csrftok>]" />
   <input type="submit" value="Submit" name="submit" onclick="doonsubmit()" />[<* the onsubmit is for the rich-text formatting to be handled correctly*>]
  </form>
