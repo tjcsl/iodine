@@ -16,7 +16,7 @@ var dayschedule_type = '[<if isset($type)>][<$type>][<else>]page[</if>]';
 		<div class='view-week' onclick='load_week()'>
 			Week
 			<span class='day-up'>
-			&#9650;
+			&#9660;
 			</span>
 			View
 		</div>

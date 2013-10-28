@@ -82,7 +82,7 @@ load_week = function(date) {
 	$.get(i2root + 'ajax/dayschedule/week', {'date': date}, function(dat) {
 		window.dat = dat;
 		$('#mainbox, #intraboxes').addClass('hide');
-		$('body').append("<div class='dayschedule-week-fixed'><div class='back' onclick='week_back()'><span class='day-up'>&#9660; Back</span></div><div class='dayschedule week'></div></div>");
+		$('body').append("<div class='dayschedule-week-fixed' style='display:none'><div class='back' onclick='week_back()'><span class='day-up'>&#9650; Back</span></div><div class='dayschedule week'></div></div>");
 		if($('.dayschedule').hasClass('box')) {
 			$('.dayschedule-week-fixed, .dayschedule.week').addClass('box');
 		}
@@ -94,6 +94,7 @@ load_week = function(date) {
 		}
 		h+= "</tr><tr><td colspan=5>Schedules are subject to change. Look at the <a href='http://www.calendarwiz.com/calendars/calendar.php?crd=tjhsstcalendar'>official TJ Calendar</a> for more information.</td></tr></table>";
 		$d.html(h);
+		$('.dayschedule-week-fixed').slideDown();
 /*
 		// reassign left and right buttons
 		$l = $('.dayschedule tr td:first-child .day-left');
@@ -111,7 +112,10 @@ week_jump = function(days) {
 week_back = function() {
 	$('#mainbox, #intraboxes, .boxes').removeClass('hide');
 	load_date(currentdate);
+	$('.dayschedule-week-fixed').slideUp();
+	setTimeout(function() {
 	$('.dayschedule.week, .dayschedule-week-fixed').remove();
+	}, 500);
 }
 
 init_dayschedule = function() {
