@@ -59,7 +59,7 @@ IE7_PNG_SUFFIX = ".png";
 <script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 <![endif]-->
 </head>
-<body>
+<body class="[<if $I2_CSS == "`$I2_ROOT`css/i3-light.css/`$I2_USER->iodineUIDNumber`">]i3 i3-light[<elseif $I2_CSS == "`$I2_ROOT`css/i3-dark.css/`$I2_USER->iodineUIDNumber`">]>i3 i3-dark[</if>]">
 <div class="mobile-msg" onclick="document.forms.mobileform.submit();">
 	<form name="mobileform" action="[<$I2_ROOT>]prefs" method="post">
 	<input type="hidden" name="prefs_form" value="" />
