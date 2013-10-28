@@ -288,8 +288,8 @@ class DaySchedule extends Module {
 		} else if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'week') {
 			$week = array();
 			$d = isset($I2_QUERY['days']) ? $I2_QUERY['days'] : 5;
-			self::gen_day_args();
 			for($i=0; $i<$d; $i++) {
+				self::gen_day_args();
 				$week[] = $disp->fetch($I2_FS_ROOT . 'templates/dayschedule/pane.tpl', self::$args, false);
 				/* make date be the next day */
 				self::increment_date('+1 day');
@@ -297,6 +297,7 @@ class DaySchedule extends Module {
 			echo json_encode($week);
 		} else {
 			self::gen_day_args();
+			if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'box') self::$args['type'] = 'box';
 			echo $disp->fetch($I2_FS_ROOT . 'templates/dayschedule/pane.tpl', self::$args, false);
 		}
 

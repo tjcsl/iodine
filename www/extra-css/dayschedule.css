@@ -32,23 +32,25 @@
 	float: left;
 	margin-left: 10px;
 }
-
+.dayschedule.box .day-left { margin: 0; }
 .day-right {
 	float: right;
 	margin-right: 10px;
 }
+.dayschedule.box .day-right { margin: 0; }
 
-.day-left, .day-right {
+.day-left, .day-right, .day-upp {
 	font-size: 28px;
 	opacity: 0.3;
 }
 
 .dayschedule.box .day-left,
-.dayschedule.box .day-right {
+.dayschedule.box .day-right,
+.dayschedule.box .day-up {
 	font-size: 20px;
 }
 
-.day-left:hover, .day-right:hover {
+.day-left:hover, .day-right:hover, .day-up:hover {
 	opacity: 1;
 	cursor: pointer;
 }
@@ -61,4 +63,117 @@
 .schedule-tbl td {
 	text-align: left;
 	padding-left: 5px;
+}
+
+
+/* week view */
+#mainbox.hide, #intraboxes.hide {
+	visibility: hidden;
+}
+
+.mainbox.dayschedule-week {
+	z-index: 999;
+	visibility: visible;
+}
+
+
+
+.dayschedule-week-fixed {
+	position: fixed;
+	top: 59px;
+	border: 1px solid #a0a0a0;
+	width: 100%;
+	height: 100%;
+	/* FIXME: #f0f0f0 shouldn't be hardcoded */
+	background: #f0f0f0;
+	z-index: 9999;
+	padding: 25px 0;
+}
+
+body.i3-dark .dayschedule-week-fixed { background: black; }
+
+.dayschedule-week-fixed.box {
+	top: 105px;
+}
+
+.dayschedule.week {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+@media (max-width: 991px) {
+	.dayschedule-week-fixed {
+		width: 990px;
+		overflow-x: scroll;
+		overflow-y: hidden;
+	}
+}
+.dayschedule.week > table {
+	margin-left: auto; margin-right: auto;
+	width: 95%;
+}
+
+.dayschedule.week > table td {
+	vertical-align: top;
+}
+
+.dayschedule.week > table > tr > td {
+	width: 100%;
+}
+
+.dayschedule.week .day-left,
+.dayschedule.week .day-right {
+	visibility: hidden;
+}
+/*
+.dayschedule.week td:first-child .day-left,
+.dayschedule.week td:last-child .day-right {
+	visibility: visible;
+}
+*/
+.dayschedule-week-fixed .back {
+	position: absolute;
+	left: 0;
+	top: 0;
+	margin: -1px 10px 0px 10px;
+	padding: 5px 10px;
+	border: 1px solid #a0a0a0;
+	border-top: 1px solid #f0f0f0;
+}
+
+.day-up {
+	font-size: 28px;
+	opacity: 0.3;
+}
+
+
+.dayschedule-week-fixed .back .day-up {
+	font-size: 20px;
+}
+
+.dayschedule .day-name .view-week {
+	display: none;
+}
+
+.dayschedule .day-name:hover {
+	visibility: hidden;
+}
+
+.dayschedule .day-name:hover .view-week {
+	display: block;
+	visibility: visible;
+	margin-top: -38px;
+	cursor: pointer;
+}
+
+.dayschedule.box .day-name:hover .view-week {
+	margin-top: -27px;
+}
+
+.dayschedule.week .day-name:hover { visibility: visible; }
+.dayschedule.week .day-name:hover .view-week { display: none; }
+
+.day-up:hover {
+	opacity: 1;
 }
