@@ -87,7 +87,7 @@
 	/* FIXME: #f0f0f0 shouldn't be hardcoded */
 	background: #f0f0f0;
 	z-index: 9999;
-	padding: 25px 0;
+	padding: 50px 0;
 }
 
 body.i3-dark .dayschedule-week-fixed { background: black; }
