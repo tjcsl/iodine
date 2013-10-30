@@ -152,6 +152,10 @@ body.i3-dark .dayschedule-week-fixed { background: black; }
 	font-size: 20px;
 }
 
+.dayschedule .day-name > span.small {
+	font-size: 16px;
+}
+
 .dayschedule .day-name .view-week {
 	display: none;
 }
