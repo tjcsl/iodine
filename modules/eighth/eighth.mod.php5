@@ -2265,7 +2265,7 @@ class Eighth extends Module {
 	}
 
 	public function migrate_passes() {
-		global $I2_SQL;
+		global $I2_SQL, $I2_USER;
 		if($this->op == '') {
 			$this->template = 'migrate_passes.tpl';
 			$start_date = $this->args['start_date'];
@@ -2274,9 +2274,12 @@ class Eighth extends Module {
 		}
 		else if($this->op == 'migrate') {
 			self::start_undo_transaction();
-			$defaid = i2config_get('default_aid', 999, 'eighth');
+			$passaid = i2config_get('pass_aid', 996, 'eighth');
+			$query = 'INSERT INTO eighth_postsigns (cid,uid,time,fromaid,toaid,bid) SELECT %d,userid,%s,aid,%d,bid FROM eighth_activity_map WHERE bid=%d AND pass=1';
+			$args = array($I2_USER->uid,date("o-m-d H:i:s"),$passaid,$this->args['bid']);
+			$result = $I2_SQL->query_arr($query, $args);
 			$query = 'UPDATE eighth_activity_map SET aid=%d WHERE bid=%d AND pass=1';
-			$args = array($defaid, $this->args['bid']);
+			$args = array($passaid, $this->args['bid']);
 			$result = $I2_SQL->query_arr($query, $args);
 			self::end_undo_transaction();
 			redirect('eighth/migrate_passes');
