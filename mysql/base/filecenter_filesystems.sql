@@ -4,3 +4,4 @@ INSERT INTO filecenter_filesystems VALUES ("main","$this->filesystem = new CSLPr
 INSERT INTO filecenter_filesystems VALUES ("bookmarks","$this->filesystem='bookmarks';return array('Filecenter','Filecenter bookmarks');");
 INSERT INTO filecenter_filesystems VALUES ("local","$this->filesystem = new CIFS($_SESSION['i2_username'],$I2_AUTH->get_user_password(),$I2_USER->gradename.'/'.$I2_USER->username);$this->template_args['max_file_size'] = 10485760;");
 INSERT INTO filecenter_filesystems VALUES ("common","$this->filesystem = new CIFS($_SESSION['i2_username'],$I2_AUTH->get_user_password(),'Common',$this->commonserver);$this->template_args['max_file_size'] = 10485760;");
+INSERT INTO filecenter_filesystems VALUES ("yearbook","$this->filesystem = new CIFS($_SESSION['i2_username'],$I2_AUTH->get_user_password(),'YEARBOOK',$this->commonserver);$this->template_args['max_file_size'] = 10485760;");
