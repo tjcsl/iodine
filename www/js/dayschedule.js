@@ -7,7 +7,10 @@ Date.prototype.yyyymmdd = function() {
 
 getoffset = function(qd, days) {
 	var dobj = new Date(['','January','February','March','April','May','June','July','August','September','October','November','December'][qd.substring(4,6)] + ' ' + qd.substring(6,8) + ', ' + qd.substring(0,4));
-        var newdobj = new Date(dobj.getTime()+(86400000 * days));	
+	var ms = 86400000;
+	/* Daylight savings bug */
+	if(parseInt(qd)+days == 20131103) ms += 3600000;
+        var newdobj = new Date(dobj.getTime()+(ms * days));	
 	return newdobj;
 }
 day_jump = function(days) {
