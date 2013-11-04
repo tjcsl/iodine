@@ -12,7 +12,7 @@ var dayschedule_type = '[<if isset($type)>][<$type>][<else>]page[</if>]';
 	&#9658;
 	</div>
 	<div class='day-name'>
-		<span[<if $dayname|count_characters >= 18>] class='small'[</if>]>[<$dayname>]</span>
+		<span[<if $dayname|count_characters > 15>] class='small'[</if>]>[<$dayname>]</span>
 		<div class='view-week' onclick='load_week()'>
 			Week
 			<span class='day-up'>
