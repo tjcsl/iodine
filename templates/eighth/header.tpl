@@ -1,3 +1,6 @@
+[<if $I2_USER->uid == 9999>]
+	<style>#debug{display:none}</style>
+[</if>]
 <div id="eighth_header">
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/eighth_help.js"></script>
 	<div id="eighth_help_blocker"></div>
