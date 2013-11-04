@@ -378,7 +378,7 @@ class DaySchedule extends Module {
 		global $I2_CACHE, $I2_QUERY;
         self::$icsStr = unserialize($I2_CACHE->read(get_class(), 'ical'));
         $cache_date = unserialize($I2_CACHE->read(get_class(), 'ical_date'));
-        if(self::$icsStr === false || isset($I2_QUERY['regenerate_schedule']) || (time() > ($cache_date + self::$cache_length))) {
+        if(self::$icsStr === false || isset($I2_QUERY['fetch_ical']) || (time() > ($cache_date + self::$cache_length))) {
         	d('Reloading dayschedule cache', 4);
 			self::$icsStr = self::curl_file_get_contents(self::$iCalURL);
         	$I2_CACHE->store(get_class(), 'ical', serialize(self::$icsStr));
@@ -515,7 +515,7 @@ class DaySchedule extends Module {
 	* and append them to the current schedules and summaries
 	**/
 	private static function fetch_custom_entries() {
-		global $I2_SQL, $I2_CACHE;
+		global $I2_SQL, $I2_CACHE, $I2_QUERY;
 
 		/* TODO: cache */
 		
