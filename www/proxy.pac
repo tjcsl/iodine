@@ -32,11 +32,12 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, "oed.com") ||
 		dnsDomainIs(host, "poll.orspub.com") ||
 		dnsDomainIs(host, "proquestk12.com") ||
+		dnsDomainIs(host, "proquest.com") ||
+		dnsDomainIs(host, ".umi.com") ||
 		dnsDomainIs(host, "www.sciencedirect.com") ||
 		dnsDomainIs(host, "hwwilsonweb.com") ||
 		dnsDomainIs(host, ".nature.com") ||
 		dnsDomainIs(host, "portal.bigchalk.com") ||
-		dnsDomainIs(host, ".umi.com") ||
 		dnsDomainIs(host, ".culturegrams.com") ||
 		dnsDomainIs(host, ".acs.org") ||
 		dnsDomainIs(host, ".opticsinfobase.org") ||
