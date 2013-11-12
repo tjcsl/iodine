@@ -1,10 +1,18 @@
 var interval;
 var clockContainer, clock;
 //var eleven = new Date(2013, 22, 12, 11, 12, 13, 111);
-if(+new Date() < +new Date("Tue Nov 12 2013 11:11:11")) {
-	var eleven = new Date("Tue Nov 12 2013 11:11:11");
+if(+new Date() < +new Date("Tue Nov 12 2013 11:12:13")) {
+	var eleven = new Date("Tue Nov 12 2013 11:12:13");
+	var etxt = "11-12-13 11:12:13";
+} else if(+new Date() < +new Date("Tue Nov 12 2013 13:12:11")) {
+        var eleven = new Date("Tue Nov 12 2013 13:12:11");
+	var etxt = "11-12-13 13:12:11";
+} else if(+new Date() < +new Date("Tue Nov 12 2013 14:15:16")) {
+        var eleven = new Date("Tue Nov 12 2013 14:15:16");
+	var etxt = "11-12-13 14:15:16";
 } else {
-var eleven = new Date("Tue Nov 12 2013 22:12:13");
+	var eleven = new Date("Tue Nov 12 2013 22:12:13");
+	var etxt = "11-12-13 11:12:13";
 }
 // year, month, date, hour, minute, second, millis
 // months start at 0, so 10 -> 11
@@ -48,7 +56,7 @@ window.addEventListener("load", function() {
 	msg = document.createElement("span");
 	msg.style.fontSize = "32px";
 	msg.style.color = "#33b5e5";
-	msg.innerHTML = "until 11-12-13 11:12:13";
+	msg.innerHTML = "until " + etxt;
 	clockContainer.appendChild(clock);
 	clockContainer.appendChild(msg);
 	document.body.appendChild(clockContainer);
@@ -95,12 +103,12 @@ function incrementCountdown() {
 		}
 	} else {
 		clock.innerHTML = hr + ":" + min + ":" + sec;
-		msg.innerHTML = "until 11-12-13 11:12:13";
+		msg.innerHTML = "until " + etxt; //11-12-13 11:12:13";
 		if (diff < 0) {
 			clock.style.fontWeight = "normal";
 			clock.style.color = "black";
 			clock.style.fontSize = "280px";
-			msg.innerHTML = "since 11-11-11 11:11:11.111<br/><br/>Come back next century!";
+			msg.innerHTML = "since " + etxt + "<br/><br/>Come back next century!";
 		}
 	}
 	if (!!window.snowing && snowing) {
