@@ -1,17 +1,18 @@
 var interval;
 var clockContainer, clock;
+var tz = " GMT-0500 (EST)";
 //var eleven = new Date(2013, 22, 12, 11, 12, 13, 111);
-if(+new Date() < +new Date("Tue Nov 12 2013 11:12:13")) {
-	var eleven = new Date("Tue Nov 12 2013 11:12:13");
+if(+new Date() < +new Date("Tue Nov 12 2013 11:12:13"+tz)) {
+	var eleven = new Date("Tue Nov 12 2013 11:12:13"+tz);
 	var etxt = "11-12-13 11:12:13";
-} else if(+new Date() < +new Date("Tue Nov 12 2013 13:12:11")) {
-        var eleven = new Date("Tue Nov 12 2013 13:12:11");
+} else if(+new Date() < +new Date("Tue Nov 12 2013 13:12:11"+tz)) {
+        var eleven = new Date("Tue Nov 12 2013 13:12:11"+tz);
 	var etxt = "11-12-13 13:12:11";
-} else if(+new Date() < +new Date("Tue Nov 12 2013 14:15:16")) {
-        var eleven = new Date("Tue Nov 12 2013 14:15:16");
+} else if(+new Date() < +new Date("Tue Nov 12 2013 14:15:16"+tz)) {
+        var eleven = new Date("Tue Nov 12 2013 14:15:16"+tz);
 	var etxt = "11-12-13 14:15:16";
 } else {
-	var eleven = new Date("Tue Nov 12 2013 22:12:13");
+	var eleven = new Date("Tue Nov 12 2013 23:12:13"+tz);
 	var etxt = "11-12-13 11:12:13";
 }
 // year, month, date, hour, minute, second, millis
