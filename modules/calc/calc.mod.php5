@@ -52,7 +52,7 @@ class Calc extends Module {
 				{
 					$uid = $I2_USER->uid;
 					$I2_SQL->query('INSERT INTO calculators (calcsn, calcid, uid) VALUES (%d,%s,%d)', $_REQUEST['sn'],strtoupper($_REQUEST['id']), $uid);
-					$this->message = "Calculator succesfully added.";
+					$this->message = "Calculator successfully added.";
 				}
 			}
 			else if ($_REQUEST['calc_form']=="delete")
