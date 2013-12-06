@@ -11,7 +11,7 @@ if(navigator.userAgent.toLowerCase().indexOf("android") != -1) {
 } else {
 	var android=false;
 }
-if(navigator.userAgent.toLowerCase().indexOf("chrome") != -1) {
+/*if(navigator.userAgent.toLowerCase().indexOf("chrome") != -1) {
 	var chrome=true;
 } else {
 	var chrome=false;
@@ -20,7 +20,9 @@ if(chrome || navigator.userAgent.toLowerCase().indexOf("firefox/4") != -1 || nav
 	var fastbrowser=true;
 } else {
 	var fastbrowser=false;
-}
+}*/
+var fastbrowser = false;
+if(!ie) fastbrowser = true;
 //Config
 //Number of flakes
 if(mobile) {
