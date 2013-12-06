@@ -231,6 +231,22 @@ class EighthSchedule {
 	}
 
 	/**
+	* Get the next eighth period block ID.
+	*
+	* @access public
+	* @param int $delay Amount to delay the rollover.
+	*/
+	public static function get_next_bid($delay=0) {
+		global $I2_SQL;
+		if(date('Hi')>1550+$delay) {
+			$date = $I2_SQL->query('SELECT bid FROM eighth_blocks WHERE date > %t ORDER BY date,block LIMIT 1', date('Y-m-d'))->fetch_array(Result::NUM);
+		} else {
+			$date = $I2_SQL->query('SELECT bid FROM eighth_blocks WHERE date >= %t ORDER BY date,block LIMIT 1', date('Y-m-d'))->fetch_array(Result::NUM);
+		}
+		return $date[0];
+	}
+
+	/**
 	* Gets the activities a student is signed up for on a specific date.
 	*
 	* @access public
