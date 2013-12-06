@@ -711,7 +711,7 @@ class Eighth extends Module {
 	* @param int $daysf  The number of days forward to show blocks.
 	* @param bool $asdc Whether or not to Allow Start Date Changes.
 	*/
-	private function setup_block_selection($add = FALSE, $field = NULL, $title = NULL, $start_date = NULL, $daysf = NULL, $asdc = FALSE) {
+	private function setup_block_selection($add = FALSE, $field = NULL, $title = NULL, $start_date = NULL, $daysf = NULL, $asdc = FALSE, $appendargs = "") {
 		if ($field === NULL) {
 			$field = 'bid';
 		}
@@ -731,6 +731,7 @@ class Eighth extends Module {
 		$this->template_args['blocks'] = $blocks;
 		$this->template_args['start_date']=$start_date;
 		$this->template_args['allowstartdatechange']=$asdc;
+		$this->template_args['appendargs']=$appendargs;
 		if($add) {
 			$this->template_args['add'] = TRUE;
 		}
@@ -1527,6 +1528,7 @@ class Eighth extends Module {
 	* @param array $this->args The arguments for the operation.
 	*/
 	private function vp_room() {
+		global $I2_SQL;
 		if($this->op == '') {
 			$this->setup_block_selection();
 			$this->template_args['op'] = 'search';
@@ -1550,6 +1552,95 @@ class Eighth extends Module {
 			$this->template_args['inc'] = $inc;
 			$this->title = 'View Room Utilization';
 			$this->template_args['print_url'] = "bid/{$this->args['bid']}";
+		}
+		else if($this->op == 'byroom') {
+			/*$rooms = (isset($_REQUEST['room']) ? $_REQUEST['room'] : (isset($this->args['room']) ? array((int)$this->args['room']) : null));
+			$bid = isset($this->args['bid']) ? (int)$this->args['bid'] : EighthSchedule::get_next_bid();
+			$bidst = isset($this->args['bidst']) ? (int)$this->args['bidst'] : $bid;
+			$biden = isset($this->args['biden']) ? (int)$this->args['biden'] : $bid;
+			*/
+			
+			$this->title = 'Select Room(s) and Block(s)';
+			$this->template_args['op'] = 'byroom';
+			if(!isset($this->args['rid']) && !isset($_REQUEST['rooms'])) {
+				$this->setup_room_selection(false,'Select a room:');
+			} else if(!isset($this->args['bidst'])) {
+				$this->setup_block_selection(false,'bidst','Select a starting block:',null,null,null,'rid/'.$this->args['rid'].'/');
+			} else if(!isset($this->args['biden'])) {
+				$button = "<button onclick=\"location.href=$('#boxcontent>table tr:last-child a').eq(0).attr('href')\">Choose last block</button>";
+				$this->setup_block_selection(false,'biden','Select an ending block:<br/>'.$button,null,null,null,'rid/'.$this->args['rid'].'/bidst/'.$this->args['bidst'].'/');
+			} else {
+				$this->title = 'View Room Utilization (By Room)';
+				$this->template = 'vp_room_viewbyroom.tpl';	
+				$this->template_args['print_url'] = '';
+				if(isset($_REQUEST['rooms'])) {
+					$rooms = $_REQUEST['rooms'];
+				} else {
+					$rooms = [$this->args['rid']];
+				}
+				$bidst = $this->args['bidst'];
+				$biden = $this->args['biden'];
+				$roomsql = '(';
+				foreach($rooms as $room) {
+					$roomsql.='eighth_block_map.rooms="'.$room.'" OR ';
+				}
+				$roomsql = substr($roomsql, 0, sizeof($roomsql) - 4).') AND ';
+				
+				$bidsql = 'eighth_block_map.bid BETWEEN '.$bidst.' AND '.$biden;
+				
+				$sql = 'SELECT eighth_block_map.bid,eighth_block_map.activityid,eighth_block_map.sponsors,eighth_block_map.rooms,eighth_rooms.name,eighth_rooms.capacity,eighth_activities.name,eighth_activities.description,eighth_sponsors.fname,eighth_sponsors.lname FROM eighth_block_map LEFT JOIN eighth_rooms ON (eighth_block_map.rooms=eighth_rooms.rid) LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) LEFT JOIN eighth_sponsors ON (eighth_block_map.sponsors=eighth_sponsors.sid) WHERE '.$roomsql.' '.$bidsql;
+				$map = $I2_SQL->query($sql)->fetch_all_arrays();
+				$util = array();
+				foreach($map as $m) {
+					$util[trim($m[3])][] = [
+						"bid"=>$m[0],
+						"aid"=>$m[1],
+						"sponsor"=>$m[2],
+						"roomid"=>$m[3],
+						"roomname"=>$m[4],
+						"actcapacity"=>$m[5],
+						"actname"=>$m[6],
+						"actdesc"=>$m[7],
+						"sponsorname"=>$m[8]." ".$m[9],
+						"actsignups"=>$I2_SQL->query('SELECT COUNT(userid) FROM eighth_activity_map WHERE bid=%d AND aid=%d',$m[0],$m[1])->fetch_single_value()
+					];
+				}
+				d_r($map, 0);
+				d_r($util, 0);
+
+				$this->template_args['util'] = $util;
+			}
+
+			/*
+			$aid = $this->args['aid'];
+			$utilizations = array();
+			$bidst = $this->args['bidst']; $bidend = $this->args['bidend'];
+			for($blockid=$bidst; $blockid<=$bidend; $blockid++) {
+				//$activity = new EighthActivity($aid, $blockid);
+				$allacts = EighthActivity::id_to_activity($I2_SQL->query('SELECT eighth_block_map.activityid,bid FROM eighth_block_map LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) WHERE bid=%d', $blockid)->fetch_all_arrays(Result::NUM));
+			foreach($allacts as $activity) {	
+				$students = EighthSchedule::count_members($blockid, $activity->aid);
+				$rooms = $activity->block_rooms;
+				foreach($rooms as $room) {
+					$room = new EighthRoom($room);
+					if(!isset($utilizations[$room->name])) $utilizations[$room->name] = [];
+					if(!isset($utilizations[$room->name][$blockid])) $utilizations[$room->name][$blockid] = [];
+					$utilizations[$room->name][$blockid][] = array('room' => $room, 'activity' => $activity, 'students' => $students);
+				}
+				if (count($rooms) == 0) {
+					// foreach loop didn't catch the activity
+					if(!isset($utilizations[$room->name])) $utilizations[$room->name] = [];
+                                        if(!isset($utilizations[$room->name][$blockid])) $utilizations[$room->name][$blockid] = [];
+					$utilizations[$room->name][$blockid][] = array('room' => new EighthRoom(i2config_get('default_rid', 934, 'eighth')), 'activity' => $activity, 'students' => $students);
+				}
+			}
+			}
+			d_r($utilizations,0);
+			$this->template_args['utilizations'] = $utilizations;
+                        $this->template_args['inc'] = ["room"=>true,"aid"=>true,"name"=>true,"teacher"=>true,"students"=>true,"capacity"=>true];
+			$this->title = 'View Activity Room Utilization';
+			$this->template = 'vp_room_act_view.tpl';
+			*/
 		}
 		else if($this->op == 'format') {
 			$this->setup_format_selection('vp_room', 'Room Utilization', array('bid' => $this->args['bid']));
