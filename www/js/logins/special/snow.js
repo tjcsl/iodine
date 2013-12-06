@@ -42,7 +42,7 @@ if(!ie && !android){ // IE doesnt' like it for some reason, and android doesn't 
 }else{
 	var snowletter="*";
 }
-//Speed multiplyer for the snow falling
+//Speed multiplier for the snow falling
 if(fastbrowser) { // They have more elements and do piling. This increases the amount of time it takes for significant slowdown.
 	var sinkspeed=0.5;
 } else {
@@ -98,7 +98,7 @@ var snowheight = new Array();
 var fastfillheight;
 //Graphics control
 var graphics;
-//The multiplyer to find the correct bucket
+//The multiplier to find the correct bucket
 var heightacc = heightbuckets/screenwidth;
 //Temporary variables
 var newx;
