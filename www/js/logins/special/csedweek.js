@@ -9,6 +9,8 @@ var files = [
 	git+"modules/dayschedule/dayschedule.mod.php5",
 	git+"modules/studentdirectory/studentdirectory.mod.php5",
 	git+"modules/news/news.mod.php5",
+	git+"modules/auth/auth.class.php5",
+	git+"modules/filecenter/filecenter.mod.php5",
 	git+"www/js/logins/special/snow.js",
 	i2root+"www/js/logins/special/csedweek-ion.txt"];
 var codefile = files[Math.floor((+new Date/100)%files.length)];
