@@ -526,7 +526,7 @@ class News extends Module {
 		}*/
 		d('Checking FCPS emerg msgs and including simple_html_dom', 9);
 		require_once $I2_FS_ROOT.'lib/simple_html_dom.php';
-		$url = "http://www.fcps.edu/news/emerg.shtml";
+		$url = "http://www.fcps.edu/news/emerg.shtml?".time();
 		try {
 			if($fgetc = $this->curl_file_get_contents($url)) {
 				$html = str_get_html($fgetc);
@@ -535,7 +535,7 @@ class News extends Module {
 				$false_str = "There are no emergency messages at this time"; 
 				$con = $html->find('div[id=mainContent]');
 				$snowdayd = $con[0]->innertext;
-				$snowday = (strpos($snowdayd, $false_str)!==false);
+				$snowday = (strpos($snowdayd, $false_str)===false);
 				// This is the message that ends the emergency text;
 				// it is currently the text of the header below
 				$end_str = "Go to The Source";
@@ -566,7 +566,7 @@ class News extends Module {
 				return $einfo;
 			} else {
 				d("Emergency info: Could not fetch FCPS' site",5);
-				return "Emergency info: Could not fetch FCPS' site";
+				return "<!--Emergency info: Could not fetch FCPS' site-->";
 			}
 		} catch(Exception $e) {
 			d("Emergency info: Error parsing FCPS' emergency site",5);
@@ -579,6 +579,8 @@ class News extends Module {
 		$c = curl_init();
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($c, CURLOPT_URL, $URL);
+		curl_setopt($c, CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
 		$contents = curl_exec($c);
 		curl_close($c);
 		
