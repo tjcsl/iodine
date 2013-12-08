@@ -558,7 +558,7 @@ class News extends Module {
 						$einfo= "<!-- snowday,".$false_str." -->";
 					} else {
 						$einfo= "<!-- ".print_r($d,1).print_r($dn,1)." -->".
-								"<div class='emerg' style='background-color:yellow'><span style='font-size:22px'>FCPS Emergency Information:</span> &nbsp; &nbsp; <a href='".$url."'>View details</a> &nbsp; <a href='?&get_new_message'>Refresh</a> <p>".trim($dn[0])."</p></div>";
+								"<div class='emerg' style='background-color:yellow;padding:5px'><span style='font-size:22px'>FCPS Emergency Information:</span> &nbsp; &nbsp; <a href='".$url."'>View details</a> &nbsp; <a href='?&get_new_message'>Refresh</a> <p>".trim($dn[0])."</p></div>";
 					}
 					//echo "<a href='{$url}'>Click here for more information</a>";
 				} else {
