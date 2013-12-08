@@ -354,6 +354,7 @@ class Auth {
 			}
 
 			self::init_backgrounds();
+			$this->template_args['emerg'] = News::get_emerg_message();
 			// Show the login box
 			$this->template_args['failed'] = $this->modauth_loginfailed;
 			$this->template_args['uname'] = $uname;

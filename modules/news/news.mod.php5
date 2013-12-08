@@ -481,23 +481,25 @@ class News extends Module {
 	* Get the emergency messages from FCPS.
 	* This is stuff like weather-related cancellations.
 	*/
-	function get_emerg_message() {
+	public static function get_emerg_message() {
 		global $I2_ROOT,$I2_QUERY;
 		$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'emerg.cache';
 		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile)>600) || isset($I2_QUERY['get_new_message'])) { //Don't let the cache get older than an hour.
-			$contents = $this->get_new_message();
-			$this->store_emerg_message($cachefile,$contents);
+			$contents = News::get_new_message();
+			News::store_emerg_message($cachefile,$contents);
+			if(isset($I2_QUERY['get_new_message'])) redirect("");
 		}
 		return $contents;
 	}
 
-	private function store_emerg_message($cachefile,$string) {
+
+	public static function store_emerg_message($cachefile,$string) {
 		$fh = fopen($cachefile,'w');
 		fwrite($fh,$string);
 		fclose($fh);
 	}
 
-	private function get_new_message() {
+	public static function get_new_message() {
 		global $I2_FS_ROOT;
 		// HTTPS because otheriwse it gets cached by the proxy, which is bad.
 		// It endangers kittens because they don't get information quickly enough.
@@ -528,7 +530,7 @@ class News extends Module {
 		require_once $I2_FS_ROOT.'lib/simple_html_dom.php';
 		$url = "http://www.fcps.edu/news/emerg.shtml?".time();
 		try {
-			if($fgetc = $this->curl_file_get_contents($url)) {
+			if($fgetc = News::curl_file_get_contents($url)) {
 				$html = str_get_html($fgetc);
 				//$false_str = "There are no emergency announcements at this time";
 				// The string used for there being no emergency messages
@@ -555,7 +557,7 @@ class News extends Module {
 						$einfo= "<!-- snowday,".$false_str." -->";
 					} else {
 						$einfo= "<!-- ".print_r($d,1).print_r($dn,1)." -->".
-								"<p style='color: red'>".trim($dn[0])."</p>";
+								"<div class='emerg' style='background-color:yellow'><span style='font-size:22px'>FCPS Emergency Information:</span> &nbsp; &nbsp; <a href='".$url."'>View details</a> &nbsp; <a href='?&get_new_message'>Refresh</a> <p>".trim($dn[0])."</p></div>";
 					}
 					//echo "<a href='{$url}'>Click here for more information</a>";
 				} else {
@@ -574,7 +576,7 @@ class News extends Module {
 		}
 
 	}
-	private function curl_file_get_contents($URL)
+	private static function curl_file_get_contents($URL)
 	{
 		$c = curl_init();
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
