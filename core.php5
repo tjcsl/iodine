@@ -309,5 +309,4 @@ try {
 	}
 }
 $I2_CACHE->__destruct();
-$I2_SQL->__destruct();
 ?>
