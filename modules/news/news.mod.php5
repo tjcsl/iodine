@@ -483,8 +483,9 @@ class News extends Module {
 	*/
 	public static function get_emerg_message() {
 		global $I2_ROOT,$I2_QUERY;
+		$secs = i2config_get("emergsecs", 600, "news");
 		$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'emerg.cache';
-		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile)>600) || isset($I2_QUERY['get_new_message'])) { //Don't let the cache get older than an hour.
+		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile)>$secs) || isset($I2_QUERY['get_new_message'])) { //Don't let the cache get older than an hour.
 			$contents = News::get_new_message();
 			News::store_emerg_message($cachefile,$contents);
 			if(isset($I2_QUERY['get_new_message'])) redirect("");
