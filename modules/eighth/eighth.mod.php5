@@ -792,7 +792,7 @@ class Eighth extends Module {
 	* @param bool $add Whether to include the add field or not.
 	* @param string $title The title for the room list.
 	*/
-	private function setup_room_selection($add = FALSE, $title = 'Select a room:', $rid = FALSE) {
+	private function setup_room_selection($add = FALSE, $title = 'Select a room:', $rid = FALSE, $appendargs = "") {
 		$rooms = EighthRoom::get_all_rooms();
 		$this->template = 'room_selection.tpl';
 		$this->template_args['rooms'] = $rooms;
@@ -803,6 +803,7 @@ class Eighth extends Module {
 			$this->template_args['add'] = TRUE;
 		}
 		$this->template_args['title'] = $title;
+		$this->template_args['appendargs'] = $appendargs;
 		$this->title = 'Select a Room';
 		$this->help_text = 'Select a Room';
 	}
@@ -1566,7 +1567,7 @@ class Eighth extends Module {
 				$this->title = 'View Room Utilization (By Room)';
 				$this->template = 'vp_room_typebyroom.tpl';
 			} else if($this->args['type'] == 'rid' && (!isset($this->args['rid']) && !isset($_REQUEST['rooms']))) {
-				$this->setup_room_selection(false,'Select a room:');
+				$this->setup_room_selection(false,'Select a room:',null,'type/rid/');
 			} else if($this->args['type'] == 'rid' && !isset($this->args['bidst'])) {
 				$this->setup_block_selection(false,'bidst','Select a starting block:',null,null,null,'type/rid/rid/'.$this->args['rid'].'/');
 			} else if($this->args['type'] == 'rid' && !isset($this->args['biden'])) {
