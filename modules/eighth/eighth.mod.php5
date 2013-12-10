@@ -1562,21 +1562,38 @@ class Eighth extends Module {
 			
 			$this->title = 'Select Room(s) and Block(s)';
 			$this->template_args['op'] = 'byroom';
-			if(!isset($this->args['rid']) && !isset($_REQUEST['rooms'])) {
+			if(!isset($this->args['type'])) {
+				$this->title = 'View Room Utilization (By Room)';
+				$this->template = 'vp_room_typebyroom.tpl';
+			} else if($this->args['type'] == 'rid' && (!isset($this->args['rid']) && !isset($_REQUEST['rooms']))) {
 				$this->setup_room_selection(false,'Select a room:');
-			} else if(!isset($this->args['bidst'])) {
-				$this->setup_block_selection(false,'bidst','Select a starting block:',null,null,null,'rid/'.$this->args['rid'].'/');
-			} else if(!isset($this->args['biden'])) {
+			} else if($this->args['type'] == 'rid' && !isset($this->args['bidst'])) {
+				$this->setup_block_selection(false,'bidst','Select a starting block:',null,null,null,'type/rid/rid/'.$this->args['rid'].'/');
+			} else if($this->args['type'] == 'rid' && !isset($this->args['biden'])) {
 				$button = "<button onclick=\"location.href=$('#boxcontent>table tr:last-child a').eq(0).attr('href')\">Choose last block</button>";
-				$this->setup_block_selection(false,'biden','Select an ending block:<br/>'.$button,null,null,null,'rid/'.$this->args['rid'].'/bidst/'.$this->args['bidst'].'/');
+				$this->setup_block_selection(false,'biden','Select an ending block:<br/>'.$button,null,null,null,'type/rid/rid/'.$this->args['rid'].'/bidst/'.$this->args['bidst'].'/');
+			} else if($this->args['type'] == 'q' && !isset($this->args['bidst'])) {
+				$this->setup_block_selection(false,'bidst','Select a starting block:',null,null,null,'type/q/q/'.$this->args['q'].'/');
+			} else if($this->args['type'] == 'q' && !isset($this->args['biden'])) {
+				$button = "<button onclick=\"location.href=$('#boxcontent>table tr:last-child a').eq(0).attr('href')\">Choose last block</button>";
+				$this->setup_block_selection(false,'biden','Select an ending block:<br/>'.$button,null,null,null,'type/q/q/'.$this->args['q'].'/bidst/'.$this->args['bidst'].'/');
 			} else {
 				$this->title = 'View Room Utilization (By Room)';
 				$this->template = 'vp_room_viewbyroom.tpl';	
 				$this->template_args['print_url'] = '';
 				if(isset($_REQUEST['rooms'])) {
 					$rooms = $_REQUEST['rooms'];
-				} else {
+				} else if(isset($this->args['rid'])) {
 					$rooms = [$this->args['rid']];
+				} else if($this->args['type'] == 'q') {
+					$q = $this->args['q'];
+					$qsql = 'SELECT rid,name FROM eighth_rooms WHERE name LIKE "'.$q.'%"';
+					$qres = $I2_SQL->query($qsql)->fetch_all_arrays();
+					$rooms = [];
+					foreach($qres as $qr) {
+						$rooms[] = $qr['rid'];
+						d("Room matches query: ".$qr['rid']." ".$qr['name'], 7);
+					}
 				}
 				$bidst = $this->args['bidst'];
 				$biden = $this->args['biden'];
@@ -1592,7 +1609,7 @@ class Eighth extends Module {
 				$map = $I2_SQL->query($sql)->fetch_all_arrays();
 				$util = array();
 				foreach($map as $m) {
-					$util[trim($m[3])][] = [
+					$util[trim($m[(isset($this->args['sort']) ? $this->args['sort'] : 0)])][] = [
 						"bid"=>$m[0],
 						"aid"=>$m[1],
 						"sponsor"=>$m[2],
@@ -1605,10 +1622,9 @@ class Eighth extends Module {
 						"actsignups"=>$I2_SQL->query('SELECT COUNT(userid) FROM eighth_activity_map WHERE bid=%d AND aid=%d',$m[0],$m[1])->fetch_single_value()
 					];
 				}
-				d_r($map, 0);
-				d_r($util, 0);
 
 				$this->template_args['util'] = $util;
+				$this->template_args['sort'] = isset($this->args['sort']) ? $this->args['sort'] : 0;
 			}
 
 			/*

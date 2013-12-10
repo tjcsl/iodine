@@ -38,7 +38,7 @@
 				<li><a href="[<$I2_ROOT>]eighth/sch_activity"><b>Schedule an activity for eighth period</b></a></li>
 				<li>[<* P+ *>]<a href="[<$I2_ROOT>]eighth/vp_roster"><b>View or print a class roster</b></a></li>
 				<li>[<* P- *>]<a href="[<$I2_ROOT>]eighth/vp_room"><b>View or print the utilization of rooms in a given block</b></a></li>
-				<li><a href="[<$I2_ROOT>]eighth/vp_room/byroom"><b>View or print the utilization of a room</b></a>
+				<li><a href="[<$I2_ROOT>]eighth/vp_room/byroom"><b>View or print the utilization of a given room</b></a>
 				<li><a href="[<$I2_ROOT>]eighth/room_sanity">Room assignment sanity check</a></li>
 				<li>[<* P+ *>]<a href="[<$I2_ROOT>]eighth/vp_sponsor">View or print sponsor schedule</a></li>
 				<li>[<* P- *>]<a href="[<$I2_ROOT>]eighth/vp_activity">View or print activity schedule</a></li>

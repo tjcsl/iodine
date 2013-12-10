@@ -12,6 +12,17 @@ table.vp-room-viewbyroom td {
     padding: 0px 5px;
 }
 </style>
+<form method="get">
+<select name="sort">
+    <option value=0[<if $sort==0>] selected[</if>]>Block ID</option>
+    <option value=1[<if $sort==1>] selected[</if>]>Activity ID</option>
+    <option value=3[<if $sort==3>] selected[</if>]>Room ID</option>
+    <option value=5[<if $sort==5>] selected[</if>]>Activity Capacity</option>
+    <option value=6[<if $sort==6>] selected[</if>]>Activity Name</option>
+    <option value=9[<if $sort==9>] selected[</if>]>Sponsor</option>
+</select>
+<input type="submit" value="Sort" />
+</form>
 <table class="vp-room-viewbyroom">
     <tr>
         <th>Room Name</th>
