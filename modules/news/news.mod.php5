@@ -535,9 +535,9 @@ class News extends Module {
 				$html = str_get_html($fgetc);
 				//$false_str = "There are no emergency announcements at this time";
 				// The string used for there being no emergency messages
-				$false_str = "There are no emergency messages at this time"; 
+				$false_str = array("There are no emergency announcements at this time","There are no emergency messages at this time");
 				$con = $html->find('div[id=mainContent]');
-				$snowdayd = $con[0]->innertext;
+				$snowdayd = preg_replace('/( )+/', ' ',$con[0]->innertext);
 				$snowday = (strpos($snowdayd, $false_str)===false);
 				// This is the message that ends the emergency text;
 				// it is currently the text of the header below
