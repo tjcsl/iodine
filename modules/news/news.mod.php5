@@ -473,7 +473,11 @@ class News extends Module {
 				$this->template_args['stories'][] = $story;
 			}
 		}
-		$this->template_args['weatherstatus']=$this->get_emerg_message();
+		try {
+			$this->template_args['weatherstatus']=$this->get_emerg_message();
+		} catch(Exception $e) {
+			$this->template_args['weatherstatus']="<!-- Exception thrown running News::get_emerg_message -->";
+		}
 		return array('News',$title);
 	}
 
