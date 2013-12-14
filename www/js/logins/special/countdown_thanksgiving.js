@@ -1,20 +1,12 @@
 var interval;
 var clockContainer, clock;
 var tz = " GMT-0500 (EST)";
-//var eleven = new Date(2013, 22, 12, 11, 12, 13, 111);
-if(+new Date() < +new Date("Tue Nov 12 2013 11:12:13"+tz)) {
-	var eleven = new Date("Tue Nov 12 2013 11:12:13"+tz);
-	var etxt = "11-12-13 11:12:13";
-} else if(+new Date() < +new Date("Tue Nov 12 2013 13:12:11"+tz)) {
-        var eleven = new Date("Tue Nov 12 2013 13:12:11"+tz);
-	var etxt = "11-12-13 13:12:11";
-} else if(+new Date() < +new Date("Tue Nov 12 2013 14:15:16"+tz)) {
-        var eleven = new Date("Tue Nov 12 2013 14:15:16"+tz);
-	var etxt = "11-12-13 14:15:16";
-} else {
-	var eleven = new Date("Tue Nov 12 2013 23:12:13"+tz);
-	var etxt = "11-12-13 11:12:13";
-}
+
+// parse the hash
+//d={};for(i in s=document.getElementsByTagName('script'))if((t=s[i].src)&&t.indexOf(u='/www/js/logins/special/countdown.js')!==-1)e=t.split(u+'#')[1];for(i in f=e.split('&'))d[(g=f[i].split('='))[0]]=g[1];
+d = {'time': 'Wed Nov 27, 2013 13:50:00', 'text': 'the start of Thanksgiving Break'};
+var eleven = new Date(d.time+tz);
+var etxt = d.text;
 // year, month, date, hour, minute, second, millis
 // months start at 0, so 10 -> 11
 

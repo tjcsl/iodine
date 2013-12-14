@@ -34,6 +34,13 @@ class Cache {
 			$I2_ERR->fatal_error('memcache server connection failed!', 1);
 		}
 	}
+
+	public function __destruct() {
+		if(isset($this->mcache)) {
+			d("Memcached closing");
+			$this->mcache->close();
+		}
+	}
 	
 	/**
 	 * Store a variable in memcached

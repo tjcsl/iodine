@@ -354,6 +354,11 @@ class Auth {
 			}
 
 			self::init_backgrounds();
+			try {
+				$this->template_args['emerg'] = News::get_emerg_message();
+			} catch(Exception $e) {
+				$this->template_args['emerg'] = "<!-- Exception thrown running News::get_emerg_message -->";
+			}
 			// Show the login box
 			$this->template_args['failed'] = $this->modauth_loginfailed;
 			$this->template_args['uname'] = $uname;
@@ -594,7 +599,7 @@ class Auth {
 
 		$rows = unserialize($I2_CACHE->read(get_class(),'special_backgrounds'));
 		if($rows === FALSE) {
-			$rows = $I2_SQL->query('SELECT startdt, enddt, background, js FROM special_backgrounds')->fetch_all_arrays();
+			$rows = $I2_SQL->query('SELECT startdt, enddt, background, js FROM special_backgrounds ORDER BY priority DESC')->fetch_all_arrays();
 			$I2_CACHE->store(get_class(),'special_backgrounds',serialize($rows));
 		}
 

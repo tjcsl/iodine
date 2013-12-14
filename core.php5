@@ -1,4 +1,4 @@
-<?php
+<?PHp
 /**
 * The core module for Iodine.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
@@ -308,5 +308,5 @@ try {
 		die("There was an error too early on in the application for anything to handle the error. What you are seeing right now is the fail-safe message. Please inform the intranetmaster immediately.<br/>Error: ".$e->__toString());
 	}
 }
-
+$I2_CACHE->__destruct();
 ?>

@@ -473,7 +473,11 @@ class News extends Module {
 				$this->template_args['stories'][] = $story;
 			}
 		}
-		$this->template_args['weatherstatus']=$this->get_emerg_message();
+		try {
+			$this->template_args['weatherstatus']=$this->get_emerg_message();
+		} catch(Exception $e) {
+			$this->template_args['weatherstatus']="<!-- Exception thrown running News::get_emerg_message -->";
+		}
 		return array('News',$title);
 	}
 
@@ -481,23 +485,26 @@ class News extends Module {
 	* Get the emergency messages from FCPS.
 	* This is stuff like weather-related cancellations.
 	*/
-	function get_emerg_message() {
+	public static function get_emerg_message() {
 		global $I2_ROOT,$I2_QUERY;
+		$secs = i2config_get("emergsecs", 600, "news");
 		$cachefile = i2config_get('cache_dir','/var/cache/iodine/','core') . 'emerg.cache';
-		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile)>600) || isset($I2_QUERY['get_new_message'])) { //Don't let the cache get older than an hour.
-			$contents = $this->get_new_message();
-			$this->store_emerg_message($cachefile,$contents);
+		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile)>$secs) || isset($I2_QUERY['get_new_message'])) { //Don't let the cache get older than an hour.
+			$contents = News::get_new_message();
+			News::store_emerg_message($cachefile,$contents);
+			if(isset($I2_QUERY['get_new_message'])) redirect("");
 		}
 		return $contents;
 	}
 
-	private function store_emerg_message($cachefile,$string) {
+
+	public static function store_emerg_message($cachefile,$string) {
 		$fh = fopen($cachefile,'w');
 		fwrite($fh,$string);
 		fclose($fh);
 	}
 
-	private function get_new_message() {
+	public static function get_new_message() {
 		global $I2_FS_ROOT;
 		// HTTPS because otheriwse it gets cached by the proxy, which is bad.
 		// It endangers kittens because they don't get information quickly enough.
@@ -526,16 +533,17 @@ class News extends Module {
 		}*/
 		d('Checking FCPS emerg msgs and including simple_html_dom', 9);
 		require_once $I2_FS_ROOT.'lib/simple_html_dom.php';
-		$url = "http://www.fcps.edu/news/emerg.shtml";
+		$url = "http://www.fcps.edu/news/emerg.shtml?".time();
 		try {
-			if($fgetc = $this->curl_file_get_contents($url)) {
+			if($fgetc = News::curl_file_get_contents($url)) {
 				$html = str_get_html($fgetc);
 				//$false_str = "There are no emergency announcements at this time";
 				// The string used for there being no emergency messages
-				$false_str = "There are no emergency messages at this time"; 
+				$false_str = array("There are no emergency announcements at this time","There are no emergency messages at this time");
 				$con = $html->find('div[id=mainContent]');
-				$snowdayd = $con[0]->innertext;
-				$snowday = (strpos($snowdayd, $false_str)!==false);
+				$snowdayd = preg_replace('/( )+/', ' ',$con[0]->innertext);
+				if(empty($snowdayd) || !is_string($snowdayd) || !is_array($snowdayd)) return "<!-- No text -->";
+				$snowday = (strpos($snowdayd, $false_str)===false);
 				// This is the message that ends the emergency text;
 				// it is currently the text of the header below
 				$end_str = "Go to The Source";
@@ -555,7 +563,7 @@ class News extends Module {
 						$einfo= "<!-- snowday,".$false_str." -->";
 					} else {
 						$einfo= "<!-- ".print_r($d,1).print_r($dn,1)." -->".
-								"<p style='color: red'>".trim($dn[0])."</p>";
+								"<div class='emerg' style='background-color:yellow;padding:5px'><span style='font-size:22px'>FCPS Emergency Information:</span> &nbsp; &nbsp; <a href='".$url."'>View details</a> &nbsp; <a href='?&get_new_message'>Refresh</a> <p>".trim($dn[0])."</p></div>";
 					}
 					//echo "<a href='{$url}'>Click here for more information</a>";
 				} else {
@@ -566,7 +574,7 @@ class News extends Module {
 				return $einfo;
 			} else {
 				d("Emergency info: Could not fetch FCPS' site",5);
-				return "Emergency info: Could not fetch FCPS' site";
+				return "<!--Emergency info: Could not fetch FCPS' site-->";
 			}
 		} catch(Exception $e) {
 			d("Emergency info: Error parsing FCPS' emergency site",5);
@@ -574,11 +582,13 @@ class News extends Module {
 		}
 
 	}
-	private function curl_file_get_contents($URL)
+	private static function curl_file_get_contents($URL)
 	{
 		$c = curl_init();
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($c, CURLOPT_URL, $URL);
+		curl_setopt($c, CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
 		$contents = curl_exec($c);
 		curl_close($c);
 		

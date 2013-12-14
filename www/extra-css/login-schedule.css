@@ -88,3 +88,13 @@ body.login #logo {
 span.cl {
 	color: red;
 }
+
+
+.emerg {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	max-width: 554px;
+	z-index: 11;
+}

@@ -44,7 +44,14 @@ class DaySchedule extends Module {
 	private static $pretty_summaries = array(
 		// "jlc" => "JLC Blue Day"
 	);
-
+	
+	/**
+	* Defines days that should use a schedule
+	* other than the one defined in CalendarWiz
+	**/
+	private static $override_schedules = array(
+	//	"20131127" => "telelearnshort"
+	);
 	/**
 	* The default schedule information (name, periods) for default days
 	* Custom schedules should be stored in MySQL!
@@ -428,9 +435,21 @@ class DaySchedule extends Module {
 				$ret[trim($day)] = self::$summaries[trim($item['SUMMARY'])];
 			}
 		}
+		foreach(self::$override_schedules as $day=>$name) {
+			d("override: $day $name",0);
+			$ret[$day] = $name;
+		}
 		d_r($ret, 0);
 		self::$dayTypes = $ret;
 		return $ret;
+	}
+
+	/**
+	* Check if there is an overriding schedule
+	* @attr String the date in format YYYYMMDD
+	**/
+	private static function is_overriding_schedule($day) {
+		return isset(self::$override_schedules[$day]);
 	}
 
 	/**
@@ -446,8 +465,9 @@ class DaySchedule extends Module {
 	**/
 	private static function admin() {
 		global $I2_ARGS;
+		self::init();
 		self::$args['template'] = 'admin.tpl';
-		$page = isset($I2_ARGS[3]) ? $I2_ARGS[3] : 'home';
+		$page = isset($I2_ARGS[2]) ? $I2_ARGS[2] : 'home';
 		self::$args['page'] = $page;
 		if($page == 'home') {
 			/**
@@ -459,15 +479,24 @@ class DaySchedule extends Module {
 			* The summary edit page
 			**/
 			self::$args['summaries'] = self::$summaries;
+			self::$args['pretty'] = self::$pretty_summaries;
+			return "Administration: Summaries";
 		} else if($page == 'summariesadd') {
 			/**
 			* Add a summary
 			**/
 			if(isset($_POST['daytype'], $_POST['daydesc'])) {
-				self::add_summary($_POST['daytype'], $_POST['daydesc']);
+				$s = self::add_summary($_POST['daytype'], $_POST['daydesc']);
 			}
+			redirect("dayschedule/admin/summaries?update_schedule");
 		} else if($page == 'summariesedit') {
-
+			/**
+			* Edit a summary
+			**/
+			if(isset($_POST['daytype'], $_POST['daydesc'])) {
+				$s = self::edit_summary($_POST['daytype'], $_POST['daydesc']);
+			}
+			redirect("dayschedule/admin/summaries?update_schedule");
 		} else if($page == 'schedules') {
 			/**
 			* The schedule edit page
@@ -476,6 +505,9 @@ class DaySchedule extends Module {
 		return "Administration";
 	}
 
+	private static function e($value) { 
+		$return = '';for($i = 0; $i < strlen($value); ++$i) {$char = $value[$i];$ord = ord($char);if($char !== "'" && $char !== "\"" && $char !== '\\' && $ord >= 32 && $ord <= 126)$return .= $char;else$return .= '\\x' . dechex($ord);}return $return;
+	}
 	/**
 	* Add custom summary information to the database
 	* @attr String $daytype Day type
@@ -484,7 +516,12 @@ class DaySchedule extends Module {
 	private static function add_summary($daytype, $daydesc) {
 		global $I2_SQL;
 		return $I2_SQL->raw_query("INSERT INTO `dayschedule_custom_summaries` (`daytype`, `daydesc`) VALUES " .
-						   "('" . mysql_real_escape_string($daytype) . "', '" . mysql_real_escape_string($daydesc) . "');");
+						   "('" . self::e($daytype) . "', '" . self::e($daydesc) . "');");
+	}
+
+	private static function edit_summary($daytype, $daydesc) {
+		global $I2_SQL;
+		return $I2_SQL->raw_query("UPDATE `dayschedule_custom_summaries` SET daydesc='" . self::e($daydesc) . "' WHERE daytype='" . self::e($daytype) . "';");
 	}
 
 	/**
@@ -517,11 +554,11 @@ class DaySchedule extends Module {
 	private static function fetch_custom_entries() {
 		global $I2_SQL, $I2_CACHE, $I2_QUERY;
 
-		/* TODO: cache */
 		
 		$custom_summaries = unserialize($I2_CACHE->read(get_class(), 'custom_summaries'));
 		$pretty_summaries = unserialize($I2_CACHE->read(get_class(), 'pretty_summaries'));
 		$custom_schedules = unserialize($I2_CACHE->read(get_class(), 'custom_schedules'));
+		$override_schedules = unserialize($I2_CACHE->read(get_class(), 'override_schedules'));
         $cache_date = unserialize($I2_CACHE->read(get_class(), 'custom_date'));
 
         if(($custom_summaries === false || $pretty_summaries === false || $custom_schedules === false) ||
@@ -532,9 +569,11 @@ class DaySchedule extends Module {
 			$custom_summaries = $I2_SQL->query('SELECT * FROM dayschedule_custom_summaries')->fetch_all_arrays(MYSQLI_ASSOC);
 			$pretty_summaries = $I2_SQL->query('SELECT * FROM dayschedule_pretty_summaries')->fetch_all_arrays(MYSQLI_ASSOC);
 			$custom_schedules = $I2_SQL->query('SELECT * FROM dayschedule_custom_schedules')->fetch_all_arrays(MYSQLI_ASSOC);
+			$override_schedules = $I2_SQL->query('SELECT * FROM dayschedule_override_schedules')->fetch_all_arrays(MYSQLI_ASSOC);
 			$I2_CACHE->store(get_class(), 'custom_summaries', serialize($custom_summaries));
 			$I2_CACHE->store(get_class(), 'pretty_summaries', serialize($pretty_summaries));
 			$I2_CACHE->store(get_class(), 'custom_schedules', serialize($custom_schedules));
+			$I2_CACHE->store(get_class(), 'override_schedules', serialize($override_schedules));
         	$I2_CACHE->store(get_class(), 'custom_date', serialize(time()));
 		}
 		foreach($custom_summaries as $s) {
@@ -548,6 +587,10 @@ class DaySchedule extends Module {
 		foreach($custom_schedules as $s) {
 			self::$schedules[$s['daytype']] = json_decode($s['json']);
 		}
+		foreach($override_schedules as $v) {
+			self::$override_schedules[$v["dayname"]] = $v["daytype"];
+		}
+		//self::$override_schedules = $override_schedules;
 		
 		
 	}

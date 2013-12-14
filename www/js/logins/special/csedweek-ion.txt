@@ -1,0 +1,370 @@
+from itertools import chain
+import logging
+import datetime
+from django.contrib.auth.decorators import login_required
+from django.db.models import Count
+from django.http import Http404
+from django.shortcuts import render, get_object_or_404
+from .models import EighthBlock, EighthActivity, EighthSponsor, EighthSignup, \
+    EighthScheduledActivity
+from rest_framework import generics, views
+from rest_framework.decorators import api_view
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from intranet.apps.eighth.models import User
+from .serializers import EighthBlockListSerializer, \
+                         EighthBlockDetailSerializer, EighthActivitySerializer
+
+logger = logging.getLogger(__name__)
+
+
+@login_required
+def eighth_signup_view(request, block_id=None):
+    if block_id is None:
+        now = datetime.datetime.now()
+
+        # Show same day if it's before 17:00
+        if now.hour < 17:
+            now = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+        try:
+            block_id = EighthBlock.objects \
+                                  .order_by("date", "block_letter") \
+                                  .filter(date__gte=now)[0] \
+                                  .id
+        except IndexError:
+            block_id = EighthBlock.objects \
+                                  .order_by("-date", "-block_letter") \
+                                  .filter(date__lte=now)[0] \
+                                  .id
+
+    try:
+        block = EighthBlock.objects \
+                           .prefetch_related("eighthscheduledactivity_set") \
+                           .get(id=block_id)
+    except EighthBlock.DoesNotExist:
+        raise Http404
+
+    next = block.next_blocks(10)
+    prev = block.previous_blocks(10)
+
+    surrounding_blocks = list(chain(prev, [block], next))
+    schedule = []
+
+    signups = EighthSignup.objects.filter(user=request.user).select_related("activity", "activity__activity")
+    block_signup_map = {s.activity.block.id: s.activity.activity.name for s in signups}
+
+    for b in surrounding_blocks:
+        info = {
+            "id": b.id,
+            "block_letter": b.block_letter,
+            "current_signup": block_signup_map.get(b.id, "")
+        }
+
+        if len(schedule) and schedule[-1]["date"] == b.date:
+            schedule[-1]["blocks"].append(info)
+        else:
+            day = {}
+            day["date"] = b.date
+            day["blocks"] = []
+            day["blocks"].append(info)
+            schedule.append(day)
+
+
+    block_info = EighthBlockDetailSerializer(block, context={"request": request}).data
+    block_info["schedule"] = schedule
+    json_string = JSONRenderer().render(block_info["activities"])
+    context = {"user": request.user,
+               "page": "eighth",
+               "block_info": block_info,
+               "bootstrapped_activities_list": JSONRenderer().render(block_info["activities"])
+               }
+
+    return render(request, "eighth/eighth.html", context)
+
+
+class EighthBlockList(generics.ListAPIView):
+
+    """API endpoint that allows viewing a list of EighthBlock objects.
+    """
+    queryset = EighthBlock.objects.all()
+    serializer_class = EighthBlockListSerializer
+
+
+class EighthBlockDetail(views.APIView):
+    """API endpoint that allows viewing an EighthBlock object.
+    """
+    def get(self, request, pk, format=None):
+        try:
+            block = EighthBlock.objects.prefetch_related("eighthscheduledactivity_set").get(pk=pk)
+        except EighthBlock.DoesNotExist:
+            raise Http404
+
+        serializer = EighthBlockDetailSerializer(block, context={"request": request})
+        return Response(serializer.data)
+
+
+class EighthActivityList(generics.ListAPIView):
+
+    """API endpoint that allows viewing a list of EighthActivity objects.
+    """
+    queryset = EighthActivity.objects.all()
+    serializer_class = EighthActivitySerializer
+
+
+class EighthActivityDetail(generics.RetrieveAPIView):
+
+    """API endpoint that allows viewing EighthActivity objects.
+    """
+    queryset = EighthActivity.objects.all()
+    serializer_class = EighthActivitySerializer
+
+
+import logging
+from django.db import models
+from django.db.models import Count, Q
+from intranet.apps.users.models import User
+
+logger = logging.getLogger(__name__)
+
+
+class EighthSponsor(models.Model):
+
+    """Represents a sponsor for an eighth period activity.
+
+    A sponsor could be an actual user or just a name.
+
+    Attributes:
+        - user -- A :class:`User<intranet.apps.users.models.User>`\
+                  object for the sponsor.
+        - name -- The name of the sponsor
+
+    """
+    user = models.ForeignKey(User, null=True)
+    first_name = models.CharField(null=True, max_length=63)
+    last_name = models.CharField(null=True, max_length=63)
+    online_attendance = models.BooleanField(default=True)
+
+
+class EighthRoom(models.Model):
+
+    """Represents a room in which an eighth period activity can be held
+
+    Attributes:
+        - Attribute -- Description.
+
+    """
+    name = models.CharField(max_length=63)
+    capacity = models.SmallIntegerField(null=False, default=-1)
+
+    unique_together = (("room_number", "name", "capacity"),)
+
+
+class EighthActivity(models.Model):
+
+    """Represents an eighth period activity.
+
+    Attributes:
+        - name -- The name of the activity.
+        - sponsors -- The EighthSponsors for the activity.
+
+    """
+    name = models.CharField(max_length=63)
+    description = models.TextField()
+    sponsors = models.ManyToManyField(EighthSponsor)
+    rooms = models.ManyToManyField(EighthRoom)
+
+    restricted = models.BooleanField(default=False)
+    presign = models.BooleanField(default=False)
+    one_a_day = models.BooleanField(default=False)
+    both_blocks = models.BooleanField(default=False)
+    sticky = models.BooleanField(default=False)
+    special = models.BooleanField(default=False)
+
+    # Groups allowed
+
+    # Single students allowed
+
+    def __unicode__(self):
+        return self.name
+
+
+class EighthBlock(models.Model):
+
+    """Represents an eighth period block.
+
+    Attributes:
+        - date -- The date of the block.
+        - block_letter -- The block letter (e.g. A, B).
+        - locked -- Whether signups are closed.
+        - activities -- List of \
+                        :class:`EighthScheduledActivity` for the block.
+
+    """
+    date = models.DateField(null=False)
+    block_letter = models.CharField(max_length=1)
+    locked = models.BooleanField(default=False)
+    activities = models.ManyToManyField(EighthActivity,
+                                        through="EighthScheduledActivity")
+
+    def next_blocks(self, quantity=1):
+        return EighthBlock.objects \
+                          .order_by("date", "block_letter") \
+                          .filter(Q(date__gt=self.date) \
+                           | (Q(date=self.date) \
+                           & Q(block_letter__gt=self.block_letter)))[:quantity]
+
+    def previous_blocks(self, quantity=1):
+        return reversed(EighthBlock.objects \
+                                   .order_by("-date", "-block_letter") \
+                                   .filter(Q(date__lt=self.date) \
+                                    | (Q(date=self.date) \
+                                    & Q(block_letter__lt=self.block_letter)))[:quantity])
+
+    def __unicode__(self):
+        return "{}: {}".format(str(self.date), self.block_letter)
+
+    class Meta:
+        unique_together = (("date", "block_letter"),)
+
+
+class EighthScheduledActivity(models.Model):
+    block = models.ForeignKey(EighthBlock, null=False)
+    activity = models.ForeignKey(EighthActivity, null=False, blank=False)
+    members = models.ManyToManyField(User, through="EighthSignup")
+
+    comment = models.CharField(max_length=255)
+
+    # Overidden attributes
+    sponsors = models.ManyToManyField(EighthSponsor)
+    rooms = models.ManyToManyField(EighthRoom)
+
+    attendance_taken = models.BooleanField(default=False)
+    cancelled = models.BooleanField(default=False)
+    room_changed = models.BooleanField(default=False)
+
+
+class EighthSignup(models.Model):
+
+    """Represents a signup/membership in an eighth period activity.
+
+    Attributes:
+        - user -- The :class:`User<intranet.apps.users.models.User>`\
+                  who has signed up.
+        - activity -- The :class:`EighthScheduledActivity` for which the user \
+                      has signed up.
+
+    """
+    user = models.ForeignKey(User, null=False)
+    activity = models.ForeignKey(EighthScheduledActivity, null=False, db_index=True)
+    has_pass = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return "{}: {}".format(self.user,
+                               self.activity)
+
+    # class Meta:
+        # unique_together = (("user", "block"),)
+        # index_together = [
+        #     ["user", "block"],
+        #     ["block", "activity"]
+        # ]
+
+
+class SignupAlert(models.Model):
+
+    """Stores a user's preferences for signup alerts.
+
+    Attributes:
+        - user -- The :class:`User<intranet.apps.users.models.User>`.
+        - night_before -- (BOOL) Whether the user wants emails the \
+                          night before if he/she hasn't signed up yet
+        - day_of -- (BOOL) Whether the user wants emails the day of if \
+                    he/she hasn't signed up yet
+
+    """
+    user = models.ForeignKey(User, null=False, unique=True)
+    night_before = models.BooleanField(null=False)
+    day_of = models.BooleanField(null=False)
+
+    def __unicode__(self):
+        return "{}: [{}] Night before "\
+               "[{}] Day of".format(self.user,
+                                    "X" if self.night_before else " ",
+                                    "X" if self.day_of else " ")
+
+
+class EighthAbsence(models.Model):
+
+    """Represents a user's absence for an eighth period block.
+
+    Attributes:
+        - block -- The `EighthBlock` of the absence.
+        - user -- The :class:`User<intranet.apps.users.models.User>`\
+                  who was absent.
+
+    """
+    block = models.ForeignKey(EighthBlock)
+    user = models.ForeignKey(User)
+
+    def __unicode__(self):
+        return "{}: {}".format(self.user, self.block)
+
+    class Meta:
+        unique_together = (("block", "user"),)
+
+import os
+import logging
+from intranet.apps.dashboard.views import dashboard_view
+from .forms import AuthenticateForm
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, logout
+from django.views.generic.base import View
+
+logger = logging.getLogger(__name__)
+
+
+def index(request, auth_form=None):
+    """Process and show the main login page or dashboard if logged in."""
+    if request.user.is_authenticated():
+        return dashboard_view(request)
+    else:
+        auth_form = auth_form or AuthenticateForm()
+        return render(request,
+                      "auth/login.html",
+                      {"auth_form": auth_form, })
+
+
+class login_view(View):
+    """Log in and redirect a user."""
+
+    def post(self, request):
+        """Validate and process the login POST request."""
+        form = AuthenticateForm(data=request.POST)
+
+        if form.is_valid():
+            login(request, form.get_user())
+            # Initial load into session
+            request.session["KRB5CCNAME"] = os.environ["KRB5CCNAME"]
+
+            next = request.GET.get("next", "/")
+            return redirect(next)
+        else:
+            logger.info("Login failed")
+            return index(request, auth_form=form)  # Modified to show errors
+
+    def get(self, request):
+        """Redirect to the login page."""
+        return index(request)
+
+
+def logout_view(request):
+    """Clear the Kerberos cache and logout."""
+    try:
+        kerberos_cache = request.session["KRB5CCNAME"]
+        os.system("/usr/bin/kdestroy -c " + kerberos_cache)
+    except KeyError:
+        pass
+    logger.info("Destroying kerberos cache and logging out")
+    logout(request)
+    return redirect("/")

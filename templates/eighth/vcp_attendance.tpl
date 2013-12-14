@@ -35,6 +35,7 @@ Activity:&nbsp;[<$act->name>], ID [<$act->aid>]<br />
 Date:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<$act->block->date|date_format>], [<$act->block->block>] block<br />
 Room(s):&nbsp;&nbsp;&nbsp;&nbsp;[<$act->block_rooms_comma>]<br />
 Sponsor(s):&nbsp;[<$act->block_sponsors_comma>]<br />
+Signups:&nbsp;[<sizeof($act->members_obj)>]&nbsp;/&nbsp;[<$act->capacity>]<br />
 [<if $is_admin || $is_sponsor>]
 [<if $act->attendancetaken == 1>]<span id="eighth_attendance_status" style="color:green;font-weight:bold;font-size:2.0em">Attendance Taken</span>
 [<else>]<span id="eighth_attendance_status" style="color:red;font-weight:bold;font-size:2.0em">Attendance NOT Taken</span>[</if>]
