@@ -25,10 +25,9 @@ table.vp-room-viewbyroom td {
 </form>
 <table class="vp-room-viewbyroom">
     <tr>
-        <th>Room Name</th>
-        <th>Block ID</th>
-        <th>Activity ID</th>
-        <th>Activity Name</th>
+	<th>Room</th>
+	<th>Block</th>
+        <th>Activity</th>
         <th>Teacher</th>
         <th>Students</th>
         <th>Capacity</th>
@@ -37,9 +36,8 @@ table.vp-room-viewbyroom td {
     [<foreach from=$activities item="actblk">]
     <tr>
         <th>[<$actblk.roomname>] ([<$actblk.roomid>])</th>
-        <td>[<$actblk.bid>]</td>
-        <td>[<$actblk.aid>]</td>
-        <td>[<$actblk.actname>]</td>
+        <td>[<$actblk.date>] [<$actblk.block>] Block ([<$actblk.bid>])</td>
+        <td>[<$actblk.actname>] ([<$actblk.aid>])</td>
         <td>[<$actblk.sponsorname>]</td>
         <td>[<$actblk.actsignups>]</td>
         <td>[<$actblk.actcapacity>]</td>

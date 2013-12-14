@@ -1574,10 +1574,10 @@ class Eighth extends Module {
 				$button = "<button onclick=\"location.href=$('#boxcontent>table tr:last-child a').eq(0).attr('href')\">Choose last block</button>";
 				$this->setup_block_selection(false,'biden','Select an ending block:<br/>'.$button,null,null,null,'type/rid/rid/'.$this->args['rid'].'/bidst/'.$this->args['bidst'].'/');
 			} else if($this->args['type'] == 'q' && !isset($this->args['bidst'])) {
-				$this->setup_block_selection(false,'bidst','Select a starting block:',null,null,null,'type/q/q/'.$this->args['q'].'/');
+				$this->setup_block_selection(false,'bidst','Select a starting block:',null,null,null,'type/q/q/'.$this->args['q'].'/'.(isset($this->args['qbefore'])?"qbefore/1/":"").(isset($this->args['qafter'])?"qafter/1/":""));
 			} else if($this->args['type'] == 'q' && !isset($this->args['biden'])) {
 				$button = "<button onclick=\"location.href=$('#boxcontent>table tr:last-child a').eq(0).attr('href')\">Choose last block</button>";
-				$this->setup_block_selection(false,'biden','Select an ending block:<br/>'.$button,null,null,null,'type/q/q/'.$this->args['q'].'/bidst/'.$this->args['bidst'].'/');
+				$this->setup_block_selection(false,'biden','Select an ending block:<br/>'.$button,null,null,null,'type/q/q/'.$this->args['q'].'/bidst/'.$this->args['bidst'].'/'.(isset($this->args['qbefore'])?"qbefore/1/":"").(isset($this->args['qafter'])?"qafter/1/":""));
 			} else {
 				$this->title = 'View Room Utilization (By Room)';
 				$this->template = 'vp_room_viewbyroom.tpl';	
@@ -1588,7 +1588,7 @@ class Eighth extends Module {
 					$rooms = [$this->args['rid']];
 				} else if($this->args['type'] == 'q') {
 					$q = $this->args['q'];
-					$qsql = 'SELECT rid,name FROM eighth_rooms WHERE name LIKE "'.$q.'%"';
+					$qsql = 'SELECT rid,name FROM eighth_rooms WHERE LOWER( name ) LIKE "'.(isset($this->args['qbefore'])?"%":"").''.strtolower($q).'%"';
 					$qres = $I2_SQL->query($qsql)->fetch_all_arrays();
 					$rooms = [];
 					foreach($qres as $qr) {
@@ -1603,10 +1603,10 @@ class Eighth extends Module {
 					$roomsql.='eighth_block_map.rooms="'.$room.'" OR ';
 				}
 				$roomsql = substr($roomsql, 0, sizeof($roomsql) - 4).') AND ';
-				
+				if($roomsql == ") AND ") $roomsql = "";	
 				$bidsql = 'eighth_block_map.bid BETWEEN '.$bidst.' AND '.$biden;
 				
-				$sql = 'SELECT eighth_block_map.bid,eighth_block_map.activityid,eighth_block_map.sponsors,eighth_block_map.rooms,eighth_rooms.name,eighth_rooms.capacity,eighth_activities.name,eighth_activities.description,eighth_sponsors.fname,eighth_sponsors.lname FROM eighth_block_map LEFT JOIN eighth_rooms ON (eighth_block_map.rooms=eighth_rooms.rid) LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) LEFT JOIN eighth_sponsors ON (eighth_block_map.sponsors=eighth_sponsors.sid) WHERE '.$roomsql.' '.$bidsql;
+				$sql = 'SELECT eighth_block_map.bid,eighth_block_map.activityid,eighth_block_map.sponsors,eighth_block_map.rooms,eighth_blocks.date,eighth_blocks.block,eighth_rooms.name,eighth_rooms.capacity,eighth_activities.name,eighth_activities.description,eighth_sponsors.fname,eighth_sponsors.lname FROM eighth_block_map LEFT JOIN eighth_blocks ON (eighth_block_map.bid=eighth_blocks.bid) LEFT JOIN eighth_rooms ON (eighth_block_map.rooms=eighth_rooms.rid) LEFT JOIN eighth_activities ON (eighth_block_map.activityid=eighth_activities.aid) LEFT JOIN eighth_sponsors ON (eighth_block_map.sponsors=eighth_sponsors.sid) WHERE '.$roomsql.' '.$bidsql;
 				$map = $I2_SQL->query($sql)->fetch_all_arrays();
 				$util = array();
 				foreach($map as $m) {
@@ -1615,11 +1615,13 @@ class Eighth extends Module {
 						"aid"=>$m[1],
 						"sponsor"=>$m[2],
 						"roomid"=>$m[3],
-						"roomname"=>$m[4],
-						"actcapacity"=>$m[5],
-						"actname"=>$m[6],
-						"actdesc"=>$m[7],
-						"sponsorname"=>$m[8]." ".$m[9],
+						"date"=>$m[4],
+						"block"=>$m[5],
+						"roomname"=>$m[6],
+						"actcapacity"=>$m[7],
+						"actname"=>$m[8],
+						"actdesc"=>$m[9],
+						"sponsorname"=>$m[10]." ".$m[11],
 						"actsignups"=>$I2_SQL->query('SELECT COUNT(userid) FROM eighth_activity_map WHERE bid=%d AND aid=%d',$m[0],$m[1])->fetch_single_value()
 					];
 				}
