@@ -542,7 +542,7 @@ class News extends Module {
 				$false_str = array("There are no emergency announcements at this time","There are no emergency messages at this time");
 				$con = $html->find('div[id=mainContent]');
 				$snowdayd = preg_replace('/( )+/', ' ',$con[0]->innertext);
-				if(empty($snowdayd) || $snowdayd == null) return "<!-- No text -->";
+				if(empty($snowdayd) || !is_string($snowdayd) || !is_array($snowdayd)) return "<!-- No text -->";
 				$snowday = (strpos($snowdayd, $false_str)===false);
 				// This is the message that ends the emergency text;
 				// it is currently the text of the header below
