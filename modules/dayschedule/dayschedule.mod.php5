@@ -13,9 +13,7 @@ class DaySchedule extends Module {
 	* The TJ CalendarWiz iCal URL, which is used to find out
 	* what type of day it is.
 	**/
-/*	private static $iCalURL = 'https://www.calendarwiz.com/CalendarWiz_iCal.php?crd=tjhsstcalendar';*/
-	// CalendarWiz broke things
-	private static $iCalURL = 'http://174.122.109.75/CalendarWiz_iCal.php?crd=tjhsstcalendar';
+	private static $iCalURL = 'https://www.calendarwiz.com/CalendarWiz_iCal.php?crd=tjhsstcalendar';
 
 	/**
 	* In seconds, how long the cached iCal should be saved.
@@ -374,9 +372,6 @@ class DaySchedule extends Module {
             $c = curl_init();
             curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($c, CURLOPT_URL, $url);
-	    curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1);
-	    curl_setopt($c, CURLOPT_SSL_VERIFYHOST, 0);
-	    curl_setopt($c, CURLOPT_SSL_VERIFYPEER, 0);
             $contents = curl_exec($c);
             curl_close($c);
             return isset($contents) ? $contents : FALSE;
@@ -392,7 +387,7 @@ class DaySchedule extends Module {
         $cache_date = unserialize($I2_CACHE->read(get_class(), 'ical_date'));
         if(self::$icsStr === false || isset($I2_QUERY['fetch_ical']) || (time() > ($cache_date + self::$cache_length))) {
         	d('Reloading dayschedule cache', 4);
-			self::$icsStr = self::curl_file_get_contents(self::$iCalURL.'&'.time());
+			self::$icsStr = self::curl_file_get_contents(self::$iCalURL);
         	$I2_CACHE->store(get_class(), 'ical', serialize(self::$icsStr));
         	$I2_CACHE->store(get_class(), 'ical_date', serialize(time()));
         }
@@ -405,9 +400,7 @@ class DaySchedule extends Module {
 	* @return Array with the iCal files' contents
 	**/
 	private static function convert_to_array($icsFile) {
-	d("icsfile: $icsFile",-1);
 	    $icsData = explode("BEGIN:", $icsFile);
-	    $icsDates = []; $icsDatesMeta = [];
 	    foreach($icsData as $key => $value) {
 	        $icsDatesMeta[$key] = explode("\n", $value);
 	    }
