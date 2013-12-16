@@ -1616,6 +1616,7 @@ class Eighth extends Module {
 						"sponsor"=>$m[2],
 						"roomid"=>$m[3],
 						"date"=>$m[4],
+						"datestr"=>date("D, M j, Y",strtotime($m[4])),
 						"block"=>$m[5],
 						"roomname"=>$m[6],
 						"actcapacity"=>$m[7],
