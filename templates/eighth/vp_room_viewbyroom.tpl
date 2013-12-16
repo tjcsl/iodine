@@ -35,9 +35,9 @@ table.vp-room-viewbyroom td {
 [<foreach from=$util item="activities" key="roomname">]
     [<foreach from=$activities item="actblk">]
     <tr>
-        <th>[<$actblk.roomname>] ([<$actblk.roomid>])</th>
-        <td>[<$actblk.date>] [<$actblk.block>] Block ([<$actblk.bid>])</td>
-        <td>[<$actblk.actname>] ([<$actblk.aid>])</td>
+        <th title="[<$actblk.roomid>]">[<$actblk.roomname>]</th>
+        <td title="[<$actblk.bid>]">[<$actblk.datestr>] <span style='float:right'>[<$actblk.block>] Block</span></td>
+        <td title="[<$actblk.aid>]"><a href="[<$I2_ROOT>]eighth/sch_activity/view/aid/[<$actblk.aid>]">[<$actblk.actname>]</a></td>
         <td>[<$actblk.sponsorname>]</td>
         <td>[<$actblk.actsignups>]</td>
         <td>[<$actblk.actcapacity>]</td>
