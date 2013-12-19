@@ -533,7 +533,7 @@ window.addEventListener("load", function() {
 	
 	
 
-	document.body.style.background = "none";	
+	//document.body.style.background = "none";	
 	clockContainer = document.createElement("div");
 	clockContainer.style.position = "fixed";
 	clockContainer.style.top = "50%";
@@ -546,7 +546,7 @@ window.addEventListener("load", function() {
 	clockContainer.style.zIndex = "-1";
 	clock = document.createElement("div");
 	clock.style.fontSize = "90px";
-	clock.style.color = "#33b5e5"; //#002000";
+	clock.style.color = "white"; //#33b5e5"; //#002000";
 	clock.style.textAlign = "center";
 	clock.style.verticalAlign = "middle";
 	clock.style.marginBottom = "-36px";
@@ -559,7 +559,7 @@ window.addEventListener("load", function() {
 
 	msg = document.createElement("span");
 	msg.style.fontSize = "32px";
-	msg.style.color = "#33b5e5";
+	msg.style.color = "white"; //#33b5e5";
 	msg.innerHTML = "until " + etxt;
 	clockContainer.appendChild(clock);
 	clockContainer.appendChild(msg);
