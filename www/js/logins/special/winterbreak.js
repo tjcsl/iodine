@@ -540,7 +540,7 @@ var tz = " GMT-0500 (EST)";
 
 // parse the hash
 //d={};for(i in s=document.getElementsByTagName('script'))if((t=s[i].src)&&t.indexOf(u='/www/js/logins/special/countdown.js')!==-1)e=t.split(u+'#')[1];for(i in f=e.split('&'))d[(g=f[i].split('='))[0]]=g[1];
-d = {'time': 'Fri Dec 20, 2013 13:50:00', 'text': 'Winter Break'};
+d = {'time': 'Fri Dec 20, 2013 15:50:00', 'text': 'Winter Break'};
 var eleven = new Date(d.time+tz);
 var etxt = d.text;
 // year, month, date, hour, minute, second, millis
@@ -604,8 +604,8 @@ function incrementCountdown() {
 	if(typeof window.customdiff != 'undefined') diff=window.customdiff,window.customdiff=undefined;
 	day = 0;
 	hr = Math.floor(Math.abs(diff / 1000.0 / 60.0 / 60.0));
-	while(hr > 23) {
-		hr-=23;
+	while(hr >= 24) {
+		hr-=24;
 		day++;
 	}
 	if (hr < 10) {
