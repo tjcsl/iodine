@@ -126,6 +126,7 @@ if (today.getMonth() == 11 && today.getDate() >= 20 && today.getDate() <= 28) {
 
 
 function set_urlvars() {
+	/*
 	var regex = new RegExp("[\\?&]flake=([^&#]*)");
 	var results = regex.exec( window.location.href );
 	if( results != null )
@@ -133,7 +134,25 @@ function set_urlvars() {
 	var regex = new RegExp("[\\?&]colors=([^&#]*)");
 	var results = regex.exec( window.location.href );
 	if( results != null )
-		snowcolor=extract_color(url_decode(results[1]));
+		snowcolor=extract_color(url_decode(results[1]));*/
+	if(location.search.length < 2) return;
+	hash = location.search.split('?',2)[1];
+	objs = hash.split('&');
+	isl = false,icl = false;
+	for(i=0; i<objs.length; i++) {
+		o = objs[i].split('=');
+		if(o[0] == 'flake') {
+			if(!isl) snowletter = [o[1]],isl=true;
+			else snowletter.push(o[1]);
+		}
+		if(o[0] == 'colors') {
+			snowcolor=extract_color(o[1]);
+		}
+		if(o[0] == 'sinkspeed') sinkspeed = o[1];
+		if(o[0] == 'snowmax') snowmax = o[1];
+		if(o[0] == 'snowsizerange') snowsizerange = o[1];
+	}
+	numsnowletters = snowletter.length;
 }
 
 function url_decode(utftext) {
