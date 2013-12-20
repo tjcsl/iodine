@@ -113,7 +113,7 @@ var santax=-santawidth;
 var santa;
 
 // Tron Menorah
-var chanukahDay = -1; // which day of Chanukah?
+/*var chanukahDay = -1; // which day of Chanukah?
 var menorah, candles, candleParticle;
 if (today.getMonth() == 11 && today.getDate() >= 20 && today.getDate() <= 28) {
 	chanukahDay = (today.getDate() - 20); // Chanukah starts on the evening of the 20th
@@ -123,7 +123,7 @@ if (today.getMonth() == 11 && today.getDate() >= 20 && today.getDate() <= 28) {
 	}
 	candles = new Array(chanukahDay);
 }
-
+*/
 
 function set_urlvars() {
 	/*
@@ -237,7 +237,7 @@ function resize() {
 	if(fastpile) {
 		fastfillheight=150;
 	}
-	if (menorah) {
+/*	if (menorah) {
 		var loginTable = document.getElementsByTagName("table")[0];
 		menorah.style.left = (loginTable.offsetLeft + 37) + "px";
 		menorah.style.top = (loginTable.offsetTop - 253) + "px";
@@ -255,7 +255,7 @@ function resize() {
 		} else {
 			candleParticle.style.left = ((menorah.offsetLeft + 104) - (25 * (chanukahDay - 5))) + "px";
 		}
-	}
+	}*/
 }
 
 function initsnow() {
@@ -277,7 +277,7 @@ function initsnow() {
 		santa.style.zIndex="-1";
 		container.appendChild(santa);
 	}
-	if (chanukahDay >= 0 && chanukahDay <= 8) { // no Chanukah = no candles
+	/*if (chanukahDay >= 0 && chanukahDay <= 8) { // no Chanukah = no candles
 		menorah = document.createElement("img");
 		menorah.src = i2root+"www/pics/menorah.png";
 		menorah.title = "Happy Chanukah!"
@@ -321,7 +321,7 @@ function initsnow() {
 		candleParticle.style.zIndex = "101"; // make sure it is on top of most stuff
 
 		container.appendChild(candleParticle); // add it to the container too
-	}
+	}*/
 	if(pile) {
 		for (var i=0; i<heightbuckets; i++) {
 			snowheight[i] = screenheight;
