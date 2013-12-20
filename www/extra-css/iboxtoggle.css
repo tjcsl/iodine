@@ -25,6 +25,12 @@
 		-o-transition-duration: 0.2s;
 		transition-duration: 0.2s;	
 	}
+	#intraboxes.hideib {
+		display: none;
+	}
+	#intraboxes.show {
+		display: block;
+	}
 }
 
 @media (max-width: 645px) {

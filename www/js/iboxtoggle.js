@@ -4,13 +4,15 @@ $(document).ready(function() {
 		if($i.css("display") == "none") {
                         $(this).css("left", "256px")
                                .html("<");
-			$i.css("left","-257px")
-			  .css("display","block")
+			$i.removeClass("hideib")
+			  .css("left","-257px")
+			  .addClass("show")
 			  .css("left", "1px");
 		} else {
 			$i.css("left", "-257px")
 			setTimeout(function() {
-			$i.css("display", "none")
+			$i.addClass("hideib")
+			  .removeClass("show")
 			  .css("left", "1px");
 			}, 400);
 			$(this).css("left", 0)
