@@ -636,7 +636,7 @@ function incrementCountdown() {
 		msg.innerHTML = "until " + etxt; //11-12-13 11:12:13";
 		if (diff < 0) {
 			clock.style.fontWeight = "normal";
-			clock.style.color = "black";
+			clock.style.color = "white";
 			clock.style.fontSize = "280px";
 			msg.innerHTML = "since " + etxt;
 		}
