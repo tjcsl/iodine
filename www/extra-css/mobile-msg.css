@@ -1,7 +1,7 @@
 .mobile-msg {
 	display: none;
 }
-@media (max-width: 550px) {
+@media screen and (max-width: 550px) , screen and (max-device-width: 750px) {
 	.mobile-msg {
 		display: block;
 		cursor: pointer;
@@ -23,4 +23,10 @@
 	.mobile-msg b {
 		font-size: 16px;
 	}
-}	
+}
+
+@media screen and (min-device-width: 550px) and (orientation: portrait) {
+	.mobile-msg {
+		zoom: 2.5;
+	}
+}
