@@ -550,7 +550,7 @@ class Eighth extends Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_ARGS, $I2_USER, $I2_QUERY;
+		global $I2_ARGS, $I2_USER, $I2_QUERY, $I2_ROOT;
 		$this->args = [];
 		$this->admin = self::is_admin();
 		$this->template_args['eighth_admin'] = $this->admin;
@@ -598,7 +598,13 @@ class Eighth extends Module {
 					if($this->template == 'pane.tpl') {
 						return FALSE;
 					}
-					return "Eighth Period Online: {$this->title}";
+					/* Students will always get this */
+					$numabs = count(EighthSchedule::get_absences($I2_USER->uid));
+					return array(
+						"Eighth Period Online: {$this->title}",
+						"Eighth Period Online: {$this->title}".($numabs>0 ? " - <a style='color: red' href='{$I2_ROOT}eighth/vcp_schedule/absences/uid/{$I2_USER->uid}'>{$numabs} absence".($numabs>1?'s':'')."</a>" : ""),
+						false
+					);
 				}
 			} else {
 				return array("Eighth Period Online: ERROR - SubModule Doesn't Exist");
@@ -2798,6 +2804,7 @@ class Eighth extends Module {
 			$this->template_args['user'] = $user;
 			$this->template_args['admin'] = $this->admin;
 			$this->template_args['count'] = count($absences);
+			$this->title = 'Absence Information';
 			$this->template = 'vcp_schedule_absences.tpl';
 		}
 		else if($this->op == 'remove_absence') {
