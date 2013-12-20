@@ -189,7 +189,13 @@ class Display {
 					$this->close_content_pane();
 				}
 				else {
-
+					/**
+					  * If title is an array, $title[0] is the page title
+					  * in <title>, and the second is the header <h1>. If
+					  * $title[2] is set and it equals false, the <h1>
+					  * title ($title[1]) will not be URL encoded so links
+					  * can be placed there for absences in eighth, for example.
+					  **/
 					if( !is_array($title) ) {
 						$title = array( $title, $title );
 					}
@@ -199,14 +205,14 @@ class Display {
 					elseif( count($title) == 0 ) {
 						$title = array( NULL, '&nbsp;' );
 					}
-
+					if(!isset($title[2]) || $title[2]) $title[1] = htmlspecialchars($title[1]);
 					$display_chrome = (isset($I2_USER)?($I2_USER->chrome=='TRUE'?TRUE:FALSE):FALSE);
 
 					$this->global_header($title[0],$display_chrome,$nagging);
 
 					if (!self::$display_stopped && $title) {
 						if ($display_chrome) {
-							$this->open_content_pane(array('title' => htmlspecialchars($title[1])),$nagging);
+							$this->open_content_pane(array('title' => $title[1]),$nagging);
 						}
 						try {
 							$timestart=explode(" ",microtime());
