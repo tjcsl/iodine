@@ -1,5 +1,5 @@
 <div class="[<$mainbox_class>]" id="mainbox">
-	<div class="boxheader">
+  <div class="boxheader">
   [<if isset($error) && $error>]
    Error
   [<elseif isset($no_module)>]

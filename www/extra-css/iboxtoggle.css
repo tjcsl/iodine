@@ -1,0 +1,35 @@
+.iboxtoggle {
+	display: none;
+}
+
+@media (max-width: 850px) {
+	.iboxtoggle {
+		display: block;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		z-index: 11;
+		width: 40px;
+		height: 40px;
+		padding-left: 8px;
+	}
+
+	.mainbox {
+		padding-top: 140px;
+	}
+
+	.iboxtoggle, #intraboxes {
+		-webkit-transition-duration: 0.2s;
+		-moz-transition-duration: 0.2s;
+		-ms-transition-duration: 0.2s;
+		-o-transition-duration: 0.2s;
+		transition-duration: 0.2s;	
+	}
+}
+
+@media (max-width: 645px) {
+	div#intraboxes {
+		top: 80px;
+	}
+}
+

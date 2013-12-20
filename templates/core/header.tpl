@@ -25,6 +25,7 @@
 		display: none;
 	}
 	</style>
+	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/iboxtoggle.css" />
 [<else>]
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/mobile-msg.css" />
 [</if>]
@@ -32,6 +33,7 @@
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js">/* woo hoo jquery */</script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/common.js"></script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/collapse.js"></script>
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/iboxtoggle.js"></script>
 <script type="text/javascript" src="[<$I2_JS>]" ></script>
 <script type="text/javascript">
 //Set some variables so that any script can use them.
@@ -70,6 +72,9 @@ IE7_PNG_SUFFIX = ".png";
 	<span>Tap for a site that is more accessible to mobile devices.</span>
 	</form>
 </div>
+<button class="iboxtoggle" title="Show/hide intraboxes">
+&gt;
+</button>
 <div style="height:100%; width:100%; position: fixed; top:0; left: 0; visibility: hidden; z-index:3">
 <div id="chat_area" style="float:right; height:100%">
 </div>
