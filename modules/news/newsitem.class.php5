@@ -268,27 +268,12 @@ class NewsItem {
 			$I2_SQL->query('INSERT INTO news_group_map SET nid=%d, gid=%s', $nid, $group->name);
 		}
 
-		// Mail out the news post to any users who have subscribed to the news and can read it.
-		$groupstring = "";
-		foreach($groups as $group)
-			$groupstring .= $group->name . ", ";
-		$groupstring = substr($groupstring, 0,-2);
-		$subj = "[Iodine-news] ".strip_tags($title);
-		
-		$messagecontents = "Posted by " . $author->name . " to " . $groupstring . ":<br />\r\n<br />\r\n" . $text ."<br />\r\n<br />\r\n-----------------------------------------<br />\r\nAutomatically sent by the Iodine news feed. Do not reply to this email. To unsubscribe from these messages, unselect 'Send all news posts to me by e-mail' in your Iodine preferences. If you are not a TJHSST student and believe that you are receiving this message in error, contact intranet@tjhsst.edu for assistance.";
-
-		d($messagecontents);
-		// Check permissions and send mail
-		$news = new NewsItem($nid);
-		foreach($I2_SQL->query('SELECT * FROM news_forwarding')->fetch_all_arrays() as $target) {
-			$user = new User($target[0]);
-			if($news->readable($user)) {
-				i2_mail($user->mail,$subj,$messagecontents, true);
-			}
-		}
-
+		d("Notifying");
+		self::notify_email($author, $title, $text, $groups, $nid);
 		// Update the feeds.
 		Feeds::update();
+		self::notify_twitter($author, $title, $text, $groups, $nid);
+		/*
 		//Post to Twitter.
 		$test1=TRUE;
 		if($public==0) //Only display stuff that's public.
@@ -326,8 +311,94 @@ class NewsItem {
 			$buffer = curl_exec($curl_handle);
 			curl_close($curl_handle);
 		}
+		*/
 
 		return true;
+	}
+
+	/**
+	  * Email out newsposts to those who have subscribed to them.
+	  */
+	public static function notify_email($author, $title, $text, $groups, $nid) {
+		global $I2_FS_ROOT, $I2_SQL;
+
+		if(strpos($I2_FS_ROOT, "home/") !== false) {
+			d("Not emailing due to sandbox use.");
+			return false;
+		}
+
+		// Mail out the news post to any users who have subscribed to the news and can read it.
+		$groupstring = "";
+		foreach($groups as $group)
+			$groupstring .= $group->name . ", ";
+		$groupstring = substr($groupstring, 0,-2);
+		$subj = "[Iodine-news] ".strip_tags($title);
+		
+		$messagecontents = "Posted by " . $author->name . " to " . $groupstring . ":<br />\r\n<br />\r\n" . $text ."<br />\r\n<br />\r\n-----------------------------------------<br />\r\nAutomatically sent by the Iodine news feed. Do not reply to this email. To unsubscribe from these messages, unselect 'Send all news posts to me by e-mail' in your Iodine preferences. If you are not a TJHSST student and believe that you are receiving this message in error, contact intranet@tjhsst.edu for assistance.";
+
+		d($messagecontents);
+		// Check permissions and send mail
+		$news = new NewsItem($nid);
+		foreach($I2_SQL->query('SELECT * FROM news_forwarding')->fetch_all_arrays() as $target) {
+			$user = new User($target[0]);
+			if($news->readable($user)) {
+				i2_mail($user->mail,$subj,$messagecontents, true);
+			}
+		}
+	}
+
+	/**
+	  * Check if Twitter postings should be done for this post.
+	  * If the twitter->enabled option in config.ini.php5 is true,
+	  * and the group list includes "all," then it will be posted.
+	  */
+	public static function should_notify_twitter($groups) {
+		$enabled = i2config_get("enabled", false, "twitter");
+		$public = false;
+		$public_gid = i2config_get("public_gid", 1, "twitter");
+		foreach ($groups as $group) {
+			if($group->gid == $public_gid) {
+				$public = true;
+				break;
+			}
+		}
+		return ($enabled && $public);
+	}
+
+	/**
+	  * Notify this posting through the TJ Intranet twitter
+	  * feed (TJIntranet) using OAuth through TwitterAPIExchange
+	  * https://github.com/J7mbo/twitter-api-php
+	  */
+	public static function notify_twitter($author, $title, $text, $groups, $nid) {
+		global $I2_ROOT, $I2_FS_ROOT;
+		require_once $I2_FS_ROOT."lib/TwitterAPIExchange.php";
+		if(self::should_notify_twitter($groups)) {
+				
+
+			$url = $I2_ROOT."news/show/".$nid;
+			$message = strip_tags($title).": ";
+			/* max t.co URL length is 20 chars, 4 chars for elipsis */
+			$message.= substr(strip_tags($text),0,140-(strlen($message)+20+4))."... ".$url;
+			d("Posting to Twitter: $message", 7);
+
+			$settings = array(
+				"oauth_access_token" => i2config_get("oauth_access_token", "", "twitter"),
+				"oauth_access_token_secret" => i2config_get("oauth_access_token_secret", "", "twitter"),
+				"consumer_key" => i2config_get("consumer_key", "", "twitter"),
+				"consumer_secret" => i2config_get("consumer_secret", "", "twitter")
+			);
+
+			$tw = new TwitterAPIExchange($settings);
+			$resp = $tw->buildOauth("https://api.twitter.com/1.1/statuses/update.json", "POST")
+				            ->setPostfields(array("status" => $message))
+				            ->performRequest();
+			d($resp);
+			d_r($resp);
+		} else {
+			d("Not posting to twitter, not in public group");
+		}
+
 	}
 
 
