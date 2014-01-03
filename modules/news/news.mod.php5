@@ -326,8 +326,17 @@ class News extends Module {
 				$notag_title = preg_replace("/<font(.*?)>/",'',$item->title);
 				$notag_title = preg_replace("/<\/font>/",'',$notag_title);
 				return "News: $notag_title";
-
-
+			case 'twitterpost':
+				$this->template = 'news_show.tpl';
+				if(!isset($I2_ARGS[2])) throw new I2Exception('ID of article not specified.');
+				$item = new Newsitem($I2_ARGS[2]);
+				$this->template_args['story'] = $item;
+				if($this->newsadmin) {
+					$tw = $item->twitternotify();
+					$j = json_decode($tw);
+					d_r($j,0);
+				}
+				return array("","<a href='http://twitter.com/tjintranet'>Posting to Twitter</a></div>If this fails, make sure the post is visible to the 'all' group.<div>",false);
 			case 'read':
 				$this->template = 'news_read.tpl';
 				if( !isset($I2_ARGS[2]) ) {
