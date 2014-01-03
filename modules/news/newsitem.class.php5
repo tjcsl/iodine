@@ -316,6 +316,7 @@ class NewsItem {
 		return true;
 	}
 
+	
 	/**
 	  * Email out newsposts to those who have subscribed to them.
 	  */
@@ -345,6 +346,11 @@ class NewsItem {
 				i2_mail($user->mail,$subj,$messagecontents, true);
 			}
 		}
+	}
+	
+	public function twitternotify() {
+		return Newsitem::notify_twitter($this->author,$this->title,$this->text,$this->groups,$this->nid);
+
 	}
 
 	/**
@@ -380,6 +386,7 @@ class NewsItem {
 			$message = strip_tags($title).": ";
 			/* max t.co URL length is 20 chars, 4 chars for elipsis */
 			$message.= substr(strip_tags($text),0,140-(strlen($message)+20+4))."... ".$url;
+			$message=str_replace("&nbsp;"," ",$message);
 			d("Posting to Twitter: $message", 7);
 
 			$settings = array(
@@ -395,8 +402,10 @@ class NewsItem {
 				            ->performRequest();
 			d($resp);
 			d_r($resp);
+			return json_decode($resp);
 		} else {
 			d("Not posting to twitter, not in public group");
+			return json_encode(array("error"=>"Not in public group."));
 		}
 
 	}
