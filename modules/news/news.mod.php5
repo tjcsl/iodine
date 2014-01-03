@@ -333,7 +333,7 @@ class News extends Module {
 				$this->template_args['story'] = $item;
 				if($this->newsadmin) {
 					$tw = $item->twitternotify();
-					$j = json_decode($tw);
+					if(is_string($tw)) $j = json_decode($tw); else $j = $tw;
 					d_r($j,0);
 				}
 				return array("","<a href='http://twitter.com/tjintranet'>Posting to Twitter</a></div>If this fails, make sure the post is visible to the 'all' group.<div>",false);
