@@ -385,7 +385,7 @@ class NewsItem {
 			$url = $I2_ROOT."news/show/".$nid;
 			$message = strip_tags($title).": ";
 			/* max t.co URL length is 20 chars, 4 chars for elipsis */
-			$message.= substr(strip_tags($text),0,140-(strlen($message)-20-4))."... ".$url;
+			$message.= substr(strip_tags($text),0,140-(strlen($message)-strlen($url)-4))."... ".$url;
 			$message=str_replace("&nbsp;"," ",$message);
 			d("Posting to Twitter: $message", 7);
 
