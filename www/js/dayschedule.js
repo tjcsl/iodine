@@ -6,10 +6,8 @@ Date.prototype.yyyymmdd = function() {
 };
 
 getoffset = function(qd, days) {
-	var dobj = new Date(['','January','February','March','April','May','June','July','August','September','October','November','December'][qd.substring(4,6)] + ' ' + qd.substring(6,8) + ', ' + qd.substring(0,4));
+	var dobj = new Date(['','January','February','March','April','May','June','July','August','September','October','November','December'][parseInt(qd.substring(4,6))] + ' ' + parseInt(qd.substring(6,8)) + ', ' + parseInt(qd.substring(0,4)));
 	var ms = 86400000;
-	/* Daylight savings bug */
-	if(parseInt(qd)+days == 20131103) ms += 3600000;
         var newdobj = new Date(dobj.getTime()+(ms * days));	
 	return newdobj;
 }
