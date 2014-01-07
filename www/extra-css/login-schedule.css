@@ -96,5 +96,6 @@ span.cl {
 	left: 0;
 	width: 100%;
 	max-width: 554px;
+	max-height: 40%;
 	z-index: 11;
 }
