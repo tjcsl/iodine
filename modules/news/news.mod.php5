@@ -501,7 +501,7 @@ class News extends Module {
 		if(!file_exists($cachefile) || !($contents = file_get_contents($cachefile)) || (time() - filemtime($cachefile)>$secs) || isset($I2_QUERY['get_new_message'])) { //Don't let the cache get older than an hour.
 			$contents = News::get_new_message();
 			News::store_emerg_message($cachefile,$contents);
-			if(isset($I2_QUERY['get_new_message'])) redirect("");
+			//if(isset($I2_QUERY['get_new_message'])) redirect("");
 		}
 		return $contents;
 	}
@@ -512,7 +512,15 @@ class News extends Module {
 		fwrite($fh,$string);
 		fclose($fh);
 	}
-
+	public static function strposa($haystack, $needles=array(), $offset=0) {
+	        $chr = array();
+	        foreach($needles as $needle) {
+	                $res = strpos($haystack, $needle, $offset);
+	                if ($res !== false) $chr[$needle] = $res;
+	        }
+	        if(empty($chr)) return false;
+	       	return min($chr);
+	}
 	public static function get_new_message() {
 		global $I2_FS_ROOT;
 		// HTTPS because otheriwse it gets cached by the proxy, which is bad.
@@ -548,19 +556,19 @@ class News extends Module {
 				$html = str_get_html($fgetc);
 				//$false_str = "There are no emergency announcements at this time";
 				// The string used for there being no emergency messages
-				$false_str = array("There are no emergency announcements at this time","There are no emergency messages at this time");
 				$con = $html->find('div[id=mainContent]');
 				$snowdayd = preg_replace('/( )+/', ' ',$con[0]->innertext);
-				if(empty($snowdayd) || !is_string($snowdayd) || !is_array($snowdayd)) return "<!-- No text -->";
-				$snowday = (strpos($snowdayd, $false_str)===false);
+				if(empty($snowdayd) || (!is_string($snowdayd) && !is_array($snowdayd))) return "<!-- No text -->";
+				$false_str = array("There are no emergency announcements at this time","There are no emergency messages at this time");
+				$snowday = (self::strposa($snowdayd, $false_str)===false);
 				// This is the message that ends the emergency text;
 				// it is currently the text of the header below
 				$end_str = "Go to The Source";
 				$d = explode($end_str, $con[0]->plaintext);
-				$dn = explode($false_str, $d[0]);
+				$dn = explode($false_str[0], $d[0]);
 				if(!$snowday) {
 					d("Emergency info: no snow day");
-					return "<!-- !snowday, ".$false_str." -->";
+					return "<!-- !snowday, False str -->";
 				}
 				if(!empty($d[0]) && !empty($dn[0])) {
 					$ddate = explode("--", $dn[0]);
@@ -568,7 +576,7 @@ class News extends Module {
 					// This was the last emerg message of 2013
 					if(trim($ddate[0]) == "Monday, March 25") {
 						$einfo= "<!-- Got old emergency message, not showing -->";
-					} else if(stristr($dn[0], $false_str)) {
+					} else if(stristr($dn[0], $false_str[0])) {
 						$einfo= "<!-- snowday,".$false_str." -->";
 					} else {
 						$einfo= "<!-- ".print_r($d,1).print_r($dn,1)." -->".
