@@ -1,3 +1,11 @@
+<style type='text/css'>
+@media (max-width: 650px) {
+  #boxcontent>table>tbody>tr>td {
+    display: block;
+    width: 100%;
+  }	
+}
+</style>
 [<include file="eighth/header.tpl">]
 <table><tr><td style="vertical-align: top;">
 [<if $is_admin >]
