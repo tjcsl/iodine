@@ -33,7 +33,9 @@ class Eighth extends Module {
 	/**
 	* Template arguments for the specified action
 	*/
-	private $template_args = [];
+	private $template_args = [
+		"defaultaid_room" => "134"
+	];
 
 	/**
 	* The user is an 8th-period admin
