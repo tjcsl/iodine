@@ -9,7 +9,16 @@
 <input type="submit" value="Change group name" />
 </form>
 <br />
-<a href="[<$I2_ROOT>]eighth/amr_group/csv/gid/[<$group->gid>]">Download as CSV</a>
+<table cellspacing="0" style="width: 100%; border: 0px; margin: 0px; padding: 0px;"> 
+    <tr>
+        <td>
+            <a href="[<$I2_ROOT>]eighth/amr_group/csv/gid/[<$group->gid>]">Download as CSV</a>
+        </td>
+        <td style="text-align: right;">
+            [<count($group->members)>] Member[<if count($group->members) != 1>]s[</if>]
+        <td>
+    </tr>
+</table>
 <br />
 [<if count($group->members) > 0>]
 <table cellspacing="0" style="border: 0px; margin: 0px; padding: 0px;">

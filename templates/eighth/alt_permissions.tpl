@@ -1,5 +1,6 @@
 [<include file="eighth/header.tpl">]
-Restricted Members of [<$activity->name_full_r>]<br />
+Restricted Members of [<$activity->name_full_r>]<br /><br />
+[<count($activity->restricted_members_obj_sorted)>] Member[<if count($activity->restricted_members_obj_sorted) != 1>]s[</if>]<br />
 <table><tr><td>
 <table cellpadding="0" cellspacing="0" style="border: 0px;">
 	<tr>
