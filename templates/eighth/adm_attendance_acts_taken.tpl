@@ -1,7 +1,7 @@
 [<include file="eighth/header.tpl">]
 <strong>Activities that have not had attendance taken:</strong><br />
 <table>
-<th>Actvitiy</th><th>Sponsors</th>
+<th>Activity</th><th>Sponsors</th>
 [<foreach from=$acts item=act>]
 <tr>
 <td>[<$act->name>]</td>
