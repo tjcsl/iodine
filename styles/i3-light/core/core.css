@@ -190,8 +190,8 @@
 	#logotext {
 		margin-left:26px;
 	}
-	.blurb {
-		display:none;
+	#mainbox.mainbox {
+		margin-top: 50px;
 	}
 	.header {
 		height:72px;
@@ -236,3 +236,5 @@
 		display:none;
 	}
 }
+
+

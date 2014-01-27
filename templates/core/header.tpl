@@ -82,31 +82,31 @@ IE7_PNG_SUFFIX = ".png";
 <div id="logo" class="logo"><a href="[<$I2_ROOT>]"><span id="logotext">Intranet</span></a></div>
 <div class="header">
  <div class="title"> [<if $I2_USER->borntoday()>]Happy Birthday[<else>]Welcome[</if>], [<$I2_USER->firstornick>]!</div>
- <div class="blurb">Today is [<$smarty.now|date_format:"%B %e, %Y">]. 
+ <div class="blurb"><span class='hid'>Today is [<$smarty.now|date_format:"%B %e, %Y">]. 
  [<if $date != "none">]
  	[<if $I2_USER->grade=="staff">]
 		<a href="[<$I2_ROOT>]eighth/vcp_attendance">View All Rosters</a>.
-	 	[<if !empty($hosting)>]The next 8th period is [<$date>], and you are currently sponsoring 
+	 	[<if !empty($hosting)>]The next 8th period is [<$date>], and </span><span class='show'>you are currently sponsoring 
  		[<foreach from=$hosting item="activity" name="activities">]
  			[<if $smarty.foreach.activities.last and not $smarty.foreach.activities.first>]
 				and
 			[<elseif not $smarty.foreach.activities.first>]
 				,
 			[</if>]
-			<a href="[<$I2_ROOT>]eighth/vcp_attendance/view/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>[</foreach>].[</if>]
+			<a href="[<$I2_ROOT>]eighth/vcp_attendance/view/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>[</foreach>].</span>[</if>]
 	[<elseif $I2_USER->grade=="TJStar">]
 	[<elseif $I2_USER->grade=="graduate">]
 		<!--Whoohoo! An Alumn who reads the source code! You're pretty cool! --!>
-	 	[<if !empty($hosting)>]The next 8th period is [<$date>], and you are currently sponsoring 
+	 	[<if !empty($hosting)>]The next 8th period is [<$date>], and </span><span class='show'>you are currently sponsoring 
  		[<foreach from=$hosting item="activity" name="activities">]
  			[<if $smarty.foreach.activities.last and not $smarty.foreach.activities.first>]
 				and
 			[<elseif not $smarty.foreach.activities.first>]
 				,
 			[</if>]
-			<a href="[<$I2_ROOT>]eighth/vcp_attendance/view/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>[</foreach>].[</if>]
+			<a href="[<$I2_ROOT>]eighth/vcp_attendance/view/bid/[<$activity->bid>]/aid/[<$activity->aid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>[</foreach>].</span>[</if>]
 	[<else>]
-		The next 8th period is [<$date>][<if !empty($activities) || !empty($hosting)>], and you are currently[</if>]
+		The next 8th period is [<$date>][<if !empty($activities) || !empty($hosting)>], and </span><span class='show'>you are currently[</if>]
 
 		[<if !empty($activities)>] signed up for
 			[<foreach from=$activities item="activity" name="activities">]
@@ -116,7 +116,7 @@ IE7_PNG_SUFFIX = ".png";
 					,
 				[</if>]
 				<a href="[<$I2_ROOT>]eighth/vcp_schedule/choose/uid/[<$I2_USER->uid>]/bids/[<$activity->bid>]">[<$activity->name_friendly>][<if $activity->cancelled>] - CANCELLED[</if>]</a>
-			[</foreach>][<if empty($hosting)>].[</if>]
+			[</foreach>]</span>[<if empty($hosting)>].[</if>]
 		[</if>]
 
 		[<if !empty($hosting)>]
