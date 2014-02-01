@@ -6,7 +6,7 @@
 	<meta name="keywords" content="TJHSST, TJ Intranet, Intranet, Intranet2, Thomas Jefferson High School" />
 	<meta name="robots" content="index, follow" />
 	<meta name="author" content="The Intranet Development Team" />
-	<link rel="image_src" href="[<$I2_ROOT>www/pics/styles/i3/logo-light.png" />
+	<link rel="image_src" href="[<$I2_ROOT>]www/pics/styles/i3/logo-light.png" />
 	<link rel="author" href="http://www.tjhsst.edu/admin/livedoc/index.php/Iodine#Intranet_Credits" />
 	<link rel="canonical" href="[<$I2_ROOT>]" />
 	<!-- zoom in mobile browsers -->
