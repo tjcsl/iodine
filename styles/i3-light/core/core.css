@@ -194,7 +194,8 @@
 		margin-top: 50px;
 	}
 	.header {
-		height:72px;
+		/*height:72px;*/
+		/* when enabled, this causes overlaps */
 	}
 }
 @media (max-width:600px) {
