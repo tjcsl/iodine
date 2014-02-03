@@ -13,9 +13,9 @@ class DaySchedule extends Module {
 	* The TJ CalendarWiz iCal URL, which is used to find out
 	* what type of day it is.
 	**/
-/*	private static $iCalURL = 'https://www.calendarwiz.com/CalendarWiz_iCal.php?crd=tjhsstcalendar';*/
-	// CalendarWiz broke things
-	private static $iCalURL = 'http://174.122.109.75/CalendarWiz_iCal.php?crd=tjhsstcalendar';
+	private static $iCalURL = 'https://www.calendarwiz.com/CalendarWiz_iCal.php?crd=tjhsstcalendar';
+	// for when CalendarWiz breaks things
+	//private static $iCalURL = 'http://174.122.109.75/CalendarWiz_iCal.php?crd=tjhsstcalendar';
 
 	/**
 	* In seconds, how long the cached iCal should be saved.
