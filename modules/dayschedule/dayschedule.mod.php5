@@ -24,19 +24,6 @@ class DaySchedule extends Module {
 	private static $cache_length = 3600;
 
 	/**
-	* Whether the iCal fetch succeeded.
-	* Default to true.
-	**/
-	private static $fetch_ok = true;
-	
-	/**
-	* How long to wait for the iCal file
-	* in milliseconds. Keep low to avoid long
-	* loading times.
-	**/
-	private static $max_fetch_time = 5000;
-	
-	/**
 	* Values of the SUMMARY iCal field, which are then mapped
 	* to IDs for the type of day (as defined in $default_day_schedules)
 	* Custom summaries should be stored in MySQL
@@ -110,7 +97,7 @@ class DaySchedule extends Module {
 			array("Break", "2:13", "2:22"),
 			array("Period 4", "2:22", "3:50")
 		),
-		"err" => array('error' => 'No schedule information available.'),
+		"error" => array('error' => 'No schedule information available.'),
 		"noschool" => array(),
 		"schoolclosed" => array()
 	);
@@ -158,16 +145,9 @@ class DaySchedule extends Module {
 		self::fetch_custom_entries();
 
 		/* get the parsed iCal */
-		$icalstr = self::fetch_ical();
-		if($icalstr === false) {
-			d(0,"WARNING: Could not fetch the iCal file!");
-			self::find_day_types([]);
-			self::$fetch_ok = false;
-		} else {
-			$ical = self::convert_to_array($icalstr);
-			/* find the day types */
-			self::find_day_types($ical);
-		}
+		$ical = self::convert_to_array(self::fetch_ical());
+		/* find the day types */
+		self::find_day_types($ical);
 	}
 
 	/**
@@ -381,7 +361,7 @@ class DaySchedule extends Module {
 		self::$args['dayname'] = date('l, F j', strtotime($day));
 		self::$args['summaryid'] = $daytype;
 		self::$args['summary'] = self::get_display_summary($daytype);
-		self::$args['schedule'] = isset(self::$schedules[$daytype]) ? self::$schedules[$daytype] : self::$schedules['err'];
+		self::$args['schedule'] = isset(self::$schedules[$daytype]) ? self::$schedules[$daytype] : self::$schedules['error'];
 	}
 
 	/**
@@ -397,16 +377,14 @@ class DaySchedule extends Module {
 	    curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1);
 	    curl_setopt($c, CURLOPT_SSL_VERIFYHOST, 0);
 	    curl_setopt($c, CURLOPT_SSL_VERIFYPEER, 0);
-	    curl_setopt($c, CURLOPT_TIMEOUT_MS, self::$max_fetch_time);
-
             $contents = curl_exec($c);
             curl_close($c);
-            return isset($contents) ? $contents : curl_errno();
+            return isset($contents) ? $contents : FALSE;
 	}
 
 	/**
 	* Fetch the iCal file from CalendarWiz
-	* @return String the iCal files's contents, or false if it couldn't be retrieved
+	* @return String the iCal files's contents
 	**/
 	private static function fetch_ical() {
 		global $I2_CACHE, $I2_QUERY;
@@ -414,23 +392,11 @@ class DaySchedule extends Module {
         $cache_date = unserialize($I2_CACHE->read(get_class(), 'ical_date'));
         if(self::$icsStr === false || isset($I2_QUERY['fetch_ical']) || (time() > ($cache_date + self::$cache_length))) {
         	d('Reloading dayschedule cache', 4);
-		if(!(self::$icsStr = self::do_fetch_ical())) return false;
+			self::$icsStr = self::curl_file_get_contents(self::$iCalURL.'&'.time());
         	$I2_CACHE->store(get_class(), 'ical', serialize(self::$icsStr));
         	$I2_CACHE->store(get_class(), 'ical_date', serialize(time()));
         }
 		return self::$icsStr;
-	}
-
-	/**
-	* Actually fetch the iCal (aka don't use or save to cache)
-	* @return String the iCal file's contents (non cached)
-	**/
-	private static function do_fetch_ical() {
-		$r = self::curl_file_get_contents(self::$iCalURL.'&'.time());
-		// if TJ suddenly becomes a lifeless place, do change
-		if(sizeof($r) < 300 || is_int($r)) {
-			return false;
-		}
 	}
 
 	/**
@@ -498,7 +464,7 @@ class DaySchedule extends Module {
 	* @attr String the date in format YYYYMMDD
 	**/
 	private static function find_day_type($day) {
-		return isset(self::$dayTypes[$day]) ? self::$dayTypes[$day] : "err";
+		return isset(self::$dayTypes[$day]) ? self::$dayTypes[$day] : "noschool";
 	}
 
 	/**
