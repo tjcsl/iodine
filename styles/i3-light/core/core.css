@@ -197,6 +197,22 @@
 		/*height:72px;*/
 		/* when enabled, this causes overlaps */
 	}
+
+	.blurb {
+		/* prevent text overlap */
+		max-height: 70px;
+		overflow-y: scroll;
+	}
+	.blurb .hid { display: none; }
+	.blurb .show .c {
+		text-transform: uppercase;
+	}
+	body.i3-light form#form {
+		background: #f0f0f0;
+	}
+	body.i3-dark form#form {
+		background: black;
+	}
 }
 @media (max-width:600px) {
 	#logotext {
