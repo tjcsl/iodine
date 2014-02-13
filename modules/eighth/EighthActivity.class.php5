@@ -19,6 +19,7 @@ class EighthActivity {
 	private static $membercache = [];
 	private static $passcache = [];
 	private static $permissionscache = [];
+	private static $favoritescache = NULL;
 	private $data = [];
 	const CANCELLED = 1;
 	const PERMISSIONS = 2;
@@ -99,8 +100,14 @@ class EighthActivity {
 				$this->data['block_sponsors'] = (!empty($this->data['block_sponsors']) ? explode(',', $this->data['block_sponsors']) : []);
 				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(',', $this->data['block_rooms']) : []);
 			}
-			// Import favorites data. This is a _good_thing_. I think.
-			$this->data['favorite']=sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $activityid)->fetch_array(MYSQLI_ASSOC))>1?TRUE:FALSE;
+
+			if (self::$favoritescache == NULL) {
+				self::$favoritescache = [];
+				$favorites = $I2_SQL->query('SELECT aid FROM eighth_favorites WHERE uid=%d', $I2_USER->uid)->fetch_all_single_values();
+				foreach($favorites as $favorite) {
+					self::$favoritescache[$favorite] = TRUE;
+				}
+			}
 		}
 	}
 
@@ -824,11 +831,16 @@ class EighthActivity {
 	* @param int $blockid The block ID.
 	*/
 	public static function get_all_activities($blockids = NULL, $restricted = FALSE) {
-		global $I2_SQL;
+		global $I2_SQL, $I2_USER;
 		if($blockids == NULL) {
 			$activitydata = $I2_SQL->query('SELECT eighth_activities.* FROM eighth_activities ' . ($restricted ? 'WHERE restricted=1 ' : ''))->fetch_all_arrays(Result::ASSOC);
+			$favoritedata = flatten($I2_SQL->query('SELECT aid FROM eighth_favorites WHERE uid=%D', [$I2_USER->uid])->fetch_all_arrays(Result::NUM));
+
 			$activities = array();
 			foreach($activitydata as $ad) {
+				if(in_array($ad['aid'], $favoritedata)) {
+					$ad['favorite'] = 1;
+				}
 				$activities[] = new EighthActivity($ad['aid'], NULL, "MASSLOAD", $ad);
 			}
 			usort($activities,'EighthActivity::activity_compare');
@@ -857,6 +869,8 @@ class EighthActivity {
 				$rooms[$rid] = $rd;
 			}
 
+			$favoritedata = flatten($I2_SQL->query('SELECT aid FROM eighth_favorites WHERE uid=%D', [$I2_USER->uid])->fetch_all_arrays(Result::NUM));
+
 			$activities = array();
 			foreach($activitydata as $ad) {
 				$roomnames = array();
@@ -872,6 +886,9 @@ class EighthActivity {
 					}
 					$ad['block_rooms_comma'] = implode(',', $roomnames);
 					$ad['capacity'] = $capacity;
+				}
+				if(in_array($ad['aid'], $favoritedata)) {
+					$ad['favorite'] = 1;
 				}
 				$activities[] = new EighthActivity($ad['aid'], NULL, "MASSLOAD", $ad);
 			}
@@ -1197,6 +1214,9 @@ class EighthActivity {
 				return $this->data['member_count'];
 			case 'percent_full':
 				return (100*$this->__get('member_count'))/($this->__get('capacity'));
+			case 'favorite':
+				 return in_array($this->data['aid'], $this->data['favorites']);
+
 		}
 	}
 
