@@ -1,4 +1,18 @@
 <link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/dayschedule.css" />
+[<if $alljs>]
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js"></script>
+<script type="text/javascript">var i2root = "[<$I2_ROOT>]";</script>
+[</if>]
+[<if $allcss>]
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-ui-light.css" />
+<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/login-schedule.css" />
+<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/schedule.css" />
+[</if>]
+[<if $iframe>]
+<style>.dayschedule div.day-name:hover { visibility: visible; } .dayschedule .day-name div.view-week,.dayschedule .day-name:hover div.view-week { display: none; margin-top: auto; }</style>
+<body class='login'>
+[</if>]
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/dayschedule.js"></script>
 <script type='text/javascript'>
 var currentdate = '[<$date>]';

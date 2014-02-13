@@ -13,9 +13,9 @@ class DaySchedule extends Module {
 	* The TJ CalendarWiz iCal URL, which is used to find out
 	* what type of day it is.
 	**/
-/*	private static $iCalURL = 'https://www.calendarwiz.com/CalendarWiz_iCal.php?crd=tjhsstcalendar';*/
-	// CalendarWiz broke things
-	private static $iCalURL = 'http://174.122.109.75/CalendarWiz_iCal.php?crd=tjhsstcalendar';
+	private static $iCalURL = 'https://www.calendarwiz.com/CalendarWiz_iCal.php?crd=tjhsstcalendar';
+	// for when CalendarWiz breaks things
+	//private static $iCalURL = 'http://174.122.109.75/CalendarWiz_iCal.php?crd=tjhsstcalendar';
 
 	/**
 	* In seconds, how long the cached iCal should be saved.
@@ -120,7 +120,10 @@ class DaySchedule extends Module {
 	/**
 	* The template arguments
 	**/
-	private static $args = array();
+	private static $args = array(
+		"alljs"=>false,
+		"allcss"=>false
+	);
 
 	/**
 	* The displayed name of the module (required)
@@ -134,6 +137,9 @@ class DaySchedule extends Module {
 	**/
 	public static function init() {
 		global $I2_QUERY;
+		self::$args['iframe'] = isset($I2_QUERY['iframe']);
+		self::$args['alljs'] = isset($I2_QUERY['alljs'])||self::$args['iframe'];
+		self::$args['allcss'] = isset($I2_QUERY['allcss'])||self::$args['iframe'];
 		/* set the day that we are querying */
 		if(isset($I2_QUERY['date'])) {
 			self::$args['date'] = $I2_QUERY['date'];
@@ -262,7 +268,7 @@ class DaySchedule extends Module {
 		* Do initialization which is needed for the following code
 		* to work (specifically fetching the custom SQL and iCal)
 		**/
-
+		
 		self::init_pane();
 		if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'json') {
 			self::gen_day_args();
