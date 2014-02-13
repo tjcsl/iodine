@@ -824,16 +824,11 @@ class EighthActivity {
 	* @param int $blockid The block ID.
 	*/
 	public static function get_all_activities($blockids = NULL, $restricted = FALSE) {
-		global $I2_SQL, $I2_USER;
+		global $I2_SQL;
 		if($blockids == NULL) {
 			$activitydata = $I2_SQL->query('SELECT eighth_activities.* FROM eighth_activities ' . ($restricted ? 'WHERE restricted=1 ' : ''))->fetch_all_arrays(Result::ASSOC);
-			$favoritedata = flatten($I2_SQL->query('SELECT aid FROM eighth_favorites WHERE uid=%D', [$I2_USER->uid])->fetch_all_arrays(Result::NUM));
-
 			$activities = array();
 			foreach($activitydata as $ad) {
-				if(in_array($ad['aid'], $favoritedata)) {
-					$ad['favorite'] = 1;
-				}
 				$activities[] = new EighthActivity($ad['aid'], NULL, "MASSLOAD", $ad);
 			}
 			usort($activities,'EighthActivity::activity_compare');
@@ -862,8 +857,6 @@ class EighthActivity {
 				$rooms[$rid] = $rd;
 			}
 
-			$favoritedata = flatten($I2_SQL->query('SELECT aid FROM eighth_favorites WHERE uid=%D', [$I2_USER->uid])->fetch_all_arrays(Result::NUM));
-
 			$activities = array();
 			foreach($activitydata as $ad) {
 				$roomnames = array();
@@ -879,9 +872,6 @@ class EighthActivity {
 					}
 					$ad['block_rooms_comma'] = implode(',', $roomnames);
 					$ad['capacity'] = $capacity;
-				}
-				if(in_array($ad['aid'], $favoritedata)) {
-					$ad['favorite'] = 1;
 				}
 				$activities[] = new EighthActivity($ad['aid'], NULL, "MASSLOAD", $ad);
 			}
@@ -1207,9 +1197,6 @@ class EighthActivity {
 				return $this->data['member_count'];
 			case 'percent_full':
 				return (100*$this->__get('member_count'))/($this->__get('capacity'));
-			case 'favorite':
-				 return (sizeof($I2_SQL->query('SELECT * FROM eighth_favorites WHERE uid=%d and aid=%d', $I2_USER->uid, $this->data['aid'])->fetch_array(MYSQLI_ASSOC))>1?TRUE:FALSE);
-
 		}
 	}
 
