@@ -40,7 +40,16 @@ class EighthActivity {
 	*/
 	public function __construct($activityid, $blockid = NULL, $special = NULL, $data = NULL) {
 		global $I2_SQL,$I2_USER;
-		if ($special == "CANCELLED") {
+		
+        if (self::$favoritescache == NULL) {
+            self::$favoritescache = [];
+            $favorites = $I2_SQL->query('SELECT aid FROM eighth_favorites WHERE uid=%d', $I2_USER->uid)->fetch_all_single_values();
+            foreach($favorites as $favorite) {
+                self::$favoritescache[$favorite] = TRUE;
+            }
+        }
+        
+        if ($special == "CANCELLED") {
 			$tmp = new EighthActivity($activityid);
 			$this->data['name'] = $tmp->name;
 			$this->data['cancelled'] = TRUE;
@@ -99,14 +108,6 @@ class EighthActivity {
 				$this->data = array_merge($this->data, $additional);
 				$this->data['block_sponsors'] = (!empty($this->data['block_sponsors']) ? explode(',', $this->data['block_sponsors']) : []);
 				$this->data['block_rooms'] = (!empty($this->data['block_rooms']) ? explode(',', $this->data['block_rooms']) : []);
-			}
-
-			if (self::$favoritescache == NULL) {
-				self::$favoritescache = [];
-				$favorites = $I2_SQL->query('SELECT aid FROM eighth_favorites WHERE uid=%d', $I2_USER->uid)->fetch_all_single_values();
-				foreach($favorites as $favorite) {
-					self::$favoritescache[$favorite] = TRUE;
-				}
 			}
 		}
 	}
@@ -1215,7 +1216,7 @@ class EighthActivity {
 			case 'percent_full':
 				return (100*$this->__get('member_count'))/($this->__get('capacity'));
 			case 'favorite':
-				 return in_array($this->data['aid'], $this->data['favorites']);
+                return array_key_exists($this->data['aid'], self::$favoritescache);
 
 		}
 	}
