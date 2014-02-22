@@ -22,4 +22,4 @@ else
 	fi
 fi
 
-
+chmod -R 777 lib/standalone/HTMLPurifier/DefinitionCache/Serializer/
