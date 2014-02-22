@@ -223,10 +223,15 @@ class NewsItem {
 	 */
 
 	public static function clean_text($text) {
+		// run through HTMLPurifier
+		global $I2_FS_ROOT;
+		require_once($I2_FS_ROOT."lib/HTMLPurifier.standalone.php");
+		$purifier = new HTMLPurifier();
+		$text = $purifier->purify($text);
 		//$text = str_replace('&','&amp;',$text);
 		//$text = str_replace('\r','<br />',$text);
 		$text = preg_replace("/\r\n|\n|\r/", " ", $text);
-		$text = preg_replace('/<br\\s*?\/??>/i', "<br />", $text);
+		$text = preg_replace('/<br\\s*?\/??>/i', '<br />', $text);
 		//$text = str_replace('"','&quot;',$text);
 		return $text;
 	}
