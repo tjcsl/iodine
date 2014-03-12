@@ -212,7 +212,7 @@ class Display {
 
 					if (!self::$display_stopped && $title) {
 						if ($display_chrome) {
-							$this->open_content_pane(array('title' => $title[1]),$nagging);
+							$this->open_content_pane(array('title' => $this->addtitlesuffix($title[1])),$nagging);
 						}
 						try {
 							$timestart=explode(" ",microtime());
@@ -242,6 +242,21 @@ class Display {
 
 		$this->global_footer();
 	}
+
+	/**
+	 * Append text (like absence information) to the
+	 * .boxheader title on every page
+	 */
+	public function addtitlesuffix($title) {
+		global $I2_USER, $I2_ROOT;
+		if($I2_USER->objectClass == "tjhsstStudent") {
+                        $numabs = count(EighthSchedule::get_absences($I2_USER->uid));
+                        if($numabs > 0) {
+                                $suffix = " - <a".($numabs>2?" style='color: red'":"")." href='{$I2_ROOT}eighth/vcp_schedule/absences/uid/{$I2_USER->uid}'>{$numabs} absence".($numabs>1?'s':'')."</a>";
+                        } else $suffix = "";
+                } else $suffix = "";
+		return $title . $suffix;
+	}	
 
 	/**
 	* Turns on or off caching.
@@ -450,7 +465,7 @@ class Display {
 	* @param boolean $chrome Whether to embellish the top of the page.
 	*/
 	public function global_header($title = NULL,$chrome = TRUE, $nagging=FALSE) {
-		global $I2_USER;
+		global $I2_USER, $I2_ROOT;
 		$this->smarty_assign(
 			array(
 					'title' => htmlspecialchars($title),
