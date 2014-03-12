@@ -600,13 +600,7 @@ class Eighth extends Module {
 					if($this->template == 'pane.tpl') {
 						return FALSE;
 					}
-					/* Students will always get this */
-					$numabs = count(EighthSchedule::get_absences($I2_USER->uid));
-					return array(
-						"Eighth Period Online: {$this->title}",
-						"Eighth Period Online: {$this->title}".($numabs>0 ? " - <a".($numabs>2?" style='color: red'":"")." href='{$I2_ROOT}eighth/vcp_schedule/absences/uid/{$I2_USER->uid}'>{$numabs} absence".($numabs>1?'s':'')."</a>" : ""),
-						false
-					);
+					return "Eighth Period Online: {$this->title}";
 				}
 			} else {
 				return array("Eighth Period Online: ERROR - SubModule Doesn't Exist");
