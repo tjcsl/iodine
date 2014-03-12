@@ -326,6 +326,9 @@ class Auth {
 						$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
 						$redir = substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index);
 					}
+					if(sizeof($I2_QUERY) > 0) {
+						$redir.="?".http_build_query($I2_QUERY);
+					}
 					redirect($redir,sizeof($_POST)>2);//If we have additional post fields, prompt to allow relay, and relay if allowed.
 					return TRUE; //never reached
 				} else {
