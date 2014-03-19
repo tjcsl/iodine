@@ -375,6 +375,13 @@ class Display {
 		$this->assign_i2vals();
 		$this->smarty_assign($args);
 
+		if(isset($_COOKIE, $_COOKIE['gc']) && $_COOKIE['gc'] == true) {
+			$ntemplate = str_replace('.tpl','-gc.tpl',$template);
+			if(file_exists('./templates/'.strtolower($this->my_module_name).'/'.$ntemplate)) {
+				d("Using GC template $ntemplate over $template");
+				$template = $ntemplate;
+			}
+		}
 		// Validate template given
 		if( $validate && (($tpl = self::get_template(strtolower($this->my_module_name).'/'.$template)) === NULL) ) {
 			throw new I2Exception('Invalid template `'.$this->my_module_name.'/'.$template.'` passed to Display');
