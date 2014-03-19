@@ -14,7 +14,7 @@ open_buffs = []
 theta = 10
 inc = 2
 
-transform = (range(0, theta, inc) + range(-theta, theta, inc)[::-1] + range(-d, 0, theta))
+transform = (range(0, theta, inc) + range(-theta, theta, inc)[::-1] + range(-theta, 0, theta))
 frame_number = 0
 star_positions = None
 star_rotations = None
@@ -51,5 +51,6 @@ for frame in frames[::-1]:
 
 gif.save(filename=input_filepath + ".gif")
 
-[buff.close() for buff in open_buffs]
+for buff in open_buffs:
+    buff.close()
 
