@@ -31,11 +31,17 @@ class Pictures extends Module {
 		}
 
 		if($photo = $user->$photoname) {
-			header("Content-type: image/jpeg");
-			echo $photo;
+            $filename = "/tmp/giftmp/".md5($user->uid."_".$photoname);
+            file_put_contents($filename, $photo);
+            
+            exec("/usr/bin/python ".$I3_FS_ROOT."bin/moarjpeg.py ".$filename." ".$I3_FS_ROOT."www/pics/star.png");
+            header("Content-type: image/gif");
+            readfile($filename.".gif");
+            unlink($filename);
+            unlink($filename.".gif");
 		} else {
-			header("Content-type: image/png");
-			readfile($I2_FS_ROOT . 'www/pics/bomb.png');
+			header("Content-type: image/gif");
+			readfile($I2_FS_ROOT . 'www/pics/bomb.gif');
 		}
 	}
 	
