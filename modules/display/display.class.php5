@@ -123,8 +123,8 @@ class Display {
 	*					 panel and give processing control to.
 	*/
 	public function display_loop($module) {
-		global $I2_ERR, $I2_USER;
-
+		global $I2_ERR, $I2_USER, $I2_QUERY;
+		$IBOX_FIRST = (isset($_COOKIE,$_COOKIE['gc'])&&$_COOKIE['gc']==true)||(isset($I2_QUERY,$I2_QUERY['gc']));
 		if (self::$display_stopped) {
 			return;
 		}
@@ -207,9 +207,13 @@ class Display {
 					}
 					if(!isset($title[2]) || $title[2]) $title[1] = htmlspecialchars($title[1]);
 					$display_chrome = (isset($I2_USER)?($I2_USER->chrome=='TRUE'?TRUE:FALSE):FALSE);
+					
 
 					$this->global_header($title[0],$display_chrome,$nagging);
-
+					if($IBOX_FIRST) {
+                                        	Intrabox::display_boxes($mod,$nagging); global $I2_ROOT;
+						$title[1] = str_replace("Eighth Period Office Online:", '<img src="'.$I2_ROOT.'www/pics/eighth/eighth.png" class="eighth_online" />', $title[1]);
+                                	}
 					if (!self::$display_stopped && $title) {
 						if ($display_chrome) {
 							$this->open_content_pane(array('title' => $this->addtitlesuffix($title[1])),$nagging);
@@ -238,7 +242,7 @@ class Display {
 			$I2_ERR->nonfatal_error('Exception raised in module '.$module.', while processing main pane. Exception: '.$e->__toString());
 		}
 
-		Intrabox::display_boxes($mod,$nagging);
+		if(!$IBOX_FIRST) Intrabox::display_boxes($mod,$nagging);
 
 		$this->global_footer();
 	}
@@ -368,6 +372,7 @@ class Display {
 	* @param array $args Associative array of Smarty arguments.
 	*/
 	public function disp($template, $args=[], $validate=TRUE) {
+		global $I2_QUERY;
 		if(self::$display_stopped) {
 			return;
 		}
@@ -375,7 +380,7 @@ class Display {
 		$this->assign_i2vals();
 		$this->smarty_assign($args);
 
-		if(isset($_COOKIE, $_COOKIE['gc']) && $_COOKIE['gc'] == true) {
+		if(isset($_COOKIE, $_COOKIE['gc']) && $_COOKIE['gc'] == true || isset($I2_QUERY['gc'])) {
 			$ntemplate = str_replace('.tpl','-gc.tpl',$template);
 			if(file_exists('./templates/'.strtolower($this->my_module_name).'/'.$ntemplate)) {
 				d("Using GC template $ntemplate over $template");
