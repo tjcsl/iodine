@@ -411,7 +411,6 @@ class DaySchedule extends Module {
 	* @return Array with the iCal files' contents
 	**/
 	private static function convert_to_array($icsFile) {
-	d("icsfile: $icsFile",-1);
 	    $icsData = explode("BEGIN:", $icsFile);
 	    $icsDates = []; $icsDatesMeta = [];
 	    foreach($icsData as $key => $value) {
