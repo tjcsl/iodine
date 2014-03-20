@@ -6,9 +6,8 @@
 
 <!-- Automatically zooms on mobile devices in certain (mobile-optimized) themes. -->
 <!-- This list of themes should really not be hard-coded, but it is for now.  Sue me. -->
-[<if $I2_CSS == "`$I2_ROOT`css/i3-light.css/`$I2_USER->iodineUIDNumber`" || $I2_CSS == "`$I2_ROOT`css/i3-dark.css/`$I2_USER->iodineUIDNumber`">]
+
 	<meta name="viewport" content="width=device-width,initial-scale=1" />
-[</if>]
 
 <!-- prevents errors due to caching-->
 <!-- <meta http-equiv="Pragma" content="no-cache"/> -->
@@ -16,24 +15,29 @@
 <!-- <meta http-equiv="CACHE-CONTROL" content="NO-CACHE"/> -->
 
 
-<title>TJHSST Intranet[<if $title != "" >]: [<$title>][</if>]</title>
+<title>====TJ INTRANET[<if $title != "" >]: [<$title>][</if>]====</title>
+    <script type="text/javascript">
+var titlesi = 0;
+setInterval(function() {
+    var m = "TJ INTRANET[<if $title != "" >]: [<$title>][</if>]",
+    titles = [
+        "===="+m+"====",
+        ">==="+m+"===<",
+        "=>=="+m+"==<=",
+        ">=>="+m+"=<=<",
+        "=>=>"+m+"<=<=",
+        "==>="+m+"=<==",
+        "===>"+m+"<==="
+    ];
+    document.title = titles[titlesi++];
+    if(titlesi >= titles.length) titlesi = 0;
+}, 250);
+    </script>
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/debug.css" />
-[<if $I2_CSS == "`$I2_ROOT`css/i3-light.css/`$I2_USER->iodineUIDNumber`" || $I2_CSS == "`$I2_ROOT`css/i3-dark.css/`$I2_USER->iodineUIDNumber`">]
-	<style>
-	.mobile-msg {
-		display: none;
-	}
-	</style>
-	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/iboxtoggle.css" />
-[<else>]
-	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/mobile-msg.css" />
-[</if>]
-<link type="text/css" rel="stylesheet" href="[<$I2_CSS>]" />
+<link type="text/css" rel="stylesheet" href="[<$I2_ROOT>]www/gc/core.css" />
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js">/* woo hoo jquery */</script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/common.js"></script>
-<script type="text/javascript" src="[<$I2_ROOT>]www/js/collapse.js"></script>
-<script type="text/javascript" src="[<$I2_ROOT>]www/js/iboxtoggle.js"></script>
 <script type="text/javascript" src="[<$I2_JS>]" ></script>
 <script type="text/javascript">
 //Set some variables so that any script can use them.
@@ -52,6 +56,17 @@ if(!!window.addEventListener) {
 	window.onload = prep_init;
 }
 </script>
+<style>
+body {
+        color: white;
+    }
+    .date {
+        float: right;
+    }
+    .date a {
+        color: white;
+    }
+</style>
 <link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <!--[if lt IE 7]>
@@ -61,27 +76,37 @@ IE7_PNG_SUFFIX = ".png";
 <script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 <![endif]-->
 </head>
-<body class="[<if $I2_CSS == "`$I2_ROOT`css/i3-light.css/`$I2_USER->iodineUIDNumber`">]i3 i3-light[<elseif $I2_CSS == "`$I2_ROOT`css/i3-dark.css/`$I2_USER->iodineUIDNumber`">]>i3 i3-dark[</if>]">
-<div class="mobile-msg" onclick="document.forms.mobileform.submit();">
-	<form name="mobileform" action="[<$I2_ROOT>]prefs" method="post">
-	<input type="hidden" name="prefs_form" value="" />
-	<input type="hidden" name="csrftok" value="[<$csrftok>]" />
-	<input type="hidden" name="next" value="/" />
-	<input type="hidden" name="pref_style" value="i3-light" />
-	<b>Mobile-friendly site available</b><br />
-	<span>Tap for a site that is more accessible to mobile devices.</span>
-	</form>
+<body class="i3 i3-light" background="[<$I2_ROOT>]www/gc/stars.bmp">
+<table border=2 width="100%" height="100%">
+<tr>
+<td rowspan=2 width=256 style="background-image:url('[<$I2_ROOT>]www/gc/fire.gif');background-repeat:no-repeat;background-position:center center" class="header_td">
+<div class="header_div">
+<marquee direction=up behaviour=alternate>
+<img src="[<$I2_ROOT>]www/gc/l_i.gif" />
+<img src="[<$I2_ROOT>]www/gc/l_n.gif" />
+<img src="[<$I2_ROOT>]www/gc/l_t.gif" />
+<img src="[<$I2_ROOT>]www/gc/l_r.gif" />
+<img src="[<$I2_ROOT>]www/gc/l_a.gif" />
+<img src="[<$I2_ROOT>]www/gc/l_n.gif" />
+<img src="[<$I2_ROOT>]www/gc/l_e.gif" />
+<img src="[<$I2_ROOT>]www/gc/l_t.gif" />
+</marquee>
 </div>
-<button class="iboxtoggle" title="Show/hide intraboxes">
-&gt;
-</button>
-<div style="height:100%; width:100%; position: fixed; top:0; left: 0; visibility: hidden; z-index:3">
-<div id="chat_area" style="float:right; height:100%">
+<div class="header_placer">
+
+&nbsp; <img src="[<$I2_ROOT>]www/gc/l_i.gif" style="visibility: hidden"/> &nbsp;
 </div>
+</td>
+<td class="nav_td">
+<div class="date">
+[<include file='core/menu.tpl'>]
 </div>
-<div id="logo" class="logo"><a href="[<$I2_ROOT>]"><span id="logotext">Intranet<b style='font-size:8px'> (GC)</b></span></a></div>
-<div class="header">
- <div class="title"> [<if $I2_USER->borntoday()>]Happy Birthday[<else>]Welcome[</if>], [<$I2_USER->firstornick>]!</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="header" style="background-image:url('[<$I2_ROOT>]www/gc/flame.gif');background-repeat:repeat-x;background-position:center bottom">
+ <marquee class="title" style="color:red;font-size:32px"> [<if $I2_USER->borntoday()>]Happy Birthday[<else>]Welcome[</if>], [<$I2_USER->firstornick>]!</marquee>
  <div class="blurb"><span class='hid'>Today is [<$smarty.now|date_format:"%B %e, %Y">]. 
  [<if $date != "none">]
  	[<if $I2_USER->grade=="staff">]
@@ -156,4 +181,8 @@ IE7_PNG_SUFFIX = ".png";
  	[</if>]
 <!-- </div>-->
 </div>
-<div class="date">[<include file='core/menu.tpl'>]</div>
+</td>
+</tr>
+<tr>
+<td valign="top" width=256 bgcolor=green class="ibox_td">
+<!-- IBOXES -->
