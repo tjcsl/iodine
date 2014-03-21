@@ -39,6 +39,8 @@ setInterval(function() {
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js">/* woo hoo jquery */</script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/common.js"></script>
 <script type="text/javascript" src="[<$I2_JS>]" ></script>
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/af.js"></script>
+
 <script type="text/javascript">
 //Set some variables so that any script can use them.
 var i2root="[<$I2_ROOT>]";
