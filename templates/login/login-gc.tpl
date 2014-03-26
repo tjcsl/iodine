@@ -148,14 +148,14 @@ setInterval(function() {
 </tr>
 <tr>
 <td class="gif_td" valign=top>
-<marquee direction=down height="500" scrollamount=5 scrolldelay="0.2">
+<marquee direction=right width=300 height="500" scrollamount=5 scrolldelay="0.2">
 <center>
-<img src="[<$I2_ROOT>]www/gc/2.gif"><br /><br /><br />
-<img src="[<$I2_ROOT>]www/gc/3.gif"><br /><br /><br />
-<img src="[<$I2_ROOT>]www/gc/4.gif" style="zoom:0.5"><br /><br /><br />
-<img src="[<$I2_ROOT>]www/gc/5.gif"><br /><br /><br />
-<img src="[<$I2_ROOT>]www/gc/6.gif"><br /><br /><br />
-<img src="[<$I2_ROOT>]www/gc/7.gif"><br /><br /><br />
+<img src="[<$I2_ROOT>]www/gc/2.gif"> &nbsp; &nbsp; &nbsp; 
+<img src="[<$I2_ROOT>]www/gc/3.gif"> &nbsp; &nbsp; &nbsp;
+<img src="[<$I2_ROOT>]www/gc/4.gif" style="zoom:0.5"> &nbsp; &nbsp; &nbsp;
+<img src="[<$I2_ROOT>]www/gc/5.gif"> &nbsp; &nbsp; &nbsp;
+<img src="[<$I2_ROOT>]www/gc/6.gif"> &nbsp; &nbsp; &nbsp;
+<img src="[<$I2_ROOT>]www/gc/7.gif"> &nbsp; &nbsp; &nbsp;
 </center>
 </marquee>
 </td>

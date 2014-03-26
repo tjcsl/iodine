@@ -55,7 +55,7 @@ class Display {
 	* Whether to display anything.
 	* @access private
 	*/
-	private static $display_stopped = FALSE;
+	public static $display_stopped = FALSE;
 
 	/**
 	* The template root directory, as specified in the configuration file.
@@ -124,7 +124,6 @@ class Display {
 	*/
 	public function display_loop($module) {
 		global $I2_ERR, $I2_USER, $I2_QUERY;
-		$IBOX_FIRST = (isset($_COOKIE,$_COOKIE['gc'])&&$_COOKIE['gc']==true)||(isset($I2_QUERY,$I2_QUERY['gc']));
 		if (self::$display_stopped) {
 			return;
 		}
@@ -208,12 +207,7 @@ class Display {
 					if(!isset($title[2]) || $title[2]) $title[1] = htmlspecialchars($title[1]);
 					$display_chrome = (isset($I2_USER)?($I2_USER->chrome=='TRUE'?TRUE:FALSE):FALSE);
 					
-
 					$this->global_header($title[0],$display_chrome,$nagging);
-					if($IBOX_FIRST) {
-                                        	Intrabox::display_boxes($mod,$nagging); global $I2_ROOT;
-						$title[1] = str_replace("Eighth Period Office Online:", '<img src="'.$I2_ROOT.'www/pics/eighth/eighth.png" class="eighth_online" />', $title[1]);
-                                	}
 					if (!self::$display_stopped && $title) {
 						if ($display_chrome) {
 							$this->open_content_pane(array('title' => $this->addtitlesuffix($title[1])),$nagging);
@@ -242,7 +236,7 @@ class Display {
 			$I2_ERR->nonfatal_error('Exception raised in module '.$module.', while processing main pane. Exception: '.$e->__toString());
 		}
 
-		if(!$IBOX_FIRST) Intrabox::display_boxes($mod,$nagging);
+		Intrabox::display_boxes($mod,$nagging);
 
 		$this->global_footer();
 	}
@@ -379,12 +373,21 @@ class Display {
 
 		$this->assign_i2vals();
 		$this->smarty_assign($args);
-
-		if(isset($_COOKIE, $_COOKIE['gc']) && $_COOKIE['gc'] == true || isset($I2_QUERY['gc'])) {
+		/* To activate, go to $I2_ROOT/gc/optin
+		 * To deactivate, go to $I2_ROOT/gc/optout
+		 */
+		if(isset($_COOKIE, $_COOKIE['gc']) && $_COOKIE['gc'] == true) {
 			$ntemplate = str_replace('.tpl','-gc.tpl',$template);
 			if(file_exists('./templates/'.strtolower($this->my_module_name).'/'.$ntemplate)) {
-				d("Using GC template $ntemplate over $template");
-				$template = $ntemplate;
+				global $I2_USER;
+				if(isset($I2_USER) && $I2_USER->uid == 9999) {
+					d("Nice try Eighth office.");
+					redirect("gc/optout");
+				} else {
+					d("Using GC template $ntemplate over $template");
+					d_r($_COOKIE); d_r($I2_QUERY);
+					$template = $ntemplate;
+				}
 			}
 		}
 		// Validate template given

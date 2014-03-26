@@ -38,15 +38,15 @@ if(document.cookie.indexOf('noads=true') == -1) {
             var t = Math.floor(Math.random() * ($(window).height() - 200));
             var l = Math.floor(Math.random() * ($(window).width() - 200));
             $(".ad1").css({'top': t, 'left': l}).click(function() { $(this).remove(); });
-        }, 1500);
-    }, 5000)
+        }, 2500);
+    }, 10000)
     setTimeout(function() {
         setInterval(function() {
             var t = Math.floor(Math.random() * ($(window).height() - 200));
             var l = Math.floor(Math.random() * ($(window).width() - 200));
             $(".ad2").css({'top': t, 'left': l}).click(function() { $(this).remove(); });
-        }, 1350);
-    }, 5500);
+        }, 2500);
+    }, 13700);
 }
     </script>
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
@@ -97,8 +97,8 @@ body {
         background-image: url('[<$I2_ROOT>]www/gc/winner2.gif');
     }
 </style>
-<link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
-<link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
+<link rel="icon" type="image/gif" href="[<$I2_ROOT>]www/gc/iewin.gif" />
+<link rel="shortcut icon" type="image/gif" href="[<$I2_ROOT>]www/gc/iewin.gif" />
 <!--[if lt IE 7]>
 <script type="text/javascript">
 IE7_PNG_SUFFIX = ".png";
