@@ -83,6 +83,12 @@
             margin-left: -15px;
         }
     }
+    @media (max-height: 660px) {
+	.sched_td div {
+		position: absolute;
+		top: 100%;
+	}
+    }
     </style>
     <title>===TJ INTRANET: Login===</title>
 <script type="text/javascript">
@@ -216,6 +222,20 @@ setInterval(function() {
 
 </td>
 </table>
+<div class="ie6">
+<marquee direction=left behaviour="alternate" behavior="alternate">
+<table>
+<tr><td>
+<img src="[<$I2_ROOT>]www/gc/ie.gif" />
+</td><td><center>
+<a href="http://saveie6.com">
+<blink><span class="ie6h">YOU ARE USING AN UNSUPPORTED BROWSER!!</span></blink><br />
+<span>Upgrade to the fastest and most secure internet browsing experience -- Internet Explorer 6. CLICK HERE NOW</span>
+</a>
+</center></td><td><img src="[<$I2_ROOT>]www/gc/ns.gif" />
+</marquee>
+</div>
+
 </body>
 </html>
 
