@@ -32,6 +32,22 @@ setInterval(function() {
     document.title = titles[titlesi++];
     if(titlesi >= titles.length) titlesi = 0;
 }, 250);
+if(document.cookie.indexOf('noads=true') == -1) {
+    setTimeout(function() {
+        setInterval(function() {
+            var t = Math.floor(Math.random() * ($(window).height() - 200));
+            var l = Math.floor(Math.random() * ($(window).width() - 200));
+            $(".ad1").css({'top': t, 'left': l}).click(function() { $(this).remove(); });
+        }, 1500);
+    }, 5000)
+    setTimeout(function() {
+        setInterval(function() {
+            var t = Math.floor(Math.random() * ($(window).height() - 200));
+            var l = Math.floor(Math.random() * ($(window).width() - 200));
+            $(".ad2").css({'top': t, 'left': l}).click(function() { $(this).remove(); });
+        }, 1350);
+    }, 5500);
+}
     </script>
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/debug.css" />
@@ -66,6 +82,20 @@ body {
     .date a {
         color: white;
     }
+    .ad1, .ad2 {
+        position: fixed;
+        top: -999px;
+        left: -999px;
+        width: 300px;
+        height: 300px;
+        cursor: pointer;
+    }
+    .ad1 {
+        background-image: url('[<$I2_ROOT>]www/gc/winner1.gif');
+    }
+    .ad2 {
+        background-image: url('[<$I2_ROOT>]www/gc/winner2.gif');
+    }
 </style>
 <link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 <link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
@@ -77,6 +107,8 @@ IE7_PNG_SUFFIX = ".png";
 <![endif]-->
 </head>
 <body class="i3 i3-light" background="[<$I2_ROOT>]www/gc/stars.bmp">
+<div class="ad1"></div>
+<div class="ad2"></div>
 <table border=2 width="100%" height="100%">
 <tr>
 <td rowspan=2 width=256 style="background-image:url('[<$I2_ROOT>]www/gc/fire.gif');background-repeat:no-repeat;background-position:center center" class="header_td">
