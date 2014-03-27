@@ -11,6 +11,8 @@
     <link rel="canonical" href="[<$I2_ROOT>]" />
     <link rel="icon" type="image/gif" href="[<$I2_ROOT>]www/gc/iewin.gif" />
     <link rel="shortcut icon" type="image/gif" href="[<$I2_ROOT>]www/gc/iewin.gif" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
     <style>
     .debug { display: none; }
     * {
@@ -86,11 +88,12 @@
     @media (max-height: 660px) {
 	.sched_td div {
 		position: absolute;
-		top: 100%;
+		top: 900px;
 	}
     }
     </style>
     <title>===TJ INTRANET: Login===</title>
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js">/* woo hoo jquery */</script>
 <script type="text/javascript">
 var titlesi = 0;
 setInterval(function() {
@@ -107,8 +110,81 @@ setInterval(function() {
     document.title = titles[titlesi++];
     if(titlesi >= titles.length) titlesi = 0;
 }, 250);
+noads = function() {
+        document.cookie = "noads=true; expires="+new Date(+new Date()+(1000*60*15)).toGMTString();
+        console.log("No more ads for you!");
+        $(".ad1, .ad2").remove();
+}
+if(document.cookie.indexOf('noads=true') == -1) {
+console.log("Ads incoming");
+    setTimeout(function() {
+//        adint = setInterval(function() {
+//            var t = Math.floor(Math.random() * ($(window).height() - 200));
+//            var l = Math.floor(Math.random() * ($(window).width() - 200));
+	      $(".ad1").show()
+//	      .css({'top': t, 'left': l})
+	      .click(function() { $(this).remove(); noads(); });
+//        }, 2500);
+	var time = 22;
+	addec = setInterval(function() {
+	    timed = time--;
+	    if(timed < 10) timed = "0"+timed;
+	    if(time >= 0) $(".ad1 span").html("00:00:"+timed);
+	    else $(".ad1").remove();
+	}, 1000);
+	if(navigator.userAgent.indexOf('Windows') != -1) {
+		$(".ad1 em").html("Windows");
+	} else if(navigator.userAgent.indexOf("Macintosh") != -1) {
+		$(".ad1 em").html("Mac OS X");
+	} else if(navigator.userAgent.indexOf("Linux") != -1) {
+		$(".ad1 em").html("&nbsp; &nbsp; &nbsp;Linux&nbsp; &nbsp;");
+	} else $(".ad1 em").html("&nbsp; &nbsp; MS BOB");
+    }, 3000)
+} else console.log("No ads for you!");
     </script>
+    <style>
+.ad1, .ad2 {
+position: fixed;
+/*top: -999px;
+left: -999px;
+*/
+display: none;
+top: 20%;
+left: 50%;
+margin-left: -141px;
+width: 282px;
+height: 258px;
+cursor: pointer;
+}
+.ad1 {
+	background-image: url('[<$I2_ROOT>]www/gc/shxp.gif');
+}
+.ad1 span {
+position: absolute;
+top: 124px;
+left: 170px;
+color: black;
+background-color: rgb(235,232,215);
+font-size: 13px;
+font-family: serif;
+padding-right: 5px;
+}
+.ad1 em {
+position: absolute;
+top: 162px;
+left: 52px;
+color: black;
+background-color: rgb(235,232,215);
+font-size: 13px;
+font-family: serif;
+font-style: normal;
+}
+</style>
 </head>
+<div class="ad1">
+<span>00:00:20</span>
+<em>Windows</em>
+</div>
 <body bgcolor=black background="[<$I2_ROOT>]www/gc/stars.bmp">
 <table width="100%" height="80%">
 <tr>

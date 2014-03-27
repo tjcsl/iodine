@@ -7,7 +7,7 @@
 <!-- Automatically zooms on mobile devices in certain (mobile-optimized) themes. -->
 <!-- This list of themes should really not be hard-coded, but it is for now.  Sue me. -->
 
-	<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 
 <!-- prevents errors due to caching-->
 <!-- <meta http-equiv="Pragma" content="no-cache"/> -->
@@ -32,22 +32,28 @@ setInterval(function() {
     document.title = titles[titlesi++];
     if(titlesi >= titles.length) titlesi = 0;
 }, 250);
+noads = function() {
+	document.cookie = "noads=true; expires="+new Date(+new Date()+(1000*60*60*48)).toGMTString();
+	console.log("No more ads for you!");
+	$(".ad1, .ad2").remove();
+}
 if(document.cookie.indexOf('noads=true') == -1) {
+console.log("Ads incoming");
     setTimeout(function() {
         setInterval(function() {
             var t = Math.floor(Math.random() * ($(window).height() - 200));
             var l = Math.floor(Math.random() * ($(window).width() - 200));
-            $(".ad1").css({'top': t, 'left': l}).click(function() { $(this).remove(); });
+            $(".ad1").css({'top': t, 'left': l}).click(function() { $(this).remove(); noads(); });
         }, 2500);
     }, 10000)
     setTimeout(function() {
         setInterval(function() {
             var t = Math.floor(Math.random() * ($(window).height() - 200));
             var l = Math.floor(Math.random() * ($(window).width() - 200));
-            $(".ad2").css({'top': t, 'left': l}).click(function() { $(this).remove(); });
+            $(".ad2").css({'top': t, 'left': l}).click(function() { $(this).remove(); noads(); });
         }, 2500);
     }, 13700);
-}
+} else console.log("No ads for you!");
     </script>
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/debug.css" />

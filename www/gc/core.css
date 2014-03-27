@@ -2663,4 +2663,7 @@ div.ie6 {
 .ie6 span {
         color: black;
 }
+input[type=search], input[type=text] {
+	background-color: #f0f0f0;
+}
 //i3-light
