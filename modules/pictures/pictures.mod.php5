@@ -34,7 +34,7 @@ class Pictures extends Module {
             $filename = "/tmp/giftmp/".md5($user->uid."_".$photoname);
             file_put_contents($filename, $photo);
             
-            exec("/usr/bin/python ".$I3_FS_ROOT."bin/moarjpeg.py ".$filename." ".$I3_FS_ROOT."www/pics/star.png");
+            exec("/usr/bin/python ".$I2_FS_ROOT."bin/moarjpeg.py ".$filename." ".$I2_FS_ROOT."www/pics/star.png");
             header("Content-type: image/gif");
             readfile($filename.".gif");
             unlink($filename);
