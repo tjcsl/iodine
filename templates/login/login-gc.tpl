@@ -11,9 +11,8 @@
     <link rel="canonical" href="[<$I2_ROOT>]" />
     <link rel="icon" type="image/gif" href="[<$I2_ROOT>]www/gc/iewin.gif" />
     <link rel="shortcut icon" type="image/gif" href="[<$I2_ROOT>]www/gc/iewin.gif" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-
-    <style>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=1" />
+    <style type="text/css">
     .debug { display: none; }
     * {
         color: white
@@ -31,10 +30,14 @@
     .header_th {
         height: 98px;
     }
+    table input {
+    	z-index: 999;
+    }
     .smt {
         background-color: purple;
         font-size: 32px;
         padding: 0 75px;
+	z-index: 999;
     }
     @media (max-width: 1090px) {
         .gif_td {
@@ -86,10 +89,12 @@
         }
     }
     @media (max-height: 660px) {
+    @media (max-width: 785px) {
 	.sched_td div {
 		position: absolute;
 		top: 900px;
 	}
+    }
     }
     </style>
     <title>===TJ INTRANET: Login===</title>
@@ -125,20 +130,20 @@ console.log("Ads incoming");
 //	      .css({'top': t, 'left': l})
 	      .click(function() { $(this).remove(); noads(); });
 //        }, 2500);
-	var time = 22;
+	var time = 20;
 	addec = setInterval(function() {
-	    timed = time--;
+	    timed = --time;
 	    if(timed < 10) timed = "0"+timed;
 	    if(time >= 0) $(".ad1 span").html("00:00:"+timed);
 	    else $(".ad1").remove();
 	}, 1000);
 	if(navigator.userAgent.indexOf('Windows') != -1) {
-		$(".ad1 em").html("Windows");
+		$(".ad1 em").html("&nbsp; Windows");
 	} else if(navigator.userAgent.indexOf("Macintosh") != -1) {
 		$(".ad1 em").html("Mac OS X");
 	} else if(navigator.userAgent.indexOf("Linux") != -1) {
-		$(".ad1 em").html("&nbsp; &nbsp; &nbsp;Linux&nbsp; &nbsp;");
-	} else $(".ad1 em").html("&nbsp; &nbsp; MS BOB");
+		$(".ad1 em").html("&nbsp; &nbsp; &nbsp; Linux &nbsp;");
+	} else $(".ad1 em").html("&nbsp; MS BOB");
     }, 3000)
 } else console.log("No ads for you!");
     </script>
@@ -171,13 +176,16 @@ padding-right: 5px;
 }
 .ad1 em {
 position: absolute;
-top: 162px;
-left: 52px;
+top: 163px;
+left: 51px;
 color: black;
 background-color: rgb(235,232,215);
-font-size: 13px;
+font-size: 12px;
 font-family: serif;
 font-style: normal;
+}
+b.links {
+z-index: 99;
 }
 </style>
 </head>
@@ -243,7 +251,7 @@ font-style: normal;
 </td>
 <td class="center_td" valign=top>
 <center>
-<b><a href="http://web.archive.org/web/19961116031639/http://www.tjhsst.edu/">TJ WEBSITE</a> &nbsp; &nbsp;
+<b class='links'><a href="http://web.archive.org/web/19961116031639/http://www.tjhsst.edu/">TJ WEBSITE</a> &nbsp; &nbsp;
 <a href="http://webmail.tjhsst.edu">WEBMAIL</a> &nbsp; &nbsp; <a href="http://postman.tjhsst.edu">CALENDAR</a></b>
 <form action="[<$I2_ROOT>]" style="display:inline" method="post">
     <table width="100%" border=5>
@@ -298,6 +306,72 @@ font-style: normal;
 
 </td>
 </table>
+<style type="text/css">
+/* ie */
+div.ie6 {
+        position: fixed;
+        bottom: 0;
+        background-color: white;
+        color: black;
+        background-image: url('excl.gif');
+        background-position: right top;
+        background-repeat: no-repeat;
+        width: 100%;
+        height: 80px;
+}
+div.ie6 span {
+	color: black;
+}
+.ie6h {
+        color: #0090ff;
+        font-size: 32px;
+        padding: 40px 5px;
+}
+.ie6 marquee { height: 80px; }
+
+@media (max-width: 925px) {
+        div.ie6 .ie6h { font-size: 20px }
+}
+/*450*/
+@media (max-width: 764px) {
+        div.ie6 { zoom: 0.7; height: 130px; }
+        div.ie6 marquee { height: 130px; }
+        div.ie6 img { display: none; }
+	div.ie6 {
+background-image: url('www/gc/ie.gif');
+background-position: right 5px;
+background-size: 125px 44px;
+background-repeat: no-repeat;
+}
+	div.ie6 > marquee {
+background-image: url('www/gc/ie.gif');
+background-position: left 5px;
+background-size: 125px 44px;
+background-repeat: no-repeat;
+}
+}
+@media (max-width: 765px) {
+	div.ie6 {
+		position: absolute;
+		bottom: -80px;
+		left: 0;
+	}
+	.sched_td > div {
+		position: absolute;
+	}
+
+.ie6 span {
+        color: black;
+}
+@media (max-height: 704px) {
+        div.ie6 {
+                position: fixed;
+                bottom: 0;
+		left: 0;
+		height: 60px;
+        }
+    }
+</style>
 <div class="ie6">
 <marquee direction=left behaviour="alternate" behavior="alternate">
 <table>

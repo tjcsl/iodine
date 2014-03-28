@@ -112,7 +112,7 @@ IE7_PNG_SUFFIX = ".png";
 <script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 <![endif]-->
 </head>
-<body class="i3 i3-light" background="[<$I2_ROOT>]www/gc/stars.bmp">
+<body class="i3 i3-light afd" style="background-color: black !important">
 <div class="ad1"></div>
 <div class="ad2"></div>
 <table border=2 width="100%" height="100%">
@@ -143,7 +143,7 @@ IE7_PNG_SUFFIX = ".png";
 </tr>
 <tr>
 <td>
-<div class="header" style="background-image:url('[<$I2_ROOT>]www/gc/flame.gif');background-repeat:repeat-x;background-position:center bottom">
+<div class="header" style="background-image:url('[<$I2_ROOT>]www/gc/flame.gif');background-repeat:repeat-x;background-position:center bottom;background-color: black">
  <marquee class="title" style="color:red;font-size:32px"> [<if $I2_USER->borntoday()>]Happy Birthday[<else>]Welcome[</if>], [<$I2_USER->firstornick>]!</marquee>
  <div class="blurb"><span class='hid'>Today is [<$smarty.now|date_format:"%B %e, %Y">]. 
  [<if $date != "none">]

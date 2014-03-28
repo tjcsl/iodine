@@ -2,7 +2,12 @@
 /* Client-Cached: Wed Mar 19 18:16:00 EDT 2014 */
 /* Using faster cache... */
 /* Server cache 'i3-light' for 2016jwoglom created on Wed Mar 19 11:18:58 EDT 2014 */
-
+body {
+background-color: black;
+background-image: url('../../www/gc/stars.bmp');
+background-repeat: repeat;
+background-position: 0px;
+}
 .logo a {
     position: absolute;
     top: 4px;
@@ -1417,6 +1422,7 @@ table#birthdays th {
     -webkit-box-shadow: -2px 0px 2px 0px rgba(0,0,0,0.2);
     -moz-box-shadow: -2px 0px 2px 0px rgba(0,0,0,0.2);
     box-shadow: -2px 0px 2px 0px rgba(0,0,0,0.2);
+    background-image: url('../www/gc/stars.bmp');
 }
 
 .mainbox .boxheader {
@@ -2646,7 +2652,7 @@ div.ie6 {
         width: 100%;
         height: 80px;
 }
-.ie6 .ie6h {
+.ie6h {
         color: #0090ff;
         font-size: 32px;
         padding: 40px 5px;
@@ -2663,7 +2669,7 @@ div.ie6 {
 .ie6 span {
         color: black;
 }
-input[type=search], input[type=text] {
+form input[type=search], form input[type=text] {
 	background-color: #f0f0f0;
 }
 //i3-light
