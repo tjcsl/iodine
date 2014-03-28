@@ -400,9 +400,9 @@ class Auth {
 				$I2_AJAX->returnResponse($I2_ARGS[1]);
 			} else {
 				//$disp->disp('login.tpl', $this->template_args);
-				
+			if(time() > 1396274400000) { /* Mon Mar 31 2014 10:00:00 GMT-0400 (EDT) */	
 				$disp->disp('login-gc.tpl', $this->template_args);
-				
+			} else $disp->disp('login.tpl', $this->template_args);
 				//$disp->disp('fb.tpl', $template_args);
 				//$disp->disp('windows.tpl', $template_args);
 			}
