@@ -2,7 +2,12 @@
 /* Client-Cached: Wed Mar 19 18:16:00 EDT 2014 */
 /* Using faster cache... */
 /* Server cache 'i3-light' for 2016jwoglom created on Wed Mar 19 11:18:58 EDT 2014 */
-
+body {
+background-color: black;
+background-image: url('../../www/gc/stars.bmp');
+background-repeat: repeat;
+background-position: 0px;
+}
 .logo a {
     position: absolute;
     top: 4px;
@@ -1296,8 +1301,13 @@ table#birthdays th {
 }
 
 .boxes {
-    width: 228px;
-    bottom: 0px;
+/*    width: 228px;
+    bottom: 0px; */
+    position: absolute;
+    top: 157px;
+    margin-left: -263px;   
+    height: auto;
+    background-color: green;
     padding: 2px 5px 2px 3px;
     -webkit-transition-duration: 0.2s;
     -moz-transition-duration: 0.2s;
@@ -1412,6 +1422,7 @@ table#birthdays th {
     -webkit-box-shadow: -2px 0px 2px 0px rgba(0,0,0,0.2);
     -moz-box-shadow: -2px 0px 2px 0px rgba(0,0,0,0.2);
     box-shadow: -2px 0px 2px 0px rgba(0,0,0,0.2);
+    background-image: url('../www/gc/stars.bmp');
 }
 
 .mainbox .boxheader {
@@ -2623,5 +2634,42 @@ img.eighth_online {
     height: 40px;
     width: 150px;
     background-color: #f0f0f0;
+}
+
+table tr {
+	background: transparent !important;
+	color: white;
+}
+/* ie */
+div.ie6 {
+        position: absolute;
+        bottom: 0;
+        background-color: white;
+        color: black;
+        background-image: url('excl.gif');
+        background-position: right top;
+        background-repeat: no-repeat;
+        width: 100%;
+        height: 80px;
+}
+.ie6h {
+        color: #0090ff;
+        font-size: 32px;
+        padding: 40px 5px;
+}
+.ie6 marquee { height: 80px; }
+@media (max-width: 925px) {
+        div.ie6 .ie6h { font-size: 20px }
+}
+@media (max-width: 450px) {
+        div.ie6 { zoom: 0.7; height: 130px; }
+        div.ie6 marquee { height: 130px; }
+        div.ie6 img { display: none; }
+}
+.ie6 span {
+        color: black;
+}
+form input[type=search], form input[type=text] {
+	background-color: #f0f0f0;
 }
 //i3-light

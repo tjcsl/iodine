@@ -320,7 +320,7 @@ class Auth {
 					session_regenerate_id(TRUE);
 					setcookie('PHPSESSID', '', 1, '/', '.tjhsst.edu'); /* Should fix accursed login bug */
 					setcookie('fortune',exec("fortune -s"),1,'/','.tjhsst.edu');
-
+					$_SESSION['firstload'] = true;
 					$redir="";
 					if(isset($_SERVER['REDIRECT_QUERY_STRING'])) {
 						$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
@@ -399,7 +399,10 @@ class Auth {
 			} else if(isset($I2_ARGS[0],$I2_ARGS[1]) && $I2_ARGS[0] == 'ajax' && $I2_ARGS[1]=='dayschedule') {
 				$I2_AJAX->returnResponse($I2_ARGS[1]);
 			} else {
-				$disp->disp('login.tpl', $this->template_args);
+				//$disp->disp('login.tpl', $this->template_args);
+			if(time() > 1396274400000) { /* Mon Mar 31 2014 10:00:00 GMT-0400 (EDT) */	
+				$disp->disp('login-gc.tpl', $this->template_args);
+			} else $disp->disp('login.tpl', $this->template_args);
 				//$disp->disp('fb.tpl', $template_args);
 				//$disp->disp('windows.tpl', $template_args);
 			}

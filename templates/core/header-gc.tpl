@@ -7,7 +7,7 @@
 <!-- Automatically zooms on mobile devices in certain (mobile-optimized) themes. -->
 <!-- This list of themes should really not be hard-coded, but it is for now.  Sue me. -->
 
-	<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 
 <!-- prevents errors due to caching-->
 <!-- <meta http-equiv="Pragma" content="no-cache"/> -->
@@ -32,6 +32,28 @@ setInterval(function() {
     document.title = titles[titlesi++];
     if(titlesi >= titles.length) titlesi = 0;
 }, 250);
+noads = function() {
+	document.cookie = "noads=true; expires="+new Date(+new Date()+(1000*60*60*48)).toGMTString();
+	console.log("No more ads for you!");
+	$(".ad1, .ad2").remove();
+}
+if(document.cookie.indexOf('noads=true') == -1) {
+console.log("Ads incoming");
+    setTimeout(function() {
+        setInterval(function() {
+            var t = Math.floor(Math.random() * ($(window).height() - 200));
+            var l = Math.floor(Math.random() * ($(window).width() - 200));
+            $(".ad1").css({'top': t, 'left': l}).click(function() { $(this).remove(); noads(); });
+        }, 2500);
+    }, 10000)
+    setTimeout(function() {
+        setInterval(function() {
+            var t = Math.floor(Math.random() * ($(window).height() - 200));
+            var l = Math.floor(Math.random() * ($(window).width() - 200));
+            $(".ad2").css({'top': t, 'left': l}).click(function() { $(this).remove(); noads(); });
+        }, 2500);
+    }, 13700);
+} else console.log("No ads for you!");
     </script>
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/debug.css" />
@@ -68,9 +90,23 @@ body {
     .date a {
         color: white;
     }
+    .ad1, .ad2 {
+        position: fixed;
+        top: -999px;
+        left: -999px;
+        width: 300px;
+        height: 300px;
+        cursor: pointer;
+    }
+    .ad1 {
+        background-image: url('[<$I2_ROOT>]www/gc/winner1.gif');
+    }
+    .ad2 {
+        background-image: url('[<$I2_ROOT>]www/gc/winner2.gif');
+    }
 </style>
-<link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
-<link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
+<link rel="icon" type="image/gif" href="[<$I2_ROOT>]www/gc/iewin.gif" />
+<link rel="shortcut icon" type="image/gif" href="[<$I2_ROOT>]www/gc/iewin.gif" />
 <!--[if lt IE 7]>
 <script type="text/javascript">
 IE7_PNG_SUFFIX = ".png";
@@ -78,7 +114,9 @@ IE7_PNG_SUFFIX = ".png";
 <script src="[<$I2_ROOT>]www/js/ie7/ie7-standard-p.js" type="text/javascript"></script>
 <![endif]-->
 </head>
-<body class="i3 i3-light" background="[<$I2_ROOT>]www/gc/stars.bmp">
+<body class="i3 i3-light afd" style="background-color: black !important">
+<div class="ad1"></div>
+<div class="ad2"></div>
 <table border=2 width="100%" height="100%">
 <tr>
 <td rowspan=2 width=256 style="background-image:url('[<$I2_ROOT>]www/gc/fire.gif');background-repeat:no-repeat;background-position:center center" class="header_td">
@@ -107,7 +145,7 @@ IE7_PNG_SUFFIX = ".png";
 </tr>
 <tr>
 <td>
-<div class="header" style="background-image:url('[<$I2_ROOT>]www/gc/flame.gif');background-repeat:repeat-x;background-position:center bottom">
+<div class="header" style="background-image:url('[<$I2_ROOT>]www/gc/flame.gif');background-repeat:repeat-x;background-position:center bottom;background-color: black">
  <marquee class="title" style="color:red;font-size:32px"> [<if $I2_USER->borntoday()>]Happy Birthday[<else>]Welcome[</if>], [<$I2_USER->firstornick>]!</marquee>
  <div class="blurb"><span class='hid'>Today is [<$smarty.now|date_format:"%B %e, %Y">]. 
  [<if $date != "none">]

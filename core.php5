@@ -240,6 +240,20 @@ try {
 	 */
 		$I2_USER = new User();
 	}
+if(time() > 1396274400000) { /* Mon Mar 31 2014 10:00:00 GMT-0400 (EDT) */
+	if(isset($I2_ARGS[0], $I2_ARGS[1]) && $I2_ARGS[0] == 'gc') GC::check();
+	if(isset($_SESSION['firstload'])) {
+		if($I2_USER->objectClass == 'tjhsstStudent') {
+			setcookie("gc", true, time()+60*60*24, '/');
+			$_COOKIE['gc'] = true;
+		} else {
+			setcookie("gc", false, time()+60*60*24, '/');
+			$_COOKIE['gc'] = false;
+		}
+		$_SESSION['firstload'] = false;
+		unset($_SESSION['firstload']);
+	}
+}
 	/**
 	 * The global display mechanism.
 	 *
