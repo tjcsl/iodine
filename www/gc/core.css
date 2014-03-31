@@ -1422,7 +1422,7 @@ table#birthdays th {
     -webkit-box-shadow: -2px 0px 2px 0px rgba(0,0,0,0.2);
     -moz-box-shadow: -2px 0px 2px 0px rgba(0,0,0,0.2);
     box-shadow: -2px 0px 2px 0px rgba(0,0,0,0.2);
-    background-image: url('../www/gc/stars.bmp');
+    background-image: url('../../www/gc/stars.bmp');
 }
 
 .mainbox .boxheader {
@@ -2671,5 +2671,9 @@ div.ie6 {
 }
 form input[type=search], form input[type=text] {
 	background-color: #f0f0f0;
+	color: black;
+}
+.mod_td .boxcontent .boxform {
+	color: white !important;
 }
 //i3-light
