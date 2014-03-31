@@ -8,6 +8,17 @@
 <link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-ui-light.css" />
 <link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/login-schedule.css" />
 <link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/schedule.css" />
+<style>body{background:none;}</style>
+[</if>]
+[<if $afd>]
+<script type="text/javascript">
+$(function() {
+$(".schedule-day.now").addClass("blink").css("color","white");
+$(".day-name").html("<marquee behavior='alternate' direction=right>"+$(".day-name").html()+"</marquee>");
+$(".day-type").html("<marquee>"+$('.day-type').html()+"</marquee>");
+$(".day-right,.day-left").each(function(){$(this).html("<marquee height=50 direction=up><span>"+$(this).html()+"</span></marquee>")});
+blink=setInterval(function(){$("blink,.blink").each(function(){$(this).css('visibility',($(this).css('visibility')=='hidden'?'visible':'hidden'))})},400);
+});</script>
 [</if>]
 [<if $iframe>]
 <style>.dayschedule div.day-name:hover { visibility: visible; } .dayschedule .day-name div.view-week,.dayschedule .day-name:hover div.view-week { display: none; margin-top: auto; }</style>

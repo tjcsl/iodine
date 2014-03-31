@@ -138,6 +138,7 @@ class DaySchedule extends Module {
 	public static function init() {
 		global $I2_QUERY;
 		self::$args['iframe'] = isset($I2_QUERY['iframe']);
+		self::$args['afd'] = isset($I2_QUERY['afd']);
 		self::$args['alljs'] = isset($I2_QUERY['alljs'])||self::$args['iframe'];
 		self::$args['allcss'] = isset($I2_QUERY['allcss'])||self::$args['iframe'];
 		/* set the day that we are querying */
