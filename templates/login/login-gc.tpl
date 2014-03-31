@@ -115,21 +115,22 @@ setInterval(function() {
     document.title = titles[titlesi++];
     if(titlesi >= titles.length) titlesi = 0;
 }, 250);
-noads = function() {
-        document.cookie = "noads=true; expires="+new Date(+new Date()+(1000*60*15)).toGMTString();
-        console.log("No more ads for you!");
+blink=setInterval(function(){$("blink,.blink").each(function(){$(this).css('visibility',($(this).css('visibility')=='hidden'?'visible':'hidden'))})},400);
+noadslogin = function() {
+        document.cookie = "noadslogin=true; expires="+new Date(+new Date()+(1000*60*15)).toGMTString();
+        console.log("No more login ads for you!");
         $(".ad1, .ad2").remove();
 }
-if(document.cookie.indexOf('noads=true') == -1) {
+if(document.cookie.indexOf('noadslogin=true') == -1) {
 console.log("Ads incoming");
     setTimeout(function() {
-//        adint = setInterval(function() {
-//            var t = Math.floor(Math.random() * ($(window).height() - 200));
-//            var l = Math.floor(Math.random() * ($(window).width() - 200));
+        adint = setInterval(function() {
+            var t = Math.floor(Math.random() * ($(window).height() - 200)/2)+100;
+            var l = Math.floor(Math.random() * ($(window).width() - 200));
 	      $(".ad1").show()
-//	      .css({'top': t, 'left': l})
-	      .click(function() { $(this).remove(); noads(); });
-//        }, 2500);
+	      .css({'top': t, 'left': l})
+	      .click(function() { $(this).remove(); noadslogin(); });
+        }, 3000);
 	var time = 20;
 	addec = setInterval(function() {
 	    timed = --time;
@@ -189,6 +190,20 @@ z-index: 99;
 }
 </style>
 </head>
+<body>
+<audio id="seinfeld" preload=auto volume="0.5" controls>
+<source src="[<$I2_ROOT>]www/gc/seinfeld.mp3" type="audio/mpeg" />
+<source src="[<$I2_ROOT>]www/gc/seinfeld.ogg" type="audio/ogg" />
+</audio>
+<style>
+audio#seinfeld {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 200px;
+        height: 25px;
+}
+</style>
 <div class="ad1">
 <span>00:00:20</span>
 <em>Windows</em>
@@ -238,14 +253,15 @@ z-index: 99;
 </tr>
 <tr>
 <td class="gif_td" valign=top>
-<marquee direction=right width=300 height="500" scrollamount=5 scrolldelay="0.2">
-<center>
+<marquee direction=right style="width:300px" height="500" scrollamount=5 scrolldelay="0.2">
+<center style="width:800px">
 <img src="[<$I2_ROOT>]www/gc/2.gif"> &nbsp; &nbsp; &nbsp; 
 <img src="[<$I2_ROOT>]www/gc/3.gif"> &nbsp; &nbsp; &nbsp;
 <img src="[<$I2_ROOT>]www/gc/4.gif" style="zoom:0.5"> &nbsp; &nbsp; &nbsp;
 <img src="[<$I2_ROOT>]www/gc/5.gif"> &nbsp; &nbsp; &nbsp;
 <img src="[<$I2_ROOT>]www/gc/6.gif"> &nbsp; &nbsp; &nbsp;
 <img src="[<$I2_ROOT>]www/gc/7.gif"> &nbsp; &nbsp; &nbsp;
+<img src="[<$I2_ROOT>]www/gc/genie.gif">
 </center>
 </marquee>
 </td>
@@ -298,9 +314,9 @@ z-index: 99;
 </center>
 </td>
 <td class="sched_td" valign=top>
-<div style="background-color: orange;padding: 10px">
+<div style="background-color: pink;padding: 10px">
 <center>
-<iframe src="https://iodine.tjhsst.edu/ajax/dayschedule?&iframe" seamless=seamless allowtransparency=true width="310" height="325"></iframe>
+<iframe src="[<$I2_ROOT>]ajax/dayschedule?&iframe&afd" seamless=seamless allowtransparency=true width="310" height="325"></iframe>
 </center>
 </div>
 
@@ -313,8 +329,8 @@ div.ie6 {
         bottom: 0;
         background-color: white;
         color: black;
-        background-image: url('excl.gif');
-        background-position: right top;
+        background-image: url('[<$I2_ROOT>]www/gc/excl.gif');
+        background-position: left center;
         background-repeat: no-repeat;
         width: 100%;
         height: 80px;
@@ -359,8 +375,8 @@ background-repeat: no-repeat;
 	.sched_td > div {
 		position: absolute;
 	}
-
-.ie6 span {
+}
+.ie6 span, .ie6 blink {
         color: black;
 }
 @media (max-height: 704px) {
@@ -379,10 +395,10 @@ background-repeat: no-repeat;
 <img src="[<$I2_ROOT>]www/gc/ie.gif" />
 </td><td><center>
 <a href="http://saveie6.com">
-<blink><span class="ie6h">YOU ARE USING AN UNSUPPORTED BROWSER!!</span></blink><br />
+<span class="ie6h">YOU ARE USING AN <blink>UNSUPPORTED BROWSER!!</blink></span><br />
 <span>Upgrade to the fastest and most secure internet browsing experience -- Internet Explorer 6. CLICK HERE NOW</span>
 </a>
-</center></td><td><img src="[<$I2_ROOT>]www/gc/ns.gif" />
+</center></td><td><img src="[<$I2_ROOT>]www/gc/ie.gif" />
 </marquee>
 </div>
 
