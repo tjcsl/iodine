@@ -284,7 +284,7 @@ audio#seinfeld {
         <center>
         <b>USERNAME</b> <input name="login_username"><br /></center>
     </td></tr><tr><td>
-        <center><b>PASSWORD <img src="[<$I2_ROOT>]www/gc/new.gif" /></b> <input name="login_password" type="password" />
+        <center><b>PASSWORD <img src="[<$I2_ROOT>]www/gc/new.gif" class=blink /></b> <input name="login_password" type="password" />
         </center>
     </td></tr><tr><td>
     <center>

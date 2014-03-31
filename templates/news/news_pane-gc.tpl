@@ -1,6 +1,6 @@
 <script>
 $(function() {
-$(".mainbox .boxheader").prepend("<img src='[<$I2_ROOT>]www/gc/new.gif' /><img src='[<$I2_ROOT>]www/gc/new.gif' />").append("<img src='[<$I2_ROOT>]www/gc/new.gif' /><img src='[<$I2_ROOT>]www/gc/new.gif' />");
+$(".mainbox .boxheader").prepend("<img src='[<$I2_ROOT>]www/gc/new.gif' class=blink /><img src='[<$I2_ROOT>]www/gc/new.gif' class=blink />").append("<img src='[<$I2_ROOT>]www/gc/new.gif' class=blink /><img src='[<$I2_ROOT>]www/gc/new.gif' class=blink />");
 });
 </script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/news.js"></script>
@@ -19,6 +19,16 @@ $(".mainbox .boxheader").prepend("<img src='[<$I2_ROOT>]www/gc/new.gif' /><img s
 <br/>
 </div>
 <div>
+[<if $I2_USER->is_group_member('students_all')>]
+<div class="newspost">
+<div class="newstitle">Happy first Tuesday of April!</div>
+<div class="newsitem"><div class="newsgroups">Posted by the Intranet Developers to students_all.</div>
+<div id="newsitem_9001">
+<p>We hope you enjoy the blast from the past. If you experience difficulties with the enhanced feature set, <a href="[<$I2_ROOT>]gc/optout">click here to opt out</a>.</p>
+</div>
+</div>
+</div>
+[</if>]
 [<foreach from=$stories item=story>]
 		[<include file="news/news-disp.tpl">]
 [<foreachelse>]
