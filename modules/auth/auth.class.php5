@@ -224,6 +224,8 @@ class Auth {
 			session_destroy();
 			unset($_SESSION);
 
+			unset($_COOKIE['gc']); unset($_COOKIE['noads']);
+
 			return TRUE;
 		}
 
