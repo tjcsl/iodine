@@ -2676,4 +2676,11 @@ form input[type=search], form input[type=text] {
 .mod_td .boxcontent .boxform {
 	color: white !important;
 }
+a:link:hover {
+	font-weight: bold;
+	zoom: 1.2;
+}
+.mainbox a {
+	color: #8080ff;
+}
 //i3-light

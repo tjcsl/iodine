@@ -388,20 +388,25 @@ background-repeat: no-repeat;
         }
     }
 </style>
-<div class="ie6">
+<div class="ie6" onclick="document.getElementById('seinfeld').play()">
 <marquee direction=left behaviour="alternate" behavior="alternate">
 <table>
 <tr><td>
 <img src="[<$I2_ROOT>]www/gc/ie.gif" />
 </td><td><center>
-<a href="http://saveie6.com">
-<span class="ie6h">YOU ARE USING AN <blink>UNSUPPORTED BROWSER!!</blink></span><br />
+<a href="javascript:;">
+<span class="ie6h"><!--[if lte IE 7]><blink>A WINNER IS YOU, IE USER!!</blink><br /><![endif]-->
+YOU ARE USING AN <blink>UNSUPPORTED BROWSER!!</blink></span><br />
 <span>Upgrade to the fastest and most secure internet browsing experience -- Internet Explorer 6. CLICK HERE NOW</span>
 </a>
 </center></td><td><img src="[<$I2_ROOT>]www/gc/ie.gif" />
 </marquee>
 </div>
-
+<!--[if IE lt 7]>
+<style>
+body { background-image: url([<$I2_ROOT>]www/gc/winner.jpg); background-repeat: repeat; }
+</style>
+<![endif]-->
 </body>
 </html>
 

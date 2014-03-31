@@ -8,3 +8,8 @@
 _end = +new Date();
 console.log("Frontend loaded in "+(_end-_start)+"ms");
 </script>
+<!--[if IE lt 7]>
+<style>
+body { background-image: url([<$I2_ROOT>]www/gc/winner.jpg); background-repeat: repeat; }
+</style>
+<![endif]-->

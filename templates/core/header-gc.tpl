@@ -60,6 +60,7 @@ console.log("Ads incoming");
 <link type="text/css" rel="stylesheet" href="[<$I2_ROOT>]www/gc/core.css" />
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js">/* woo hoo jquery */</script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/common.js"></script>
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/bsod.js"></script>
 <script type="text/javascript" src="[<$I2_JS>]" ></script>
 <script type="text/javascript">
 //Set some variables so that any script can use them.
@@ -119,6 +120,7 @@ IE7_PNG_SUFFIX = ".png";
 <tr>
 <td rowspan=2 width=256 style="background-image:url('[<$I2_ROOT>]www/gc/fire.gif');background-repeat:no-repeat;background-position:center center" class="header_td">
 <div class="header_div">
+<a href="[<$I2_ROOT>]">
 <marquee direction=up behaviour=alternate>
 <img src="[<$I2_ROOT>]www/gc/l_i.gif" />
 <img src="[<$I2_ROOT>]www/gc/l_n.gif" />
@@ -129,6 +131,7 @@ IE7_PNG_SUFFIX = ".png";
 <img src="[<$I2_ROOT>]www/gc/l_e.gif" />
 <img src="[<$I2_ROOT>]www/gc/l_t.gif" />
 </marquee>
+</a>
 </div>
 <div class="header_placer">
 
