@@ -19,7 +19,7 @@ function menu_onmouseout() {
 }
 function menuitem_onmouseover(div_id,not_1,not_2,not_3,not_4,not_5) {
 }
-function menuitem_onmouseout(div_id) {i
+function menuitem_onmouseout(div_id) {
 }
 /*function shrinkBlurb() { // remove the date from the header blurb
 	if(window.innerWidth < 575) {
