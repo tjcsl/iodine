@@ -15,14 +15,15 @@ $(".mainbox .boxheader").prepend("<img src='[<$I2_ROOT>]www/gc/new.gif' class=bl
 [<if !$newsadmin >]
 	<a href="[<$I2_ROOT>]news/request">Submit a news article for posting</a>
 [</if>]
-<span style="float:right; margin-right:3px;"><a href="http://www.twitter.com/TJIntranet" target="_blank"><img src="[<$I2_ROOT>]www/pics/twitter_logo.png" width="15" alt="Follow on Twitter" title="Follow on Twitter" style="position: relative; top: 3px" /></a><img src="[<$I2_ROOT>]www/pics/rss_logo.png" width="15" alt="Feeds:" title="Feeds" style="position: relative; top: 3px" /> <a href="[<$I2_ROOT>]feeds/rss">RSS</a>&middot;<a href="[<$I2_ROOT>]feeds/atom">ATOM</a>
+
+<span style="float:right; margin-right:3px;">
+<span>
+<a href="http://www.twitter.com/TJIntranet" target="_blank"><img src="[<$I2_ROOT>]www/pics/twitter_logo.png" width="15" alt="Follow on Twitter" title="Follow on Twitter" style="position: relative; top: 3px" /></a><img src="[<$I2_ROOT>]www/pics/rss_logo.png" width="15" alt="Feeds:" title="Feeds" style="position: relative; top: 3px" /> <a href="[<$I2_ROOT>]feeds/rss">RSS</a>&middot;<a href="[<$I2_ROOT>]feeds/atom">ATOM</a></span>
 <br>
 <a href="#" id="big-red-button">
-<img src="[<$I2_ROOT>]/www/pics/big_red_button.png" width="100" height="100">
+    <img src="[<$I2_ROOT>]/www/pics/big_red_button.png" width="100px" height="100px">
 </a>
-
 </span>
-<br/>
 </div>
 <div>
 [<if $I2_USER->is_group_member('students_all')>]

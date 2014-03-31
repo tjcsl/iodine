@@ -62,6 +62,8 @@ console.log("Ads incoming");
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/common.js"></script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/bsod.js"></script>
 <script type="text/javascript" src="[<$I2_JS>]" ></script>
+<script type="text/javascript" src="[<$I2_ROOT>]www/js/af.js"></script>
+
 <script type="text/javascript">
 //Set some variables so that any script can use them.
 var i2root="[<$I2_ROOT>]";
@@ -215,7 +217,7 @@ IE7_PNG_SUFFIX = ".png";
 		<form action="[<$I2_ROOT>]studentdirectory/search/" method="get" id="form" style="margin: 1px 0px;">
 			<input type="hidden" name="op" value="search" />
 			<div>
-				<input type="search" name="q" id="query" results="0" placeholder="Search the directory" />
+				<input type="search" name="q" id="query" results="0" style="color: black; background-color: yellow;" placeholder="Search the directory" />
 			</div>
 			<button type="submit" id="studentsearchbtn">Search</button>
 		</form>
