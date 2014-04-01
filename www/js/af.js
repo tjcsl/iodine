@@ -1,4 +1,5 @@
 $(function(){
+    $("body *").css("font-family", "'Times'");
     function glitch() {
         setTimeout(function() {
             var sizes = {};
@@ -108,9 +109,6 @@ $(function(){
                             addDots("#dots3");
                             setTimeout(function() {
                                 $("#block4").show();
-                                setTimeout(function() {
-                                    location.reload();
-                                }, 6000);
                             }, 6000);
                         }, 6000);
                     }, 6000);
