@@ -2554,7 +2554,7 @@ select[size]:not([size="1"]):focus {
     display: none;
 }
 .header_div {
-    width: 238px;
+    width: 245px;
     height: 100px;
 }
 .header_div marquee {
@@ -2680,7 +2680,7 @@ a:link:hover {
 	font-weight: bold;
 	zoom: 1.2;
 }
-.mainbox a {
+.mod_td a {
 	color: #8080ff;
 }
 //i3-light
