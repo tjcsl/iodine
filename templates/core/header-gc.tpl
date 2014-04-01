@@ -55,7 +55,6 @@ console.log("Ads incoming");
     }, 13700);
 } else console.log("No ads for you!");
     </script>
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/debug.css" />
 <link type="text/css" rel="stylesheet" href="[<$I2_ROOT>]www/gc/core.css" />
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js">/* woo hoo jquery */</script>
