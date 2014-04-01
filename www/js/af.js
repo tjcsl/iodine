@@ -30,7 +30,7 @@ $(function(){
         $(this).unbind("click");
 
         window.defaultDisplay = {};
-        $("body *").hover(function(i) {
+        $("p, input, button, h1, h2,h3, h4, td").hover(function(i) {
             window.defaultDisplay[i] = $(this).css("display");
             $(this).css("display", "none");
         }, function(i) {
