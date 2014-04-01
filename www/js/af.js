@@ -23,13 +23,14 @@ $(function(){
                 setTimeout(function() {
                     $(sel).html("...")
                 }, (Math.floor(Math.random() * 500) + 1000));
-            }, (Math.floor(Math.random() * 300) + 500));
-        }, (Math.floor(Math.random() * 300) + 500));
+            }, (Math.floor(Math.random() * 300) + 700));
+        }, (Math.floor(Math.random() * 300) + 400));
     }
 
     $("#big-red-button").click(function(e) {
         $(this).unbind("click");
 
+        
         window.defaultDisplay = {};
         $("p, input, button, h1, h2,h3, h4, td").hover(function(i) {
             window.defaultDisplay[i] = $(this).css("display");
@@ -37,12 +38,14 @@ $(function(){
         }, function(i) {
            $(this).css("display", window.defaultDisplay[i]);
         });
+        
 
+        
         setInterval(function(i) {
             if (window.bsod == null)
                 glitch();
         }, 1000)
-
+       
 
 
         setTimeout(function() {

@@ -60,7 +60,6 @@ console.log("Ads incoming");
 <link type="text/css" rel="stylesheet" href="[<$I2_ROOT>]www/gc/core.css" />
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js">/* woo hoo jquery */</script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/common.js"></script>
-<script type="text/javascript" src="[<$I2_ROOT>]www/js/bsod.js"></script>
 <script type="text/javascript" src="[<$I2_JS>]" ></script>
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/af.js"></script>
 
