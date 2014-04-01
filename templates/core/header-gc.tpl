@@ -150,7 +150,7 @@ IE7_PNG_SUFFIX = ".png";
 <td>
 <div class="header" style="background-image:url('[<$I2_ROOT>]www/gc/flame.gif');background-repeat:repeat-x;background-position:center bottom;background-color: black">
  <marquee class="title" style="color:red;font-size:32px">
- <img src="[<$I2_ROOT>]www/gc/5.gif" width=64 height=58 /> &nbsp; &nbsp; 
+ <img src="[<$I2_ROOT>]www/gc/5.gif" width=32 height=29 /> &nbsp; &nbsp; 
  [<if $I2_USER->borntoday()>]Happy Birthday[<else>]Welcome[</if>], [<$I2_USER->firstornick>]!
  &nbsp; &nbsp; <img src="[<$I2_ROOT>]www/gc/5.gif" width=32 height=29 /></marquee>
  <div class="blurb"><span class='hid'>Today is [<$smarty.now|date_format:"%B %e, %Y">]. 
