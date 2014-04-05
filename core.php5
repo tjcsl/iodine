@@ -240,6 +240,8 @@ try {
 	 */
 		$I2_USER = new User();
 	}
+/*
+	// APRIL FOOLS 2014
 	if(isset($I2_ARGS[0], $I2_ARGS[1]) && $I2_ARGS[0] == 'gc') GC::check();
 	if(isset($_SESSION['firstload'])) {
 		if($I2_USER->objectClass == 'tjhsstStudent') {
@@ -253,6 +255,7 @@ try {
 		$_SESSION['firstload'] = false;
 		unset($_SESSION['firstload']);
 	}
+*/
 	/**
 	 * The global display mechanism.
 	 *
