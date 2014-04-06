@@ -31,7 +31,10 @@ class Pictures extends Module {
 		}
 
 		if($photo = $user->$photoname) {
-            $filename = "/tmp/giftmp/".md5($user->uid."_".$photoname);
+			header("Content-type: image/jpeg");
+			echo $photo;
+/*
+	    $filename = "/tmp/giftmp/".md5($user->uid."_".$photoname);
             file_put_contents($filename, $photo);
             
             exec("/usr/bin/python ".$I2_FS_ROOT."bin/moarjpeg.py ".$filename." ".$I2_FS_ROOT."www/pics/star.png");
@@ -39,9 +42,10 @@ class Pictures extends Module {
             readfile($filename.".gif");
             unlink($filename);
             unlink($filename.".gif");
+*/
 		} else {
-			header("Content-type: image/gif");
-			readfile($I2_FS_ROOT . 'www/pics/bomb.gif');
+			header("Content-type: image/png");
+			readfile($I2_FS_ROOT . 'www/pics/bomb.png'); //bomb.gif');
 		}
 	}
 	
