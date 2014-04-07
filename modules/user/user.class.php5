@@ -1499,6 +1499,24 @@ class User {
 		//print_r(self::$cache);
 		return true;
 	}
+	public static function uid_to_username($uid) {
+		$username = array_search($uid, self::$usernametouid);
+		if($username === false) {
+			self::cache_users(array($uid));
+			return array_search($uid, self::$usernametouid);
+		} else return $username;
+	}
+	public static function rawdata($uid, $ldapobj = null) {
+		global $I2_LDAP;
+		if($ldapobj == null) $l = LDAP::get_user_dn();
+		$ret = [];
+		$info = $I2_LDAP->search($l,"iodineUidNumber=$uid")->fetch_array(Result::ASSOC);
+                return $info;
+		if ($info) {
+             		foreach ($info as $key=>$val) $ret[strtolower($key)] = $val;
+                        $ret['allset']=True;
+                } return $ret;
+	}
 }
 
 ?>
