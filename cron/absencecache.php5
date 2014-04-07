@@ -22,7 +22,7 @@ function fix($uid, $abs) {
 	$I2_SQL->query("INSERT INTO eighth_absences_cache VALUES(".(int)$uid.", ".(int)$abs.");");
 }
 
-$users = $I2_SQL->query("SELECT userid, COUNT(DISTINCT bid) AS absences, eighth_absences_cache.absences AS cached FROM eighth_absentees INNER JOIN eighth_absences_cache USING (userid) WHERE 1 GROUP BY userid;")->fetch_all_arrays();
+$users = $I2_SQL->query("SELECT userid, COUNT(DISTINCT bid) AS absences, eighth_absences_cache.absences AS cached FROM eighth_absentees LEFT JOIN eighth_absences_cache USING (userid) WHERE 1 GROUP BY userid;")->fetch_all_arrays();
 if(isset($argv,$argv[1]) && $argv[1] == "fix") { echo "ADDING CURRENT ABSENCES TO DATABASE. TO STOP HIT CTRL-C NOW."; sleep(3); }
 $n=0;
 foreach($users as $user) {
