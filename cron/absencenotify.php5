@@ -9,8 +9,11 @@
 $em_title = "[Intranet] You recieved an eighth period absence";
 $em_msg = <<<EOF
 <p>At of the time this message was sent, you, %NAME%, have %NUM% eighth period absence%NUMS%:</p>
+
 %DESC%
+
 <p>To clear an absence print the <a href="%ROOT%/eighth/vcp_schedule/absences/uid/%UID%">absence information page on Intranet</a>. Have the teacher listed sign next to the activity to indicate that you were present. If you went to another activity, that teacher will need to sign as well as indicating what activity you attended as an alternative to the one that shows up in intranet. Bring the signed page to the 8th period office within two weeks of an absence to clear it. </p>
+
 <p>If you have any questions about this process, contact the Eighth Period Office.</p>
 <br />
 <br />
@@ -33,10 +36,12 @@ define('MEMCACHE_DEFAULT_TIMEOUT', strtotime("1 hour"));
 $I2_ERR = new Error();
 $I2_SQL = new MySQL(); $I2_CACHE = new Cache();
 $I2_LDAP= LDAP::get_generic_bind();
+$ignoreuid = 10000;
 function ignore_userid($uid) {
-	return $uid < 1000;
+	global $ignoreuid;
+	return $uid < $ignoreuid;
 }
-$users = $I2_SQL->query("SELECT eighth_absentees.*, COUNT(DISTINCT eighth_absentees.bid) AS absences, eighth_absences_cache.absences AS cached FROM eighth_absentees LEFT OUTER JOIN eighth_absences_cache ON (eighth_absentees.userid=eighth_absences_cache.userid) WHERE eighth_absentees.userid > 10000 GROUP BY eighth_absentees.userid")->fetch_all_arrays();
+$users = $I2_SQL->query("SELECT eighth_absentees.*, COUNT(DISTINCT eighth_absentees.bid) AS absences, eighth_absences_cache.absences AS cached FROM eighth_absentees LEFT OUTER JOIN eighth_absences_cache ON (eighth_absentees.userid=eighth_absences_cache.userid) WHERE eighth_absentees.userid > ".$ignoreuid." GROUP BY eighth_absentees.userid")->fetch_all_arrays();
 echo "* Got SQL\n";
 $emailed = [];
 $toemail = [];
@@ -48,20 +53,24 @@ foreach($users as $user) {
 			$I2_USER = $userobj = new User($user['userid']);
 			$userdata = User::rawdata($user['userid'], "ou=people,dc=tjhsst,dc=edu");
 			$acts = EighthActivity::id_to_Activity(EighthSchedule::get_absences($user['userid']));
-			$desc = "<table><tr><th>Date</th><th>Block</th><th>Activity ID</th><th>Sponsor(s)</th></tr>";
+			$desc = "<table><tr><th>Date</th>\t<th>Block</th>\t<th>Activity</th>\t<th>Sponsor ID</th>\t</tr>\n";
 			foreach($acts as $act) {
-				$desctmp = "<tr><td>%DATE%</td><td>%BLOCK%</td><td>%AID%</td><td>%SPONSOR%</td></tr>";
+				$desctmp = "<tr><td>%DATE%</td>\t<td>%BLOCK%</td>\t<td>%AID%</td>\t<td>%SPONSOR%</td></tr>\n";
+				try {
+				$sp = EighthSponsor::id_to_sponsor($act->block_sponsors_name_short);
+				$spn = $sp->name;
+				} catch(Exception $err){$spn = $act->block_sponsors_name_short;}
 				$desc.=str_replace(array(
 					"%DATE%", "%BLOCK%", "%AID%", "%SPONSOR%"
 					), array(
-						$act->block->date, $act->block->block, $act->name_r, $act->aid, $act->block_sponsors_name_short
+						$act->block->date, $act->block->block, $act->name_r, $act->aid, $spn
 					), $desctmp);
 			}
-			$desc.="</table>";
+			$desc.="</table>\n";
 			$tmpmsg = str_replace(array(
 				"%NAME%", "%NUM%", "%NUMS%", "%DESC%", "%UID%", "%ROOT%"
 			), array(
-				$userobj->cn, $user['absences'], ($user['absences']>1?'s':''), $desc, $user['userid'], "https://iodine.tjhsst.edu/~2016jwoglom/i2/"
+				$userobj->cn, $user['absences'], ($user['absences']>1?'s':''), $desc, $user['userid'], "https://iodine.tjhsst.edu/"
 			), $em_msg);
 			$toemail[] = [$userdata['mail'], $em_title, $tmpmsg];
 			echo "Going to email ".(is_array($userdata['mail'])?$userdata['mail'][0]:$userdata['mail']);
