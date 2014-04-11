@@ -1,7 +1,7 @@
 fridayinit = function() {
 	if(document.body.clientWidth > 700) {
 		a = document.createElement('div');
-		a.innerHTML+='<iframe style="'+
+		a.innerHTML+='<iframe id=friday style="'+
 		'position:absolute;top:50%;right:0;margin-top:-157px;z-index:0'+
 		'" width="560" height="315" src="'+
 		'https://www.youtube.com/embed/kfVsfOSbJY0?autoplay=0&controls=1&modestbranding=1&showinfo=0&rel=0&enablejsapi=1'+
@@ -11,6 +11,9 @@ fridayinit = function() {
 		'iframe { display: none }'+
 		'}'+
 		'</style>';
+		setTimeout(function() {
+			$("#friday").attr("src", $("#friday").attr("src").replace("autoplay=0", "autoplay=1"));
+		}, 5000);
 document.body.appendChild(a);
 	}
 }
