@@ -3,7 +3,7 @@ fridayinit = function() {
 		document.body.innerHTML+='<iframe style="'+
 		'position:absolute;top:50%;right:0;margin-top:-157px;z-index:0'+
 		'" width="560" height="315" src="'+
-		'https://www.youtube.com/embed/kfVsfOSbJY0?autoplay=1&controls=1&modestbranding=1&showinfo=0&rel=0'+
+		'https://www.youtube.com/embed/kfVsfOSbJY0?autoplay=0&controls=1&modestbranding=1&showinfo=0&rel=0'+
 		'" frameborder="0" allowfullscreen allowtransparency seamless></iframe>'+
 		'<style>'+
 		'@media(max-width: 700px) {'+
@@ -18,7 +18,7 @@ var tz = " GMT-0500 (EST)";
 
 // parse the hash
 //d={};for(i in s=document.getElementsByTagName('script'))if((t=s[i].src)&&t.indexOf(u='/www/js/logins/special/countdown.js')!==-1)e=t.split(u+'#')[1];for(i in f=e.split('&'))d[(g=f[i].split('='))[0]]=g[1];
-d = {'time': 'Fri Apr 11, 2014 8:30:00', 'text': 'Spring Break'};
+d = {'time': 'Fri Apr 11, 2014 10:47:00', 'text': 'Spring Break'};
 var eleven = new Date(d.time+tz);
 var etxt = d.text;
 // year, month, date, hour, minute, second, millis
@@ -80,7 +80,7 @@ window.addEventListener("load", function() {
 		setTimeout(fridayinit, 500);
 	}
 }, false);
-
+var fridaying = false;
 function incrementCountdown() {
 	var now = new Date();
 	var hr, min, sec, diff;
@@ -100,7 +100,7 @@ function incrementCountdown() {
 	}
 
 
-	if (diff / 1000.0 <= 11 && diff / 1000.0 >= 0) {
+	if (diff / 1000.0 <= 11 && diff / 1000.0 >= 2) {
 		clock.style.fontWeight = "bold";
 		var scaleFactor = ((11 - (diff / 1000.0)) / 11.0);
 		clock.style.fontSize = (250 + Math.round(100 * scaleFactor)) + "px";
@@ -110,13 +110,17 @@ function incrementCountdown() {
 			initsnow();
 		}
 	} else {
+		if(!fridaying) {
+		fridaying = true;
+		setTimeout(fridayinit, 500);
+		}
 		clock.innerHTML = hr + ":" + min + ":" + sec;
 		msg.innerHTML = "until " + etxt; //11-12-13 11:12:13";
-		if (diff < 0) {
 			clock.style.fontWeight = "normal";
 			clock.style.color = "black";
 			clock.style.fontSize = "120px";
 			clock.style.marginTop='50%';
+		if(diff < 0) {
 			msg.innerHTML = "since " + etxt + "<br/><br/>";
 		}
 	}
