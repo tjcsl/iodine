@@ -20,7 +20,7 @@ var tz = " GMT-0500 (EDT)";
 
 // parse the hash
 //d={};for(i in s=document.getElementsByTagName('script'))if((t=s[i].src)&&t.indexOf(u='/www/js/logins/special/countdown.js')!==-1)e=t.split(u+'#')[1];for(i in f=e.split('&'))d[(g=f[i].split('='))[0]]=g[1];
-d = {'time': 'Fri Apr 11, 2014 15:50:00', 'text': 'Spring Break'};
+d = {'time': 'Fri Apr 11, 2014 14:50:00', 'text': 'Spring Break'};
 var eleven = new Date(d.time+tz);
 var etxt = d.text;
 // year, month, date, hour, minute, second, millis
