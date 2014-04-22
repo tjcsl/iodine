@@ -406,6 +406,7 @@ class Auth {
 		//		$disp->disp('login-gc.tpl', $this->template_args);
 		//	} else
 			global $I2_QUERY;
+				$this->template_args['jlam'] = isset($I2_QUERY['jlam']);
 				if(isset($I2_QUERY['customtheme']) && strpos($I2_QUERY['customtheme'],".")===false && $disp->get_template("login/".$I2_QUERY['customtheme'].".tpl") !== NULL)
 					$disp->disp($I2_QUERY['customtheme'].'.tpl', $this->template_args);
 				else 

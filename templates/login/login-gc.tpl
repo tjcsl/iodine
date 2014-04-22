@@ -191,12 +191,15 @@ z-index: 99;
 </style>
 </head>
 <body>
-<audio id="seinfeld" preload=auto volume="0.5" controls>
+<div id="seinfeld-cont">
+<audio id="seinfeld" preload=auto volume="0.5" controls[<if $jlam>] autoplay=1[</if>]>
 <source src="[<$I2_ROOT>]www/gc/seinfeld.mp3" type="audio/mpeg" />
 <source src="[<$I2_ROOT>]www/gc/seinfeld.ogg" type="audio/ogg" />
-</audio>
+</audio><br />
+<a href="?&customtheme=login-gc&jlam=1" style="color:red">AUTOPLAY!!!</a>
+</div>
 <style>
-audio#seinfeld {
+#seinfeld-cont {
         position: absolute;
         top: 0;
         right: 0;
@@ -409,4 +412,3 @@ body { background-image: url([<$I2_ROOT>]www/gc/winner.jpg); background-repeat: 
 <![endif]-->
 </body>
 </html>
-
