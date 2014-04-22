@@ -192,11 +192,10 @@ z-index: 99;
 </head>
 <body>
 <div id="seinfeld-cont">
-<audio id="seinfeld" preload=auto volume="0.5" controls[<if $jlam>] autoplay=1[</if>]>
+<audio id="seinfeld" preload=auto volume="0.5" controls autoplay=1 loop=1>
 <source src="[<$I2_ROOT>]www/gc/seinfeld.mp3" type="audio/mpeg" />
 <source src="[<$I2_ROOT>]www/gc/seinfeld.ogg" type="audio/ogg" />
-</audio><br />
-<a href="?&customtheme=login-gc&jlam=1" style="color:red">AUTOPLAY!!!</a>
+</audio>
 </div>
 <style>
 #seinfeld-cont {
