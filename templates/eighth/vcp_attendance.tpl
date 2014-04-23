@@ -29,6 +29,7 @@
 		[</foreach>]
 	</table>
 </div>
+<!--
 <div id="eighth_call_ins">
 	<h2>Call-ins</h2>
 	<p>Enter the Name or Student ID# of a student to call-in. Please note that call-ins cannot override Stickies.</p>
@@ -37,6 +38,7 @@
 		<input type="submit" value="Call in Student"/>
 	</form>
 </div>
+-->
 </td><td style="vertical-align: top;">
 <div style="font-family: monospace;">
 Activity:&nbsp;[<$act->name>], ID [<$act->aid>]<br />

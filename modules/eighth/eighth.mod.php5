@@ -2757,6 +2757,8 @@ class Eighth extends Module {
 				$this->template_args['aid'] = $this->args['aid'];
 			}
 		}
+		/*Callins are currently disabled*/
+		/*
 		else if($this->op == 'callin') {
 			if (isset($this->args['name_id']) && isset($this->args['bid']) && isset($this->args['aid'])) {
 
@@ -2775,6 +2777,7 @@ class Eighth extends Module {
 			}
 
 		}
+		*/
 		else if($this->op == 'acceptallpasses') {
 			if(isset($this->args['bid']) && isset($this->args['aid'])) {
 
