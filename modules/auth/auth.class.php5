@@ -245,7 +245,11 @@ class Auth {
 			// make sure the user exists in ldap not just kerberos.
 			$ldap = LDAP::get_generic_bind();
 			if ($ldap->search_one(LDAP::get_user_dn(), "iodineUid=$user", 'iodineUidNumber')->fetch_single_value() == NULL) {
-				$this->modauth_loginfailed = 3;
+				if(substr($user, -11) == "@tjhsst.edu") {
+					$this->modauth_loginfailed = 4;
+				} else {
+					$this->modauth_loginfailed = 3;
+				}
 				return FALSE;
 			}
 
