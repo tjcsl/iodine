@@ -82,6 +82,11 @@
 		[<elseif $failed eq 4>]
 		<div class="login_msg" id="login_failed">
 			Your TJ email address[<if $uname>] ([<$uname|escape>])[</if>] is not your username! Remove the @tjhsst.edu suffix.
+		</div>
+		[<elseif $failed eq 5>]
+		<div class="login_msg" id="login_failed">
+			Your account is not yet active for use on Intranet. Patience, young freshman.
+		</div>
 		[<elseif $failed>]
 		<div class="login_msg" id="login_failed">
 			An unidentified error has occurred.  Please contact the Intranetmaster and tell him you received this error message.

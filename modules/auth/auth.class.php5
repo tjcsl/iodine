@@ -250,6 +250,10 @@ class Auth {
 				} else {
 					$this->modauth_loginfailed = 3;
 				}
+				// If it's between April and August, and a user fails logging in with $year+4 (aka new freshman)
+				if(substr($user, 0, 4) == date('Y')+4 && date('n')>=4 && date('n') < 9) {
+					$this->modauth_loginfailed = 5;
+				}
 				return FALSE;
 			}
 
