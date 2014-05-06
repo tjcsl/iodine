@@ -55,6 +55,7 @@
 	</style>
 </head>
 <body class="login">
+[<include file='downtime.tpl'>]
 [<$emerg>]
 	<div class="pane" id="mainPane">
 		<a id="logo" href="[<$I2_ROOT>]" title="TJHSST Intranet">Intranet</a>

@@ -1,3 +1,4 @@
+[<include file='downtime.tpl'>]
 <div class="[<$mainbox_class>]" id="mainbox">
   <div class="boxheader">
   [<if isset($error) && $error>]
