@@ -32,7 +32,12 @@ class EighthSponsor {
 	    } else {
             $bulk = $I2_SQL->query('SELECT * FROM eighth_sponsors')->fetch_all_arrays_keyed("sid", Result::ASSOC);
             self::$cache = $bulk;
-            $this->data = $bulk[$sponsorid];
+            if(isset($bulk[$sponsorid])) {
+	    	$this->data = $bulk[$sponsorid];
+	    } else {
+	    	warn("Sponsor with ID does not exist: $sponsorid");
+		$this->data = array("sid"=>0,"fname"=>"INVALID","lname"=>"INVALID","pickup"=>"","userid"=>"");
+	    }
 	    }
 	}
 
