@@ -133,7 +133,6 @@
             width: 300px;
             height: 70px;
             padding: 10px 0;
-            cursor: pointer;
         }
         .dayschedule-app b {
             font-size: 16px;
@@ -164,7 +163,7 @@
             if(navigator.userAgent.match(/Android/i)) {
                 $(".dayschedule-app").click(function() {
                     location.href = $(".dayschedule-app a").eq(0).attr('href');
-                });
+                }).css("cursor", "pointer");
             } else {
                 $(".dayschedule-app a").html("Download (Android only)");
             }
