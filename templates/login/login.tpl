@@ -125,7 +125,58 @@
 	</div>
 	<div class="pane" id="subPane">
 		[<include file='dayschedule/login.tpl'>]
-		<br /><br />
+		<br />
+        <style>.dayschedule-app {
+            position: fixed;
+            bottom: 0;
+            background-color: yellow;
+            width: 300px;
+            height: 70px;
+            padding: 10px 0;
+            cursor: pointer;
+        }
+        .dayschedule-app b {
+            font-size: 16px;
+            display: block;
+        }
+        .dayschedule-app em {
+            font-size: 18px;
+            font-style: normal;
+        }
+        .dayschedule-app span {
+            font-size: 12px;
+            display: block;
+        }
+        @media (max-width: 645px) {
+            div.dayschedule-app {
+                width: 100%;
+            }
+        }
+        @media (max-height: 450px) {
+            div.dayschedule-app {
+                position: absolute;
+                top: 100%;
+            }
+        }
+        </style>
+        <script type="text/javascript">
+        $(function() {
+            if(navigator.userAgent.match(/Android/i)) {
+                $(".dayschedule-app").click(function() {
+                    location.href = $(".dayschedule-app a").eq(0).attr('href');
+                });
+            } else {
+                $(".dayschedule-app a").html("Download (Android only)");
+            }
+
+        });
+        </script>
+        <div class="dayschedule-app">
+        <b>New: Bell Schedule app for Android</b>
+        <em><a href="https://www.tjhsst.edu/~2016jwoglom/uploads/TJDaySchedule/latest.apk">Download now</a></em>
+        <span>(enable "Unknown Sources")</span>
+        </div>
+        <br />
 		<ul id="links">
 			<li><a href="http://www.tjhsst.edu" target="_blank">TJHSST</a></li>
 			<li><a href="https://webmail.tjhsst.edu" target="_blank">Mail</a></li>
