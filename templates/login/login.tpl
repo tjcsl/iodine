@@ -207,11 +207,11 @@
 		</script>
 		*>]
 	</div>
-<div style="position: absolute;bottom:0;right:0;padding:5px">
+<!--div style="position: absolute;bottom:0;right:0;padding:5px">
 <a href="?&customtheme=login-gc" title="April Fools Day 2014">
 <img src="[<$I2_ROOT>]www/gc/tjold.gif" width="52.5" height="45.5" />
 </a>
-</div>
+</div-->
 	[<* This doesn't work on recent versions of chrome because
 	     it is not in the web store; so why advertise it? *>]
 	<!--script type="text/javascript">
