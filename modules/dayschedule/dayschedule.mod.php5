@@ -300,6 +300,10 @@ class DaySchedule extends Module {
 					)
 				);
 			}
+			if(isset($I2_QUERY['callback'])) {
+				echo $I2_QUERY['callback']."(".json_encode($json).");";
+				die();
+			}
 			echo json_encode($json);
 		} else if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'week') {
 			$week = array();
@@ -443,7 +447,7 @@ class DaySchedule extends Module {
 	private static function find_day_types($arr) {
 		$ret = array();
 		foreach($arr as $item) {
-			if(in_array(trim($item['SUMMARY']), array_keys(self::$summaries))) {
+			if(in_array(trim($item['SUMMARY']), array_keys(self::$summaries)) && isset($item['DTSTART;VALUE=DATE'])) {
 				$day = $item['DTSTART;VALUE=DATE'];
 				$ret[trim($day)] = self::$summaries[trim($item['SUMMARY'])];
 			}
