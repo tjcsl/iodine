@@ -379,6 +379,9 @@ class Newimport extends Module {
 		$file = @fopen($filename, 'r');
 
 		d("Importing data from user data file $filename...",6);
+		// fgetcsv reads a line and parses as CSV
+		// args past are length=0 (autodetect max line length)
+		// and delimiter="\t" for tab-delimiters instead of commas
 		while (list($username, 
 					$StudentID, 
 					$Lastname, 
@@ -395,7 +398,7 @@ class Newimport extends Module {
 					$Couns,
 					$Nickname,
 					$Locker
-				) = fgetcsv($file)) {
+				) = fgetcsv($file, 0, "\t")) {
 			$username = strtolower($username);
 			$newusers[] = $username;
 			$newuserdata[] = array(
@@ -631,7 +634,10 @@ class Newimport extends Module {
 		*/
 		d("Reading from class file: $classfile...", 6);
 		$file = @fopen($classfile,'r');
-		while (list($sectionid,$periodstart,$periodend,$courselen,$othercourselen,$otherothercourselen,$teacherid,$room,$class) = fgetcsv($file)) {
+		// fgetcsv reads a line and parses as CSV
+		// args past are length=0 (autodetect max line length)
+		// and delimiter="\t" for tab-delimiters instead of commas
+		while (list($sectionid,$periodstart,$periodend,$courselen,$othercourselen,$otherothercourselen,$teacherid,$room,$class) = fgetcsv($file, 0, "\t")) {
 			list($classid,) = explode('-',$sectionid);
 			$numclasses++;
 
@@ -673,7 +679,10 @@ class Newimport extends Module {
 		$students = [];
 		d("Reading from schedule file: $schedulefile...", 6);
 		$studentcoursefile = @fopen($schedulefile,'r');
-		while (list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename, $teacherid, $teachername, $term, $room) = fgetcsv($studentcoursefile)) {
+		// fgetcsv reads a line and parses as CSV
+		// args past are length=0 (autodetect max line length)
+		// and delimiter="\t" for tab-delimiters instead of commas
+		while (list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename, $teacherid, $teachername, $term, $room) = fgetcsv($studentcoursefile, 0, "\t"))
 			$class = $ldap->search(LDAP::get_schedule_dn(),"tjhsstSectionId=$sectionone",array('tjhsstSectionId'))->fetch_single_value();
 			if (!$class) {
 				$I2_LOG->log_file('Invalid SectionID '.$sectionone.' for studentid '.$studentid);
