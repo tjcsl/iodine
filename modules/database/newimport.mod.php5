@@ -397,7 +397,6 @@ class Newimport extends Module {
 					$Zip, 
 					$Couns,
 					$Nickname,
-					$Locker
 				) = fgetcsv($file, 0, "\t")) {
 			$username = strtolower($username);
 			$newusers[] = $username;
@@ -583,8 +582,6 @@ class Newimport extends Module {
 		if ($user['mname']) {
 			$usernew['middlename'] = $user['mname'];
 		}
-		$usernew['locker'] = $user['locker'];
-
 		$dn = "iodineUid={$user['username']},ou=people,dc=tjhsst,dc=edu";
 
 		d("Updating user \"{$user['username']}\"...",7);
