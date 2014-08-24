@@ -679,7 +679,7 @@ class Newimport extends Module {
 		// fgetcsv reads a line and parses as CSV
 		// args past are length=0 (autodetect max line length)
 		// and delimiter="\t" for tab-delimiters instead of commas
-		while (list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename, $teacherid, $teachername, $term, $room) = fgetcsv($studentcoursefile, 0, "\t"))
+		while (list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename, $teacherid, $teachername, $term, $room) = fgetcsv($studentcoursefile, 0, "\t")) {
 			$class = $ldap->search(LDAP::get_schedule_dn(),"tjhsstSectionId=$sectionone",array('tjhsstSectionId'))->fetch_single_value();
 			if (!$class) {
 				$I2_LOG->log_file('Invalid SectionID '.$sectionone.' for studentid '.$studentid);
