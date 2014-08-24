@@ -416,7 +416,6 @@ class Newimport extends Module {
 				'zip' => $Zip, 
 				'counselor' => $Couns,
 				'nick' => $Nickname,
-				'locker' => $Locker
 			);
 		}
 		$this->messages[] = count($newusers).' users read from SASI dump file';
