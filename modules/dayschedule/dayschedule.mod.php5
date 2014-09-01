@@ -428,7 +428,7 @@ class DaySchedule extends Module {
 	                    // $icsDates[$key]["BEGIN"] = $subValue;
 	                } else {
 	                    $subValueArr = explode(":", $subValue, 2);
-	                    if(in_array($subValueArr[0], array("DTSTART;VALUE=DATE", "DTEND;VALUE=DATE", "SUMMARY", "CATEGORIES"))) {
+	                    if(in_array($subValueArr[0], array("DTSTART", "DTEND", "DTSTART;VALUE=DATE", "DTEND;VALUE=DATE", "SUMMARY", "CATEGORIES"))) {
 		                    $icsDates[$key][$subValueArr[0]] = $subValueArr[1];
 		                }
 		            }
@@ -447,8 +447,12 @@ class DaySchedule extends Module {
 	private static function find_day_types($arr) {
 		$ret = array();
 		foreach($arr as $item) {
-			if(in_array(trim($item['SUMMARY']), array_keys(self::$summaries)) && isset($item['DTSTART;VALUE=DATE'])) {
-				$day = $item['DTSTART;VALUE=DATE'];
+			if(in_array(trim($item['SUMMARY']), array_keys(self::$summaries))) {
+				if(isset($item['DTSTART;VALUE=DATE'])) {
+					$day = $item['DTSTART;VALUE=DATE'];
+				} else if(isset($item['DTSTART'])) {
+					$day = substr($item['DTSTART'], 0, 8);
+				} else continue;
 				$ret[trim($day)] = self::$summaries[trim($item['SUMMARY'])];
 			}
 		}
