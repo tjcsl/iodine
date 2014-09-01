@@ -108,6 +108,11 @@ class DaySchedule extends Module {
 	private static $dayTypes = array();
 
 	/**
+	* A to-be-filled array containing the summary for each day
+	**/
+	private static $daySummaries = array();
+
+	/**
 	* Contains the fetched ics file
 	**/
 	private static $icsStr = "";
@@ -334,7 +339,8 @@ class DaySchedule extends Module {
 		if(isset(self::$pretty_summaries[$daytype])) {
 			return self::$pretty_summaries[$daytype];
 		} else {
-			return array_search($daytype, self::$summaries);
+			return null;
+			// return array_search($daytype, self::$summaries);
 		}
 	}
 
@@ -372,6 +378,13 @@ class DaySchedule extends Module {
 		self::$args['dayname'] = date('l, F j', strtotime($day));
 		self::$args['summaryid'] = $daytype;
 		self::$args['summary'] = self::get_display_summary($daytype);
+		if(self::$args['summary'] == null) {
+			if(isset(self::$daySummaries[$day])) {
+				self::$args['summary'] = self::$daySummaries[$day];
+			} else {
+				self::$args['summary'] = array_search($daytype, self::$summaries);
+			}
+		}
 		self::$args['schedule'] = isset(self::$schedules[$daytype]) ? self::$schedules[$daytype] : self::$schedules['error'];
 	}
 
@@ -446,6 +459,7 @@ class DaySchedule extends Module {
 	**/
 	private static function find_day_types($arr) {
 		$ret = array();
+		$sum = array();
 		foreach($arr as $item) {
 			if(in_array(trim($item['SUMMARY']), array_keys(self::$summaries))) {
 				if(isset($item['DTSTART;VALUE=DATE'])) {
@@ -454,6 +468,7 @@ class DaySchedule extends Module {
 					$day = substr($item['DTSTART'], 0, 8);
 				} else continue;
 				$ret[trim($day)] = self::$summaries[trim($item['SUMMARY'])];
+				$sum[trim($day)] = trim($item['SUMMARY']);
 			}
 		}
 		foreach(self::$override_schedules as $day=>$name) {
@@ -462,6 +477,8 @@ class DaySchedule extends Module {
 		}
 		d_r($ret, 0);
 		self::$dayTypes = $ret;
+		d_r($sum, 0);
+		self::$daySummaries = $sum;
 		return $ret;
 	}
 
