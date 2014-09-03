@@ -1,13 +1,14 @@
 [<assign var='proxyscript' value='https://iodine.tjhsst.edu/www/proxy.pac' >]
 [<assign var='proxyhost' value='local.border.tjhsst.edu' >]
 [<assign var='proxyport' value='8080' >]
-[<assign var='dbsite' value='http://www.tjhsst.edu/curriculum/library/wordpress/databases/' >]
+[<assign var='dbsite' value='http://www.tjhsst.edu/research-academics/library/databases.html' >]
 <h1 style="text-align: center; font-weight: bold; line-height:95%;">
   Internet Set-Up for Using TJHSST Library
   <br />Online Databases From Home
 </h1>
 
 <h2><strong>A full PDF pictorial guide to configuring your TJHSST Database access is available at <a href="[<$I2_ROOT>]www/info/dbproxy.pdf">this link</a>.</strong></h2>
+<p>Another helpful set of instructions created by library staff is provided at <a href="https://sites.google.com/site/tjproxyaccess/">https://sites.google.com/site/tjproxyaccess/</a>.</p>
 <p>
 Our library subscribes to online databases with high quality, authoritative resources that are
 essential for your high school research. On campus, they open automatically because the
@@ -26,7 +27,7 @@ Be sure to include your username, the operating system and browser (including ve
    <a href="[<$dbsite>]">[<$dbsite>]</a>.</p>
 
 <p>
-  [Last updated September 4, 2013] <br />
+  [Last updated September 2, 2014] <br />
 </p>
 
 </div>
