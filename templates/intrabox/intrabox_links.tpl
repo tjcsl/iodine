@@ -11,3 +11,4 @@
 [</if>]
 <a href="http://leadership.tjhsst.edu/sga">TJ SGA</a><br />
 <a href="http://colonialathletics.org">TJ Athletics</a><br />
+<a href="http://tinyurl.com/tjmorning">Submit Morning Announcement Request</a><br />
