@@ -503,7 +503,6 @@ class Auth {
 		global $I2_QUERY;
 		$ds = new DaySchedule();
 		$ds->init_login();
-		d('auth args'.print_r($ds->get_args(),1), 0);
 		$this->template_args = array_merge($this->template_args, $ds->get_args());
 		$this->template_args['type'] = 'login';
 	}

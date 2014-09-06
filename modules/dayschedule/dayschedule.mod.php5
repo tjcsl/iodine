@@ -472,12 +472,9 @@ class DaySchedule extends Module {
 			}
 		}
 		foreach(self::$override_schedules as $day=>$name) {
-			d("override: $day $name",0);
 			$ret[$day] = $name;
 		}
-		d_r($ret, 0);
 		self::$dayTypes = $ret;
-		d_r($sum, 0);
 		self::$daySummaries = $sum;
 		return $ret;
 	}
