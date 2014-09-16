@@ -56,6 +56,9 @@ class EighthSchedule {
 		** Warning: adding a check for $aid validity will break newimport.
 		*/
 		$old = $I2_SQL->query('SELECT * FROM eighth_block_map WHERE activityid=%d and bid=%d',$activityid,$blockid)->fetch_array(Result::ASSOC);
+		if(($old) and isset($old['attendancetaken'])) {
+			$attendancetaken = $old['attendancetaken'];
+		}
 		
 		$query = "REPLACE INTO eighth_block_map (bid,activityid,sponsors,rooms,comment,attendancetaken,cancelled,advertisement,capacity) VALUES (%d,%d,'%D','%D',%s,%d,%d,%s,%d)";
 		$queryarg = array($blockid, $activityid, $sponsors, $rooms, $comment,$attendancetaken,$cancelled,$advertisement,$capacity);
