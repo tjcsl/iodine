@@ -68,7 +68,7 @@ AID: <input type="text" name="aid"/>
 	</script>
 	<tr>
 		<td style="width:  20px; text-align: left;"><input type="checkbox" name="selectall" onclick="CA();" /></td>
-		<th style="padding: 5px; text-align: left; width: 120px;">Select All
+		<th style="padding: 5px; text-align: left; width: 120px;">Select All 
 			<a onclick="hideshow('typelist','dropmenubutton')"><img id="dropmenubutton" alt="dropdown" src="https://iodine.tjhsst.edu/www/pics/downarrow.gif" /></a>
 			<div id="typelist" class="mainbox" style="display:none;background-color:#ffffff; float:right; left:auto; right:auto;top: auto;padding:1px 4px">
 				<a onclick="select(1,'B')">Monday B block</a><br />
@@ -124,7 +124,7 @@ AID: <input type="text" name="aid"/>
 		<td style="padding: 5px;">
 			<textarea name="comments[[<$activity.block.bid>]]" id="comment_[<$activity.block.bid>]" readonly="readonly" class="eighth_sch_activity_commentcell" rows="1">[<if isset($activity.comment) >][<$activity.comment|escape:"html">][</if>]</textarea>
 		</td>
-		<td style="text-align: center;"><img src="[<$I2_ROOT>]www/pics/eighth/notepad.gif" alt="Add Comment" title="Add Comment" onmousedown="show_comment_dialog(event, [<$activity.block.bid>])" class="eighth_sch_activity_comment"><a href="#[<$activity.block.bid>]" class="eighth_sch_activity_propagate" onclick="return do_action('propagate', [<$activity.block.bid>]);">Propagate&nbsp;&darr;</a>
+		<td style="text-align: center;"><img src="[<$I2_ROOT>]www/pics/eighth/notepad.gif" alt="Add Comment" title="Add Comment" onmousedown="show_comment_dialog(event, [<$activity.block.bid>])" class="eighth_sch_activity_comment"><a href="#[<$activity.block.bid>]" class="eighth_sch_activity_propagate" onclick="return do_action('propagate', [<$activity.block.bid>]);">&uarr;&nbsp;Propagate&nbsp;&darr;</a>
 		</td>
 		<td>
 			<input type="submit" value="Save" />

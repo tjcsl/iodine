@@ -187,24 +187,22 @@ function do_action(action, bid, data, e) {
 	}
 	else if(action == "propagate") {
 		for(block in unscheduled_blocks) {
-			if (parseInt(unscheduled_blocks[block]) > bid) {
-				var ubid = unscheduled_blocks[block];
-				var rooms_from = document.getElementById("room_list_" + bid);
-				var room_list_from = document.getElementById("div_room_list_" + bid);
-				var sponsors_from = document.getElementById("sponsor_list_" + bid);
-				var sponsor_list_from = document.getElementById("div_sponsor_list_" + bid);
-				var rooms_to = document.getElementById("room_list_" + ubid);
-				var room_list_to = document.getElementById("div_room_list_" + ubid);
-				var sponsors_to = document.getElementById("sponsor_list_" + ubid);
-				var sponsor_list_to = document.getElementById("div_sponsor_list_" + ubid);
-				if(rooms_to.value == "") {
-					rooms_to.value = rooms_from.value;
-					room_list_to.innerHTML = room_list_from.innerHTML;
-				}
-				if(sponsors_to.value == "") {
-					sponsors_to.value = sponsors_from.value;
-					sponsor_list_to.innerHTML = sponsor_list_from.innerHTML;
-				}
+			var ubid = unscheduled_blocks[block];
+			var rooms_from = document.getElementById("room_list_" + bid);
+			var room_list_from = document.getElementById("div_room_list_" + bid);
+			var sponsors_from = document.getElementById("sponsor_list_" + bid);
+			var sponsor_list_from = document.getElementById("div_sponsor_list_" + bid);
+			var rooms_to = document.getElementById("room_list_" + ubid);
+			var room_list_to = document.getElementById("div_room_list_" + ubid);
+			var sponsors_to = document.getElementById("sponsor_list_" + ubid);
+			var sponsor_list_to = document.getElementById("div_sponsor_list_" + ubid);
+			if(rooms_to.value == "") {
+				rooms_to.value = rooms_from.value;
+				room_list_to.innerHTML = room_list_from.innerHTML;
+			}
+			if(sponsors_to.value == "") {
+				sponsors_to.value = sponsors_from.value;
+				sponsor_list_to.innerHTML = sponsor_list_from.innerHTML;
 			}
 		}
 	}
@@ -237,7 +235,7 @@ function filterList(txt,el) {
 
 	var currentList = document.getElementById(el);
 	currentList.innerHTML = "";
-
+	
 	var listItems = savedRoomList.options;
 	for (var i = 0; i < listItems.length; i++) {
 		for (var j = 0; j < txt.length; j++) {
@@ -247,7 +245,7 @@ function filterList(txt,el) {
 			}
 		}
 	}
-
+	
 }
 function filterList2(txt,el) {
 	txt = txt.toLowerCase();
@@ -255,7 +253,7 @@ function filterList2(txt,el) {
 
 	var currentList = document.getElementById(el);
 	currentList.innerHTML = "";
-
+	
 	var listItems = savedSponsorList.options;
 	for (var i = 0; i < listItems.length; i++) {
 		for (var j = 0; j < txt.length; j++) {
@@ -265,5 +263,5 @@ function filterList2(txt,el) {
 			}
 		}
 	}
-
+	
 }
