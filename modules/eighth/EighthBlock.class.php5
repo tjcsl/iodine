@@ -99,9 +99,24 @@ class EighthBlock {
 	public static function remove_block($blockid) {
 		global $I2_SQL;
 		Eighth::check_admin();
-		$result = $I2_SQL->query('DELETE FROM eighth_blocks WHERE bid=%d', $blockid);
-		$result2= $I2_SQL->query('DELETE FROM eighth_activity_restrictionlists WHERE bid=%d', $blockid);
-		//FIXME: Deal with removing a block
+
+		//First, delete any absence records for the block
+		$I2_SQL->query('DELETE FROM eighth_absentees WHERE bid=%d', $blockid);
+
+		//Delete any postsign records for the block
+		$I2_SQL->query('DELETE FROM eighth_postsigns WHERE bid=%d', $blockid);
+
+		//Next delete any activity signups
+		$I2_SQL->query('DELETE FROM eighth_activity_map WHERE bid=%d', $blockid);
+
+		//Delete the activities scheduled for the block
+		$I2_SQL->query('DELETE FROM eighth_block_map WHERE bid=%d', $blockid);
+
+		//Delete any block-specific restriction lists (not sure if these are used)
+		$I2_SQL->query('DELETE FROM eighth_activity_restrictionlists WHERE bid=%d', $blockid);
+
+		//Finally, delete the block itself
+		$I2_SQL->query('DELETE FROM eighth_blocks WHERE bid=%d', $blockid);
 	}
 
 	/**
