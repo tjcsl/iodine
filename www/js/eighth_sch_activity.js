@@ -186,14 +186,8 @@ function do_action(action, bid, data, e) {
 		sponsors.value = list_of_sponsors.join(",");
 	}
 	else if(action == "propagate") {
-        var l = document.getElementsByClassName("eighth_sch_activity_checkcell");
-        var bid_date_order = [];
-        for(var i = 0; i < l.length; i++) {
-            bid_date_order.push(parseInt(l[i].getElementsByTagName("a")[0].name));
-        }
-        
-        for(block in unscheduled_blocks) {
-			if (bid_date_order.indexOf(parseInt(unscheduled_blocks[block])) > bid_date_order.indexOf(bid)) {
+		for(block in unscheduled_blocks) {
+			if (parseInt(unscheduled_blocks[block]) > bid) {
 				var ubid = unscheduled_blocks[block];
 				var rooms_from = document.getElementById("room_list_" + bid);
 				var room_list_from = document.getElementById("div_room_list_" + bid);
