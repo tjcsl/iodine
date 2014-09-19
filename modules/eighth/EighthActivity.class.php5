@@ -1140,7 +1140,7 @@ class EighthActivity {
 				foreach($sponsors as $sponsor) {
 					$temp_sponsors[] = $sponsor->name;
 				}
-				return implode(', ', $temp_sponsors);
+				return implode('; ', $temp_sponsors);
 			case 'sponsors_lname_comma':
 				$sponsors = EighthSponsor::id_to_sponsor($this->data['sponsors']);
 				$temp_sponsors = [];
@@ -1158,7 +1158,7 @@ class EighthActivity {
 				foreach($sponsors as $sponsor) {
 					$temp_sponsors[] = $sponsor->name_comma;
 				}
-				return implode(', ', $temp_sponsors);
+				return implode('; ', $temp_sponsors);
 			case 'block_sponsors_comma_short':
 				if($this->data['cancelled']) {
 					return 'CANCELLED';
@@ -1168,7 +1168,7 @@ class EighthActivity {
 				foreach($sponsors as $sponsor) {
 					$temp_sponsors[] =  $sponsor->lname . ($sponsor->fname ? ', ' . substr($sponsor->fname, 0, 1) . '.' : '');
 				}
-				return implode(', ', $temp_sponsors);
+				return implode('; ', $temp_sponsors);
 			case 'sponsors_obj':
 				return $sponsors = EighthSponsor::id_to_sponsor($this->data['block_sponsors']);
 			case 'pickups_comma':
