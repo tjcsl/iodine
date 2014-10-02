@@ -96,7 +96,7 @@
 		}
 	}
 </script>
-<form name="activity_select_form" action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$uid>]/bids/[<$bids>][<if $start_date != NULL>]/start_date/[<$start_date>][</if>]" method="post">
+<form name="activity_select_form" action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$uid>]/bids/[<$bids|escape>][<if $start_date != NULL>]/start_date/[<$start_date|escape>][</if>]" method="post">
 	<div id="activityList">
 		[<if $selected>]
 			[<include file="eighth/vcp_schedule_choose_section.tpl"

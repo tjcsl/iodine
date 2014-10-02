@@ -45,6 +45,7 @@
 	<div style="float: right; margin: 10px;">
 		<a href="[<$I2_ROOT>]eighth/vcp_schedule/absences/uid/[<$user->uid>]" style="font-weight: bold; font-size: 14pt;">[<$absence_count>] absence[<if $absence_count != 1>]s[</if>]</a><br />
 		<a href="[<$I2_ROOT>]eighth/view/student/uid/[<$user->uid>]">Edit Student</a><br />
+        <a href="[<$I2_ROOT>]studentdirectory/info/[<$user->uid>]">View in Directory</a><br />
 	</div>
 	<b>Counselor: [<$counselor_name>]</b><br />
 	<span style="color: #FF0000; font-weight: bold;">Comments: [<if isset($comments) && $comments != "">][<$comments>][<else>]none[</if>]</span><br />

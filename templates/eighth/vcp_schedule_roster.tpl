@@ -28,7 +28,7 @@ Sponsor(s):
 [</if>]
 [<if !$inthisactivity>]
 <br />
-<form name="activity_select_form" action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$I2_USER->uid>]/bids/[<$activity->bid>]" method="post">
+<form name="activity_select_form" action="[<$I2_ROOT>]eighth/vcp_schedule/change/uid/[<$I2_USER->uid>]/bids/[<$activity->bid|escape>]" method="post">
 <input type="hidden" name="aid" id="aid_box" value="[<$activity->aid>]" />
 <input type="submit" name="submit" value="Change to this activity" />
 </form>
