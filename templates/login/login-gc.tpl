@@ -301,10 +301,7 @@ z-index: 99;
     </table>
 </form>
 <marquee direction="right" behavior="alternate" scrollspeed=4>
-
-<div id="verisign_box" class="box" title="Click to Verify - This site chose VeriSign SSL for secure confidential communications." style="display:inline-block !important">
-                <script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=iodine.tjhsst.edu&amp;size=S&amp;use_flash=NO&amp;use_transparent=YES&amp;lang=en"></script><br/>
-            </div>
+<img name="seal" border="true" src="https://seal.verisign.com/getseal?at=0&amp;sealid=2&amp;dn=iodine.tjhsst.edu&amp;lang=en" oncontextmenu="return false;" alt="Click to Verify - This site has chosen an SSL Certificate to improve Web     site security">
 <img name="seal" border="true" src="https://seal.verisign.com/getseal?at=0&amp;sealid=2&amp;dn=iodine.tjhsst.edu&amp;lang=en" oncontextmenu="return false;" alt="Click to Verify - This site has chosen an SSL Certificate to improve Web site security">
 <img name="seal" border="true" src="https://seal.verisign.com/getseal?at=0&amp;sealid=2&amp;dn=iodine.tjhsst.edu&amp;lang=en" oncontextmenu="return false;" alt="Click to Verify - This site has chosen an SSL Certificate to improve Web site security">
 <img name="seal" border="true" src="https://seal.verisign.com/getseal?at=0&amp;sealid=2&amp;dn=iodine.tjhsst.edu&amp;lang=en" oncontextmenu="return false;" alt="Click to Verify - This site has chosen an SSL Certificate to improve Web site security">

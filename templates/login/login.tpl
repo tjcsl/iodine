@@ -118,10 +118,14 @@
 		<br />
 
 		<div style="text-align:center">
-			<div id="verisign_box" class="box" title="Click to Verify - This site chose VeriSign SSL for secure confidential communications.">
-				<script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=iodine.tjhsst.edu&amp;size=S&amp;use_flash=NO&amp;use_transparent=YES&amp;lang=en"></script><br/>
-			</div>
-		</div>
+		    <!-- Begin DigiCert site seal HTML and JavaScript -->
+            <div id="verisign_box" data-language="en_US">
+            </div>
+            <script type="text/javascript" async="async">
+            var __dcid = __dcid || [];__dcid.push(["verisign_box", "7", "m", "black", "5VDyXkwz"]);(function(){var cid=document.createElement("script");cid.async=true;cid.src="//seal.digicert.com/seals/cascade/seal.min.js";var s = document.getElementsByTagName("script");var ls = s[(s.length - 1)];ls.parentNode.insertBefore(cid, ls.nextSibling);}());
+            </script>
+            <!-- End DigiCert site seal HTML and JavaScript -->
+        </div>
 	</div>
 	<div class="pane" id="subPane">
 		[<include file='dayschedule/login.tpl'>]
