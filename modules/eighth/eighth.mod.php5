@@ -426,12 +426,12 @@ class Eighth extends Module {
 			else if(is_object($value)) {
 				$I2_API->startElement($name);
 				foreach($value->get_data() as $arrkey=>$arrvalue) {
-					$I2_API->writeElement($arrkey,$arrvalue);
+					$I2_API->writeElement($arrkey,htmlspecialchars($arrvalue));
 				}
 				$I2_API->endElement();
 			}
 			else {
-				$I2_API->writeElement($name,$value);
+				$I2_API->writeElement($name,htmlspecialchars($value));
 			}
 		}
 		$I2_API->endElement();
