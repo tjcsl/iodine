@@ -1,4 +1,4 @@
-<?PHp
+<?php
 /**
 * The core module for Iodine.
 * @author The Intranet 2 Development Team <intranet2@tjhsst.edu>
@@ -6,6 +6,14 @@
 * @package core
 * @filesource
 */
+
+/**
+* Access-Control-Allow-Origin
+*/
+header('Access-Control-Allow-Origin: https://my8th.tjhsst.edu');
+header('Access-Control-Allow-Origin: https://ion.tjhsst.edu');
+header('Access-Control-Allow-Origin: https://www.tjhsst.edu');
+
 
 /**
 * General functions.
