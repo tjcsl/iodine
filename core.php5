@@ -8,7 +8,7 @@
 */
 
 /**
-* Access-Control-Allow-Origin
+* Access-Control-Allow-Origin: allows client-side GET/POST requests from specified domains
 *
 * The W3C spec specifies that a space or comma separated ACAO value
 * should match multiple domains. However, this does not work and produces
