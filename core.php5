@@ -9,9 +9,20 @@
 
 /**
 * Access-Control-Allow-Origin
+*
+* The W3C spec specifies that a space or comma separated ACAO value
+* should match multiple domains. However, this does not work and produces
+* a "contains multiple values but only one is allowed" error message in Webkit.
+* Setting the ACAO header multiple times results in only the first applying.
+* Hence, this solution.
 */
-header('Access-Control-Allow-Origin: https://my8th.tjhsst.edu, https://ion.tjhsst.edu, https://www.tjhsst.edu');
-
+if(substr($_SERVER['HTTP_REFERER'], 0, 24) == 'https://my8th.tjhsst.edu') {
+    header('Access-Control-Allow-Origin: https://my8th.tjhsst.edu');
+} else if(substr($_SERVER['HTTP_REFERER'], 0, 22) == 'https://ion.tjhsst.edu') {
+    header('Access-Control-Allow-Origin: https://ion.tjhsst.edu');
+} else if(substr($_SERVER['HTTP_REFERER'], 0, 22) == 'https://www.tjhsst.edu') {
+    header('Access-Control-Allow-Origin: https://www.tjhsst.edu');
+}
 
 /**
 * General functions.
