@@ -471,7 +471,30 @@ class Eighth extends Module {
 				}
 				$I2_API->endElement();
 				break;
-			// $I2_ARGS[2] == block id
+            
+            // $I2_ARGS[2] = block id
+            case 'get_block':
+                if(!isset($I2_ARGS[2])) {
+                    throw new I2Exception("No block id given");
+                }
+                if(isset($I2_ARGS[3])) {
+                    $user = new User($I2_ARGS[2]);
+                }
+                else {
+                    $user = $I2_USER;
+                }
+                $block = new EighthBlock($I2_ARGS[2]);
+                $blk = $block->get_data();
+                d_r($blk);
+                self::print_block($blk, $user->uid);
+                $acts = EighthActivity::get_all_activities($I2_ARGS[2], FALSE);
+			    $I2_API->startElement('activities');
+                foreach($acts as $act) {
+                    self::print_activity($act);
+                }
+                $I2_API->endElement(); 
+                
+            // $I2_ARGS[2] == block id
 			case 'list_activities':
 				if (!isset($I2_ARGS[2])) {
 					throw new I2Exception("No block id given");
