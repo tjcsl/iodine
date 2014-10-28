@@ -487,7 +487,13 @@ class Eighth extends Module {
 				}
 				$I2_API->endElement();
 				break;
-
+            case 'get_activity':
+                if(!isset($I2_ARGS[2])) {
+                    throw new I2Exception("No activity id given");
+                }
+                $act = new EighthActivity($I2_ARGS[2]);
+                self::print_activity($act);
+                break;
 			// $_POST['bid'] == block id
 			// $_POST['aid'] == activity id
 			// $_POST['uid'] == user id
