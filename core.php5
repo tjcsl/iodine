@@ -16,14 +16,17 @@
 * Setting the ACAO header multiple times results in only the first applying.
 * Hence, this solution.
 */
-if(substr($_SERVER['HTTP_REFERER'], 0, 24) == 'https://my8th.tjhsst.edu') {
+$origin = $_SERVER['HTTP_ORIGIN'];
+if(empty($origin)) {
+    $origin = $_SERVER['HTTP_REFERER'];
+}
+if(substr($origin, 0, 24) == 'https://my8th.tjhsst.edu') {
     header('Access-Control-Allow-Origin: https://my8th.tjhsst.edu');
-} else if(substr($_SERVER['HTTP_REFERER'], 0, 22) == 'https://ion.tjhsst.edu') {
+} else if(substr($origin, 0, 22) == 'https://ion.tjhsst.edu') {
     header('Access-Control-Allow-Origin: https://ion.tjhsst.edu');
-} else if(substr($_SERVER['HTTP_REFERER'], 0, 22) == 'https://www.tjhsst.edu') {
+} else if(substr($origin, 0, 22) == 'https://www.tjhsst.edu') {
     header('Access-Control-Allow-Origin: https://www.tjhsst.edu');
 }
-
 /**
 * General functions.
 */
