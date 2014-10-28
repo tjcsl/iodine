@@ -10,7 +10,7 @@
 /**
 * Access-Control-Allow-Origin
 */
-header('Access-Control-Allow-Origin: https://my8th.tjhsst.edu https://ion.tjhsst.edu https://www.tjhsst.edu');
+header('Access-Control-Allow-Origin: https://my8th.tjhsst.edu, https://ion.tjhsst.edu, https://www.tjhsst.edu');
 
 
 /**
