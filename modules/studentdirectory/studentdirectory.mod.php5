@@ -242,15 +242,16 @@ class StudentDirectory extends Module {
 
     function api_entry($k, $v) {
         global $I2_API;
+        if(is_numeric($k)) $k = "num".$k;
         if(is_object($v) || is_array($v)) {
             try {
                 $v = (array)$v;
-                if(!is_string($k)) $k="x"; // skips but processes children
+                if(!is_string($k)) return; // skips but processes children
                 $I2_API->startElement("".$k);
                 foreach($v as $w=>$x) {
                     self::api_entry($w, $x);
                 }
-                if(strlen($k) > 0) $I2_API->endElement();
+                if(strlen("".$k) > 0) $I2_API->endElement();
             } catch(Exception $e) {}
         } else {
             $I2_API->writeElement($k, $v);
