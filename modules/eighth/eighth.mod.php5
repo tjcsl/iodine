@@ -570,6 +570,37 @@ class Eighth extends Module {
                 }
                 $I2_API->endElement();
                 break;
+            case 'mostoften':
+                if(!isset($I2_ARGS[2])) $uid = $I2_USER->uid;
+                else $uid = $I2_ARGS[2];
+                $date = getdate();
+                $date = ($date['mon'] > 7 ? $date['year'] : $date['year']-1).'-09-01';
+                $days = intval((time()-strtotime($date))/86400);
+                $acts = EighthActivity::id_to_activity(EighthSchedule::get_activities($uid, $date, $days), FALSE);
+                $moa = array();
+                $actd = array();
+                // Loop through all activities and get counts
+                foreach($acts as $act) {
+                    if(isset($moa[$act->aid])) {
+                        $moa[$act->aid]++;
+                    } else {
+                        $moa[$act->aid] = 1;
+                    }
+                    // cut down on requests by saving the activity object
+                    if(!isset($actd[$act->aid])) {
+                        $actd[$act->aid] = $act;
+                    }
+                }
+                // Sort highest to lowest by value
+                arsort($moa);
+                $moao = array();
+                // Loop through the sorted values and make an array with the activity object, not the id
+                foreach($moa as $aid => $mo) {
+                    $moao[] = array(
+                        "num" => $mo,
+                        "act" => $actd[$aid]
+                    );
+                }
 			default:
 				throw new I2Exception("Invalid argument given to eighth module.");
 		}
