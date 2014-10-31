@@ -601,7 +601,8 @@ class Eighth extends Module {
                     $I2_API->writeElement('num', $mo);
                     $a = $actd[$aid];
                     foreach($a->get_data() as $k => $v) {
-                        if(is_array($v)) {
+                        if(is_array($v) || is_object($v)) {
+                            $v = (array)$v;
                             $I2_API->startElement("".$k);
                             foreach($v as $l => $w) {
                                 $I2_API->writeElement("".$l, "".$w);
