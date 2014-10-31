@@ -557,7 +557,14 @@ class Eighth extends Module {
                 foreach($acts as $el) {
                     d_r($el);
                     //self::print_block($el[1], $uid);
+                    $I2_API->startElement('day');
+                    $b = new EighthBlock($el[1]);
                     $I2_API->startElement('block');
+                    foreach($b as $k => $v) {
+                        $I2_API->writeElement("".$k, "".$v);
+                    }
+                    $I2_API->endElement();
+                    $I2_API->writeElement('date',print_r($b,1));
                     $I2_API->writeElement('aid', $el[0]);
                     $I2_API->writeElement('bid', $el[1]);
                     $I2_API->endElement();
