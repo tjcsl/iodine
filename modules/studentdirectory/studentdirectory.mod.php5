@@ -257,7 +257,7 @@ class StudentDirectory extends Module {
     }
 
     function api() {
-        global $I2_API, $I2_ARGS, $I2_QUERY, $I2_USER;
+        global $I2_API, $I2_ARGS, $I2_QUERY, $I2_USER, $I2_ROOT;
         if(!isset($I2_ARGS[1])) {
             throw new I2Exception("Argument needed");
         }
@@ -299,6 +299,17 @@ class StudentDirectory extends Module {
                 }
             break;
 
+            case 'pictures':
+                if(!isset($I2_ARGS[2])) $user = $I2_USER;
+                else $user = new User($I2_ARGS[2]);
+                $uid = $user->uid;
+
+                $I2_API->startElement('pictures');
+                $I2_API->writeElement("main", $I2_ROOT."pictures/".$uid);
+                foreach(['freshman','sophomore','junior','senior'] as $y) {
+                    $I2_API->writeElement($y, $I2_ROOT."pictures/".$uid."/".$y."Photo");
+                }
+            break;
             default:
                 throw new I2Exception("Invalid submodule");
         }
