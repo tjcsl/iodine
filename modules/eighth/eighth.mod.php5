@@ -623,6 +623,8 @@ class Eighth extends Module {
                 $absences = EighthActivity::id_to_Activity(EighthSchedule::get_absences($uid));
                 $I2_API->writeElement('a',print_r($absences,1));
                 $I2_API->startElement('absences');
+                $I2_API->writeAttribute('uid', $uid);
+                $I2_API->writeAttribute('count', count($absences));
                 foreach($absences as $abs) {
                     self::print_activity($abs);
                 }
