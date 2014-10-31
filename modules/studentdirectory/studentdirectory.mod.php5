@@ -311,8 +311,9 @@ class StudentDirectory extends Module {
             case 'class':
                 if(!isset($I2_ARGS[2])) throw new I2Exception("Class ID needed");
                 $sec = Schedule::section($I2_ARGS[2]);
-                $sec->get_students();
+                $students = $sec->get_students(); // accessed through $sec in loop
                 $I2_API->startElement("class");
+                $I2_API->writeElement("numstudents", sizeof($students));
                 self::api_entry("", $sec);
                 break;
 
