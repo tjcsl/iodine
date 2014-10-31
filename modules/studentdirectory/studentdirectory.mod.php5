@@ -272,7 +272,6 @@ class StudentDirectory extends Module {
                 $eighthhosting = EighthActivity::id_to_activity(EighthSchedule::get_activities_sponsored($uid));
 
                 $I2_API->startElement("info");
-               // $I2_API->writeElement("d", print_r($user,1));
                 $user = (array)$user;
                 foreach($user as $k=>$v) {
                     self::api_entry($k, $v);
@@ -314,10 +313,8 @@ class StudentDirectory extends Module {
                 $I2_API->writeAttribute("q", $q);
 
                 $info = $I2_USER->search_info($q);
-                //$I2_API->writeElement('d', print_r($info,1));
                 foreach($info as $entry) {
                     $I2_API->startElement("result");
-                    $I2_API->writeElement("entry", print_r($entry,1));
                     $entry = (array)$entry;
                     foreach($entry as $k => $v) {
                         self::api_entry($k, $v);
