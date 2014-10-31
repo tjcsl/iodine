@@ -245,14 +245,15 @@ class StudentDirectory extends Module {
         if(is_object($v) || is_array($v)) {
             try {
                 $v = (array)$v;
-                @$I2_API->startElement("".$k);
+                if(!is_string($k)) $k=""; // skips but processes children
+                $I2_API->startElement("".$k);
                 foreach($v as $w=>$x) {
-                    @self::api_entry($w, $x);
+                    self::api_entry($w, $x);
                 }
-                $I2_API->endElement();
+                if(strlen($k) > 0) $I2_API->endElement();
             } catch(Exception $e) {}
         } else {
-            @$I2_API->writeElement($k, $v);
+            $I2_API->writeElement($k, $v);
         }
     }
 
@@ -292,6 +293,7 @@ class StudentDirectory extends Module {
                 foreach($sched as $k=>$v) {
                     $I2_API->startElement("class");
                     self::api_entry($k, $v);
+                    $I2_API->endElement();
                 }
 
                 break;
