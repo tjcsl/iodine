@@ -648,6 +648,8 @@ class Eighth extends Module {
                     d_r($act);
                     self::print_activity($act);
                 }
+               $I2_API->writeElement('prev', $prev_date);
+               $I2_API->writeElement('next', $next_date);
                break;
 
 			default:
