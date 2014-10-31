@@ -245,7 +245,7 @@ class StudentDirectory extends Module {
         $skip = (urlencode(substr($k, 0, 1)) == "%00" || substr($k, 0, 1) == "*" || substr($k, 0, 2) == "__" || strlen($k) < 1);
         if(is_numeric($k)) {
             if(strlen($par) > 0) {
-                $k = $par;
+                $k = substr($par, 0, strlen($par)-1);
             } else {
                 $k = "num".$k;
             }
