@@ -247,7 +247,7 @@ class StudentDirectory extends Module {
                 $v = (array)$v;
                 @$I2_API->startElement("".$k);
                 foreach($v as $w=>$x) {
-                    @$I2_API->writeElement($w, $x);
+                    @self::api_entry($w, $x);
                 }
                 $I2_API->endElement();
             } catch(Exception $e) {}
@@ -296,7 +296,6 @@ class StudentDirectory extends Module {
                     foreach($entry as $k => $v) {
                         self::api_entry($k, $v);
                     }
-                    $I2_API->endElement();
                 }
             break;
 
