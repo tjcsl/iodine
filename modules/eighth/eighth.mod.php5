@@ -562,7 +562,10 @@ class Eighth extends Module {
                     foreach($b->get_data() as $k => $v) {
                         $I2_API->writeElement("".$k, "".$v);
                     }
-                    $I2_API->writeElement('date',print_r($b,1));
+                    $a = new EighthActivity($el[0]);
+                    foreach($a->get_data() as $k => $v) {
+                        $I2_API->writeElement("".$k, "".$v);
+                    }
                     $I2_API->writeElement('aid', $el[0]);
                     $I2_API->writeElement('bid', $el[1]);
                     $I2_API->endElement();
