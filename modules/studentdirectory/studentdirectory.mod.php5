@@ -240,16 +240,22 @@ class StudentDirectory extends Module {
 		}
 	}
 
-    function api_entry($k, $v) {
+    function api_entry($k, $v, $par="") {
         global $I2_API;
         $skip = (urlencode(substr($k, 0, 1)) == "%00" || substr($k, 0, 1) == "*" || substr($k, 0, 2) == "__" || strlen($k) < 1);
-        if(is_numeric($k)) $k = "num".$k;
+        if(is_numeric($k)) {
+            if(strlen($par) > 0) {
+                $k = $par;
+            } else {
+                $k = "num".$k;
+            }
+        }
         if(is_object($v) || is_array($v)) {
             try {
                 $v = (array)$v;
                 if(!$skip) $I2_API->startElement("".$k);
                 foreach($v as $w=>$x) {
-                    self::api_entry($w, $x);
+                    self::api_entry($w, $x, $k);
                 }
                 if(!$skip) $I2_API->endElement();
             } catch(Exception $e) {}
@@ -304,6 +310,7 @@ class StudentDirectory extends Module {
             case 'class':
                 if(!isset($I2_ARGS[2])) throw new I2Exception("Class ID needed");
                 $sec = Schedule::section($I2_ARGS[2]);
+                $sec->get_students();
                 $I2_API->startElement("class");
                 self::api_entry("", $sec);
                 break;
