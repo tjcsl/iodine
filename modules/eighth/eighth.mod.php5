@@ -632,6 +632,17 @@ class Eighth extends Module {
                 }
                 $I2_API->endElement();
                 break;
+            case 'schedule':
+                if(!isset($I2_ARGS[2])) $user = $I2_USER;
+                else $user = new User($I2_ARGS[2]);
+                $uid = $user->uid;
+                $start_date = isset($I2_QUERY['start_date']) ? $I2_QUERY['start_date'] : EighthSchedule::get_next_date();
+                $acts = EighthActivity::id_to_activity(EighthSchedule::get_activities($uid, $start_date), FALSE);
+                $I2_API->startElement('schedule');
+                foreach($acts as $act) {
+                    self::print_activity($act);
+                }
+
 			default:
 				throw new I2Exception("Invalid argument given to eighth module.");
 		}
