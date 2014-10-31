@@ -607,7 +607,7 @@ class Eighth extends Module {
                             } else $v = (array)$v;
                             $I2_API->startElement("".$k);
                             foreach($v as $l => $w) {
-                                $I2_API->writeElement("".$l, "".$w);
+                                @$I2_API->writeElement("".$l, "".$w);
                             }
                             $I2_API->endElement();
                         } else {
@@ -616,6 +616,7 @@ class Eighth extends Module {
                     }
                     $I2_API->endElement();
                 }
+                break;
 			default:
 				throw new I2Exception("Invalid argument given to eighth module.");
 		}
