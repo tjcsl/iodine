@@ -239,6 +239,42 @@ class StudentDirectory extends Module {
 				
 		}
 	}
+
+    function api() {
+        global $I2_API, $I2_ARGS, $I2_USER;
+        if(!isset($I2_ARGS[1])) {
+            throw new I2Exception("Argument needed");
+        }
+        switch($I2_ARGS[1]) {
+            case 'info':
+                if(!isset($I2_ARGS[2])) $uid = $I2_USER->uid;
+                else $uid = $I2_ARGS[2];
+                $user = new User($uid);
+                $eighth = EighthActivity::id_to_activity(EighthSchedule::get_activities($uid));
+                $eighthhosting = EighthActivity::id_to_activity(EighthSchedule::get_activities_sponsored($uid));
+
+                $I2_API->startElement("info");
+                $I2_API->writeElement("d", print_r($user,1));
+                foreach($user as $k=>$v) {
+                    if(is_object($v) || is_array($v)) {
+                        $v = (array)$v;
+                        $I2_API->startElement($k);
+                        foreach($v as $w=>$x) {
+                            @$I2_API->writeElement($w, $x);
+                        }
+                        $I2_API->endElement();
+                    } else {
+                        @$I2_API->writeElement($k, $v);
+                    }
+                }
+                $I2_API->endElement();
+
+                break;
+
+            default:
+                throw new I2Exception("Invalid submodule");
+        }
+    }
 	
 	function math_eval($input) { //TODO: Parse mathematical stuff, return output (or false if not valid)
 		return false;
