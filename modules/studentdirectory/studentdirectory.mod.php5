@@ -242,7 +242,7 @@ class StudentDirectory extends Module {
 
     function api_entry($k, $v) {
         global $I2_API;
-        $skip = (urlencode(substr($k, 0, 1)) == "%00" || substr($k, 0, 1) == "*" || substr($k, 0, 2) == "__");
+        $skip = (urlencode(substr($k, 0, 1)) == "%00" || substr($k, 0, 1) == "*" || substr($k, 0, 2) == "__" || strlen($k) < 1);
         if(is_numeric($k)) $k = "num".$k;
         if(is_object($v) || is_array($v)) {
             try {
