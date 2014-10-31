@@ -554,6 +554,7 @@ class Eighth extends Module {
                                 $uid, $date, $days);
                 d_r($acts);
                 $I2_API->startElement('history');
+                $I2_API->writeAttribute('uid', $uid);
                 foreach($acts as $el) {
                     d_r($el);
                     //self::print_block($el[1], $uid);
@@ -596,6 +597,7 @@ class Eighth extends Module {
                 $moao = array();
                 // Loop through the sorted values and make an array with the activity object, not the id
                 $I2_API->startElement('mostoften');
+                $I2_API->writeAttribute('uid', $uid);
                 foreach($moa as $aid => $mo) {
                     $I2_API->startElement('often');
                     $I2_API->writeElement('num', $mo);
