@@ -607,8 +607,9 @@ class Eighth extends Module {
                                 $I2_API->writeElement("".$l, "".$w);
                             }
                             $I2_API->endElement();
+                        } else {
+                            $I2_API->writeElement("".$k, "".$v);
                         }
-                        $I2_API->writeElement("".$k, "".$v);
                     }
                     $I2_API->endElement();
                 }
