@@ -600,7 +600,7 @@ class Eighth extends Module {
                 $I2_API->writeAttribute('uid', $uid);
                 foreach($moa as $aid => $mo) {
                     $I2_API->startElement('often');
-                    $I2_API->writeElement('num', $mo);
+                    $I2_API->writeAttribute('num', $mo);
                     $a = $actd[$aid];
                     foreach($a->get_data() as $k => $v) {
                         if(is_array($v) || is_object($v)) {
