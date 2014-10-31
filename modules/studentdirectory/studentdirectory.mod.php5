@@ -279,7 +279,7 @@ class StudentDirectory extends Module {
                 $I2_API->endElement();
                 // continue
             break;
-            case 'schedule':
+            case 'classes':
                 if(!isset($I2_ARGS[2])) $user = $I2_USER;
                 else $user = new User($I2_ARGS[2]);
                 try {
@@ -290,7 +290,7 @@ class StudentDirectory extends Module {
                 } catch( I2Exception $e) {
                     $sched = NULL;
                 }
-                $I2_API->startElement("schedule");
+                $I2_API->startElement("classes");
                 foreach($sched as $class) {
                     d_r($v);
                     $I2_API->startElement("class");
@@ -319,6 +319,7 @@ class StudentDirectory extends Module {
                     foreach($entry as $k => $v) {
                         self::api_entry($k, $v);
                     }
+                    $I2_API->endElement();
                 }
             break;
 
