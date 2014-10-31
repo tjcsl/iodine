@@ -617,6 +617,17 @@ class Eighth extends Module {
                     $I2_API->endElement();
                 }
                 break;
+            case 'absences':
+                if(!isset($I2_ARGS[2])) $uid = $I2_USER->uid;
+                else $uid = $I2_ARGS[2];
+                $absences = EighthActivity::id_to_Activity(EighthSchedule::get_absences($uid));
+                $I2_API->writeElement('a',print_r($absences,1));
+                $I2_API->startElement('absences');
+                foreach($absences as $abs) {
+                    self::print_activity($abs);
+                }
+                $I2_API->endElement();
+                break;
 			default:
 				throw new I2Exception("Invalid argument given to eighth module.");
 		}
