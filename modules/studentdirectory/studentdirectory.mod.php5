@@ -241,6 +241,7 @@ class StudentDirectory extends Module {
 	}
 
     function api_entry($k, $v) {
+        global $I2_API;
         if(is_object($v) || is_array($v)) {
             try {
                 $v = (array)$v;
