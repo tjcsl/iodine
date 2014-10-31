@@ -240,8 +240,23 @@ class StudentDirectory extends Module {
 		}
 	}
 
+    function api_entry($k, $v) {
+        if(is_object($v) || is_array($v)) {
+            try {
+                $v = (array)$v;
+                @$I2_API->startElement("".$k);
+                foreach($v as $w=>$x) {
+                    @$I2_API->writeElement($w, $x);
+                }
+                $I2_API->endElement();
+            } catch(Exception $e) {}
+        } else {
+            @$I2_API->writeElement($k, $v);
+        }
+    }
+
     function api() {
-        global $I2_API, $I2_ARGS, $I2_USER;
+        global $I2_API, $I2_ARGS, $I2_QUERY, $I2_USER;
         if(!isset($I2_ARGS[1])) {
             throw new I2Exception("Argument needed");
         }
@@ -257,21 +272,32 @@ class StudentDirectory extends Module {
                // $I2_API->writeElement("d", print_r($user,1));
                 $user = (array)$user;
                 foreach($user as $k=>$v) {
-                    if(is_object($v) || is_array($v)) {
-                        try {
-                            $v = (array)$v;
-                            @$I2_API->startElement("".$k);
-                            foreach($v as $w=>$x) {
-                                @$I2_API->writeElement($w, $x);
-                            }
-                            $I2_API->endElement();
-                        } catch(Exception $e) {}
-                    } else {
-                        @$I2_API->writeElement($k, $v);
-                    }
+                    self::api_entry($k, $v);
                 }
-
                 break;
+            
+            case 'search':
+                if(!isset($I2_ARGS[2])) {
+                    if(!isset($I2_QUERY['q'])) {
+                        throw new I2Exception("No search query given");
+                    } else $q = $I2_QUERY['q'];
+                } else $q = $I2_ARGS[2];
+
+                $I2_API->startElement('search');
+                $I2_API->writeAttribute("q", $q);
+
+                $info = $I2_USER->search_info($q);
+                //$I2_API->writeElement('d', print_r($info,1));
+                foreach($info as $entry) {
+                    $I2_API->startElement("result");
+                    $I2_API->writeElement("entry", print_r($entry,1));
+                    $entry = (array)$entry;
+                    foreach($entry as $k => $v) {
+                        self::api_entry($k, $v);
+                    }
+                    $I2_API->endElement();
+                }
+            break;
 
             default:
                 throw new I2Exception("Invalid submodule");
