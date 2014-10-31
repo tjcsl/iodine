@@ -566,8 +566,6 @@ class Eighth extends Module {
                     foreach($a->get_data() as $k => $v) {
                         $I2_API->writeElement("".$k, "".$v);
                     }
-                    $I2_API->writeElement('aid', $el[0]);
-                    $I2_API->writeElement('bid', $el[1]);
                     $I2_API->endElement();
                 }
                 $I2_API->endElement();
