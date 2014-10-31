@@ -242,18 +242,19 @@ class StudentDirectory extends Module {
 
     function api_entry($k, $v) {
         global $I2_API;
+        d("k: ".urlencode($k));
+        $skip = (substr($k, 0, 1) == "*" || substr($k, 0, 2) == "__");
         if(is_numeric($k)) $k = "num".$k;
         if(is_object($v) || is_array($v)) {
             try {
                 $v = (array)$v;
-                if(!is_string($k)) return; // skips but processes children
-                $I2_API->startElement("".$k);
+                if(!$skip) $I2_API->startElement("".$k);
                 foreach($v as $w=>$x) {
                     self::api_entry($w, $x);
                 }
-                if(strlen("".$k) > 0) $I2_API->endElement();
+                if(!$skip) $I2_API->endElement();
             } catch(Exception $e) {}
-        } else {
+        } else if(!$skip) {
             $I2_API->writeElement($k, $v);
         }
     }
@@ -279,6 +280,7 @@ class StudentDirectory extends Module {
                 }
                 $I2_API->endElement();
                 // continue
+            break;
             case 'schedule':
                 if(!isset($I2_ARGS[2])) $user = $I2_USER;
                 else $user = new User($I2_ARGS[2]);
