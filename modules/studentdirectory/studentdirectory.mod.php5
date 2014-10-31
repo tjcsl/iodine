@@ -255,14 +255,17 @@ class StudentDirectory extends Module {
 
                 $I2_API->startElement("info");
                 $I2_API->writeElement("d", print_r($user,1));
+                $user = (array)$user;
                 foreach($user as $k=>$v) {
                     if(is_object($v) || is_array($v)) {
-                        $v = (array)$v;
-                        $I2_API->startElement($k);
-                        foreach($v as $w=>$x) {
-                            @$I2_API->writeElement($w, $x);
-                        }
-                        $I2_API->endElement();
+                        try {
+                            $v = (array)$v;
+                            @$I2_API->startElement("".$k);
+                            foreach($v as $w=>$x) {
+                                @$I2_API->writeElement($w, $x);
+                            }
+                            $I2_API->endElement();
+                        } catch(Exception $e) {}
                     } else {
                         @$I2_API->writeElement($k, $v);
                     }
