@@ -595,11 +595,15 @@ class Eighth extends Module {
                 arsort($moa);
                 $moao = array();
                 // Loop through the sorted values and make an array with the activity object, not the id
+                $I2_API->startElement('mostoften');
                 foreach($moa as $aid => $mo) {
-                    $moao[] = array(
-                        "num" => $mo,
-                        "act" => $actd[$aid]
-                    );
+                    $I2_API->startElement('often');
+                    $I2_API->writeElement('num', $mo);
+                    $a = $actd[$aid];
+                    foreach($a->get_data() as $k => $v) {
+                        $I2_API->writeElement("".$k, "".$v);
+                    }
+                    $I2_API->endElement();
                 }
 			default:
 				throw new I2Exception("Invalid argument given to eighth module.");
