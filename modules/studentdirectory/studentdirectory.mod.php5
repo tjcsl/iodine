@@ -275,8 +275,26 @@ class StudentDirectory extends Module {
                 foreach($user as $k=>$v) {
                     self::api_entry($k, $v);
                 }
+                $I2_API->endElement();
+                // continue
+            case 'schedule':
+                if(!isset($I2_ARGS[2])) $user = $I2_USER;
+                else $user = new User($I2_ARGS[2]);
+                try {
+                    $sched = $user->schedule();
+                    if (!$sched->current()) {
+                        $sched = NULL;
+                    }
+                } catch( I2Exception $e) {
+                    $sched = NULL;
+                }
+                $I2_API->startElement("schedule");
+                foreach($sched as $k=>$v) {
+                    $I2_API->startElement("class");
+                    self::api_entry($k, $v);
+                }
+
                 break;
-            
             case 'search':
                 if(!isset($I2_ARGS[2])) {
                     if(!isset($I2_QUERY['q'])) {
