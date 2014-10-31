@@ -560,6 +560,7 @@ class Eighth extends Module {
                     $I2_API->startElement('block');
                     $I2_API->writeElement('aid', $el[0]);
                     $I2_API->writeElement('bid', $el[1]);
+                    $I2_API->endElement();
                 }
                 $I2_API->endElement();
                 break;
