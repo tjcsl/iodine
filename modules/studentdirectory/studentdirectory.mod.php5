@@ -247,9 +247,9 @@ class StudentDirectory extends Module {
         }
         switch($I2_ARGS[1]) {
             case 'info':
-                if(!isset($I2_ARGS[2])) $uid = $I2_USER->uid;
-                else $uid = $I2_ARGS[2];
-                $user = new User($uid);
+                if(!isset($I2_ARGS[2])) $user = $I2_USER;
+                else $user = new User($I2_ARGS[2]);
+                $uid = $user->uid;
                 $eighth = EighthActivity::id_to_activity(EighthSchedule::get_activities($uid));
                 $eighthhosting = EighthActivity::id_to_activity(EighthSchedule::get_activities_sponsored($uid));
 
