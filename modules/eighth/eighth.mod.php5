@@ -34,7 +34,7 @@ class Eighth extends Module {
 	* Template arguments for the specified action
 	*/
 	private $template_args = [
-		"defaultaid_room" => "134"
+		"defaultaid_room" => "231 (8th Period Office)"
 	];
 
 	/**
