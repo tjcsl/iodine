@@ -3188,27 +3188,6 @@ class Eighth extends Module {
 		}
 	}
 	/**
-	* Manage block group access restrictions
-	*/
-	public function restrictionlists() {
-		global $I2_SQL,$I2_ARGS,$I2_QUERY;
-		if($this->op=='') {
-			$this->template_args['blocklist']=$I2_SQL->query('SELECT * FROM eighth_activity_restrictionlists')->fetch_all_arrays(Result::ASSOC);
-			$this->template='reslist_block_list.tpl';
-		} elseif($this->op=='add' && isset($_POST['newbid'])) {
-			$I2_SQL->query('INSERT INTO eighth_activity_restrictionlists (bid,gid,aidlist) VALUES (%d,%d,%s)',$_POST['newbid'],$_POST['gid'],$_POST['aidlist']);
-			redirect('eighth/restrictionlists');
-		} elseif($this->op=='edit' && isset($_POST['bid'])) {
-			$I2_SQL->query('UPDATE eighth_activity_restrictionlists SET bid=%d,gid=%d,aidlist=%s WHERE bid=%d',$_POST['newbid'],$_POST['gid'],$_POST['aidlist'],$_POST['bid']);
-			redirect('eighth/restrictionlists');
-		} elseif($this->op=='delete' && isset($_POST['bid'])) {
-			$I2_SQL->query('DELETE FROM eighth_activity_restrictionlists WHERE bid=%d',$_POST['bid']);
-			redirect('eighth/restrictionlists');
-		} else {
-			redirect();
-		}
-	}
-	/**
 	* Sort by time, used for field sorting in the usort()s above.
 	*/
 	static function equals_time($f1,$f2) {

@@ -17,7 +17,6 @@
 class EighthBlock {
 
 	private $data = [];
-	private $restrictionlists = []; //Lists of group-specific restrictions.
 
 	/**
 	* The constructor for the {@link EighthBlock} class.
@@ -28,10 +27,6 @@ class EighthBlock {
 	public function __construct($blockid) {
 		global $I2_SQL;
 		$this->data = $I2_SQL->query('SELECT * FROM eighth_blocks WHERE bid=%d', $blockid)->fetch_array(Result::ASSOC);
-		$temp= $I2_SQL->query('SELECT * FROM eighth_activity_restrictionlists WHERE bid=%d',$blockid)->fetch_all_arrays(Result::ASSOC);
-		foreach($temp as $entry) {
-			$restrictionlists[] = array('gid'=>$temp['gid'], 'aidlist'=>explode(',',$temp['aidlist']));
-		}
 	}
 	/**
 	* Check whether an block exists.
@@ -112,9 +107,6 @@ class EighthBlock {
 		//Delete the activities scheduled for the block
 		$I2_SQL->query('DELETE FROM eighth_block_map WHERE bid=%d', $blockid);
 
-		//Delete any block-specific restriction lists (not sure if these are used)
-		$I2_SQL->query('DELETE FROM eighth_activity_restrictionlists WHERE bid=%d', $blockid);
-
 		//Finally, delete the block itself
 		$I2_SQL->query('DELETE FROM eighth_blocks WHERE bid=%d', $blockid);
 	}
@@ -162,8 +154,6 @@ class EighthBlock {
 	public function __get($name) {
 		if(array_key_exists($name, $this->data)) {
 			return $this->data[$name];
-		} else if($name == 'restrictionlists') {
-			return $this->restrictionlists;
 		}
 	}
 
