@@ -19,7 +19,7 @@ class PolicyAccept extends Module {
         }
 		if( isset($_POST['accept']) && $_POST['accept']) {
 			//user finished the intro blurb
-		    $I2_SQL->query("INSERT INTO policyaccept VALUES(%d, 1);", $I2_USER->iodineuidnumber); 	
+			$I2_USER->eighth-agreement = TRUE;
 			//reset to news
 			$I2_USER->startpage = "news";
 			$I2_CACHE->remove('User','ldap_user_info_'.$I2_USER->iodineuidnumber);

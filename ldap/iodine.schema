@@ -188,9 +188,9 @@ attributetype ( i2Attr:19
 
 attributetype ( i2Attr:20
 	NAME ('tjhsstClassId' 'classId' 'courseId' 'tjhsstCourseId' 'associatedClassId')
-	DESC 'A number identifying a TJHSST class'
-	EQUALITY integerMatch
-	SYNTAX integerSyntax
+	DESC 'A string identifying a TJHSST class'
+	EQUALITY caseIgnoreMatch
+	SYNTAX stringSyntax
 	SINGLE-VALUE
 	)
 
@@ -655,6 +655,14 @@ attributetype ( i2Attr:80
 	SINGLE-VALUE
 	)
 
+attributetype ( i2Attr:81
+	NAME ('eighth-agreement')
+	DESC 'Whether the user has accepted the 8th period policy agreement'
+	EQUALITY booleanMatch
+	SYNTAX boolSyntax
+	SINGLE-VALUE
+	)
+
 objectclass ( i2OC:1
 	NAME 'tjhsstStudent'
 	SUP inetOrgPerson STRUCTURAL
@@ -713,7 +721,8 @@ objectclass ( i2OC:1
 		homeDirectory $
 		loginShell $
 		is-student-admin $
-		is-admin
+		is-admin $
+		eighth-agreement
 	)
 	)
 
