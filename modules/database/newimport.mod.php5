@@ -513,6 +513,8 @@ class Newimport extends Module {
 
 		$usernew['preferredPhoto'] = 'AUTO';
 
+		$usernew['eighth-agreement'] = 'FALSE';
+
 		$dn = "iodineUid={$usernew['iodineUid']},ou=people,dc=tjhsst,dc=edu";
 
 		d("Creating user \"{$usernew['iodineUid']}\"...",7);
@@ -576,6 +578,7 @@ class Newimport extends Module {
 			$usernew['showeighthself'] = 'TRUE';
 			$usernew['showlockerself'] = 'TRUE';
 			$usernew['eighthoffice-comments'] = ' ';
+			$usernew['eighth-agreement'] = 'FALSE';
 		}
 		$usernew['title'] = ($user['sex']=='M')?'Mr.':'Ms.';
 		if ($user['mname']) {
