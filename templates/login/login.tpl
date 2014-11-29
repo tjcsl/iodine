@@ -20,11 +20,13 @@
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/login-schedule.css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/schedule.css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/debug.css" />
+    <link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/dayschedule-app.css" />
 	<link rel="shortcut icon" href="[<$I2_ROOT>]www/favicon.ico" />
 	<link rel="icon" href="[<$I2_ROOT>]www/favicon.ico" />
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js"></script>
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/login.js"></script>
 	<script type="text/javascript" src="[<$I2_ROOT>]www/js/common.js"></script>
+    <script type="text/javascript" src="[<$I2_ROOT>]www/js/dayschedule-app.js"></script>
 	<script type="text/javascript">
 	//Set some variables so that any script can use them.
 	var i2root="[<$I2_ROOT>]";
@@ -118,6 +120,7 @@
 		<br />
 
 		<div style="text-align:center">
+        [<*
 		    <!-- Begin DigiCert site seal HTML and JavaScript -->
             <div id="verisign_box" data-language="en_US">
             </div>
@@ -125,59 +128,22 @@
             var __dcid = __dcid || [];__dcid.push(["verisign_box", "7", "m", "black", "5VDyXkwz"]);(function(){var cid=document.createElement("script");cid.async=true;cid.src="//seal.digicert.com/seals/cascade/seal.min.js";var s = document.getElementsByTagName("script");var ls = s[(s.length - 1)];ls.parentNode.insertBefore(cid, ls.nextSibling);}());
             </script>
             <!-- End DigiCert site seal HTML and JavaScript -->
+        *>]
+            <div id="verisign_box" data-language="en_US">
+            </div>
+            <script type="text/javascript">
+            var __dcid = __dcid || [];__dcid.push(["verisign_box", "7", "m", "black", "5VDyXkwz"]);
+            </script>
+            <script type="text/javascript" async="" src="//seal.digicert.com/seals/cascade/seal.min.js"></script>
         </div>
 	</div>
 	<div class="pane" id="subPane">
 		[<include file='dayschedule/login.tpl'>]
 		<br />
-        <style>.dayschedule-app {
-            position: fixed;
-            bottom: 0;
-            background-color: yellow;
-            width: 300px;
-            height: 70px;
-            padding: 10px 0;
-        }
-        .dayschedule-app b {
-            font-size: 16px;
-            display: block;
-        }
-        .dayschedule-app em {
-            font-size: 18px;
-            font-style: normal;
-        }
-        .dayschedule-app span {
-            font-size: 12px;
-            display: block;
-        }
-        @media (max-width: 645px) {
-            div.dayschedule-app {
-                width: 100%;
-            }
-        }
-        @media (max-height: 450px) {
-            div.dayschedule-app {
-                position: absolute;
-                top: 100%;
-            }
-        }
-        </style>
-        <script type="text/javascript">
-        $(function() {
-            if(navigator.userAgent.match(/Android/i)) {
-                $(".dayschedule-app").click(function() {
-                    location.href = $(".dayschedule-app a").eq(0).attr('href');
-                }).css("cursor", "pointer");
-            } else {
-                $(".dayschedule-app a").html("Download (Android only)");
-            }
-
-        });
-        </script>
         <div class="dayschedule-app">
-        <b>New: Bell Schedule app for Android</b>
-        <em><a href="https://www.tjhsst.edu/~2016jwoglom/uploads/TJDaySchedule/latest.apk">Download now</a></em>
-        <span>(enable "Unknown Sources")</span>
+            <b>New: Bell Schedule app for Android</b>
+            <em><a href="https://www.tjhsst.edu/~2016jwoglom/uploads/TJDaySchedule/latest.apk">Download now</a></em>
+            <span>(enable "Unknown Sources")</span>
         </div>
         <br />
 		<ul id="links">
@@ -187,39 +153,5 @@
 			<!--<li><a href="http://www.tjhsst.edu/studentlife/publications/tjtoday" target="_blank">tjTODAY</a></li>-->
 		</ul>
 		<br />
-		[<*
-		<form action="[<$I2_SELF|escape>]" method="get">
-			<select name="background" onchange="this.form.bid.value=this.options[this.selectedIndex].id.split('bg')[1];this.form.submit()">
-				<optgroup label="Change your background image:">
-					<option value="random" id="bg0">Surprise me!</option>
-				</optgroup>
-				<optgroup>
-					[<assign var=num value=0>]
-					[<foreach from=$backgrounds item=b>]
-						[<assign var=num value=$num+1>]
-						[<assign var=name value="."|explode:$b>]
-						<option value="[<$b|escape>]" id="bg[<$num>]">[<$name[0]|escape>]</option>
-					[</foreach>]
-
-				</optgroup>
-			</select>
-			<input type="hidden" name="bid" value="0">
-			<noscript><input type="submit" value="Change Background" /></noscript>
-		</form>
-		<script type="text/javascript">
-		parse_bgs();
-		</script>
-		*>]
 	</div>
-<!--div style="position: absolute;bottom:0;right:0;padding:5px">
-<a href="?&customtheme=login-gc" title="April Fools Day 2014">
-<img src="[<$I2_ROOT>]www/gc/tjold.gif" width="52.5" height="45.5" />
-</a>
-</div-->
-	[<* This doesn't work on recent versions of chrome because
-	     it is not in the web store; so why advertise it? *>]
-	<!--script type="text/javascript">
-		chrome_app();
-
-	</script-->
 

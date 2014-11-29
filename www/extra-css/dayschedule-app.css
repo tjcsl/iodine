@@ -1,0 +1,31 @@
+.dayschedule-app {
+    position: fixed;
+    bottom: 0;
+    background-color: yellow;
+    width: 300px;
+    height: 70px;
+    padding: 10px 0;
+}
+.dayschedule-app b {
+    font-size: 16px;
+    display: block;
+}
+.dayschedule-app em {
+    font-size: 18px;
+    font-style: normal;
+}
+.dayschedule-app span {
+    font-size: 12px;
+    display: block;
+}
+@media (max-width: 645px) {
+    div.dayschedule-app {
+        width: 100%;
+    }
+}
+@media (max-height: 450px) {
+    div.dayschedule-app {
+        position: absolute;
+        top: 100%;
+    }
+}
