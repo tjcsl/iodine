@@ -19,7 +19,7 @@ class PolicyAccept extends Module {
         }
 		if( isset($_POST['accept']) && $_POST['accept']) {
 			//user finished the intro blurb
-			$I2_USER->eighth-agreement = TRUE;
+			$I2_USER->eighthAgreement = TRUE;
 			//reset to news
 			$I2_USER->startpage = "news";
 			$I2_CACHE->remove('User','ldap_user_info_'.$I2_USER->iodineuidnumber);
@@ -33,8 +33,7 @@ class PolicyAccept extends Module {
 	
 	function display_pane($disp) {
 		global $I2_USER, $I2_SQL;
-        $acc = 0; //$I2_SQL->query("SELECT accept FROM policyaccept WHERE uid=%d;", $I2_USER->iodineuidnumber)->fetch_all_arrays()[0];
-		$disp->disp( "policyaccept.tpl", array( 'user' => $I2_USER, 'acc' => $acc) );
+		$disp->disp( "policyaccept.tpl", array( 'user' => $I2_USER) );
 		//TODO: Perhaps there is a better way than force flushing...maybe not. --wyang 2007/09/06
 		$disp->flush_buffer();
 		Display::stop_display();
