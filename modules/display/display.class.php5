@@ -159,8 +159,12 @@ class Display {
 				** Display the main pane.
 				*/
 				$disp = new Display($module);
-
-				$mod = NULL;
+                
+                if(isset($I2_USER) && $I2_USER->eighthAgreement != TRUE && !in_array($module, ["auth", "policyaccept"])) {
+                    redirect("policyaccept?force");
+                }
+				
+                $mod = NULL;
 
 				try {
 					$mod = new $module();
