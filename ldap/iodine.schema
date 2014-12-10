@@ -656,7 +656,7 @@ attributetype ( i2Attr:80
 	)
 
 attributetype ( i2Attr:81
-	NAME ('eighth-agreement')
+	NAME ('eighthAgreement')
 	DESC 'Whether the user has accepted the 8th period policy agreement'
 	EQUALITY booleanMatch
 	SYNTAX boolSyntax
@@ -722,7 +722,7 @@ objectclass ( i2OC:1
 		loginShell $
 		is-student-admin $
 		is-admin $
-		eighth-agreement
+		eighthAgreement
 	)
 	)
 
