@@ -136,6 +136,9 @@
             </script>
             <script type="text/javascript" async="" src="//seal.digicert.com/seals/cascade/seal.min.js"></script>
         </div>
+        <a class="oss" href="https://github.com/tjcsl/iodine" title="Intranet is open source software, and uses exclusively open-source technologies.">
+            <img src="[<$I2_ROOT>]www/pics/oss.png" alt="Open Source Software" />
+        </a>
 	</div>
 	<div class="pane" id="subPane">
 		[<include file='dayschedule/login.tpl'>]
