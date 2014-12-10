@@ -19,7 +19,7 @@ class PolicyAccept extends Module {
         }
 		if( isset($_POST['accept']) && $_POST['accept']) {
 			//user finished the intro blurb
-			$I2_USER->eighthAgreement = TRUE;
+			$I2_USER->eighthAgreement = 'TRUE';
 			//reset to news
 			$I2_USER->startpage = "news";
 			$I2_CACHE->remove('User','ldap_user_info_'.$I2_USER->iodineuidnumber);
