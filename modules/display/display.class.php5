@@ -160,8 +160,12 @@ class Display {
 				*/
 				$disp = new Display($module);
                 
-                if(isset($I2_USER) && $I2_USER->eighthAgreement != TRUE && !in_array($module, ["auth", "policyaccept"])) {
-                    redirect("policyaccept?force");
+                if(isset($I2_USER) && 
+                   $I2_USER->objectClass == "tjhsstStudent" &&
+                   $I2_USER->eighthAgreement != TRUE &&
+                   !in_array($module, ["auth", "policyaccept", "css"]) &&
+                   i2config_get("eighthagreement", "false", "core")) {
+                        redirect("policyaccept?force");
                 }
 				
                 $mod = NULL;
