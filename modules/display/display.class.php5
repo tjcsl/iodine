@@ -162,7 +162,7 @@ class Display {
                 
                 if(isset($I2_USER) && 
                    $I2_USER->objectClass == "tjhsstStudent" &&
-                   $I2_USER->eighthAgreement != TRUE &&
+                   ($I2_USER->eighthagreement != 'TRUE' || $I2_USER->eighthagreement != TRUE) &&
                    !in_array($module, ["auth", "policyaccept", "css"]) &&
                    i2config_get("eighthagreement", "false", "core")) {
                         redirect("policyaccept");

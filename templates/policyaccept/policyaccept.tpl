@@ -1,3 +1,4 @@
+<!-- [<$I2_USER->eighthagreement>] -->
 <div style="position: absolute; top: 15px; right: 15px">
     <a href="[<$I2_ROOT>]logout">Logout</a>
 </div>

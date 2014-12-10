@@ -12,16 +12,17 @@ class PolicyAccept extends Module {
 	private $data;
 
 	function init_pane() {
-		global $I2_USER, $I2_QUERY, $I2_CACHE;
-        if(isset($I2_QUERY['forcein'])) {
-            $I2_USER->startpage="policyaccept";
+		global $I2_USER, $I2_QUERY, $I2_CACHE, $I2_ARGS;
+        if(isset($I2_ARGS[1]) && $I2_ARGS[1] == 'forcein') {
+            $I2_USER->eighthagreement = 'FALSE';
+            unset($I2_USER->eighthagreement);
+
             $I2_CACHE->remove('User', 'ldap_user_info_'.$I2_USER->iodineuidnumber);
+            redirect();
         }
-		if( isset($_POST['accept']) && $_POST['accept']) {
+		if( isset($_POST['accept']) ) {
 			//user finished the intro blurb
-			$I2_USER->eighthAgreement = 'TRUE';
-			//reset to news
-			$I2_USER->startpage = "news";
+			$I2_USER->eighthagreement = 'TRUE';
 			$I2_CACHE->remove('User','ldap_user_info_'.$I2_USER->iodineuidnumber);
 
 			redirect();
