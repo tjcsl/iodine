@@ -37,15 +37,15 @@
 
     <h3>I will be assigned to Administrative Detention if..</h3>
     <ul>
-        <li>I get <b>2 or more uncleared absences</b> in any quarter</li>
+        <li>I get <b>two or more uncleared absences</b> in any quarter</li>
         <li>I get any additional uncleared absences in the same quarter after attending detention</li>
     </ul>
     <h3>I may be referred to an Administrator for possible additional consequences, including Saturday detention, if..</h3>
     <ul>
         <li>I am late or fail to show up for both blocks of the detention period</li>
-        <li>I get five or more absences in any quarter</li>
-        <li>I get ten or more absences in the year</li>
-        <li>I get assigned to three Administrative Detentions in the year</li>
+        <li>I get <b>five or more absences</b> in any quarter</li>
+        <li>I get <b>ten or more absences</b> in the year</li>
+        <li>I get assigned to <b>three Administrative detentions</b> in the year</li>
     </ul>
     <br />
     <p>If you have any questions, please stop by the 8th Period Office.</p>
