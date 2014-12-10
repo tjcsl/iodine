@@ -165,7 +165,7 @@ class Display {
                    $I2_USER->eighthAgreement != TRUE &&
                    !in_array($module, ["auth", "policyaccept", "css"]) &&
                    i2config_get("eighthagreement", "false", "core")) {
-                        redirect("policyaccept?force");
+                        redirect("policyaccept");
                 }
 				
                 $mod = NULL;
