@@ -99,3 +99,13 @@ span.cl {
 	max-height: 40%;
 	z-index: 11;
 }
+
+.oss {
+    position: absolute;
+    bottom: 0;
+}
+@media (max-width: 645px) {
+    .oss {
+        display: none;
+    }
+}
