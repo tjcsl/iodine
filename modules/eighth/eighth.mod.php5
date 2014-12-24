@@ -413,6 +413,21 @@ class Eighth extends Module {
 		global $I2_API;
 		$I2_API->startElement('activity');
 		foreach($act->get_data() as $name=>$value) {
+            if($name == "block_sponsors") {
+                $I2_API->startElement($name);
+                foreach($value as $arrkey=>$arrvalue) {
+                    $I2_API->startElement("sponsor");
+
+                    $sp = new EighthSponsor($arrvalue);
+                    $I2_API->writeElement('sid', $sp->sid);
+                    $I2_API->writeElement('fname', $sp->fname);
+                    $I2_API->writeElement('lname', $sp->lname);
+                    $I2_API->writeElement('userid', $sp->userid);
+
+                    $I2_API->endElement();
+                }
+                $I2_API->endElement();
+            } else
 			if(is_array($value)) {
 				$I2_API->startElement($name);
 				foreach($value as $arrkey=>$arrvalue) {
@@ -425,10 +440,10 @@ class Eighth extends Module {
 			}
 			else if(is_object($value)) {
 				$I2_API->startElement($name);
-				foreach($value->get_data() as $arrkey=>$arrvalue) {
-					$I2_API->writeElement($arrkey,htmlspecialchars($arrvalue));
-				}
-				$I2_API->endElement();
+                foreach($value->get_data() as $arrkey=>$arrvalue) {
+                    $I2_API->writeElement($arrkey,htmlspecialchars($arrvalue));
+                }
+                $I2_API->endElement();
 			}
 			else {
 				$I2_API->writeElement($name,htmlspecialchars($value));
