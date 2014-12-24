@@ -142,6 +142,19 @@ class News extends Module {
 	private function print_story($story) {
 		global $I2_API;
 		$I2_API->startElement('post');
+        
+        $I2_API->writeElement('posted', $story->posted);
+        $I2_API->writeElement('expire', $story->expire);
+        $I2_API->writeElement('visible', $story->visible);
+        $I2_API->writeElement('public', $story->public);
+        $I2_API->startElement('groups');
+        foreach($story->groups as $gr) {
+            $I2_API->startElement('group');
+            $I2_API->writeElement('gid', $gr->gid);
+            $I2_API->writeElement('name', $gr->name);
+            $I2_API->endElement();
+        }
+        $I2_API->endElement();
 		$I2_API->writeElement('id',$story->nid);
 		$I2_API->writeElement('title',$story->title);
 		$I2_API->startElement('text');
@@ -150,6 +163,9 @@ class News extends Module {
 		$I2_API->startElement('text_strip');
 		$I2_API->writeCData(strip_tags($story->text));
 		$I2_API->endElement();
+        $I2_API->writeElement('liked', $story->liked);
+        $I2_API->writeElement('likecount', $story->likecount);
+        
 		$I2_API->endElement();
 	}
 
