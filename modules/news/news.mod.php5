@@ -142,7 +142,8 @@ class News extends Module {
 	private function print_story($story) {
 		global $I2_API;
 		$I2_API->startElement('post');
-        
+       
+        $I2_API->writeElement('read', $story->has_been_read() ? 1 : 0);
         $I2_API->writeElement('posted', $story->posted);
         $I2_API->writeElement('expire', $story->expire);
         $I2_API->writeElement('visible', $story->visible);
@@ -174,7 +175,7 @@ class News extends Module {
 	*
 	*/
 	function api() {
-		global $I2_ARGS;
+		global $I2_ARGS, $I2_QUERY;
 		if(!isset($I2_ARGS[1])) {
 			throw new I2Exception('Arguments not specified. Possible arguments are list, show.');
 		}
@@ -183,9 +184,15 @@ class News extends Module {
 				if( $this->stories === NULL) {
 					$this->stories = Newsitem::get_all_items(false);
 				}
+                $i = 0;
+                $st = isset($I2_QUERY['start']) ? $I2_QUERY['start'] : 0;
+                $en = isset($I2_QUERY['end']) ? $I2_QUERY['end'] : $st + 10;
 				foreach($this->stories as $story) {
-					if ((!$story->has_been_read()) && $story->readable()) {
-						self::print_story($story);
+					if ($story->readable()) {
+                        if($i >= $st && $i < $en) {
+						    self::print_story($story);
+                        }
+                        $i++;
 					}
 				}
 				break;
