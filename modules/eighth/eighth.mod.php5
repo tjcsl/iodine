@@ -427,8 +427,20 @@ class Eighth extends Module {
                     $I2_API->endElement();
                 }
                 $I2_API->endElement();
-            } else
-			if(is_array($value)) {
+            } else if($name == "block_rooms") {
+                $I2_API->startElement($name);
+                foreach($value as $arrkey=>$arrvalue) {
+                    $I2_API->startElement("room");
+
+                    $rm = new EighthRoom($arrvalue);
+                    $I2_API->writeElement('rid', $rm->rid);
+                    $I2_API->writeElement('name', $rm->name);
+                    $I2_API->writeElement('capacity', $rm->capacity);
+
+                    $I2_API->endElement();
+                }
+                $I2_API->endElement();
+            } else if(is_array($value)) {
 				$I2_API->startElement($name);
 				foreach($value as $arrkey=>$arrvalue) {
 						//FIXME: hack to make singular
