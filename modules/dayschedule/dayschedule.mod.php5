@@ -263,7 +263,40 @@ class DaySchedule extends Module {
 
 	}
 
-	/**
+
+    function ajax_json_day() {
+        self::gen_day_args();
+        $schedule = self::$args['schedule'];
+        $json = array();
+        $json['dayname'] = self::$args['dayname'];
+        $json['summary'] = self::$args['summary'];
+
+        $json['date'] = array(
+            'tomorrow' => date('Ymd', strtotime('+1 day', strtotime(self::$args['date']))),
+            'yesterday' => date('Ymd', strtotime('-1 day', strtotime(self::$args['date']))),
+            'today' => self::$args['date']
+        );
+
+        $json['schedule'] = array(
+            'date' => self::$args['date'],
+            'period' => array()
+        );
+        $i = 1;
+        foreach($schedule as $s) {
+            $json['schedule']['period'][] = array(
+                'num' => $i++,
+                'name' => $s[0],
+                'times' => array(
+                    'start' => $s[1],
+                    'end' => $s[2],
+                    'times' => $s[1].' - '.$s[2]
+                )
+            );
+        }
+        return $json;
+    }
+
+    /**
 	* Used for accessing data on the client side through AJAX
 	**/
 	function ajax() {
@@ -276,36 +309,22 @@ class DaySchedule extends Module {
 		**/
 		
 		self::init_pane();
-		if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'json') {
-			self::gen_day_args();
-			$schedule = self::$args['schedule'];
-			$json = array();
-			$json['dayname'] = self::$args['dayname'];
-			$json['summary'] = self::$args['summary'];
-
-			$json['date'] = array(
-				'tomorrow' => date('Ymd', strtotime('+1 day', strtotime(self::$args['date']))),
-				'yesterday' => date('Ymd', strtotime('-1 day', strtotime(self::$args['date']))),
-				'today' => self::$args['date']
-			);
-
-			$json['schedule'] = array(
-				'date' => self::$args['date'],
-				'period' => array()
-			);
-			$i = 1;
-			foreach($schedule as $s) {
-				$json['schedule']['period'][] = array(
-					'num' => $i++,
-					'name' => $s[0],
-					'times' => array(
-						'start' => $s[1],
-						'end' => $s[2],
-						'times' => $s[1].' - '.$s[2]
-					)
-				);
-			}
-			if(isset($I2_QUERY['callback'])) {
+        if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'json_exp') {
+            $json = array();
+            $start = $I2_QUERY['start'];
+            $end = $I2_QUERY['end'];
+            if(!isset($I2_QUERY['start']) || !isset($I2_QUERY['end'])) die(json_encode(array("Invalid")));
+            $date = $start;
+            while($date != $end) {
+                self::$args['date'] = $date;
+                $json[$date] = self::ajax_json_day();
+                $date = date('Ymd', strtotime('+1 day', strtotime(self::$args['date'])));
+            }
+            die(json_encode($json));
+        } else if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'json') {
+			$json = self::ajax_json_day();
+            
+            if(isset($I2_QUERY['callback'])) {
 				echo $I2_QUERY['callback']."(".json_encode($json).");";
 				die();
 			}
