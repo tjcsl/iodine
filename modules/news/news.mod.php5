@@ -160,9 +160,9 @@ class News extends Module {
 		$I2_API->startElement('text');
 		$I2_API->writeCData($story->text);
 		$I2_API->endElement();
-		$I2_API->startElement('text_strip');
-		$I2_API->writeCData(strip_tags($story->text));
-		$I2_API->endElement();
+		// $I2_API->startElement('text_strip');
+		// $I2_API->writeCData(strip_tags($story->text));
+		// $I2_API->endElement();
         $I2_API->writeElement('liked', $story->liked);
         $I2_API->writeElement('likecount', $story->likecount);
         
