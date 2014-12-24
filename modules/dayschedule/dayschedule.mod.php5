@@ -310,6 +310,7 @@ class DaySchedule extends Module {
 		
 		self::init_pane();
         if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'json_exp') {
+            set_time_limit(2); // in case some idiot has $start > $end..
             $json = array();
             $start = $I2_QUERY['start'];
             $end = $I2_QUERY['end'];
