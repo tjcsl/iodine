@@ -520,6 +520,7 @@ class Eighth extends Module {
                     self::print_activity($act);
                 }
                 $I2_API->endElement(); 
+                break;
                 
             // $I2_ARGS[2] == block id
 			case 'list_activities':
