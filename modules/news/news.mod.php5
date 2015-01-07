@@ -581,6 +581,7 @@ class News extends Module {
 				// The string used for there being no emergency messages
 				$con = $html->find('div[id=mainContent]');
 				$snowdayd = preg_replace('/( )+/', ' ',$con[0]->innertext);
+                $snowdayd = preg_replace('<!--(.*?)-->', '', $snowdayd);
 				if(empty($snowdayd) || (!is_string($snowdayd) && !is_array($snowdayd))) return "<!-- No text -->";
 				$false_str = array("There are no emergency announcements at this time","There are no emergency messages at this time","There are no emeregency annoncements at this time.");
 				$snowday = (self::strposa($snowdayd, $false_str)===false);
