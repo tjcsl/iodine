@@ -520,7 +520,6 @@ class Eighth extends Module {
                     self::print_activity($act);
                 }
                 $I2_API->endElement(); 
-                break;
                 
             // $I2_ARGS[2] == block id
 			case 'list_activities':
@@ -560,10 +559,10 @@ class Eighth extends Module {
 					$user = $I2_USER;
 				}
 				// (aid, bid)
+				$activity = new EighthActivity($_POST['aid']);
 				if(!EighthBlock::block_exists($_POST['bid']))
 					throw new I2Exception("Block does not exist");
-				$activity = new EighthActivity($_POST['aid'], $_POST['bid']);
-				$success = ($activity->add_member($user, FALSE));
+				$success = ($activity->add_member($user, FALSE, $_POST['bid']));
 				$I2_API->startElement('signup');
 				$I2_API->writeElement('bid', $_POST['bid']);
 				$I2_API->writeElement('aid', $_POST['aid']);
