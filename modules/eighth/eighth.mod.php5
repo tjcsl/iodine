@@ -559,11 +559,11 @@ class Eighth extends Module {
 					$user = $I2_USER;
 				}
 				// (aid, bid)
-				$activity = new EighthActivity($_POST['aid']);
 				if(!EighthBlock::block_exists($_POST['bid']))
 					throw new I2Exception("Block does not exist");
-				$success = ($activity->add_member($user, FALSE, $_POST['bid']));
-				$I2_API->startElement('signup');
+				$activity = new EighthActivity($_POST['aid'], $_POST['bid']);
+                $success = ($activity->add_member($user, FALSE));
+                $I2_API->startElement('signup');
 				$I2_API->writeElement('bid', $_POST['bid']);
 				$I2_API->writeElement('aid', $_POST['aid']);
 				$I2_API->writeElement('uid', $user->uid);
