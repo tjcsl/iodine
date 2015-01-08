@@ -558,7 +558,6 @@ class Eighth extends Module {
 				else {
 					$user = $I2_USER;
 				}
-				// (aid, bid)
 				if(!EighthBlock::block_exists($_POST['bid']))
 					throw new I2Exception("Block does not exist");
 				$activity = new EighthActivity($_POST['aid'], $_POST['bid']);
