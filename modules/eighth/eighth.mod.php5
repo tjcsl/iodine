@@ -520,6 +520,7 @@ class Eighth extends Module {
                     self::print_activity($act);
                 }
                 $I2_API->endElement(); 
+		break;
                 
             // $I2_ARGS[2] == block id
 			case 'list_activities':
@@ -558,11 +559,12 @@ class Eighth extends Module {
 				else {
 					$user = $I2_USER;
 				}
+				// (aid, bid)
 				if(!EighthBlock::block_exists($_POST['bid']))
 					throw new I2Exception("Block does not exist");
 				$activity = new EighthActivity($_POST['aid'], $_POST['bid']);
-                $success = ($activity->add_member($user, FALSE));
-                $I2_API->startElement('signup');
+				$success = ($activity->add_member($user, FALSE));
+				$I2_API->startElement('signup');
 				$I2_API->writeElement('bid', $_POST['bid']);
 				$I2_API->writeElement('aid', $_POST['aid']);
 				$I2_API->writeElement('uid', $user->uid);
@@ -2363,7 +2365,7 @@ class Eighth extends Module {
 			self::end_undo_transaction();
 			redirect('eighth/fin_schedules');
 		}
-	 	else if($this->op == 'unlock') {
+		else if($this->op == 'unlock') {
 			$block = new EighthBlock($this->args['bid']);
 			self::start_undo_transaction();
 			$block->locked = FALSE;
