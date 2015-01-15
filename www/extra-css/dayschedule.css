@@ -187,3 +187,8 @@ body.i3-dark .dayschedule-week-fixed { background: black; }
 .day-up:hover {
 	opacity: 1;
 }
+
+.dayschedule td.times  {
+    white-space: nowrap;
+    overflow: hidden;
+}
