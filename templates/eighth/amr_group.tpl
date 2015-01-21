@@ -5,7 +5,7 @@
 [</if>]
 <br />
 <form method="post" action="[<$I2_ROOT>]eighth/amr_group/modify/gid/[<$group->gid>]">
-<input type="text" name="name" size="25" value="[<$group->name|replace:'eighth_':''>]" />
+<input type="text" name="name" size="25" value="[<$group->name|escape|replace:'eighth_':''>]" />
 <input type="submit" value="Change group name" />
 </form>
 <br />
