@@ -1,11 +1,11 @@
 <a href="[<$I2_ROOT>]groups">Groups Home</a><br />
 <br />
-Group: <strong>[<$group>]</strong><br />
+Group: <strong>[<$group|escape>]</strong><br />
 <br />
 [<if $can_add>]
  <h3>Adding Users</h3>
  To add a person, enter their user id here:<br />
- <form method="post" action="[<$I2_ROOT>]groups/pane/[<$group>]" class="boxform">
+ <form method="post" action="[<$I2_ROOT>]groups/pane/[<$group|escape>]" class="boxform">
  <input type="hidden" name="group_form" value="add" />
  <input type="text" name="uid" value="" /><input type="submit" value="Add" name="submit" /><br /><br />
  </form>
@@ -13,7 +13,7 @@ Group: <strong>[<$group>]</strong><br />
 [<if $can_remove>]
  <h3>Removing Users</h3>
  To remove a person, enter their user id here:<br />
- <form method="post" action="[<$I2_ROOT>]groups/pane/[<$group>]" class="boxform">
+ <form method="post" action="[<$I2_ROOT>]groups/pane/[<$group|escape>]" class="boxform">
  <input type="hidden" name="group_form" value="remove" />
  <input type="text" name="uid" value="" /><input type="submit" value="Remove" name="submit" /><br /><br />
  </form>
@@ -21,7 +21,7 @@ Group: <strong>[<$group>]</strong><br />
 [<if $can_set_perms>]
  <h3>Set Permissions</h3>
  <p>
- <form method="post" action="[<$I2_ROOT>]groups/pane/[<$group>]" class="boxform">
+ <form method="post" action="[<$I2_ROOT>]groups/pane/[<$group|escape>]" class="boxform">
  <input type="hidden" name="group_form" value="grant" />
  To grant a permission to a user, enter their user id here:<br />
  <input type="text" name="uid" value="" /><br />
@@ -35,7 +35,7 @@ Group: <strong>[<$group>]</strong><br />
  </form>
  </p>
  <p>
- <form method="post" action="[<$I2_ROOT>]groups/pane/[<$group>]" class="boxform">
+ <form method="post" action="[<$I2_ROOT>]groups/pane/[<$group|escape>]" class="boxform">
  <input type="hidden" name="group_form" value="grantgroup" />
  To grant a permission to all members in a group, enter the group name or GID here:<br />
  <input type="text" name="gid" value="" /><br />

@@ -1,7 +1,7 @@
 [<include file="eighth/header.tpl">]
 <table><tr><td>
 [<if isset($error) >]
-<font color=red>[<$error>]</font>
+<span class="color:red;">[<$error>]</span> 
 [</if>]
 <br />
 <form method="post" action="[<$I2_ROOT>]eighth/amr_group/modify/gid/[<$group->gid>]">

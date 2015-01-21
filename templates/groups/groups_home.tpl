@@ -10,7 +10,7 @@
  You are currently a member of the following groups:<br />
  <ul>
  [<foreach from=$groups item=grp>]
-  <li><a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a> [<if $grp->has_permission($I2_USER,'join')>]<em>- <a href="[<$I2_ROOT>]groups/sleave/[<$grp->gid>]">[Leave this group]</a> -</em> [</if>]([<$grp->description>])</li>
+  <li><a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name|escape>]</a> [<if $grp->has_permission($I2_USER,'join')>]<em>- <a href="[<$I2_ROOT>]groups/sleave/[<$grp->gid>]">[Leave this group]</a> -</em> [</if>]([<$grp->description>])</li>
  [</foreach>]
  </ul>
 [<else>]
@@ -20,7 +20,7 @@
  You are currently an admin in the following groups:<br />
  <ul>
  [<foreach from=$group_admin item=grp>]
-   <li><a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name>]</a></li>
+   <li><a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">[<$grp->name|escape>]</a></li>
  [</foreach>]
  </ul>
 [</if>]
@@ -28,7 +28,7 @@
  You are not a member of the following groups, but you may join them (click to join):<br />
  <ul>
  [<foreach from=$group_join item=grp>]
-  <li><a onclick="return confirm('Are you sure you want to join this group?')" href="[<$I2_ROOT>]groups/sjoin/[<$grp->gid>]">[<$grp->name>]</a> <a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">(view group)</a> ([<$grp->description>])</li>
+  <li><a onclick="return confirm('Are you sure you want to join this group?')" href="[<$I2_ROOT>]groups/sjoin/[<$grp->gid>]">[<$grp->name|escape>]</a> <a href="[<$I2_ROOT>]groups/pane/[<$grp->gid>]">(view group)</a> ([<$grp->description>])</li>
  [</foreach>]
  </ul>
 [</if>]
