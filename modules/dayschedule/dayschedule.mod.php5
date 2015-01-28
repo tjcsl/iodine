@@ -319,17 +319,22 @@ class DaySchedule extends Module {
             while($date != $end) {
                 self::$args['date'] = $date;
                 $json[$date] = self::ajax_json_day();
-                $date = date('Ymd', strtotime('+1 day', strtotime(self::$args['date'])));
+                $date = date('Ymd', strtotime(isset($I2_QUERY['incr']) ? $I2_QUERY['incr'] : '+1 day', strtotime(self::$args['date'])));
             }
-            die(json_encode($json));
+            header("Content-type: application/json");
+            if(isset($I2_QUERY['callback'])) {
+                echo $I2_QUERY['callback']."(".json_encode($json).");";
+            } else {
+                echo json_encode($json);
+            }
         } else if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'json') {
 			$json = self::ajax_json_day();
-            
+            header("Content-type: application/json"); 
             if(isset($I2_QUERY['callback'])) {
 				echo $I2_QUERY['callback']."(".json_encode($json).");";
-				die();
-			}
-			echo json_encode($json);
+			} else {
+			    echo json_encode($json);
+            }
 		} else if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'week') {
 			$week = array();
 			$d = isset($I2_QUERY['days']) ? $I2_QUERY['days'] : 5;
@@ -340,6 +345,19 @@ class DaySchedule extends Module {
 				self::increment_date('+1 day');
 			}
 			echo json_encode($week);
+        } else if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'exp') {
+            $week = array();
+            $d = isset($I2_QUERY['days']) ? $I2_QUERY['days'] : 5;
+            for($i=0; $i<$d; $i++) {
+                self::gen_day_args();
+                $week[] = $disp->fetch($I2_FS_ROOT . 'templates/dayschedule/pane.tpl', self::$args, false);
+                self::increment_date(isset($I2_QUERY['incr']) ? $I2_QUERY['incr'] : '+1 day');
+            }
+            echo "<table><tr>";
+            foreach($week as $wk) {
+                echo "<td>$wk</td>";
+            }
+            echo "</tr></table>";
 		} else {
 			self::gen_day_args();
 			if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'box') self::$args['type'] = 'box';
