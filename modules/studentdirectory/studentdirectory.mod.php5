@@ -234,6 +234,35 @@ class StudentDirectory extends Module {
 				$this->template_args['mode'] = $mode;
 
 				return Array('Directory: '.$user->fname.' '.$user->lname, $user->fname.' '.$user->lname);
+            case 'tools':
+                $this->template = 'studentdirectory_tools.tpl';
+                if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'randomstudent') {
+                    
+                    $ldapstr = "(&(|";
+                    if(isset($_POST['grades'])) {
+                        $grades = $_POST['grades'];
+                    } else $grades = [9,10,11,12];
+
+                    for($i=0; $i<sizeof($grades); $i++) {
+                        $ldapstr .= "(|(graduationYear=".User::get_gradyear((int)$grades[$i])."))";
+                    }
+                    $ldapstr .= "))";
+                    d("LDAP str: $ldapstr");
+                    $uldap = $I2_LDAP->search(LDAP::get_user_dn(), $ldapstr, array('iodineUid'));
+                    $users = [];
+                    while($row = $uldap->fetch_array(Result::ASSOC)) {
+                        d_r($row);
+                        $users[] = $row['iodineUid'];
+                    }
+                    d_r($users);
+                    shuffle($users);
+                    $usr = new User($users[0]);
+                    d("RANDOM USER: ".$usr->uid);
+                    header("Location: ".$I2_ROOT."/studentdirectory/info/".$usr->uid);
+                    return Array('Random Student');
+                }
+                return Array('Tools');
+
 			default:
 				return Array('Error', 'Error: User does not exist');
 				
