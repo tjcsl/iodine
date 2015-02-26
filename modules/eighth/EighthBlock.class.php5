@@ -135,6 +135,21 @@ class EighthBlock {
 		return $I2_SQL->query('SELECT * FROM eighth_blocks WHERE date >= %t AND date <= ADDDATE(%t, INTERVAL %d DAY) ORDER BY date,block', $starting_date, $starting_date, $number_of_days)->fetch_all_arrays(Result::ASSOC);
 	}
 
+    /**
+    * Gets the first block of the current school year.
+    *
+    */
+    public static function get_first_of_year() {
+        global $I2_SQL;
+        $yr = (int)date('Y');
+        // June and before is of the previous year
+        if((int)date('n') <= 6) $yr--;
+        $date = $yr."-09-01";
+        $q = $I2_SQL->query('SELECT bid FROM eighth_blocks WHERE DATE >= %t ORDER BY bid ASC LIMIT 1', $date)->fetch_all_arrays(Result::ASSOC); 
+        if(sizeof($q) == 0) return null;
+        return $q[0]['bid'];
+    }
+
 	/**
 	* get private data.
 	* only for use by api.
