@@ -241,8 +241,8 @@ class StudentDirectory extends Module {
                 } else if($I2_ARGS[2] == 'randomstudent') {
                     
                     $ldapstr = "(&(|";
-                    if(isset($_POST['grades'])) {
-                        $grades = $_POST['grades'];
+                    if(isset($_REQUEST['grades'])) {
+                        $grades = $_REQUEST['grades'];
                     } else $grades = [9,10,11,12];
 
                     for($i=0; $i<sizeof($grades); $i++) {
@@ -263,6 +263,9 @@ class StudentDirectory extends Module {
                     header("Location: ".$I2_ROOT."/studentdirectory/info/".$usr->uid);
                     return Array('Random Student');
                 } else if($I2_ARGS[2] == "mostattended") {
+                    if( !$I2_USER->is_group_member("admin_all") && !$I2_USER->is_group_member("admin_eighth")) {
+                        throw new I2Exception("You don't have the appropriate permissions to use this tool.");
+                    }
                     $aid = $I2_QUERY['aid'];
                     $firstblk = isset($I2_QUERY['firstblk']) ? (int)$I2_QUERY['firstblk'] : EighthBlock::get_first_of_year();
                     $sql = $I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE aid=".$aid." AND bid >= ".$firstblk.";")->fetch_all_arrays();$s="";
