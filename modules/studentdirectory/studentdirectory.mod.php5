@@ -278,14 +278,20 @@ class StudentDirectory extends Module {
                     $ea = new EighthActivity($aid);
                     $eb = new EighthBlock($firstblk);
                     $str = "<form>Activity: <input name='aid' value='".$aid."' size=4 /> (".$ea->name.")<br />";
-                    $str .= "Since Block: <input name='firstblk' value='".$firstblk."' size=4 /> (".$eb->date.")<br /><input type='submit' value='Update' /></form><br />";
+                    $str .= "Since Block: <input name='firstblk' value='".$firstblk."' size=4 /> (".$eb->date.")<br /><input type='submit' value='Update' /></form>";
+                    $ustr = "";
+                    $snum = 0;
+                    $anum = 0;
                     foreach($t as $uid=>$num) {
                         try {
                             $usr = new User($uid);
-                            $str .= $num.". <a href='".$I2_ROOT."studentdirectory/info/".$usr->uid."'>".$usr->fullname." (".$usr->username.")</a><br>";
+                            $ustr .= $num.". <a href='".$I2_ROOT."studentdirectory/info/".$usr->uid."'>".$usr->fullname." (".$usr->username.")</a><br>";
+                            $snum++;
+                            $anum += $num;
                         } catch(Exception $e){}
                     }
-                    $this->template_args['output'] = $str;
+                    $str.= "<b>".$snum." students have attended, on average, ".round($anum/$snum, 2)." times</b><br />";
+                    $this->template_args['output'] = $str.$ustr."<br /><br />";
                     return Array('Global Student Attendance');
                 }
                 return Array('Tools');
