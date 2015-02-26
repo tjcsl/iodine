@@ -30,7 +30,7 @@ class StudentDirectory extends Module {
 	* Required by the {@link Module} interface.
 	*/
 	function init_pane() {
-		global $I2_ROOT,$I2_ARGS,$I2_USER,$I2_LDAP,$I2_QUERY;
+		global $I2_ROOT,$I2_ARGS,$I2_USER,$I2_LDAP,$I2_QUERY,$I2_SQL;
 
 		$this->user = NULL;
 
@@ -236,7 +236,9 @@ class StudentDirectory extends Module {
 				return Array('Directory: '.$user->fname.' '.$user->lname, $user->fname.' '.$user->lname);
             case 'tools':
                 $this->template = 'studentdirectory_tools.tpl';
-                if(isset($I2_ARGS[2]) && $I2_ARGS[2] == 'randomstudent') {
+                $this->template_args['output'] = '';
+                if(!isset($I2_ARGS[2])) {
+                } else if($I2_ARGS[2] == 'randomstudent') {
                     
                     $ldapstr = "(&(|";
                     if(isset($_POST['grades'])) {
@@ -260,6 +262,31 @@ class StudentDirectory extends Module {
                     d("RANDOM USER: ".$usr->uid);
                     header("Location: ".$I2_ROOT."/studentdirectory/info/".$usr->uid);
                     return Array('Random Student');
+                } else if($I2_ARGS[2] == "mostattended") {
+                    $aid = $I2_QUERY['aid'];
+                    $firstblk = isset($I2_QUERY['firstblk']) ? (int)$I2_QUERY['firstblk'] : EighthBlock::get_first_of_year();
+                    $sql = $I2_SQL->query("SELECT userid FROM eighth_activity_map WHERE aid=".$aid." AND bid >= ".$firstblk.";")->fetch_all_arrays();$s="";
+                    $t=array();
+                    foreach($sql as $e) {
+                        if(isset($e['userid']) && !isset($t[$e['userid']])) {
+                            $t[$e['userid']] = 1;
+                        } else {
+                            $t[$e['userid']]++;
+                        }
+                    }
+                    arsort($t);
+                    $ea = new EighthActivity($aid);
+                    $eb = new EighthBlock($firstblk);
+                    $str = "<form>Activity: <input name='aid' value='".$aid."' size=4 /> (".$ea->name.")<br />";
+                    $str .= "Since Block: <input name='firstblk' value='".$firstblk."' size=4 /> (".$eb->date.")<br /><input type='submit' value='Update' /></form><br />";
+                    foreach($t as $uid=>$num) {
+                        try {
+                            $usr = new User($uid);
+                            $str .= $num.". <a href='".$I2_ROOT."studentdirectory/info/".$usr->uid."'>".$usr->fullname." (".$usr->username.")</a><br>";
+                        } catch(Exception $e){}
+                    }
+                    $this->template_args['output'] = $str;
+                    return Array('Global Student Attendance');
                 }
                 return Array('Tools');
 
