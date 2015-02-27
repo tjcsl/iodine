@@ -228,6 +228,7 @@ class StudentDirectory extends Module {
 					$this->template_args['homecoming_may_vote'] = false;// Don't show this in the preview
 				else
 					$this->template_args['homecoming_may_vote'] = Homecoming::user_may_vote($user);
+                $this->template_args['mrcolonial_may_vote'] = MrColonial::user_may_vote($user);
 				$this->template_args['im_an_admin'] = Group::admin_all()->has_member($I2_USER);
 				$this->template_args['is_admin'] = Group::admin_all()->has_member($user);
 				$this->template_args['sex'] = $user->sex;

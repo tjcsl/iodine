@@ -35,7 +35,7 @@ class MrColonial extends Module {
 		if(count($I2_ARGS) <= 1) {
 			$this->template = 'homecoming_pane.tpl';
 
-			$muid = $I2_SQL->query('SELECT male FROM mrcolonial_votes WHERE uid=%d', $I2_USER->uid)->fetch_array();
+			list($muid) = $I2_SQL->query('SELECT male FROM mrcolonial_votes WHERE uid=%d', $I2_USER->uid)->fetch_array();
 			if ($muid) {
 				$this->template_args['voted_male'] = new User($muid);
 			}
@@ -93,7 +93,7 @@ class MrColonial extends Module {
 
 		$istime = (($start < $now) && ($now < $end));
 
-		return ($istime && "M" == $votee->grade);
+		return ($istime && $votee->gender == "M");
 	}
 
 	/**
