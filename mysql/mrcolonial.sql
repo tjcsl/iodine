@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS mrcolonial_votes;
+CREATE TABLE mrcolonial_votes (
+	uid MEDIUMINT UNSIGNED NOT NULL UNIQUE,
+	PRIMARY KEY(uid),
+	grade MEDIUMINT UNSIGNED NOT NULL,
+	KEY(grade),
+	male MEDIUMINT UNSIGNED
+);
