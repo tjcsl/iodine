@@ -257,8 +257,8 @@ class Display {
 		global $I2_USER, $I2_ROOT;
 		if($I2_USER->objectClass == "tjhsstStudent") {
                         $numabs = count(EighthSchedule::get_absences($I2_USER->uid));
-                        if($numabs > 0) {
-                                $suffix = " - <a".($numabs>2?" style='color: red'":"")." href='{$I2_ROOT}eighth/vcp_schedule/absences/uid/{$I2_USER->uid}'>{$numabs} absence".($numabs>1?'s':'')."</a>";
+                        if($numabs > 0 && !$I2_USER->is_group_member("admin_all")) {
+                                $suffix = "<a style='".($numabs>2?"color: red":"").";float:right' href='{$I2_ROOT}eighth/vcp_schedule/absences/uid/{$I2_USER->uid}'>{$numabs} absence".($numabs>1?'s':'')."</a>";
                         } else $suffix = "";
                 } else $suffix = "";
 		return $title . $suffix;

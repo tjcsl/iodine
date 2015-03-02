@@ -28,7 +28,14 @@ blink=setInterval(function(){$("blink,.blink").each(function(){$(this).css('visi
 <script type='text/javascript'>
 var currentdate = '[<$date>]';
 var dayschedule_type = '[<if isset($type)>][<$type>][<else>]page[</if>]';
+var dayschedule_summary = '[<$summaryid>]';
 </script>
+[<if $summaryid eq "snowday">]
+    <script type='text/javascript'> $.getScript('[<$I2_ROOT>]www/js/logins/special/snow.js')</script>
+    [<if isset($type) and $type eq "box">]
+        <style type="text/css">#snowcontainer { position: fixed; }</style>
+    [</if>]
+[</if>]
 <div class='dayschedule[<if isset($type)>] [<$type>][</if>]'>
 	<div class='day-left' onclick='day_jump(-1)' title='Go back one day'>
 	&#9668;
