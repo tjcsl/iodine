@@ -19,6 +19,9 @@ Username: [<$user->iodineuid>]<br />
 [</if>]
 [<if $user->grade != 'staff'>]
 [<if $homecoming_may_vote>]<br /><br /><strong><a href="[<$I2_ROOT>]homecoming/vote/[<$user->uid>]">Vote for this person<br />for homecoming court</a></strong>[</if>]
+[<if $mrcolonial_may_vote>]<br /><br /><strong><a href="[<$I2_ROOT>]mrcolonial/vote/[<$user->uid>]">Vote for [<$user->name>] for Mr. Colonial</a></strong>
+[</if>]
+
 [</if>]
 
 <!-- April Fools' Day 2011 relationship status -->
