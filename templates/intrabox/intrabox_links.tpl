@@ -13,3 +13,4 @@
 <a href="http://colonialathletics.org">TJ Athletics</a><br />
 <a href="http://tinyurl.com/tjmorning">Submit Morning Announcement Request</a><br />
 <a href="https://livedoc.tjhsst.edu/wiki/Forwarding_your_TJ_Email">Forwarding your TJ Email</a><br />
+<a href="https://www.tjhsst.edu/~2016jwoglom/uploads/WiFiFAQ.pdf">FCPSOnboard WiFi FAQ</a><br />
