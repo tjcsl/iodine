@@ -93,7 +93,7 @@ class MrColonial extends Module {
 
 		$istime = (($start < $now) && ($now < $end));
 
-		return ($istime && $votee->gender == "M");
+		return ($istime && $votee->gender == "M" && $votee->grade == $I2_USER->grade);
 	}
 
 	/**
