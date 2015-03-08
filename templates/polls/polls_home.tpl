@@ -19,8 +19,8 @@
 <tr><td>No polls are available at this time.</td></tr>
 [</foreach>]
 [<if isset($admin)>]
-  <tr><td colspan="5"><b>Finished polls</b></td></tr>
-[<foreach from=$finished item=poll>]
+  <tr><td colspan="5"><b>Unstarted polls</b></td></tr>
+[<foreach from=$unstarted item=poll>]
   <tr><th>[<$poll->name>]</th>
     <td></td>
     <td><a href="[<$I2_ROOT>]polls/results/[<$poll->pid>]">View results</a></td>
@@ -32,8 +32,8 @@
 [<foreachelse>]
 <tr><td>No polls are available at this time.</td></tr>
 [</foreach>]
-  <tr><td colspan="5"><b>Unstarted polls</b></td></tr>
-[<foreach from=$unstarted item=poll>]
+  <tr><td colspan="5"><b>Finished polls</b></td></tr>
+[<foreach from=$finished item=poll>]
   <tr><th>[<$poll->name>]</th>
     <td></td>
     <td><a href="[<$I2_ROOT>]polls/results/[<$poll->pid>]">View results</a></td>
