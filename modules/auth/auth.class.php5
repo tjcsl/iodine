@@ -446,7 +446,7 @@ class Auth {
 			$mod->api();
 			exit(0);
 		}
-        header("HTTP/1.1 403 Unauthorized");
+        header("HTTP/1.1 401 Unauthorized");
 		$I2_API->startElement('auth');
 		$I2_API->startElement('error');
 		$I2_API->writeElement('message','You are not logged in.');
