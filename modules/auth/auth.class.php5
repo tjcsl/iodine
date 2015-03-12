@@ -446,6 +446,7 @@ class Auth {
 			$mod->api();
 			exit(0);
 		}
+        header("HTTP/1.1 403 Unauthorized");
 		$I2_API->startElement('auth');
 		$I2_API->startElement('error');
 		$I2_API->writeElement('message','You are not logged in.');
@@ -616,18 +617,20 @@ class Auth {
 	* @return string The path, relative to the Iodine root, of the background tile image (or null if today is not "special")
 	*/
 	private static function getSpecialBG() {
-		global $I2_SQL, $I2_CACHE;
+		global $I2_SQL, $I2_CACHE, $I2_QUERY;
 
 		$rows = unserialize($I2_CACHE->read(get_class(),'special_backgrounds'));
 		if($rows === FALSE) {
-			$rows = $I2_SQL->query('SELECT startdt, enddt, background, js FROM special_backgrounds ORDER BY priority DESC')->fetch_all_arrays();
+			$rows = $I2_SQL->query('SELECT occasion, startdt, enddt, background, js FROM special_backgrounds ORDER BY priority DESC')->fetch_all_arrays();
 			$I2_CACHE->store(get_class(),'special_backgrounds',serialize($rows));
 		}
 
 		$timestamp = time();
 
 		foreach ($rows as $occasion) {
-			if (strtotime($occasion['startdt']) < $timestamp && $timestamp < strtotime($occasion['enddt'])) {
+			if ((strtotime($occasion['startdt']) < $timestamp && $timestamp < strtotime($occasion['enddt'])) || 
+                (isset($I2_QUERY['occasion']) && 
+                trim(strtolower($I2_QUERY['occasion'])) == trim(strtolower($occasion['occasion'])))) {
 				return array('www/pics/logins/special/'.$occasion['background'],'www/js/logins/special/'.$occasion['js']);
 			}
 		}
