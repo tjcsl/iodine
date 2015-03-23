@@ -165,17 +165,17 @@
 		<div>
 			<b>Search tips:</b>
 			<br/>
-			Search for an activity name <i>e.g. &ldquo;Awesome Association&rdquo;</i>
+			Search for an activity name: <i>e.g. &ldquo;Awesome Association&rdquo; or &ldquo;Study Hall&rdquo;</i>
 			<br/>
-			Search by sponsor <i>e.g. &ldquo;Torbert&rdquo;</i>
+			Search by sponsor: <i>e.g. &ldquo;Torbert&rdquo; or &ldquo;Foreman&rdquo;</i>
 			<br/>
-			Search by room number <i>e.g. &ldquo;115&rdquo; or &ldquo;gym&rdquo;</i>
+			Search by room: <i>e.g. &ldquo;200&rdquo; or &ldquo;Gym 2&rdquo;</i>
 			<br/>
-			Search by flags <i>e.g. &ldquo;restricted&rdquo; or &ldquo;cancelled&rdquo;</i>
+			Search by flags: <i>e.g. &ldquo;restricted&rdquo; or &ldquo;cancelled&rdquo;</i>
 			<br/>
-			Exclude results <i>e.g. &ldquo;-restricted&rdquo; or &ldquo;-lab&rdquo;</i>
+			Exclude results: <i>e.g. &ldquo;-restricted&rdquo; or &ldquo;-lab&rdquo;</i>
 			<br/>
-			Combine queries <i>e.g. &ldquo;Stueben OR Gabor&rdquo;</i>
+			Combine queries: <i>e.g. &ldquo;Stueben OR Gabor&rdquo;</i>
 		</div>
 	</div>
 </form>
