@@ -436,9 +436,9 @@ class DaySchedule extends Module {
             $c = curl_init();
             curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($c, CURLOPT_URL, $url);
-	    curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1);
-	    curl_setopt($c, CURLOPT_SSL_VERIFYHOST, 0);
-	    curl_setopt($c, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($c, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($c, CURLOPT_SSL_VERIFYPEER, 0);
             $contents = curl_exec($c);
             curl_close($c);
             return isset($contents) ? $contents : FALSE;
@@ -659,6 +659,10 @@ class DaySchedule extends Module {
 
 		foreach($custom_schedules as $s) {
 			self::$schedules[$s['daytype']] = json_decode($s['json']);
+            // If daytype is a date, set it as an override schedule automatically
+            if(strlen($s['daytype']) == 8 && is_numeric($s['daytype'])) {
+                self::$override_schedules[$s['daytype']] = $s['daytype'];
+            }
 		}
 		foreach($override_schedules as $v) {
 			self::$override_schedules[$v["dayname"]] = $v["daytype"];
