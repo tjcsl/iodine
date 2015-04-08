@@ -44,10 +44,10 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, ".tumblebooks.com") ||
 		dnsDomainIs(host, "hsus.cambridge.org") ||
 		dnsDomainIs(host, ".aps.org") ||
-		dnsDomainIs(host, "Rm124Camera1.tjhsst.edu") ||
-		dnsDomainIs(host, "Rm124Camera2.tjhsst.edu") ||
-		dnsDomainIs(host, "Rm124Camera3.tjhsst.edu") ||
-		dnsDomainIs(host, "Rm124IpVideo.tjhsst.edu") ||
+		dnsDomainIs(host, "rm124camera1.tjhsst.edu") ||
+		dnsDomainIs(host, "rm124camera2.tjhsst.edu") ||
+		dnsDomainIs(host, "rm124camera3.tjhsst.edu") ||
+		dnsDomainIs(host, "rm124ipvideo.tjhsst.edu") ||
 		dnsDomainIs(host, ".humanitiesebook.org") ||
 		dnsDomainIs(host, ".lib.umich.edu") ||
 		dnsDomainIs(host, ".hdl.handle.net") ||
