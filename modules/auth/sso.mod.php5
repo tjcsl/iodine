@@ -14,21 +14,27 @@ class SSO extends Module {
     /**
       * The default expiry time, in hours.
       */
-    private $DEFAULT_EXP = 24;
+    private static $DEFAULT_EXP = 4;
 
     /**
       * If there is a given token request, show the
       * SSO accept page. Otherwise, print a valid token.
       */
 	function init_pane() {
+        if(empty($I2_QUERY['req'])) {
+            $this->template_args['error'] = "SSO token generated: ".self::gen_token();
+            return "Single Sign-on";
+        }
         $req = self::find_req();
-        if(empty($req['return'])) {
-            $this->template_args['error'] = "SSO token generated: ".self::get_token();
+        if(empty($req) || empty($req['next'])) {
+            $this->template_args['error'] = "An invalid SSO token was entered.";
+            return "Single Sign-on";
         }
         $redir = self::process_token($req);
         $this->template_args['sso'] = $req;
+        $this->template_args['exphrs'] = (int)(($req['exp'] - time()) / (60*60));
         $this->template_args['redir'] = $redir;        
-        return "Single-Sign On";
+        return "Single Sign-on";
     }
 
     /**
@@ -45,24 +51,41 @@ class SSO extends Module {
     }
 
     /**
+      * Get SSO key from preferences.
+      */
+    static function get_sso_key() {
+        return i2config_get('key', null, 'sso');
+    }
+
+    /**
+      * Get the default expiry time.
+      */
+    static function gen_default_exp() {
+        return time() + 60*60*self::$DEFAULT_EXP;
+    }
+
+    /**
       * Check whether a given SSO token is valid.
       * Returns true for valid, false for expired,
       * and null for invalid.
       */
     static function valid_token($sso) {
         $tok = self::token_info($sso);
-        return time() > ($tok['time'] + $tok['exp']*60*60);
+        return time() > $tok['exp'];
     }
 
     /**
-      * Generate a token given the expiry time (in hours)
+      * Generate a token given the expiry time
+      * (in epoch seconds)
       */
-    static function get_token($exp=null) {
+    static function gen_token($exp=null) {
         global $I2_USER;
-        if(empty($exp)) $exp = self::$DEFAULT_EXP;
+        if(empty($exp) || $exp == null) $exp = self::gen_default_exp();
         $PLAIN_pwd = self::get_plain();
-        list($Nret, $Nkey, $Niv) = Auth::encrypt($PLAIN_pwd, i2config_get('key', null, 'sso'));
-        $sso = base64_encode(http_build_query(array("username" => $I2_USER->username, "ret" => $Nret, "iv" => $Niv, "time" => time(), "exp" => $exp)));
+        $PLAIN_data = base64_encode(http_build_query(array("time" => time(), "exp" => $exp, "username" => $I2_USER->username, "password" => $PLAIN_pwd)));
+        list($Nret, $Nkey, $Niv) = Auth::encrypt($PLAIN_data, self::get_sso_key());
+        $sso = base64_encode(http_build_query(array("ret" => $Nret, "iv" => $Niv)));
+        d("ssogen:".$sso);
         return $sso;
     }
 
@@ -73,17 +96,28 @@ class SSO extends Module {
     static function process_token($dat) {
         if(empty($dat['return'])) return null;
         if(substr($dat['return'], 0, 8) != "https://") throw new I2Exception("Insecure protocol not allowed.");
-        $sso = self::get_token();
+        $sso = self::gen_token();
         return $dat['return']."?sso=".urlencode($sso);
 	}
 
     /**
-      * Return the information stored in a token
-      * (the username, time, ret, and iv strings).
+      * Return the crypto information stored in a
+      * token (ret and iv strings).
       */
-    static function token_info($sso) {
+    static function token_cryptinfo($sso) {
         parse_str(base64_decode($sso), $arr);
         return $arr;
+    }
+    
+    /**
+      * Return the secured information stored in a
+      * token (username, password, time, and exp fields)
+      */
+    static function token_info($sso) {
+        $crypt = self::token_cryptinfo($sso);
+        $PLAIN_str = Auth::decrypt($crypt['ret'], self::get_sso_key(), $crypt['iv']);
+        parse_str($PLAIN_str, $data);
+        return $data;
     }
 
     /**
@@ -92,9 +126,10 @@ class SSO extends Module {
       */
     static function decode_token($sso) {
         $arr = self::token_info($sso);
-        $PLAIN_pwd = Auth::decrypt($arr['ret'], i2config_get('key', null, 'sso'), $arr['iv']);
-        return array($arr['username'], $PLAIN_pwd);
+        return array($arr['username'], $arr['password']);
     }
+
+    /********** Token requests **********/
 
     /**
       * Decode information about the token request.
@@ -102,6 +137,7 @@ class SSO extends Module {
     static function decode_req($req) {
         if(!isset($req) || sizeof($req) < 1) return array();
         parse_str(base64_decode($req), $arr);
+        $arr['exptime'] = $arr['exp'] - time();
         return $arr;
     }
 
