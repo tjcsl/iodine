@@ -21,13 +21,18 @@ class SSO extends Module {
       * SSO accept page. Otherwise, print a valid token.
       */
 	function init_pane() {
+        global $I2_QUERY;
         if(empty($I2_QUERY['req'])) {
             $this->template_args['error'] = "SSO token generated: ".self::gen_token();
             return "Single Sign-on";
         }
         $req = self::find_req();
-        if(empty($req) || empty($req['next'])) {
-            $this->template_args['error'] = "An invalid SSO token was entered.";
+        if(time() > $req['exp']) {
+            $this->template_args['error'] = "The given SSO request token has expired.";
+            return "Single Sign-on";
+        }
+        if(empty($req) || empty($req['return'])) {
+            $this->template_args['error'] = "An invalid SSO request token was entered.";
             return "Single Sign-on";
         }
         $redir = self::process_token($req);
@@ -71,6 +76,8 @@ class SSO extends Module {
       */
     static function valid_token($sso) {
         $tok = self::token_info($sso);
+        var_dump($tok);
+        if(!isset($tok) || sizeof($tok) < 2) return null;
         return time() > $tok['exp'];
     }
 
@@ -157,6 +164,24 @@ class SSO extends Module {
             return self::decode_req($I2_QUERY['req']);
         }
         return null;
+    }
+
+    /**
+      * AJAX JSON API
+      */
+    function ajax() {
+        global $I2_QUERY, $I2_ARGS;
+        // [api, sso]
+        if(isset($I2_ARGS[2])) {
+            if($I2_ARGS[2] == "valid_token" && isset($I2_QUERY['sso'])) {
+                $ret = array("valid_token" => self::valid_token($I2_QUERY['sso']));
+            } else if($I2_ARGS[2] == "gen_token") {
+                $ret = array("gen_token" => self::gen_token($I2_QUERY['exp']));
+            } else if($I2_ARGS[2] == "decode_req" && isset($I2_QUERY['req'])) {
+                $ret = array("decode_req" => self::decode_req($I2_QUERY['req']));
+            }
+            echo json_encode(array("sso" => $ret));
+        }
     }
 
 	function display_pane($disp) {
