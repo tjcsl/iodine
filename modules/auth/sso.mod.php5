@@ -76,9 +76,8 @@ class SSO extends Module {
       */
     static function valid_token($sso) {
         $tok = self::token_info($sso);
-        var_dump($tok);
         if(!isset($tok) || sizeof($tok) < 2) return null;
-        return time() > $tok['exp'];
+        return $tok['exp'] > time();
     }
 
     /**
@@ -123,8 +122,7 @@ class SSO extends Module {
     static function token_info($sso) {
         $crypt = self::token_cryptinfo($sso);
         $PLAIN_str = Auth::decrypt($crypt['ret'], self::get_sso_key(), $crypt['iv']);
-        parse_str($PLAIN_str, $data);
-        return $data;
+        return self::token_cryptinfo($PLAIN_str);
     }
 
     /**
@@ -174,7 +172,8 @@ class SSO extends Module {
         // [api, sso]
         if(isset($I2_ARGS[2])) {
             if($I2_ARGS[2] == "valid_token" && isset($I2_QUERY['sso'])) {
-                $ret = array("valid_token" => self::valid_token($I2_QUERY['sso']));
+                $dat = self::token_info($I2_QUERY['sso']);
+                $ret = array("valid_token" => self::valid_token($I2_QUERY['sso']), "token_exp" => $dat['exp'], "token_time" => $dat['time'], "time" => time(), "username" => $dat['username']);
             } else if($I2_ARGS[2] == "gen_token") {
                 $ret = array("gen_token" => self::gen_token($I2_QUERY['exp']));
             } else if($I2_ARGS[2] == "decode_req" && isset($I2_QUERY['req'])) {
