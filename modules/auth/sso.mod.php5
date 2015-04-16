@@ -45,6 +45,16 @@ class SSO extends Module {
     }
 
     /**
+      * Check whether a given SSO token is valid.
+      * Returns true for valid, false for expired,
+      * and null for invalid.
+      */
+    static function valid_token($sso) {
+        $tok = self::token_info($sso);
+        return time() > ($tok['time'] + $tok['exp']*60*60);
+    }
+
+    /**
       * Generate a token given the expiry time (in hours)
       */
     static function get_token($exp=null) {
@@ -57,8 +67,8 @@ class SSO extends Module {
     }
 
     /**
-      * Process the token and return the URL to
-      * return to, with SSO token attached.
+      * Process the token request and return the
+      * URL to return to, with SSO token attached.
       */
     static function process_token($dat) {
         if(empty($dat['return'])) return null;
