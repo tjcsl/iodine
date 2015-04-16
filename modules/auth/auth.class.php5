@@ -307,6 +307,15 @@ class Auth {
 				$_SESSION['logout_funcs'] = [];
 			}
 			//$this->cache_password($_REQUEST['login_password']);
+            /**
+              * If logging in with a SSO token
+              */
+            if(isset($_REQUEST['login_sso'])) {
+                list($user, $pass) = SSO::decode_token($_REQUEST['login_sso']);
+                $_REQUEST['login_username'] = $_POST['login_username'] = $user;
+                $_REQUEST['login_password'] = $_POST['login_password'] = $pass;
+                d_r("Attempting SSO login..");
+            }
 			if (isset($_REQUEST['login_username']) && isset($_REQUEST['login_password'])) {
 				if ($this->check_user($_REQUEST['login_username'],$_REQUEST['login_password'])) {
 
@@ -336,9 +345,11 @@ class Auth {
 						$index = strpos($_SERVER['REDIRECT_QUERY_STRING'], '?');
 						$redir = substr($_SERVER['REDIRECT_QUERY_STRING'], 0, $index);
 					}
+                    unset($I2_QUERY['login_sso']);
 					if(sizeof($I2_QUERY) > 0) {
 						$redir.="?".http_build_query($I2_QUERY);
 					}
+
 					redirect($redir,sizeof($_POST)>2);//If we have additional post fields, prompt to allow relay, and relay if allowed.
 					return TRUE; //never reached
 				} else {
@@ -364,7 +375,16 @@ class Auth {
 			} else {
 				$this->modauth_loginfailed = FALSE;
 				$uname='';
-			}
+            }
+            /**
+              * Request for SSO
+              */
+            if(isset($I2_ARGS[0]) && $I2_ARGS[0] == "sso" && isset($I2_QUERY['req'])) {
+                $sso = SSO::decode_req($I2_QUERY['req']);
+                d("SSO:");
+                d_r($sso);
+                if(isset($sso['return'])) $this->template_args['sso'] = $sso;
+            }
 
 			self::init_backgrounds();
 			try {
