@@ -61,8 +61,14 @@
 [<$emerg>]
 	<div class="pane" id="mainPane">
 		<a id="logo" href="[<$I2_ROOT>]" title="TJHSST Intranet">Intranet</a>
-
-		[<if isset($err)>]
+        [<if isset($sso)>]
+            <div class="login_msg" id="login_msg" title="You will be redirected to [<$sso['return']>] after a successful authentication.">
+                <b>
+                [<if isset($sso['title'])>]The application [<$sso['title']>][<else>]An unnamed application[</if>] 
+                [<if isset($sso['author'])>]by [<$sso['author']>] [</if>]
+                would like to access your Intranet account.</b> Only enter your credentials below if you <b>fully trust</b> this application[<if isset($sso['author'])>] and developer[</if>].<br />
+            </div>
+		[<elseif isset($err)>]
 		<div class="login_msg" id="login_failed">
 			[<$err>]<br />
 		</div>
