@@ -16,7 +16,7 @@
 <h3>
     If you <b>fully trust</b> this application[<if isset($sso['author'])>] and developer[</if>], press the OK button below.
 </h3>
-You will be redirected to [<$sso['return']>] after a successful authentication.
+You will be redirected to <a href="[<$sso['return']>]">[<$sso['return']>]</a>. The token sent will expire in [<if $exphrs lt 1>]less than one hour[<else>][<$exphrs>] hours[</if>].
 <br />
 <br />
 <script type="text/javascript">
