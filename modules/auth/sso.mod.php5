@@ -5,7 +5,6 @@ class SSO extends Module {
 	private $template_args = [];
 
 	function init_pane() {
-        Display::stop_display(); 
         /*$str = base64_encode(openssl_random_pseudo_bytes(12));
         $key = base64_encode(openssl_random_pseudo_bytes(5));
         list($ret, $key2, $iv) = Auth::encrypt($str, $key);
@@ -15,9 +14,13 @@ class SSO extends Module {
         //print_r($dat);
 
         $req = self::find_req();
+        if(empty($req['return'])) {
+            $this->template_args['error'] = "SSO token generated: ".self::get_token();
+        }
         $redir = self::process_token($req);
-
-        header("Location: $redir");
+        $this->template_args['sso'] = $req;
+        $this->template_args['redir'] = $redir;        
+        return "Single-Sign On";
     }
 
 
@@ -39,8 +42,8 @@ class SSO extends Module {
     }
 
     static function process_token($dat) {
-        if(empty($dat['return'])) die("Your SSO token: ".self::get_token());
-        if(substr($dat['return'], 0, 8) != "https://") die("Insecure protocol not allowed.");
+        if(empty($dat['return'])) return null;
+        if(substr($dat['return'], 0, 8) != "https://") throw new I2Exception("Insecure protocol not allowed.");
         $sso = self::get_token();
         return $dat['return']."?sso=".urlencode($sso);
 	}
@@ -74,10 +77,11 @@ class SSO extends Module {
     }
 
 	function display_pane($disp) {
+        $disp->disp("sso.tpl", $this->template_args);
 	}
 
 	function init_box() {
-		return "";
+		return "SSO";
 	}
 
 	function display_box($disp) {
