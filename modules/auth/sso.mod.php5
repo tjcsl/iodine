@@ -1,18 +1,26 @@
 <?php
-
+/**
+  * The SSO module, which allows Iodine to act as a 
+  * Single Sign On provider and tokens to be shared
+  * with applications instead of usernames and passwords.
+  * @copyright 2015 The Intranet Development Team
+  * @package modules
+  * @subpackage auth
+  */
 class SSO extends Module {
 
 	private $template_args = [];
 
-	function init_pane() {
-        /*$str = base64_encode(openssl_random_pseudo_bytes(12));
-        $key = base64_encode(openssl_random_pseudo_bytes(5));
-        list($ret, $key2, $iv) = Auth::encrypt($str, $key);
-*/
-        //$dec = Auth::decrypt($I2_QUERY['str'], i2config_get('key', null, 'sso'), $I2_QUERY['iv']);
-        //$dat = json_decode($dec);
-        //print_r($dat);
+    /**
+      * The default expiry time, in hours.
+      */
+    private $DEFAULT_EXP = 24;
 
+    /**
+      * If there is a given token request, show the
+      * SSO accept page. Otherwise, print a valid token.
+      */
+	function init_pane() {
         $req = self::find_req();
         if(empty($req['return'])) {
             $this->template_args['error'] = "SSO token generated: ".self::get_token();
@@ -23,7 +31,10 @@ class SSO extends Module {
         return "Single-Sign On";
     }
 
-
+    /**
+      * Return the plain password of the current
+      * logged in user.
+      */
     static function get_plain() {
         global $I2_USER;
         $str = $_SESSION['i2_password'];
@@ -33,14 +44,22 @@ class SSO extends Module {
         return $PLAIN_pwd;
     }
 
-    static function get_token() {
+    /**
+      * Generate a token given the expiry time (in hours)
+      */
+    static function get_token($exp=null) {
         global $I2_USER;
+        if(empty($exp)) $exp = self::$DEFAULT_EXP;
         $PLAIN_pwd = self::get_plain();
         list($Nret, $Nkey, $Niv) = Auth::encrypt($PLAIN_pwd, i2config_get('key', null, 'sso'));
-        $sso = base64_encode(http_build_query(array("username" => $I2_USER->username, "ret" => $Nret, "iv" => $Niv)));
+        $sso = base64_encode(http_build_query(array("username" => $I2_USER->username, "ret" => $Nret, "iv" => $Niv, "time" => time(), "exp" => $exp)));
         return $sso;
     }
 
+    /**
+      * Process the token and return the URL to
+      * return to, with SSO token attached.
+      */
     static function process_token($dat) {
         if(empty($dat['return'])) return null;
         if(substr($dat['return'], 0, 8) != "https://") throw new I2Exception("Insecure protocol not allowed.");
@@ -48,11 +67,19 @@ class SSO extends Module {
         return $dat['return']."?sso=".urlencode($sso);
 	}
 
+    /**
+      * Return the information stored in a token
+      * (the username, time, ret, and iv strings).
+      */
     static function token_info($sso) {
         parse_str(base64_decode($sso), $arr);
         return $arr;
     }
 
+    /**
+      * Decode a SSO token, returning an array
+      * in the form [$user, $pass].
+      */
     static function decode_token($sso) {
         $arr = self::token_info($sso);
         $PLAIN_pwd = Auth::decrypt($arr['ret'], i2config_get('key', null, 'sso'), $arr['iv']);
@@ -68,6 +95,16 @@ class SSO extends Module {
         return $arr;
     }
 
+    /**
+      * Generate a request token.
+      */
+    static function gen_req($data) {
+        return base64_encode(http_build_query($data));
+    }
+
+    /**
+      * Find the request token in the querystring.
+      */
     static function find_req() {
         global $I2_QUERY;
         if(isset($I2_QUERY['req'])) {
