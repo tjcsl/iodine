@@ -353,9 +353,14 @@ class DaySchedule extends Module {
                 $week[] = $disp->fetch($I2_FS_ROOT . 'templates/dayschedule/pane.tpl', self::$args, false);
                 self::increment_date(isset($I2_QUERY['incr']) ? $I2_QUERY['incr'] : '+1 day');
             }
-            echo "<style>.day-left,.day-right{display:none}</style><table><tr>";
+            echo "<style>.day-left,.day-right{display:none}table.outer>tbody>tr>td,table.outer>tr>td{padding:10px}</style><table class='outer'><tr>";
+            $i = 0;
             foreach($week as $wk) {
                 echo "<td>$wk</td>";
+                $i++;
+                if(isset($I2_QUERY['split']) && $i % (int)$I2_QUERY['split'] == 0) {
+                    echo "</tr><tr>";
+                }
             }
             echo "</tr></table>";
 		} else {
