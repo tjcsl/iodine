@@ -35,10 +35,14 @@ class SSO extends Module {
             $this->template_args['error'] = "An invalid SSO request token was entered.";
             return "Single Sign-on";
         }
-        $redir = self::process_token($req);
-        $this->template_args['sso'] = $req;
-        $this->template_args['exphrs'] = (int)(($req['exp'] - time()) / (60*60));
-        $this->template_args['redir'] = $redir;        
+        try {
+            $redir = self::process_token($req);
+            $this->template_args['sso'] = $req;
+            $this->template_args['exphrs'] = round(($req['exp'] - time()) / (60*60));
+            $this->template_args['redir'] = $redir;        
+        } catch(Exception $e) {
+            $this->template_args['error'] = "An error occurred decoding the token.";
+        }
         return "Single Sign-on";
     }
 
@@ -142,6 +146,7 @@ class SSO extends Module {
     static function decode_req($req) {
         if(!isset($req) || sizeof($req) < 1) return array();
         parse_str(base64_decode($req), $arr);
+        if(empty($arr) || empty($arr['exp'])) return null;
         $arr['exptime'] = $arr['exp'] - time();
         return $arr;
     }
