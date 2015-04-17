@@ -197,6 +197,7 @@ class SSO extends Module {
 	}
 
 	function display_box($disp) {
+        $disp->disp("sso.tpl", $this->template_args);
 	}
 
 	function get_name() {
