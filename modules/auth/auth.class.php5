@@ -311,7 +311,11 @@ class Auth {
               * If logging in with a SSO token
               */
             if(isset($_REQUEST['login_sso'])) {
+                try {
                 list($user, $pass) = SSO::decode_token($_REQUEST['login_sso']);
+                } catch(Exception $e) {
+                    throw new I2Exception("An error occurred decoding the SSO token.");
+                }
                 $_REQUEST['login_username'] = $_POST['login_username'] = $user;
                 $_REQUEST['login_password'] = $_POST['login_password'] = $pass;
                 d_r("Attempting SSO login..");
@@ -380,7 +384,11 @@ class Auth {
               * Request for SSO
               */
             if(isset($I2_ARGS[0]) && $I2_ARGS[0] == "sso" && isset($I2_QUERY['req'])) {
-                $sso = SSO::decode_req($I2_QUERY['req']);
+                try {
+                    $sso = SSO::decode_req($I2_QUERY['req']);
+                } catch(Exception $e) {
+                    throw new I2Exception("An error occurred decoding the SSO request.");
+                }
                 d("SSO:");
                 d_r($sso);
                 if(isset($sso['return'])) $this->template_args['sso'] = $sso;
