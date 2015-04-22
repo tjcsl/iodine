@@ -54,8 +54,8 @@ Your news post has been changed.<br />
 		fillinarea();
 	}, false);
 	function fillinarea() {
-		formfield.body.innerHTML = "[<$newsitem->text|replace:'"':"'"|replace:"\n":'<br />'>]";
-    var subhead = formfield.getElementsByTagName("head")[0];
+		formfield.body.innerHTML = "[<$newsitem->text|replace:'"':"'"|replace:"\n":'<br />'|replace:"\r":''>]";
+		var subhead = formfield.getElementsByTagName("head")[0];
 		var css = formfield.createElement("link");
 		css.setAttribute("rel", "stylesheet");
 		css.setAttribute("type", "text/css");
