@@ -19,10 +19,7 @@
 You will be redirected to <a href="[<$sso['return']>]">[<$sso['return']>]</a>. The token sent will expire in [<if $exphrs lt 1>]less than one hour[<else>][<$exphrs>] hours[</if>].
 <br />
 <br />
-<script type="text/javascript">
-var redir = "[<$redir>]";
-</script>
-<button onclick="location.href=redir;">OK</button> &nbsp; &nbsp; <button onclick="history.back()">Cancel</button>
+[<$redir>] &nbsp; &nbsp; <button onclick="history.back()">Cancel</button>
 
 
 [</if>]

@@ -37,9 +37,15 @@ class SSO extends Module {
         }
         try {
             $redir = self::process_token($req);
+            if(isset($redir[2]) && $redir[2] == "GET") {
+                $redirhtml = self::redirect_get($redir);
+            } else {
+                $redirhtml = self::redirect_post($redir);
+            }
+            d("redirhtml $redirhtml");
             $this->template_args['sso'] = $req;
             $this->template_args['exphrs'] = round(($req['exp'] - time()) / (60*60));
-            $this->template_args['redir'] = $redir;        
+            $this->template_args['redir'] = $redirhtml;
         } catch(Exception $e) {
             $this->template_args['error'] = "An error occurred decoding the token.";
         }
@@ -100,15 +106,36 @@ class SSO extends Module {
     }
 
     /**
-      * Process the token request and return the
-      * URL to return to, with SSO token attached.
+      * Process the token request and return an array
+      * with the URL to return to, and SSO token.
       */
     static function process_token($dat) {
         if(empty($dat['return'])) return null;
         if(substr($dat['return'], 0, 8) != "https://") throw new I2Exception("Insecure protocol not allowed.");
         $sso = self::gen_token();
-        return $dat['return']."?sso=".urlencode($sso);
+        $args = array($dat['return'], $sso, isset($dat['method']) ? $dat['method'] : "POST");
+        return $args;
 	}
+
+    /**
+      * Returns the HTML code for a button that 
+      * redirects with a GET request.
+      */
+    static function redirect_get($args) {
+        return "<button onclick=\"location.href = '" . addslashes($args[0] . "?sso=" . urlencode($args[1])) . "'\">OK</button>";
+    }
+
+    
+    /**
+      * Returns the HTML code for a button that
+      * makes a POST request.
+      */
+    static function redirect_post($args) {
+        return '<form method="POST" action="' . htmlspecialchars($args[0]) . '" style="display: inline">' .
+               '<input type="hidden" name="sso" value="' . htmlspecialchars($args[1]) . '" />' .
+               '<input type="submit" value="OK" />' .
+               '</form>';
+    }
 
     /**
       * Return the crypto information stored in a
