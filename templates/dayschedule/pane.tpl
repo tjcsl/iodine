@@ -21,7 +21,7 @@ blink=setInterval(function(){$("blink,.blink").each(function(){$(this).css('visi
 });</script>
 [</if>]
 [<if $iframe>]
-<style>.dayschedule div.day-name:hover { visibility: visible; } .dayschedule .day-name div.view-week,.dayschedule .day-name:hover div.view-week { display: none; margin-top: auto; }</style>
+<style>.dayschedule div.day-name:hover { visibility: visible; } .dayschedule .day-name div.view-week,.dayschedule .day-name:hover div.view-week { display: none; margin-top: auto; } td { vertical-align: top; }</style>
 <body class='login'>
 [</if>]
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/dayschedule.js"></script>

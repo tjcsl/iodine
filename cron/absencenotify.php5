@@ -17,7 +17,7 @@ $em_msg = <<<EOF
 <p>If you have any questions about this process, contact the Eighth Period Office.</p>
 <br />
 <br />
-This message was automatically sent by the <a href="%ROOT%">TJ Intranet</a>. If you have not the person listed above, email <a href="mailto:intranet@tjhsst.edu">intranet@tjhsst.edu</a>
+This message was automatically sent by the <a href="%ROOT%">TJ Intranet</a>. If you are not the person listed above, email <a href="mailto:intranet@tjhsst.edu">intranet@tjhsst.edu</a>
 EOF;
 include_once("../functions.inc.php5");
 define('CONFIG_FILENAME','../config.ini.php5');
