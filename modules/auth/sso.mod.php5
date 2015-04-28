@@ -14,7 +14,7 @@ class SSO extends Module {
     /**
       * The default expiry time, in seconds: 1 hour
       */
-    private static $DEFAULT_EXP = 1*60*60;
+    private static $DEFAULT_EXP = 3600;
 
     static function check_enable() {
         if(i2config_get('enabled', FALSE, 'sso') != true) {
