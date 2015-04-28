@@ -12,9 +12,9 @@ class SSO extends Module {
 	private $template_args = [];
 
     /**
-      * The default expiry time, in hours.
+      * The default expiry time, in seconds: 1 hour
       */
-    private static $DEFAULT_EXP = 4;
+    private static $DEFAULT_EXP = 1*60*60;
 
     static function check_enable() {
         if(i2config_get('enabled', FALSE, 'sso') != true) {
@@ -35,7 +35,11 @@ class SSO extends Module {
             return;
         }
         if(empty($I2_QUERY['req'])) {
-            $this->template_args['error'] = "SSO token generated: ".self::gen_token();
+            if($I2_USER->is_group_member('admin_all')) {
+                $this->template_args['error'] = "SSO token generated: ".self::gen_token();
+            } else {
+                $this->template_args['error'] = "No SSO request token was given.";
+            }
             return "Single Sign-on";
         }
         $req = self::find_req();
@@ -54,7 +58,6 @@ class SSO extends Module {
             } else {
                 $redirhtml = self::redirect_post($redir);
             }
-            d("redirhtml $redirhtml");
             $this->template_args['sso'] = $req;
             $this->template_args['exphrs'] = round(($req['exp'] - time()) / (60*60));
             $this->template_args['redir'] = $redirhtml;
@@ -88,7 +91,7 @@ class SSO extends Module {
       * Get the default expiry time.
       */
     static function gen_default_exp() {
-        return time() + 60*60*self::$DEFAULT_EXP;
+        return time() + self::$DEFAULT_EXP;
     }
 
     /**
