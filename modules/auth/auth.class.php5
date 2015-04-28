@@ -311,14 +311,12 @@ class Auth {
               * If logging in with a SSO token
               */
             if(isset($_REQUEST['login_sso'])) {
-                try {
                 list($user, $pass) = SSO::decode_token($_REQUEST['login_sso']);
-                } catch(Exception $e) {
-                    throw new I2Exception("An error occurred decoding the SSO token.");
+                if(isset($user) && isset($pass)) {
+                    $_REQUEST['login_username'] = $_POST['login_username'] = $user;
+                    $_REQUEST['login_password'] = $_POST['login_password'] = $pass;
+                    d_r("Attempting SSO login..");
                 }
-                $_REQUEST['login_username'] = $_POST['login_username'] = $user;
-                $_REQUEST['login_password'] = $_POST['login_password'] = $pass;
-                d_r("Attempting SSO login..");
             }
 			if (isset($_REQUEST['login_username']) && isset($_REQUEST['login_password'])) {
 				if ($this->check_user($_REQUEST['login_username'],$_REQUEST['login_password'])) {

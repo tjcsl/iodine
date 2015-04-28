@@ -16,12 +16,24 @@ class SSO extends Module {
       */
     private static $DEFAULT_EXP = 4;
 
+    static function check_enable() {
+        if(i2config_get('enabled', FALSE, 'sso') != true) {
+            throw new I2Exception("SSO module is disabled.");
+        }
+    }
+
     /**
       * If there is a given token request, show the
       * SSO accept page. Otherwise, print a valid token.
       */
 	function init_pane() {
         global $I2_QUERY;
+        try {
+            self::check_enable();
+        } catch(I2Exception $e) {
+            redirect("");
+            return;
+        }
         if(empty($I2_QUERY['req'])) {
             $this->template_args['error'] = "SSO token generated: ".self::gen_token();
             return "Single Sign-on";
@@ -161,6 +173,7 @@ class SSO extends Module {
       * in the form [$user, $pass].
       */
     static function decode_token($sso) {
+        self::check_enable();
         $arr = self::token_info($sso);
         return array($arr['username'], $arr['password']);
     }
@@ -171,6 +184,12 @@ class SSO extends Module {
       * Decode information about the token request.
       */
     static function decode_req($req) {
+        try {
+            SSO::check_enable();
+        } catch(I2Exception $e) {
+            warn("SSO module is not enabled.");
+            return;
+        }
         if(!isset($req) || sizeof($req) < 1) return array();
         parse_str(base64_decode($req), $arr);
         if(empty($arr) || empty($arr['exp'])) return null;
