@@ -14,13 +14,13 @@ PROCESS:
 * User logs in to Iodine
   * Password decrypted from session, combined with username and encrypted (credtok)
   * Secret token generated containing encrypted credentials (sectok)
-  * Random identifier assigned to secret token in database (keytok)
+  * Access token assigned to secret token in database (acckey)
   * User hits accept
-  * Random identifier sent to application
+  * Access token sent to application
 * Third party recieves identifier
-  * Sends request to $I2_ROOT/ajax/sso/valid_key?sso=$id
-    * If JSON object contains valid_key: true, authentication was completed successfully
-    * $id may be used to log in to the Iodine session for the time period allocated with the token (usually 1hr)
+  * Sends request to $I2_ROOT/ajax/sso/valid_acckey?sso=$acckey
+    * If JSON object contains valid_acckey: true, authentication was completed successfully
+    * $acckey may be used to log in to the Iodine session for the time period allocated with the token (usually 1hr)
 */
 class SSO extends Module {
 
@@ -51,7 +51,7 @@ class SSO extends Module {
         }
         if(empty($I2_QUERY['req'])) {
             if($I2_USER->is_group_member('admin_all')) {
-                $this->template_args['error'] = "keytok generated: ".self::gen_key();
+                $this->template_args['error'] = "acckey generated: ".self::gen_acckey();
             } else {
                 $this->template_args['error'] = "No SSO request token was given.";
             }
@@ -115,9 +115,9 @@ class SSO extends Module {
     }
 
     /**
-      * Check if the sectok given by a keytok is valud.
+      * Check if the sectok given by a acckey is valud.
       */
-    static function valid_keytok($key) {
+    static function valid_acckey($key) {
         $tok = self::grab_sectok($key);
         if($tok == null || $tok == false) return false;
         return self::valid_sectok($tok);
@@ -149,19 +149,20 @@ class SSO extends Module {
     }
 
     /**
-      * Generate a key given the expiry time
-      * (in epoch seconds). This is what is sent
+      * Generate an access token (acckey) given
+      * the expiry time. This is what is sent
       * to the application -- the secret TOKEN
       * is saved in the database and is accessed
       * using the key.
       */
-    static function gen_key($exp=null) {
+    static function gen_acckey($exp=null) {
         global $I2_SQL;
         if(empty($exp) || $exp == null) $exp = self::gen_default_exp();
         $tok = self::gen_sectok($exp);
         d("sectok: $tok");
-        $key = openssl_random_pseudo_bytes(32);
-        $key = substr(base64_encode($key), 0, 32);
+        $key = openssl_random_pseudo_bytes(64);
+        $key = substr(base64_encode($key), 0, 64);
+        $key = preg_replace("/[^a-zA-Z0-9]+/", "", $key);
         d("key: $key");
         d("exp: $exp");
         $I2_SQL->query("INSERT INTO sso_sessions VALUES(%s, %s, %s)", $key, $tok, $exp);
@@ -176,7 +177,7 @@ class SSO extends Module {
     static function process_reqtok($dat) {
         if(empty($dat['return'])) return null;
         if(substr($dat['return'], 0, 8) != "https://") throw new I2Exception("Insecure protocol not allowed.");
-        $sso = self::gen_key();
+        $sso = self::gen_acckey();
         $args = array($dat['return'], $sso, isset($dat['method']) ? $dat['method'] : "POST");
         return $args;
 	}
@@ -303,7 +304,7 @@ class SSO extends Module {
                 $dat = self::sectok_info($tok);
                 $ret = array("valid_key" => self::valid_sectok($tok), "token_exp" => $dat['exp'], "token_time" => $dat['time'], "time" => time(), "username" => $dat['username']);
             } else if($I2_ARGS[2] == "gen_key") {
-                $ret = array("gen_key" => self::gen_key($I2_QUERY['exp']));
+                $ret = array("gen_acckey" => self::gen_acckey($I2_QUERY['exp']));
             } else if($I2_ARGS[2] == "decode_req" && isset($I2_QUERY['req'])) {
                 $ret = array("decode_req" => self::decode_req($I2_QUERY['req']));
             }
