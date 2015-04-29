@@ -9,11 +9,12 @@
   */
 /**
 PROCESS:
-* Third party application generates request token
+* Third party application generates request token (reqtok)
   * Redirects to $I2_ROOT/sso?req=$tok
 * User logs in to Iodine
-  * Secret token generated containing encrypted credentials
-  * Random identifier assigned to secret token in database
+  * Password decrypted from session, combined with username and encrypted (credtok)
+  * Secret token generated containing encrypted credentials (sectok)
+  * Random identifier assigned to secret token in database (keytok)
   * User hits accept
   * Random identifier sent to application
 * Third party recieves identifier
@@ -50,13 +51,14 @@ class SSO extends Module {
         }
         if(empty($I2_QUERY['req'])) {
             if($I2_USER->is_group_member('admin_all')) {
-                $this->template_args['error'] = "SSO token generated: ".self::gen_key();
+                $this->template_args['error'] = "keytok generated: ".self::gen_key();
             } else {
                 $this->template_args['error'] = "No SSO request token was given.";
             }
             return "Single Sign-on";
         }
 
+        // Decode request token
         $req = self::find_req();
         if(time() > $req['exp']) {
             $this->template_args['error'] = "The given SSO request token has expired.";
@@ -67,7 +69,8 @@ class SSO extends Module {
             return "Single Sign-on";
         }
         try {
-            $redir = self::process_token($req);
+            // Process request token
+            $redir = self::process_reqtok($req);
             if(isset($redir[2]) && $redir[2] == "GET") {
                 $redirhtml = self::redirect_get($redir);
             } else {
@@ -98,7 +101,7 @@ class SSO extends Module {
     /**
       * Get SSO key from preferences.
       */
-    static function get_sso_key() {
+    static function get_decrypt_key() {
         $cfgkey = i2config_get('key', null, 'sso');
         if($cfgkey == null) return null;
         return $cfgkey;
@@ -111,10 +114,13 @@ class SSO extends Module {
         return time() + self::$DEFAULT_EXP;
     }
 
-    static function valid_key($key) {
-        $tok = self::grab_token($key);
+    /**
+      * Check if the sectok given by a keytok is valud.
+      */
+    static function valid_keytok($key) {
+        $tok = self::grab_sectok($key);
         if($tok == null || $tok == false) return false;
-        return self::valid_token($tok);
+        return self::valid_sectok($tok);
     }
 
     /**
@@ -122,8 +128,8 @@ class SSO extends Module {
       * Returns true for valid, false for expired,
       * and null for invalid.
       */
-    static function valid_token($sso) {
-        $tok = self::token_info($sso);
+    static function valid_sectok($sso) {
+        $tok = self::sectok_info($sso);
         if(!isset($tok) || sizeof($tok) < 2) return null;
         return $tok['exp'] > time();
     }
@@ -132,11 +138,11 @@ class SSO extends Module {
       * Generate a token given the expiry time
       * (in epoch seconds)
       */
-    static function gen_token($exp=null) {
+    static function gen_sectok($exp=null) {
         global $I2_USER;
         $PLAIN_pwd = self::get_plain();
         $PLAIN_data = base64_encode(http_build_query(array("time" => time(), "exp" => $exp, "username" => $I2_USER->username, "password" => $PLAIN_pwd)));
-        list($Nret, $Nkey, $Niv) = Auth::encrypt($PLAIN_data, self::get_sso_key());
+        list($Nret, $Nkey, $Niv) = Auth::encrypt($PLAIN_data, self::get_decrypt_key());
         $sso = base64_encode(http_build_query(array("ret" => $Nret, "iv" => $Niv)));
         d("ssogen:".$sso);
         return $sso;
@@ -152,8 +158,8 @@ class SSO extends Module {
     static function gen_key($exp=null) {
         global $I2_SQL;
         if(empty($exp) || $exp == null) $exp = self::gen_default_exp();
-        $tok = self::gen_token($exp);
-        d("tok: $tok");
+        $tok = self::gen_sectok($exp);
+        d("sectok: $tok");
         $key = openssl_random_pseudo_bytes(32);
         $key = substr(base64_encode($key), 0, 32);
         d("key: $key");
@@ -167,7 +173,7 @@ class SSO extends Module {
       * Process the token request and return an array
       * with the URL to return to, and SSO token.
       */
-    static function process_token($dat) {
+    static function process_reqtok($dat) {
         if(empty($dat['return'])) return null;
         if(substr($dat['return'], 0, 8) != "https://") throw new I2Exception("Insecure protocol not allowed.");
         $sso = self::gen_key();
@@ -197,7 +203,7 @@ class SSO extends Module {
 
     /**
       * Return the crypto information stored in a
-      * token (ret and iv strings).
+      * sectok (ret and iv strings) OR credtok (username and password).
       */
     static function token_cryptinfo($sso) {
         parse_str(base64_decode($sso), $arr);
@@ -207,7 +213,7 @@ class SSO extends Module {
     /**
       * Return the secure token given the public key
       */
-   static function grab_token($key) {
+   static function grab_sectok($key) {
        global $I2_SQL;
        $res = $I2_SQL->query("SELECT token FROM sso_sessions WHERE acckey=%s;", $key)->fetch_single_value();
        d("GRAB_TOKEN");
@@ -220,21 +226,21 @@ class SSO extends Module {
      * token given the public key.
      */
    static function key_info($key) {
-       $tok = self::grab_token($key);
-       return self::token_info($tok);
+       $tok = self::grab_sectok($key);
+       return self::sectok_info($tok);
    }
     
     /**
       * Return the secured information stored in a
       * token (username, password, time, and exp fields)
       */
-    static function token_info($sso) {
+    static function sectok_info($sso) {
         $crypt = self::token_cryptinfo($sso);
         if(!(isset($crypt['ret']) && isset($crypt['iv']))) {
             warn("Invalid token.");
             return;
         }
-        $PLAIN_str = Auth::decrypt($crypt['ret'], self::get_sso_key(), $crypt['iv']);
+        $PLAIN_str = Auth::decrypt($crypt['ret'], self::get_decrypt_key(), $crypt['iv']);
         return self::token_cryptinfo($PLAIN_str);
     }
 
@@ -242,9 +248,9 @@ class SSO extends Module {
       * Decode a SSO token, returning an array
       * in the form [$user, $pass].
       */
-    static function decode_token($sso) {
+    static function decode_credtok($sectok) {
         self::check_enable();
-        $arr = self::token_info($sso);
+        $arr = self::sectok_info($sso);
         return array($arr['username'], $arr['password']);
     }
 
@@ -293,9 +299,9 @@ class SSO extends Module {
         // [api, sso]
         if(isset($I2_ARGS[2])) {
             if($I2_ARGS[2] == "valid_key" && isset($I2_QUERY['sso'])) {
-                $tok = self::grab_token($I2_QUERY['sso']);
-                $dat = self::token_info($tok);
-                $ret = array("valid_key" => self::valid_token($tok), "token_exp" => $dat['exp'], "token_time" => $dat['time'], "time" => time(), "username" => $dat['username']);
+                $tok = self::grab_sectok($I2_QUERY['sso']);
+                $dat = self::sectok_info($tok);
+                $ret = array("valid_key" => self::valid_sectok($tok), "token_exp" => $dat['exp'], "token_time" => $dat['time'], "time" => time(), "username" => $dat['username']);
             } else if($I2_ARGS[2] == "gen_key") {
                 $ret = array("gen_key" => self::gen_key($I2_QUERY['exp']));
             } else if($I2_ARGS[2] == "decode_req" && isset($I2_QUERY['req'])) {
