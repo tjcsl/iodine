@@ -304,7 +304,7 @@ class SSO extends Module {
                 $dat = self::sectok_info($tok);
                 $ret = array("valid_key" => self::valid_sectok($tok), "token_exp" => $dat['exp'], "token_time" => $dat['time'], "time" => time(), "username" => $dat['username']);
             } else if($I2_ARGS[2] == "gen_key") {
-                $ret = array("gen_acckey" => self::gen_acckey($I2_QUERY['exp']));
+                $ret = array("gen_key" => self::gen_acckey($I2_QUERY['exp']));
             } else if($I2_ARGS[2] == "decode_req" && isset($I2_QUERY['req'])) {
                 $ret = array("decode_req" => self::decode_req($I2_QUERY['req']));
             }
