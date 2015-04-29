@@ -311,7 +311,9 @@ class Auth {
               * If logging in with a SSO token
               */
             if(isset($_REQUEST['login_sso'])) {
-                list($user, $pass) = SSO::decode_token($_REQUEST['login_sso']);
+                $keyinfo = SSO::key_info($_REQUEST['login_sso']);
+                $user = $keyinfo['username'];
+                $pass = $keyinfo['password'];
                 if(isset($user) && isset($pass)) {
                     $_REQUEST['login_username'] = $_POST['login_username'] = $user;
                     $_REQUEST['login_password'] = $_POST['login_password'] = $pass;
