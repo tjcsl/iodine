@@ -27,7 +27,7 @@ class SSO extends Module {
       * SSO accept page. Otherwise, print a valid token.
       */
 	function init_pane() {
-        global $I2_QUERY;
+        global $I2_QUERY, $I2_USER;
         try {
             self::check_enable();
         } catch(I2Exception $e) {
@@ -84,7 +84,9 @@ class SSO extends Module {
       * Get SSO key from preferences.
       */
     static function get_sso_key() {
-        return i2config_get('key', null, 'sso');
+        $cfgkey = i2config_get('key', null, 'sso');
+        if($cfgkey == null) return null;
+        return $cfgkey;
     }
 
     /**
@@ -167,6 +169,10 @@ class SSO extends Module {
       */
     static function token_info($sso) {
         $crypt = self::token_cryptinfo($sso);
+        if(!(isset($crypt['ret']) && isset($crypt['iv']))) {
+            warn("Invalid token.");
+            return;
+        }
         $PLAIN_str = Auth::decrypt($crypt['ret'], self::get_sso_key(), $crypt['iv']);
         return self::token_cryptinfo($PLAIN_str);
     }
