@@ -149,11 +149,14 @@
 	<div class="pane" id="subPane">
 		[<include file='dayschedule/login.tpl'>]
 		<br />
-        <div class="dayschedule-app">
+        <div class="dayschedule-app" style="display: none">
             <b>New: Bell Schedule app for Android</b>
             <em><a href="https://www.tjhsst.edu/~2016jwoglom/uploads/TJDaySchedule/latest.apk">Download now</a></em>
             <span>(enable "Unknown Sources")</span>
         </div>
+        <script type="text/javascript">
+        if(navigator.userAgent.indexOf('Android') != -1) $(".dayschedule-app").show();
+        </script>
         <br />
 		<ul id="links">
 			<li><a href="http://www.tjhsst.edu" target="_blank">TJHSST</a></li>
