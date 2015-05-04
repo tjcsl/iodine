@@ -42,6 +42,10 @@
     margin: 3px 0;
 }
 
+.apinfo li {
+    margin-left: -20px;
+}
+
 </style>
 
 <div class="pane apinfo">
@@ -55,11 +59,11 @@
     </li>
     <li>AP Environmental Science:
     <ul>
-        <li>A-Z: Black Box Theater</li>
+        <li>A-Z: Black Box Theater (near Stud Svcs)</li>
     </ul>
     </li>
 </ul>
-<b>Afternoon:</b> Report by 12:30
+<b>Afternoon:</b> Report by end of lunch
 <ul>
     <li>AP Psychology:
     <ul>
@@ -67,20 +71,66 @@
     </ul>
     </li>
 </ul>
-<!--
-<span class="title">AP Exams: May 5</span>
-<b>Morning Exams:</b>
+<span style="display:">
+<span class="title">AP Exam Locations: May 5</span>
+<b>Morning:</b> Report by 8:30
 <ul>
     <li>AP Calculus AB:
     <ul>
-        <li></li>
+        <li>A-St: Gym 2</li>
+        <Li>Su-Z: Black Box Theater (near Stud Svcs)</li>
     </ul>
     </li>
-    <li>AP Calculus BC:
+    <li>AP Calculus BC
     <ul>
-        <li></li>
+        <li>A-G: Cafeteria</li>
+        <li>H-Jo: Main Library</li>
+        <li>Ju-Ku: Library Online Room</li>
+        <li>Kw-Li: College and Career Center</li>
+        <li>Lif-Mo: Room 212 (Upstairs front hall)</li>
+        <li>Moi-Pen: Room 206 (Techlab Wing)</li>
+        <li>Pet-R: Room 2 (Oceanography)</li>
+        <li>S-Srid: Geosystems Commons</li>
+        <li>Srin-T: Room 251 (Geosystems)</li>
+        <Li>V-Wood: Room 250 (Geosystems)</li>
+        <li>Woon-Z: Room 249 (Geosystems)</li>
     </ul>
     </li>
 </ul>
--->
+<b>Afternoon:</b> Report by end of lunch
+<ul>
+    <li>AP Chinese:
+    <ul>
+        <li>A-Ma: Room 211 (Upstairs front hall)</li>
+        <li>Pan-Z: Room 206 (Upstairs front hall)</li>
+    </ul>
+    </li>
+</ul>
+</span>
+[<*
+<span class="title">AP Exam Locations: May 6</span>
+<b>Morning:</b>
+<ul>
+    <li>AP English Lit:
+    <ul>
+        <li>A-Z: Gym 2</li>
+    </ul>
+    </li>
+</ul>
+<b>Afternoon:</b>
+<ul>
+    <li>AP Physics 1:
+    <ul>
+        <li>A-Z: Room 212 (Upstairs front hall)</li>
+    </ul>
+    </li>
+    <li>AP Japanese:
+    <ul>
+        <li>A-Z: Room 211 (Upstairs front hall)</li>
+    </ul>
+    </li>
+</ul>
+
+
+*>]
 </div>
