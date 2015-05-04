@@ -53,7 +53,7 @@ var dayschedule_summary = '[<$summaryid>]';
 			View
 		</div>
 	</div>
-	<div class='day-type [<$summaryid>]' title='[<$summaryid>]'>
+	<div class='day-type [<$summaryid>][<if $summary|lower|truncate:8:"" eq "blue day">] blue[<else if $summary|lower|truncate:7:"" eq "red day">] red[</if>]' title='[<$summaryid>]'>
 		[<$summary>]
 	</div>
 	<div class='day-schedule'>
