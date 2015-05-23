@@ -331,6 +331,18 @@ class StudentDirectory extends Module {
         }
     }
 
+    function ajax() {
+        global $I2_ARGS, $I2_USER;
+        $data = array("invalid");
+        if($I2_ARGS[2] == "info") {
+            if(!isset($I2_ARGS[3])) $user = $I2_USER;
+            else $user = new User($I2_ARGS[3]);
+            $data = array_shift(array_values((array)$user));
+        }
+        echo json_encode($data);
+    }
+
+
     function api() {
         global $I2_API, $I2_ARGS, $I2_QUERY, $I2_USER, $I2_ROOT;
         if(!isset($I2_ARGS[1])) {
