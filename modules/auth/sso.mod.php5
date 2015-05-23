@@ -8,6 +8,49 @@
   * @subpackage auth
   */
 /**
+
+TO IMPLEMENT SINGLE SIGN-ON IN YOUR APPLICATION:
+* Create a request token.
+    * A request token includes the following information:
+        * title: Application title
+        * author: Application author (optional)
+        * return: Return/callback URL
+        * time: The current epoch time
+        * exp: The time the token will expire (usually time()+120 or similar)
+        * method: GET or POST (defaults to POST)
+    * Make an array/dictionary of this information and convert it to a URL-encoded query string
+  (http_build_query in PHP, urllib.parse.urlencode in Python)
+    * Encode the query string with base64 to generate the request token.
+* Redirect to $I2_ROOT/sso?req=$requesttoken
+    * The user will be redirected to the Iodine login page, if they do not currently have a session active.
+    * The user will see a screen stating:
+        * "The application $title by $author would like to access your Intranet account."
+        * "If you fully trust this application and developer, press the OK button below."
+        * If the "Cancel" button is pressed, they will be sent to the Iodine login page.
+    * The user accepts the authorization request, and is redirected back to the callback URL specified.
+        * If method is "GET", then the access key is the "sso" query value.
+        * If method is "POST", then the access key is the "sso" POST value.
+* The application now has the access key, but needs to verify that it is correct.
+    * Send a GET or POST request to $I2_ROOT/ajax/sso/valid_key?sso=$accesskey
+    * A JSON object will be returned containing information about the token.
+        * $json["sso"]["valid_key"]:
+            * null = Invalid token
+            * false = The key has expired
+            * true = The key is valid and has not expired
+        * $json["sso"]["token_exp"]: The expiry time in epoch seconds
+        * $json["sso"]["token_time"]: The epoch time when the token was created
+        * $json["sso"]["time"]: The current server time
+        * $json["sso"]["username"]: The username of the user that the token was generated for
+* To use your now valid access key:
+    * Send a POST request to $I2_ROOT/ with login_sso=$accesskey to begin an Iodine session
+        * Save and pass the PHPSESSID and IODINE_PASS_VECTOR cookies to all further requests
+    * Send a request to any API endpoint with the GET or POST argument login_sso=$accesskey and follow
+      the redirect to get the contents of that page.
+        * This does not require saving cookies
+        * Get information on the logged-in user by requesting $I2_ROOT/ajax/studentdirectory/info (JSON) or
+          $I2_ROOT/api/studentdirectory/info (XML).
+* Any questions, comments, or issues with the SSO module should be directed to 2016jwoglom@tjhsst.edu
+
 PROCESS:
 * Third party application generates request token (reqtok)
   * Redirects to $I2_ROOT/sso?req=$tok
@@ -18,8 +61,8 @@ PROCESS:
   * User hits accept
   * Access token sent to application
 * Third party recieves identifier
-  * Sends request to $I2_ROOT/ajax/sso/valid_acckey?sso=$acckey
-    * If JSON object contains valid_acckey: true, authentication was completed successfully
+  * Sends request to $I2_ROOT/ajax/sso/valid_key?sso=$acckey
+    * If JSON object contains valid_key: true, authentication was completed successfully
     * $acckey may be used to log in to the Iodine session for the time period allocated with the token (usually 1hr)
 */
 class SSO extends Module {
