@@ -1,5 +1,5 @@
 [<if $query == "sex:lots" || $query == "sex: lots" || $query == "sex :lots">]
-<iframe width="425" height="349" src="http://www.youtube.com/embed/QH2-TGUlwu4?autoplay=1" frameborder="0" allowfullscreen></iframe><br/>
+<iframe width="425" height="349" src="https://www.youtube.com/embed/QH2-TGUlwu4?autoplay=1" frameborder="0" allowfullscreen></iframe><br/>
 [<else>]
 [<if $query == "do a barrel roll">]
 <script type="text/javascript">
@@ -94,7 +94,7 @@
 </script>
 [<else>]
 [<if $query == "can has sleep" || $query == "can has sleep?">]
-<iframe width="560" height="315" src="http://www.youtube.com/embed/gvdf5n-zI14?autoplay=1" frameborder="0" allowfullscreen></iframe><br/>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/gvdf5n-zI14?autoplay=1" frameborder="0" allowfullscreen></iframe><br/>
 [</if>]
 [</if>]
 [</if>]
