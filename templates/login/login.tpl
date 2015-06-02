@@ -10,6 +10,8 @@
 	<link rel="author" href="http://www.tjhsst.edu/admin/livedoc/index.php/Iodine#Intranet_Credits" />
 	<link rel="canonical" href="[<$I2_ROOT>]" />
 	<!-- zoom in mobile browsers -->
+    <!-- Chrome Add To Home Screen -->
+    <link rel="manifest" href="[<$I2_ROOT>]www/manifest.json" />
 	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=1">
 	<title>TJHSST Intranet: Login</title>
 	
@@ -58,7 +60,7 @@
 </head>
 <body class="login">
 [<include file='downtime.tpl'>]
-[<include file='login/apinfo.tpl'>]
+<!--include file='login/apinfo.tpl'-->
 [<$emerg>]
 	<div class="pane" id="mainPane">
 		<a id="logo" href="[<$I2_ROOT>]" title="TJHSST Intranet">Intranet</a>
@@ -156,7 +158,7 @@
             <span>(enable "Unknown Sources")</span>
         </div>
         <script type="text/javascript">
-        if(navigator.userAgent.indexOf('Android') != -1) $(".dayschedule-app").show();
+        if(false && navigator.userAgent.indexOf('Android') != -1) $(".dayschedule-app").show();
         </script>
         <br />
 		<ul id="links">

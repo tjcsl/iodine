@@ -1,0 +1,14 @@
+{
+  "name": "TJ Intranet",
+  "icons": [
+    {
+      "src": "www/pics/styles/i3/logo-light.png",
+      "sizes": "50x55",
+      "type": "image/png",
+      "density": "4.0"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "landscape"
+}
