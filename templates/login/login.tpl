@@ -11,8 +11,10 @@
 	<link rel="canonical" href="[<$I2_ROOT>]" />
 	<!-- zoom in mobile browsers -->
 	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=1">
+	<!-- Chrome Add To Home Screen -->
+	<link rel="manifest" href="[<$I2_ROOT>]www/manifest.json">
 	<title>TJHSST Intranet: Login</title>
-	
+
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-ui-light.css" />
 	<link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/i3-login-default.css" />
@@ -65,7 +67,7 @@
         [<if isset($sso)>]
             <div class="login_msg" id="login_msg" title="You will be redirected to [<$sso['return']|escape>] after a successful authentication.">
                 <b>
-                [<if isset($sso['title'])>]The application [<$sso['title']|escape>][<else>]An unnamed application[</if>] 
+                [<if isset($sso['title'])>]The application [<$sso['title']|escape>][<else>]An unnamed application[</if>]
                 [<if isset($sso['author'])>]by [<$sso['author']|escape>] [</if>]
                 would like to access your Intranet account.</b> Only enter your credentials below if you <b>fully trust</b> this application[<if isset($sso['author'])>] and developer[</if>].<br />
             </div>
@@ -167,4 +169,3 @@
 		</ul>
 		<br />
 	</div>
-
