@@ -15,6 +15,9 @@
 <!-- <meta http-equiv="Expires" content="-1"/> -->
 <!-- <meta http-equiv="CACHE-CONTROL" content="NO-CACHE"/> -->
 
+<!-- Chrome Add To Home Screen -->
+<link rel="manifest" href="`$I2_ROOT`www/manifest.json">
+
 
 <title>TJHSST Intranet[<if $title != "" >]: [<$title>][</if>]</title>
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext,cyrillic-ext,greek-ext,cyrillic,vietnamese,greek" rel="stylesheet" type="text/css" />
@@ -82,11 +85,11 @@ IE7_PNG_SUFFIX = ".png";
 <div id="logo" class="logo"><a href="[<$I2_ROOT>]"><span id="logotext">Intranet</span></a></div>
 <div class="header">
  <div class="title"> [<if $I2_USER->borntoday()>]Happy Birthday[<else>]Welcome[</if>], [<$I2_USER->firstornick>]!</div>
- <div class="blurb"><span class='hid'>Today is [<$smarty.now|date_format:"%B %e, %Y">]. 
+ <div class="blurb"><span class='hid'>Today is [<$smarty.now|date_format:"%B %e, %Y">].
  [<if $date != "none">]
  	[<if $I2_USER->grade=="staff">]
 		<a href="[<$I2_ROOT>]eighth/vcp_attendance">View All Rosters</a>.
-	 	[<if !empty($hosting)>]The next 8th period is [<$date>], and </span><span class='show'><span class='c'>y</span>ou are currently sponsoring 
+	 	[<if !empty($hosting)>]The next 8th period is [<$date>], and </span><span class='show'><span class='c'>y</span>ou are currently sponsoring
  		[<foreach from=$hosting item="activity" name="activities">]
  			[<if $smarty.foreach.activities.last and not $smarty.foreach.activities.first>]
 				and
@@ -97,7 +100,7 @@ IE7_PNG_SUFFIX = ".png";
 	[<elseif $I2_USER->grade=="TJStar">]
 	[<elseif $I2_USER->grade=="graduate">]
 		<!--Whoohoo! An Alumn who reads the source code! You're pretty cool! --!>
-	 	[<if !empty($hosting)>]The next 8th period is [<$date>], and </span><span class='show'><span class='c'>y</span>ou are currently sponsoring 
+	 	[<if !empty($hosting)>]The next 8th period is [<$date>], and </span><span class='show'><span class='c'>y</span>ou are currently sponsoring
  		[<foreach from=$hosting item="activity" name="activities">]
  			[<if $smarty.foreach.activities.last and not $smarty.foreach.activities.first>]
 				and
