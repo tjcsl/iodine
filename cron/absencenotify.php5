@@ -82,7 +82,7 @@ echo "\nFound ".sizeof($toemail)." users..\n";
 if(isset($argv,$argv[1]) && $argv[1] == "mail") echo "SENDING EMAIL NOTIFICATIONS in 5 SECONDS\n";
 sleep(5);
 foreach($toemail as $mailparam) {
-	echo $mailparam[0]."\n";
+    print_r($mailparam[0]);
 	if(isset($argv,$argv[1]) && $argv[1] == "mail") i2_mail($mailparam[0], $mailparam[1], $mailparam[2]);
 }
 echo "Updating database counts\n\n";
