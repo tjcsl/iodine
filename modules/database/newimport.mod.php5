@@ -397,7 +397,7 @@ class Newimport extends Module {
 					$Zip, 
 					$Couns,
 					$Nickname,
-				) = fgetcsv($file, 0, "\t")) {
+				) = fgetcsv($file, 0, ",")) {
 			$username = strtolower($username);
 			$newusers[] = $username;
 			$newuserdata[] = array(
@@ -636,7 +636,7 @@ class Newimport extends Module {
 		// fgetcsv reads a line and parses as CSV
 		// args past are length=0 (autodetect max line length)
 		// and delimiter="\t" for tab-delimiters instead of commas
-		while (list($sectionid,$periodstart,$periodend,$courselen,$othercourselen,$otherothercourselen,$teacherid,$room,$class) = fgetcsv($file, 0, "\t")) {
+		while (list($sectionid,$periodstart,$periodend,$courselen,$othercourselen,$otherothercourselen,$teacherid,$room,$class) = fgetcsv($file, 0, ",")) {
 			list($classid,) = explode('-',$sectionid);
 			$numclasses++;
 
@@ -681,7 +681,7 @@ class Newimport extends Module {
 		// fgetcsv reads a line and parses as CSV
 		// args past are length=0 (autodetect max line length)
 		// and delimiter="\t" for tab-delimiters instead of commas
-		while (list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename) = fgetcsv($studentcoursefile, 0, "\t")) {
+		while (list($studentid, $last, $first, $middle, $period, $sectionone, $courseid, $coursename) = fgetcsv($studentcoursefile, 0, ",")) {
 			$class = $ldap->search(LDAP::get_schedule_dn(),"tjhsstSectionId=$sectionone",array('tjhsstSectionId'))->fetch_single_value();
 			if (!$class) {
 				$I2_LOG->log_file('Invalid SectionID '.$sectionone.' for studentid '.$studentid);
