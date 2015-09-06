@@ -1,3 +1,4 @@
+[<*
 <link rel="stylesheet" type="text/css" href="[<$I2_ROOT>]www/extra-css/dayschedule.css" />
 [<if $alljs>]
 <script type="text/javascript" src="[<$I2_ROOT>]www/js/jquery.min.js"></script>
@@ -66,3 +67,6 @@ var dayschedule_summary = '[<$summaryid>]';
 <script type="text/javascript">
 init_dayschedule();
 </script>
+*>]
+<iframe src="https://ion.tjhsst.edu/schedule/embed?iodine"
+        seamless=seamless allowtransparency=true width="310" height="275" style="margin: -4px -39px;border: 0 !important"></iframe>
