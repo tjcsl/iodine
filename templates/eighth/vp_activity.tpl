@@ -10,7 +10,7 @@
 		</tr>
 	[<foreach from=$activities item="act">]
 		<tr style="background-color: [<cycle values="#EEEEFF,#FFFFFF">];">
-			<td style="padding: 0px 5px;">[<$act->block->date|date_format:"%B %e, %Y">], [<$act->block->block>] block</td>
+			<td style="padding: 0px 5px;">[<$act->block->date|date_format:"%a %B %e, %Y">], [<$act->block->block>] block</td>
 			<td style="padding: 0px 5px;"><a href="[<$I2_ROOT>]eighth/vp_roster/view/bid/[<$act->bid>]/aid/[<$act->aid>]">[<$act->name_r>] - [<$act->aid>]</a></td>
 			<td style="padding: 0px 5px; text-align: center;">[<$act->block_rooms_comma>]</td>
 			<td style="padding: 0px 5px; text-align: center;">[<$act->member_count>]</td>

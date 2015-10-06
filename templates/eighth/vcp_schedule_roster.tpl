@@ -15,6 +15,8 @@ Sponsor(s):
 [</if>]
 [<if $sponsor->userid != 0>]</a>[</if>]
 [</foreach>]<br />
+Description: [<$activity->description|escape:html>]<br />
+
 [<assign var='inthisactivity' value=0>]
 [<foreach from=$activity->members_obj item="member">]
 	[<if $member->uid==$I2_USER->uid>]
