@@ -262,7 +262,9 @@ class EighthSponsor {
 		else if($name == 'name_comma') {
 			//Allow hacky last-name-only sponsors from old Intranet
 			if (isset($this->data['fname']) && trim($this->data['fname']) != '') {
-				return "{$this->data['lname']}, {$this->data['fname']}";
+                $fname = $this->data['fname'];
+                $fname = substr($fname, 0, 1);
+				return "{$this->data['lname']}, {$fname}";
 			}
 			return $this->data['lname'];
 		}
