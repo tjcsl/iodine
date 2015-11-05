@@ -11,6 +11,6 @@
 [</if>]
 <a href="http://leadership.tjhsst.edu/sga">TJ SGA</a><br />
 <a href="http://colonialathletics.org">TJ Athletics</a><br />
-<a href="http://tinyurl.com/tjmorning">Submit Morning Announcement Request</a><br />
+<a href="https://docs.google.com/a/fcpsschools.net/forms/d/1bv8aG3CRDC-F4W138ivuwKI61a5ZVSCDaVXaAlGkBHM/viewform?c=0&w=1">Submit Morning Announcement Request (Updated 11/5)</a><br />
 <a href="https://livedoc.tjhsst.edu/wiki/Forwarding_your_TJ_Email">Forwarding your TJ Email</a><br />
 <a href="https://www.tjhsst.edu/~2016jwoglom/uploads/WiFiFAQ.pdf">FCPSOnboard WiFi FAQ</a><br />
