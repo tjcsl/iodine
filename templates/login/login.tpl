@@ -59,6 +59,7 @@
 	</style>
 </head>
 <body class="login">
+[<include file='login/credits.tpl'>]
 [<include file='downtime.tpl'>]
 <!--include file='login/apinfo.tpl'-->
 [<$emerg>]
