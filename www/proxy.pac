@@ -28,7 +28,7 @@ function FindProxyForURL(url, host)
 		dnsDomainIs(host, "jchemed.chem.wisc.edu") ||
 		dnsDomainIs(host, "www.jstor.org") ||
 		dnsDomainIs(host, "web.lexis-nexis.com") ||
-		dnsDomainIs(host, "oed.com") ||
+		dnsDomainIs(host, ".oed.com") ||
 		dnsDomainIs(host, "poll.orspub.com") ||
 		dnsDomainIs(host, "proquestk12.com") ||
 		dnsDomainIs(host, "proquest.com") ||
