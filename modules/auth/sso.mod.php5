@@ -219,7 +219,7 @@ class SSO extends Module {
       */
     static function process_reqtok($dat) {
         if(empty($dat['return'])) return null;
-        if(substr($dat['return'], 0, 8) != "https://") throw new I2Exception("Insecure protocol not allowed.");
+        //if(substr($dat['return'], 0, 8) != "https://") throw new I2Exception("Insecure protocol not allowed.");
         $sso = self::gen_acckey();
         $args = array($dat['return'], $sso, isset($dat['method']) ? $dat['method'] : "POST");
         return $args;

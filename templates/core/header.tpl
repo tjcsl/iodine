@@ -62,6 +62,9 @@ IE7_PNG_SUFFIX = ".png";
 <![endif]-->
 </head>
 <body class="[<if $I2_CSS == "`$I2_ROOT`css/i3-light.css/`$I2_USER->iodineUIDNumber`">]i3 i3-light[<elseif $I2_CSS == "`$I2_ROOT`css/i3-dark.css/`$I2_USER->iodineUIDNumber`">]>i3 i3-dark[</if>]">
+<!--
+<div class='downtime'>Intranet will be unavailable for approximately 10 minutes starting at 1:15PM for unplanned maintanence.</div>
+-->
 <div class="mobile-msg" onclick="document.forms.mobileform.submit();">
 	<form name="mobileform" action="[<$I2_ROOT>]prefs" method="post">
 	<input type="hidden" name="prefs_form" value="" />

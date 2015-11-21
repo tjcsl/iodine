@@ -111,7 +111,7 @@ AID: <input type="text" name="aid"/>
 			<div id="div_sponsor_list_[<$activity.block.bid>]" class="eighth_sponsor_list">
 [<if $activity.scheduled>]
 	[<foreach from=$activity.sponsors_obj item=sponsor>]
-				[<$sponsor->name_comma>] <a href="#[<$activity.block.bid>]" onclick="return do_action('remove_sponsor', '[<$activity.block.bid>]', '[<$sponsor->sid>]', event)">Remove</a><br />
+				[<$sponsor->name_comma>] <a href="#[<$activity.block.bid>]" onclick="return do_action('remove_sponsor', '[<$activity.block.bid>]', [<$sponsor->sid>], event)">Remove</a><br />
 	[</foreach>]
 [</if>]
 			</div>

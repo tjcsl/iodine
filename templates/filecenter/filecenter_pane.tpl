@@ -1,4 +1,4 @@
-
+<b>If you are having issues with filecenter, <a href="https://livedoc.tjhsst.edu/wiki/Accessing_Your_TJ_Files_Remotely#SFTP">click here for a guide to access your files over SFTP.</a></b><br />
 [<if isset($error)>]
 <div style="text-align: left; float: left;">
  <font color=red><b>[<$error>]</b></font>

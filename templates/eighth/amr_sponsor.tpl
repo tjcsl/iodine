@@ -12,7 +12,7 @@ function sponsorSelect(sid) {
 }
 var sponsorData = Array();
 [<foreach from=$sponsors item='sponsor'>]
-	sponsorData[[<$sponsor.sid>]] = Array("[<$sponsor.fname>]", "[<$sponsor.lname>]", "[<$sponsor.pickup>]", "[<$sponsor.userid>]");
+	sponsorData[[<$sponsor['sid']>]] = Array("[<$sponsor.fname>]", "[<$sponsor.lname>]", "[<$sponsor.pickup>]", "[<$sponsor.userid>]");
 [</foreach>]
 </script>
 <br /><br />

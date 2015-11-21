@@ -443,9 +443,9 @@ class Auth {
 		//	} else
 			global $I2_QUERY;
 				$this->template_args['jlam'] = isset($I2_QUERY['jlam']);
-				if(isset($I2_QUERY['customtheme']) && strpos($I2_QUERY['customtheme'],".")===false && $disp->get_template("login/".$I2_QUERY['customtheme'].".tpl") !== NULL)
+				/*if(isset($I2_QUERY['customtheme']) && strpos($I2_QUERY['customtheme'],".")===false && $disp->get_template("login/".$I2_QUERY['customtheme'].".tpl") !== NULL)
 					$disp->disp($I2_QUERY['customtheme'].'.tpl', $this->template_args);
-				else 
+            else */
 					$disp->disp('login.tpl', $this->template_args);
 				//$disp->disp('fb.tpl', $template_args);
 				//$disp->disp('windows.tpl', $template_args);

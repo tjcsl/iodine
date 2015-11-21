@@ -224,7 +224,9 @@ class NewsItem {
 
 	public static function clean_text($text) {
 		// run through HTMLPurifier
-		global $I2_FS_ROOT;
+        global $I2_FS_ROOT;
+        // FIXME: CURRENTLY DISABLED
+        return $text;
 		require_once($I2_FS_ROOT."lib/HTMLPurifier.standalone.php");
 		$purifier = new HTMLPurifier();
 		$text = $purifier->purify($text);

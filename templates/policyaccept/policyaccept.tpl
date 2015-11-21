@@ -52,7 +52,8 @@
 
 
     <p>Press 'accept' below to acknowledge that you, <b>[<$user->fullname>]</b>, have read this information.</p>
-    <form action="[<$I2_ROOT>]policyaccept" method="post">
+    <script>var start = +new Date;</script>
+    <form action="[<$I2_ROOT>]policyaccept" onsubmit="this.action+='?time='+((+new Date)-start);" method="post">
         <center>
             <input type="hidden" name="accept" value="true" />
             <input type="submit" value="I accept" style="padding: 10px 20px" />

@@ -32,13 +32,15 @@ class Api extends XMLWriter {
 		$this->endDocument();
 		echo $this->outputMemory();
 	}
-	function init() {
+    function init() {
+        header('HTTP/1.1 403 Forbidden');
 		register_shutdown_function(array($this,'flush_api'));
 		header('Content-Type: application/xml');
 		$this->api = true;
 		$this->openMemory();
 		$this->setIndent(true);
-		$this->startDocument('1.0','ISO-8859-1');
+        $this->startDocument('1.0','ISO-8859-1');
+        die();
 	}
 }
 ?>

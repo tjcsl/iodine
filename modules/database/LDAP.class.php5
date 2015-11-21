@@ -61,8 +61,11 @@ class LDAP {
 				d('LDAP protocol version set failed.',7);
 			}
 			d('KRB5CCNAME for LDAP bind is '.$_ENV['KRB5CCNAME'],8);
+			try {
 			$this->bind = ldap_sasl_bind($this->conn,'','','GSSAPI');
-
+			} catch(Exception $e) {
+				warn("Unable to get ldap_sasl_bind");
+			}
 			/*
 			** This is what stuff would look like for a proxy bind (w/GSSAPI)... But PHP ldap_sasl_bind is badly broken...
 			*/
@@ -175,7 +178,8 @@ class LDAP {
 	}
 
 	public static function get_simple_bind($userdn,$pass,$server=NULL) {
-		return new LDAP($userdn,$pass,$server);	
+		$l = new LDAP($userdn,$pass,$server);
+	return $l;
 	}
 
 	public function has_admin_privs() {

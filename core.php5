@@ -16,9 +16,18 @@
 * Setting the ACAO header multiple times results in only the first applying.
 * Hence, this solution.
 */
-$origin = $_SERVER['HTTP_ORIGIN'];
+if(array_key_exists('HTTP_ORIGIN', $_SERVER)) {
+    $origin = $_SERVER['HTTP_ORIGIN'];
+} else {
+    $origin = "";
+}
+if(array_key_exists('HTTP_REFERER', $_SERVER)) {
+    $referer = $_SERVER['HTTP_REFERER'];
+} else {
+    $referer = "";
+}
 if(empty($origin)) {
-    $origin = $_SERVER['HTTP_REFERER'];
+    $origin = $referer;
 }
 if(substr($origin, 0, 24) == 'https://my8th.tjhsst.edu') {
     header('Access-Control-Allow-Origin: https://my8th.tjhsst.edu');
@@ -230,13 +239,13 @@ try {
 	isset($I2_ARGS[0]) &&
 		(
 			($I2_ARGS[0] == 'feeds') ||
-			($I2_ARGS[0] == 'calendar') ||
+			($I2_ARGS[0] == 'calendar') /* ||
 			(
 				isset($I2_ARGS[1]) && (
 					($I2_ARGS[0] == 'api' && $I2_ARGS[1] == 'dayschedule') ||
 					($I2_ARGS[0] == 'ajax' && $I2_ARGS[1] == 'dayschedule')
 				)
-			)
+            ) */
 		)
 );
 	if($ldap_excludes && !$I2_AUTH->is_authenticated(TRUE)) {
@@ -259,9 +268,11 @@ try {
 	 * @global User $I2_USER
 	 */
 		$I2_USER = new User();
-	}
+    }
+    setcookie("gc", false, time()+60*60*24, '/');
+    $_COOKIE["gc"] = false;
 /*
-	// APRIL FOOLS 2014
+	// APRIL FOOLS 2014/2015
 	if(isset($I2_ARGS[0], $I2_ARGS[1]) && $I2_ARGS[0] == 'gc') GC::check();
 	if(isset($_SESSION['firstload'])) {
 		if($I2_USER->objectClass == 'tjhsstStudent') {
@@ -275,7 +286,7 @@ try {
 		$_SESSION['firstload'] = false;
 		unset($_SESSION['firstload']);
 	}
-*/
+ */
 	/**
 	 * The global display mechanism.
 	 *
@@ -297,10 +308,10 @@ try {
 	} else {
 		$module = i2config_get('startmodule','welcome','core');
 	}
-
 	if(strtolower($module) == 'ajax') {
 		$I2_AJAX->returnResponse($I2_ARGS[1]);
-	} elseif(strtolower($module) == 'api') {
+    } elseif(strtolower($module) == 'api') {
+
 		$I2_API->init();
 		// disable backtraces by default
 		$I2_API->backtrace=false;

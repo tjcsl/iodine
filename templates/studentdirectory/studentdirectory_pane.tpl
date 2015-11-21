@@ -387,7 +387,6 @@ To view this user's portfolio click <a href="https://shares.tjhsst.edu/PORTFOLIO
 </div>
 [</if>]
 [</if>]
-
 [<if $eighth>]
  <br /><span class="bold">Eighth Periods:</span><br />
  <table cellspacing="0">

@@ -28,7 +28,7 @@ $(".mainbox .boxheader").prepend("<img src='[<$I2_ROOT>]www/gc/new.gif' class=bl
 <div>
 [<if $I2_USER->is_group_member('students_all')>]
 <div class="newspost">
-<div class="newstitle">Happy first Tuesday of April!</div>
+<div class="newstitle">Happy March 32nd!</div>
 <div class="newsitem"><div class="newsgroups">Posted by the Intranet Developers to students_all.</div>
 <div id="newsitem_9001">
 <p>We hope you enjoy the blast from the past. If you experience difficulties with the enhanced feature set, <a href="[<$I2_ROOT>]gc/optout">click here to opt out</a>.</p>

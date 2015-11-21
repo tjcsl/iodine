@@ -63,6 +63,7 @@ body {
     }
 
     #credits-mobile {
+        display: block;
         position: absolute;
         top: 0;
         left: 0;
@@ -121,10 +122,10 @@ body {
     Bryan "brj" Rau-Jacobs (2006)<br>
     Andrew "asmith" Smith (2006)<br>
     Logan Kearsley (2007)<br>
+    Victor "vmircea" Mircea (2007)<br>
+    Josiah "Jobin" Boning (2008)
     </td>
     <td class="names">
-    Victor "vmircea" Mircea (2007)<br>
-    Josiah "Jobin" Boning (2008)<br>
     Jack "jbreese" Breese (2008)<br>
     Nathan Watson (2008)<br>
     William "wyang" Yang (2008)<br>
@@ -138,13 +139,16 @@ body {
     Ethan Lowman (2015)<br>
     James Woglom (2016)<br>
     <br />
+    Mr. Peter Morasca<br>
     Mr. Richard Slivoskey<br>
     Mr. Donald Hyatt<br>
     Mr. Randy Latimer<br>
     Mr. Joshua Strong<br>
-    Mr. Shane Torbert<br>
+    Dr. Shane Torbert<br>
     Ms. Marie Lauducci<br>
-    Ms. Joan Burch<br>
+    Mrs. Jean Stevens<br>
+    Ms. Allison Agee<br>
+    Mrs. Joan Burch<br>
     Mr. Andrew Hamilton
 </td>
 </tr>

@@ -36,6 +36,8 @@ class CIFS extends Filesystem {
 		$this->server = isset($server) ? $server : i2config_get('cifs_default_server', '', 'filecenter');
 		$this->share = isset($share) ? $share : i2config_get('cifs_default_share', '', 'filecenter');
 
+//		die("<style>.downtime {position: fixed; left: 0; width: 100%; z-index: 999; font-size: 18px; text-align: center; background-color: yellow; border: 1px solid black;}</style><div class='downtime'>LOCAL domain servers, which host the M: and R: drives in addition to other services, are currently down due to renovation.</div>");
+
 		$this->root_dir = i2config_get('cifs_base_dir', '/tmp/cifs/', 'filecenter') . $this->server . "/" . $this->share . "_" . $user;
 		d("filecenter using mount point ".$this->root_dir." for CIFS filesystem",5);
 
